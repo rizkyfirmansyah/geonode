@@ -608,6 +608,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     edition_help_text = _('version of the cited resource')
     abstract_help_text = _(
         'brief narrative summary of the content of the resource(s)')
+    data_description_help_text = _(
+        'description or abstract of the data and methodology')
     purpose_help_text = _(
         'summary of the intentions with which the resource(s) was developed')
     maintenance_frequency_help_text = _(
@@ -636,6 +638,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         'time period covered by the content of the dataset (start)')
     temporal_extent_end_help_text = _(
         'time period covered by the content of the dataset (end)')
+    spatial_resolution_help_text = _(
+        'describes the spatial resolution: e.g. 1:50.000 or 30m')
+    date_content_help_text = _(
+        'date or time period that the data represents')
     data_quality_statement_help_text = _(
         'general explanation of the data producer\'s knowledge about the lineage of a'
         ' dataset')
@@ -655,6 +661,14 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         blank=True,
         null=True,
         help_text=attribution_help_text)
+    source_help_text = _(
+        'People/organizations that contributed to the data set (separate by commas), or link to the journal article, from which institutions the data was obtained')
+    source = models.CharField(
+        _('Source'),
+        max_length=2048,
+        blank=True,
+        null=True,
+        help_text=source_help_text)
     # internal fields
     uuid = models.CharField(max_length=36)
     owner = models.ForeignKey(
@@ -680,6 +694,12 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         choices=VALID_DATE_TYPES,
         default='publication',
         help_text=date_type_help_text)
+    date_content = models.CharField(
+        _('date of content'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=date_content_help_text)
     edition = models.CharField(
         _('edition'),
         max_length=255,
@@ -691,6 +711,11 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         max_length=2000,
         blank=True,
         help_text=abstract_help_text)
+    data_description = models.TextField(
+        _('data description'),
+        max_length=2000,
+        blank=True,
+        help_text=data_description_help_text)
     purpose = models.TextField(
         _('purpose'),
         max_length=500,
@@ -775,6 +800,13 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         blank=True,
         null=True,
         help_text=temporal_extent_end_help_text)
+    spatial_resolution = models.CharField(
+        _('Spatial Resolution/Scale'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=spatial_resolution_help_text)
+
     supplemental_information = models.TextField(
         _('supplemental information'),
         max_length=2000,
@@ -937,6 +969,22 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     @property
     def raw_abstract(self):
         return self._remove_html_tags(self.abstract)
+
+    @property
+    def raw_data_description(self):
+        return self._remove_html_tags(self.data_description)
+
+    @property
+    def raw_date_content(self):
+        return self._remove_html_tags(self.date_content)
+
+    @property
+    def raw_spatial_resolution(self):
+        return self._remove_html_tags(self.spatial_resolution)
+
+    @property
+    def raw_source(self):
+        return self._remove_html_tags(self.source)
 
     @property
     def raw_purpose(self):

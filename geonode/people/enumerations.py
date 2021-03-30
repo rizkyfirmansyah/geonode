@@ -24,8 +24,6 @@ CONTACT_FIELDS = [
     "name",
     "organization",
     "position",
-    "voice",
-    "facsimile",
     "delivery_point",
     "city",
     "administrative_area",

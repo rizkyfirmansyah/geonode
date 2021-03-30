@@ -17,6 +17,9 @@
       }
     });
 
+    // remove mandatory of doi form
+    $('#id_resource-doi').removeClass('input-empty');
+
     var metadata_uri = $(location).attr('pathname').split('/').pop();
     var metadata_update_done = false;
     var metadata_preview = false;
@@ -63,13 +66,11 @@
         animation: true,
         content: tooltipContent
       });
-    {% block completeness  %}
+
     var updateCompleteness = function(completeness) {
-        {% block extendcompleteness %}{% endblock extendcompleteness %}
       $('#profileCompleteness .progress-bar').html(parseFloat(((completeness)*100).toFixed(0)) + ' %').width(parseFloat(((completeness)*100).toFixed(2)) + '%');
       $('#profileCompleteness .completed').toggle(completeness === 1);
       $('#profileCompleteness .not-completed').toggle(completeness !== 1);
-      
       var mandatoryMissing = $('#mandatory').find('.input-empty:not([class^="select2"])').length > 0;
           if (mandatoryMissing) {
             var inputs = $('#mandatory').find('.input-empty:not([class^="select2"])');
@@ -81,10 +82,6 @@
             }
             mandatoryMissing = empty > 0;
           }
-        var imgMissing = $('img#image').attr('src');
-        if (imgMissing && imgMissing.includes('missing_thumb')) {
-            mandatoryMissing = true
-        }
       var advancedMissing = $('#advanced').find('.input-empty').length > 0;
           if (advancedMissing) {
             var inputs = $('#advanced').find('.input-empty');
@@ -96,26 +93,6 @@
             }
             advancedMissing = empty > 0;
           }
-
-        {% if UI_REQUIRED_FIELDS %}
-         var metadataMissing = $('#ownership').find('.input-empty').length > 0;
-          if (metadataMissing) {
-            var inputs = $('#ownership').find('.input-empty');
-            var empty = inputs.length;
-            for (var i=0; i<inputs.length; i++) {
-              if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
-                empty--;
-              }
-            }
-            metadataMissing = empty > 0;
-          }
-          $('#completeness-hints .metadata-hint')
-            .toggleClass('progress-bar-danger', metadataMissing)
-            .toggleClass('progress-bar-success', !metadataMissing)
-            .attr('title', metadataMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-            .tooltip('fixTitle');
-        {% endif %}
-
       $('#completeness-hints .mandatory-hint')
         .toggleClass('progress-bar-danger', mandatoryMissing)
         .toggleClass('progress-bar-success', !mandatoryMissing)
@@ -126,6 +103,7 @@
         .toggleClass('progress-bar-success', !advancedMissing)
         .attr('title', advancedMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
         .tooltip('fixTitle');
+
         //done button tooltip
         if(completeness === 1 && $('.metadata-edit-done').css('opacity')+"" === "0" && !tooltipShown && !gotIt) {
           tooltipShown = true;
@@ -143,7 +121,6 @@
         // show/hide done button
         $('.metadata-edit-done').animate(completeness === 1 ? {width: '100px', opacity: 1} : {width: 0, opacity: 0});
     }
-    {% endblock completeness  %}
 
     function getTab(number) {
       var activeTab = $("#edit-metadata .wizard--progress li.is-active");
@@ -225,11 +202,8 @@
     $(document).ready(function() {
         var prevNum = 0, totalNum = 0;
         var empty = 0;
-        {% block hints %}
-
         $('#completeness-hints .mandatory-hint').click(getTab.bind(null, 1));
         $('#completeness-hints .advanced-hint').click(getTab.bind(null, 2));
-        {% endblock hints %}
 
         // set proper classes to count empty fields and display them
         var setInputEmpty = function( target, empty ) {
@@ -240,40 +214,28 @@
           } else if( !$(target).hasClass('autocomplete') ){
             // display error status for token fields if not completed
             $(target).toggleClass("input-empty", empty);
-            if (target.id.startsWith('id_tkeywords')) {
-                $("#" + target.id).closest("p").toggleClass("has-error", empty);   
-              }
-          }
-          var imgMissing = $('img#image').attr('src');
-          if (imgMissing && !imgMissing.includes('missing_thumb')) {
-              $('input#id_crop_file').removeClass("input-empty");
-              $('input#id_crop_file').parent().find(".mandatory-warning").remove();
           }
 
           if(target.id === 'id_resource-keywords') {
             $(target).siblings('span').toggleClass('has-error', empty);
             $(target).toggleClass("input-empty", empty);
           }
-        {% block target %}
+
           if(target.id === 'category_form' ||
              target.id === 'id_resource-regions' ||
-             target.id === 'id_resource-group' || 
-             target.id === 'id_resource-date' ||
-             target.id === 'id_resource-links' || {{UI_REQUIRED_FIELDS}}.includes(target.id)
+             target.id === 'id_resource-group'
           ) {
               // group selector
               $(target).closest('#basicGroupInfo').toggleClass('has-error', empty);
 
               // category selector
               $(target).closest('#basicCategoryInfo').toggleClass('has-error', empty);
-              $(target).closest('#req_item').toggleClass('has-error', empty);
 
               // regions container
               $(target).closest('#regions_multiselect_container').toggleClass('has-error', empty);
               $(target).toggleClass("input-empty", empty);
           }
 
-        {% endblock target %}
           // bootstrap-select copies the select's classes, so it have to be removed
           if( $( '.bootstrap-select' ).hasClass("input-empty") ) {
             $( '.bootstrap-select' ).toggleClass("input-empty");
@@ -328,12 +290,6 @@
             return false;
           }
 
-          if (el.id.startsWith('id_tkeywords') && $(el).hasClass('treq')) {
-              return true;
-          } else if (el.id.startsWith('id_tkeywords') && !$(el).hasClass('treq')) {
-              return false;
-          }
-
           var is_mandatory = (el.id.indexOf("autocomplete") < 0 &&
                         (typeof $(el).attr("class") !== 'undefined' && $(el).attr("class").indexOf("select2") < 0) &&
                         !$(el).hasClass('value-select') &&
@@ -341,21 +297,16 @@
                         el.type !== 'button');
             return is_mandatory;
         }
-        
-        {% block onInputChange %}
+
         var onInputChange = function(e){
             toggleRestrictionsConstraints(e);
+
             if(e.target.value !== undefined && e.target.value.trim() === ''){
                 if(!$(e.target).hasClass("input-empty")){
                     if(isMandatoryField(this)) {
                         setInputEmpty(e.target, true);
-                        var mandatoryWarning = "<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"
-                        if (!!$(this).closest('.date').length) {
-                            $(e.target).parent().parent().append(gettext(mandatoryWarning));
-                        } else if (!!$(this).closest('.check-select').length) {
-                            $(e.target).parent().parent().append(gettext(mandatoryWarning));
-                        } else if (!!$(this).closest('#mdinfo').length || !!$(this).closest('#basicDescriptiveInfo').length ) {
-                            $(e.target).parent().append(gettext(mandatoryWarning));
+                        if(!!$(this).closest('#mdinfo').length) {
+                            $(e.target).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"));
                         }
                         empty++;
                     }
@@ -367,12 +318,7 @@
                         empty--;
                     }
                     setInputEmpty(e.target, false);
-                    if (!!$(e.target).closest('.date').length) { 
-                        $(e.target).parent().parent().find(".mandatory-warning").remove();
-                    } else {
-                        $(e.target).parent().find(".mandatory-warning").remove();
-                    }
-                    
+                    $(e.target).parent().find(".mandatory-warning").remove();
                 }
             }
 
@@ -387,24 +333,12 @@
                 }
             }
         };
-        {% endblock onInputChange %}
-        {% block trigger_onInputChange %}
-
-        {{UI_REQUIRED_FIELDS}}.forEach(element => $('#' + element).change(onInputChange).change());
 
         $('#category_form').change(onInputChange).change();
         $('#id_resource-group').change(onInputChange).change();
-
-        $('#id_resource-date').change(onInputChange).change();
-        $('#id_resource-links').change(onInputChange).change();
-
-        {{REQ_THESAURI}}.forEach(element => document.querySelector('select[name="'+ element + '"]').onchange=onInputChange);
-
         document.querySelector('select[name="resource-keywords"]').onchange=onInputChange
 
         $('#id_resource-regions').change(onInputChange).change();
-        $('#id_resource-temporal_extent_end').on('blur', function() {$(this).change(onInputChange).change();})
-        $('#id_resource-temporal_extent_start').on('blur', function() {$(this).change(onInputChange).change();})
         $('#mandatory').find(":input:not(.value-select):not(.autocomplete)").each(function(){
             if(isMandatoryField(this)) {
                 prevNum++;
@@ -432,7 +366,6 @@
             }
         });
 
-        {% endblock trigger_onInputChange %}
         // Dataset attributes sorting
         $(document).ready(function() {
             //Helper function to keep table row from collapsing when being sorted
@@ -506,7 +439,7 @@
               ) {
                 $('#group_mandatoryDialog').modal();
             } else {
-                validateRequiredInput()
+                $('#preview_pleaseWaitDialog').modal();
             }
         });
 
@@ -528,25 +461,9 @@
               ) {
                 $('#group_mandatoryDialog').modal();
             } else {
-                validateRequiredInput()
-            }
-        });
-        
-        function validateRequiredInput() {
-            var errors = ['{% trans "Following items are required:" %}']
-            $( ':input[required]').each( function () {
-                if ( this.value.trim() == '' ) {
-                    errors.push(this.id)
-                }
-            });
-            if (errors.length > 1) {
-                console.error("Following items are required: " + errors)
-                $(".general_errors").find("p").html(errors.join('<br>'));
-                $('#error_mandatoryDialog').modal();
-            } else {
                 $('#preview_pleaseWaitDialog').modal();
             }
-        }
+        });
 
         $('#btn_upd_md_done').click(function(){
             if
@@ -572,19 +489,8 @@
             }
         });
 
-        $('#preview_tab').on('show.bs.tab', function(e){
-            var errors = ['{% trans "Please, fill the following items before clicking on preview:" %}<br>']
-                $( ':input[required]').each( function () {
-                    if ( this.value.trim() == '' ) {
-                        errors.push(this.id)
-                    }
-                });
-            if (errors.length > 1) {
-	                e.preventDefault();
-                    console.error("Please, fill the following items before clicking on preview: " + errors)
-                    $(".general_errors").find("p").html(errors.join('<br>'));
-                    $('#error_mandatoryDialog').modal();
-                } else if
+        $('#preview_tab').on('show.bs.tab', function(){
+            if
             ( is_category_mandatory &&
                 (
                     (!is_advanced && $('#category_form').hasClass("input-empty")) ||
@@ -760,6 +666,7 @@
             success: function(data) {
                 data = JSON.parse(data)
                 var kws = parseKeywords(data);
+
                 {% if freetext_readonly %}
                     $('#id_resource-keywords').tokenfield({
                         createTokensOnBlur: true,
@@ -778,6 +685,7 @@
                         if(!exists) {
                             event.preventDefault(); //prevents creation of token
                         }
+
                         var existingTokens = $(this).tokenfield('getTokens');
                         $.each(existingTokens, function(index, token) {
                             if (token.value === event.attrs.value)
@@ -807,6 +715,7 @@
                         });
                     });
                 {% endif %}
+
                 if (window.location.href.match('/metadata_advanced$')) {
                     if (!select_button_active) {
                         const select_button = $('<button id="id_freetext_keyword_select" class="btn btn-primary">Select</button>');
@@ -817,6 +726,7 @@
                     $('#id_freetext_keyword_select').click(function() {
                         $('#id_resource-keywords-tokenfield').blur().focus();
                     });
+
                     const resource_group = $('#id_resource-group');
                     resource_group.empty();
                     resource_group.append('<option value="">-----</option>');
@@ -832,6 +742,7 @@
                         {% endif %}
                     {% endfor %}
                 }
+
                 $('#treeview').treeview({
                     color: "#428bca",
                     expandIcon: "fa fa-folder",
@@ -857,6 +768,7 @@
                         // $('#treeview-toggle').click();
                     }
                 });
+
                 $('#treeview-toggle').click((e, value) => {
                 $('#treeview').toggle();
                 var icon = $(this).find('i');

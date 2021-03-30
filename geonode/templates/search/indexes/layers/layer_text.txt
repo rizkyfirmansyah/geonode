@@ -1,7 +1,9 @@
 {{ object.content }}
 {{ object.title }}
 {{ object.abstract }}
-{{ object.purpose }}
+{{ object.data_description }}
+{{ object.date_content }}
+{{ object.source }}
 {{ object.name }}
-{{ object.supplemental_information }}
+{{ object.purpose }}
 {{ object.keyword_list }}

@@ -275,7 +275,10 @@ def csw_render_extra_format_txt(request, layeruuid, resname):
     content += 'resource owner' + s + fst(resource.owner) + sc
     content += 'date' + s + fst(resource.date) + sc
     content += 'date type' + s + fst(resource.date_type) + sc
+    content += 'date of content' + s + fst(resource.date_content) + sc
     content += 'abstract' + s + fst(resource.abstract) + sc
+    content += 'data description' + s + fst(resource.data_description) + sc
+    content += 'source' + s + fst(resource.source) + sc
     content += 'edition' + s + fst(resource.edition) + sc
     content += 'purpose' + s + fst(resource.purpose) + sc
     content += 'maintenance frequency' + s + fst(
@@ -312,6 +315,7 @@ def csw_render_extra_format_txt(request, layeruuid, resname):
     content += 'extent ' + s + fst(ext[0]) + ',' + fst(ext[2]) + \
         ',' + fst(ext[1]) + ',' + fst(ext[3]) + sc
     content += 'SRID  ' + s + fst(resource.srid) + sc
+    content += 'Spatial Resolution ' + s + fst(resource.spatial_resolution) + sc
     content += 'Thumbnail url' + s + fst(resource.thumbnail_url) + sc
 
     content += 'keywords;' + get_keywords(resource) + s

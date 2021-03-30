@@ -169,7 +169,7 @@ geonode_data:geonode_data@localhost:5432/geonode_data')
 # If set to 'True' it will refresh/regenrate all resource links everytime a 'migrate' will be performed
 UPDATE_RESOURCE_LINKS_AT_MIGRATE = ast.literal_eval(os.getenv('UPDATE_RESOURCE_LINKS_AT_MIGRATE', 'False'))
 
-MANAGERS = ADMINS = os.getenv('ADMINS', [])
+MANAGERS = ADMINS = os.getenv('ADMINS', ['Rizky Firmansyah', 'wri.indonesia.gis@gmail.com'])
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -189,37 +189,8 @@ USE_L10N = ast.literal_eval(os.getenv('USE_I18N', 'True'))
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
 
 _DEFAULT_LANGUAGES = """(
-    ('af', 'Afrikaans'),
-    ('sq', 'Albanian'),
-    ('am', 'Amharic'),
-    ('ar', 'Arabic'),
     ('id', 'Bahasa Indonesia'),
-    ('bn', 'Bengali'),
-    ('de', 'Deutsch'),
     ('en', 'English'),
-    ('es', 'Español'),
-    ('fr', 'Français'),
-    ('it', 'Italiano'),
-    ('km', 'Khmer'),
-    ('nl', 'Nederlands'),
-    ('ne', 'Nepali'),
-    ('fa', 'Persian'),
-    ('pl', 'Polish'),
-    ('pt', 'Portuguese'),
-    ('pt-br', 'Portuguese (Brazil)'),
-    ('ru', 'Russian'),
-    ('si', 'Sinhala'),
-    ('sw', 'Swahili'),
-    ('sv', 'Swedish'),
-    ('tl', 'Tagalog'),
-    ('ta', 'Tamil'),
-    ('uk', 'Ukranian'),
-    ('vi', 'Vietnamese'),
-    ('el', 'Ελληνικά'),
-    ('th', 'ไทย'),
-    ('zh-cn', '中文'),
-    ('ja', '日本語'),
-    ('ko', '한국어'),
 )"""
 
 LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', _DEFAULT_LANGUAGES))
@@ -361,10 +332,10 @@ CACHES = {
     },
 
     # MEMCACHED EXAMPLE
-    # 'default': {
-    #     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-    #     'LOCATION': '127.0.0.1:11211',
-    # },
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    },
 
     # FILECACHE EXAMPLE
     # 'default': {
@@ -460,6 +431,9 @@ INSTALLED_APPS = (
     # Boostrap admin theme
     # 'django_admin_bootstrapped.bootstrap3',
     # 'django_admin_bootstrapped',
+
+    ## DEV PURPOSES
+    'livesync',
 
     # Apps bundled with Django
     'modeltranslation',
@@ -755,6 +729,9 @@ MIDDLEWARE = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'geonode.base.middleware.MaintenanceMiddleware',
     'geonode.base.middleware.ReadOnlyMiddleware',   # a Middleware enabling Read Only mode of Geonode
+
+    ## DEV PURPOSES
+    'livesync.core.middleware.DjangoLiveSyncMiddleware',
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
@@ -909,7 +886,7 @@ ACTSTREAM_SETTINGS = {
 
 # Email for users to contact admins.
 THEME_ACCOUNT_CONTACT_EMAIL = os.getenv(
-    'THEME_ACCOUNT_CONTACT_EMAIL', 'admin@example.com'
+    'THEME_ACCOUNT_CONTACT_EMAIL', 'wri.indonesia.gis@gmail.com'
 )
 
 #
@@ -925,8 +902,8 @@ ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 
 # Backend
-DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
-CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'geonode')
+DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'sdi')
+CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'sdi')
 
 OGP_URL = os.getenv('OGP_URL', "http://geodata.tufts.edu/solr/select")
 
@@ -1062,8 +1039,7 @@ EPSG_CODE_MATCHES = {
     'EPSG:900913': '(900913) Google Maps Global Mercator',
     'EPSG:3857': '(3857) WGS 84 / Pseudo-Mercator',
     'EPSG:3785': '(3785 DEPRECATED) Popular Visualisation CRS / Mercator',
-    'EPSG:32647': '(32647) WGS 84 / UTM zone 47N',
-    'EPSG:32736': '(32736) WGS 84 / UTM zone 36S'
+    'EPSG:3395': '(3395) World Mercator'
 }
 
 # CSW settings
@@ -1387,12 +1363,12 @@ DEFAULT_MAP_CRS = os.environ.get('DEFAULT_MAP_CRS', "EPSG:3857")
 DEFAULT_LAYER_FORMAT = os.environ.get('DEFAULT_LAYER_FORMAT', "image/png")
 
 # Where should newly created maps be focused?
-DEFAULT_MAP_CENTER = (os.environ.get('DEFAULT_MAP_CENTER_X', 0), os.environ.get('DEFAULT_MAP_CENTER_Y', 0))
+DEFAULT_MAP_CENTER = (os.environ.get('DEFAULT_MAP_CENTER_X', -3), os.environ.get('DEFAULT_MAP_CENTER_Y', 118))
 
 # How tightly zoomed should newly created maps be?
 # 0 = entire world;
 # maximum zoom is between 12 and 15 (for Google Maps, coverage varies by area)
-DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 0))
+DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 5))
 
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)

@@ -458,16 +458,19 @@ class GeoNodeServiceHandler(WmsServiceHandler):
 
     LAYER_FIELDS = [
         "abstract",
+        "data_description",
         "bbox_polygon",
         "srid",
         "constraints_other",
         "data_quality_statement",
         "date",
         "date_type",
+        "date_content",
         "edition",
         "has_time",
         "language",
         "license",
+        "source",
         "maintenance_frequency",
         "name",
         "purpose",
@@ -476,6 +479,7 @@ class GeoNodeServiceHandler(WmsServiceHandler):
         "supplemental_information",
         "temporal_extent_end",
         "temporal_extent_start",
+        "spatial_resolution",
         "title"
     ]
 

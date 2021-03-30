@@ -1,32 +1,27 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
 
-{% block body %}
-    <div id="description">
-      <h3>
-        {% if error_title %}
-          {{ error_title }}
-        {% else %}
-          {% trans "Not Permitted" %}
-        {% endif %}
-      </h3>
+{% block middle %}
+
+    <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-8">
+          <img src="../../static/geonode/img/disgust.jfif" class='stretch' alt=''>
+      </div>
+      <div class="col-md-4">
+        <h1>Ewwwww...</h1>
+        <p>I want to look your restricted nerves! <br> Okay, caution. There is a dangerous smell, people. Hold on. What is this?</p>
+        <p>
+          {% if not request.user.is_anonymous %}
+          {% blocktrans %}Please verify that you are logged in as the correct user.{% endblocktrans %}
+          {% else %}
+          {% blocktrans %}Please login or register and retry.{% endblocktrans %}
+          {% else %}
+          {% endif %}
+        </p>
+        <a class="error-link" id='back' href='#' onclick="goBack(); return false;">Back to memory</a>
+      </div>
     </div>
-    {% if error_message %}
-    <p>
-      {{ error_message }}
-    </p>
-    {% else %}
-    <p>
-      {% blocktrans %}
-          You are not allowed to perform this operation.
-      {% endblocktrans %}
-    </p>
-    <p>
-      {% if not request.user.is_anonymous %}
-      {% blocktrans %}Please verify that you are logged in as the correct user.{%endblocktrans%}
-      {% else %}
-      {% blocktrans %}Please login or register and retry.{% endblocktrans %}
-      {% endif %}
-    </p>
-    {% endif %}
+  </div>
+
 {% endblock %}

@@ -35,8 +35,6 @@ class Migration(migrations.Migration):
                 ('contact_city', models.TextField(null=True, blank=True)),
                 ('contact_country', models.TextField(null=True, blank=True)),
                 ('contact_delivery_point', models.TextField(null=True, blank=True)),
-                ('contact_voice', models.TextField(null=True, blank=True)),
-                ('contact_facsimile', models.TextField(null=True, blank=True)),
                 ('contact_email', models.TextField(null=True, blank=True)),
             ],
             options={

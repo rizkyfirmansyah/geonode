@@ -61,6 +61,12 @@
 						<dt>{% trans "Abstract" %}</dt>
 							<dd>{{resource.raw_abstract}}</dd>
 
+						<dt>{% trans "Data Description" %}</dt>
+							<dd>{{resource.data_description}}</dd>
+						
+						<dt>{% trans "Date of Content" %}</dt>
+							<dd>{{resource.date_content}}</dd>
+
 						<dt>{% trans "Edition" %}</dt>
 							{% if resource.edition %}
 							<dd>{{resource.edition}}</dd>
@@ -97,6 +103,9 @@
 
 						<dt>{% trans "License" %}</dt>
 							<dd>{{resource.license}}</dd>
+
+						<dt>{% trans "Source" %}</dt>
+							<dd>{{resource.source}}</dd>
 
 						<dt>{% trans "Language" %} </dt>
 							<dd>{{resource.language}}</dd>
@@ -138,6 +147,9 @@
 
 						<dt>{% trans "Spatial Reference System Identifier" %}</dt>
 							<dd>{{resource.srid}}</dd>
+					
+						<dt>{% trans "Spatial Resolution / Scale" %}</dt>
+							<dd>{{resource.spatial_resolution}}</dd>
 
 						<dt>{% trans "Keywords" %}</dt>
 							<dd>{{extra_res_md.keywords}}</dd>

@@ -125,8 +125,6 @@ class GeoNodeThemeCustomization(models.Model):
     contact_city = models.CharField(max_length=255, null=True, blank=True)
     contact_country = models.CharField(max_length=255, null=True, blank=True)
     contact_delivery_point = models.CharField(max_length=255, null=True, blank=True)
-    contact_voice = models.CharField(max_length=255, null=True, blank=True)
-    contact_facsimile = models.CharField(max_length=255, null=True, blank=True)
     contact_email = models.CharField(max_length=255, null=True, blank=True)
     partners_title = models.CharField(max_length=100, null=True, blank=True, default="Our Partners")
     partners = models.ManyToManyField(Partner, related_name="partners", blank=True)

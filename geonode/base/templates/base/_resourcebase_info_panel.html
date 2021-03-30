@@ -30,6 +30,12 @@
     <dd itemprop="description">{{ resource.abstract|safe }}</dd>
     {% endif %}
 
+    {% if resource.data_description %}
+    <dt>{% trans "Data Description" %}</dt>
+    <dd itemprop="description">{{ resource.data_description|safe|escape|urlize|linebreaks|safe|truncatechars:500 }}</dd>
+    {% endif %}
+
+
     {% if resource.date %}
     {% if resource.date_type == 'creation' %}
     <dt>{% trans "Creation Date" %}</dt>
@@ -128,6 +134,16 @@
     <dd>{{ resource.attribution }}</dd>
     {% endif %}
 
+    {% if resource.source %}
+    <dt>{% trans "Source" %}</dt>
+    <dd>{{ resource.source }}</dd>
+    {% endif %}
+
+    {% if resource.date_content %}
+    <dt>{% trans "Date of Content" %}</dt>
+    <dd>{{ resource.date_content }}</dd>
+    {% endif %}
+
   </dl>
 
   <dl class="dl-horizontal">
@@ -137,6 +153,11 @@
 
   <dl class="dl-horizontal">
     <div class="more collapse">
+
+    {% if resource.spatial_resolution %}
+    <dt>{% trans "Spatial Resolution/Scale" %}</dt>
+    <dd>{{ resource.spatial_resolution }}</dd>
+    {% endif %}
 
     {% if resource.srid and SRID_DETAIL == 'below' %}
     <dt>{% trans "SRID" %}</dt>
