@@ -51,9 +51,6 @@ RUN apt install memcached
 RUN pip install pylibmc \
     && pip install sherlock
 
-## DEV PURPOSES
-RUN pip install django-livesync
-
 # Install "geonode-contribs" apps
 RUN cd /usr/src; git clone https://github.com/GeoNode/geonode-contribs.git -b master
 # Install logstash and centralized dashboard dependencies

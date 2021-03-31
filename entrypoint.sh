@@ -100,6 +100,8 @@ else
     fi
 fi
 
+python /usr/src/geonode/manage.py collectstatic --noinput | exit 1
+
 echo "-----------------------------------------------------"
 echo "FINISHED DJANGO ENTRYPOINT --------------------------"
 echo "-----------------------------------------------------"

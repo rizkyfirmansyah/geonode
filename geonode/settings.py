@@ -432,9 +432,6 @@ INSTALLED_APPS = (
     # 'django_admin_bootstrapped.bootstrap3',
     # 'django_admin_bootstrapped',
 
-    ## DEV PURPOSES
-    'livesync',
-
     # Apps bundled with Django
     'modeltranslation',
     'dal',
@@ -729,9 +726,6 @@ MIDDLEWARE = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'geonode.base.middleware.MaintenanceMiddleware',
     'geonode.base.middleware.ReadOnlyMiddleware',   # a Middleware enabling Read Only mode of Geonode
-
-    ## DEV PURPOSES
-    'livesync.core.middleware.DjangoLiveSyncMiddleware',
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
