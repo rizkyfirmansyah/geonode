@@ -21,6 +21,7 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 from .views import ProfileAutocomplete, SetUserLayerPermission
+from django.contrib.auth.decorators import login_required
 from . import views
 
 urlpatterns = [  # 'geonode.people.views',
