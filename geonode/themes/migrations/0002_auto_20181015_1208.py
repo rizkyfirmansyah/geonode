@@ -57,11 +57,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
-            name='contact_facsimile',
-            field=models.CharField(blank=True, max_length=255, null=True),
-        ),
-        migrations.AlterField(
-            model_name='geonodethemecustomization',
             name='contact_name',
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
@@ -78,11 +73,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='contact_street',
-            field=models.CharField(blank=True, max_length=255, null=True),
-        ),
-        migrations.AlterField(
-            model_name='geonodethemecustomization',
-            name='contact_voice',
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(

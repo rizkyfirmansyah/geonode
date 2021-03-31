@@ -57,9 +57,6 @@ class BaseExtractor(object):
     def extract_email(self, data):
         raise NotImplementedError
 
-    def extract_fax(self, data):
-        raise NotImplementedError
-
     def extract_first_name(self, data):
         raise NotImplementedError
 
@@ -73,9 +70,6 @@ class BaseExtractor(object):
         raise NotImplementedError
 
     def extract_profile(self, data):
-        raise NotImplementedError
-
-    def extract_voice(self, data):
         raise NotImplementedError
 
     def extract_zipcode(self, data):
@@ -179,9 +173,6 @@ class OpenIDExtractor(BaseExtractor):
 
     def extract_organization(self, data):
         return data.get("organization", "")
-
-    def extract_voice(self, data):
-        return data.get("phone", "")
 
     def extract_groups(self, data):
         return data.get("groups", "")

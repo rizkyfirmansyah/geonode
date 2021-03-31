@@ -27,6 +27,10 @@ from django.conf import settings
 from pycsw.core.repository import Repository, query_spatial, get_geometry_area
 
 from geonode.base.models import ResourceBase
+<<<<<<< HEAD
+=======
+from geonode.layers.models import Layer
+>>>>>>> 3.2.x
 
 from pycsw.core import util
 
@@ -106,10 +110,21 @@ class GeoNodeRepository(Repository):
         Query by list of identifiers
         """
 
+<<<<<<< HEAD
         results = self\
             ._get_repo_filter(ResourceBase.objects)\
             .filter(uuid__in=ids)\
             .all()
+=======
+        results = self._get_repo_filter(
+            Layer.objects).filter(
+            uuid__in=ids).all()
+
+        if len(results) == 0:  # try services
+            results = self._get_repo_filter(
+                ResourceBase.objects).filter(
+                uuid__in=ids).all()
+>>>>>>> 3.2.x
 
         return results
 
@@ -119,7 +134,11 @@ class GeoNodeRepository(Repository):
         Query by property domain values
         """
 
+<<<<<<< HEAD
         objects = self._get_repo_filter(ResourceBase.objects)
+=======
+        objects = self._get_repo_filter(Layer.objects)
+>>>>>>> 3.2.x
 
         if domainquerytype == 'range':
             return [tuple(objects.aggregate(
@@ -136,16 +155,26 @@ class GeoNodeRepository(Repository):
         Query to get latest (default) or earliest update to repository
         """
         if direction == 'min':
+<<<<<<< HEAD
             return ResourceBase.objects.aggregate(
                 Min('last_updated'))['last_updated__min'].strftime('%Y-%m-%dT%H:%M:%SZ')
         return self._get_repo_filter(ResourceBase.objects).aggregate(
+=======
+            return Layer.objects.aggregate(
+                Min('last_updated'))['last_updated__min'].strftime('%Y-%m-%dT%H:%M:%SZ')
+        return self._get_repo_filter(Layer.objects).aggregate(
+>>>>>>> 3.2.x
             Max('last_updated'))['last_updated__max'].strftime('%Y-%m-%dT%H:%M:%SZ')
 
     def query_source(self, source):
         """
         Query by source
         """
+<<<<<<< HEAD
         return self._get_repo_filter(ResourceBase.objects).filter(url=source)
+=======
+        return self._get_repo_filter(Layer.objects).filter(url=source)
+>>>>>>> 3.2.x
 
     def query(self, constraint, sortby=None, typenames=None,
               maxrecords=10, startposition=0):
@@ -158,13 +187,21 @@ class GeoNodeRepository(Repository):
         # search engine
         if 'where' in constraint:  # GetRecords with constraint
             query = self._get_repo_filter(
+<<<<<<< HEAD
                 ResourceBase.objects).filter(alternate__isnull=False).extra(
+=======
+                Layer.objects).filter(alternate__isnull=False).extra(
+>>>>>>> 3.2.x
                 where=[
                     constraint['where']],
                 params=constraint['values'])
         else:  # GetRecords sans constraint
             query = self._get_repo_filter(
+<<<<<<< HEAD
                 ResourceBase.objects).filter(alternate__isnull=False)
+=======
+                Layer.objects).filter(alternate__isnull=False)
+>>>>>>> 3.2.x
 
         total = query.count()
 

@@ -1,13 +1,20 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
 
-{% block body %}
-  <div id="description"><h3>{% trans "Page Not Found" %}</h3></div>
-  {% if message %}
-      {{ message }}
-  {% else %}
-      {% blocktrans %}
-          The page you requested does not exist.  Perhaps you are using an outdated bookmark?
-      {% endblocktrans %}
-  {% endif %}
+{% block middle %}
+
+    <div class="row">
+    <div class="col-md-12">
+      <div class="col-md-8">
+          <img src="../../static/geonode/img/sadness.jfif" class='stretch' alt=''>
+      </div>
+      <div class="col-md-4">
+        <h1>Awwww... Don't cry :)</h1>
+        <p>It's just a 404 error!</p>
+        <p><i>What you're looking for may have been misplaced <br> in Long Term Memory</i></p>
+        <a class="error-link" id='back' href='#' onclick="goBack(); return false;">Back to memory</a>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}

@@ -15,4 +15,8 @@ class Migration(migrations.Migration):
             name='metadata_only',
             field=models.BooleanField(default=False, help_text='If true, will be excluded from search', verbose_name='Metadata'),
         ),
+<<<<<<< HEAD
     ]
+=======
+    ]
+>>>>>>> 3.2.x

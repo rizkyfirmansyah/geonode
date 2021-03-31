@@ -1,8 +1,8 @@
 {% load i18n %}
 {% autoescape off %}
-{% blocktrans %}Dear Sir/Madam,{% endblocktrans %}
+{% blocktrans %}Hi Folks!{% endblocktrans %}
 
-{{ inviter_name }} {% blocktrans %}is inviting you to join{% endblocktrans %} ({{ site_name }}).
+{{ inviter_name }} {% blocktrans %}is inviting you to join Spatial Data Infrastructure {% endblocktrans %} ({{ site_name }}).
 
 {% blocktrans %}To do so, please register at{% endblocktrans %} {{ invite_url }} .
 
@@ -15,8 +15,9 @@
 - {{ group }}
 {% endfor %}
 
-{% blocktrans %}We look forward to seeing you on the platform,{% endblocktrans %}
+{% blocktrans %}We look forward to seeing you on the platform :){% endblocktrans %}
 
-{% blocktrans %}The GeoNode team.{% endblocktrans %}
+{% blocktrans %}Cheers,{% endblocktrans %}
+{% blocktrans %}The SDI team.{% endblocktrans %}
 
 {% endautoescape %}

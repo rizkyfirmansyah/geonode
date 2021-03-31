@@ -102,7 +102,7 @@ export const RequestChart = function ({ label, timeRange, globalTimeRange, resou
                             </YAxis>
                             <Tooltip
                                 labelFormatter={(value) => `Date ${moment.utc(value).format(format)}`} />
-                            <Bar type="monotone" dataKey="Hits" fill="#2c689c" />
+                            <Bar type="monotone" dataKey="Hits" fill="#f0ab00" />
                             <Bar type="monotone" dataKey="Unique Visitors" fill="#ff8f31" />
                             <Bar type="monotone" dataKey="Anonymous Sessions" fill="#333333" />
                         </BarChart>

@@ -1,10 +1,10 @@
 {% extends "geonode_base.html" %}
 {% load markdownify %}
-{% load i18n %}
+{% load i18n %}`
 {% load static from staticfiles %}
 {% load base_tags %}
 
-{% block title %} {% trans "Welcome!" %} - {{ block.super }} {% endblock %}
+{% block title %} {{ block.super }} {% endblock %}
 
 {% block body_class %}home{% endblock %}
 
@@ -19,17 +19,17 @@
 {% if custom_theme.welcome_theme == 'JUMBOTRON_BG' or not slides %}
 <div class="jumbotron">
   <div class="container gn-container">
-      {% with jumbotron_welcome_title=custom_theme.jumbotron_welcome_title|default:"Welcome"|template_trans %}
+      {% with jumbotron_welcome_title=custom_theme.jumbotron_welcome_title|default:"Spatial Data Infrastructure"|template_trans %}
       <h1>{% trans jumbotron_welcome_title %}</h1>
       {% endwith %}
       <p></p>
-      {% with jumbotron_welcome_content=custom_theme.jumbotron_welcome_content|default:"GeoNode is an open source platform for sharing geospatial data and maps."|template_trans %}
+      {% with jumbotron_welcome_content=custom_theme.jumbotron_welcome_content|default:"SDI is a platform for sharing geospatial data and maps."|template_trans %}
       <p>{% trans jumbotron_welcome_content %}</p>
       {% endwith %}
       {% if not custom_theme.jumbotron_cta_hide %}
       <p><a class="btn btn-default btn-lg" target="_blank"
-          href="{{custom_theme.jumbotron_cta_link|default:"https://docs.geonode.org/en/master/usage/index.html"}}"
-          role="button">{{custom_theme.jumbotron_cta_text|default:_("Get Started &raquo;")}}</a></p>
+          href="{{custom_theme.jumbotron_cta_link|default:"https://data.wri-indonesia.id/layers/"}}"
+          role="button">{{custom_theme.jumbotron_cta_text|default:_("Explore Layers &raquo;")}}</a></p>
       {% endif %}
   </div>
 </div>
@@ -46,7 +46,7 @@
 				{% endfor %}
 			 </ol>
 			 {% endif %}
-       {% with jumbotron_welcome_title=custom_theme.jumbotron_welcome_title|default:"Welcome"|template_trans %}
+       {% with jumbotron_welcome_title=custom_theme.jumbotron_welcome_title|default:"Explore SDI"|template_trans %}
        <h1 class="carousel-header">{% trans jumbotron_welcome_title %}</h1>
        {% endwith %}
 			 <!-- Wrapper for slides -->
@@ -93,24 +93,23 @@
       {% else %}
       <div class="big-search">
       	<div class="container">
-      		<h1>{% trans "Search for Data." %}</h1>
-      		<div class="search">
+      		<h1>{% trans "What are you looking for?" %}</h1>
+      		<div class="search" id="search-landing">
       			<form id="main_search" action="{% url "search" %}" >
-      				<span class="fa fa-search fa-3x"></span>
+      				<span class="fa fa-search fa-2x"></span>
       				{% if HAYSTACK_SEARCH %}
       				<input id="main_search_input" type="text" placeholder="{% trans 'Search' %}" class="form-control" name="q" autocomplete="off">
                     <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
                     <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
                     <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
       				{% else %}
-      				<input id="main_search_input" type="text" placeholder="{% trans 'Search' %}" class="form-control" autocomplete="off" name="title__icontains">
+      				<input id="main_search_input" type="text" placeholder="" class="form-control" autocomplete="off" name="title__icontains">
                     <input type="hidden" name="abstract__icontains" id="main_search_abstract_input">
                     <input type="hidden" name="purpose__icontains" id="main_search_purpose_input">
                     <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
       				{% endif %}
       			</form>
       		</div>
-      		<p><a class="btn btn-default btn-lg" href="{% url "search" %}">{% trans "Advanced Search" %}</a></p>
       	</div>
       </div>
       {% endif %}
@@ -146,7 +145,7 @@
               <div class="col-md-6">
                 <p><a href="{% url "document_browse" %}"><i class="fa fa-newspaper-o fa-4x"></i></a></p>
                 <h2><a href="{% url "document_browse" %}">{{ facets.document|default:_("No") }} {% blocktrans count counter=facets.document %}Document{% plural %}Documents{% endblocktrans %}</a></h2>
-                <p>{% trans "As for the layers and maps GeoNode allows to publish tabular and text data, manage theirs metadata and associated documents." %}</p>
+                <p>{% trans "As for the layers and maps SDI allows to publish tabular and text data, manage theirs metadata and associated documents." %}</p>
                 {% if user.is_authenticated %}
                 <p class="text-center"><a class="btn btn-default" href="{% url "document_browse" %}" role="button">{% trans "Add documents" %} &raquo;</a></p>
                 {% else %}
@@ -156,7 +155,7 @@
               <div class="col-md-6">
                 <p><a href="{% url "profile_browse" %}"><i class="fa fa-user fa-4x"></i></a></p>
                 <h2><a href="{% url "profile_browse" %}">{{ facets.user|default:_("No") }} {% blocktrans count counter=facets.user %}User{% plural %}Users{% endblocktrans %}</a></h2>
-                <p>{% trans "Geonode allows registered users to easily upload geospatial data and various documents in several formats." %}</p>
+                <p>{% trans "SDI allows registered users to easily upload geospatial data and various documents in several formats." %}</p>
                 <p><a class="btn btn-default" href="{% url "profile_browse" %}" role="button">{% trans "See users" %} &raquo;</a></p>
               </div>
             {% endwith %}
@@ -251,6 +250,34 @@
 <script src="{% static "lib/js/angular.js" %}"></script>
 {% endif %}
 <script type="text/javascript">
+
+    // running text of search bar
+    function searchIt(words) {
+      var letterIndex = 0;
+      var wordIndex = 0;
+      var placeholder = $("#main_search_input");
+
+      (function nextWord() {
+        var SI = setInterval(function() {
+          placeholder.attr("placeholder", function() { return $(this).attr("placeholder") + words[wordIndex][letterIndex] });
+          letterIndex++;
+          if (letterIndex === words[wordIndex].length) {
+            wordIndex = (wordIndex + 1) % words.length;
+            letterIndex = 0;
+            clearInterval(SI);
+            setTimeout(function() {
+              placeholder.attr("placeholder", "");
+              nextWord();
+            }, 1000); // delay between words
+          }
+        }, 70)       // delay between letters
+      })();
+    }
+
+    $(function() {
+        searchIt(["forest", "peat", "concession", "type me!"]);
+    });
+
     FEATURED_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='featured' %}'
     'use strict';
     (function(){

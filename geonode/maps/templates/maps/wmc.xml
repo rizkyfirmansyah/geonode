@@ -33,8 +33,6 @@
                 <PostCode>{{ profile.zipcode }}</PostCode>
                 <Country>{{ profile.country }}</Country>
             </ContactAddress>
-            <ContactVoiceTelephone>{{ profile.voice }}</ContactVoiceTelephone>
-            <ContactFacsimileTelephone>{{ profile.fax }}</ContactFacsimileTelephone>
             <ContactElectronicMailAddress>{{ map.owner.email }}</ContactElectronicMailAddress>
         </ContactInformation>
         {% endwith %}

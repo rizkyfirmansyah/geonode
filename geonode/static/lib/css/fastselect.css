@@ -101,10 +101,11 @@ General styling
     color: #fff;
     background-color: #43A2F3;
     border-color: #73baf6; }
-  .fstResultItem.fstSelected {
-    color: #fff;
-    background-color: #2694f1;
-    border-color: #73baf6; }
+
+/* after select option from region list, hide options */
+.fstResultItem.fstSelected {
+  display: none;
+}
 
 .fstGroupTitle {
   font-size: 1.4em;
@@ -234,3 +235,7 @@ Multiple mode
   display: block;
   z-index: 10;
   border-top: 1px solid #D7D7D7; }
+
+.fstElement .fstMultipleMode {
+  width: 100% !important;
+}

@@ -12,19 +12,39 @@ x-common-django:
   env_file:
     - .env
   volumes:
-    # - '.:/usr/src/geonode'
     - statics:/mnt/volumes/statics
-    - geoserver-data-dir:/geoserver_data/data
     - backup-restore:/backup_restore
     - data:/data
     - tmp:/tmp
+    - geonode:/usr/src/geonode/geonode
 
 services:
+
+  # Vanilla RabbitMQ service. This is needed by celery
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq4${COMPOSE_PROJECT_NAME}
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq.sh:/docker-entrypoint-initdb.d/init.sh
+    restart: on-failure
+    entrypoint: []
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+
+  elasticsearch:
+    image: elasticsearch:2.4.1
+    restart: unless-stopped
+    container_name: elasticsearch4${COMPOSE_PROJECT_NAME}
+    stdin_open: true
+    ports:
+      - "127.0.0.1:9200:9200"
 
   # Our custom django application. It includes Geonode.
   django:
     << : *default-common-django
-    container_name: django4${COMPOSE_PROJECT_NAME}
+    container_name: ${COMPOSE_PROJECT_NAME}
     healthcheck:
       test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8001/"
       interval: 60s
@@ -35,6 +55,10 @@ services:
       - IS_CELERY=False
     entrypoint: ["/usr/src/geonode/entrypoint.sh"]
     command: "uwsgi --ini /usr/src/geonode/uwsgi.ini"
+    ports:
+      - "127.0.0.1:8000:8000"
+    links:
+      - elasticsearch
 
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -44,6 +68,7 @@ services:
       - IS_CELERY=True
     entrypoint: ["/usr/src/geonode/entrypoint.sh"]
     command: "celery -A geonode.celery_app:app worker --without-gossip --without-mingle -Ofair -B -E --statedb=/mnt/volumes/statics/worker.state -s /mnt/volumes/statics/celerybeat-schedule --loglevel=INFO --concurrency=10 -n worker1@%h -f /var/log/celery.log"
+<<<<<<< HEAD
 
   # Nginx is serving django static and media files and proxies to django and geonode
   geonode:
@@ -130,20 +155,16 @@ services:
     volumes:
       - rabbitmq:/var/lib/rabbitmq
     restart: on-failure
+=======
+    links:
+      - rabbitmq
+>>>>>>> 3.2.x
 
 volumes:
   statics:
     name: ${COMPOSE_PROJECT_NAME}-statics
-  nginx-confd:
-    name: ${COMPOSE_PROJECT_NAME}-nginxconfd
-  nginx-certificates:
-    name: ${COMPOSE_PROJECT_NAME}-nginxcerts
-  geoserver-data-dir:
-    name: ${COMPOSE_PROJECT_NAME}-gsdatadir
-  dbdata:
-    name: ${COMPOSE_PROJECT_NAME}-dbdata
-  dbbackups:
-    name: ${COMPOSE_PROJECT_NAME}-dbbackups
+  geonode:
+    name: ${COMPOSE_PROJECT_NAME}-geonode
   backup-restore:
     name: ${COMPOSE_PROJECT_NAME}-backup-restore
   data:

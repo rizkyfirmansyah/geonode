@@ -159,6 +159,41 @@ def csw_global_dispatch(request, layer_filter=None, config_updater=None):
         if isinstance(content, list):  # pycsw 2.0+
             content = content[1]
 
+<<<<<<< HEAD
+=======
+        spaces = {'csw': 'http://www.opengis.net/cat/csw/2.0.2',
+                  'dc': 'http://purl.org/dc/elements/1.1/',
+                  'dct': 'http://purl.org/dc/terms/',
+                  'gmd': 'http://www.isotc211.org/2005/gmd',
+                  'gml': 'http://www.opengis.net/gml',
+                  'ows': 'http://www.opengis.net/ows',
+                  'xs': 'http://www.w3.org/2001/XMLSchema',
+                  'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                  'ogc': 'http://www.opengis.net/ogc',
+                  'gco': 'http://www.isotc211.org/2005/gco',
+                  'gmi': 'http://www.isotc211.org/2005/gmi'}
+
+        for prefix, uri in spaces.items():
+            ET.register_namespace(prefix, uri)
+
+        if access_token and not access_token.is_expired():
+            tree = dlxml.fromstring(content)
+            for online_resource in tree.findall(
+                    '*//gmd:CI_OnlineResource', spaces):
+                try:
+                    linkage = online_resource.find('gmd:linkage', spaces)
+                    for url in linkage.findall('gmd:URL', spaces):
+                        if url.text:
+                            if '?' not in url.text:
+                                url.text += "?"
+                            else:
+                                url.text += "&"
+                            url.text += f"access_token={access_token.token}"
+                            url.set('updated', 'yes')
+                except Exception:
+                    pass
+            content = ET.tostring(tree, encoding='utf8', method='xml')
+>>>>>>> 3.2.x
     finally:
         # Restore original filter before doing anything
         mdict['repository']['filter'] = mdict_filter
@@ -241,7 +276,10 @@ def csw_render_extra_format_txt(request, layeruuid, resname):
     content += 'resource owner' + s + fst(resource.owner) + sc
     content += 'date' + s + fst(resource.date) + sc
     content += 'date type' + s + fst(resource.date_type) + sc
+    content += 'date of content' + s + fst(resource.date_content) + sc
     content += 'abstract' + s + fst(resource.abstract) + sc
+    content += 'data description' + s + fst(resource.data_description) + sc
+    content += 'source' + s + fst(resource.source) + sc
     content += 'edition' + s + fst(resource.edition) + sc
     content += 'purpose' + s + fst(resource.purpose) + sc
     content += 'maintenance frequency' + s + fst(
@@ -278,6 +316,7 @@ def csw_render_extra_format_txt(request, layeruuid, resname):
     content += 'extent ' + s + fst(ext[0]) + ',' + fst(ext[2]) + \
         ',' + fst(ext[1]) + ',' + fst(ext[3]) + sc
     content += 'SRID  ' + s + fst(resource.srid) + sc
+    content += 'Spatial Resolution ' + s + fst(resource.spatial_resolution) + sc
     content += 'Thumbnail url' + s + fst(resource.thumbnail_url) + sc
 
     content += 'keywords;' + get_keywords(resource) + s

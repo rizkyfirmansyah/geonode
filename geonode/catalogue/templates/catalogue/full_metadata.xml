@@ -27,16 +27,6 @@
        </gmd:positionName>
        <gmd:contactInfo>
          <gmd:CI_Contact>
-           <gmd:phone>
-             <gmd:CI_Telephone>
-               <gmd:voice {% if not poc.voice %}gco:nilReason="missing"{% endif %}>
-                 {% if poc.voice %}<gco:CharacterString>{{ poc.voice }}</gco:CharacterString>{% endif %}
-               </gmd:voice>
-               <gmd:facsimile {% if not poc.fax %}gco:nilReason="missing"{% endif %}>
-                 {% if poc.fax %}<gco:CharacterString>{{ poc.fax }}</gco:CharacterString> {%endif %}
-               </gmd:facsimile>
-             </gmd:CI_Telephone>
-           </gmd:phone>
            <gmd:address>
              <gmd:CI_Address>
                <gmd:deliveryPoint {% if not poc.delivery %}gco:nilReason="missing"{% endif %}>
@@ -97,16 +87,6 @@
        </gmd:positionName>
        <gmd:contactInfo>
          <gmd:CI_Contact>
-           <gmd:phone>
-             <gmd:CI_Telephone>
-               <gmd:voice {% if not metadata_author.voice %}gco:nilReason="missing"{% endif %}>
-                 {% if metadata_author.voice %}<gco:CharacterString>{{ metadata_author.voice }}</gco:CharacterString>{% endif %}
-               </gmd:voice>
-               <gmd:facsimile {% if not metadata_author.fax %}gco:nilReason="missing"{% endif %}>
-                 {% if metadata_author.fax %}<gco:CharacterString>{{ metadata_author.fax }}</gco:CharacterString> {%endif %}
-               </gmd:facsimile>
-             </gmd:CI_Telephone>
-           </gmd:phone>
            <gmd:address>
              <gmd:CI_Address>
                <gmd:deliveryPoint {% if not metadata_author.delivery %}gco:nilReason="missing"{% endif %}>
@@ -224,6 +204,14 @@
        <gmd:abstract>
          <gco:CharacterString>{{layer.raw_abstract}}</gco:CharacterString>
        </gmd:abstract>
+       <gmd:dataDescription>
+         <gco:CharacterString>{{layer.raw_data_description}}</gco:CharacterString>
+       </gmd:dataDescription>
+       {% if layer.date_content %}
+          <gmd:dateContent>
+            <gco:CharacterString>{{layer.raw_date_content}}</gco:CharacterString>
+          </gmd:dateContent>
+        {% endif %}
        <gmd:purpose {% if not layer.raw_purpose %}gco:nilReason="missing"{% endif %}>
              {% if layer.raw_purpose %}<gco:CharacterString>{{layer.raw_purpose}}</gco:CharacterString>{% endif %}
        </gmd:purpose>
@@ -245,16 +233,6 @@
            </gmd:positionName>
            <gmd:contactInfo>
              <gmd:CI_Contact>
-               <gmd:phone>
-                 <gmd:CI_Telephone>
-                   <gmd:voice {% if not owner.voice %}gco:nilReason="missing"{% endif %}>
-                     {% if owner.voice %}<gco:CharacterString>{{ owner.voice }}</gco:CharacterString>{% endif %}
-                   </gmd:voice>
-                   <gmd:facsimile {% if not owner.fax %}gco:nilReason="missing"{% endif %}>
-                     {% if owner.fax %}<gco:CharacterString>{{ owner.fax }}</gco:CharacterString> {%endif %}
-                   </gmd:facsimile>
-                 </gmd:CI_Telephone>
-               </gmd:phone>
                <gmd:address>
                  <gmd:CI_Address>
                    <gmd:deliveryPoint {% if not owner.delivery %}gco:nilReason="missing"{% endif %}>
@@ -397,6 +375,11 @@
          </gmd:MD_Keywords>
        </gmd:descriptiveKeywords>
        {% endfor %}
+        {% if layer.source %}
+          <gmd:source>
+            <gco:CharacterString>{{layer.raw_source}}</gco:CharacterString>
+          </gmd:source>
+        {% endif %}
        {% if LICENSES_METADATA == 'light' and layer.license %}
        <gmd:resourceConstraints>
          <gmd:MD_LegalConstraints>
@@ -451,6 +434,11 @@
          {% endif %}
        </gmd:topicCategory>
        <gmd:extent>
+        {% if layer.spatial_resolution %}
+          <gmd:spatialResolution>
+            <gco:CharacterString>{{layer.raw_spatial_resolution}}</gco:CharacterString>
+          </gmd:spatialResolution>
+        {% endif %}
          <gmd:EX_Extent>
            <gmd:geographicElement>
              <gmd:EX_GeographicBoundingBox>

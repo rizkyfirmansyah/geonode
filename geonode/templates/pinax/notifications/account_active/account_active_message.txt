@@ -1,3 +1,13 @@
 {% load i18n %}
-{% trans "Your account has been approved and is now active." %} ({{ username }})<br/>
-{% trans "You can use the login form at" %}: http://{{ current_site.name }}
+{% autoescape off %}
+
+{% blocktrans %}Congratulations!{% endblocktrans %}
+
+{% blocktrans %}Your account has been approved and is now active.{% endblocktrans %} 
+
+{% blocktrans %}Go explore through https://data.wri-indonesia.id/account/login using your registered user: {{ username }} {% endblocktrans %}
+
+{% blocktrans %}Cheers,{% endblocktrans %}
+{% blocktrans %}The SDI team.{% endblocktrans %}
+
+{% endautoescape %}

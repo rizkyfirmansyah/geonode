@@ -57,7 +57,7 @@ class ProfileAdmin(admin.ModelAdmin):
                                        'groups')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         (_('Extended profile'), {'fields': ('organization', 'profile',
-                                            'position', 'voice', 'fax',
+                                            'position',
                                             'delivery', 'city', 'area',
                                             'zipcode', 'country',
                                             'keywords')}),

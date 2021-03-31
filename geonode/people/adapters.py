@@ -76,13 +76,11 @@ def update_profile(sociallogin):
             "city",
             "country",
             "delivery",
-            "fax",
             "first_name",
             "last_name",
             "organization",
             "position",
             "profile",
-            "voice",
             "zipcode"
         )
         for field in profile_fields:

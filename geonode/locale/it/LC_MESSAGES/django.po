@@ -6297,5 +6297,11 @@ msgstr "Se Vero, l'elemento verrà escluso dalla ricerca"
 msgid "Permission Denied"
 msgstr "Permesso negato"
 
+<<<<<<< HEAD
+=======
+msgid "If true, will be excluded from search"
+msgstr "Se Vero, l'elemento verrà escluso dalla ricerca"
+
+>>>>>>> 3.2.x
 msgid "Please, fill the following items before clicking on preview:"
 msgstr "Perfavore, completa i seguenti campi prima di andare su Anteprima:"

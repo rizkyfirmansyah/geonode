@@ -62,17 +62,30 @@
 
     <div id="upload-status"></div>
 
-    <section id="drop-zone">
-      <h3><i class="fa fa-cloud-upload"></i><br />{% trans "Drop files here" %}</h3>
+    <section id="drop-zone" onclick="document.getElementById('file-input').click();">
+      <h3><i class="fa fa-cloud-upload" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "metadata files" %}</span>{% trans " or click here to upload" %}</h3>
+      <form id="file-uploader" method="post" enctype="multipart/form-data">
+        <!-- UI change to hide the list of previously uploaded files from the user -->
+        <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.xml,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
+      </form>
     </section>
 
-    <p>{% trans " or select them one by one:" %}</p>
-
-    <form id="file-uploader" method="post" enctype="multipart/form-data">
-      <!-- UI change to hide the list of previously uploaded files from the user -->
-      <input type="file" id="file-input" style="display: none;" multiple>
-      <input class="btn btn-default" type="button" value="{% trans "Choose Files" %}" onclick="document.getElementById('file-input').click();">
-    </form>
+    <div class="learn-more">
+        <p>Learn more about supported file formats<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".learn-more-modal" style="background: none; border: none;"><i class="fa fa-info-circle" aria-hidden="true" style="background: #f0ab00;"></i></button> </p>
+    </div>
+    <div class="modal fade learn-more-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+          <div class="modal-content learn-more-modal-content">
+              <p><strong>List of supported file formats:</strong></p><br/>
+              <p>Shapefile data: .shp, .shx, .dbf and .prj</p>
+              <p>Raster data: .tif</p><br/>
+              <p>If you find yourself cannot uploaded the data and found some problem like</p><br/>
+              <p><strong>Server Error: timeout</strong></p>
+              <p><italic>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.</italic></p><br/>
+              <p><strong>Please contact system administrator or rizky.firmansyah@wri.org</strong></p>
+          </div>
+      </div>
+    </div>
 
     <section class="widget">
       <ul id="global-errors"></ul>

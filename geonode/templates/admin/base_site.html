@@ -1,10 +1,10 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}{{ title }} | {{ site_title|default:_('GeoNode site admin') }}{% endblock %}
+{% block title %}{{ title }} | {{ site_title|default:_('SDI site admin') }}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('GeoNode administration') }}</a></h1>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('SDI administration') }}</a></h1>
 {% endblock %}
 
 {% block extrahead %}

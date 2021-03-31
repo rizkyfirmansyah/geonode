@@ -45,8 +45,8 @@ form #mdeditor_form label{
   width: 100%;
 }
 #regions_multiselect_container .fstChoiceItem {
-  background-color: #2c689c;
-  border: #2c689c;
+  background-color: #f0ab00;
+  border: #f0ab00;
 }
 
 #mdeditor_form .mandatory-hint,#mdeditor_form .advanced-hint {
@@ -89,7 +89,7 @@ form #mdeditor_form label{
   display: table;
   table-layout: fixed;
   width: 100%;
-  color: #2c689c;
+  color: #f0ab00;
 }
 .wizard--progress > li {
   position: relative;
@@ -150,14 +150,14 @@ form #mdeditor_form label{
   width: 100%;
 }
 .wizard--progress > li a {
-  color: #2c689c;
+  color: #f0ab00;
 }
 .wizard--progress > li.is-active {
-  color: #2c689c;
+  color: #f0ab00;
 }
 .wizard--progress > li.is-active:before {
   color: #FFF;
-  background: #2c689c;
+  background: #f0ab00;
 }
 
 .wizard--progress > li.is-complete a {
@@ -232,8 +232,6 @@ span.grippy::after {
 
 <div class="tab-content">
 <div id="edit-metadata" class="tab-content tab-pane fade in active">
-{% block edit_progress %}
-
   <div id="completeness-hints" class="progress">
 
   <div class="mandatory-hint progress-bar" role="progressbar" style="width:25%">
@@ -256,8 +254,6 @@ span.grippy::after {
   {% endif %}
   
 </div>
-{% endblock edit_progress %}
- {% block breadcrumbs %}
   <ul class="wizard--progress wizard--progress--medium">
       <li data-step="1" id="first" class="is-active" data-toggle="tab" href="#mandatory">
           <a>{% trans "Basic Metadata" %}</a>
@@ -276,8 +272,6 @@ span.grippy::after {
           <a>{% trans "Dataset Attributes" %}</a>
       </li>
   </ul>
-  {% endblock breadcrumbs %}
-  {% block mandatory %}
     <div id="mandatory" class="tab-pane fade in active">
         <!--<br />-->
         <div class="panel-group">
@@ -327,6 +321,20 @@ span.grippy::after {
                                     </div>
                                 </div>
                                 <div class="col-lg-5">
+                                    <div class="col-lg-12">
+                                        <span><label for="{{ layer_form.date_type|id }}">{{ layer_form.keywords.label }}</label></span>
+                                        {{ layer_form.keywords }}
+                                    </div>
+                                    {% if THESAURI_FILTERS %}
+                                    <div class="col-lg-12 thesauri_keywords">
+                                        {{ tkeywords_form }}
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-lg-12">
+                                        <span><label for="{{ layer_form.date_content|id }}">{{ layer_form.date_content.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Date or time period that the data represents)</p>-->
+                                        {{ layer_form.date_content }}
+                                    </div>
                                     <div class="col-lg-6 col-xs-12">
                                         <span><label for="{{ layer_form.date_type|id }}">{{ layer_form.date_type.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
@@ -378,25 +386,24 @@ span.grippy::after {
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <span><label for="{{ layer_form.date_type|id }}">{{ layer_form.keywords.label }}</label></span>
-                                        {{ layer_form.keywords }}
-                                    </div>
-                                    {% if THESAURI_FILTERS %}
-                                    <div class="col-lg-12 thesauri_keywords">
-                                      {{tkeywords_form.as_p}}
-                                    </div>
-                                    {% endif %}
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div>
+                                <span><label for="{{ layer_form.data_description|id }}">{{ layer_form.data_description.label }}</label></span>
+                                <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
+                                {{ layer_form.data_description }}
+                            </div>
+                          </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endblock %}
-    {% block advanced %}
+
     <div id="advanced" class="tab-pane fade">
         <div class="panel-group">
                 <div class="panel panel-default">
@@ -404,7 +411,6 @@ span.grippy::after {
                     <div class="panel-body">
                         <div class="" id="mdinfo">
                             <div class="">
-                            {% block layer_attributes %}
                                 <div class="col-lg-4">
                                     <div>
                                         <span><label for="{{ layer_form.language|id }}">{{ layer_form.language.label }}</label></span>
@@ -425,8 +431,6 @@ span.grippy::after {
                                         {{ layer_form.attribution }}
                                     </div>
                                 </div>
-                                {% endblock layer_attributes %}
-                                {% block layer_regions %}
                                 <div class="col-lg-4">
                                       <div id="regions_multiselect_container">
                                           <span><label for="{{ layer_form.regions|id }}">{{ layer_form.regions.label }}</label></span>
@@ -435,11 +439,9 @@ span.grippy::after {
                                       <div>
                                           <span><label for="{{ layer_form.data_quality_statement|id }}">{{ layer_form.data_quality_statement.label }}</label></span>
                                           <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
-                                          {{ layer_form.data_quality_statement }}
+                                          {{ layer_form.data_quality_statement|safe }}
                                       </div>
                                 </div>
-                                {% endblock layer_regions %}
-                                {% block layer_constraints %}
                                 <div class="col-lg-4">
                                     <div>
                                         <span><label for="{{ layer_form.restriction_code_type|id }}">{{ layer_form.restriction_code_type.label }}</label></span>
@@ -452,19 +454,21 @@ span.grippy::after {
                                         {{ layer_form.constraints_other }}
                                     </div>
                                 </div>
-                                {% endblock layer_constraints %}
                             </div>
                             <div class="row">
-
+                              <div class="col-lg-12">
+                                <div>
+                                    <span><label for="{{ layer_form.source|id }}">{{ layer_form.source.label }}</label></span>
+                                    {{ layer_form.source }}
+                                </div>
+                              </div>
                             </div>
                         </div>
                     </div>
                 </div>
         </div>
     </div>
-    {% endblock %}
-    {% block other_tab %}{% endblock other_tab %}
-    {% block ownership %}
+
     <div id="ownership" class="tab-pane fade">
         <div class="panel-group"><div class="panel panel-default"><div class="panel-body">
         <div id="mdinfo">
@@ -480,28 +484,31 @@ span.grippy::after {
                     <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
                     {{ layer_form.purpose }}
                 </div>
-                <div>
-                    <span><label for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
-                    {{ layer_form.supplemental_information }}
-                </div>
             </div>
             <div class="col-xs-12 col-lg-5">
+<<<<<<< HEAD
                     <div class="col-xs-12 col-lg-6 check-select">
+=======
+                <div class="col-xs-12">
+                    <div class="col-xs-12 col-lg-6" style="padding: 0px;">
+>>>>>>> 3.2.x
                       <div class="input-group date">
                         <span><label for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
                         <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
                         {{ layer_form.temporal_extent_start }}
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div class="col-xs-12 col-lg-6 check-select">
+=======
+                    <div class="col-xs-12 col-lg-6" style="padding-left: 5px; padding-right: 0px;">
+>>>>>>> 3.2.x
                         <div class="input-group date">
                         <span><label for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
                         <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                         {{ layer_form.temporal_extent_end }}
                         </div>
                     </div>
-                <div class="col-xs-12">
                     <div style="margin-top: 5px">
                         <span><label for="{{ layer_form.maintenance_frequency|id }}">{{ layer_form.maintenance_frequency.label }}</label></span>
                         <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
@@ -511,6 +518,11 @@ span.grippy::after {
                         <span><label for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
                         <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
                         {{ layer_form.spatial_representation_type }}
+                    </div>
+                    <div style="margin-top: 5px">
+                        <span><label for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
+                        <!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
+                        {{ layer_form.spatial_resolution }}
                     </div>
                 </div>
             </div>
@@ -541,8 +553,6 @@ span.grippy::after {
         </div>
       </div></div></div>
     </div>
-    {% endblock %}
-    {% block dataset %}
     <div id="dataset" class="tab-pane fade">
       <div class="panel-group"><div class="panel panel-default"><div class="panel-body">
         <div>
@@ -593,7 +603,6 @@ span.grippy::after {
         </div>
       </div>
     </div>
-    {% endblock %}
   </div>
 </div>
 <div id="preview" class="tab-pane fade" style="overflow: hidden;">
