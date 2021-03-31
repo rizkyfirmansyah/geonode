@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_background',
-            field=models.CharField(default='#2c689c', max_length=30),
+            field=models.CharField(default='#f0ab00', max_length=30),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_1_link_colour',
-            field=models.CharField(default='#2c689c', max_length=30),
+            field=models.CharField(default='#f0ab00', max_length=30),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_2_link_colour',
-            field=models.CharField(default='#2c689c', max_length=30),
+            field=models.CharField(default='#f0ab00', max_length=30),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',
@@ -134,7 +134,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_3_link_colour',
-            field=models.CharField(default='#2c689c', max_length=30),
+            field=models.CharField(default='#f0ab00', max_length=30),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',
@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_4_link_colour',
-            field=models.CharField(default='#2c689c', max_length=30),
+            field=models.CharField(default='#f0ab00', max_length=30),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',

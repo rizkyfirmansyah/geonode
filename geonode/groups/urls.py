@@ -25,8 +25,8 @@ from .views import GroupDetailView, GroupActivityView, SetGroupLayerPermission
 from . import views
 
 urlpatterns = [  # 'geonode.groups.views',
-    url(r'^$', TemplateView.as_view(
-        template_name='groups/group_list.html'), name="group_list"),
+    url(r'^$', login_required(TemplateView.as_view(
+        template_name='groups/group_list.html')), name="group_list"),
 
     url(r'^categories/$',
         TemplateView.as_view(
