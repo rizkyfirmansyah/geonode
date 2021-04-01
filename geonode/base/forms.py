@@ -405,10 +405,6 @@ class ResourceBaseForm(TranslationModelForm):
         label=_("Other constraints"),
         required=False,
         widget=TinyMCE())
-    supplemental_information = forms.CharField(
-        label=_('Supplemental information'),
-        required=False,
-        widget=TinyMCE())
     data_quality_statement = forms.CharField(
         label=_("Data quality statement"),
         required=False,
