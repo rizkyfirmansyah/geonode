@@ -3,6 +3,10 @@
 {% load floppyforms %}
 
 <!--<link href="{% static "lib/css/bootstrap-select.css" %}" rel="stylesheet" />-->
+<script type="text/javascript">
+  // this is used by thumbnail.js to POST to the thumbnail update view
+  window.thumbnailUpdateUrl = '{% url 'layer_thumbnail' resource.alternate %}';
+</script>
 <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
 
 <!-- Required to make select2 fields work for autocomplete -->
@@ -16,6 +20,8 @@
 <script type="text/javascript" src="{% static "autocomplete_light/forward.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
+
+
 
 <style>
 /* general panel styles */

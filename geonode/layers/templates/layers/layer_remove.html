@@ -5,11 +5,14 @@
 
 {% block body %}
 <div class="page-header">
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Layers" %}</a>
+  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info pull-right" style="font-size: 22px;">{% trans "Explore Layers" %}</a>
   <h2 class="page-title">{% trans "Remove Layers" %}</h2>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6">
+    <img src="../../static/geonode/img/delete.jpg" class='stretch' alt='' style="width: 100%">
+  </div>
+  <div class="col-md-6">
     <p class="lead">
         {% blocktrans with layer.alternate as layer_title %}
           Are you sure you want to remove <a href="{{ layer.get_absolute_url }}">{{ layer_title }}</a>?
@@ -19,7 +22,7 @@
       {% csrf_token %}
       <input type="hidden" value="{{ layer.service_typename }}" />
       <div class="form-actions">
-        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
+        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger emphasize-button" />
         <a href="{{ layer.get_absolute_url }}" class="btn btn-default">{% trans "No, don't remove it" %}</a>
       </div>
     </form>

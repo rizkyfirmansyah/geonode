@@ -19,7 +19,7 @@
 <form action="{% url "layer_style_manage" layer.service_typename %}" method="POST">
   <div class="row grid-spacer">
     <fieldset>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <h4>{% trans "Layer Default Style" %}</h4>
       </div>
       <div class="col-md-6">
@@ -37,12 +37,12 @@
   </div>
   <div class="row grid-spacer">
     <fieldset>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <h4>{% trans "Available styles" %}</h4>
         <p>{% trans "Click on an available style in the upper box to assign it to this layer. Selected styles appear in the lower box." %}</p>
       </div>
 
-      <div class="col-md-9">
+      <div class="col-md-6">
         <select multiple="multiple" id="style-select" name="style-select">
           {% for style in gs_styles %}
             {% if style.0 in layer_style_names %}
@@ -57,11 +57,8 @@
       </div>
     </fieldset>
   </div>
-  <div class="row grid-spacer">
-    <div class="col-md-offset-3 col-md-6 form-actions">
-      <input type="submit" value="{% trans "Update Available Styles" %}" class="btn btn-danger" />
-    </div>
-  </div>
+  <br/>
+  <input type="submit" value="{% trans "Update Available Styles" %}" class="btn btn-danger" style="float: right; padding: 8px;"/>
 </form>
 
 {% endblock %}
@@ -102,5 +99,6 @@
       });
     });
   });
+
 </script>
 {% endblock %}

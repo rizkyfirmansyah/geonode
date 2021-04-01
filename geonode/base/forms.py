@@ -393,8 +393,12 @@ class ResourceBaseDateTimePicker(DateTimePicker):
 
 class ResourceBaseForm(TranslationModelForm):
     """Base form for metadata, should be inherited by childres classes of ResourceBase"""
-    abstract = forms.CharField(
-        label=_("Abstract"),
+    data_description = forms.CharField(
+        label=_("Data Description"),
+        required=False,
+        widget=TinyMCE())
+    supplemental_information = forms.CharField(
+        label=_("supplemental information"),
         required=False,
         widget=TinyMCE())
     purpose = forms.CharField(

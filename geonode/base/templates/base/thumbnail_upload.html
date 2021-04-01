@@ -15,6 +15,11 @@
 
 <div class="row">
 
+  <div class="col-md-8">
+    <img src='{{ resource.thumbnail_url }}'></img>
+    <h4>{% trans "Auto generated thumbnail" %}</h4>
+  </div>
+
   <div class="col-md-4">
 
     <!-- current uploaded thumb -->
@@ -32,14 +37,10 @@
     <form method="POST" enctype="multipart/form-data" class="post-form">
       {% csrf_token %}
         {{ form.img }}
-        <button type="submit" class="save btn btn-default"  name="upload-thumb">{% trans "Upload" %}</button>
+        <br/>
+        <button type="submit" class="save btn btn-primary"  name="upload-thumb">{% trans "Upload" %}</button>
     </form>
 
-  </div>
-
-  <div class="col-md-4">
-    <h5>{% trans "Auto generated thumbnail" %}</h5>
-    <img src='{{ resource.thumbnail_url }}'></img>
   </div>
 
 </div>

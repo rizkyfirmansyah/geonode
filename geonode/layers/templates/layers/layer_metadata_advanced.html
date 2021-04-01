@@ -25,17 +25,22 @@
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
-<div class="page-header">
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Layers" %}</a>
-  <h2 class="page-title">{% trans "Edit Metadata" %}</h2>
+<div class="page-header" id="fixed-header">
+  <h2 class="page-title">
+    {% blocktrans with layer.title as layer_title %}
+      Edit Metadata for {{ layer_title }}
+    {% endblocktrans %}
+  </h2>
+  <p>
+    {% if not layer.metadata_uploaded_preserve %}
+    <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-default">{% trans "Return to Layer" %}</a>
+    <input type="submit" class="btn btn-update" value="{% trans "Update" %}"/>
+    {% endif %}
+    <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Layers" %}</a>
+  </p>
 </div>
-<div class="row">
-  <div class="col-md-8">
-    <p class="lead">
-      {% blocktrans with layer.title as layer_title %}
-        Editing details for {{ layer_title }}
-      {% endblocktrans %}
-    </p>
+<div class="row fixed_content">
+  <div class="col-md-12">
     {% block advanced_edit_form %}
     <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
 
@@ -82,18 +87,11 @@
         {% endif %}
       {% endblock layer_form_errors %}
 
-        {% if not layer.metadata_uploaded_preserve %}
-        <div class="form-actions">
-          <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary">{% trans "Return to Layer" %}</a>
-          <input type="submit" id="btn_upd_md_up" class="btn btn-primary" value="{% trans "Update" %}"/>
-        </div>
-        {% endif %}
-
         {% csrf_token %}
         <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
              Unfortunately this needs to appear at the bottom of the form since tkeywords_form is a complete other django form. 
              There might be a better way to solve this. -->
-        <div class="col-md-6 form-controls">
+        <div class="form-controls">
           {% block layer_fields %}
           {% for field in layer_form %}
             {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' %}
@@ -201,15 +199,6 @@
               <button type='button' class="modal-cloose-btn btn btn-primary">{% trans "Done" %}</button>
             </fieldset>
             {% endblock metadata_provider %}
-
-            {% if not layer.metadata_uploaded_preserve %}
-            {% block form_actions %}
-            <div class="form-actions">
-              <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary">{% trans "Return to Layer" %}</a>
-              <input type="submit" id="btn_upd_md_dwn" class="btn btn-primary" value="{% trans "Update" %}"/>
-            </div>
-            {% endblock form_actions %}
-            {% endif %}
           </div>
         </div>
       </form>
@@ -243,11 +232,18 @@
         $(document.body).on("change", "#id_resource-use_featureinfo_custom_template", function (event) {
             if (this.checked) {
                 $('#layer-attributes-panel').css("visibility", "collapse");
+                $('#layer-attributes-panel').css("z-index", "auto");
                 $('#layer-attributes-custom_template').css("visibility", "visible");
+                $('#layer-attributes-custom_template').css("z-index", "auto");
             } else {
                 $('#layer-attributes-panel').css("visibility", "visible");
+                $('#layer-attributes-panel').css("z-index", "auto");
                 $('#layer-attributes-custom_template').css("visibility", "collapse");
+                $('#layer-attributes-custom_template').css("z-index", "auto");
             }
+        });
+        $(window).scroll(function () {
+          
         });
     </script>
 {% endblock %}

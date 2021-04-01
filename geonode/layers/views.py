@@ -1492,7 +1492,7 @@ def layer_thumbnail(request, layername):
             overwrite=True
         )
 
-        return HttpResponse('Thumbnail saved')
+        return HttpResponse('Yeay, your thumbnail saved successfully!')
 
     except Exception as e:
         logger.exception(e)

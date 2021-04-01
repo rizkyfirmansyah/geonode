@@ -50,7 +50,7 @@ var createMapThumbnail = function(obj_id) {
         },
         success: function (data, status, jqXHR) {
             try {
-                $("#_thumbnail_feedbacks").find('.modal-title').text(status);
+                $("#_thumbnail_feedbacks").find('.modal-title').text("Generate thumbnail");
                 $("#_thumbnail_feedbacks").find('.modal-body').text(data);
                 $("#_thumbnail_feedbacks").modal("show");
             } catch (err) {
