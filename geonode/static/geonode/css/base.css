@@ -8472,12 +8472,6 @@ form-inline {
     margin-right: auto;
 }
 
-.form-body {
-  right: 30px;
-  padding-right: 40px;
-  top: 40px;
-}
-
 .error-link {
   display: block;
   text-align: center;
