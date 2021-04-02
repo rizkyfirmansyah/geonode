@@ -22,7 +22,7 @@
 
 <div class="page-header">
   <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right" style="margin-left: 3px;">{% trans "Explore Layers" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary pull-right" style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
+  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-default pull-right" style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
   <h2 class="page-title">{% trans "Upload Layer Metadata" %} <small>{% trans "(XML - ISO, FGDC, ebRIM, Dublin Core)" %}<small></h2>
 </div>
 
@@ -66,7 +66,7 @@
       <h3><i class="fa fa-cloud-upload" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "metadata files" %}</span>{% trans " or click here to upload" %}</h3>
       <form id="file-uploader" method="post" enctype="multipart/form-data">
         <!-- UI change to hide the list of previously uploaded files from the user -->
-        <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.xml,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
+        <input type="file" id="file-input" style="display: none;" accept=".xml" multiple>
       </form>
     </section>
 
@@ -76,13 +76,12 @@
     <div class="modal fade learn-more-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
           <div class="modal-content learn-more-modal-content">
-              <p><strong>List of supported file formats:</strong></p><br/>
-              <p>Shapefile data: .shp, .shx, .dbf and .prj</p>
-              <p>Raster data: .tif</p><br/>
-              <p>If you find yourself cannot uploaded the data and found some problem like</p><br/>
-              <p><strong>Server Error: timeout</strong></p>
-              <p><italic>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.</italic></p><br/>
-              <p><strong>Please contact system administrator or rizky.firmansyah@wri.org</strong></p>
+              <p>
+                Metadata contains all the information related to the layer. They provide essential information for its identification and its comprehension. Metadata also make the layer more easily retrievable through search by other users.
+              </p>
+              <p>List of supported metadata file formats: <strong>ISO, FGDC, or Dublin Core</strong></p><br/>
+              <p>For more info, check the documentation in link below</p>
+              <a target="_blank" href="https://docs.geonode.org/en/master/usage/managing_layers/layer_metadata.html#uploading-metadata">Geonode Metadata Documentation</a>
               <hr/>
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>

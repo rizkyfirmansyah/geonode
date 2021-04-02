@@ -5,10 +5,10 @@
 {% block title %}{% trans "Log out" %}{% endblock %}
 
 {% block middle %}
-  <div class="row">
+  <div class="row" style="margin: 0px;">
     <div class="col-md-12">
       <div class="col-md-8">
-          <img src="../../static/geonode/img/logout.jpg" class='stretch' alt='' style="width: 60%">
+          <img src="../../static/geonode/img/logout.jpg" class='stretch logout-img' alt=''>
       </div>
       <div class="col-md-4">
         <form method="POST" action="{% url "account_logout" %}" class="form-horizontal">

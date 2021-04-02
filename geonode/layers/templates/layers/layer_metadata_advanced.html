@@ -31,19 +31,21 @@
       Edit Metadata for {{ layer_title }}
     {% endblocktrans %}
   </h2>
-  <p>
-    {% if not layer.metadata_uploaded_preserve %}
-    <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-default">{% trans "Return to Layer" %}</a>
-    <input type="submit" class="btn btn-update" value="{% trans "Update" %}"/>
-    {% endif %}
-    <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Layers" %}</a>
-  </p>
 </div>
-<div class="row fixed_content">
+<div class="row">
   <div class="col-md-12">
     {% block advanced_edit_form %}
-    <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
-
+      
+      <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
+      <div class="fixed-button">
+        <p>
+          {% if not layer.metadata_uploaded_preserve %}
+            <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-default">{% trans "Return to Layer" %}</a>
+            <input type="submit" id="btn_upd_md_up" class="btn btn-primary" value="{% trans "Update" %}"/>
+          {% endif %}
+          <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Layers" %}</a>
+        </p>
+      </div>
       {% block metadata_uploaded_check %}
       {% if layer.metadata_uploaded_preserve %}
         <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a metadata XML file.
@@ -208,7 +210,7 @@
 
 <div class="modal fade" style="width: 100%; height: 100%;" id="error_mandatoryDialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content panel-warning">
+    <div class="modal-content panel-warning" style="z-index: 99999;">
       <div class="modal-header panel-heading">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">{% trans "ERROR" %}</h4>
@@ -232,18 +234,11 @@
         $(document.body).on("change", "#id_resource-use_featureinfo_custom_template", function (event) {
             if (this.checked) {
                 $('#layer-attributes-panel').css("visibility", "collapse");
-                $('#layer-attributes-panel').css("z-index", "auto");
                 $('#layer-attributes-custom_template').css("visibility", "visible");
-                $('#layer-attributes-custom_template').css("z-index", "auto");
             } else {
                 $('#layer-attributes-panel').css("visibility", "visible");
-                $('#layer-attributes-panel').css("z-index", "auto");
                 $('#layer-attributes-custom_template').css("visibility", "collapse");
-                $('#layer-attributes-custom_template').css("z-index", "auto");
             }
-        });
-        $(window).scroll(function () {
-          
         });
     </script>
 {% endblock %}

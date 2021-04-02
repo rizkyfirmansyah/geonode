@@ -1562,7 +1562,7 @@ pre code {
   padding: 0;
   font-size: inherit;
   color: inherit;
-  white-space: pre-wrap;
+  white-space: pre- ;
   background-color: transparent;
   border-radius: 0;
 }
@@ -2575,13 +2575,6 @@ th {
   .table-responsive > .table-bordered > tfoot > tr:last-child > td {
     border-bottom: 0;
   }
-  #logout-button { 
-    font-size: 130%;
-  }
-  #logout-style {
-    margin-bottom: 10px;
-    font-size: 28px;
-  }
   #signup_form {
     margin-left: 40px;
     width: 100%;
@@ -3169,21 +3162,11 @@ a.btn.disabled,
 fieldset[disabled] a.btn {
   pointer-events: none;
 }
-.btn-default {
-  color: #333;
-  background-color: #fff;
-  border-color: #ccc;
-}
 .btn-default:focus,
 .btn-default.focus {
   color: #333;
   background-color: #e6e6e6;
   border-color: #8c8c8c;
-}
-.btn-default:hover {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
 }
 .btn-default:active,
 .btn-default.active,
@@ -7402,12 +7385,12 @@ article.tab-pane {
   text-align: center;
   padding: 2em 0;
 }
-.home-facets a {
+.home-facets > i {
   color: black;
 }
-.home-facets a:hover {
+.home-facets > i:hover {
   color: #f0ab00;
-  text-decoration: none;
+  background-color: transparent;
 }
 .partner_logo {
   background-repeat: no-repeat;
@@ -8489,20 +8472,6 @@ form-inline {
     margin-right: auto;
 }
 
-#logout-style {
-    line-height: 40px;
-    font-weight: bold;
-    font-size: 40px;
-    margin-top: 150px;
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-#logout-button {
-  width: 40%;
-  font-size: 200%;
-}
-
 .form-body {
   right: 30px;
   padding-right: 40px;
@@ -8556,9 +8525,4 @@ form-inline {
   text-align: left;
   width: 140%;
   font-size: 18px;
-}
-
-.fixed_content {
-  margin-top: 150px;
-  z-index: auto;
 }
