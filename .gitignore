@@ -15,9 +15,9 @@ geonode/development.db
 /geoserver/
 downloaded
 package-lock.json
-.vscode
-.github
-.circleci
+.vscode/
+.github/
+.circleci/
 
 docs/i18n/pot/
 
