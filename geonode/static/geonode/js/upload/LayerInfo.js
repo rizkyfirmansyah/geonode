@@ -670,7 +670,7 @@ define(function (require, exports) {
             mode: "queue",
             type: "POST",
             data: form_data,
-            timeout: 600000, // sets timeout to 10 minutes
+            timeout: 1800000, // sets timeout to 30 minutes
             processData: false,
             contentType: false,
             xhr: function() {
