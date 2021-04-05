@@ -2575,10 +2575,7 @@ th {
   .table-responsive > .table-bordered > tfoot > tr:last-child > td {
     border-bottom: 0;
   }
-  #signup_form {
-    margin-left: 40px;
-    width: 100%;
-  }
+  
   #signup-img, #passwordreset-img, #login-img {
     width: 100%;
     margin-left: 15px;
@@ -2655,7 +2652,7 @@ output {
 }
 .form-control {
   display: block;
-  width: 100%;
+  width: 100% !important;
   height: 36px;
   padding: 6px 12px;
   font-size: 16px;
