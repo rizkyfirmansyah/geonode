@@ -15,7 +15,9 @@ geonode/development.db
 /geoserver/
 downloaded
 package-lock.json
-GeoIPCities.dat
+.vscode
+.github
+.circleci
 
 docs/i18n/pot/
 
