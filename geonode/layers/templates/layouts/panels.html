@@ -471,6 +471,11 @@ span.grippy::after {
                     <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
                     {{ layer_form.purpose }}
                 </div>
+                <div>
+                    <span><label for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
+                    <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
+                    {{ layer_form.supplemental_information }}
+                </div>
             </div>
             <div class="col-xs-12 col-lg-5">
                 <div class="col-xs-12">
