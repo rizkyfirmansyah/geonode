@@ -32,7 +32,7 @@
 
     {% if resource.data_description %}
     <dt>{% trans "Data Description" %}</dt>
-    <dd itemprop="description">{{ resource.data_description|safe|escape|urlize|linebreaks|safe|truncatechars:500 }}</dd>
+    <dd itemprop="description">{{ resource.data_description|safe|escape|urlize|safe }}</dd>
     {% endif %}
 
 
