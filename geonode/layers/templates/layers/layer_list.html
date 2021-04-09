@@ -13,6 +13,7 @@
             <h1 class="ml13">Please sign in to see all available datasets</h1>
         </div>
     </div>
+    {% endif %}
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.0.2/anime.min.js"></script>
     <script type="text/javascript">
@@ -21,10 +22,9 @@
             $('.ml13').each(function(){
                 $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter' onclick=\"window.location.href='https://data.wri-indonesia.id/account/login/?next=/layers/';\">$&</span>"));
             });
-            anime.timeline({loop: false})
+            anime.timeline({loop: true})
             .add({
                 targets: '.ml13 .letter',
-                scale: [4,1],
                 translateY: [100,0],
                 translateZ: 0,
                 opacity: [0,1],
@@ -46,15 +46,28 @@
             });
         }
         $(function() {
-            setTimeout(animateLogin, 7000);
-            $.when(animateLogin()).done(function() {
-                setTimeout(function() {
-                    $(".composition").css("display", "none");
-                }, 7000);
+            animateLogin();
+
+            $(document).mouseup(function(e) 
+            {
+                var container = $(".close-signin");
+
+                if (!container.is(e.target) && container.has(e.target).length === 0) {
+                    $('.composition').hide();
+                } else {
+                    $('.composition').remove();
+                }
             });
+
+            $('<a href="#" class="close-signin">').insertBefore(".ml13");
+        
+            $(".ml13").hover(function() {
+                $(".ml13").hide();
+                $("<h1 class='ml14' onclick=\"window.location.href='https://data.wri-indonesia.id/account/login/?next=/layers/';\">sign in</h1>").insertAfter(".ml13");
+            });
+
         });
             
     </script>
-    {% endif %}
 
 {% endblock extra_head %}
