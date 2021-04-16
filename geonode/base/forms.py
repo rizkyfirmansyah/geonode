@@ -394,11 +394,11 @@ class ResourceBaseDateTimePicker(DateTimePicker):
 class ResourceBaseForm(TranslationModelForm):
     """Base form for metadata, should be inherited by childres classes of ResourceBase"""
     data_description = forms.CharField(
-        label=_("Data Description"),
+        label=_("Data description"),
         required=False,
         widget=TinyMCE())
     supplemental_information = forms.CharField(
-        label=_("supplemental information"),
+        label=_("Supplemental information"),
         required=False,
         widget=TinyMCE())
     purpose = forms.CharField(
@@ -427,14 +427,14 @@ class ResourceBaseForm(TranslationModelForm):
         widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
     )
     temporal_extent_start = forms.DateTimeField(
-        label=_("temporal extent start"),
+        label=_("Temporal extent start"),
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
         widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
     )
     temporal_extent_end = forms.DateTimeField(
-        label=_("temporal extent end"),
+        label=_("Temporal extent end"),
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
@@ -442,7 +442,7 @@ class ResourceBaseForm(TranslationModelForm):
     )
 
     poc = forms.ModelChoiceField(
-        empty_label=_("Person outside GeoNode (fill form)"),
+        empty_label=_("Person outside SDI (fill form)"),
         label=_("Point of Contact"),
         required=False,
         queryset=get_user_model().objects.exclude(
@@ -450,8 +450,8 @@ class ResourceBaseForm(TranslationModelForm):
         widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
 
     metadata_author = forms.ModelChoiceField(
-        empty_label=_("Person outside GeoNode (fill form)"),
-        label=_("Metadata Author"),
+        empty_label=_("Person outside SDI (fill form)"),
+        label=_("Metadata author"),
         required=False,
         queryset=get_user_model().objects.exclude(
             username='AnonymousUser'),

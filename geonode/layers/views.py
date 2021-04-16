@@ -996,6 +996,10 @@ def layer_metadata(
         category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
             request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
             request.POST["category_choice_field"] else None)
+        # Get all choices list instead of one list
+        # category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
+        #     request.POST.getlist("category_choice_field")) if "category_choice_field" in request.POST and
+        #     request.POST.getlist("category_choice_field") else None)
         if not category_form.is_valid():
             logger.error(f"Layer Category form is not valid: {category_form.errors}")
             out = {

@@ -36,6 +36,7 @@ from modeltranslation.admin import TabbedTranslationAdmin
 
 from geonode.base.models import (
     TopicCategory,
+    DataType,
     SpatialRepresentationType,
     Region,
     RestrictionCodeType,
@@ -174,6 +175,17 @@ class TopicCategoryAdmin(TabbedTranslationAdmin):
         else:
             return False
 
+class DataTypeAdmin(TabbedTranslationAdmin):
+    model = DataType
+    list_display_links = ('identifier',)
+    list_display = ('identifier', 'description', 'gn_description', 'is_choice')
+
+    def has_add_permission(self, request):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return True
+
 
 class RegionAdmin(TabbedTranslationAdmin):
     model = Region
@@ -190,11 +202,11 @@ class SpatialRepresentationTypeAdmin(TabbedTranslationAdmin):
 
     def has_add_permission(self, request):
         # the records are from the standard TC 211 list, so no way to add
-        return False
+        return True
 
     def has_delete_permission(self, request, obj=None):
         # the records are from the standard TC 211 list, so no way to remove
-        return False
+        return True
 
 
 class RestrictionCodeTypeAdmin(TabbedTranslationAdmin):
@@ -204,11 +216,11 @@ class RestrictionCodeTypeAdmin(TabbedTranslationAdmin):
 
     def has_add_permission(self, request):
         # the records are from the standard TC 211 list, so no way to add
-        return False
+        return True
 
     def has_delete_permission(self, request, obj=None):
         # the records are from the standard TC 211 list, so no way to remove
-        return False
+        return True
 
 
 class ContactRoleAdmin(admin.ModelAdmin):
@@ -356,6 +368,7 @@ class ThesaurusKeywordLabelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(TopicCategory, TopicCategoryAdmin)
+admin.site.register(DataType, DataTypeAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(SpatialRepresentationType, SpatialRepresentationTypeAdmin)
 admin.site.register(RestrictionCodeType, RestrictionCodeTypeAdmin)

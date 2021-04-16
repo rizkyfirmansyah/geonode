@@ -1944,6 +1944,7 @@ json_serializer_k_map = {
     'restriction_code_type': 'base.RestrictionCodeType',
     'license': 'base.License',
     'category': 'base.TopicCategory',
+    'data_type': 'base.DataType',
     'spatial_representation_type': 'base.SpatialRepresentationType',
     'group': 'auth.Group',
     'default_style': 'layers.Style',

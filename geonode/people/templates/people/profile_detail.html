@@ -85,10 +85,6 @@
         <td class="table-user-profile-attribute">{% trans 'Location' %}</td>
         <td>{{ profile.location | default:_('Not provided.') }}</td>
       </tr>
-      <tr>
-        <td class="table-user-profile-attribute">{% trans 'Description' %}</td>
-        <td>{{ profile.profile | default:_('Not provided.') }}</td>
-      </tr>
       {% endif %}
       <tr>
         <td class="table-user-profile-attribute">{% trans 'Keywords' %}</td>

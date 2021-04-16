@@ -27,10 +27,8 @@
             <ContactPosition>{{ profile.position }}</ContactPosition>
             <ContactAddress>
                 <AddressType>postal</AddressType>
-                <Address>{{ profile.delivery }}</Address>
                 <City>{{ profile.city }}</City>
                 <StateOrProvince>{{ profile.area }}</StateOrProvince>
-                <PostCode>{{ profile.zipcode }}</PostCode>
                 <Country>{{ profile.country }}</Country>
             </ContactAddress>
             <ContactElectronicMailAddress>{{ map.owner.email }}</ContactElectronicMailAddress>

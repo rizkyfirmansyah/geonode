@@ -36,6 +36,7 @@ from geonode.base.models import (
     RestrictionCodeType,
     License,
     TopicCategory,
+    DataType,
     SpatialRepresentationType
 )
 
@@ -112,6 +113,13 @@ class TopicCategorySerializer(DynamicModelSerializer):
     class Meta:
         model = TopicCategory
         name = 'TopicCategory'
+        fields = ('identifier',)
+
+class DataTypeSerializer(DynamicModelSerializer):
+
+    class Meta:
+        model = DataType
+        name ='DataType'
         fields = ('identifier',)
 
 
@@ -227,7 +235,7 @@ class ResourceBaseSerializer(DynamicModelSerializer):
         self.fields['title'] = serializers.CharField()
         self.fields['abstract'] = serializers.CharField()
         self.fields['data_description'] = serializers.CharField()
-        self.fields['attribution'] = serializers.CharField()
+        self.fields['author'] = serializers.CharField()
         self.fields['source'] = serializers.CharField()
         self.fields['doi'] = serializers.CharField()
         self.fields['alternate'] = serializers.CharField(read_only=True)
@@ -272,6 +280,8 @@ class ResourceBaseSerializer(DynamicModelSerializer):
             RegionSerializer, embed=True, many=True, read_only=True)
         self.fields['category'] = DynamicRelationField(
             TopicCategorySerializer, embed=True, many=False)
+        self.fields['data_type'] = DynamicRelationField(
+            DataTypeSerializer, embed=True, many=False)
         self.fields['restriction_code_type'] = DynamicRelationField(
             RestrictionCodeTypeSerializer, embed=True, many=False)
         self.fields['license'] = DynamicRelationField(
@@ -285,8 +295,8 @@ class ResourceBaseSerializer(DynamicModelSerializer):
         fields = (
             'pk', 'uuid', 'resource_type', 'polymorphic_ctype_id',
             'owner', 'poc', 'metadata_author',
-            'keywords', 'regions', 'category',
-            'title', 'abstract', 'attribution', 'doi', 'alternate', 'bbox_polygon', 'll_bbox_polygon', 'srid',
+            'keywords', 'regions', 'category', 'data_type',
+            'title', 'abstract', 'author', 'doi', 'alternate', 'bbox_polygon', 'll_bbox_polygon', 'srid',
             'date', 'date_type', 'edition', 'purpose', 'maintenance_frequency',
             'restriction_code_type', 'constraints_other', 'license', 'language',
             'spatial_representation_type', 'temporal_extent_start', 'temporal_extent_end',

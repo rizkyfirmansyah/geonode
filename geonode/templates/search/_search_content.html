@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="row" ng-controller="CartList">
-  <div class="col-md-3">
+  <div class="col-md-3 search-content">
 
     {% if facet_type == 'layers' %}
     <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Selection" %}' emptyString="{% trans "No list items selected. Use the selection fields to add." %}" >

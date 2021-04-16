@@ -68,23 +68,12 @@ class Profile(AbstractUser):
         blank=True,
         null=True,
         help_text=_('name of the responsible organization'))
-    profile = models.TextField(
-        _('Profile'),
-        null=True,
-        blank=True,
-        help_text=_('introduce yourself'))
     position = models.CharField(
         _('Position Name'),
         max_length=255,
         blank=True,
         null=True,
         help_text=_('role or position of the responsible person'))
-    delivery = models.CharField(
-        _('Delivery Point'),
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text=_('physical and email address at which the organization or individual may be contacted'))
     city = models.CharField(
         _('City'),
         max_length=255,
@@ -97,12 +86,6 @@ class Profile(AbstractUser):
         blank=True,
         null=True,
         help_text=_('state, province of the location'))
-    zipcode = models.CharField(
-        _('Postal Code'),
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text=_('ZIP or other postal code'))
     country = models.CharField(
         _('Country'),
         choices=COUNTRIES,
@@ -118,13 +101,6 @@ class Profile(AbstractUser):
         max_length=10,
         choices=LANGUAGES,
         default=settings.LANGUAGE_CODE
-    )
-    timezone = models.CharField(
-        _('Timezone'),
-        max_length=100,
-        default="",
-        choices=TIMEZONES,
-        blank=True,
     )
 
     def __init__(self, *args, **kwargs):
@@ -187,8 +163,7 @@ class Profile(AbstractUser):
 
     @property
     def location(self):
-        return format_address(self.delivery, self.zipcode,
-                              self.city, self.area, self.country)
+        return format_address(self.city, self.area, self.country)
 
     def save(self, *args, **kwargs):
         super(Profile, self).save(*args, **kwargs)

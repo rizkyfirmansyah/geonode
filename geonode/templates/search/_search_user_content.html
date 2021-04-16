@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="row" ng-controller="CartList">
-  <div class="col-md-3">
+  <div class="col-md-3 search-content">
     <div class="row">
       <div class="col-xs-12">
         {% load base_tags %}
@@ -46,7 +46,7 @@
 
   </div>
   <div class="col-md-9">
-    <div class="col-md-2">
+    <div class="col-md-4" style="font-size: 2em; font-weight: bold;">
       <span>{% trans "Total" %}: </span>
       <span ng-bind="total_counts"></span>
     </div>

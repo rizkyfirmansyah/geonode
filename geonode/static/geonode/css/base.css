@@ -1426,7 +1426,6 @@ ol ol {
 }
 .list-inline > li {
   display: inline-block;
-  padding-right: 5px;
   padding-left: 5px;
 }
 dl {
@@ -7493,9 +7492,6 @@ article.tab-pane {
   color: #af0900;
   text-decoration: none;
 }
-.profile-avatar .list-inline {
-  margin: 0.5em 0;
-}
 .item-thumb {
   padding-left: 0;
   padding-right: 0;
@@ -7641,12 +7637,8 @@ span.icon.node-icon:before {
   color: #af0900;
   text-decoration: none;
 }
-.profile-avatar .profile-items .list-inline {
-  margin: 0.5em 0;
-}
 .profile-avatar li a {
   color: #555555;
-  margin-right: 0.5em;
 }
 .profile-avatar li a:hover {
   color: #af0900;

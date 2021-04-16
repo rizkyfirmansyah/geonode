@@ -214,7 +214,7 @@ class Catalogue(CatalogueServiceWeb):
         result['keywords'] = keywords
 
         # XXX needs indexing ? how
-        result['attribution'] = {'title': '', 'href': ''}
+        result['author'] = {'title': '', 'href': ''}
 
         result['name'] = result['uuid']
 

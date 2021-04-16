@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(help_text='name by which the cited resource is known', max_length=255, verbose_name='title')),
                 ('date', models.DateTimeField(default=now, help_text='reference date for the cited resource', verbose_name='date')),
                 ('date_type', models.CharField(default='publication', help_text='identification of when a given event occurred', max_length=255, verbose_name='date type', choices=[('creation', 'Creation'), ('publication', 'Publication'), ('revision', 'Revision')])),
-                ('date_content', models.CharField(null=True, blank=True)),
+                ('date_content', models.CharField(blank=True, max_length=255, help_text='date or time period that the data represents')),
                 ('edition', models.CharField(help_text='version of the cited resource', max_length=255, null=True, verbose_name='edition', blank=True)),
                 ('abstract', models.TextField(help_text='brief narrative summary of the content of the resource(s)', verbose_name='abstract', blank=True)),
                 ('data_description', models.TextField(help_text='No definition provided', verbose_name='data description', null=True, blank=True)),

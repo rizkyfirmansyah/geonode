@@ -58,8 +58,8 @@ class ProfileAdmin(admin.ModelAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
         (_('Extended profile'), {'fields': ('organization', 'profile',
                                             'position',
-                                            'delivery', 'city', 'area',
-                                            'zipcode', 'country',
+                                            'city', 'area',
+                                            'country',
                                             'keywords')}),
     )
     add_fieldsets = (

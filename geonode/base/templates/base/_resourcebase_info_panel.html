@@ -129,9 +129,9 @@
     <dd>{{ resource.doi }}</dd>
     {% endif %}
 
-    {% if resource.attribution %}
-    <dt>{% trans "Attribution" %}</dt>
-    <dd>{{ resource.attribution }}</dd>
+    {% if resource.author %}
+    <dt>{% trans "Author" %}</dt>
+    <dd>{{ resource.author }}</dd>
     {% endif %}
 
     {% if resource.source %}
@@ -142,6 +142,16 @@
     {% if resource.date_content %}
     <dt>{% trans "Date of Content" %}</dt>
     <dd>{{ resource.date_content }}</dd>
+    {% endif %}
+
+    {% if resource.data_type %}
+    <dt>{% trans "Type of Data" %}</dt>
+    <dd>{{ resource.data_type.gn_description }} <a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa fa-info-circle"></i></a></dd>
+      {% if resource.data_type.gn_description %}
+      <dd class="data_type-more collapse">
+        {% trans resource.data_type.description %}
+      </dd>
+      {% endif %}
     {% endif %}
 
   </dl>

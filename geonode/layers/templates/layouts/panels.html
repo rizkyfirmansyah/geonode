@@ -342,6 +342,7 @@ span.grippy::after {
                                             id="category_form"
                                             class="selectpicker form-control"
                                             >
+                                            {% comment %} multiple> {% endcomment %}
                                             <option {% if not category_form.initial %} selected="selected" {% endif %} value="">---</option>
                                           {% for choice in category_form.category_choice_field.field.choices %}
                                               <option
@@ -414,8 +415,12 @@ span.grippy::after {
                                         {{ layer_form.doi }}
                                     </div>
                                     <div>
-                                        <span><label for="{{ layer_form.attribution|id }}">{{ layer_form.attribution.label }}</label></span>
-                                        {{ layer_form.attribution }}
+                                        <span><label for="{{ layer_form.author|id }}">{{ layer_form.author.label }}</label></span>
+                                        {{ layer_form.author }}
+                                    </div>
+                                    <div>
+                                        <span><label for="{{ layer_form.data_type|id }}">{{ layer_form.data_type.label }}</label></span>
+                                        {{ layer_form.data_type }}
                                     </div>
                                 </div>
                                 <div class="col-lg-4">

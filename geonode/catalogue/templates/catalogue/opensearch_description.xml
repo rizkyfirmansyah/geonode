@@ -10,5 +10,5 @@
     <Url type="application/atom+xml" template="{{ url }}/catalogue/csw?mode=opensearch&amp;service=CSW&amp;version=2.0.2&amp;request=GetRecords&amp;elementsetname=full&amp;typenames=csw:Record&amp;resulttype=results&amp;q={searchTerms?}&amp;bbox={geo:box?}&amp;time={time:start?}/{time:end?}&amp;startposition={startIndex?}&amp;maxrecords={count?}"/>
     <Developer>{{ developer }}</Developer>
     <Contact>{{ contact }}</Contact>
-    <Attribution>{{ attribution }}</Attribution>
+    <Author>{{ author }}</Author>
 </OpenSearchDescription>

@@ -130,6 +130,8 @@ class CommonModelApi(ModelResource):
         'restriction_code_type',
         'constraints_other',
         'license',
+        'author',
+        'data_type',
         'source',
         'language',
         'spatial_representation_type',
