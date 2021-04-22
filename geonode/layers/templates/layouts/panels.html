@@ -682,5 +682,19 @@ span.grippy::after {
         }
     });
   });
+
+  $(function() {
+    function containsEmpty(a) {
+        return [].concat(a).sort().reverse().pop() === "";
+    };
+    $("#category_form").change(function() {
+      var list_picking = $(this).val();
+      if (containsEmpty(list_picking)) {
+        $("#category_form option:selected").prop("selected", false);
+      }
+       $('#category_form').selectpicker('refresh');
+    });
+
+  })
 </script>
 {% endblock %}

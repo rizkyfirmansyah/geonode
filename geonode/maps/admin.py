@@ -42,9 +42,9 @@ class MapAdminForm(ResourceBaseAdminForm):
 class MapAdmin(TabbedTranslationAdmin):
     inlines = [MapLayerInline, ]
     list_display_links = ('title',)
-    list_display = ('id', 'title', 'owner', 'category', 'group', 'is_approved', 'is_published', 'featured',)
-    list_editable = ('owner', 'category', 'group', 'is_approved', 'is_published', 'featured',)
-    list_filter = ('owner', 'category', 'group', 'featured',
+    list_display = ('id', 'title', 'owner', 'group', 'is_approved', 'is_published', 'featured',)
+    list_editable = ('owner', 'group', 'is_approved', 'is_published', 'featured',)
+    list_filter = ('owner', 'group', 'featured',
                    'is_approved', 'is_published',)
     search_fields = ('title', 'abstract', 'purpose',
                      'is_approved', 'is_published',)

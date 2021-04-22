@@ -104,7 +104,7 @@ class CommonMetaApi:
 class CommonModelApi(ModelResource):
     keywords = fields.ToManyField(TagResource, 'keywords', null=True)
     regions = fields.ToManyField(RegionResource, 'regions', null=True)
-    category = fields.ToOneField(
+    category = fields.ToManyField(
         TopicCategoryResource,
         'category',
         null=True,
@@ -754,7 +754,8 @@ class LayerResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__gn_description'] = _(obj.category.gn_description)
+                # formatted_obj['category__gn_description'] = _(obj.category.gn_description)
+                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:

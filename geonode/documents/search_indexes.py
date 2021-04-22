@@ -44,8 +44,8 @@ class DocumentIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, use_template=True, stored=False)
     type = indexes.CharField(faceted=True)
     title_sortable = indexes.CharField(indexed=False, stored=False)  # Necessary for sorting
-    category = indexes.CharField(
-        model_attr="category__identifier",
+    category = indexes.MultiValueField(
+        model_attr="category_list",
         faceted=True,
         null=True,
         stored=True)

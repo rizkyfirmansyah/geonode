@@ -890,7 +890,7 @@ def layer_metadata(
         form=LayerAttributeForm,
     )
     current_keywords = [keyword.name for keyword in layer.keywords.all()]
-    topic_category = layer.category
+    topic_category = layer.category.all()
 
     topic_thesaurus = layer.tkeywords.all()
     # Add metadata_author or poc if missing
@@ -993,13 +993,14 @@ def layer_metadata(
                 json.dumps(out),
                 content_type='application/json',
                 status=400)
-        category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
-            request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
-            request.POST["category_choice_field"] else None)
-        # Get all choices list instead of one list
         # category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
-        #     request.POST.getlist("category_choice_field")) if "category_choice_field" in request.POST and
-        #     request.POST.getlist("category_choice_field") else None)
+        #     request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
+        #     request.POST["category_choice_field"] else None)
+        # category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=[
+        #     request.POST.getlist("category_choice_field[]") if "category_choice_field[]" in request.POST and
+        #     request.POST.getlist("category_choice_field[]") else None])
+        category_form = CategoryForm(request.POST, prefix="category_choice_field")
+
         if not category_form.is_valid():
             logger.error(f"Layer Category form is not valid: {category_form.errors}")
             out = {
@@ -1035,8 +1036,7 @@ def layer_metadata(
             prefix="layer_attribute_set",
             queryset=Attribute.objects.order_by('display_order'))
         category_form = CategoryForm(
-            prefix="category_choice_field",
-            initial=topic_category.id if topic_category else None)
+            prefix="category_choice_field")
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
@@ -1116,9 +1116,10 @@ def layer_metadata(
         new_category = None
         if category_form and 'category_choice_field' in category_form.cleaned_data and\
         category_form.cleaned_data['category_choice_field']:
-            new_category = TopicCategory.objects.get(
-                id=int(category_form.cleaned_data['category_choice_field']))
-
+            # new_category = TopicCategory.objects.get(
+            #     id=int(category_form.cleaned_data['category_choice_field']))
+            new_category = [int(c.strip()) for c in category_form.cleaned_data['category_choice_field']]
+            # categories = [int(c.strip()) for c in category_form.cleaned_data['category_choice_field']]
         for form in attribute_form.cleaned_data:
             la = Attribute.objects.get(id=int(form['id'].id))
             la.description = form["description"]
@@ -1143,7 +1144,9 @@ def layer_metadata(
         layer.regions.clear()
         if new_regions:
             layer.regions.add(*new_regions)
-        layer.category = new_category
+        layer.category.clear()
+        if new_category:
+            layer.category.add(*new_category)
 
         up_sessions = UploadSession.objects.filter(layer=layer)
         if up_sessions.count() > 0 and up_sessions[0].user != layer.owner:
@@ -1338,7 +1341,7 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
                         name=layer.name,
                         user=layer.owner,
                         license=layer.license.name if layer.license else None,
-                        category=layer.category,
+                        category=list(layer.category.all()),
                         keywords=list(layer.keywords.all()),
                         regions=list(layer.regions.values_list('name', flat=True)),
                         overwrite=True,

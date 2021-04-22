@@ -434,6 +434,8 @@ def file_upload(filename,
         keywords = []
     if regions is None:
         regions = []
+    if category is None:
+        category = []
 
     # Get a valid user
     theuser = get_valid_user(user)

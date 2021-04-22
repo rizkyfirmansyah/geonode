@@ -280,7 +280,7 @@ class CategoryForm(forms.Form):
         empty_label=None,
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
-            order_by=['description']))
+            order_by=['gn_description']))
 
     def clean(self):
         cleaned_data = self.data

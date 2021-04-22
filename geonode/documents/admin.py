@@ -40,14 +40,13 @@ class DocumentAdmin(TabbedTranslationAdmin):
     list_display = ('id',
                     'title',
                     'date',
-                    'category',
                     'group',
                     'is_approved',
                     'is_published',
                     'metadata_completeness')
     list_display_links = ('id',)
-    list_editable = ('title', 'category', 'group', 'is_approved', 'is_published')
-    list_filter = ('date', 'date_type', 'restriction_code_type', 'category',
+    list_editable = ('title', 'group', 'is_approved', 'is_published')
+    list_filter = ('date', 'date_type', 'restriction_code_type',
                    'group', 'is_approved', 'is_published',)
     search_fields = ('title', 'abstract', 'purpose',
                      'is_approved', 'is_published',)

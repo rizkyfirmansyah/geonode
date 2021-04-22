@@ -792,12 +792,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         choices=ALL_LANGUAGES,
         default='eng',
         help_text=language_help_text)
-    category = models.ForeignKey(
+    category = models.ManyToManyField(
         TopicCategory,
         null=True,
         blank=True,
-        on_delete=models.SET_NULL,
-        limit_choices_to=Q(is_choice=True),
         help_text=category_help_text)
     data_type = models.ForeignKey(
         DataType,
@@ -1272,7 +1270,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     if not field.all():
                         continue
                 if required_field == 'category':
-                    if not field.identifier:
+                    if not field.all():
                         continue
                 filled_fields.append(field)
         return f'{len(filled_fields) * 100 / len(required_fields)}%'
@@ -1285,6 +1283,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             return False
         except Exception:
             return False
+
+    def category_list(self):
+        return [c.identifier for c in self.category.all()]
 
     def keyword_list(self):
         return [kw.name for kw in self.keywords.all()]

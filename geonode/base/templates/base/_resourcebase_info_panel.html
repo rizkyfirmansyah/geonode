@@ -89,12 +89,12 @@
 
     {% if resource.category %}
     <dt>{% trans "Category" %}</dt>
-    <dd><a href="{% url "search" %}?category__identifier__in={{ resource.category.identifier }}">{% trans resource.category.gn_description %}</a> {% if resource.category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
-      {% if resource.category.description %}
-      <dd class="category-more collapse">
-        {% trans resource.category.description %}
-      </dd>
-      {% endif %}
+      {% for category in resource.category.all %}
+        <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+        <dd class="category-more collapse">
+          {% trans category.description %}
+        </dd>
+      {% endfor %}
     {% endif %}
 
     {% if resource.regions.all %}

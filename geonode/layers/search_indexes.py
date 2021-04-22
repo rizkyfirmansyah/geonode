@@ -48,8 +48,8 @@ class LayerIndex(indexes.SearchIndex, indexes.Indexable):
     subtype = indexes.CharField(faceted=True)
     alternate = indexes.CharField(model_attr='alternate')
     title_sortable = indexes.CharField(indexed=False, stored=False)  # Necessary for sorting
-    category = indexes.CharField(
-        model_attr="category__identifier",
+    category = indexes.MultiValueField(
+        model_attr="category_list",
         faceted=True,
         null=True,
         stored=True)

@@ -40,9 +40,9 @@ class GeoAppAdminForm(ResourceBaseAdminForm):
 class GeoAppAdmin(TabbedTranslationAdmin):
     inlines = [GeoAppDataInline, ]
     list_display_links = ('title',)
-    list_display = ('id', 'title', 'type', 'owner', 'category', 'group', 'is_approved', 'is_published',)
-    list_editable = ('owner', 'category', 'group', 'is_approved', 'is_published',)
-    list_filter = ('title', 'owner', 'category', 'group', 'is_approved', 'is_published',)
+    list_display = ('id', 'title', 'type', 'owner', 'group', 'is_approved', 'is_published',)
+    list_editable = ('owner', 'group', 'is_approved', 'is_published',)
+    list_filter = ('title', 'owner', 'group', 'is_approved', 'is_published',)
     search_fields = ('title', 'abstract', 'purpose', 'is_approved', 'is_published',)
     form = GeoAppAdminForm
 
