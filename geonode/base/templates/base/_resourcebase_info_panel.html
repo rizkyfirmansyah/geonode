@@ -87,11 +87,11 @@
       </dd>
     {% endif %}
 
-    {% if resource.category %}
+    {% if resource.category.count > 0 %}
     <dt>{% trans "Category" %}</dt>
       {% for category in resource.category.all %}
-        <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
-        <dd class="category-more collapse">
+        <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+        <dd class="category-more-{{ category.id }} collapse">
           {% trans category.description %}
         </dd>
       {% endfor %}

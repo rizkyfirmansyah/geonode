@@ -18,15 +18,15 @@
         <div class="col-lg-8 item-details">
           <div class="row">
             <div class="col-xs-10">
-              <p class="item-meta">
-                  <span class="item-category">{{ item.category__gn_description }}</span><br>
-                  <span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/"><i class="fa fa-group" aria-hidden="true" style="margin-right: 8px;"></i>{{ item.group_name }}</a><br></span>
-                  <span class="item-category" ng-if="item.has_time">
-                    {% endverbatim %}
-                    <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 8px;"></i>{% trans "Temporal Serie" %}<br>
-                    {% verbatim %}
-                  </span>
-              </p>
+                <div class="text-categories">
+                  <span class="item-category">{{ item.category__gn_description.join(' | ') }}</span><br>
+                </div>
+                <span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/"><i class="fa fa-group" aria-hidden="true" style="margin-right: 8px;"></i>{{ item.group_name }}</a><br></span>
+                <span class="item-category" ng-if="item.has_time">
+                  {% endverbatim %}
+                  <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 8px;"></i>{% trans "Temporal Serie" %}<br>
+                  {% verbatim %}
+                </span>
               <h4>
                   <i ng-if="item.store_type == 'remoteStore'" title="Remote Service" class="fa fa-external-link fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
                   <i ng-if="item.store_type == 'dataStore'" title="Vector Data" class="fa fa-pencil-square-o fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>

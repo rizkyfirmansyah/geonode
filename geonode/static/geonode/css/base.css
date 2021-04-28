@@ -7503,12 +7503,10 @@ article.tab-pane {
   background: white;
   color: #333333;
 }
-.item-details .item-meta {
-  margin-top: 1em;
-}
 .item-details .item-meta .item-category {
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
+  font-weight: bolder;
 }
 .item-details h4 a {
   word-wrap: break-word;
