@@ -94,14 +94,14 @@ class AdvancedModelChoiceIterator(models.ModelChoiceIterator):
             obj)
 
 
-class CategoryChoiceField(forms.ModelChoiceField):
+class CategoryChoiceField(forms.ModelMultipleChoiceField):
     def _get_choices(self):
         if hasattr(self, '_choices'):
             return self._choices
 
         return AdvancedModelChoiceIterator(self)
 
-    choices = property(_get_choices, ChoiceField._set_choices)
+    choices = property(_get_choices, MultipleChoiceField._set_choices)
 
     def label_from_instance(self, obj):
         return '<i class="fa ' + obj.fa_class + ' fa-2x unchecked"></i>' \
@@ -274,10 +274,17 @@ class RegionsSelect(forms.Select):
 
 
 class CategoryForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(CategoryForm, self).__init__(*args, **kwargs)
+        self.fields['layers'].label_from_instance = self.label_from_instance
+
+    layers = forms.ModelMultipleChoiceField(
+        queryset=Layer.objects.all(),
+        required=False)
+
     category_choice_field = CategoryChoiceField(
         required=False,
         label='*' + _('Category'),
-        empty_label=None,
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
             order_by=['gn_description']))
@@ -292,6 +299,10 @@ class CategoryForm(forms.Form):
 
         # Always return the full collection of cleaned data.
         return cleaned_data
+
+    @staticmethod
+    def label_from_instance(obj):
+        return obj.id
 
 
 class TKeywordForm(forms.ModelForm):

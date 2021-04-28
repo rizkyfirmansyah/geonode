@@ -578,7 +578,7 @@
                         dataType: "JSON",
                         data: $.param(formData)
                    }).done(function(data){
-                        // Do something more fancy with your respone
+                        // Do something more fancy with your response
                         // $('.message').html(data.message);
                         if (!is_advanced) {
                             try {
@@ -592,8 +592,8 @@
                         }
                         metadata_update_done = true;
                     }).fail(function(xhr, status, error) {
+                        console.log(xhr);
                         // error handling
-                        // console.log(error);
                         try {
                             if(xhr.responseJSON && xhr.responseJSON['errors']) {
                                 var errors = "<ul>";
@@ -604,7 +604,7 @@
                                 $("#preview_errorDialog .modal-body").html(errors);
                             } else {
                                 if (xhr.responseText.indexOf('<!DOCTYPE html>') >= 0) {
-                                    $("#preview_errorDialog .modal-body").html("Unknown Error Occurred.");
+                                    $("#preview_errorDialog .modal-body").html("Unknown error occurred. Please ask your developer to resolve this issue.");
                                 } else {
                                     $("#preview_errorDialog .modal-body").html(xhr.responseText);
                                 }

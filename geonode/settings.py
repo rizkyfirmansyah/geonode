@@ -1008,10 +1008,7 @@ UPLOADER = {
     },
     'SUPPORTED_CRS': [
         'EPSG:4326',
-        'EPSG:3785',
-        'EPSG:3857',
-        'EPSG:32647',
-        'EPSG:32736'
+        'EPSG:3395'
     ],
     'SUPPORTED_EXT': [
         '.shp',
@@ -1031,8 +1028,6 @@ UPLOADER = {
 EPSG_CODE_MATCHES = {
     'EPSG:4326': '(4326) WGS 84',
     'EPSG:900913': '(900913) Google Maps Global Mercator',
-    'EPSG:3857': '(3857) WGS 84 / Pseudo-Mercator',
-    'EPSG:3785': '(3785 DEPRECATED) Popular Visualisation CRS / Mercator',
     'EPSG:3395': '(3395) World Mercator'
 }
 
