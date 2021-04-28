@@ -1032,7 +1032,7 @@ def layer_metadata(
             queryset=Attribute.objects.order_by('display_order'))
         category_form = CategoryForm(
             prefix="category_choice_field",
-            initial=[c.pk for c in layer.category.all()])
+            initial=[c.id for c in layer.category.all()])
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
@@ -1125,6 +1125,7 @@ def layer_metadata(
 
         new_keywords = current_keywords if request.keyword_readonly else layer_form.cleaned_data['keywords']
         new_regions = [x.strip() for x in layer_form.cleaned_data['regions']]
+        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         layer.keywords.clear()
         if new_keywords:
@@ -1134,10 +1135,8 @@ def layer_metadata(
             layer.regions.add(*new_regions)
 
         layer.category.clear()
-        for c in request.POST.getlist('category_choice_field'):
-            cid = int(c.strip())
-            new_category = TopicCategory.objects.get(id=cid)
-            layer.category.add(new_category)
+        if new_categories:
+            layer.category.add(*new_categories)
 
         up_sessions = UploadSession.objects.filter(layer=layer)
         if up_sessions.count() > 0 and up_sessions[0].user != layer.owner:

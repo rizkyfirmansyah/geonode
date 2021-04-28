@@ -1937,13 +1937,12 @@ def add_url_params(url, params):
 
     return new_url
 
-
 json_serializer_k_map = {
     'user': settings.AUTH_USER_MODEL,
     'owner': settings.AUTH_USER_MODEL,
     'restriction_code_type': 'base.RestrictionCodeType',
     'license': 'base.License',
-    'category': 'base.TopicCategory',
+    # 'category': 'base.TopicCategory',
     'data_type': 'base.DataType',
     'spatial_representation_type': 'base.SpatialRepresentationType',
     'group': 'auth.Group',
