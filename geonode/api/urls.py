@@ -32,6 +32,7 @@ from . import resourcebase_api as resourcebase_resources
 
 api = Api(api_name='api')
 
+api.register(resources.DataTypeResource())
 api.register(resources.GroupCategoryResource())
 api.register(resources.GroupResource())
 api.register(resources.GroupProfileResource())

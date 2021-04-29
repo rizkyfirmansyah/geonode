@@ -76,6 +76,7 @@ def facets(context):
     extent_filter = request.GET.get('extent', None)
     keywords_filter = request.GET.getlist('keywords__slug__in', None)
     category_filter = request.GET.getlist('category__identifier__in', None)
+    datatype_filter = request.GET.getlist('datatype__identifier__in', None)
     regions_filter = request.GET.getlist('regions__name__in', None)
     owner_filter = request.GET.getlist('owner__username__in', None)
     date_gte_filter = request.GET.get('date__gte', None)
@@ -106,6 +107,8 @@ def facets(context):
                         unpublished_not_visible=settings.RESOURCE_PUBLISHING,
                         private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
 
+                    if datatype_filter:
+                        geoapps = geoapps.filter(datatype__identifier__in=datatype_filter)
                     if category_filter:
                         geoapps = geoapps.filter(category__identifier__in=category_filter)
                     if regions_filter:
@@ -142,6 +145,8 @@ def facets(context):
         return facets
     elif facet_type == 'documents':
         documents = Document.objects.filter(title__icontains=title_filter)
+        if datatype_filter:
+            documents = documents.filter(datatype__identifier__in=datatype_filter)
         if category_filter:
             documents = documents.filter(category__identifier__in=category_filter)
         if regions_filter:
@@ -188,6 +193,8 @@ def facets(context):
             Q(abstract__icontains=abstract_filter) |
             Q(purpose__icontains=purpose_filter)
         )
+        if datatype_filter:
+            layers = layers.filter(datatype__identifier__in=datatype_filter)
         if category_filter:
             layers = layers.filter(category__identifier__in=category_filter)
         if regions_filter:
@@ -259,6 +266,9 @@ def facets(context):
         maps = Map.objects.filter(title__icontains=title_filter)
         documents = Document.objects.filter(title__icontains=title_filter)
 
+        if datatype_filter:
+            maps = maps.filter(datatype__identifier__in=datatype_filter)
+            documents = documents.filter(datatype__identifier__in=datatype_filter)
         if category_filter:
             maps = maps.filter(category__identifier__in=category_filter)
             documents = documents.filter(category__identifier__in=category_filter)

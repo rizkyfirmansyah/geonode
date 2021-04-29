@@ -201,12 +201,17 @@
         };
     }
 
-    module.load_groups = function ($http, $rootScope, $location) {
+    // Load datatype
+    module.load_datatypes = function ($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == "undefined" ? {} : {'type': FILTER_TYPE};
         $http.get(DATATYPE_ENDPOINT, {params: params}).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            $rootScope.datatype = data.data.objects;
+            if ($location.search().hasOwnProperty('datatype__identifier__in')) {
+                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+                    $location.search()['datatype__identifier__in'], 'identifier');
+            }
+            $rootScope.datatypes = data.data.objects;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -253,6 +258,22 @@
                         category.count = $rootScope.category_counts[category.identifier]
                     } else {
                         category.count = 0;
+                    }
+                }
+            } catch (err) {
+                // console.log(err);
+            }
+        }
+
+        if ("datatypes" in $rootScope) {
+            try {
+                $rootScope.datatype_counts = data.meta.facets.datatype;
+                for (var id in $rootScope.datatypes) {
+                    var datatype = $rootScope.datatypes[id];
+                    if (datatype.identifier in $rootScope.datatype_counts) {
+                        datatype.count = $rootScope.datatype_counts[datatype.identifier]
+                    } else {
+                        datatype.count = 0;
                     }
                 }
             } catch (err) {
@@ -342,7 +363,9 @@
         if ($('#tkeywords').length > 0) {
             module.load_t_keywords($http, $rootScope, $location);
         }
-
+        if ($('#datatypes').length > 0) {
+            module.load_datatypes($http, $rootScope, $location);
+        }
 
         // Activate the type filters if in the url
         if ($location.search().hasOwnProperty('type__in')) {

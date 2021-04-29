@@ -43,6 +43,7 @@ from tastypie.bundle import Bundle
 
 from geonode.base.models import ResourceBase, ThesaurusKeyword
 from geonode.base.models import TopicCategory
+from geonode.base.models import DataType
 from geonode.base.models import Region
 from geonode.base.models import HierarchicalKeyword
 from geonode.base.models import ThesaurusKeywordLabel
@@ -313,34 +314,42 @@ class TopicCategoryResource(TypeFilteredResource):
 
 class DataTypeResource(TypeFilteredResource):
     """Datatype api"""
-    datatype = fields.CharField()
+    layers_count = fields.IntegerField(default=0)
 
-    def dehydrate_full_name(self, bundle):
-        return bundle.obj.get_full_name() or bundle.obj.username
+    def dehydrate_layers_count(self, bundle):
+        request = bundle.request
+        obj_with_perms = get_objects_for_user(request.user,
+                                                'base.view_resourcebase').filter(polymorphic_ctype__model='layer')
+        filter_set = bundle.obj.resourcebase_set.filter(id__in=obj_with_perms.values('id')).filter(metadata_only=False)
 
-    def dehydrate_email(self, bundle):
-        email = ''
-        if bundle.request.user.is_superuser:
-            email = bundle.obj.email
-        return email
+        if not settings.SKIP_PERMS_FILTER:
+            filter_set = get_visible_resources(
+                filter_set,
+                request.user if request else None,
+                admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
+                unpublished_not_visible=settings.RESOURCE_PUBLISHING,
+                private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
+
+        return filter_set.distinct().count()
+
+    def dehydrate_gn_description(self, bundle):
+        return bundle.obj.gn_description
 
     def serialize(self, request, data, format, options=None):
         if options is None:
             options = {}
-        options['count_type'] = 'owner'
+        options['count_type'] = 'data_type'
 
-        return super(OwnersResource, self).serialize(request, data, format, options)
+        return super(DataTypeResource, self).serialize(request, data, format, options)
 
     class Meta:
-        queryset = get_user_model().objects.exclude(username='AnonymousUser')
-        resource_name = 'owners'
+        queryset = DataType.objects.all().order_by('gn_description')
+        resource_name = 'datatype'
         allowed_methods = ['get']
-        ordering = ['username', 'date_joined']
-        excludes = ['is_staff', 'password', 'is_superuser',
-                    'is_active', 'last_login']
+        excludes = ['is_choice', 'description_en', 'gn_description_en']
 
         filtering = {
-            'username': ALL,
+            'identifier': ALL,
         }
         serializer = CountJSONSerializer()
         authorization = ApiLockdownAuthorization()

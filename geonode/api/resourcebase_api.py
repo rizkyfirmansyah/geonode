@@ -62,6 +62,7 @@ from .api import (
     OwnersResource,
     ThesaurusKeywordResource,
     TopicCategoryResource,
+    DataTypeResource,
     GroupResource,
     FILTER_TYPES)
 from .paginator import CrossSiteXHRPaginator
@@ -92,6 +93,7 @@ class CommonMetaApi:
         'category': ALL_WITH_RELATIONS,
         'group': ALL_WITH_RELATIONS,
         'owner': ALL_WITH_RELATIONS,
+        'datatype': ALL_WITH_RELATIONS,
         'date': ALL,
         'purpose': ALL,
         'uuid': ALL_WITH_RELATIONS,
@@ -109,6 +111,7 @@ class CommonModelApi(ModelResource):
         'category',
         null=True,
         full=True)
+    datatype = fields.ToOneField(DataTypeResource, 'data_type', null=True)
     group = fields.ToOneField(
         GroupResource,
         'group',
@@ -131,7 +134,7 @@ class CommonModelApi(ModelResource):
         'constraints_other',
         'license',
         'author',
-        'data_type',
+        'data_type__gn_description',
         'source',
         'language',
         'spatial_representation_type',
@@ -174,6 +177,8 @@ class CommonModelApi(ModelResource):
             orm_filters.update({'polymorphic_ctype__model': filters['app_type__in'].lower()})
         if 'extent' in filters:
             orm_filters.update({'extent': filters['extent']})
+        if 'datatype' in filters:
+            orm_filters.update({'extent': filters['extent']})
         orm_filters['f_method'] = filters['f_method'] if 'f_method' in filters else 'and'
         if not settings.SEARCH_RESOURCES_EXTENDED:
             return self._remove_additional_filters(orm_filters)
@@ -189,6 +194,7 @@ class CommonModelApi(ModelResource):
         types = applicable_filters.pop('type', None)
         extent = applicable_filters.pop('extent', None)
         keywords = applicable_filters.pop('keywords__slug__in', None)
+        datatype = applicable_filters.pop('datatype__identifier__in', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
         if filtering_method == 'or':
             filters = Q()
@@ -312,6 +318,9 @@ class CommonModelApi(ModelResource):
         date_end = parameters.get("date__lte", None)
         date_start = parameters.get("date__gte", None)
 
+        # Data type filter
+        datatype = parameters.getlist("datatype__identifier__in")
+
         # Topic category filter
         category = parameters.getlist("category__identifier__in")
 
@@ -393,6 +402,11 @@ class CommonModelApi(ModelResource):
                             SQ(description=Raw(search_word)) |
                             SQ(content=Raw(search_word))
                         )
+
+        # filter by data_type
+        if datatype:
+            sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
+                'data_type:%s' % ','.join(map(str, data_type)))
 
         # filter by category
         if category:
@@ -494,12 +508,12 @@ class CommonModelApi(ModelResource):
             # results
             if len(filter_set) > 0:
                 sqs = sqs.filter(id__in=filter_set_ids).facet('type').facet('subtype').facet(
-                    'owner') .facet('keywords').facet('regions').facet('category')
+                    'owner') .facet('keywords').facet('regions').facet('category').facet('datatype')
             else:
                 sqs = None
         else:
             sqs = sqs.facet('type').facet('subtype').facet(
-                'owner').facet('keywords').facet('regions').facet('category')
+                'owner').facet('keywords').facet('regions').facet('category').facet('datatype')
 
         if sqs:
             # Build the Facet dict
@@ -761,7 +775,8 @@ class LayerResource(CommonModelApi):
                     formatted_obj['group_name'] = GroupProfile.objects.get(slug=obj.group.name)
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
-
+            if obj.data_type:
+                formatted_obj['data_type__gn_description'] = obj.data_type
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
@@ -917,7 +932,8 @@ class MapResource(CommonModelApi):
                     formatted_obj['group_name'] = GroupProfile.objects.get(slug=obj.group.name)
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
-
+            if obj.data_type:
+                formatted_obj['data_type__gn_description'] = obj.data_type
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
@@ -998,7 +1014,8 @@ class GeoAppResource(CommonModelApi):
                     formatted_obj['group_name'] = GroupProfile.objects.get(slug=obj.group.name)
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
-
+            if obj.data_type:
+                formatted_obj['data_type__gn_description'] = obj.data_type
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
@@ -1065,7 +1082,8 @@ class DocumentResource(CommonModelApi):
                     formatted_obj['group_name'] = GroupProfile.objects.get(slug=obj.group.name)
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
-
+            if obj.data_type:
+                formatted_obj['data_type__gn_description'] = obj.data_type
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
