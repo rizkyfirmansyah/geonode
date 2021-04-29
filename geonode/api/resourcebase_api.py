@@ -754,7 +754,6 @@ class LayerResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                # formatted_obj['category__gn_description'] = _(obj.category.gn_description)
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
             if obj.group:
                 formatted_obj['group'] = obj.group
@@ -911,7 +910,7 @@ class MapResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__gn_description'] = _(obj.category.gn_description)
+                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -992,7 +991,7 @@ class GeoAppResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__gn_description'] = obj.category.gn_description
+                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -1059,7 +1058,7 @@ class DocumentResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__gn_description'] = _(obj.category.gn_description)
+                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:

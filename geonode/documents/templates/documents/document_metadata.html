@@ -74,8 +74,9 @@
               </fieldset>
 
                 <div class="form-actions">
+                  <a href="{% url 'document_detail' docid=resource.id %}" class="btn btn-default">{% trans "Return to Documents" %}</a>
                   <input type="button" id="btn_back_dwn" class="btn btn-primary" style="display: none" value="{% trans "<< Back" %}"/>
-                  <input type="submit" id="btn_upd_md_dwn" class="btn btn-primary" value="{% trans "Update" %}"/>
+                  <input type="submit" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}"/>
                   <input type="button" id="btn_next_dwn" class="btn btn-primary" value="{% trans "Next >>" %}"/>
                 </div>
             </div>

@@ -5,10 +5,14 @@
 
 {% block body %}
 <div class="page-header">
+  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info pull-right" style="font-size: 22px;">{% trans "Explore Documents" %}</a>
   <h2 class="page-title">{% trans "Remove Document" %}</h2>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-6">
+    <img src="../../static/geonode/img/delete.jpg" class='stretch' alt='' style="width: 100%">
+  </div>
+  <div class="col-md-6">
     <p class="lead">
         {% blocktrans with document.title as document_title %}
           Are you sure you want to remove <a href="{{ document.get_absolute_url }}">{{ document_title }}</a>?
@@ -17,7 +21,7 @@
     <form action="{% url "document_remove" document.id %}" method="POST">
       {% csrf_token %}
       <div class="form-actions">
-        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
+        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger emphasize-button" />
         <a href="{{ document.get_absolute_url }}" class="btn btn-default">{% trans "No, don't remove it" %}</a>
       </div>
     </form>

@@ -355,7 +355,7 @@ def document_metadata(
     document.add_missing_metadata_author_or_poc()
     poc = document.poc
     metadata_author = document.metadata_author
-    topic_category = document.category
+    topic_category = [document.id for document in document.category.all()]
     current_keywords = [keyword.name for keyword in document.keywords.all()]
 
     if request.method == "POST":
@@ -363,9 +363,7 @@ def document_metadata(
             request.POST,
             instance=document,
             prefix="resource")
-        category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
-            request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
-                                                        request.POST["category_choice_field"] else None)
+        category_form = CategoryForm(request.POST, prefix="category_choice_field")
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -377,7 +375,7 @@ def document_metadata(
         document_form.disable_keywords_widget_for_non_superuser(request.user)
         category_form = CategoryForm(
             prefix="category_choice_field",
-            initial=topic_category.id if topic_category else None)
+            initial=topic_category)
 
         # Keywords from THESAURUS management
         doc_tkeywords = document.tkeywords.all()
@@ -420,12 +418,7 @@ def document_metadata(
         new_author = document_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else document_form.cleaned_data['keywords']
         new_regions = document_form.cleaned_data['regions']
-
-        new_category = None
-        if category_form and 'category_choice_field' in category_form.cleaned_data and \
-                category_form.cleaned_data['category_choice_field']:
-            new_category = TopicCategory.objects.get(
-                id=int(category_form.cleaned_data['category_choice_field']))
+        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:
             if poc is None:
@@ -469,7 +462,8 @@ def document_metadata(
         document.keywords.add(*new_keywords)
         document.regions.clear()
         document.regions.add(*new_regions)
-        document.category = new_category
+        document.category.clear()
+        document.category.add(*new_categories)
         document.save(notify=True)
         document_form.save_many2many()
 

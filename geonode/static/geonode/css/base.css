@@ -7799,7 +7799,7 @@ nav.filter li a {
 #upload_form input[type="text"] {
   display: block;
   margin: 0;
-  width: 480px;
+  width: 100%;
   appearance: none;
   box-shadow: none;
   border-radius: none;
@@ -7812,15 +7812,15 @@ nav.filter li a {
 }
 #upload_form #id_doc_file {
   padding: 0.5em;
-  width: 480px;
+  width: 100%;
 }
 #upload_form #id_doc_url {
   display: block;
-  width: 480px;
+  width: 100%;
 }
 #upload_form #s2id_resource {
   display: block;
-  width: 480px;
+  width: 100%;
 }
 @media (max-width: 991px) {
   body {

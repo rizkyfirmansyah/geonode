@@ -40,7 +40,7 @@
 <script type="text/javascript">
     $('#id_doc_file').on('change', function(){
         if($('#id_title').val() == ''){
-            $('#id_title').val($('#id_doc_file').val().replace("C:\\fakepath\\", ""));
+            $('#id_title').val($('#id_doc_file').val().replace("C:\\fakepath\\", "")).split('.').slice(0, -1).join('.');
         }
     });
     $("#id_links").select2({
