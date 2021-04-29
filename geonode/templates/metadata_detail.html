@@ -94,6 +94,16 @@
         <dd>{{ resource.display_type }}</dd>
         {% endif %}
 
+        {% if resource.data_type %}
+        <dt>{% trans "Data Type" %}</dt>
+        <dd><a href="/search/?datatype__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+        {% if resource.data_type.description %}
+        <dd class="data_type-more collapse">
+            {{ resource.data_type.description }}
+        </dd>
+        {% endif %}
+        {% endif %}
+        
         {% if resource.keyword_list %}
         <dt>{% trans "Keywords" %}</dt>
         <dd>{% for keyword in resource.keyword_list %}
@@ -101,14 +111,14 @@
             {% endfor %}</dd>
         {% endif %}
 
-        {% if resource.category %}
+        {% if resource.category.count > 0 %}
         <dt>{% trans "Category" %}</dt>
-        <dd><a href="/search/?category__identifier__in={{ resource.category.identifier }}">{{ resource.category }}</a> {% if resource.category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
-        {% if resource.category.description %}
-        <dd class="category-more collapse">
-            {{ resource.category.description }}
-        </dd>
-        {% endif %}
+        {% for category in resource.category.all %}
+            <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+            <dd class="category-more-{{ category.id }} collapse">
+            {% trans category.description %}
+            </dd>
+        {% endfor %}
         {% endif %}
 
         {% if resource.regions.all %}

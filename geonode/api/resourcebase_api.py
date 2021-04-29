@@ -177,8 +177,8 @@ class CommonModelApi(ModelResource):
             orm_filters.update({'polymorphic_ctype__model': filters['app_type__in'].lower()})
         if 'extent' in filters:
             orm_filters.update({'extent': filters['extent']})
-        if 'datatype' in filters:
-            orm_filters.update({'extent': filters['extent']})
+        if 'data_type' in filters:
+            orm_filters.update({'data_type': filters['datatype__identifier__in']})
         orm_filters['f_method'] = filters['f_method'] if 'f_method' in filters else 'and'
         if not settings.SEARCH_RESOURCES_EXTENDED:
             return self._remove_additional_filters(orm_filters)
@@ -194,7 +194,6 @@ class CommonModelApi(ModelResource):
         types = applicable_filters.pop('type', None)
         extent = applicable_filters.pop('extent', None)
         keywords = applicable_filters.pop('keywords__slug__in', None)
-        datatype = applicable_filters.pop('datatype__identifier__in', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
         if filtering_method == 'or':
             filters = Q()

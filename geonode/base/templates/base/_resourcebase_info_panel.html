@@ -146,8 +146,8 @@
 
     {% if resource.data_type %}
     <dt>{% trans "Type of Data" %}</dt>
-    <dd>{{ resource.data_type.gn_description }} <a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa fa-info-circle"></i></a></dd>
-      {% if resource.data_type.gn_description %}
+    <dd><a href="{% url "search" %}?datatype__identifier__in={{ resource.data_type.identifier }}">{% trans resource.data_type.gn_description %}</a> {% if resource.data_type.description %} <a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+      {% if resource.data_type.description %}
       <dd class="data_type-more collapse">
         {% trans resource.data_type.description %}
       </dd>
