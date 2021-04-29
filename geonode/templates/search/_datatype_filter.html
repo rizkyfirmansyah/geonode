@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<nav class="filter" ng-cloak>
+    <h4><a href="#" class="toggle toggle-nav"><i class="fa fa-chevron-right"></i> {% trans "Data Type" %}</a></h4>
+    <ul class="nav closed" id="datatype">
+    {% verbatim %}
+    <li ng-repeat="data in datatype" ng-if="datatype.count > 0">
+      <a data-value="{{ data.gn_description }}" data-filter="data__gn_description__in" ng-click="multiple_choice_listener($event)" class="{{data.active}}">{{ data.gn_description }}
+        <span class="badge pull-right">{{ data.count }}</span>
+      </a>
+    </li>
+    {% endverbatim %}
+  </ul>
+</nav>

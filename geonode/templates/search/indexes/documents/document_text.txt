@@ -5,4 +5,5 @@
 {{ object.date_content }}
 {{ object.source }}
 {{ object.purpose }}
+{{ object.data_type }}
 {{ object.keyword_list }}

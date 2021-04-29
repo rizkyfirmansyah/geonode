@@ -7,3 +7,4 @@
 {{ object.name }}
 {{ object.purpose }}
 {{ object.keyword_list }}
+{{ object.data_type }}

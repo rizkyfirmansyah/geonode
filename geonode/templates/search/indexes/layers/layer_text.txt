@@ -6,4 +6,5 @@
 {{ object.source }}
 {{ object.name }}
 {{ object.purpose }}
+{{ object.data_type }}
 {{ object.keyword_list }}

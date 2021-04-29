@@ -311,6 +311,40 @@ class TopicCategoryResource(TypeFilteredResource):
         serializer = CountJSONSerializer()
         authorization = ApiLockdownAuthorization()
 
+class DataTypeResource(TypeFilteredResource):
+    """Datatype api"""
+    datatype = fields.CharField()
+
+    def dehydrate_full_name(self, bundle):
+        return bundle.obj.get_full_name() or bundle.obj.username
+
+    def dehydrate_email(self, bundle):
+        email = ''
+        if bundle.request.user.is_superuser:
+            email = bundle.obj.email
+        return email
+
+    def serialize(self, request, data, format, options=None):
+        if options is None:
+            options = {}
+        options['count_type'] = 'owner'
+
+        return super(OwnersResource, self).serialize(request, data, format, options)
+
+    class Meta:
+        queryset = get_user_model().objects.exclude(username='AnonymousUser')
+        resource_name = 'owners'
+        allowed_methods = ['get']
+        ordering = ['username', 'date_joined']
+        excludes = ['is_staff', 'password', 'is_superuser',
+                    'is_active', 'last_login']
+
+        filtering = {
+            'username': ALL,
+        }
+        serializer = CountJSONSerializer()
+        authorization = ApiLockdownAuthorization()
+
 
 class GroupCategoryResource(TypeFilteredResource):
     detail_url = fields.CharField()

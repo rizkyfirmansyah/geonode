@@ -201,6 +201,22 @@
         };
     }
 
+    module.load_groups = function ($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == "undefined" ? {} : {'type': FILTER_TYPE};
+        $http.get(DATATYPE_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+
+        function successCallback(data) {
+            $rootScope.datatype = data.data.objects;
+            if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
+                module.haystack_facets($http, $rootScope, $location);
+            }
+        };
+
+        function errorCallback(error) {
+            console.log(error);
+        };
+    }
+
     module.load_owners = function ($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
         if ($location.search().hasOwnProperty('title__icontains')) {
