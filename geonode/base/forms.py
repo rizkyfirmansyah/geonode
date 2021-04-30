@@ -275,12 +275,7 @@ class RegionsSelect(forms.Select):
 
 class CategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(CategoryForm, self).__init__(*args, **kwargs)
-        self.fields['layers'].label_from_instance = self.label_from_instance
-
-    layers = forms.ModelMultipleChoiceField(
-        queryset=Layer.objects.all(),
-        required=False)
+        super(CategoryForm, self).__init__(*args, **kwargs) 
 
     category_choice_field = CategoryChoiceField(
         required=False,

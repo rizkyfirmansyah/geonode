@@ -2007,7 +2007,9 @@ def resourcebase_post_save(instance, *args, **kwargs):
             poly1 = GEOSGeometry(wkt1, srid=int(srid1[0]))
             poly1.transform(4326)
 
-            queryset = Region.objects.all().order_by('name')
+            # queryset = Region.objects.all().order_by('name')
+            ## Get only specific region that is Indonesia
+            queryset = Region.objects.filter(code__iexact="IDN")
             global_regions = []
             regions_to_add = []
             for region in queryset:
@@ -2032,29 +2034,6 @@ def resourcebase_post_save(instance, *args, **kwargs):
                     instance.regions.add(*regions_to_add)
                 else:
                     instance.regions.add(*global_regions)
-    except Exception:
-        tb = traceback.format_exc()
-        if tb:
-            logger.debug(tb)
-    finally:
-        # refresh catalogue metadata records
-        from geonode.catalogue.models import catalogue_post_save
-        catalogue_post_save(instance=instance, sender=instance.__class__)
-
-    # import category fields
-    try:
-        if not instance.category or instance.category.count() == 0:
-            queryset = TopicCategory.objects.all().order_by('gn_description')
-            categories_to_add = []
-            for c in queryset:
-                try:
-                    categories_to_add.append(c)
-                except Exception:
-                    tb = traceback.format_exc()
-                    if tb:
-                        logger.debug(tb)
-            if categories_to_add and len(categories_to_add) > 0:
-                instance.category.add(*categories_to_add)
     except Exception:
         tb = traceback.format_exc()
         if tb:
