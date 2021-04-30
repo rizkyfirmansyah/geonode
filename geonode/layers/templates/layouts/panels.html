@@ -346,7 +346,6 @@ span.grippy::after {
                                             <option {% if not category_form.initial %} selected="selected" {% endif %} value="">---</option>
                                           {% for choice in category_form.category_choice_field.field.choices %}
                                               <option
-                                              {% ifequal category_form.initial choice.0 %} selected="selected" {% endifequal %}
                                               value="{{ choice.0 }}"
                                               data-content="<span class='has-popover' data-container='body' data-toggle='popover' data-placement='top'  data-content=' {{ choice.2.description }}' rigger='hover'><i class='fa {{choice.2.fa_class}}'></i> {{ choice.2.gn_description }}<span>"
                                               >{{ choice.2.gn_description }}</option>
@@ -694,6 +693,11 @@ span.grippy::after {
         $("#category_form option:selected").prop("selected", false);
       }
       $('#category_form').selectpicker('refresh');
+    });
+
+    var selected_category = {{ category_form.initial }};
+    $.each(selected_category, function(i,e) {
+        $("#category_form option[value=" + e + "]").prop("selected", true);
     });
 
   })

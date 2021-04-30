@@ -1039,7 +1039,7 @@ def layer_metadata(
         #  set initial values for category form
         ids = list(c.id for c in topic_category)
         category_form = CategoryForm(prefix="category_choice_field",
-                    initial=TopicCategory.objects.filter(id__in=ids)
+                    initial=ids
                     )
 
         # Create THESAURUS widgets
