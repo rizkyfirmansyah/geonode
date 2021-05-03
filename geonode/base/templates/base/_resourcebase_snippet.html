@@ -14,13 +14,22 @@
           <a href="{{ item.detail_url }}">
             <img ng-src="{{ item.thumbnail_url }}" />
           </a>
+          {% endverbatim %}
+            {% if not READ_ONLY_MODE %}
+              {% verbatim %}
+              <a ng-if="item.detail_url.indexOf('/layers/') > -1" class="create_map col-md-6" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+              {% endverbatim %}
+              <i class="fa fa-map-marker"></i>{% trans "Create a Map" %}</a>
+            {% endif %}
+          <div class="text-categories col-md-6">
+              {% verbatim %}
+              <i ng-repeat="(key, value) in item.category__fa_dict" class="fa {{ value }} fa-2x" style="margin-left: 3px; float: right; margin-top: 1vh;" title="{{ key }}"></i>
+              </a>
+          </div>
         </div>
         <div class="col-lg-8 item-details">
           <div class="row">
             <div class="col-xs-10">
-                <div class="text-categories">
-                  <span class="item-category">{{ item.category__gn_description.join(' | ') }}</span><br>
-                </div>
                 <span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/"><i class="fa fa-group" aria-hidden="true" style="margin-right: 8px;"></i>{{ item.group_name }}</a><br></span>
                 <span class="item-category" ng-if="item.has_time">
                   {% endverbatim %}
@@ -78,13 +87,6 @@
                 <li><a href="{{ item.detail_url }}#share"><i class="fa fa-share"></i>{{ item.share_count }}</a></li>
                 <li><a href="{{ item.detail_url }}#rate"><i class="fa fa-star"></i>{{ item.rating }}</a></li>
                 {% endverbatim %}
-                  {% if not READ_ONLY_MODE %}
-                    {% verbatim %}
-                    <li><a ng-if="item.detail_url.indexOf('/layers/') > -1" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
-                      {% endverbatim %}
-                      <i class="fa fa-map-marker"></i>{% trans "Create a Map" %}</a>
-                    </li>
-                  {% endif %}
                 {% verbatim %}
                 <li><a ng-if="item.detail_url.indexOf('/maps/') > -1" href="{{ item.site_url }}maps/{{item.id}}/view">
                   {% endverbatim %}

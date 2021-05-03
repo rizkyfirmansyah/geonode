@@ -153,6 +153,7 @@ class CommonModelApi(ModelResource):
         'srid',
         'bbox_polygon',
         'category__gn_description',
+        'category__fa_dict',
         'supplemental_information',
         'site_url',
         'thumbnail_url',
@@ -768,6 +769,15 @@ class LayerResource(CommonModelApi):
             formatted_obj['owner_name'] = full_name
             if obj.category:
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
+                fa_dict = {}
+                c_fa = [c.fa_class for c in obj.category.all()]
+                c_gn = [c.gn_description for c in obj.category.all()]
+                if len(c_fa) > 0:
+                    for i,v in enumerate(c_fa):
+                        fa_dict[c_gn[i]] = v
+                else:
+                    fa_dict = {}
+                formatted_obj['category__fa_dict'] = fa_dict
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -925,6 +935,15 @@ class MapResource(CommonModelApi):
             formatted_obj['owner_name'] = full_name
             if obj.category:
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
+                fa_dict = {}
+                c_fa = [c.fa_class for c in obj.category.all()]
+                c_gn = [c.gn_description for c in obj.category.all()]
+                if len(c_fa) > 0:
+                    for i,v in enumerate(c_fa):
+                        fa_dict[c_gn[i]] = v
+                else:
+                    fa_dict = {}
+                formatted_obj['category__fa_dict'] = fa_dict
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -1007,6 +1026,15 @@ class GeoAppResource(CommonModelApi):
             formatted_obj['owner_name'] = full_name
             if obj.category:
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
+                fa_dict = {}
+                c_fa = [c.fa_class for c in obj.category.all()]
+                c_gn = [c.gn_description for c in obj.category.all()]
+                if len(c_fa) > 0:
+                    for i,v in enumerate(c_fa):
+                        fa_dict[c_gn[i]] = v
+                else:
+                    fa_dict = {}
+                formatted_obj['category__fa_dict'] = fa_dict
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -1075,6 +1103,15 @@ class DocumentResource(CommonModelApi):
             formatted_obj['owner_name'] = full_name
             if obj.category:
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
+                fa_dict = {}
+                c_fa = [c.fa_class for c in obj.category.all()]
+                c_gn = [c.gn_description for c in obj.category.all()]
+                if len(c_fa) > 0:
+                    for i,v in enumerate(c_fa):
+                        fa_dict[c_gn[i]] = v
+                else:
+                    fa_dict = {}
+                formatted_obj['category__fa_dict'] = fa_dict
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
