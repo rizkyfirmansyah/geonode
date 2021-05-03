@@ -1038,9 +1038,9 @@ def layer_metadata(
             queryset=Attribute.objects.order_by('display_order'))
         #  set initial values for category form
         ids = list(c.id for c in topic_category)
-        category_form = CategoryForm(prefix="category_choice_field",
-                    initial=ids
-                    )
+        category_form = CategoryForm(
+                    prefix="category_choice_field",
+                    initial=ids)
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'

@@ -355,7 +355,7 @@ def document_metadata(
     document.add_missing_metadata_author_or_poc()
     poc = document.poc
     metadata_author = document.metadata_author
-    topic_category = [document.id for document in document.category.all()]
+    topic_category = document.category.all()
     current_keywords = [keyword.name for keyword in document.keywords.all()]
 
     if request.method == "POST":
@@ -373,9 +373,11 @@ def document_metadata(
     else:
         document_form = DocumentForm(instance=document, prefix="resource")
         document_form.disable_keywords_widget_for_non_superuser(request.user)
+        #  set initial values for category form
+        ids = list(c.id for c in topic_category)
         category_form = CategoryForm(
-            prefix="category_choice_field",
-            initial=topic_category)
+                    prefix="category_choice_field",
+                    initial=ids)
 
         # Keywords from THESAURUS management
         doc_tkeywords = document.tkeywords.all()
