@@ -13,6 +13,7 @@
   {% endif %}
   <h2 class="page-title">{% trans "Explore Layers" %}</h2>
 </div>
+  <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   {% with include_type_filter='true' %}
     {% with header='Type' %}
       {% with filter='type__in' %}
@@ -31,6 +32,22 @@
           SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='layers' %}';
       {% endif %}
     FILTER_TYPE = 'layer';
+
+    $(function() {
+        $('#jump_to_top').hide();
+        $(window).scroll(function() {
+            if ($(document).scrollTop() > 700) {
+              $('#jump_to_top').show();
+              $('#jump_to_top').animate({ scrollTop: 0 }, 'fast');
+            }
+            else {
+              $('#jump_to_top').hide();
+            }
+        });
+        $("#jump_to_top").click(function() {
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
+        });
+    });
   </script>
   {% with include_spatial='true' %}
     {% include 'search/search_scripts.html' %}
