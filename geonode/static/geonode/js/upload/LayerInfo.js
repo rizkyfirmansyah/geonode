@@ -399,13 +399,26 @@ define(function (require, exports) {
         const first_name = JSON.parse(document.getElementById('first_name').textContent);
         const last_name = JSON.parse(document.getElementById('last_name').textContent);
         let callme;
+        let greeting;
         if (first_name) {
             callme = first_name;
         } else {
             callme = username;
         }
+        const today = new Date()
+        const curHr = today.getHours()
+
+        if (curHr > 5 && curHr < 12) {
+            greeting = 'Good morning';
+        } else if (curHr >= 12 && curHr < 18) {
+            greeting = 'Good afternoon';
+        } else if (curHr >= 18 && curHr < 21) {
+            greeting = 'Good evening';
+        } else {
+            greeting = 'Good night';
+        }
         this.logStatus({
-            msg: 'Your upload has started<div class="progress" id="prog"><div class="progress-bar progress-bar-success" style="width:0%">Hi, '+callme+'! Grab your favourite snack, coffee, or tea while waiting :)</div><br><div class="remaining-text" id="remaining"></div>',
+            msg: 'Your upload has started<div class="progress" id="prog"><div class="progress-bar progress-bar-success" style="width:0%">'+greeting.concat(" ", callme)+'! Grab your favourite snack, coffee, or tea while waiting :)</div><br><div class="remaining-text" id="remaining"></div>',
             level: 'alert-success',
             empty: 'true'
         });
