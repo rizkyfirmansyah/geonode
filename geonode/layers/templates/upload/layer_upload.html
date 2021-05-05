@@ -9,7 +9,9 @@
 
 
 {% block head %}
-
+{{ request.user.username|json_script:"username" }}
+{{ request.user.first_name|json_script:"first_name" }}
+{{ request.user.last_name|json_script:"last_name" }}
 {{ block.super }}
 {% endblock %}
 

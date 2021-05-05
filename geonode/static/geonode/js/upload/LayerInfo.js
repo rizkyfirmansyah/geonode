@@ -395,8 +395,17 @@ define(function (require, exports) {
      *  more generic way
      */
     LayerInfo.prototype.markStart = function () {
+        const username = JSON.parse(document.getElementById('username').textContent);
+        const first_name = JSON.parse(document.getElementById('first_name').textContent);
+        const last_name = JSON.parse(document.getElementById('last_name').textContent);
+        let callme;
+        if (first_name) {
+            callme = first_name;
+        } else {
+            callme = username;
+        }
         this.logStatus({
-            msg: 'Your upload has started<div class="progress" id="prog"><div class="progress-bar progress-bar-success" style="width:0%">Grab your favourite snack, coffee, or tea while waiting :)</div><br><div class="remaining-text" id="remaining"></div>',
+            msg: 'Your upload has started<div class="progress" id="prog"><div class="progress-bar progress-bar-success" style="width:0%">Hi, '+callme+'! Grab your favourite snack, coffee, or tea while waiting :)</div><br><div class="remaining-text" id="remaining"></div>',
             level: 'alert-success',
             empty: 'true'
         });
