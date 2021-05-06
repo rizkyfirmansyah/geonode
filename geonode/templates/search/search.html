@@ -10,6 +10,7 @@
   <div class="page-header">
     <h2>{% trans "Search" %} <span ng-if="text_query != ''">:</span> <span ng-bind="text_query"></span></h2>
   </div>
+  <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   {% with include_type_filter='true' %}
   {% with header='Type' %}
   {% with filter='type__in' %}
@@ -30,6 +31,22 @@
     {% else %}
     SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='base' %}'
     {% endif %}
+
+    $(function() {
+        $('#jump_to_top').hide();
+        $(window).scroll(function() {
+            if ($(document).scrollTop() > 700) {
+                $('#jump_to_top').show();
+                $('#jump_to_top').animate({ scrollTop: 0 }, 'fast');
+            }
+            else {
+                $('#jump_to_top').hide();
+            }
+        });
+        $("#jump_to_top").click(function() {
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
+        });
+    })
   </script>
   {% with include_spatial='true' %}
   {% include 'search/search_scripts.html' %}
@@ -91,6 +108,20 @@
             $(".ml13").hover(function() {
                 $(".ml13").hide();
                 $("<h1 class='ml14' onclick=\"window.location.href='https://data.wri-indonesia.id/account/login/?next=/layers/';\">sign in</h1>").insertAfter(".ml13");
+            });
+
+            $('#jump_to_top').hide();
+            $(window).scroll(function() {
+                if ($(document).scrollTop() > 700) {
+                    $('#jump_to_top').show();
+                    $('#jump_to_top').animate({ scrollTop: 0 }, 'fast');
+                }
+                else {
+                    $('#jump_to_top').hide();
+                }
+            });
+            $("#jump_to_top").click(function() {
+                $('html, body').animate({ scrollTop: 0 }, 'fast');
             });
 
         });

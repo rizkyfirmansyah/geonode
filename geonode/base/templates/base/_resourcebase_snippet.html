@@ -23,7 +23,7 @@
             {% endif %}
           <div class="text-categories col-md-6">
               {% verbatim %}
-              <i ng-repeat="(key, value) in item.category__fa_dict" class="fa {{ value }} fa-2x" style="margin-left: 3px; float: right; margin-top: 1vh;" title="{{ key }}"></i>
+              <i ng-repeat="(key, value) in item.category__fa_dict" class="fa {{ value }} fa-2x" style="margin-left: 3px; float: right; margin-top: 1vh;" title="{{ key }}" id="category_icon" ng-click="cart.category(key)" ng-if="cart"></i>
               </a>
           </div>
         </div>
