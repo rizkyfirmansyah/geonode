@@ -2,15 +2,59 @@
         "pk": 1,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Information pertaining to forestry. Examples: tree cover, tree cover loss, deforestation, forest legal, moratorium",
-            "gn_description": "Forestry",
+            "description": "Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass",
+            "gn_description": "Oceans",
             "is_choice": true,
-            "fa_class": "fa-tree",
-            "identifier": "forestry"
+            "fa_class": "fa-anchor",
+            "identifier": "oceans"
         }
     },
     {
         "pk": 2,
+        "model": "base.topiccategory",
+        "fields": {
+            "description": "Forest, mining concessions, small-scale agriculture, oil palm. Examples: logging concession, oil palm concessions, social forestry concessions, smallholder plantations.",
+            "gn_description": "Land Use",
+            "is_choice": true,
+            "fa_class": "fa-clone",
+            "identifier": "landUse"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "base.topiccategory",
+        "fields": {
+            "description": "Examples: land cover, land use, mangrove, peat, soils, burn area",
+            "gn_description": "Land Cover",
+            "is_choice": true,
+            "fa_class": "fa-globe",
+            "identifier": "landCover"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "base.topiccategory",
+        "fields": {
+            "description": "Georeferenced images of the Earth’s surface, which have been collected via aerial photography or satellite data. Examples: land cover, topographic maps, imagery, unclassified images, drone.",
+            "gn_description": "Imagery",
+            "is_choice": true,
+            "fa_class": "fa-picture-o",
+            "identifier": "imagery"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "base.topiccategory",
+        "fields": {
+            "description": "Information pertaining to earth sciences. Examples: geophysical features and processes, geology, minerals, sciences dealing with the composition, structure and origin of the earth s rocks, risks of earthquakes, volcanic activity, landslides, gravity information, soils, permafrost, hydrogeology, erosion.",
+            "gn_description": "Geoscientific Information",
+            "is_choice": true,
+            "fa_class": "fa-bullseye",
+            "identifier": "geoscientificInformation"
+        }
+    },
+    {
+        "pk": 6,
         "model": "base.topiccategory",
         "fields": {
             "description": "Height above or below sea level. Examples: altitude, bathymetry, digital elevation models, slope, derived products.",
@@ -21,69 +65,47 @@
         }
     },
     {
-        "pk": 3,
-        "model": "base.topiccategory",
-        "fields": {
-            "description": "Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass",
-            "gn_description": "Oceans",
-            "is_choice": true,
-            "fa_class": "fa-anchor",
-            "identifier": "oceans"
-        }
-    },
-    {
-        "pk": 4,
-        "model": "base.topiccategory",
-        "fields": {
-            "description": "Legal land descriptions. Examples: political and administrative boundaries.",
-            "gn_description": "Boundaries",
-            "is_choice": true,
-            "fa_class": "fa-ellipsis-h",
-            "identifier": "boundaries"
-        }
-    },
-    {
-        "pk": 5,
-        "model": "base.topiccategory",
-        "fields": {
-            "description": "Forest, mining concessions, small-scale agriculture, oil palm. Examples: logging concession, oil palm concessions, social forestry concessions, smallholder plantations.",
-            "gn_description": "Commodities",
-            "is_choice": true,
-            "fa_class": "fa-clone",
-            "identifier": "commodities"
-        }
-    },
-    {
-        "pk": 6,
-        "model": "base.topiccategory",
-        "fields": {
-            "description": "Land Use Land Cover. Examples: land cover, land use, mangrove, peat, soils, burn area",
-            "gn_description": "Land Use Land Cover",
-            "is_choice": true,
-            "fa_class": "fa-globe",
-            "identifier": "landUseLandCover"
-        }
-    },
-    {
         "pk": 7,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Peatland",
-            "gn_description": "Peatland",
+            "description": "Information used for appropriate actions for future use of the land. Examples: conservation area, zoning maps, cadastral surveys, land ownership, national spatial plan.",
+            "gn_description": "Cadastre",
             "is_choice": true,
-            "fa_class": "fa-industry",
-            "identifier": "peatland"
+            "fa_class": "fa-home",
+            "identifier": "planningCadastre"
         }
     },
     {
         "pk": 8,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Others. Examples: your ad-hoc project which is not categorized yet",
-            "gn_description": "Others",
+            "description": "Economic activities, conditions and employment. Examples: production, labour, revenue, commerce, industry, tourism and ecotourism, forestry, fisheries, commercial or subsistence hunting, exploration and exploitation of resources such as minerals, oil and gas.",
+            "gn_description": "Economy",
             "is_choice": true,
-            "fa_class": "fa-star-half-o",
-            "identifier": "others"
+            "fa_class": "fa-shopping-cart",
+            "identifier": "economy"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "base.topiccategory",
+        "fields": {
+            "description": "Characteristics of society and cultures. Examples: settlements, anthropology, archaeology, education, traditional beliefs, manners and customs, demographic data, recreational areas and activities, social impact assessments, crime and justice, census information.",
+            "gn_description": "Society",
+            "is_choice": true,
+            "fa_class": "fa-comments",
+            "identifier": "society"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "base.topiccategory",
+        "fields": {
+            "description": "Processes and phenomena of the atmosphere. Examples: cloud cover, weather, climate, atmospheric conditions, climate change, precipitation.",
+            "gn_description": "Climate",
+            "is_choice": true,
+            "fa_class": "fa-cloud",
+            "identifier": "climate"
         }
     },
     {
