@@ -686,6 +686,7 @@ define(function (require, exports) {
         var form_data = this.prepareFormData(), self = this;
         var prog = "";
         var start = new Date().getTime();
+        console.log(form_data);
         $.ajax({
             url: form_target,
             async: true,

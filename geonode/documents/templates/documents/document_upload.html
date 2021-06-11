@@ -10,11 +10,10 @@
 {% block body %}
 
 <div class="col-md-8">
-  {% comment %} <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}"> {% endcomment %}
-  <form id="upload_form" enctype="multipart/form-data">
+  <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
     {{ form.as_p }}
-    <button type="submit" id="upload-button" class="btn btn-danger" onclick="remainingTime()">{% trans "Upload" %}</button>
+    <button type="submit" id="upload-button" class="btn btn-danger">{% trans "Upload" %}</button>
   </form>
 </div>
 
@@ -54,43 +53,6 @@
     $('#upload-button').click(function(){
       $('#_resource_uploading').modal('toggle');
     });
-
-    function remainingTime() {
-      var start = new Date().getTime();
-      $("#upload_form").submit(function(e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        $.ajax({
-            url: "{% url 'document_upload' %}",
-            async: true,
-            mode: "queue",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr: function() {
-                var req = $.ajaxSettings.xhr();
-                if (req) {
-                    req.upload.addEventListener('progress', function(evt) {
-                        if(evt.lengthComputable) {
-                            var pct = (evt.loaded / evt.total) * 100;
-                            var end = new Date().getTime();
-                            var duration = (end - start) / 1000;
-                            var bps = evt.loaded / duration
-                            var time = (evt.total - evt.loaded) / bps;
-                            var seconds = time % 60;
-                            var minutes = time / 60;
-                            seconds = Math.floor(seconds);
-                            minutes = Math.floor(minutes);
-                            $("#remaining").text(minutes + " minutes " + seconds + " seconds remaining");
-                            $('#prog-doc > .progress-bar').css('width', pct.toPrecision(3) + '%');
-                        }
-                    }, false);
-                }
-                return req;
-            }
-        });
-      });
-    }
+    
 </script>
 {% endblock extra_script %}
