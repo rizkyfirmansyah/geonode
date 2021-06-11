@@ -17,12 +17,13 @@ x-common-django:
     - data:/data
     - tmp:/tmp
     - geonode:/usr/src/geonode/geonode
+    - geoserver-data-dir:/geoserver_data/data
 
 services:
 
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:management-alpine
     container_name: rabbitmq4${COMPOSE_PROJECT_NAME}
     volumes:
       - rabbitmq:/var/lib/rabbitmq
@@ -63,13 +64,57 @@ services:
   # Celery worker that executes celery tasks created by Django.
   celery:
     << : *default-common-django
+    image: geonode/geonode:latest
     container_name: celery4${COMPOSE_PROJECT_NAME}
+    depends_on: 
+      - django
     environment:
       - IS_CELERY=True
     entrypoint: ["/usr/src/geonode/entrypoint.sh"]
     command: "celery -A geonode.celery_app:app worker --without-gossip --without-mingle -Ofair -B -E --statedb=/mnt/volumes/statics/worker.state -s /mnt/volumes/statics/celerybeat-schedule --loglevel=INFO --concurrency=10 -n worker1@%h -f /var/log/celery.log"
     links:
       - rabbitmq
+
+  geoserver:
+    image: geonode/geoserver:2.18.2
+    container_name: geoserver4${COMPOSE_PROJECT_NAME}
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspace/geonode.html"
+      interval: 60s
+      timeout: 10s
+      retries: 1
+      start_period: 60s
+    env_file:
+      - ./scripts/docker/env/${DOCKER_ENV}/geoserver.env
+    volumes:
+      - statics:/mnt/volumes/statics
+      - geoserver-data-dir:/geoserver_data/data
+      - backup-restore:/backup_restore
+      - data:/data
+      - tmp:/tmp
+    restart: on-failure
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  data-dir-conf:
+    image: geonode/geoserver_data:2.18.2
+    container_name: gsconf4${COMPOSE_PROJECT_NAME}
+    command: /bin/true
+    volumes:
+      - geoserver-data-dir:/geoserver_data/data
+    restart: on-failure
+
+  db:
+    image: kartoza/postgis:13-3.1
+    container_name: dbspatial4${COMPOSE_PROJECT_NAME}
+    env_file: 
+      - ./scripts/docker/env/${DOCKER_ENV}/db.env
+    volumes:
+      - dbspatial:/var/lib/postgresql/data
+      - dbbackups:/pg_backups
+    restart: on-failure
+    ports:
+      - "35432:5432"
 
 volumes:
   statics:
@@ -84,3 +129,11 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}-tmp
   rabbitmq:
     name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+  geoserver-data-dir:
+    name: ${COMPOSE_PROJECT_NAME}-gsdatadir
+  backup-restore:
+    name: ${COMPOSE_PROJECT_NAME}-backup-restore
+  dbspatial:
+    name: ${COMPOSE_PROJECT_NAME}-dbspatial
+  dbbackups:
+    name: ${COMPOSE_PROJECT_NAME}-dbbackups
