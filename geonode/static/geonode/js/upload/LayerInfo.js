@@ -395,8 +395,30 @@ define(function (require, exports) {
      *  more generic way
      */
     LayerInfo.prototype.markStart = function () {
+        const username = JSON.parse(document.getElementById('username').textContent);
+        const first_name = JSON.parse(document.getElementById('first_name').textContent);
+        const last_name = JSON.parse(document.getElementById('last_name').textContent);
+        let callme;
+        let greeting;
+        if (first_name) {
+            callme = first_name;
+        } else {
+            callme = username;
+        }
+        const today = new Date()
+        const curHr = today.getHours()
+
+        if (curHr > 5 && curHr < 12) {
+            greeting = 'Good morning';
+        } else if (curHr >= 12 && curHr < 18) {
+            greeting = 'Good afternoon';
+        } else if (curHr >= 18 && curHr < 21) {
+            greeting = 'Good evening';
+        } else {
+            greeting = 'Good night';
+        }
         this.logStatus({
-            msg: 'Your upload has started<div class="progress" id="prog"><div class="progress-bar progress-bar-success" style="width:0%"></div>',
+            msg: 'Your upload has started<div class="progress" id="prog"><div class="progress-bar progress-bar-success" style="width:0%">'+greeting.concat(" ", callme)+'! Grab your favourite snack, coffee, or tea while waiting :)</div><br><div class="remaining-text" id="remaining"></div>',
             level: 'alert-success',
             empty: 'true'
         });
@@ -663,7 +685,8 @@ define(function (require, exports) {
      LayerInfo.prototype.uploadFiles = function (callback, array) {
         var form_data = this.prepareFormData(), self = this;
         var prog = "";
-
+        var start = new Date().getTime();
+        console.log(form_data);
         $.ajax({
             url: form_target,
             async: true,
@@ -679,6 +702,15 @@ define(function (require, exports) {
                     req.upload.addEventListener('progress', function(evt) {
                         if(evt.lengthComputable) {
                             var pct = (evt.loaded / evt.total) * 100;
+                            var end = new Date().getTime();
+                            var duration = (end - start) / 1000;
+                            var bps = evt.loaded / duration
+                            var time = (evt.total - evt.loaded) / bps;
+                            var seconds = time % 60;
+                            var minutes = time / 60;
+                            seconds = Math.floor(seconds);
+                            minutes = Math.floor(minutes);
+                            $("#remaining").text(minutes + " minutes " + seconds + " seconds remaining");
                             $('#prog > .progress-bar').css('width', pct.toPrecision(3) + '%');
                         }
                     }, false);

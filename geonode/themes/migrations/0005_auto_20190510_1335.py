@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='navbar_dropdown_menu',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#2c689c', max_length=10),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',
@@ -39,11 +39,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='navbar_text_hover',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#2c689c', max_length=10),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='navbar_text_hover_focus',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#2c689c', max_length=10),
         ),
     ]

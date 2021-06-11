@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0046_merge_20201016_0937'),
+        ('base', '0047_resourcebase_attribution'),
     ]
 
     operations = [

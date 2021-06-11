@@ -249,7 +249,7 @@ def get_sld_for(gs_catalog, layer):
     gs_style = None
 
     _default_style = None
-    _max_retries, _tries = getattr(ogc_server_settings, "MAX_RETRIES", 2), 0
+    _max_retries, _tries = getattr(ogc_server_settings, "MAX_RETRIES", 4), 0
     try:
         gs_layer = gs_catalog.get_layer(layer.name)
         if gs_layer.default_style:

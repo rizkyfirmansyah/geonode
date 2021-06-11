@@ -14,7 +14,9 @@
 
 
 {% block head %}
-
+{{ request.user.username|json_script:"username" }}
+{{ request.user.first_name|json_script:"first_name" }}
+{{ request.user.last_name|json_script:"last_name" }}
 {{ block.super }}
 {% endblock %}
 
@@ -64,7 +66,7 @@
       <h3><i class="fa fa-cloud-upload" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "shapefile or raster files" %}</span>{% trans " or click here to upload" %}</h3>
       <form id="file-uploader" method="post" enctype="multipart/form-data">
         <!-- UI change to hide the list of previously uploaded files from the user -->
-        <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.xml,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
+        <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
       </form>
     </section>
 

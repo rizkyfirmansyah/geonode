@@ -154,6 +154,7 @@ class CommonModelApi(ModelResource):
         'bbox_polygon',
         'category__gn_description',
         'category__fa_dict',
+        'category__identifier',
         'supplemental_information',
         'site_url',
         'thumbnail_url',
@@ -768,6 +769,7 @@ class LayerResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
+                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_dict = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
@@ -934,6 +936,7 @@ class MapResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
+                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_dict = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
@@ -1025,6 +1028,7 @@ class GeoAppResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
+                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_dict = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
@@ -1102,6 +1106,7 @@ class DocumentResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
+                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_dict = {}
                 c_fa = [c.fa_class for c in obj.category.all()]

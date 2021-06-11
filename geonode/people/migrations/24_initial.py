@@ -33,6 +33,8 @@ class Migration(migrations.Migration):
                 ('organization', models.CharField(help_text='name of the responsible organization', max_length=255, null=True, verbose_name='Organization Name', blank=True)),
                 ('profile', models.TextField(help_text='introduce yourself', null=True, verbose_name='Profile', blank=True)),
                 ('position', models.CharField(help_text='role or position of the responsible person', max_length=255, null=True, verbose_name='Position Name', blank=True)),
+                ('voice', models.CharField(help_text='telephone number by which individuals can speak to the responsible organization or individual', max_length=255, null=True, verbose_name='Voice', blank=True)),
+                ('fax', models.CharField(help_text='telephone number of a facsimile machine for the responsible organization or individual', max_length=255, null=True, verbose_name='Facsimile', blank=True)),
                 ('delivery', models.CharField(help_text='physical and email address at which the organization or individual may be contacted', max_length=255, null=True, verbose_name='Delivery Point', blank=True)),
                 ('city', models.CharField(help_text='city of the location', max_length=255, null=True, verbose_name='City', blank=True)),
                 ('area', models.CharField(help_text='state, province of the location', max_length=255, null=True, verbose_name='Administrative Area', blank=True)),
