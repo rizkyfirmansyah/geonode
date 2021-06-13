@@ -1,13 +1,16 @@
 {% load i18n %}
 {% autoescape off %}
 
-{% blocktrans %}Congratulations!{% endblocktrans %}
+{% blocktrans %}
+Congratulations!
 
-{% blocktrans %}Your account has been approved and is now active.{% endblocktrans %} 
+Your account has been approved and is now active.
 
-{% blocktrans %}Go explore through https://data.wri-indonesia.id/account/login using your registered user: <em><strong>{{ username }}</strong></em> {% endblocktrans %}
+Go explore through https://data.wri-indonesia.id/account/login using your registered user: {{ username }}
 
-{% blocktrans %}Cheers,{% endblocktrans %}
-{% blocktrans %}The SDI team.{% endblocktrans %}
 
+Cheers,
+The SDI team.
+
+{% endblocktrans %}
 {% endautoescape %}

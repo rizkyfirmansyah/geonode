@@ -8,6 +8,7 @@ Reason for the request: "{{ reason }}"
 To allow the change, set the resource to not "Approved" under the metadata settings, and write message to the owner to notify him.
 <br/>
 <br/>
+<br/>
 Cheers,
 <br/>
 The SDI team.

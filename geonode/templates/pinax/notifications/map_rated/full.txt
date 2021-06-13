@@ -10,7 +10,8 @@
 <br/>
 {% trans "You can visit the map's detail page here" %}: <a href="https://{{ current_site }}{% url "map_detail" resource.id %}">{% url "map_detail" resource.id %}</a>
 <br/>
-{% blocktrans %}Cheers,{% endblocktrans %}
 <br/>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
 <br/>
 {% blocktrans %}The SDI team.{% endblocktrans %}

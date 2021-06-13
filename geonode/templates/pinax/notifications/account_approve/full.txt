@@ -6,6 +6,7 @@
 {% trans "You can enable access by setting the user as active on the admin section" %}: <a href="https://{{current_site}}/admin/people/profile/{{from_user.id}}">https://{{current_site}}/admin/people/profile/{{from_user.id}}</a>
 <br/>
 <br/>
+<br/>
 {% blocktrans %}Cheers,{% endblocktrans %}
 <br/>
 {% blocktrans %}The SDI team.{% endblocktrans %}

@@ -17,6 +17,7 @@
 
 {% blocktrans %}We look forward to seeing you on the platform :){% endblocktrans %}
 
+
 {% blocktrans %}Cheers,{% endblocktrans %}
 {% blocktrans %}The SDI team.{% endblocktrans %}
 

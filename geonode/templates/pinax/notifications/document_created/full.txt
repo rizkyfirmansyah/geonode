@@ -6,6 +6,7 @@
 <em><strong>{{ resource.title }}</strong></em>
 <br/>
 <br/>
+<br/>
 {% blocktrans %}Cheers,{% endblocktrans %}
 <br/>
 {% blocktrans %}The SDI team.{% endblocktrans %}

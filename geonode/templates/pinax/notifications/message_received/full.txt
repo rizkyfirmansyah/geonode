@@ -1,11 +1,14 @@
 {% load i18n %}
+
+{% trans "You received a new message from" %} <em><strong>{{ sender }}</strong></em>. 
+<br/>
+{% trans "Click the link below to view the message:" %}
 {% autoescape off %}
-
-You received a new message from {{ sender }}. Click the link below to view the message:
-
 {{ thread_url }}
-
 {% endautoescape %}
-
+<br/>
+<br/>
+<br/>
 {% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
 {% blocktrans %}The SDI team.{% endblocktrans %}
