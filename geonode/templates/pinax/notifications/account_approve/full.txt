@@ -1,1 +1,11 @@
-{% load i18n %}{% trans "User" %} "{{from_user}}" ({{from_user.email}}) {% trans "has requested access to the site." %} {% trans "You can enable access by setting the user as active on the admin section" %}: http://{{current_site}}/admin/people/profile/{{from_user.id}}
+{% load i18n %}
+
+{% trans "User" %} <em><strong>{{from_user}}</strong></em> ({{from_user.email}})
+{% trans "has requested access to the site." %}
+<br/>
+{% trans "You can enable access by setting the user as active on the admin section" %}: <a href="https://{{current_site}}/admin/people/profile/{{from_user.id}}">https://{{current_site}}/admin/people/profile/{{from_user.id}}</a>
+<br/>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
+{% blocktrans %}The SDI team.{% endblocktrans %}

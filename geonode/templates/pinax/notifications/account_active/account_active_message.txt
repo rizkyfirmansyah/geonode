@@ -5,7 +5,7 @@
 
 {% blocktrans %}Your account has been approved and is now active.{% endblocktrans %} 
 
-{% blocktrans %}Go explore through https://data.wri-indonesia.id/account/login using your registered user: {{ username }} {% endblocktrans %}
+{% blocktrans %}Go explore through https://data.wri-indonesia.id/account/login using your registered user: <em><strong>{{ username }}</strong></em> {% endblocktrans %}
 
 {% blocktrans %}Cheers,{% endblocktrans %}
 {% blocktrans %}The SDI team.{% endblocktrans %}

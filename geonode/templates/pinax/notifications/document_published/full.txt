@@ -1,4 +1,13 @@
 {% load i18n %}
-{% trans "The following document was published" %}:<br/>
-<strong>{{ resource.title }}</strong>, {% trans "owned by" %} <i><a href="{{ default_http_protocol }}://{{ current_site }}/people/profile/{{ resource.owner.username }}">{{ resource.owner.username }}</a></i><br/>
-{% trans "You can visit the document's detail page here" %}: http://{{ current_site }}{% url "document_detail" resource.id %}
+
+{% trans "The following document was published" %}:
+<br/>
+<strong>{{ resource.title }}</strong>, 
+{% trans "owned by" %} <i><a href="{{ default_http_protocol }}://{{ current_site }}/people/profile/{{ resource.owner.username }}">{{ resource.owner.username }}</a></i>
+<br/>
+{% trans "You can visit the document's detail page here" %}: <a href="https://{{ current_site }}{% url "document_detail" resource.id %}">{% url "document_detail" resource.id %}</a>
+<br/>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
+{% blocktrans %}The SDI team.{% endblocktrans %}

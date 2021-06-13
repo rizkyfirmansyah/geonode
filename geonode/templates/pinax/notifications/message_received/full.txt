@@ -6,3 +6,6 @@ You received a new message from {{ sender }}. Click the link below to view the m
 {{ thread_url }}
 
 {% endautoescape %}
+
+{% blocktrans %}Cheers,{% endblocktrans %}
+{% blocktrans %}The SDI team.{% endblocktrans %}

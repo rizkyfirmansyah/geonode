@@ -5,6 +5,6 @@
 {{ message }}
 </p>
 <p>
-{% blocktrans %}To change how you receive notifications, please go to {% endblocktrans %} {{ default_http_protocol }}://{{ current_site }}{{ notice_settings_url }}
+{% blocktrans %}You can adjust your notification settings by clicking on the <strong>Notifications</strong> link of the profile page, please go to {% endblocktrans %} </i><a href="{{ default_http_protocol }}://{{ current_site }}/notifications/settings/">Notification Settings</a></i>
 </p>
 </body>

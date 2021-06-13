@@ -1,6 +1,16 @@
 {% load i18n %}
-{% trans "The user" %} {{ user.username }} <br/>
-{% trans "rated" %} {{ rating }} <br/>
-{% trans "the following map" %}:<br/>
-{{ resource.title }}, {% trans "owned by" %} {{ resource.owner.username }}<br/>
-{% trans "You can visit the map's detail page here" %}: http://{{ current_site }}{% url "map_detail" resource.id %}
+
+{% trans "The user" %} {{ user.username }}
+<br/>
+{% trans "rated" %} {{ rating }}
+<br/>
+{% trans "the following map" %}:
+<br/>
+{{ resource.title }}, {% trans "owned by" %} <strong>{{ resource.owner.username }}></strong>
+<br/>
+{% trans "You can visit the map's detail page here" %}: <a href="https://{{ current_site }}{% url "map_detail" resource.id %}">{% url "map_detail" resource.id %}</a>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
+<br/>
+{% blocktrans %}The SDI team.{% endblocktrans %}

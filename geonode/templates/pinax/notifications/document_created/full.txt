@@ -1,3 +1,11 @@
 {% load i18n %}
-{% trans "The user" %} <i><a href="{{ default_http_protocol }}://{{ current_site }}/people/profile/{{ resource.owner.username }}">{{ resource.owner.username }}</a></i> {% trans "uploaded the following document" %}:<br/>
-<strong>{{ resource.title }}</strong><br/>
+
+{% trans "The user" %} <i><a href="{{ default_http_protocol }}://{{ current_site }}/people/profile/{{ resource.owner.username }}">{{ resource.owner.username }}</a></i>
+{% trans "uploaded the following document" %}:
+<br/>
+<em><strong>{{ resource.title }}</strong></em>
+<br/>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
+{% blocktrans %}The SDI team.{% endblocktrans %}

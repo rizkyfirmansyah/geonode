@@ -1,9 +1,20 @@
 {% load i18n %}
-{% trans "The user" %} {{ from_user.username }} {% trans "requested you to download this resource" %}:<br/>
+
+{% trans "The user" %} <em><strong>{{ from_user.username }}</strong></em>
+{% trans "requested you to download this resource" %}:
 <strong>{{ resource.title }}</strong><br/>
 {% if resource.polymorphic_ctype.name == 'layer' %}
-{% trans "Layer" %}: {{ current_site }}{% url "layer_detail" resource.layer.service_typename %}<br/>
+<br/>
+{% trans "Layer" %}: <i><a href="{{ default_http_protocol }}://{{ current_site }}{% url "layer_detail" resource.layer.service_typename %}">{{ resource.layer.service_typename }}</a></i>
+<br/>
 {% else %}
-{% trans "Document" %}: {{ current_site }}{% url "document_detail" resource.document.id %}<br/>
+{% trans "Document" %}: {{ current_site }}{% url "document_detail" resource.document.id %}
+<br/>
 {% endif %}
+<br/>
 {% trans "Please go to resource page and assign the download permissions if you wish" %}.
+<br/>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
+{% blocktrans %}The SDI team.{% endblocktrans %}

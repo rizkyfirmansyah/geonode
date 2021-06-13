@@ -1,3 +1,11 @@
 {% load i18n %}
-{% trans "A comment has been posted for the document" %} {{ resource.title }} {% trans "by the user" %} {{ author.username }}<br/>
-{% trans "You can visit the document's detail page here" %}: http://{{ current_site }}{% url "document_detail" resource.id %}
+
+{% trans "A comment has been posted for the document" %} {{ resource.title }}
+{% trans "by the user" %} <strong>{{ author.username }}</strong>
+<br/>
+{% trans "You can visit the document's detail page here" %}: <a href="https://{{ current_site }}{% url "document_detail" resource.id %}">{% url "document_detail" resource.id %}</a>
+<br/>
+<br/>
+{% blocktrans %}Cheers,{% endblocktrans %}
+<br/>
+{% blocktrans %}The SDI team.{% endblocktrans %}
