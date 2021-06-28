@@ -356,6 +356,12 @@
           </li>
 
           <li>
+              {% if user.is_authenticated %}
+                <a href="{% url "faq" %}">{% trans "FAQs" %}</a>
+              {% endif %}
+          </li>
+
+          <li>
               <a target="_blank" href="https://kms.wri-indonesia.id">KMS</a>
           </li>
 
