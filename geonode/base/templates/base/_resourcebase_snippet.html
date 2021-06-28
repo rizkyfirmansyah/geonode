@@ -19,7 +19,7 @@
               {% verbatim %}
               <a ng-if="item.detail_url.indexOf('/layers/') > -1" class="create_map col-md-6" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
               {% endverbatim %}
-              <i class="fa fa-map-marker"></i>{% trans "Create a Map" %}</a>
+              <i class="fa fa-map-marker"></i>{% trans " Create a Map" %}</a>
             {% endif %}
           <div class="text-categories col-md-6">
               {% verbatim %}
