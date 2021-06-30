@@ -195,9 +195,9 @@
     {% if resource.restriction_code_type or resource.constraints_other %}
     <dt>{% trans "Restrictions" %}</dt>
     <dd>{% if resource.constraints_other %}
-            {{ resource.constraints_other|safe }}
+            {{ resource.constraints_other|safe|escape }}
         {% else %}
-            {{ resource.restriction_code_type|safe }}
+            {{ resource.restriction_code_type|safe|escape }}
         {% endif %}</dd>
     {% endif %}
 
@@ -223,12 +223,12 @@
 
     {% if resource.data_quality_statement %}
     <dt>{% trans "Data Quality" %}</dt>
-    <dd>{{ resource.data_quality_statement|safe }}</dd>
+    <dd>{{ resource.data_quality_statement|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.supplemental_information %}
     <dt>{% trans "Supplemental Information" %}</dt>
-    <dd>{{ resource.supplemental_information|safe }}</dd>
+    <dd>{{ resource.supplemental_information|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.spatial_representation_type %}
