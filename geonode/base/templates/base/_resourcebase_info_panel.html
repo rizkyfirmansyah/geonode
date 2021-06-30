@@ -32,7 +32,7 @@
 
     {% if resource.data_description %}
     <dt>{% trans "Data Description" %}</dt>
-    <dd itemprop="description">{{ resource.data_description|safe|escape|urlize|safe }}</dd>
+    <dd itemprop="description">{{ resource.data_description|safe|escape }}</dd>
     {% endif %}
 
 
@@ -126,7 +126,7 @@
 
     {% if resource.doi %}
     <dt>{% trans "DOI" %}</dt>
-    <dd>{{ resource.doi }}</dd>
+    <dd>{{ resource.doi|safe|urlize }}</dd>
     {% endif %}
 
     {% if resource.author %}
@@ -136,7 +136,7 @@
 
     {% if resource.source %}
     <dt>{% trans "Source" %}</dt>
-    <dd>{{ resource.source }}</dd>
+    <dd>{{ resource.source|safe|urlize }}</dd>
     {% endif %}
 
     {% if resource.date_content %}

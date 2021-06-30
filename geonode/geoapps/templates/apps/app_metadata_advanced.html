@@ -80,7 +80,7 @@
               <div class="col-md-6">
                 <label class="fancy-checkbox">
                     <input type="radio" name="category_choice_field" value="{{ choice.0 }}"
-                      {% ifequal category_form.initial choice.0 %} checked="checked" {% endifequal %} />
+                      {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
                     {{ choice.1 }}
                 </label>
               </div>
