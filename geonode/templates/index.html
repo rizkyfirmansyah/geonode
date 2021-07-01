@@ -29,7 +29,7 @@
       {% if not custom_theme.jumbotron_cta_hide %}
       <p><a class="btn btn-default btn-lg" target="_blank"
           href="{{custom_theme.jumbotron_cta_link|default:"https://data.wri-indonesia.id/layers/"}}"
-          role="button">{{custom_theme.jumbotron_cta_text|default:_("Explore Layers &raquo;")}}</a></p>
+          role="button">{{custom_theme.jumbotron_cta_text|default:_("Explore Spatial Layers &raquo;")}}</a></p>
       {% endif %}
   </div>
 </div>
@@ -124,7 +124,7 @@
              {% facets as facets %}
               <div class="col-md-6">
                 <p><a href="{% url "layer_browse" %}"><i class="fa fa-square-o fa-4x rotate-45"></i></a></p>
-                <h2><a href="{% url "layer_browse" %}">{{ facets.layer|default:_("No") }} {% blocktrans count counter=facets.layer %}Layer{% plural %}Layers{% endblocktrans %}</a></h2>
+                <h2><a href="{% url "layer_browse" %}">{{ facets.layer|default:_("No") }} {% blocktrans count counter=facets.layer %}Geospatial Data{% plural %}Geospatial Datasets{% endblocktrans %}</a></h2>
                 <p>{% trans "Click to search for geospatial data published by other users, organizations and public sources. Download data in standard formats." %}</p>
                 {% if user.is_authenticated %}
                 <p class="text-center"><a class="btn btn-default" href="{% url "layer_upload" %}" role="button">{% trans "Add layers" %} &raquo;</a></p>
@@ -144,12 +144,12 @@
               </div>
               <div class="col-md-6">
                 <p><a href="{% url "document_browse" %}"><i class="fa fa-newspaper-o fa-4x"></i></a></p>
-                <h2><a href="{% url "document_browse" %}">{{ facets.document|default:_("No") }} {% blocktrans count counter=facets.document %}Document{% plural %}Documents{% endblocktrans %}</a></h2>
+                <h2><a href="{% url "document_browse" %}">{{ facets.document|default:_("No") }} {% blocktrans count counter=facets.document %}BigTIFF/Non-Spatial Data{% plural %}BigTIFF/Non-Spatial Data{% endblocktrans %}</a></h2>
                 <p>{% trans "As for the layers and maps SDI allows to publish tabular and text data, manage theirs metadata and associated documents." %}</p>
                 {% if user.is_authenticated %}
-                <p class="text-center"><a class="btn btn-default" href="{% url "document_browse" %}" role="button">{% trans "Add documents" %} &raquo;</a></p>
+                <p class="text-center"><a class="btn btn-default" href="{% url "document_browse" %}" role="button">{% trans "Add BigTIFF/Non-Spatial Data" %} &raquo;</a></p>
                 {% else %}
-                <p class="text-center"><a class="btn btn-default" href="{% url "document_browse" %}" role="button">{% trans "Explore documents" %} &raquo;</a></p>
+                <p class="text-center"><a class="btn btn-default" href="{% url "document_browse" %}" role="button">{% trans "Explore BigTIFF/Non-Spatial Data" %} &raquo;</a></p>
                 {% endif %}
               </div>
               <div class="col-md-6">

@@ -54,11 +54,11 @@
     <div class="row">
       <div class="col-md-10">
           {% if facet_type == 'layers' %}
-          <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% trans "Layers found" %}'"></span>
+          <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% trans "Geospatial datasets found" %}'"></span>
           {% elif facet_type == 'maps' %}
           <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% trans "Maps found" %}'"></span>
           {% elif facet_type == 'documents' %}
-          <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% trans "Documents found" %}'"></span>
+          <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% trans "BigTIFF/Non-Spatial Data found" %}'"></span>
           {% elif facet_type == 'geoapps' %}
           <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %} {% trans "found" %}'"></span>
           {% else %}

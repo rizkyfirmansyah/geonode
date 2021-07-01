@@ -10,8 +10,8 @@
 
 {% block body_outer %}
 <div class="page-header">
-  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Documents" %}</a>
-  <h2 class="page-title">{% trans "Upload Documents/Raw Data" %}</h2>
+  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore BigTIFF/Non-Spatial Data" %}</a>
+  <h2 class="page-title">{% trans "Upload BigTIFF/Non-Spatial Data" %}</h2>
 	<p>{% trans "Allowed raw data types" %}:</p>
 	<p class="allowed_doctype">
 	{% for doc in ALLOWED_DOC_TYPES %}

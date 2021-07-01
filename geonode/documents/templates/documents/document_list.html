@@ -2,16 +2,16 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %} {% trans "Explore Documents" %} - {{ block.super }} {% endblock %}
+{% block title %} {% trans "Explore BigTIFF/Non-Spatial Data" %} - {{ block.super }} {% endblock %}
 
 {% block body_class %}documents documents-list explore{% endblock %}
 
 {% block body %}
   <div class="page-header">
     {% if not READ_ONLY_MODE %}
-      <a href="{% url "document_upload" %}" class="btn btn-primary pull-right">{% trans "Upload Documents" %}</a>
+      <a href="{% url "document_upload" %}" class="btn btn-primary pull-right">{% trans "Upload BigTIFF/Non-Spatial Data" %}</a>
     {% endif %}
-    <h2>{% trans "Explore Documents" %}</h2>
+    <h2>{% trans "Explore BigTIFF/Non-Spatial Data" %}</h2>
   </div>
   <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   {% with include_type_filter='true' %}
