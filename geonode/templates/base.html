@@ -592,19 +592,22 @@
     <script type="text/javascript">
 
       // get pixel ration of client interface
-      const widthScreen = window.screen.width * window.devicePixelRatio
+      const widthScreen = window.screen.width * window.devicePixelRatio;
       const search_width = $('#search_input').width();
-      const asearch_width = search_width * 1.8
+      const asearch_width = search_width * 1.8;
+      const as = 1200;
       // animate your search input
       if (widthScreen >= 1025) {
-        $('#search_input').on('focus blur', function(evt) {
-          if($(this).is("animated")) return;
-
-          var isFocus = evt.type == "focus";
-          if (isFocus) this.w = $(this).width();
-          $(this).animate({ width: isFocus ? asearch_width : this.w });
-        }).on("input", function() {
-          $(this).trigger("blur");
+        $('#search_input').on('focus', function() {
+          $(this).stop().animate({
+            width: asearch_width
+          }, as, function () {
+            $(this).on('blur', function() {
+              $(this).stop().animate({
+                width: search_width
+              }, as);
+            });
+          })
         });
       }
       
