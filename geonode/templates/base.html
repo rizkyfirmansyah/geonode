@@ -591,6 +591,23 @@
     {% block extra_script %}{% endblock extra_script %}
     <script type="text/javascript">
 
+      // get pixel ration of client interface
+      const widthScreen = window.screen.width * window.devicePixelRatio
+      const search_width = $('#search_input').width();
+      const asearch_width = search_width * 1.8
+      // animate your search input
+      if (widthScreen >= 1025) {
+        $('#search_input').on('focus blur', function(evt) {
+          if($(this).is("animated")) return;
+
+          var isFocus = evt.type == "focus";
+          if (isFocus) this.w = $(this).width();
+          $(this).animate({ width: isFocus ? asearch_width : this.w });
+        }).on("input", function() {
+          $(this).trigger("blur");
+        });
+      }
+      
       // Autocomplete instance for the search found in the header.
       $(document).ready(function() {
         window.autocomplete2 = new Autocomplete({
