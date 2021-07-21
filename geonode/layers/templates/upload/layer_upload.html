@@ -156,12 +156,6 @@
   userLookup = "{% url "account_ajax_lookup" %}"
 
 {% endautoescape %}
-  $("#upload-button").click(function() {
-    window.onbeforeunload = confirmExit;
-    function confirmExit() {
-        return "You have attempted to leave this page. Are you sure leaving uploading process?";
-    }
-  })
 
 </script>
 {% if GEONODE_SECURITY_ENABLED %}

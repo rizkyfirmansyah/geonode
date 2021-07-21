@@ -65,7 +65,6 @@ COPY package/geotools /mnt/volumes/statics/geoip
 
 ## Enable email service
 RUN apt install msmtp
-RUN apt install vim
 
 # Export ports
 EXPOSE 8000

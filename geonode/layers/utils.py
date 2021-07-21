@@ -583,8 +583,7 @@ def file_upload(filename,
         'srid': 'EPSG:4326',
         'is_approved': is_approved,
         'is_published': is_published,
-        'license': license,
-        'category': category
+        'license': license
     }
 
     # set metadata
@@ -672,7 +671,6 @@ def file_upload(filename,
         defaults['is_published'] = defaults.get(
             'is_published', is_published) or layer.is_published
         defaults['license'] = defaults.get('license', None) or layer.license
-        defaults['category'] = defaults.get('category', None) or layer.category
 
         if upload_session:
             if layer.upload_session:
@@ -708,6 +706,16 @@ def file_upload(filename,
             else:
                 layer.regions.clear()
                 layer.regions.add(*regions_resolved)
+
+    # Assign the categories (needs to be done after saving)
+    categories = list(set(categories))
+    if categories:
+        if len(categories) > 0:
+            if not layer.category:
+                layer.category = categories
+            else:
+                layer.category.clear()
+                layer.category.add(*categories)
 
     # Assign and save the charset using the Layer class' object (layer)
     if charset != 'UTF-8':

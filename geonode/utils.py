@@ -60,7 +60,7 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.files.storage import default_storage as storage
-from django.db import models, connection, transaction
+from django.db import models, connection, transaction, DatabaseError
 from django.utils.translation import ugettext_lazy as _
 
 from geonode import geoserver, GeoNodeException  # noqa
@@ -1350,13 +1350,17 @@ def raw_sql(query, params=None, ret=True):
     Execute raw query
     param ret=True returns data from cursor as iterator
     """
+    transaction.rollback()
     with connection.cursor() as c:
-        query = _convert_sql_params(c, query)
-        c.execute(query, params)
-        if ret:
-            desc = [r[0] for r in c.description]
-            for row in c:
-                yield dict(zip(desc, row))
+        try:
+            query = _convert_sql_params(c, query)
+            c.execute(query, params)
+            if ret:
+                desc = [r[0] for r in c.description]
+                for row in c:
+                    yield dict(zip(desc, row))
+        except:
+            transaction.rollback()
 
 
 def get_client_ip(request):

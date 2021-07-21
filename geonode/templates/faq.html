@@ -1,6 +1,7 @@
 {% extends "geonode_base.html" %}
 
 {% load i18n %}
+{% load static from staticfiles %}
 {% block title %} {% trans "FAQs" %} — {{ block.super }} {% endblock %}
 
 {% block body_outer %}
@@ -8,93 +9,158 @@
   <h2>{% trans "Frequently Asked Questions" %}</h2>
 </div>
 
-<div class="row">
-    <div class="col-md-12">
+<main id="faq">
+    <div>
+    {% if user.is_authenticated %}
         {% blocktrans %}
-        <h3>How do I upload Geodatabase into SDI?</h3>
-        <p>SDI cannot upload geodatabase directly in the <a href="https://data.wri-indonesia.id/layers/upload">upload layer</a>. You should store the geodatabase in S3 Cloud Storage first and catalog the dataset in the <a href="https://data.wri-indonesia.id/documents/upload">documents</a> section.</p>
-        <p>Steps to catalog your geodatabase:</p>
-        <ol>
-            <li><strong>Download S3 Client</strong></li>
-                <p>We highly recommend using <a target="_blank" href="https://www.msp360.com/explorer/windows/amazon-s3.aspx">CloudBerry Explorer Freeware for Amazon S3</a> in your workstation.</p>
-            <li><strong>Connect to the S3 service</strong></li>
-                <p><code>File > New S3 Compatible Account > S3 Compatible</code></p>
-                <p><code>Display Name: whatever-you-desire</code></p>
-                <p><code>Service Point: s3-id-jkt-1.kilatstorage.id</code></p>
-            <li><strong>Provide Access Key and Secret Key</strong></li>
-                <p>Ask these credentials to your system administrator or IT support.</p>
-            <li><strong>Transfer your file into S3 Storage</strong></li>
-                <p>Once connected, you can browse the storage by accessing Source Tab. Then go to the required folder: <code>data.wri-indonesia.tech/sdi</code></p>
-                <p>Simply drag and drop your local file into S3 Cloud Storage.</p>
-            <li><strong>Update Permissions</strong></li>
-                <p>In order to accessible by all users, you need to set the security permission by accessing Properties Tab of your uploaded file.</p>
-                <p><code>Right Click of your file > Properties > Security > All Users > Tick Read > Hit OK</code></p>
-            <li><strong>Copy Web Url</strong></li>
-                <p>You can access the data by copy the web url of the data content.</p>
-                <p><code>Right Click of your file > Web URL > Copy to Clipboard (or generate short url using chilp.it to simplify your url)</code></p>
-        </ol>
+            <section id="upload-gdb">
+            <h3>How do I upload Geodatabase into SDI?</h3>
+            <p>SDI cannot upload geodatabase directly in the <a href="https://data.wri-indonesia.id/layers/upload">upload layer</a>. You should store the geodatabase in S3 Cloud Storage first and catalog the dataset in the <a href="https://data.wri-indonesia.id/documents/upload">BigTIFF/Non-Spatial Data</a> section. Please make sure your gdb dataset is compressed into <i>.rar/.zip</i> instead of .gdb, since .gdb is recognized as a folder based not a single data file.</p>
+            <p>Steps to catalog your geodatabase:</p>
+            <ol>
+                <li><strong>Download S3 Client</strong></li>
+                    <p>We highly recommend using <a target="_blank" href="https://www.msp360.com/explorer/windows/amazon-s3.aspx">CloudBerry Explorer Freeware for Amazon S3</a> in your workstation.</p>
+                <li><strong>Connect to the S3 service</strong></li>
+                    <p><code>File > New S3 Compatible Account > S3 Compatible</code></p>
+                    <p><code>Display Name: whatever-you-desire</code></p>
+                    <p><code>Service Point: s3-id-jkt-1.kilatstorage.id</code></p>
+                <li><strong>Provide Access Key and Secret Key</strong></li>
+                    <p>Ask these credentials to your system administrator or IT support.</p>
+                <li><strong>Transfer your file into S3 Storage</strong></li>
+                    <p>Once connected, you can browse the storage by accessing Source Tab. Then go to the required folder: <code>data.wri-indonesia.tech/sdi</code></p>
+                    <p>Simply drag and drop your local file into S3 Cloud Storage.</p>
+                <li><strong>Update Permissions</strong></li>
+                    <p>In order to accessible by all users, you need to set the security permission by accessing Properties Tab of your uploaded file.</p>
+                    <p><code>Right Click of your file > Properties > Security > All Users > Tick Read > Hit OK</code></p>
+                <li><strong>Copy Web Url</strong></li>
+                    <p>You can access the data by copy the web url of the data content.</p>
+                    <p><code>Right Click of your file > Web URL > Copy to Clipboard (or generate short url using chilp.it to simplify your url)</code></p>
+            </ol>
+            </section>
 
-        <h3>Is there any limitations using S3 Object?</h3>
-        <p>Certainly yes! S3 Object limits the user to upload an object in single operation up to 5 GB. See the documentation <a target="_blank" href="https://docs.amazonaws.cn/en_us/AmazonS3/latest/userguide/upload-objects.html">here</a>.</p>
-        <p>If your datasets have more than 5 GB, you need to clip within particular area to reduce your file size.</p>
-        <p>If you do insist to preserve the original datasets, please contact system administrator or IT support to help you upload the data.</p>
+            <section id="limitation-s3">
+            <h3>Is there any limitations using S3 Object?</h3>
+            <p>Certainly yes! S3 Object limits the user to upload an object in single operation up to 5 GB. See the documentation <a target="_blank" href="https://docs.amazonaws.cn/en_us/AmazonS3/latest/userguide/upload-objects.html">here</a>.</p>
+            <p>If your datasets have more than 5 GB, you need to clip within particular area to reduce your file size.</p>
+            <p>If you do insist to preserve the original datasets, please contact system administrator or IT support to help you upload the data.</p>
 
-        <h3>What should I do with my BIG Raster File? Should I upload within <a href="https://data.wri-indonesia.id/layers/upload">layers</a> or <a href="https://data.wri-indonesia.id/documents/upload">documents</a>?</h3>
-        <p>If your datasets have more than 1 GB, it's better to store the data in S3 Object and catalog them via <a href="https://data.wri-indonesia.id/documents/upload">documents</a>.</p>
-        <p>Once your TIFF datasets are stored within S3 Object, you can have a quick glance using QGIS without a need to download the data.</p>
+            <h3>What should I do with my BIG Raster File? Should I upload within <a href="https://data.wri-indonesia.id/layers/upload">layers</a> or <a href="https://data.wri-indonesia.id/documents/upload">BigTIFF/Non-Spatial Data</a>?</h3>
+            <p>If your datasets have more than 1 GB, it's better to store the data in S3 Object and catalog them via <a href="https://data.wri-indonesia.id/documents/upload">BigTIFF/Non-Spatial Data</a>.</p>
+            <p>Once your TIFF datasets are stored within S3 Object, you can have a quick glance using QGIS without a need to download the data.</p>
+            </section>
 
-        <h3>What topic categories are used in the Metadata?</h3>
-        <p>You can define in multiple categories if you are unsure to categorize your dataset. Here are the predefined topic categories:</p>
-        <ol>
-            <li><strong>Biodiversity</strong></li>
-                <p>Information pertaining to biodiversity indicators. Examples: birds, mammal distribution, plants species, tree species, marine species.</p>
-            <li><strong>Cadastre & Administrative</strong></li>
-                <p>Information used for land information system containing ownership of land (e.g. rights, restrictions, land value) and reflects administrative or political areas. Examples: countries and lower-level boundaries, cadastral surveys, land ownership, land value.</p>
-            <li><strong>Climate</strong></li>
-                <p>Processes and phenomena of the atmosphere. Examples: cloud cover, weather, climate, atmospheric conditions, climate change, precipitation.</p>
-            <li><strong>Economy</strong></li>
-                <p>Economic activities, conditions and employment. Examples: production, labour, revenue, commerce, industry, tourism and ecotourism, forestry, fisheries, commercial or subsistence hunting, exploration and exploitation of resources such as minerals, oil and gas.</p>
-            <li><strong>Geoscientific Information</strong></li>
-                <p>Information pertaining to earth sciences. Examples: geophysical features and processes, geology, altitude, bathymetry, digital elevation models, slope, peat lands, soils, hydrogeology, erosion.</p>
-            <li><strong>Hazards</strong></li>
-                <p>Information pertaning to natural hazards. Examples: landslides, flood, active fires, burned area, vulnerability assessment, deforestation.</p>
-            <li><strong>Imagery</strong></li>
-                <p>Georeferenced images of the Earth’s surface, which have been collected via aerial photography or satellite data. Examples: land cover, basemaps, imagery, unclassified images, drone.</p>
-            <li><strong>Land Cover</strong></li>
-                <p>Representing spatial information of physical coverage of the Earth's surface. Examples: forest, grass land, mangrove, croplands, wetlands, built area, bare lands.</p>
-            <li><strong>Land Use & Spatial Planning</strong></li>
-                <p>Representing spatial information on the arrangements, activities and inputs people undertake in a certain land cover type to produce, change or maintain it. Examples: settlements, tree crops, logging concession, oil palm concessions, social forestry concessions, smallholder plantations, mining concessions, conservation area, zoning maps, spatial planning, forest area.</p>
-            <li><strong>Oceans</strong></li>
-                <p>Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass, sea surface temperature.</p>
-            <li><strong>Society</strong></li>
-                <p>Characteristics of society and cultures. Examples: customary territory, settlements, anthropology, archaeology, education, traditional beliefs, manners and customs, demographic data, recreational areas and activities, social impact assessments, crime and justice, census information.</p>
-            <li><strong>Structure</strong></li>
-                <p>A form that is constructed. Examples: building, gas station, road, dams. port, runway, bridge, power plants, terminal, settlements.</p>
-        </ol>
-
-        <h3>What are the data types in the Metadata?</h3>
-        <p>The common data types are:</p>
-        <ol>
-            <li><strong>Observational</strong> - captured through observation of a behavior or activity</li>
-                <p>Example: survey data, remote sensing data, air pollution data, etc</p>
-            <li><strong>Experimental</strong> - collected through active intervention by researcher to produce and measure changes</li>
-                <p>Example: tree sapling growth in a climate-controlled experiment</p>
-            <li><strong>Simulation</strong> - generated by imitating the operation of a real-world process or system using computer model</li>
-                <p>Example: forest growth data generated by Forest Vegetation Simulator model</p>
-            <li><strong>Derived/compiled</strong> - generated using existing data points to create new data through some sort of transformation</li>
-                <p>Example: aspect or slope raster data generated from DEM data</p>
-        </ol>
-
-        <h3>Are all datasets in Data Catalog "Open" and freely shareable?</h3>
-        <p><strong>No</strong>. Depending on the license and restrictions with the data providers. Some datasets may have restricted access.</p>
-
-        <h3>Who owns the datasets listed in the catalog?</h3>
-        <p>Not all datasets in the catalog are owned by WRI. Neither of the responsible or point of contact of the resource. Data ownership and terms of use are determined by agreements between the parties responsible for creating and maintaining the dataset. Data ownership is an important consideration in the catalog, and is reflected in each dataset's metadata.</p>
-
-        <h3>What and how can I change the metadata in Data Catalog?</h3>
-        <p>Only developer and superuser can modify the web content. Please contact your developer or system administrator to convey your concern.</p>
+            <section id="topic">
+            <h3>What topic categories are used in the Metadata?</h3>
+            <p>You can define in multiple categories if you are unsure to categorize your dataset. Here are the predefined topic categories:</p>
+            <ol>
+                <li><strong>Biodiversity</strong></li>
+                    <p>Information pertaining to biodiversity indicators. Examples: birds, mammal distribution, plants species, tree species, marine species.</p>
+                <li><strong>Cadastre & Administrative</strong></li>
+                    <p>Information used for land information system containing ownership of land (e.g. rights, restrictions, land value) and reflects administrative or political areas. Examples: countries and lower-level boundaries, cadastral surveys, land ownership, land value.</p>
+                <li><strong>Climate</strong></li>
+                    <p>Processes and phenomena of the atmosphere. Examples: cloud cover, weather, climate, atmospheric conditions, climate change, precipitation.</p>
+                <li><strong>Economy</strong></li>
+                    <p>Economic activities, conditions and employment. Examples: production, labour, revenue, commerce, industry, tourism and ecotourism, forestry, fisheries, commercial or subsistence hunting, exploration and exploitation of resources such as minerals, oil and gas.</p>
+                <li><strong>Geoscientific Information</strong></li>
+                    <p>Information pertaining to earth sciences. Examples: geophysical features and processes, geology, altitude, bathymetry, digital elevation models, slope, peat lands, soils, hydrogeology, erosion.</p>
+                <li><strong>Hazards</strong></li>
+                    <p>Information pertaning to natural hazards. Examples: landslides, flood, active fires, burned area, vulnerability assessment, deforestation.</p>
+                <li><strong>Imagery</strong></li>
+                    <p>Georeferenced images of the Earth’s surface, which have been collected via aerial photography or satellite data. Examples: land cover, basemaps, imagery, unclassified images, drone.</p>
+                <li><strong>Land Cover</strong></li>
+                    <p>Representing spatial information of physical coverage of the Earth's surface. Examples: forest, grass land, mangrove, croplands, wetlands, built area, bare lands.</p>
+                <li><strong>Land Use & Spatial Planning</strong></li>
+                    <p>Representing spatial information on the arrangements, activities and inputs people undertake in a certain land cover type to produce, change or maintain it. Examples: settlements, tree crops, logging concession, oil palm concessions, social forestry concessions, smallholder plantations, mining concessions, conservation area, zoning maps, spatial planning, forest area.</p>
+                <li><strong>Oceans</strong></li>
+                    <p>Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass, sea surface temperature.</p>
+                <li><strong>Society</strong></li>
+                    <p>Characteristics of society and cultures. Examples: customary territory, settlements, anthropology, archaeology, education, traditional beliefs, manners and customs, demographic data, recreational areas and activities, social impact assessments, crime and justice, census information.</p>
+                <li><strong>Structure</strong></li>
+                    <p>A form that is constructed. Examples: building, gas station, road, dams. port, runway, bridge, power plants, terminal, settlements.</p>
+            </ol>
+            </section>
         {% endblocktrans %}
-    </div>
-</div>
+    {% endif %}
+        {% blocktrans %}
+            <section id="data-types">
+            <h3>What are the data types in the Metadata?</h3>
+            <p>The common data types are:</p>
+            <ol>
+                <li><strong>Observational</strong> - captured through observation of a behavior or activity</li>
+                    <p>Example: survey data, remote sensing data, air pollution data, etc</p>
+                <li><strong>Experimental</strong> - collected through active intervention by researcher to produce and measure changes</li>
+                    <p>Example: tree sapling growth in a climate-controlled experiment</p>
+                <li><strong>Simulation</strong> - generated by imitating the operation of a real-world process or system using computer model</li>
+                    <p>Example: forest growth data generated by Forest Vegetation Simulator model</p>
+                <li><strong>Derived/compiled</strong> - generated using existing data points to create new data through some sort of transformation</li>
+                    <p>Example: aspect or slope raster data generated from DEM data</p>
+            </ol>
+            </section>
 
+            <section id="open-data">
+            <h3>Are all datasets in Data Catalog "Open" and freely shareable?</h3>
+            <p><strong>No</strong>. Depending on the license and restrictions with the data providers. Some datasets may have restricted access.</p>
+            </section>
+
+            <section id="data-owner">
+            <h3>Who owns the datasets listed in the catalog?</h3>
+            <p>Not all datasets in the catalog are owned by WRI. Neither of the responsible or point of contact of the resource. Data ownership and terms of use are determined by agreements between the parties responsible for creating and maintaining the dataset. Data ownership is an important consideration in the catalog, and is reflected in each dataset's metadata.</p>
+            </section>
+        {% endblocktrans %}
+    {% if user.is_authenticated %}
+        {% blocktrans %}
+            <section id="change-metadata">
+            <h3>What and how can I change the metadata in Data Catalog?</h3>
+            <p>Only developer and superuser can modify the web content. Please contact your developer or system administrator to convey your concern.</p>
+            </section>
+        {% endblocktrans %}
+    {% endif %}
+    </div>
+        {% blocktrans %}
+            <nav class="section-nav">
+                <ol>
+        {% endblocktrans %}
+    {% if user.is_authenticated %}
+        {% blocktrans %}
+                    <li><a href="#upload-gdb">Upload Geodatabase</a></li>
+                    <li><a href="#limitation-s3">S3 Object Limitation</a></li>
+                    <li><a href="#topic">Topic Categories</a></li>
+        {% endblocktrans %}
+    {% endif %}
+        {% blocktrans %}
+                    <li><a href="#data-types">Data Type</a></li>
+                    <li><a href="#open-data">License</a></li>
+                    <li><a href="#data-owner">Data owner</a></li>
+        {% endblocktrans %}
+    {% if user.is_authenticated %}
+        {% blocktrans %}
+                    <li><a href="#change-metadata">Changing metadata</a></li>
+        {% endblocktrans %}
+    {% endif %}
+        {% blocktrans %}
+                </ol>
+            </nav>
+        {% endblocktrans %}
+</main>
 {% endblock %}
+
+<script src="{% static "lib/js/intersection-observer.js" %}"></script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+	const observer = new IntersectionObserver(entries => {
+		entries.forEach(entry => {
+			const id = entry.target.getAttribute('id');
+			if (entry.intersectionRatio > 0) {
+				document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.add('active');
+			} else {
+				document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.remove('active');
+			}
+		});
+	});
+
+	// Track all sections that have an `id` applied
+	document.querySelectorAll('section[id]').forEach((section) => {
+		observer.observe(section);
+	});
+});
+</script>

@@ -192,7 +192,11 @@ def pre_save_document(instance, sender, **kwargs):
         instance.extension = extension[1:]
         doc_type_map = DOCUMENT_TYPE_MAP
         doc_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
-        if doc_type_map is None:
+        if instance.extension == 'py':
+            doc_type = 'python'
+        elif instance.extension == 'tif' or instance.extension == 'tiff':
+            doc_type = 'raster'
+        elif doc_type_map is None:
             doc_type = 'other'
         else:
             doc_type = doc_type_map.get(
