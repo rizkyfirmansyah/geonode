@@ -34,11 +34,13 @@ own applications.
 Install
 -------
 
-    This repo is forked from [Geonode](https://github.com/GeoNode/geonode/tree/3.2.x) on branch 3.2.x
+    This repo is forked from official Geonode on branch 3.2.x
 
-GeoNode can be setup in different ways, flavors and plattforms. If
-you´re planning to do development or install for production please visit
-the offical GeoNode installation documentation:
+ This repository was developed and installed using docker.
+ All the required libraries and services was set up in the docker-compose and dockerfile.
+ Set your preferred data volumes and port as you wish. Only nginx is not installed within the container.
+ See the .env file of SDI geonode-project repository to set up the application services.
+ Read more the documentation in below:
 
 - [Docker](https://docs.geonode.org/en/3.x/install/advanced/core/index.html#docker)
 - [Ubuntu 20.04lts](https://docs.geonode.org/en/3.x/install/advanced/core/index.html#ubuntu-20-04lts)
