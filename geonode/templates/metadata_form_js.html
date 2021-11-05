@@ -82,27 +82,43 @@
             }
             mandatoryMissing = empty > 0;
           }
-      var advancedMissing = $('#advanced').find('.input-empty').length > 0;
-          if (advancedMissing) {
-            var inputs = $('#advanced').find('.input-empty');
+      var licenseMissing = $('#licenses').find('.input-empty').length > 0;
+          if (licenseMissing) {
+            var inputs = $('#licenses').find('.input-empty');
             var empty = inputs.length;
             for (var i=0; i<inputs.length; i++) {
               if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
                 empty--;
               }
             }
-            advancedMissing = empty > 0;
+            licenseMissing = empty > 0;
           }
+        var contentMissing = $('#content').find('.input-empty').length > 0;
+        if (contentMissing) {
+          var inputs = $('#content').find('.input-empty');
+          var empty = inputs.length;
+          for (var i=0; i<inputs.length; i++) {
+            if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
+              empty--;
+            }
+          }
+          contentMissing = empty > 0;
+        }
       $('#completeness-hints .mandatory-hint')
         .toggleClass('progress-bar-danger', mandatoryMissing)
         .toggleClass('progress-bar-success', !mandatoryMissing)
         .attr('title', mandatoryMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
         .tooltip('fixTitle');
-      $('#completeness-hints .advanced-hint')
-        .toggleClass('progress-bar-danger', advancedMissing)
-        .toggleClass('progress-bar-success', !advancedMissing)
-        .attr('title', advancedMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+      $('#completeness-hints .licenses-hint')
+        .toggleClass('progress-bar-danger', licenseMissing)
+        .toggleClass('progress-bar-success', !licenseMissing)
+        .attr('title', licenseMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
         .tooltip('fixTitle');
+      $('#completeness-hints .content-hint')
+      .toggleClass('progress-bar-danger', contentMissing)
+      .toggleClass('progress-bar-success', !contentMissing)
+      .attr('title', contentMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+      .tooltip('fixTitle');
 
         //done button tooltip
         if(completeness === 1 && $('.metadata-edit-done').css('opacity')+"" === "0" && !tooltipShown && !gotIt) {
@@ -203,7 +219,8 @@
         var prevNum = 0, totalNum = 0;
         var empty = 0;
         $('#completeness-hints .mandatory-hint').click(getTab.bind(null, 1));
-        $('#completeness-hints .advanced-hint').click(getTab.bind(null, 2));
+        $('#completeness-hints .licenses-hint').click(getTab.bind(null, 2));
+        $('#completeness-hints .content-hint').click(getTab.bind(null, 3));
 
         // set proper classes to count empty fields and display them
         var setInputEmpty = function( target, empty ) {

@@ -52,7 +52,11 @@ form #mdeditor_form label{
   border: #f0ab00;
 }
 
-#mdeditor_form .mandatory-hint,#mdeditor_form .advanced-hint {
+#mdeditor_form .mandatory-hint,#mdeditor_form .licenses-hint {
+  cursor: pointer;
+}
+
+#mdeditor_form .mandatory-hint,#mdeditor_form .content-hint {
   cursor: pointer;
 }
 
@@ -237,35 +241,39 @@ span.grippy::after {
 <div id="edit-metadata" class="tab-content tab-pane fade in active">
   <div id="completeness-hints" class="progress">
 
-  <div class="mandatory-hint progress-bar" role="progressbar" style="width:25%">
+  <div class="mandatory-hint progress-bar" role="progressbar" style="width:20%">
     {% trans "Mandatory" %}
   </div>
-  <div class="advanced-hint progress-bar" role="progressbar" style="width:25%">
+  <div class="licenses-hint progress-bar" role="progressbar" style="width:20%">
     {% trans "Mandatory" %}
   </div>
-  <div class="progress-bar" role="progressbar" style="width:50%">
+  <div class="content-hint progress-bar" role="progressbar" style="width:20%">
+    {% trans "Mandatory" %}
+  </div>
+  <div class="progress-bar" role="progressbar" style="width:40%">
     {% trans "Optional" %}
   </div>
 </div>
   <ul class="wizard--progress wizard--progress--medium">
       <li data-step="1" id="first" class="is-active" data-toggle="tab" href="#mandatory">
-          <a>{% trans "Basic Metadata" %}</a>
+          <a>{% trans "Content Citation" %}</a>
       </li>
-      <li data-step="2" id="second"  data-toggle="tab" href="#advanced">
+      <li data-step="2" id="second" data-toggle="tab" href="#licenses">
           <a>{% trans "Location and Licenses" %}</a>
       </li>
-      <li data-step="3" data-toggle="tab" href="#ownership">
-          <a>{% trans "Optional Metadata" %}</a>
+      <li data-step="3" id="three" data-toggle="tab" href="#content">
+          <a>{% trans "Content Description" %}</a>
       </li>
-      <li data-step="4"  data-toggle="tab" href="#dataset">
+      <li data-step="4" data-toggle="tab" href="#spatial">
+          <a>{% trans "Spatial Domain" %}</a>
+      </li>
+      <li data-step="5"  data-toggle="tab" href="#dataset">
           <a>{% trans "Dataset Attributes" %}</a>
       </li>
   </ul>
     <div id="mandatory" class="tab-pane fade in active">
-        <!--<br />-->
         <div class="panel-group">
             <div class="panel panel-default">
-                <!-- div class="panel-heading">Data info</div -->
                 <div class="panel-body">
                     <div class="row">
                         <div class="col">
@@ -287,24 +295,26 @@ span.grippy::after {
                                       <div>
                                         <span class="btn-group btn-group-xs btn-group-justified">
                                             <a class="btn btn-default" href="#" id="set_thumbnail">{% trans "Save" %}</a>
-                                            <!-- span class="input-group-addon">
-                                                <form id="form1" runat="server">
-                                                    <input type='file' id="imgInp" />
-                                                </form>
-                                            </span -->
                                             <a class="btn btn-default" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
                                         </span>
                                       </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <span><label for="{{ layer_form.title|id }}">{{ layer_form.title.label }}</label></span>
-                                    <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
-                                    {{ layer_form.title }}
+                                    <div>
+                                        <span><label for="{{ layer_form.title|id }}">{{ layer_form.title.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
+                                        {{ layer_form.title }}
+                                    </div>
                                     <div>
                                         <span><label for="{{ layer_form.abstract|id }}">{{ layer_form.abstract.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Brief narrative summary of the content of the resource/s)</p>-->
                                         {{ layer_form.abstract }}
+                                    </div>
+                                    <div>
+                                        <span><label for="{{ layer_form.edition|id }}">{{ layer_form.edition.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Version of the cited resource)</p>-->
+                                        {{ layer_form.edition }}
                                     </div>
                                 </div>
                                 <div class="col-lg-5">
@@ -376,14 +386,33 @@ span.grippy::after {
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                          <div class="col-lg-12">
-                            <div>
-                                <span><label for="{{ layer_form.data_description|id }}">{{ layer_form.data_description.label }}</label></span>
-                                <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
-                                {{ layer_form.data_description }}
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="panel panel-default" style="margin-top: 20px">
+                                <div class="panel-heading">{% trans "Responsible Parties" %}</div>
+                                <div class="panel-body">
+                                    <span><label for="{{ layer_form.poc|id }}">{{ layer_form.poc.label }}</label></span>
+                                    {{ layer_form.poc }}
+                                </div>
                             </div>
-                          </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="panel panel-default" style="margin-top: 20px">
+                                <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
+                                <div class="panel-body">
+                                    <div>
+                                        <span><label for="{{ layer_form.owner|id }}">{{ layer_form.owner.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Responsible of the cited resource)</p>-->
+                                        {{ layer_form.owner }}
+                                    </div>
+                                    <div>
+                                        <span><label for="{{ layer_form.metadata_author|id }}">{{ layer_form.metadata_author.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Author of the metadata)</p>-->
+                                        {{ layer_form.metadata_author }}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -391,61 +420,44 @@ span.grippy::after {
         </div>
     </div>
 
-    <div id="advanced" class="tab-pane fade">
+    <div id="licenses" class="tab-pane fade">
         <div class="panel-group">
                 <div class="panel panel-default">
-                    <!-- div class="panel-heading">Metadata info</div -->
                     <div class="panel-body">
                         <div class="" id="mdinfo">
-                            <div class="">
-                                <div class="col-lg-4">
-                                    <div>
-                                        <span><label for="{{ layer_form.language|id }}">{{ layer_form.language.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
-                                        {{ layer_form.language }}
-                                    </div>
-                                    <div>
-                                        <span><label for="{{ layer_form.license|id }}">{{ layer_form.license.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(License of the dataset)</p>-->
-                                        {{ layer_form.license }}
-                                    </div>
-                                    <div>
-                                        <span><label for="{{ layer_form.doi|id }}">{{ layer_form.doi.label }}</label></span>
-                                        {{ layer_form.doi }}
-                                    </div>
-                                    <div>
-                                        <span><label for="{{ layer_form.author|id }}">{{ layer_form.author.label }}</label></span>
-                                        {{ layer_form.author }}
-                                    </div>
-                                    <div>
-                                        <span><label for="{{ layer_form.data_type|id }}">{{ layer_form.data_type.label }}</label></span>
-                                        {{ layer_form.data_type }}
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                      <div id="regions_multiselect_container">
-                                          <span><label for="{{ layer_form.regions|id }}">{{ layer_form.regions.label }}</label></span>
-                                          {{ layer_form.regions }}
-                                      </div>
-                                      <div>
-                                          <span><label for="{{ layer_form.data_quality_statement|id }}">{{ layer_form.data_quality_statement.label }}</label></span>
-                                          <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
-                                          {{ layer_form.data_quality_statement|safe }}
-                                      </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div>
-                                        <span><label for="{{ layer_form.restriction_code_type|id }}">{{ layer_form.restriction_code_type.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
-                                        {{ layer_form.restriction_code_type }}
-                                    </div>
-                                    <div>
-                                        <span><label for="{{ layer_form.constraints_other|id }}">{{ layer_form.constraints_other.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
-                                        {{ layer_form.constraints_other }}
-                                    </div>
-                                </div>
-                            </div>
+                              <div class="col-lg-4" style="padding: 0px;">
+                                  <div>
+                                      <span><label for="{{ layer_form.license|id }}">{{ layer_form.license.label }}</label></span>
+                                      <!--<p class="xxs-font-size">(License of the dataset)</p>-->
+                                      {{ layer_form.license }}
+                                  </div>
+                                  <div>
+                                      <span><label for="{{ layer_form.restriction_code_type|id }}">{{ layer_form.restriction_code_type.label }}</label></span>
+                                      <!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
+                                      {{ layer_form.restriction_code_type }}
+                                  </div>
+                              </div>
+                              <div class="col-lg-4">
+                                  <div>
+                                      <span><label for="{{ layer_form.language|id }}">{{ layer_form.language.label }}</label></span>
+                                      <!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
+                                      {{ layer_form.language }}
+                                  </div>
+                                  <div id="regions_multiselect_container">
+                                      <span><label for="{{ layer_form.regions|id }}">{{ layer_form.regions.label }}</label></span>
+                                      {{ layer_form.regions }}
+                                  </div>
+                              </div>
+                              <div class="col-lg-4" style="padding: 0px;">
+                                  <div>
+                                      <span><label for="{{ layer_form.author|id }}">{{ layer_form.author.label }}</label></span>
+                                      {{ layer_form.author }}
+                                  </div>
+                                  <div>
+                                      <span><label for="{{ layer_form.doi|id }}">{{ layer_form.doi.label }}</label></span>
+                                      {{ layer_form.doi }}
+                                  </div>
+                              </div>
                             <div class="row">
                               <div class="col-lg-12">
                                 <div>
@@ -460,42 +472,77 @@ span.grippy::after {
         </div>
     </div>
 
-    <div id="ownership" class="tab-pane fade">
+    <div id="content" class="tab-pane fade">
+        <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="" id="cdinfo">
+                            <div class="col-lg-6" style="padding-left: 0px;">
+                                <div>
+                                    <span><label for="{{ layer_form.data_type|id }}">{{ layer_form.data_type.label }}</label></span>
+                                    {{ layer_form.data_type }}
+                                </div>
+                            </div>
+                            <div class="col-lg-6" style="padding-right: 0px;">
+                                <div>
+                                    <span><label for="{{ layer_form.maintenance_frequency|id }}">{{ layer_form.maintenance_frequency.label }}</label></span>
+                                    <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
+                                    {{ layer_form.maintenance_frequency }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div style="margin-top: 10px">
+                                        <span><label for="{{ layer_form.data_description|id }}">{{ layer_form.data_description.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
+                                        {{ layer_form.data_description }}
+                                    </div>
+                                    <div style="margin-top: 10px">
+                                        <span><label for="{{ layer_form.data_quality_statement|id }}">{{ layer_form.data_quality_statement.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
+                                        {{ layer_form.data_quality_statement|safe }}
+                                    </div>
+                                    <div style="margin-top: 10px">
+                                        <span><label for="{{ layer_form.purpose|id }}">{{ layer_form.purpose.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
+                                        {{ layer_form.purpose }}
+                                    </div>
+                                    <div style="margin-top: 10px">
+                                        <span><label for="{{ layer_form.constraints_other|id }}">{{ layer_form.constraints_other.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
+                                        {{ layer_form.constraints_other }}
+                                    </div>
+                                    <div style="margin-top: 10px">
+                                        <span><label for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
+                                        {{ layer_form.supplemental_information }}
+                                    </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <div id="spatial" class="tab-pane fade">
         <div class="panel-group"><div class="panel panel-default"><div class="panel-body">
-        <div>
-            <div class="col-xs-12 col-lg-4">
-                <div>
-                    <span><label for="{{ layer_form.edition|id }}">{{ layer_form.edition.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Version of the cited resource)</p>-->
-                    {{ layer_form.edition }}
-                </div>
-                <div>
-                    <span><label for="{{ layer_form.purpose|id }}">{{ layer_form.purpose.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
-                    {{ layer_form.purpose }}
-                </div>
-            </div>
-            <div class="col-xs-12 col-lg-5">
-                <div class="col-xs-12">
-                    <div class="col-xs-12 col-lg-6" style="padding: 0px;">
-                      <div class="input-group date">
+            <div class="">
+                <div class="col-lg-6" style="padding-right: 10px;">
+                    <div class="input-group date">
                         <span><label for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
                         <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
                         {{ layer_form.temporal_extent_start }}
-                        </div>
                     </div>
-                    <div class="col-xs-12 col-lg-6" style="padding-left: 5px; padding-right: 0px;">
-                        <div class="input-group date">
+                    <div class="input-group date">
                         <span><label for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
                         <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                         {{ layer_form.temporal_extent_end }}
-                        </div>
                     </div>
-                    <div style="margin-top: 5px">
-                        <span><label for="{{ layer_form.maintenance_frequency|id }}">{{ layer_form.maintenance_frequency.label }}</label></span>
-                        <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-                        {{ layer_form.maintenance_frequency }}
-                    </div>
+                </div>
+            </div>
+            <div class="">
+                <div class="col-lg-6" style="padding-right: 0px; padding-left: 10px;">
                     <div style="margin-top: 5px">
                         <span><label for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
                         <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
@@ -508,40 +555,9 @@ span.grippy::after {
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-lg-3">
-              <div class="panel panel-default" style="margin-top: 5px">
-                  <div class="panel-heading">{% trans "Responsible Parties" %}</div>
-                  <div class="panel-body">
-                      <span><label for="{{ layer_form.poc|id }}">{{ layer_form.poc.label }}</label></span>
-                      {{ layer_form.poc }}
-                  </div>
-              </div>
-              <div class="panel panel-default">
-                  <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
-                  <div class="panel-body">
-                      <div>
-                          <span><label for="{{ layer_form.owner|id }}">{{ layer_form.owner.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Responsible of the cited resource)</p>-->
-                          {{ layer_form.owner }}
-                      </div>
-                      <div>
-                          <span><label for="{{ layer_form.metadata_author|id }}">{{ layer_form.metadata_author.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Author of the metadata)</p>-->
-                          {{ layer_form.metadata_author }}
-                      </div>
-                  </div>
-              </div>
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12">
-              <span><label for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
-              <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
-              {{ layer_form.supplemental_information }}
-          </div>
-        </div>
       </div></div></div>
     </div>
+
     <div id="dataset" class="tab-pane fade">
       <div class="panel-group"><div class="panel panel-default"><div class="panel-body">
         <div>

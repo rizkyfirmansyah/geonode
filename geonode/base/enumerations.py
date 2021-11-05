@@ -48,12 +48,12 @@ UPDATE_FREQUENCIES = (
     ('notPlanned', _('there are no plans to update the data')),
     ('asNeeded', _('data is updated as deemed necessary')),
     ('daily', _('data is updated each day')),
-    ('annually', _('data is updated every year')),
+    ('weekly', _('data is updated on a weekly basis')),
+    ('fortnightly', _('data is updated every two weeks')),
+    ('monthly', _('data is updated each month')),
     ('biannually', _('data is updated twice each year')),
     ('quarterly', _('data is updated every three months')),
-    ('monthly', _('data is updated each month')),
-    ('fortnightly', _('data is updated every two weeks')),
-    ('weekly', _('data is updated on a weekly basis')),
+    ('annually', _('data is updated every year')),
 )
 
 DEFAULT_SUPPLEMENTAL_INFORMATION = _(

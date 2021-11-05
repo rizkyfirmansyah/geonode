@@ -629,8 +629,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     purpose_help_text = _(
         'summary of the intentions with which the resource(s) was developed')
     maintenance_frequency_help_text = _(
-        'frequency with which modifications and deletions are made to the data after '
-        'it is first produced')
+        'Information about maintenance and update frequency of the dataset')
     keywords_help_text = _(
         'commonly used word(s) or formalised word(s) or phrase(s) used to describe the subject '
         '(space or comma-separated)')

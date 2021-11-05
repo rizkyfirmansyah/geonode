@@ -235,13 +235,15 @@ def map_metadata(
     topic_thesaurus = map_obj.tkeywords.all()
     metadata_author = map_obj.metadata_author
 
-    topic_category = map_obj.category
+    topic_category = map_obj.category.all()
 
     if request.method == "POST":
         map_form = MapForm(request.POST, instance=map_obj, prefix="resource")
-        category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
-            request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
-            request.POST["category_choice_field"] else None)
+        category_form = CategoryForm(request.POST, prefix="category_choice_field",
+                    initial=(
+                        request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
+                        request.POST.getlist("category_choice_field") else []
+                        ))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -250,9 +252,11 @@ def map_metadata(
     else:
         map_form = MapForm(instance=map_obj, prefix="resource")
         map_form.disable_keywords_widget_for_non_superuser(request.user)
+        #  set initial values for category form
+        ids = list(c.id for c in topic_category)
         category_form = CategoryForm(
-            prefix="category_choice_field",
-            initial=topic_category.id if topic_category else None)
+                    prefix="category_choice_field",
+                    initial=ids)
 
         # Keywords from THESAURUS management
         map_tkeywords = map_obj.tkeywords.all()
@@ -302,10 +306,9 @@ def map_metadata(
         new_abstract = map_form.cleaned_data['abstract']
 
         new_category = None
-        if category_form and 'category_choice_field' in category_form.cleaned_data and\
-                category_form.cleaned_data['category_choice_field']:
-            new_category = TopicCategory.objects.get(
-                id=int(category_form.cleaned_data['category_choice_field']))
+        new_categories = None
+        if category_form and 'category_choice_field' in category_form.cleaned_data and category_form.cleaned_data['category_choice_field']:
+            new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:
             if poc is None:
@@ -337,6 +340,9 @@ def map_metadata(
         map_obj.regions.clear()
         map_obj.regions.add(*new_regions)
         map_obj.category = new_category
+        map_obj.category.clear()
+        if new_categories:
+            map_obj.category.add(*new_categories)
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, map_obj)
         if not ajax:

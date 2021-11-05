@@ -3087,10 +3087,6 @@ select[multiple].input-lg {
   }
 }
 
-#id_resource-temporal_extent_start_pickers {
-  padding-right: 5px;
-}
-
 #login {
   top: 0px !important;
 }

@@ -5,7 +5,6 @@ Table of Contents
 =================
 
 -  [What is GeoNode?](#what-is-geonode)
--  [Try out GeoNode](#try-out-geonode)
 -  [Install](#install)
 -  [Most useful links](#most-useful-links)
 -  [Licensing](#licensing)
