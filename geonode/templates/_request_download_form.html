@@ -1,0 +1,212 @@
+{% load i18n %}
+{% load avatar_tags %}
+{% load static from staticfiles %}
+
+{% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
+<script src="{% static "geonode/js/jszip/jszip-utils.js" %}" type="text/javascript"></script>
+<script src="{% static "geonode/js/jszip/preprocess.js" %}" type="text/javascript"></script>
+<script src="{% static "geonode/js/jszip/preview.js" %}" type="text/javascript"></script>
+
+<style>
+    /* Bootstrap */
+    .modal {
+      overflow: auto !important;
+    }
+    .tooltip {
+      position: fixed;
+    }
+    .bt-scrollable {
+      max-height: 180px;
+      margin-bottom: 10px;
+      overflow:scroll;
+      -webkit-overflow-scrolling: touch;
+    }
+    .photo {
+      border-radius: 45px;
+      margin-right: 10px;
+      width: 64px;
+      height:64px
+    }
+    .name {
+      font-weight: 700;
+    }
+    .expertise-label {
+      display:block;
+      font-weight: 700;
+      margin-top:10px;
+    }
+    .btn-more {
+      margin-top:10px;
+      width: 100%
+    }
+    .label {
+      font-weight: normal;
+    }
+    #dataInfo {
+      text-align: center;
+    }
+    #option {
+      display: none;
+    }
+
+</style>
+{% endif %}
+
+<div class="modal fade" id="request-download-layer" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">{% trans "Request Download" %}</h4>
+      </div>
+      <div class="modal-body">
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                {% if links %}
+                <li class="active"><a href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
+                {% endif %}
+                {% if links_download %}
+                <li><a href="#download_tab2" data-toggle="tab">{% trans "Data" %}</a></li>
+                {% endif %}
+            </ul>
+            <div class="tab-content">
+            {% if links %}
+                <div class="tab-pane active" id="download_tab1">
+                    <li class="active">
+                        <ul>
+                          {% for link in links %}
+                            <li><a href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
+                          {% endfor %}
+                        </ul>
+                    </li>
+                </div>
+            {% endif %}
+            {% if links_download %}
+                {% if not links %}
+                {#  if links doesn't exist, make this tab active by default #}
+                <div class="tab-pane active" id="download_tab2">
+                {% else %}
+                <div class="tab-pane" id="download_tab2">
+                {% endif %}
+                  </br>
+
+                  <!-- DOWNLOAD FILTER - START -->
+
+                  {% if layer_type == "vector" %}
+                    <button type="button" id = "button-toggle" class="btn btn-primary btn-circle" data-toggle="button" data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
+                      {% trans "Do you want to filter it?" %}
+                    </button>
+                    <img src="{% static 'geonode/img/geonode_icon.png' %}" class="gear pull-right loading_msg" witdth="30" height="30" style="margin-right:10px; display:none"/>
+                    <div class="pull-right loading_msg" style="margin-right:10px;margin-top:5px;display:none">{% trans "Loading..." %}</div>
+                    </br></br>
+                  {% endif %}
+                    <ul class="nav nav-tabs" id="tabContent" style="display: none;">
+                      <li class="active"><a href="#query_builder" data-toggle="tab">{% trans "Filter by attributes" %}</a></li>
+                    </ul>
+                  </br>
+
+                  <div class="tab-content query_builder_tab" style="display:none;">
+                    <div id="query_builder" class="tab-pane fade in active">
+                        <div class="form-inline">
+                        {% trans "Match" %}
+                          <div class="input-group" style=" display: inline-table; vertical-align: middle; width: auto;  ">
+                            <div class="input-group-btn" id="drop_operator_list">
+                            <div class="btn-group btn-group-xs">
+                                <div class="dropdown">
+                                  <button class="btn btn-primary btn-xs dropdown-toggle" id="modal-button-and-or" type="button" data-toggle="dropdown" value="AND">
+                                    <span class="caret"></span></button>
+                                    <ul class="dropdown-menu dropdown-menu-and-or" id="and-or_list" data-modal-button-id="and-or">
+                                      <li><a href="#" id="AND">{% trans "all" %}</a></li>
+                                      <li><a href="#" id="OR">{% trans "any" %}</a></li>
+                                    </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        {% trans "of the following:" %}
+                        </div>
+                        </br></br>
+                        <div class="input-group" id = "query-filter-tools">
+                          <div class="input-group-btn">
+                            <div class="btn-group btn-group-sm">
+                                <div class="dropdown">
+                                  <button class="btn btn-primary dropdown-toggle" id="modal-button-attributes" type="button" data-toggle="dropdown">{% trans "Attribute" %}<span class="caret"></span></button>
+                                  <ul class="dropdown-menu dropdown-menu-attribute" id="attribute_list" data-modal-button-id="attribute">
+                                    {% if schema %}
+                                      {% for key, values in schema.properties.items %}
+                                        <li><a href="#" id={{ key }} data-type={{ values }} data-schema= 'yes'>{{ key }}</a></li>
+                                      {% endfor %}
+                                    {% elif resource.attributes %}
+                                      {% for attribute in resource.attributes %}
+                                        <li><a href="#" id={{ attribute.attribute }} data-type='string' data-schema='no'>{{ attribute }}</a></li>
+                                      {% endfor %}
+                                    {% endif %}
+                                  </ul>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-sm">
+                              <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" id="modal-button-operator" type="button" data-toggle="dropdown">{% trans "Operator" %}<span class="caret"></span></button>
+                                <ul class="dropdown-menu dropdown-menu-operator" id="operator_list" data-modal-button-id="operator">
+                                  <li><a href="#" id="=">=</a></li>
+                                  <li><a href="#" id="&lt;&gt;">&lt;&gt;</a></li>
+                                  <li><a href="#" id="&gt;">&gt;</a></li>
+                                  <li><a href="#" id="&lt;">&lt;</a></li>
+                                  <li><a href="#" id="&gt;=">&gt;=</a></li>
+                                  <li><a href="#" id="&lt;=">&lt;=</a></li>
+                                  <li role="separator" class="divider"></li>
+                                  <li><a href="#" id=" LIKE ">LIKE</a></li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <select class="form-control js-data-array" style="position:static;" id="single_value" placeholder="" data-toggle="tooltip" title=""></select>
+                          <div class="input-group-btn" id="button_query">
+                            <a href="#" id="query_part" class="btn btn-primary btn-mg" data-toggle="modal" data-target="#myModal" title=""><span class="glyphicon glyphicon-plus"></span></a>
+                          </div>
+                        </div>
+                        </br>
+                        <div class="text_area">
+                          <div class="form-group" id="added_rules"></div>
+                          <div>
+                              <p id="whole_query"> </p>
+                          </div>
+                        </div>
+                        <label style="font-weight: normal;">{% trans "Feature limit" %}: </label>
+                        <input type="text" id="max_features" name="filter" style="width: 50px"/>
+                        <a href='#' id="clear_filter" style="float:right;">{% trans "Clear" %}</a> </br>
+                      </div>
+                    <hr id="hr_filter_layer" />
+                  </div>
+
+                  <!-- DOWNLOAD FILTER - END -->
+
+                  <h4>{% trans "Pick your download format:" %}</h4>
+                  <ul>
+                    {% for link in links_download %}
+                      {% if link.name == 'Original Dataset' %}
+                        {% original_link_available resource.id link.url as original_dwn_link_available %}
+                        {% if original_dwn_link_available %}
+                        <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li>
+                        {% else %}
+                        <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
+                        <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
+                        {% endif %}
+                      {% else %}
+                        <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                  </ul>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
