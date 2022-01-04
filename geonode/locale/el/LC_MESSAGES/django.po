@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2019-07-19 12:46+0300\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Greek (http://www.transifex.com/geonode/geonode/language/"
@@ -142,9 +142,6 @@ msgstr "τα δεδομένα ανανεώνονται κάθε τρείς μή�
 msgid "No information provided"
 msgstr "Δεν παρέχεται καμία πληροφορία"
 
-msgid "Category"
-msgstr "Κατηγορία"
-
 msgid "Category is required."
 msgstr "Απαιτείται Κατηγορία."
 
@@ -212,6 +209,9 @@ msgstr "Περιοχές"
 msgid "Group"
 msgstr "Ομάδα"
 
+msgid "Category"
+msgstr "Κατηγορία"
+
 msgid "License"
 msgstr "Άδεια"
 
@@ -247,6 +247,9 @@ msgstr ""
 msgid "function performed by the responsible party"
 msgstr "λειτουργία που εκτελείται από τον υπεύθυνο"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "σύντομη συνοπτική περιγραφή του περιεχομένου του πόρου"
+
 msgid "reference date for the cited resource"
 msgstr "ημερομηνία αναφοράς του πόρου που αναφέρεται"
 
@@ -256,8 +259,13 @@ msgstr "αναγνώριση του χρόνου που συνέβη ένα δε
 msgid "version of the cited resource"
 msgstr "έκδοση του αναφερόμενου πόρου"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "σύντομη συνοπτική περιγραφή του περιεχομένου του πόρου"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr ""
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "περίληψη των προθέσεων με την οποία αναπτύχθηκε ο πόρος"
@@ -340,27 +348,17 @@ msgstr ""
 "γενική εξήγηση της γνώσης του παραγωγού των δεδομένων σχετικά με την "
 "καταγωγή τους"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr ""
-
-msgid "DOI"
-msgstr ""
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "Ιδιότητα"
-
 msgid "title"
 msgstr "τίτλος"
 
 msgid "name by which the cited resource is known"
 msgstr "όνομα με το οποίο η αναφερόμενη πηγή είναι γνωστή"
+
+msgid "abstract"
+msgstr "περίληψη"
+
+msgid "purpose"
+msgstr "σκοπός"
 
 msgid "date"
 msgstr "ημερομηνία"
@@ -371,11 +369,13 @@ msgstr "τύπος ημερομηνίας"
 msgid "edition"
 msgstr "έκδοση"
 
-msgid "abstract"
-msgstr "περίληψη"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "Ιδιότητα"
 
-msgid "purpose"
-msgstr "σκοπός"
+msgid "DOI"
+msgstr ""
 
 msgid "maintenance frequency"
 msgstr "συχνότητα συντήρησης"
@@ -462,6 +462,12 @@ msgstr "Οι κανόνες ασφαλείας δεν έχουν συγχρον�
 #| msgid "Resources"
 msgid "Resource Type"
 msgstr "Πόροι"
+
+msgid "Metadata"
+msgstr "Μεταδεδομένα"
+
+msgid "If true, will be excluded from search"
+msgstr ""
 
 msgid "For example \"kml\""
 msgstr "Για παράδειγμα \"kml\""
@@ -557,9 +563,6 @@ msgstr "σε σύνδεση"
 msgid "offline"
 msgstr "χωρίς σύνδεση"
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr "Οι κανόνες ασφαλείας δεν έχουν συγχρονιστεί"
 
@@ -581,9 +584,6 @@ msgstr "Επισκόπηση Χάρτη"
 msgid "Batch Edit"
 msgstr "Μαζική Επεξεργασία"
 
-msgid "batch edit"
-msgstr "μαζική επεξεργασία"
-
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -593,11 +593,6 @@ msgstr "Υποβολή"
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Set Permissions"
-msgstr "Ρυθμίστε τα δικαιώματα"
-
-#, fuzzy
-#| msgid "Set permissions"
-msgid "set permissions"
 msgstr "Ρυθμίστε τα δικαιώματα"
 
 msgid "Discover the available datasets."
@@ -701,30 +696,6 @@ msgstr "Περιγραφή"
 msgid "GeoNode Client Library"
 msgstr "Βιβλιοθήκη Εφαρμογής GeoNode"
 
-msgid "Explore Maps"
-msgstr "Εξερεύνηση Χαρτών"
-
-msgid "Edit Map"
-msgstr "Επεξεργασία Χάρτη"
-
-msgid "Update"
-msgstr "Ενημέρωση"
-
-msgid "Create a New Map"
-msgstr "Δημιουργία Νέου Χάρτη"
-
-msgid "Available layers"
-msgstr "Διαθέσιμα Επίπεδα"
-
-msgid "Save"
-msgstr "Αποθήκευση"
-
-msgid "Save Map"
-msgstr "Αποθήκευση Χάρτη"
-
-msgid "Close"
-msgstr "Κλείσιμο"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -745,8 +716,8 @@ msgid ""
 "climate, atmospheric conditions, climate change, precipitation."
 msgstr ""
 
-msgid "Climate"
-msgstr "Κλιμα"
+msgid "Climatology Meteorology Atmosphere"
+msgstr ""
 
 msgid ""
 "Economic activities, conditions and employment. Examples: production, "
@@ -762,6 +733,9 @@ msgid ""
 "Height above or below sea level. Examples: altitude, bathymetry, digital "
 "elevation models, slope, derived products."
 msgstr ""
+
+msgid "Elevation"
+msgstr "Υψομετρο"
 
 msgid ""
 "Environmental resources, protection and conservation. Examples: "
@@ -789,8 +763,10 @@ msgid ""
 "erosion."
 msgstr ""
 
-msgid "Geoscience"
-msgstr "Γεωεπιστημη"
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "Συμπληρωματικές Πληροφορίες"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -806,10 +782,13 @@ msgid ""
 "images, annotations."
 msgstr ""
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 
 msgid "Inland Waters"
@@ -820,13 +799,18 @@ msgid ""
 "grounds, military transportation, information collection."
 msgstr ""
 
-msgid "Intelligence"
+#, fuzzy
+#| msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr "Πληροφορια"
 
 msgid ""
 "Positional information and services. Examples: addresses, geodetic networks, "
 "control points, postal zones and services, place names."
 msgstr ""
+
+msgid "Location"
+msgstr "Τοποθεσια"
 
 msgid ""
 "Features and characteristics of salt water bodies (excluding inland waters). "
@@ -841,7 +825,9 @@ msgid ""
 "Examples: land use maps, zoning maps, cadastral surveys, land ownership."
 msgstr ""
 
-msgid "Planning"
+#, fuzzy
+#| msgid "Planning"
+msgid "Planning Cadastre"
 msgstr "Σχεδιασμος"
 
 msgid ""
@@ -889,8 +875,8 @@ msgid ""
 "telecommunication, radio, communication networks."
 msgstr ""
 
-msgid "Utilities"
-msgstr "Υπηρεσιες"
+msgid "Utilities Communication"
+msgstr ""
 
 msgid "Document Created"
 msgstr "Έγγραφο Δημιουργήθηκε"
@@ -991,9 +977,6 @@ msgstr "Η διεύθυνση URL του εγγράφου, εάν είναι ε�
 msgid "URL"
 msgstr "URL"
 
-msgid "documents"
-msgstr "έγγραφα"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1032,9 +1015,6 @@ msgstr "Επεξεργασία Εγγράφου"
 msgid "Request change"
 msgstr "Αίτημα Λήψης"
 
-msgid "Metadata"
-msgstr "Μεταδεδομένα"
-
 msgid "Wizard"
 msgstr "Βοηθός"
 
@@ -1051,6 +1031,9 @@ msgstr "Αντικατάσταση"
 
 msgid "Remove"
 msgstr "Κατάργηση"
+
+msgid "Close"
+msgstr "Κλείσιμο"
 
 msgid "Download Metadata"
 msgstr "Μεταφόρτωση Μεταδεδομένων"
@@ -1092,9 +1075,6 @@ msgstr "Εξερεύνηση Εγγράφων"
 msgid "Upload Documents"
 msgstr "Ανέβασμα Εγγραφων"
 
-msgid "data"
-msgstr "δεδομένα"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr "για %(document_title)s"
@@ -1122,6 +1102,9 @@ msgstr "Πάροχος Μεταδεδομένων"
 msgid "<< Back"
 msgstr "<< Προηγούμενο"
 
+msgid "Update"
+msgstr "Ενημέρωση"
+
 msgid "Next >>"
 msgstr "Επόμενο >>"
 
@@ -1133,6 +1116,9 @@ msgstr "Επεξεργασία Μεταδεδομένων"
 
 msgid "Editing details for"
 msgstr "Επεξεργασία λεπτομερειών για"
+
+msgid "Return to Document"
+msgstr ""
 
 msgid "Deleting"
 msgstr "Διαγραφή"
@@ -1214,6 +1200,11 @@ msgstr "Βασικά Μεταδεδομένα"
 msgid "Location and Licenses"
 msgstr "Τοποθεσία και Άδειες"
 
+#, fuzzy
+#| msgid "Resource Metadata"
+msgid "Required Metadata"
+msgstr "Μεταδεδομένα Πόρου"
+
 msgid "Optional Metadata"
 msgstr "Προαιρετικά Μεταδεδομένα"
 
@@ -1231,14 +1222,11 @@ msgstr "Υπεύθυνο Μέρος"
 msgid "Responsible and Permissions"
 msgstr "Ιδιοκτήτης και Δικαιώματα"
 
-msgid "Message box"
-msgstr "Εισερχόμενα Μηνύματα"
-
-msgid "OK"
-msgstr "OK"
-
 msgid "Publishing"
 msgstr "Δημοσιεύεται"
+
+msgid "You are not allowed to view this document."
+msgstr "Δεν έχετε δικαιώματα να δείτε αυτό το χάρτη."
 
 msgid "You are not permitted to delete this document"
 msgstr "Δεν επιτρέπεται να διαγράψετε αυτό το έγγραφο"
@@ -1264,9 +1252,6 @@ msgstr "Δεν παρέχεται"
 #| msgid "Maps found"
 msgid "Not found"
 msgstr "Χάρτες"
-
-msgid "You are not allowed to view this document."
-msgstr "Δεν έχετε δικαιώματα να δείτε αυτό το χάρτη."
 
 msgid "You must set a point of contact for this resource"
 msgstr "Πρέπει να ορίσετε υπεύθυνο επικοινωνίας για αυτό τον πόρο"
@@ -1432,11 +1417,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "GeoExplorer"
-msgid "apps explore"
-msgstr "Εφαρμογή GeoExplorer"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "Δημιουργία Νέου Χάρτη"
@@ -1552,6 +1532,15 @@ msgstr "Βαθμολογία ενός Επιπέδου"
 msgid "A rating was given to a layer"
 msgstr "Βαθμολογήθηκε ένα επίπεδο"
 
+msgid "Points"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 msgid "Layer name"
 msgstr "Όνομα Επιπέδου"
 
@@ -1575,6 +1564,22 @@ msgstr "Προσθήκη Ιδιότητας"
 
 msgid "Create"
 msgstr "Δημιουργία"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "Διαστήματα"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "Δεν παρέχεται"
 
 msgid "No abstract provided"
 msgstr "Δεν υπάρχει σύνοψη"
@@ -1733,9 +1738,6 @@ msgstr "Δεν υπάρχουν ακόμη ενέργειες"
 msgid "Explore Group Categories"
 msgstr "Εξερεύνηση Ομάδων Κατηγοριών"
 
-msgid "groups explore"
-msgstr "εξερεύνηση ομάδων"
-
 msgid "Create a New Group Category"
 msgstr "Δημιουργία ομάδας κατηγοριών"
 
@@ -1753,12 +1755,6 @@ msgstr "Κατάργηση Ομάδας"
 
 msgid "Create Group"
 msgstr "Δημιουργία Ομάδας"
-
-msgid "groups create"
-msgstr "δημιουργία ομάδων"
-
-msgid "groups"
-msgstr "ομάδες"
 
 msgid "Last Modified"
 msgstr "Τελευταία Τροποποίηση"
@@ -1831,9 +1827,6 @@ msgstr "Προσθήκη νέων μελών"
 msgid "Add Group Members"
 msgstr "Προσθήκη μελών ομάδας"
 
-msgid "groups remove"
-msgstr "διαγραφή ομάδων"
-
 #, python-format
 msgid ""
 "\n"
@@ -1848,9 +1841,6 @@ msgstr "Κατάργηση Χαρτών / Δεδομένων από την Ομ�
 
 msgid "Remove selected maps/data"
 msgstr "Κατάργηση επιλεγμένων χαρτών / δεδομένων"
-
-msgid "groups update"
-msgstr "ενημέρωση ομάδας"
 
 msgid "Edit Group Category Details"
 msgstr "Επεξεργασία Λεπτομερειών Ομάδας"
@@ -1867,17 +1857,23 @@ msgstr "Δημιουργία Ομάδας Κατηγοριών"
 msgid "Edit Group Category"
 msgstr "Επεξεργασία Ομάδας Κατηγοριών"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#, fuzzy, python-brace-format
+#| msgid "The e-mail address '%(email)s' has already been invited."
+msgid "The e-mail address '{email}' has already been invited."
 msgstr "Ο χρήστης με την διεύθυνση '%(email)s' έχει ήδη προσκληθεί."
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, fuzzy, python-brace-format
+#| msgid "The e-mail address '%(email)s' has already accepted an invite."
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr ""
 "Ο χρήστης με την διεύθυνση '%(email)s' έχει ήδη αποδεχθεί την πρόσκληση."
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, fuzzy, python-brace-format
+#| msgid "An active user is already using the e-mail address '%(email)s'"
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr "Ένας ενεργός χρήστης ήδη χρησιμοποιεί την διεύθυνση '%(email)s'"
 
 msgid "E-mail"
@@ -2134,6 +2130,20 @@ msgstr ""
 "ημερομηνία κατά την οποία τα στατιστικά στοιχεία χαρακτηριστικό ήταν "
 "τελευταία ενημέρωση"
 
+#, fuzzy
+#| msgid "Return to Layer"
+msgid "Append to Layer"
+msgstr "Επιστροφή στο Επίπεδο"
+
+msgid "Return to Layer"
+msgstr "Επιστροφή στο Επίπεδο"
+
+msgid "Preserve Metadata XML"
+msgstr "Διατήρηση Μεταδεδομένων XML"
+
+msgid "Select the charset or leave default"
+msgstr "Επιλέξτε το σύνολο χαρακτήρων ή αφήστε προεπιλογή"
+
 msgid "Home"
 msgstr "Αρχική Σελίδα"
 
@@ -2142,9 +2152,6 @@ msgstr "Αλλαγή σημείου επαφής"
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "Αντιστοιχίστε ένα νέο σημείο επαφής για τις επιφάνειες παρακάτω:"
-
-msgid "layers"
-msgstr "επίπεδα"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr "Έγγραφο δυνατοτήτων υπηρεσίας WMS"
@@ -2163,9 +2170,6 @@ msgstr "Πλαίσιο οριοθέτησης"
 
 msgid "Time"
 msgstr "Χρόνος"
-
-msgid "Elevation"
-msgstr "Υψομετρο"
 
 msgid "Actions"
 msgstr "Ενέργειες"
@@ -2281,6 +2285,9 @@ msgid "Layer"
 msgid_plural "Layers"
 msgstr[0] "Επίπεδο"
 msgstr[1] "Επίπεδα"
+
+msgid "Append Data"
+msgstr ""
 
 msgid "Edit data"
 msgstr "Επεξεργασία Δεδομένων"
@@ -2404,9 +2411,6 @@ msgstr "Η ενέργεια αυτή επηρεάζει τους παρακάτ�
 msgid "No maps are using this layer"
 msgstr "Κανένας χάρτης δεν χρησιμοποιεί αυτή την επιφάνεια"
 
-msgid "layers explore"
-msgstr "εξερεύνηση επιπέδων"
-
 msgid "Upload Layers"
 msgstr "Μεταφόρτωση Επιπέδων"
 
@@ -2427,9 +2431,6 @@ msgid ""
 "Dublin Core metadata elements.\n"
 "          Some of your original metadata may have been lost."
 msgstr ""
-
-msgid "Return to Layer"
-msgstr "Επιστροφή στο Επίπεδο"
 
 #, python-format
 msgid ""
@@ -2455,35 +2456,17 @@ msgstr "Σειρά Εμφάνισης"
 msgid "Visible"
 msgstr "Ορατό"
 
+msgid "ERROR"
+msgstr ""
+
+msgid "Following items are required:"
+msgstr ""
+
 msgid "Upload Layer Metadata"
 msgstr "Μεταφόρτωση Μεταδεδομένων Επιπέδου"
 
-msgid "layers upload"
-msgstr "μεταφόρτωση επιπέδων"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr ""
-
-msgid "Incomplete Uploads"
-msgstr "Ελλιπής Μεταφόρτωση"
-
-msgid "You have the following incomplete uploads"
-msgstr "Έχετε τις παρακάτω ελλιπείς μεταφορτώσεις"
-
-msgid "last updated on"
-msgstr "τελευταία ενημέρωση"
-
-msgid "Resume"
-msgstr "Περίληψη"
-
-msgid "Delete"
-msgstr "Διαγραφή"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν τη μεταφόρτωση;"
-
-msgid "Delete, and don't ask me again."
-msgstr "Διαγραφή, και μην με ρωτήσετε ξανά."
 
 msgid "Remove Layers"
 msgstr "Αφαίρεση Επιπέδων"
@@ -2499,24 +2482,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "Αντικατάσταση Επιπέδου"
 
-msgid "Preserve Metadata XML"
-msgstr "Διατήρηση Μεταδεδομένων XML"
-
-msgid "Select the charset or leave default"
-msgstr "Επιλέξτε το σύνολο χαρακτήρων ή αφήστε προεπιλογή"
-
 msgid "Manage Styles"
 msgstr "Διαχείριση Στυλ"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"Διαχείριση διαθέσιμων στυλ για <a href=\"/layers/%(layer_title)s\">"
+"Διαχείριση διαθέσιμων στυλ για <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a> "
 
 msgid "Layer Default Style"
@@ -2555,6 +2532,53 @@ msgstr "Χαρακτηριστικά"
 
 msgid "Upload Layer"
 msgstr "Μεταφόρτωση Επιπέδου"
+
+#, fuzzy
+#| msgid "Upload Metadata"
+msgid "Upload status"
+msgstr "Μεταφόρτωση Μεταδεδομένων"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "Μεταφόρτωση Εγγράφων"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "Δημιουργία"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr "σελίδα"
+
+msgid "of"
+msgstr "από"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "Ελλιπής Μεταφόρτωση"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "Είστε σίγουροι ότι θέλετε να διαγράψετε αυτήν τη μεταφόρτωση;"
 
 msgid "Upload Layer Step: Set SRS"
 msgstr "Βήμα Μεταφόρτωσης Επιπέδου: Ορισμός SRS"
@@ -3020,32 +3044,51 @@ msgstr "τώρα"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr "Προσπαθείτε να αντικαταστήσετε διανυσματικό αρχείο με εικόνα"
 
-msgid "You are attempting to replace a vector layer with a raster."
+msgid ""
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
+msgid "You are attempting to {action_type} a vector layer with a raster."
 msgstr "Προσπαθείτε να αντικαταστήσετε διανυσματικό αρχείο με εικόνα"
 
-msgid "You are attempting to replace a raster layer with a vector."
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a raster layer with a vector."
+msgid "You are attempting to {action_type} a raster layer with a vector."
 msgstr ""
 "Προσπαθείτε να αντικαταστήσετε εικονιστικό επίπεδο με διανυσματικό αρχείο"
 
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr "Προσπαθείτε να αντικαταστήσετε διανυσματικό αρχείο με εικόνα"
+
+#, python-brace-format
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
 msgstr ""
 
 msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 
 msgid ""
@@ -3079,16 +3122,22 @@ msgstr "Δεν σας επιτρέπεται να δείτε αυτή την ε�
 msgid "Failed to upload the layer"
 msgstr "Αποτυχία μεταφόρτωσης επιπέδων"
 
-msgid "Unable to delete layer"
-msgstr "Αδυναμία διαγραφής επιπέδου"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr "Προσπαθείτε να αντικαταστήσετε διανυσματικό αρχείο με εικόνα"
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr ""
+"Προσπαθείτε να αντικαταστήσετε εικονιστικό επίπεδο με διανυσματικό αρχείο"
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
 "group before deleting."
 msgstr ""
 
-msgid "couldn't generate thumbnail"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Remote Thumbnail"
+msgid "couldn't generate thumbnail: %s"
+msgstr "Remote Thumbnail"
 
 msgid "Map Created"
 msgstr "Χάρτης Δημιουργήθηκε"
@@ -3176,9 +3225,6 @@ msgstr "παράμετροι επιφάνειας"
 msgid "source params"
 msgstr "παράμετροι πηγής"
 
-msgid "maps"
-msgstr "χάρτες"
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr "Έγγραφο δυνατοτήτων υπηρεσίας WMS"
 
@@ -3213,6 +3259,9 @@ msgstr "Αντιγραφή χάρτη"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "Αντιγράψτε τον χάρτη και τροποποιήστε τον για δικούς σας σκοπούς"
+
+msgid "Create a New Map"
+msgstr "Δημιουργία Νέου Χάρτη"
 
 msgid ""
 "\n"
@@ -3274,10 +3323,11 @@ msgstr "Λήψη Ολοκληρώθηκε"
 msgid "Download Failed"
 msgstr "Αποτυχία Λήψης"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "maps explore"
-msgstr "Εφαρμογή GeoExplorer"
+msgid "Edit Map"
+msgstr "Επεξεργασία Χάρτη"
+
+msgid "Explore Maps"
+msgstr "Εξερεύνηση Χαρτών"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3291,6 +3341,11 @@ msgstr ""
 "υποστηρίζει ένα υποσύνολο του ISO, FGDC, και στοιχεία του Dublin Core "
 "μεταδεδομένα. Μερικά από τα πρωτότυπα μεταδεδομένων σας μπορεί να έχουν "
 "χαθεί."
+
+#, fuzzy
+#| msgid "Return to"
+msgid "Return to Map"
+msgstr "Επιστροφή στο"
 
 msgid "Remove Map"
 msgstr "Διαγραφή Χάρτη"
@@ -3321,9 +3376,6 @@ msgstr "Δεν επιτρέπεται να τροποποιήσετε τα με�
 msgid "You are not allowed to view this map."
 msgstr "Δεν σας επιτρέπεται να δείτε αυτό το χάρτη."
 
-msgid "Thumbnail saved"
-msgstr "Αποθήκευση Προεπισκόπησης"
-
 #, fuzzy
 #| msgid "Set Map Thumbnail"
 msgid "error saving thumbnail"
@@ -3345,7 +3397,9 @@ msgstr "Παρακολούθηση"
 msgid "Alert situation reported by monitoring"
 msgstr "Κατάσταση συναγερμού από σύστημα παρακολούθησης"
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+#, fuzzy
+#| msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr "Το Σύστημα Παρακολούθησης GeoNode στο {} αναφέρει σφάλματα: {}"
 
 #, fuzzy
@@ -3418,7 +3472,9 @@ msgstr "Εμφάνιση δεδομένων για συγκεκριμένο πό
 msgid "Show data for specific label"
 msgstr "Εμφάνιση δεδομένων για συγκεκριμένη ετικέτα"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, fuzzy, python-brace-format
+#| msgid "Write result to file, default GEOIP_PATH: {}"
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr "Αποθήκευση αποτελέσματος σε αρχείο, προεπιλογή GEOIP_PATH: {}"
 
 msgid ""
@@ -3581,7 +3637,8 @@ msgstr "Πόσο σοβαρό θα ήταν σφάλμα από αυτήν τη�
 msgid "Is it active"
 msgstr "Είναι ενεργό"
 
-msgid "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
 msgstr ""
 
 msgid "Value must be above"
@@ -3816,11 +3873,6 @@ msgstr "Δημιουργία προφίλ"
 msgid "Profile of "
 msgstr "Προφίλ"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "people explore"
-msgstr "Εφαρμογή GeoExplorer"
-
 msgid "Not provided."
 msgstr "Δεν παρέχεται."
 
@@ -3829,9 +3881,6 @@ msgstr "Θέση"
 
 msgid "Organization"
 msgstr "Οργανισμός"
-
-msgid "Location"
-msgstr "Τοποθεσια"
 
 msgid "Not provided"
 msgstr "Δεν παρέχεται"
@@ -3891,11 +3940,6 @@ msgstr "Χρήστης Δραστηριότητες"
 msgid "Resources"
 msgstr "Πόροι"
 
-#, fuzzy
-#| msgid "Invite people"
-msgid "edit people"
-msgstr "Προσκαλέστε τους ανθρώπους"
-
 msgid "Edit Your Profile"
 msgstr "Επεξεργασία του προφίλ σας"
 
@@ -3911,7 +3955,9 @@ msgstr "Ενημέρωση προφίλ"
 msgid "Explore People"
 msgstr "Εξερεύνηση Χρηστών"
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "Το όνομα χρήστη για"
 
 msgid "Your username has been emailed to you."
@@ -4213,9 +4259,9 @@ msgstr ""
 msgid "Resource is already being processed"
 msgstr "Πόροι"
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Resources"
-msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "Πόροι"
 
 #, fuzzy
@@ -4231,9 +4277,9 @@ msgstr "Δεν επιτρέπεται να αφαιρέσετε αυτή την 
 msgid "You are not permitted to remove this service."
 msgstr "Δεν επιτρέπεται να αφαιρέσετε αυτή την υπηρεσία."
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Service has been created:"
-msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "Υπηρεσία έχει δημιουργηθεί:"
 
 msgid "created"
@@ -4486,6 +4532,12 @@ msgstr ""
 #| msgid "Delete from Favorites"
 msgid "Delete Geo Limits"
 msgstr "Διαγραφή από τα αγαπημένα"
+
+msgid "Message box"
+msgstr "Εισερχόμενα Μηνύματα"
+
+msgid "OK"
+msgstr "OK"
 
 msgid "Mandatory files : SHP , DBF"
 msgstr ""
@@ -5227,13 +5279,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5242,9 +5294,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5253,9 +5305,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5289,7 +5341,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5305,7 +5357,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 
@@ -5459,22 +5511,11 @@ msgstr "είναι μέλος των ακολούθων ομάδων"
 msgid "Updating Metadata..."
 msgstr "Ενημέρωση Μεταδεδομένων..."
 
-msgid "ERROR"
-msgstr ""
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr ""
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr ""
-
-msgid "Return to Document"
-msgstr ""
-
-#, fuzzy
-#| msgid "Return to"
-msgid "Return to Map"
-msgstr "Επιστροφή στο"
 
 msgid "Identification"
 msgstr ""
@@ -5533,6 +5574,9 @@ msgid "Online Link"
 msgstr ""
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 #, fuzzy
@@ -5936,12 +5980,6 @@ msgstr "εεεε-μμ-ηη"
 msgid "Date ends before:"
 msgstr "Ημερομηνία τελειώνει πριν από:"
 
-msgid "page"
-msgstr "σελίδα"
-
-msgid "of"
-msgstr "από"
-
 msgid "Search by region"
 msgstr "Αναζήτηση"
 
@@ -5995,9 +6033,6 @@ msgstr "Z - A"
 
 msgid "Most popular"
 msgstr "Πιο δημοφιλή"
-
-msgid "Thesaurus"
-msgstr ""
 
 msgid "Text"
 msgstr "Κείμενο"
@@ -6139,6 +6174,11 @@ msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
 #, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "Όλα τα περιεχόμενα"
+
+#, fuzzy
 #| msgid "Could not find any kml files inside the uploaded kmz"
 msgid "Could not access to uploaded data."
 msgstr "Δεν ήταν δυνατή η εύρεση αρχείων kml στο ανεβασμένο αρχείο kmz"
@@ -6159,6 +6199,22 @@ msgid "Layer already exists"
 msgstr "Επίπεδο Δημιουργήθηκε"
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6205,20 +6261,19 @@ msgid ""
 "To support the time step, you must enable the OGC_SERVER DATASTORE option"
 msgstr ""
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, python-brace-format
+msgid "Unsupported file type: {e.message}"
 msgstr ""
 
-#, python-format
-msgid "File does not exist: %s"
+#, python-brace-format
+msgid "File does not exist: {absolute_base_file}"
 msgstr ""
 
-#, python-format
-msgid "unknown item state: %s"
+#, python-brace-format
+msgid "unknown item state: {task.state}"
 msgstr ""
 
-#, python-format
-msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr ""
 
 #, fuzzy
@@ -6237,3 +6292,105 @@ msgstr "Άκυρο επίπεδο δικαιωμάτων."
 
 msgid "Permission Denied"
 msgstr "Πρόσβαση Απορρίφθηκε"
+
+#~ msgid "batch edit"
+#~ msgstr "μαζική επεξεργασία"
+
+#, fuzzy
+#~| msgid "Set permissions"
+#~ msgid "set permissions"
+#~ msgstr "Ρυθμίστε τα δικαιώματα"
+
+#~ msgid "documents"
+#~ msgstr "έγγραφα"
+
+#~ msgid "data"
+#~ msgstr "δεδομένα"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "apps explore"
+#~ msgstr "Εφαρμογή GeoExplorer"
+
+#~ msgid "groups explore"
+#~ msgstr "εξερεύνηση ομάδων"
+
+#~ msgid "groups create"
+#~ msgstr "δημιουργία ομάδων"
+
+#~ msgid "groups"
+#~ msgstr "ομάδες"
+
+#~ msgid "groups remove"
+#~ msgstr "διαγραφή ομάδων"
+
+#~ msgid "groups update"
+#~ msgstr "ενημέρωση ομάδας"
+
+#, fuzzy
+#~| msgid "layers upload"
+#~ msgid "layers append"
+#~ msgstr "μεταφόρτωση επιπέδων"
+
+#~ msgid "layers"
+#~ msgstr "επίπεδα"
+
+#~ msgid "layers explore"
+#~ msgstr "εξερεύνηση επιπέδων"
+
+#~ msgid "layers upload"
+#~ msgstr "μεταφόρτωση επιπέδων"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "Ελλιπής Μεταφόρτωση"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "Έχετε τις παρακάτω ελλιπείς μεταφορτώσεις"
+
+#~ msgid "Resume"
+#~ msgstr "Περίληψη"
+
+#~ msgid "maps"
+#~ msgstr "χάρτες"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "maps explore"
+#~ msgstr "Εφαρμογή GeoExplorer"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "people explore"
+#~ msgstr "Εφαρμογή GeoExplorer"
+
+#, fuzzy
+#~| msgid "Invite people"
+#~ msgid "edit people"
+#~ msgstr "Προσκαλέστε τους ανθρώπους"
+
+#~ msgid "last updated on"
+#~ msgstr "τελευταία ενημέρωση"
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "Διαγραφή, και μην με ρωτήσετε ξανά."
+
+#~ msgid "Available layers"
+#~ msgstr "Διαθέσιμα Επίπεδα"
+
+#~ msgid "Save Map"
+#~ msgstr "Αποθήκευση Χάρτη"
+
+#~ msgid "Climate"
+#~ msgstr "Κλιμα"
+
+#~ msgid "Geoscience"
+#~ msgstr "Γεωεπιστημη"
+
+#~ msgid "Utilities"
+#~ msgstr "Υπηρεσιες"
+
+#~ msgid "Unable to delete layer"
+#~ msgstr "Αδυναμία διαγραφής επιπέδου"
+
+#~ msgid "Thumbnail saved"
+#~ msgstr "Αποθήκευση Προεπισκόπησης"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -29,6 +28,7 @@ from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 
 from dal import views, autocomplete
 from user_messages.models import Message
@@ -58,6 +58,16 @@ from geonode.base.models import (
 )
 
 
+def get_url_for_app_model(model, model_class):
+    return reverse(f'admin:{model_class._meta.app_label}_{model}_changelist')
+    # was: return f'/admin/{model_class._meta.app_label}/{model}/'
+
+
+def get_url_for_model(model):
+    return reverse(f'admin:{model.lower()}s_{model.lower()}_changelist')
+    # was: f'/admin/{model.lower()}s/{model.lower()}/'
+
+
 def user_and_group_permission(request, model):
     if not request.user.is_superuser:
         raise PermissionDenied
@@ -72,8 +82,7 @@ def user_and_group_permission(request, model):
     ids = request.POST.get("ids")
     if "cancel" in request.POST or not ids:
         return HttpResponseRedirect(
-            f'/admin/{model_class._meta.app_label}/{model}/'
-        )
+            get_url_for_app_model(model, model_class))
 
     if request.method == 'POST':
         form = UserAndGroupPermissionsForm(request.POST)
@@ -104,8 +113,7 @@ def user_and_group_permission(request, model):
                     (permissions_names, resources_names, users_usernames, groups_names, delete_flag))
 
         return HttpResponseRedirect(
-            f'/admin/{model_class._meta.app_label}/{model}/'
-        )
+            get_url_for_app_model(model, model_class))
 
     form = UserAndGroupPermissionsForm({
         'permission_type': ('r', ),
@@ -135,8 +143,7 @@ def batch_modify(request, model):
 
     if "cancel" in request.POST or not ids:
         return HttpResponseRedirect(
-            f'/admin/{model.lower()}s/{model.lower()}/'
-        )
+            get_url_for_model(model))
 
     if request.method == 'POST':
         form = BatchEditForm(request.POST)
@@ -177,8 +184,8 @@ def batch_modify(request, model):
                 keywords_through.objects.bulk_create(new_keywords, ignore_conflicts=True)
 
             return HttpResponseRedirect(
-                f'/admin/{model.lower()}s/{model.lower()}/'
-            )
+                get_url_for_model(model))
+
         return render(
             request,
             template,
@@ -323,15 +330,19 @@ class ThesaurusAvailable(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         tid = self.request.GET.get("sysid")
         lang = self.request.GET.get("lang")
-
         qs_local = []
         qs_non_local = []
         for key in ThesaurusKeyword.objects.filter(thesaurus_id=tid):
             label = ThesaurusKeywordLabel.objects.filter(keyword=key).filter(lang=lang)
+            if self.q:
+                label = label.filter(label__icontains=self.q)
             if label.exists():
                 qs_local.append(label.get())
             else:
-                qs_non_local.append(key)
+                if self.q in key.alt_label:
+                    qs_non_local.append(key)
+                elif not self.q:
+                    qs_non_local.append(key)
 
         return qs_non_local + qs_local
 

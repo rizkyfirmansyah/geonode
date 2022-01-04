@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2016-08-23 13:57+0000\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Thai (http://www.transifex.com/geonode/geonode/language/th/)\n"
@@ -143,9 +143,6 @@ msgstr "ข้อมูลมีการปรับปรุงทุก 3 เ
 msgid "No information provided"
 msgstr "ไม่มีการให้ข้อมูล"
 
-msgid "Category"
-msgstr "หมวด"
-
 msgid "Category is required."
 msgstr "หมวดเป็นสิ่งที่จำเป็น"
 
@@ -217,6 +214,9 @@ msgstr "ภูมิภาค"
 msgid "Group"
 msgstr "กลุ่ม"
 
+msgid "Category"
+msgstr "หมวด"
+
 msgid "License"
 msgstr "ใบอนุญาต"
 
@@ -249,6 +249,9 @@ msgstr ""
 msgid "function performed by the responsible party"
 msgstr "ฟังก์ชั่นดำเนินการโดยบุคคลที่รับผิดชอบ"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "คำบรรยายสั้นๆเกี่ยวกับเนื้อหาของแหล่งข้อมูล"
+
 msgid "reference date for the cited resource"
 msgstr "วันที่อ้างอิงสำหรับแหล่งที่มา"
 
@@ -258,8 +261,13 @@ msgstr "ระบุเมื่อมีเหตุการณ์ที่เ
 msgid "version of the cited resource"
 msgstr "รุ่นของแหล่งที่มา"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "คำบรรยายสั้นๆเกี่ยวกับเนื้อหาของแหล่งข้อมูล"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr ""
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "วัตถุประสงค์ในการสร้างแหล่งข้อมูลโดยสรุป"
@@ -323,27 +331,17 @@ msgid ""
 "dataset"
 msgstr "คำอธิบายทั่วไปของความรู้ผลิตข้อมูลเกี่ยวกับเชื้อสายของชุดข้อมูล"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr ""
-
-msgid "DOI"
-msgstr ""
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "แอตทริบิวต์"
-
 msgid "title"
 msgstr "ชื่อเรื่อง"
 
 msgid "name by which the cited resource is known"
 msgstr "ชื่อของแหล่งข้อมูลที่เป็นที่รู้จักกัน"
+
+msgid "abstract"
+msgstr "บทคัดย่อ"
+
+msgid "purpose"
+msgstr "วัตถุประสงค์"
 
 msgid "date"
 msgstr "วันที่"
@@ -354,11 +352,13 @@ msgstr "ชนิดของวันที่"
 msgid "edition"
 msgstr "รุ่น"
 
-msgid "abstract"
-msgstr "บทคัดย่อ"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "แอตทริบิวต์"
 
-msgid "purpose"
-msgstr "วัตถุประสงค์"
+msgid "DOI"
+msgstr ""
 
 msgid "maintenance frequency"
 msgstr "ความถี่ในการดูแลรักษา"
@@ -453,6 +453,12 @@ msgstr ""
 #| msgid "Resources"
 msgid "Resource Type"
 msgstr "แหล่งข้อมูล"
+
+msgid "Metadata"
+msgstr "คำอธิบายข้อมูล"
+
+msgid "If true, will be excluded from search"
+msgstr ""
 
 msgid "For example \"kml\""
 msgstr "ตัวอย่าง เช่น \"kml\""
@@ -554,9 +560,6 @@ msgstr ""
 msgid "offline"
 msgstr ""
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr ""
 
@@ -580,9 +583,6 @@ msgstr "ดูแผนที่"
 msgid "Batch Edit"
 msgstr ""
 
-msgid "batch edit"
-msgstr ""
-
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -592,11 +592,6 @@ msgstr "ส่ง"
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Set Permissions"
-msgstr "ตั้งค่าสิทธิ์"
-
-#, fuzzy
-#| msgid "Set permissions"
-msgid "set permissions"
 msgstr "ตั้งค่าสิทธิ์"
 
 msgid "Discover the available datasets."
@@ -712,34 +707,6 @@ msgstr "คำอธิบาย"
 msgid "GeoNode Client Library"
 msgstr "วิธีใช้ GeoNode"
 
-msgid "Explore Maps"
-msgstr "สำรวจแผนที่"
-
-msgid "Edit Map"
-msgstr "แก้ไขแผนที่"
-
-msgid "Update"
-msgstr "แก้ไข"
-
-msgid "Create a New Map"
-msgstr "สร้างแผนที่ใหม่"
-
-#, fuzzy
-#| msgid "Available styles"
-msgid "Available layers"
-msgstr "สไตล์ที่สามารถใช้ได้"
-
-msgid "Save"
-msgstr "บันทึก"
-
-#, fuzzy
-#| msgid "Remove Map"
-msgid "Save Map"
-msgstr "ลบแผนที่"
-
-msgid "Close"
-msgstr "ปิด"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -760,7 +727,7 @@ msgid ""
 "climate, atmospheric conditions, climate change, precipitation."
 msgstr ""
 
-msgid "Climate"
+msgid "Climatology Meteorology Atmosphere"
 msgstr ""
 
 msgid ""
@@ -776,6 +743,9 @@ msgstr ""
 msgid ""
 "Height above or below sea level. Examples: altitude, bathymetry, digital "
 "elevation models, slope, derived products."
+msgstr ""
+
+msgid "Elevation"
 msgstr ""
 
 msgid ""
@@ -806,8 +776,10 @@ msgid ""
 "erosion."
 msgstr ""
 
-msgid "Geoscience"
-msgstr ""
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "ข้อมูลเพิ่มเติม"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -823,10 +795,13 @@ msgid ""
 "images, annotations."
 msgstr ""
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 
 msgid "Inland Waters"
@@ -837,13 +812,16 @@ msgid ""
 "grounds, military transportation, information collection."
 msgstr ""
 
-msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr ""
 
 msgid ""
 "Positional information and services. Examples: addresses, geodetic networks, "
 "control points, postal zones and services, place names."
 msgstr ""
+
+msgid "Location"
+msgstr "ตำแหน่ง"
 
 msgid ""
 "Features and characteristics of salt water bodies (excluding inland waters). "
@@ -858,7 +836,7 @@ msgid ""
 "Examples: land use maps, zoning maps, cadastral surveys, land ownership."
 msgstr ""
 
-msgid "Planning"
+msgid "Planning Cadastre"
 msgstr ""
 
 msgid ""
@@ -910,10 +888,8 @@ msgid ""
 "telecommunication, radio, communication networks."
 msgstr ""
 
-#, fuzzy
-#| msgid "User Activities"
-msgid "Utilities"
-msgstr "กิจกรรมของผู้ใช้"
+msgid "Utilities Communication"
+msgstr ""
 
 #, fuzzy
 #| msgid "Document Updated"
@@ -1024,11 +1000,6 @@ msgstr "URL ของเอกสาร ถ้าหากมาจากภา�
 msgid "URL"
 msgstr "URL"
 
-#, fuzzy
-#| msgid "Documents"
-msgid "documents"
-msgstr "เอกสาร"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1071,9 +1042,6 @@ msgstr "แก้ไขเอกสาร"
 msgid "Request change"
 msgstr "ร้องขอการดาวน์โหลด"
 
-msgid "Metadata"
-msgstr "คำอธิบายข้อมูล"
-
 msgid "Wizard"
 msgstr ""
 
@@ -1091,6 +1059,9 @@ msgstr "แทนที่"
 
 msgid "Remove"
 msgstr "ลบ"
+
+msgid "Close"
+msgstr "ปิด"
 
 msgid "Download Metadata"
 msgstr "ดาวน์โหลดคำอธิบายข้อมูล"
@@ -1139,11 +1110,6 @@ msgstr "สำรวจเอกสาร"
 msgid "Upload Documents"
 msgstr "อัพโหลดเอกสาร"
 
-#, fuzzy
-#| msgid "dataset"
-msgid "data"
-msgstr "ชุดข้อมูล"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr ""
@@ -1169,6 +1135,9 @@ msgstr "ผู้ให้คำอธิบายข้อมูล"
 msgid "<< Back"
 msgstr ""
 
+msgid "Update"
+msgstr "แก้ไข"
+
 #, fuzzy
 #| msgid "Next"
 msgid "Next >>"
@@ -1184,6 +1153,9 @@ msgstr "แก้ไขคำอธิบายข้อมูล"
 
 msgid "Editing details for"
 msgstr "แก้ไขรายละเอียดสำหรับ"
+
+msgid "Return to Document"
+msgstr ""
 
 msgid "Deleting"
 msgstr "กำลังลบ"
@@ -1280,6 +1252,11 @@ msgid "Location and Licenses"
 msgstr ""
 
 #, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Required Metadata"
+msgstr "แก้ไขคำอธิบายข้อมูลของเซอร์วิส"
+
+#, fuzzy
 #| msgid "Download Metadata"
 msgid "Optional Metadata"
 msgstr "ดาวน์โหลดคำอธิบายข้อมูล"
@@ -1303,17 +1280,12 @@ msgid "Responsible and Permissions"
 msgstr "เปลี่ยนแปลงสิทธิ์ชั้นข้อมูล"
 
 #, fuzzy
-#| msgid "Message Inbox"
-msgid "Message box"
-msgstr "ข้อความขาเข้า"
-
-msgid "OK"
-msgstr ""
-
-#, fuzzy
 #| msgid "Is Published"
 msgid "Publishing"
 msgstr "ที่มีการเผยแพร่"
+
+msgid "You are not allowed to view this document."
+msgstr "คุณไม่ได้รับอนุญาตให้ดูเอกสารนี้"
 
 msgid "You are not permitted to delete this document"
 msgstr "คุณไม่มีสิทธิ์ลบเอกสารนี้"
@@ -1339,9 +1311,6 @@ msgstr "ไม่มีการระบุ"
 #| msgid "Page Not Found"
 msgid "Not found"
 msgstr "ไม่พบหน้าเว็บ"
-
-msgid "You are not allowed to view this document."
-msgstr "คุณไม่ได้รับอนุญาตให้ดูเอกสารนี้"
 
 msgid "You must set a point of contact for this resource"
 msgstr "คุณจะต้องเพิ่มที่อยู่สำหรับติดต่อให้กับทรัพยากรนี้"
@@ -1510,11 +1479,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "GeoExplorer"
-msgid "apps explore"
-msgstr "GeoExplorer"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "สร้างแผนที่ใหม่"
@@ -1634,6 +1598,15 @@ msgstr "ให้คะแนนชั้นข้อมูล"
 msgid "A rating was given to a layer"
 msgstr "ชั้นข้อมูลได้รับการให้คะแนนแล้ว"
 
+msgid "Points"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 #, fuzzy
 #| msgid "Layer Name"
 msgid "Layer name"
@@ -1669,6 +1642,22 @@ msgstr "แอตทริบิวต์"
 
 msgid "Create"
 msgstr "สร้าง"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "ช่วงเวลา"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "ไม่มีการระบุ"
 
 #, fuzzy
 #| msgid "Not provided"
@@ -1827,11 +1816,6 @@ msgid "Explore Group Categories"
 msgstr "สำรวจกลุ่ม"
 
 #, fuzzy
-#| msgid "Categories"
-msgid "groups explore"
-msgstr "หมวด"
-
-#, fuzzy
 #| msgid "Create a Group"
 msgid "Create a New Group Category"
 msgstr "สร้างกลุ่ม"
@@ -1850,16 +1834,6 @@ msgstr "ลบกลุ่ม"
 
 msgid "Create Group"
 msgstr "สร้างกลุ่ม"
-
-#, fuzzy
-#| msgid "A Map was created"
-msgid "groups create"
-msgstr "สร้างแผนที่เสร็จแล้ว"
-
-#, fuzzy
-#| msgid "group"
-msgid "groups"
-msgstr "กลุ่ม"
 
 #, fuzzy
 #| msgid "last modified"
@@ -1938,9 +1912,6 @@ msgstr "เพิ่มสมาชิก"
 msgid "Add Group Members"
 msgstr "จัดการสมาชิกในกลุ่ม"
 
-msgid "groups remove"
-msgstr ""
-
 #, python-format
 msgid ""
 "\n"
@@ -1955,11 +1926,6 @@ msgstr "ลบแผนที่/ข้อมูลจากกลุ่ม"
 
 msgid "Remove selected maps/data"
 msgstr "ลบแผนที่/ข้อมูลที่เลือก"
-
-#, fuzzy
-#| msgid "A Map was updated"
-msgid "groups update"
-msgstr "แผนที่ได้รับการปรับปรุงแล้ว"
 
 #, fuzzy
 #| msgid "Edit Group Details"
@@ -1984,16 +1950,19 @@ msgstr "สร้างกลุ่ม"
 msgid "Edit Group Category"
 msgstr "สร้างกลุ่ม"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "บันทึก"
+
+#, python-brace-format
+msgid "The e-mail address '{email}' has already been invited."
 msgstr ""
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, python-brace-format
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr ""
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, python-brace-format
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr ""
 
 #, fuzzy
@@ -2257,6 +2226,22 @@ msgstr "แก้ไขครั้งล่าสุด"
 msgid "date when attribute statistics were last updated"
 msgstr "วันที่สถิติเกี่ยวกับแอตทริบิวต์มีการปรับปรุงล่าสุด"
 
+#, fuzzy
+#| msgid "Edit Layer"
+msgid "Append to Layer"
+msgstr "แก้ไขชั้นข้อมูล"
+
+msgid "Return to Layer"
+msgstr ""
+
+#, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Preserve Metadata XML"
+msgstr "แก้ไขคำอธิบายข้อมูลของเซอร์วิส"
+
+msgid "Select the charset or leave default"
+msgstr "เลือกชุดอักขระหรือใช้ค่าเริ่มต้น"
+
 msgid "Home"
 msgstr "บ้าน"
 
@@ -2265,11 +2250,6 @@ msgstr "เปลี่ยนที่อยู่สำหรับติดต
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "เพิ่มที่อยู่ที่ติดต่อได้ให้กับชั้นข้อมูลด้านล่างนี้:"
-
-#, fuzzy
-#| msgid "Layers"
-msgid "layers"
-msgstr "ชั้นข้อมูล"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr ""
@@ -2287,9 +2267,6 @@ msgid "Bounding Box"
 msgstr ""
 
 msgid "Time"
-msgstr ""
-
-msgid "Elevation"
 msgstr ""
 
 msgid "Actions"
@@ -2424,6 +2401,9 @@ msgid "Layer"
 msgid_plural "Layers"
 msgstr[0] "ชั้นข้อมูล"
 
+msgid "Append Data"
+msgstr ""
+
 msgid "Edit data"
 msgstr "แก้ไขข้อมูล"
 
@@ -2552,11 +2532,6 @@ msgstr "การกระทำนี้ส่งผลต่อแผนที
 msgid "No maps are using this layer"
 msgstr "ไม่มีแผนที่ใดใช้ชั้นข้อมูลนี้"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers explore"
-msgstr "อัพโหลดชั้นข้อมูลเสร็จแล้ว"
-
 msgid "Upload Layers"
 msgstr "อัพโหลดชั้นข้อมูล"
 
@@ -2580,9 +2555,6 @@ msgstr ""
 "หมายเหตุ: คำอธิบายข้อมูลต้นฉบับของแผนที่นี้ถูกสร้างขึ้นโดยนำเข้าคำอธิบายข้อมูลในรูปแบบไฟล์ XML "
 "คำอธิบายข้อมูลของ GeoNode รองรับบางส่วนของมาตรฐาน ISO, FGDC, และ Dublin Core "
 "อาจจะทำให้มีบางส่วนของคำอธิบายต้นฉบับของคุณสูญเสียไป"
-
-msgid "Return to Layer"
-msgstr ""
 
 #, python-format
 msgid ""
@@ -2609,39 +2581,19 @@ msgstr "ลำดับการแสดงผล"
 msgid "Visible"
 msgstr "สามารถมองเห็นได้?"
 
+msgid "ERROR"
+msgstr ""
+
+msgid "Following items are required:"
+msgstr ""
+
 #, fuzzy
 #| msgid "Upload Layer"
 msgid "Upload Layer Metadata"
 msgstr "อัพโหลดชั้นข้อมูล"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers upload"
-msgstr "อัพโหลดชั้นข้อมูลเสร็จแล้ว"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr ""
-
-msgid "Incomplete Uploads"
-msgstr "อัพโหลดไม่สมบูรณ์"
-
-msgid "You have the following incomplete uploads"
-msgstr "คุณมีไฟล์ที่อัพโหลดไม่เสร็จดังต่อไปนี้"
-
-msgid "last updated on"
-msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
-
-msgid "Resume"
-msgstr "ประวัติย่อ"
-
-msgid "Delete"
-msgstr "ลบ"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "คุณแน่ใจแล้วหรือว่าต้องการลบไฟล์ที่จะอัพโหลดนี้?"
-
-msgid "Delete, and don't ask me again."
-msgstr "ลบ และไม่ต้องถามฉันอีก"
 
 msgid "Remove Layers"
 msgstr "ลบชั้นข้อมูล"
@@ -2660,26 +2612,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "แทนที่ชั้นข้อมูล"
 
-#, fuzzy
-#| msgid "Edit Service Metadata"
-msgid "Preserve Metadata XML"
-msgstr "แก้ไขคำอธิบายข้อมูลของเซอร์วิส"
-
-msgid "Select the charset or leave default"
-msgstr "เลือกชุดอักขระหรือใช้ค่าเริ่มต้น"
-
 msgid "Manage Styles"
 msgstr "จัดการสไตล์"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"จัดการสไตล์ที่สามารถใช้งานได้สำหรับ <a href=\"/layers/%(layer_title)s\">"
+"จัดการสไตล์ที่สามารถใช้งานได้สำหรับ <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>"
 
 msgid "Layer Default Style"
@@ -2721,6 +2665,53 @@ msgstr "แอตทริบิวต์"
 
 msgid "Upload Layer"
 msgstr "อัพโหลดชั้นข้อมูล"
+
+#, fuzzy
+#| msgid "Download Metadata"
+msgid "Upload status"
+msgstr "ดาวน์โหลดคำอธิบายข้อมูล"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "ลบ"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "อัพโหลดเอกสาร"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "สร้าง"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "of"
+msgstr "จาก"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "อัพโหลดไม่สมบูรณ์"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "คุณแน่ใจแล้วหรือว่าต้องการลบไฟล์ที่จะอัพโหลดนี้?"
 
 #, fuzzy
 #| msgid "Upload Layer Step 2"
@@ -3207,31 +3198,50 @@ msgstr "เดี๋ยวนี้"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr "คุณกำลังพยายามที่จะแทนที่ชั้นข้อมูลเวกเตอร์ด้วยชั้นข้อมูลแรสเตอร์"
 
-msgid "You are attempting to replace a vector layer with a raster."
+msgid ""
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
+msgid "You are attempting to {action_type} a vector layer with a raster."
 msgstr "คุณกำลังพยายามที่จะแทนที่ชั้นข้อมูลเวกเตอร์ด้วยชั้นข้อมูลแรสเตอร์"
 
-msgid "You are attempting to replace a raster layer with a vector."
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a raster layer with a vector."
+msgid "You are attempting to {action_type} a raster layer with a vector."
 msgstr "คุณกำลังพยายามที่จะแทนที่ชั้นข้อมูลแรสเตอร์ด้วยชั้นข้อมูลเวกเตอร์"
 
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr "คุณกำลังพยายามที่จะแทนที่ชั้นข้อมูลเวกเตอร์ด้วยชั้นข้อมูลแรสเตอร์"
+
+#, python-brace-format
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
 msgstr ""
 
 msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 
 msgid ""
@@ -3265,18 +3275,21 @@ msgstr "คุณไม่มีสิทธิ์ดูชั้นข้อม
 msgid "Failed to upload the layer"
 msgstr "ไฟล์ที่ต้องการอัพโหลด"
 
-#, fuzzy
-#| msgid "Unable to delete layer"
-msgid "Unable to delete layer"
-msgstr "ไม่สามารถลบชั้นข้อมูลได้"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr "คุณกำลังพยายามที่จะแทนที่ชั้นข้อมูลเวกเตอร์ด้วยชั้นข้อมูลแรสเตอร์"
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr "คุณกำลังพยายามที่จะแทนที่ชั้นข้อมูลแรสเตอร์ด้วยชั้นข้อมูลเวกเตอร์"
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
 "group before deleting."
 msgstr "ชั้นข้อมูลนี้เป็นสมาชิกของกลุ่มชั้นข้อมูล คุณต้องนำชั้นข้อมูลออกจากกลุ่มก่อนที่จะทำการลบ"
 
-msgid "couldn't generate thumbnail"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Remote Thumbnail"
+msgid "couldn't generate thumbnail: %s"
+msgstr "Remote Thumbnail"
 
 msgid "Map Created"
 msgstr "สร้างแผนที่เสร็จแล้ว"
@@ -3378,9 +3391,6 @@ msgstr "layer params"
 msgid "source params"
 msgstr "source params"
 
-msgid "maps"
-msgstr ""
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr ""
 
@@ -3414,6 +3424,9 @@ msgstr "คัดลอกแผนที่นี้"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "ทำสำเนาแผนที่นี้แล้วแก้ไขตามความต้องการของคุณ"
+
+msgid "Create a New Map"
+msgstr "สร้างแผนที่ใหม่"
 
 msgid ""
 "\n"
@@ -3470,10 +3483,11 @@ msgstr "ดาวน์โหลดเสร็จสิ้น"
 msgid "Download Failed"
 msgstr "ดาวน์โหลดล้มเหลว"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "maps explore"
-msgstr "GeoExplorer"
+msgid "Edit Map"
+msgstr "แก้ไขแผนที่"
+
+msgid "Explore Maps"
+msgstr "สำรวจแผนที่"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3485,6 +3499,11 @@ msgstr ""
 "หมายเหตุ: คำอธิบายข้อมูลต้นฉบับของแผนที่นี้ถูกสร้างขึ้นโดยนำเข้าคำอธิบายข้อมูลจากไฟล์ XML\n"
 "คำอธิบายข้อมูลของ GeoNode รองรับบางส่วนของมาตรฐาน ISO, FGDC, และ Dublin Core\n"
 "อาจจะทำให้มีบางส่วนของคำอธิบายต้นฉบับของคุณสูญเสียไป"
+
+#, fuzzy
+#| msgid "Return to"
+msgid "Return to Map"
+msgstr "ย้อนกลับไปยัง"
 
 msgid "Remove Map"
 msgstr "ลบแผนที่"
@@ -3520,11 +3539,6 @@ msgstr "คุณไม่ได้รับอนุญาตให้ดูแ
 
 #, fuzzy
 #| msgid "Thumbnail"
-msgid "Thumbnail saved"
-msgstr "Thumbnail"
-
-#, fuzzy
-#| msgid "Thumbnail"
 msgid "error saving thumbnail"
 msgstr "Thumbnail"
 
@@ -3542,7 +3556,7 @@ msgstr ""
 msgid "Alert situation reported by monitoring"
 msgstr ""
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr ""
 
 #, fuzzy
@@ -3617,7 +3631,8 @@ msgstr "วันที่อ้างอิงสำหรับแหล่ง
 msgid "Show data for specific label"
 msgstr "วันที่อ้างอิงสำหรับแหล่งที่มา"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, python-brace-format
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr ""
 
 msgid ""
@@ -3786,7 +3801,8 @@ msgstr ""
 msgid "Is it active"
 msgstr ""
 
-msgid "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
 msgstr ""
 
 msgid "Value must be above"
@@ -4011,11 +4027,6 @@ msgstr "สร้างโปรไฟล์"
 msgid "Profile of "
 msgstr "โปรไฟล์ของ"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "people explore"
-msgstr "GeoExplorer"
-
 msgid "Not provided."
 msgstr "ไม่มีการระบุ"
 
@@ -4024,9 +4035,6 @@ msgstr "ตำแหน่ง"
 
 msgid "Organization"
 msgstr "องค์กร"
-
-msgid "Location"
-msgstr "ตำแหน่ง"
 
 msgid "Not provided"
 msgstr "ไม่มีการระบุ"
@@ -4090,11 +4098,6 @@ msgstr "กิจกรรมของผู้ใช้"
 msgid "Resources"
 msgstr "แหล่งข้อมูล"
 
-#, fuzzy
-#| msgid "Invite people"
-msgid "edit people"
-msgstr "เชิญคนอื่น"
-
 msgid "Edit Your Profile"
 msgstr "แก้ไขโปรไฟล์ของคุณ"
 
@@ -4110,7 +4113,9 @@ msgstr "แก้ไขโปรไฟล์"
 msgid "Explore People"
 msgstr "สำรวจผู้คน"
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "ชื่อผู้ใช้ของคุณสำหรับ"
 
 msgid "Your username has been emailed to you."
@@ -4430,9 +4435,9 @@ msgstr "ได้รับการร้องขอการดาวน์โ
 msgid "Resource is already being processed"
 msgstr "ได้รับการร้องขอการดาวน์โหลดทรัพยากรแล้ว"
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "A resource's download has been requested"
-msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "ได้รับการร้องขอการดาวน์โหลดทรัพยากรแล้ว"
 
 #, fuzzy
@@ -4448,9 +4453,9 @@ msgstr "คุณไม่มีสิทธิ์ลบเซอร์วิส
 msgid "You are not permitted to remove this service."
 msgstr "คุณไม่มีสิทธิ์ลบเซอร์วิสนี้"
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Service has been created:"
-msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "สร้างเซอร์วิสเสร็จแล้ว:"
 
 msgid "created"
@@ -4714,6 +4719,14 @@ msgstr ""
 #| msgid "Delete from Favorites"
 msgid "Delete Geo Limits"
 msgstr "ลบออกจากรายการโปรด"
+
+#, fuzzy
+#| msgid "Message Inbox"
+msgid "Message box"
+msgstr "ข้อความขาเข้า"
+
+msgid "OK"
+msgstr ""
 
 msgid "Mandatory files : SHP , DBF"
 msgstr ""
@@ -5475,13 +5488,13 @@ msgstr ""
 #| "</p>\n"
 #| "\n"
 #| "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-#| "    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+#| "    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 #| "uploaded to this GeoNode.</p>\n"
 #| "    <p>All data can be downloaded in a variety of formats, for use in "
 #| "other applications.</p>\n"
 #| "\n"
 #| "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-#| "    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+#| "    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 #| "developers to get started building applications against the GeoNode. It "
 #| "includes instructions on using the web services, links to the source code "
 #| "of the GeoNode, and information about the open source projects used to "
@@ -5490,7 +5503,7 @@ msgstr ""
 #| "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 #| "    <p>The GeoNode allows users to create and share maps with one another."
 #| "</p>\n"
-#| "    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration "
+#| "    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration "
 #| "on GeoNode.  From here you can <strong>search for a map</strong> or "
 #| "<strong>create a map</strong>, which will open the <a href=\"/maps/new"
 #| "\">Map Composer</a>.</p>\n"
@@ -5502,10 +5515,10 @@ msgstr ""
 #| "p>\n"
 #| "\n"
 #| "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-#| "    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</"
-#| "a> tab and click the <a href=\"/maps/new\">create your own map</a> link.</"
+#| "    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</"
+#| "a> tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</"
 #| "p>\n"
-#| "    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> "
+#| "    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> "
 #| "with a base layer loaded.</p>\n"
 #| "    <p>To add data layers from the GeoNode click on the green plus button "
 #| "located below the layers tab on the left hand side of the screen. This "
@@ -5540,7 +5553,7 @@ msgstr ""
 #| "    </ol>\n"
 #| "    <p>This will put an interactive widget showing you map in your web "
 #| "page or blog post.</p>\n"
-#| "    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+#| "    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 #| "button to export the map. Just be sure to save the map before exporting "
 #| "if there are changes that you want others to see. It exports the last "
 #| "saved version, not the last viewed version.</p>\n"
@@ -5557,7 +5570,7 @@ msgstr ""
 #| "      <li>Save the map.</li>\n"
 #| "    </ol>\n"
 #| "    <p>You will be able to see your new map when you search for it from "
-#| "the <a href=\"/maps\">Maps</a> tab.</p> \n"
+#| "the <a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p> \n"
 #| "    "
 msgid ""
 "\n"
@@ -5566,13 +5579,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5581,9 +5594,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5592,9 +5605,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5628,7 +5641,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5644,7 +5657,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 "\n"
@@ -5653,22 +5666,22 @@ msgstr ""
 "p>\n"
 "\n"
 "<h4 id=\"browsing-data\">การเรียกดูชั้นข้อมูล</h4>\n"
-"<p>แท็บ <a href=\"/layers\">ชั้นข้อมูล</a> เป็นที่ที่คุณสามารถเรียกดูข้อมูลที่ถูกอัพโหลดมาที่ "
+"<p>แท็บ <a href=\"{{ url_layer_browse }}\">ชั้นข้อมูล</a> เป็นที่ที่คุณสามารถเรียกดูข้อมูลที่ถูกอัพโหลดมาที่ "
 "GeoNode นี้</p>\n"
 "\n"
 "<p>ข้อมูลทั้งหมดสามารถดาวน์โหลดได้ในรูปแบบที่หลากหลายเพื่อใช้ในแอพพลิเคชันอื่นๆ</p>\n"
 "\n"
 "<h4 id=\"developer-access\">การเข้าถึงของนักพัฒนา</h4>\n"
-"<p>หน้า <a href=\"/developer\">นักพัฒนา</a> "
+"<p>หน้า <a href=\"{{ url_developer }}\">นักพัฒนา</a> "
 "เป็นจุดเริ่มต้นสำหรับนักพัฒนาที่จะสร้างแอพพลิเคชันกับ GeoNode รวมถึงคำแนะในการใช้เว็บเซอร์วิส "
 "ลิงค์ของซอร์สโค๊ดของ GeoNode และข้อมูลเกี่ยวกับโครงการโอเพ่นซอร์สที่ใช้ในการสร้างมันขึ้นมาด้วย</"
 "p>\n"
 "\n"
 "<h4 id=\"browsing-maps\">การเรียกดูแผนที่</h4>\n"
 "<p>ผู้ใช้สามารถสร้างและแบ่งปันแผนที่ระหว่างผู้ใช้ด้วยกันผ่าน GeoNode ได้</p>\n"
-"<p>แท็บ <a href=\"/maps\">แผนที่</a> เป็นประตูสู่การสำรวจแผนที่บน GeoNode "
+"<p>แท็บ <a href=\"{{ url_maps_browse }}\">แผนที่</a> เป็นประตูสู่การสำรวจแผนที่บน GeoNode "
 "ที่นี่คุณสามารถ<strong>ค้นหาแผนที่</strong>หรือ<strong>สร้างแผนที่</strong>ซึ่งจะเปิดหน้า <a "
-"href=\"/maps/new\">Map Composer</a>ขึ้นมา</p>\n"
+"href=\"{{ url_maps_new }}\">Map Composer</a>ขึ้นมา</p>\n"
 "<h5>มุมมอง Google Earth</h5>\n"
 "<p>แผนที่ใดๆที่เปิดดูในหน้าต่างแก้ไขแผนที่สามารถดูในมุมมอง 3 มิติได้ด้วยปลั๊กอิน Google Earth "
 "เมื่อต้องการสลับไปยังมุมมอง 3 มิติให้คลิกที่โลโก้ของ Google Earth "
@@ -5676,9 +5689,9 @@ msgstr ""
 "ก็จะมีการแจ้งเตือนให้ติดตั้งก่อน</p>\n"
 "\n"
 "<h4 id=\"creating-a-map\">การสร้างแผนที่</h4>\n"
-"<p>การสร้างแผนที่ใหม่ให้ไปที่แท็บ <a href=\"/maps\">Contributed Maps</a> แล้วคลิกที่ลิงค์ "
-"<a href=\"/maps/new\">create your own map</a></p>\n"
-"<p>ซึ่งจะนำคุณไปที่ <a href=\"/maps/new\">Map Composer</a> ซึ่งมีชั้นข้อมูลฐานพร้อมใช้งาน</"
+"<p>การสร้างแผนที่ใหม่ให้ไปที่แท็บ <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> แล้วคลิกที่ลิงค์ "
+"<a href=\"{{ url_maps_new }}\">create your own map</a></p>\n"
+"<p>ซึ่งจะนำคุณไปที่ <a href=\"{{ url_maps_new }}\">Map Composer</a> ซึ่งมีชั้นข้อมูลฐานพร้อมใช้งาน</"
 "p>\n"
 "<p>การเพิ่มชั้นข้อมูลจาก GeoNodeให้คลิกที่ปุ่มเครื่องหมายบวกสีเขียวด้านล่างแท็บ layers "
 "ด้านซ้ายมือของจอ ซึ่งจะเปิดหน้าต่างที่มีรายการชั้นข้อมูลที่สามารถใช้ได้ทั้งหมดใน GeoNode</p>\n"
@@ -5704,7 +5717,7 @@ msgstr ""
 "<li>คัดลอก HTML จากวิซาร์ดไปที่หน้าเว็บ HTML หรือบล็อกที่รองรับการโพสต์ iFrame</li>\n"
 "</ol>\n"
 "<p>คุณก็จะได้วิเจ็ตแผนที่ไปแสดงในเว็บเพจหรือบล็อกโพสต์แล้ว</p\n"
-"<p>หมายเหตุ <a href=\"/maps/new\">Map Composer</a> "
+"<p>หมายเหตุ <a href=\"{{ url_maps_new }}\">Map Composer</a> "
 "นั้นก็มีปุ่มสำหรับส่งออกแผนที่ด้วยเช่นกัน ต้องแน่ใจว่าบันทึกแผนที่ก่อนที่จะมีการส่งออกเพราะว่า "
 "หากมีการเปลี่ยนแปลงที่ต้องการให้คนอื่นดู มันจะส่งออกที่บันทึกครั้งล่าสุด ไม่ใช่ที่ดูครั้งล่าสุด</p>\n"
 "\n"
@@ -5718,7 +5731,7 @@ msgstr ""
 "และแท็กที่สัมพันธ์กับแผนที่ใหม่</li>\n"
 "<li>บันทึกแผนที่</li>\n"
 "</ol>\n"
-"<p>คุณสามารถดูแผนที่ใหม่ขอคุณได้เมื่อคุณค้นหาจากแท็บ <a href=\"/maps\">แผนที่</a></p>"
+"<p>คุณสามารถดูแผนที่ใหม่ขอคุณได้เมื่อคุณค้นหาจากแท็บ <a href=\"{{ url_maps_browse }}\">แผนที่</a></p>"
 
 msgid "Sections"
 msgstr "หมวด"
@@ -5891,22 +5904,11 @@ msgstr "กลุ่มดังต่อไปนี้:"
 msgid "Updating Metadata..."
 msgstr "ดาวน์โหลดคำอธิบายข้อมูล"
 
-msgid "ERROR"
-msgstr ""
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr ""
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr ""
-
-msgid "Return to Document"
-msgstr ""
-
-#, fuzzy
-#| msgid "Return to"
-msgid "Return to Map"
-msgstr "ย้อนกลับไปยัง"
 
 msgid "Identification"
 msgstr ""
@@ -5969,6 +5971,9 @@ msgid "Online Link"
 msgstr ""
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 #, fuzzy
@@ -6310,12 +6315,6 @@ msgstr "ปปปป-ดด-วว"
 msgid "Date ends before:"
 msgstr "ก่อนวันที่"
 
-msgid "page"
-msgstr ""
-
-msgid "of"
-msgstr "จาก"
-
 #, fuzzy
 #| msgid "Search"
 msgid "Search by region"
@@ -6373,9 +6372,6 @@ msgstr "Z - A"
 
 msgid "Most popular"
 msgstr "ความนิยมสูงสุด"
-
-msgid "Thesaurus"
-msgstr ""
 
 msgid "Text"
 msgstr "ข้อความ"
@@ -6525,6 +6521,11 @@ msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
 #, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "เนื้อหาทั้งหมด"
+
+#, fuzzy
 #| msgid "Could not find any layers in a compatible projection."
 msgid "Could not access to uploaded data."
 msgstr "ไม่พบชั้นใด ๆ ในการฉายที่เข้ากันได้"
@@ -6545,6 +6546,22 @@ msgid "Layer already exists"
 msgstr "สร้างชั้นข้อมูลเสร็จแล้ว"
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6593,20 +6610,19 @@ msgid ""
 "To support the time step, you must enable the OGC_SERVER DATASTORE option"
 msgstr ""
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, python-brace-format
+msgid "Unsupported file type: {e.message}"
 msgstr ""
 
-#, python-format
-msgid "File does not exist: %s"
+#, python-brace-format
+msgid "File does not exist: {absolute_base_file}"
 msgstr ""
 
-#, python-format
-msgid "unknown item state: %s"
+#, python-brace-format
+msgid "unknown item state: {task.state}"
 msgstr ""
 
-#, python-format
-msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr ""
 
 #, fuzzy
@@ -6625,3 +6641,118 @@ msgstr "ระดับการอนุญาตไม่ถูกต้อง
 
 msgid "Permission Denied"
 msgstr "ไม่ได้รับอนุญาต"
+
+#, fuzzy
+#~| msgid "Set permissions"
+#~ msgid "set permissions"
+#~ msgstr "ตั้งค่าสิทธิ์"
+
+#, fuzzy
+#~| msgid "Documents"
+#~ msgid "documents"
+#~ msgstr "เอกสาร"
+
+#, fuzzy
+#~| msgid "dataset"
+#~ msgid "data"
+#~ msgstr "ชุดข้อมูล"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "apps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "groups explore"
+#~ msgstr "หมวด"
+
+#, fuzzy
+#~| msgid "A Map was created"
+#~ msgid "groups create"
+#~ msgstr "สร้างแผนที่เสร็จแล้ว"
+
+#, fuzzy
+#~| msgid "group"
+#~ msgid "groups"
+#~ msgstr "กลุ่ม"
+
+#, fuzzy
+#~| msgid "A Map was updated"
+#~ msgid "groups update"
+#~ msgstr "แผนที่ได้รับการปรับปรุงแล้ว"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers append"
+#~ msgstr "อัพโหลดชั้นข้อมูลเสร็จแล้ว"
+
+#, fuzzy
+#~| msgid "Layers"
+#~ msgid "layers"
+#~ msgstr "ชั้นข้อมูล"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers explore"
+#~ msgstr "อัพโหลดชั้นข้อมูลเสร็จแล้ว"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers upload"
+#~ msgstr "อัพโหลดชั้นข้อมูลเสร็จแล้ว"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "อัพโหลดไม่สมบูรณ์"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "คุณมีไฟล์ที่อัพโหลดไม่เสร็จดังต่อไปนี้"
+
+#~ msgid "Resume"
+#~ msgstr "ประวัติย่อ"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "maps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "people explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Invite people"
+#~ msgid "edit people"
+#~ msgstr "เชิญคนอื่น"
+
+#~ msgid "last updated on"
+#~ msgstr "แก้ไขครั้งสุดท้ายเมื่อ"
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "ลบ และไม่ต้องถามฉันอีก"
+
+#, fuzzy
+#~| msgid "Available styles"
+#~ msgid "Available layers"
+#~ msgstr "สไตล์ที่สามารถใช้ได้"
+
+#, fuzzy
+#~| msgid "Remove Map"
+#~ msgid "Save Map"
+#~ msgstr "ลบแผนที่"
+
+#, fuzzy
+#~| msgid "User Activities"
+#~ msgid "Utilities"
+#~ msgstr "กิจกรรมของผู้ใช้"
+
+#, fuzzy
+#~| msgid "Unable to delete layer"
+#~ msgid "Unable to delete layer"
+#~ msgstr "ไม่สามารถลบชั้นข้อมูลได้"
+
+#, fuzzy
+#~| msgid "Thumbnail"
+#~ msgid "Thumbnail saved"
+#~ msgstr "Thumbnail"

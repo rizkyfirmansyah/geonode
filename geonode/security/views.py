@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -85,9 +84,9 @@ def resource_permissions_handle_post(request, resource):
                not view_any:
 
                 success = False
-                message = f"User {user.username} has download permissions but cannot " \
-                          "access the resource. Please update permission " \
-                          "consistently!"
+                message = _("User {username} has download permissions but cannot "
+                            "access the resource. Please update permission "
+                            "consistently!").format(username=user.username)
 
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
@@ -403,7 +402,7 @@ def invalidate_tiledlayer_cache(request):
 @require_POST
 def set_bulk_permissions(request):
     permission_spec = json.loads(request.POST.get('permissions', None))
-    resource_ids = request.POST.getlist('resources', [])
+    resource_ids = json.loads(request.POST.get('resources', '[]'))
     if permission_spec is not None:
         not_permitted = []
         for resource_id in resource_ids:
@@ -415,7 +414,15 @@ def set_bulk_permissions(request):
                     'base.change_resourcebase_permissions')
                 resource.set_permissions(permission_spec)
             except PermissionDenied:
-                not_permitted.append(ResourceBase.objects.get(id=resource_id).title)
+                try:
+                    resolve_object(
+                        request, ResourceBase, {
+                            'id': resource_id
+                        },
+                        'base.change_resourcebase')
+                    resource.set_permissions(permission_spec)
+                except PermissionDenied:
+                    not_permitted.append(ResourceBase.objects.get(id=resource_id).title)
 
         return HttpResponse(
             json.dumps({'success': 'ok', 'not_changed': not_permitted}),

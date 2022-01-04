@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -17,8 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
-
 import os
 import logging
 import gzip
@@ -48,6 +45,7 @@ class Command(BaseCommand):
                             help=_("Overwrite file if exists"))
 
     def handle(self, *args, **options):
+        # Exit early if MONITORING_ENABLED=False
         if not settings.MONITORING_ENABLED or not URL:
             return
 
@@ -67,7 +65,7 @@ class Command(BaseCommand):
         block_size = 1024
         wrote = 0
         with open('output.bin', 'wb') as f:
-            for data in tqdm(r.iter_content(block_size), total=math.ceil(total_size//block_size), unit='KB', unit_scale=False):  # noqa
+            for data in tqdm(r.iter_content(block_size), total=math.ceil(total_size // block_size), unit='KB', unit_scale=False):  # noqa
                 wrote = wrote + len(data)
                 f.write(data)
         logger.info(f" total_size [{total_size}] / wrote [{wrote}] ")

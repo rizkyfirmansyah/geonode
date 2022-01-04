@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2020 OSGeo
@@ -18,11 +17,14 @@
 #
 #########################################################################
 import logging
-from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from rest_framework import permissions
 from rest_framework.filters import BaseFilterBackend
+
+from geonode.security.utils import (
+    get_users_with_perms,
+    get_resources_with_perms)
 
 logger = logging.getLogger(__name__)
 
@@ -100,32 +102,45 @@ class IsSelfOrAdminOrAuthenticatedReadOnly(IsSelfOrAdmin):
         return IsSelfOrAdmin.has_object_permission(self, request, view, obj)
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsOwnerOrAdmin(permissions.BasePermission):
+    """
+    Object-level permission to only allow admin and owners of an object to edit it.
+    Assumes the model instance has an `owner` attribute.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.user is None or (not request.user.is_anonymous and not request.user.is_active):
+            return False
+        if request.user.is_superuser or request.user.is_staff:
+            return True
+
+        # Instance must have an attribute named `owner`.
+        _request_matches = False
+        if isinstance(obj, get_user_model()) and obj == request.user:
+            _request_matches = True
+        elif hasattr(obj, 'owner'):
+            _request_matches = obj.owner == request.user
+        elif hasattr(obj, 'user'):
+            _request_matches = obj.user == request.user
+
+        if not _request_matches:
+            _request_matches = request.user in get_users_with_perms(obj)
+        return _request_matches
+
+
+class IsOwnerOrReadOnly(IsOwnerOrAdmin):
     """
     Object-level permission to only allow owners of an object to edit it.
     Assumes the model instance has an `owner` attribute.
     """
-    def has_object_permission(self, request, view, obj):
-        if request.user is None or \
-        (not request.user.is_anonymous and not request.user.is_active):
-            return False
-        if request.user.is_superuser:
-            return True
 
+    def has_object_permission(self, request, view, obj):
         # Read permissions are allowed to any request,
         # so we'll always allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS and not isinstance(obj, get_user_model()):
             return True
 
-        # Instance must have an attribute named `owner`.
-        if isinstance(obj, get_user_model()) and obj == request.user:
-            return True
-        elif hasattr(obj, 'owner'):
-            return obj.owner == request.user
-        elif hasattr(obj, 'user'):
-            return obj.user == request.user
-        else:
-            return False
+        return IsOwnerOrAdmin.has_object_permission(self, request, view, obj)
 
 
 class ResourceBasePermissionsFilter(BaseFilterBackend):
@@ -141,9 +156,6 @@ class ResourceBasePermissionsFilter(BaseFilterBackend):
         # We want to defer this import until runtime, rather than import-time.
         # See https://github.com/encode/django-rest-framework/issues/4608
         # (Also see #1624 for why we need to make this import explicitly)
-        from guardian.shortcuts import get_objects_for_user
-        from geonode.base.models import ResourceBase
-        from geonode.security.utils import get_visible_resources
 
         user = request.user
         # perm_format = '%(app_label)s.view_%(model_name)s'
@@ -152,22 +164,7 @@ class ResourceBasePermissionsFilter(BaseFilterBackend):
         #     'model_name': queryset.model._meta.model_name,
         # }
 
-        if settings.SKIP_PERMS_FILTER:
-            resources = ResourceBase.objects.all()
-        else:
-            resources = get_objects_for_user(
-                user,
-                'base.view_resourcebase',
-                **self.shortcut_kwargs
-            )
-        logger.debug(f" user: {user} -- resources: {resources}")
-
-        obj_with_perms = get_visible_resources(
-            resources,
-            user,
-            admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
-            unpublished_not_visible=settings.RESOURCE_PUBLISHING,
-            private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
+        obj_with_perms = get_resources_with_perms(user, shortcut_kwargs=self.shortcut_kwargs)
         logger.debug(f" user: {user} -- obj_with_perms: {obj_with_perms}")
 
         return queryset.filter(id__in=obj_with_perms.values('id'))

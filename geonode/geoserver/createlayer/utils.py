@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -80,8 +79,10 @@ def create_gn_layer(workspace, datastore, name, title, owner_name):
 
     if settings.ADMIN_MODERATE_UPLOADS:
         layer.is_approved = False
+        layer.was_approved = False
     if settings.RESOURCE_PUBLISHING:
         layer.is_published = False
+        layer.was_published = False
 
     layer.save()
     return layer

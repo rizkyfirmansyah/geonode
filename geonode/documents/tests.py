@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -48,7 +47,7 @@ from geonode.groups.models import (
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
 from geonode.compat import ensure_string
-from geonode.base.thumb_utils import get_thumbs
+from geonode.thumbs.utils import get_thumbs
 from geonode.base.models import License, Region
 from geonode.documents import DocumentsAppConfig
 from geonode.documents.forms import DocumentFormMixin
@@ -70,7 +69,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         "groups": {}}
 
     def setUp(self):
-        super(DocumentsTest, self).setUp()
+        super().setUp()
         create_models('map')
         self.imgfile = io.BytesIO(
             b'GIF87a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00ccc,\x00'
@@ -307,7 +306,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         # Test that previous permissions for users other than ones specified in
         # the perm_spec (and the document owner) were removed
         current_perms = document.get_all_level_info()
-        self.assertEqual(len(current_perms['users']), 2)
+        self.assertEqual(len(current_perms['users']), 1)
 
         # Test that the User permissions specified in the perm_spec were
         # applied properly
@@ -453,7 +452,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
 class DocumentModerationTestCase(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        super(DocumentModerationTestCase, self).setUp()
+        super().setUp()
         self.user = 'admin'
         self.passwd = 'admin'
         create_models(type=b'document')
@@ -566,8 +565,6 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
             self.client.login(username="norman", password="norman")
             resp = self.client.get(
                 reverse('document_detail', args=(_d.id,)))
-            # Forbidden
-            self.assertEqual(resp.status_code, 403)
             _d.group = group.group
             _d.save()
             resp = self.client.get(

@@ -2,16 +2,19 @@
 <div class="row" ng-controller="CartList">
   <div class="col-md-3 search-content">
 
-    {% if facet_type == 'layers' %}
+    {% if facet_type == 'layers' and not request.user_agent.is_mobile %}
     <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Selection" %}' emptyString="{% trans "No list items selected. Use the selection fields to add." %}" >
     </resource-cart>
     {% endif %}
     <div class="row">
       <div class="col-xs-12">
 
-        {% if facet_type == 'layers' %}
+        {% if user.is_authenticated and facet_type == 'layers' and not request.user_agent.is_mobile %}
           {% block bulk_perms_button %}
           <div class="btn-group btn-group-justified" role="group" aria-label="tools">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-default" ng-disabled="!cart.getCart().items.length" data-toggle="modal" data-target="#_bulk_permissions">{% trans "Set permissions" %}</button>
+            </div>
             <div class="btn-group" role="group">
               <button type="button" class="btn btn-default" ng-disabled="!cart.getCart().items.length" ng-click="newMap()">{% trans "Create a Map" %}</button>
             </div>
@@ -19,13 +22,14 @@
           {% endblock %}
         {% endif %}
 
+        {% if not request.user_agent.is_mobile  %}
         <div class="selections">
             {% trans "Filters" %}
             <a href="." id="clear-search" class="pull-right">{% trans "Clear" %}</a>
         </div>
-            {% if SEARCH_FILTERS.TEXT_ENABLED %}
-              {% include "search/_text_filter.html" %}
-            {% endif  %}
+        {% if SEARCH_FILTERS.TEXT_ENABLED %}
+          {% include "search/_text_filter.html" %}
+        {% endif  %}
         <div id="slide-pane">
             {% if SEARCH_FILTERS.H_KEYWORDS_ENABLED %}
               {% include "search/_h_keywords_filter.html" %}
@@ -47,12 +51,14 @@
               {% include "search/_extent_filter.html" %}
             {% endif %}
         </div>
+      {% endif %}
       </div>
     </div>
   </div>
   <div class="col-md-9">
-    <div class="row">
-      <div class="col-md-10">
+    <div class="row resources-list-header">
+      {% if not request.user_agent.is_mobile %}
+      <div class="col-md-8">
           {% if facet_type == 'layers' %}
           <span style="font-size: 34px;" ng-bind="total_counts + ' ' + '{% trans "Geospatial datasets found" %}'"></span>
           {% elif facet_type == 'maps' %}
@@ -65,12 +71,28 @@
           <span style="font-size: 34px;" ng-bind="total_counts + ' {{ facet_type | title }} {% trans "found" %}'"></span>
           {% endif %}
       </div>
-      <div class="col-md-2">{% include "search/_sort_filters.html" %}</div>
+      {% endif %}
+      {% if request.user_agent.is_mobile %}
+        <div class="mobile-list-row">
+          {% if SEARCH_FILTERS.TEXT_ENABLED %}
+                {% include "search/_text_filter.html" %}
+          {% endif  %}
+        </div>
+        <div class="mobile-list-row">
+          {% include "search/_pagination.html" %}
+          <div class="mobile-list-float-right">{% include "search/_sort_filters.html" %}</div>
+        </div>
+      
+      {% else %}
+        <div class="col-md-2">{% include "search/_sort_filters.html" %}</div>
+      {% endif %}
     </div>
     <div class="row">
       <div class="col-md-12 grid-spacer">
         {% include 'base/_resourcebase_snippet.html' %}
-        {% include 'search/_pagination.html' %}
+        {% if not request.user_agent.is_mobile %}
+          {% include 'search/_pagination.html' %}
+        {% endif %}
       </div>
     </div>
   </div>

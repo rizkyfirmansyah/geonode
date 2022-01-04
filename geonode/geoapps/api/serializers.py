@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2020 OSGeo
@@ -70,11 +69,12 @@ class GeoAppSerializer(ResourceBaseSerializer):
 
     def __init__(self, *args, **kwargs):
         # Instantiate the superclass normally
-        super(GeoAppSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = GeoApp
         name = 'geoapp'
+        view_name = 'geoapps-list'
         fields = (
             'pk', 'uuid',
             'zoom', 'projection', 'center_x', 'center_y',

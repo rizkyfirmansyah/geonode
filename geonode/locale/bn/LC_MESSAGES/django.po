@@ -31,7 +31,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2016-08-23 13:57+0000\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Bengali (http://www.transifex.com/geonode/geonode/language/"
@@ -149,9 +149,6 @@ msgstr "তথ্য প্রতি তিন মাস আপডেট হয�
 msgid "No information provided"
 msgstr "প্রদত্ত কোন তথ্য"
 
-msgid "Category"
-msgstr "শ্রেণী"
-
 msgid "Category is required."
 msgstr "শ্রেণী প্রয়োজন"
 
@@ -223,6 +220,9 @@ msgstr "অঞ্চল"
 msgid "Group"
 msgstr "গ্রুপ"
 
+msgid "Category"
+msgstr "শ্রেণী"
+
 msgid "License"
 msgstr "লাইসেন্স"
 
@@ -258,6 +258,9 @@ msgstr ""
 msgid "function performed by the responsible party"
 msgstr "দায়ী পক্ষের দ্বারা সঞ্চালিত ফাংশন"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "সম্পদ এর বিষয়বস্তুর সংক্ষিপ্ত আখ্যান সারসংক্ষেপ (গুলি)"
+
 msgid "reference date for the cited resource"
 msgstr "উদাহৃত সম্পদ জন্য রেফারেন্স তারিখ"
 
@@ -267,8 +270,13 @@ msgstr "একটি প্রদত্ত ঘটনা ঘটেছে যখ�
 msgid "version of the cited resource"
 msgstr "উদাহৃত সম্পদ সংস্করণ"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "সম্পদ এর বিষয়বস্তুর সংক্ষিপ্ত আখ্যান সারসংক্ষেপ (গুলি)"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr ""
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "সম্পদ (গুলি) উন্নত ছিল যা দিয়ে করতেও সারসংক্ষেপ"
@@ -340,27 +348,17 @@ msgid ""
 "dataset"
 msgstr "একটি ডেটা সেটটি এর বংশ সম্পর্কে তথ্য প্রযোজক এর জ্ঞান সাধারণ ব্যাখ্যা"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr ""
-
-msgid "DOI"
-msgstr ""
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "গুণ"
-
 msgid "title"
 msgstr "খেতাব"
 
 msgid "name by which the cited resource is known"
 msgstr "উদাহৃত সম্পদ পরিচিত যা দ্বারা নাম"
+
+msgid "abstract"
+msgstr "বিমূর্ত"
+
+msgid "purpose"
+msgstr "উদ্দেশ্য"
 
 msgid "date"
 msgstr "তারিখ"
@@ -371,11 +369,13 @@ msgstr "তারিখ ধরন"
 msgid "edition"
 msgstr "সংস্করণ"
 
-msgid "abstract"
-msgstr "বিমূর্ত"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "গুণ"
 
-msgid "purpose"
-msgstr "উদ্দেশ্য"
+msgid "DOI"
+msgstr ""
 
 msgid "maintenance frequency"
 msgstr "রক্ষণাবেক্ষণ ফ্রিকোয়েন্সি"
@@ -470,6 +470,12 @@ msgstr ""
 #| msgid "Resources"
 msgid "Resource Type"
 msgstr "সম্পদ"
+
+msgid "Metadata"
+msgstr "মেটাডাটা"
+
+msgid "If true, will be excluded from search"
+msgstr ""
 
 msgid "For example \"kml\""
 msgstr "উদাহরণস্বরূপ \"KML\""
@@ -571,9 +577,6 @@ msgstr ""
 msgid "offline"
 msgstr ""
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr ""
 
@@ -597,9 +600,6 @@ msgstr "মানচিত্র দেখুন"
 msgid "Batch Edit"
 msgstr ""
 
-msgid "batch edit"
-msgstr ""
-
 msgid "Cancel"
 msgstr "বাতিল করুন"
 
@@ -609,11 +609,6 @@ msgstr "দাখিল করুন"
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Set Permissions"
-msgstr "অনুমতি স্থাপন করুন"
-
-#, fuzzy
-#| msgid "Set permissions"
-msgid "set permissions"
 msgstr "অনুমতি স্থাপন করুন"
 
 msgid "Discover the available datasets."
@@ -729,34 +724,6 @@ msgstr "বিবরণ"
 msgid "GeoNode Client Library"
 msgstr "GeoNode সহায়তা"
 
-msgid "Explore Maps"
-msgstr "মানচিত্র টেলিভিশন"
-
-msgid "Edit Map"
-msgstr "সম্পাদনা ম্যাপ"
-
-msgid "Update"
-msgstr "আপডেট"
-
-msgid "Create a New Map"
-msgstr "একটি নতুন মানচিত্র তৈরি করুন"
-
-#, fuzzy
-#| msgid "Available styles"
-msgid "Available layers"
-msgstr "উপলভ্য শৈলী"
-
-msgid "Save"
-msgstr "সংরক্ষণ করুন"
-
-#, fuzzy
-#| msgid "Create a Map"
-msgid "Save Map"
-msgstr "একটি মানচিত্র তৈরি করুন"
-
-msgid "Close"
-msgstr "ঘনিষ্ঠ"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -777,7 +744,7 @@ msgid ""
 "climate, atmospheric conditions, climate change, precipitation."
 msgstr ""
 
-msgid "Climate"
+msgid "Climatology Meteorology Atmosphere"
 msgstr ""
 
 msgid ""
@@ -793,6 +760,9 @@ msgstr ""
 msgid ""
 "Height above or below sea level. Examples: altitude, bathymetry, digital "
 "elevation models, slope, derived products."
+msgstr ""
+
+msgid "Elevation"
 msgstr ""
 
 msgid ""
@@ -823,8 +793,10 @@ msgid ""
 "erosion."
 msgstr ""
 
-msgid "Geoscience"
-msgstr ""
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "প্রাসঙ্গিক তথ্য"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -840,10 +812,13 @@ msgid ""
 "images, annotations."
 msgstr ""
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 
 msgid "Inland Waters"
@@ -854,13 +829,16 @@ msgid ""
 "grounds, military transportation, information collection."
 msgstr ""
 
-msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr ""
 
 msgid ""
 "Positional information and services. Examples: addresses, geodetic networks, "
 "control points, postal zones and services, place names."
 msgstr ""
+
+msgid "Location"
+msgstr "অঞ্চল"
 
 msgid ""
 "Features and characteristics of salt water bodies (excluding inland waters). "
@@ -875,7 +853,7 @@ msgid ""
 "Examples: land use maps, zoning maps, cadastral surveys, land ownership."
 msgstr ""
 
-msgid "Planning"
+msgid "Planning Cadastre"
 msgstr ""
 
 msgid ""
@@ -927,10 +905,8 @@ msgid ""
 "telecommunication, radio, communication networks."
 msgstr ""
 
-#, fuzzy
-#| msgid "User Activities"
-msgid "Utilities"
-msgstr "ব্যবহারকারী ক্রিয়াকলাপ"
+msgid "Utilities Communication"
+msgstr ""
 
 #, fuzzy
 #| msgid "Document Updated"
@@ -1041,11 +1017,6 @@ msgstr "ডকুমেন্টের ইউআরএল এটা বাইর
 msgid "URL"
 msgstr "URL টি"
 
-#, fuzzy
-#| msgid "Documents"
-msgid "documents"
-msgstr "কাগজপত্র"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1088,9 +1059,6 @@ msgstr "সম্পাদনা ডকুমেন্ট"
 msgid "Request change"
 msgstr "ডাউনলোডের অনুরোধ"
 
-msgid "Metadata"
-msgstr "মেটাডাটা"
-
 msgid "Wizard"
 msgstr ""
 
@@ -1109,6 +1077,9 @@ msgstr "প্রতিস্থাপন"
 
 msgid "Remove"
 msgstr "অপসারণ"
+
+msgid "Close"
+msgstr "ঘনিষ্ঠ"
 
 msgid "Download Metadata"
 msgstr "ডাউনলোড মেটাডাটা"
@@ -1157,11 +1128,6 @@ msgstr "ডকুমেন্টস এবং পুরুষ"
 msgid "Upload Documents"
 msgstr "আপলোড ডকুমেন্টস"
 
-#, fuzzy
-#| msgid "dataset"
-msgid "data"
-msgstr "ডেটা সেটটি"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr ""
@@ -1187,6 +1153,9 @@ msgstr "মেটাডাটা সরবরাহকারী"
 msgid "<< Back"
 msgstr ""
 
+msgid "Update"
+msgstr "আপডেট"
+
 #, fuzzy
 #| msgid "Next"
 msgid "Next >>"
@@ -1202,6 +1171,9 @@ msgstr "সম্পাদনা মেটাডেটা"
 
 msgid "Editing details for"
 msgstr "সম্পাদনার জন্য বিবরণ"
+
+msgid "Return to Document"
+msgstr ""
 
 msgid "Deleting"
 msgstr "মোছা"
@@ -1295,6 +1267,11 @@ msgid "Location and Licenses"
 msgstr ""
 
 #, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Required Metadata"
+msgstr "সম্পাদনা পরিষেবা মেটাডাটা"
+
+#, fuzzy
 #| msgid "Download Metadata"
 msgid "Optional Metadata"
 msgstr "ডাউনলোড মেটাডাটা"
@@ -1318,17 +1295,12 @@ msgid "Responsible and Permissions"
 msgstr "পরিবর্তন লেয়ার অনুমতি"
 
 #, fuzzy
-#| msgid "Message Inbox"
-msgid "Message box"
-msgstr "বার্তা ইনবক্স"
-
-msgid "OK"
-msgstr ""
-
-#, fuzzy
 #| msgid "Is Published"
 msgid "Publishing"
 msgstr "প্রকাশিত"
+
+msgid "You are not allowed to view this document."
+msgstr "আপনি এই নথি দেখতে অনুমতি দেওয়া হয়নি."
 
 msgid "You are not permitted to delete this document"
 msgstr "আপনি এই নথি মুছে করার অনুমতি নেই"
@@ -1354,9 +1326,6 @@ msgstr "উপলব্ধ নেই"
 #| msgid "Page Not Found"
 msgid "Not found"
 msgstr "পাতা পাওয়া যায়নি"
-
-msgid "You are not allowed to view this document."
-msgstr "আপনি এই নথি দেখতে অনুমতি দেওয়া হয়নি."
 
 #, fuzzy
 #| msgid "You must set an author for this resource"
@@ -1527,11 +1496,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "GeoExplorer"
-msgid "apps explore"
-msgstr "GeoExplorer"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "একটি নতুন মানচিত্র তৈরি করুন"
@@ -1649,6 +1613,15 @@ msgstr "লেয়ার জন্য নির্ধারণ"
 msgid "A rating was given to a layer"
 msgstr "একটি রেটিং একটি স্তর দেওয়া হয়"
 
+msgid "Points"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 #, fuzzy
 #| msgid "Layer Name"
 msgid "Layer name"
@@ -1684,6 +1657,22 @@ msgstr "গুণ"
 
 msgid "Create"
 msgstr "তৈরি করুন"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "অন্তর"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "উপলব্ধ নেই"
 
 #, fuzzy
 #| msgid "Not provided"
@@ -1844,11 +1833,6 @@ msgid "Explore Group Categories"
 msgstr "গ্রুপ টেলিভিশন"
 
 #, fuzzy
-#| msgid "Categories"
-msgid "groups explore"
-msgstr "ফোরাম"
-
-#, fuzzy
 #| msgid "Create a Group"
 msgid "Create a New Group Category"
 msgstr "একটি গ্রুপ তৈরি করুন"
@@ -1867,16 +1851,6 @@ msgstr "গ্রুপ সরান"
 
 msgid "Create Group"
 msgstr "গ্রুপ তৈরি করুন"
-
-#, fuzzy
-#| msgid "A Map was created"
-msgid "groups create"
-msgstr "একটি মানচিত্র তৈরি করা হয়েছে"
-
-#, fuzzy
-#| msgid "group"
-msgid "groups"
-msgstr "গ্রুপ"
 
 #, fuzzy
 #| msgid "last modified"
@@ -1955,9 +1929,6 @@ msgstr "সদস্যদের করো"
 msgid "Add Group Members"
 msgstr "গ্রুপের সদস্যদের পরিচালনা"
 
-msgid "groups remove"
-msgstr ""
-
 #, python-format
 msgid ""
 "\n"
@@ -1972,11 +1943,6 @@ msgstr "গ্রুপ থেকে মানচিত্র / ডেটা স
 
 msgid "Remove selected maps/data"
 msgstr "নির্বাচিত মানচিত্র সরান / তথ্য"
-
-#, fuzzy
-#| msgid "A Map was updated"
-msgid "groups update"
-msgstr "একটি মানচিত্র হালনাগাদ করা হয়েছিল"
 
 #, fuzzy
 #| msgid "Edit Group Details"
@@ -2001,16 +1967,19 @@ msgstr "একটি গ্রুপ তৈরি করুন"
 msgid "Edit Group Category"
 msgstr "গ্রুপ তৈরি করুন"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "সংরক্ষণ করুন"
+
+#, python-brace-format
+msgid "The e-mail address '{email}' has already been invited."
 msgstr ""
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, python-brace-format
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr ""
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, python-brace-format
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr ""
 
 #, fuzzy
@@ -2274,6 +2243,22 @@ msgstr "সর্বশেষ সম্পাদিত"
 msgid "date when attribute statistics were last updated"
 msgstr "অ্যাট্রিবিউট পরিসংখ্যান গত ছিল যখন তারিখের আপডেট"
 
+#, fuzzy
+#| msgid "Edit Layer"
+msgid "Append to Layer"
+msgstr "সম্পাদনা লেয়ার"
+
+msgid "Return to Layer"
+msgstr ""
+
+#, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Preserve Metadata XML"
+msgstr "সম্পাদনা পরিষেবা মেটাডাটা"
+
+msgid "Select the charset or leave default"
+msgstr "অক্ষরসেট নির্বাচন করুন অথবা ডিফল্ট ছেড়ে"
+
 msgid "Home"
 msgstr "বাড়ি"
 
@@ -2282,11 +2267,6 @@ msgstr "যোগাযোগ বিন্দু পরিবর্তন কর
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "নিচের স্তর থেকে যোগাযোগের একটি নতুন পয়েন্ট নির্ধারণ:"
-
-#, fuzzy
-#| msgid "Layers"
-msgid "layers"
-msgstr "স্তরসমূহ"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr ""
@@ -2304,9 +2284,6 @@ msgid "Bounding Box"
 msgstr ""
 
 msgid "Time"
-msgstr ""
-
-msgid "Elevation"
 msgstr ""
 
 msgid "Actions"
@@ -2442,6 +2419,9 @@ msgid_plural "Layers"
 msgstr[0] "স্তর"
 msgstr[1] "স্তর সমূহ"
 
+msgid "Append Data"
+msgstr ""
+
 msgid "Edit data"
 msgstr "তথ্য পরিবর্তন"
 
@@ -2572,11 +2552,6 @@ msgstr "এই কর্ম নিম্নলিখিত ম্যাপের
 msgid "No maps are using this layer"
 msgstr "কোন মানচিত্র এই স্তর ব্যবহার করছেন"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers explore"
-msgstr "একটি স্তর আপলোড করা হয় নি"
-
 msgid "Upload Layers"
 msgstr "আপলোড স্তরসমূহ"
 
@@ -2596,9 +2571,6 @@ msgid ""
 "          GeoNode's metadata import supports a subset of ISO, FGDC, and "
 "Dublin Core metadata elements.\n"
 "          Some of your original metadata may have been lost."
-msgstr ""
-
-msgid "Return to Layer"
 msgstr ""
 
 #, python-format
@@ -2626,39 +2598,19 @@ msgstr "প্রদর্শন আদেশ"
 msgid "Visible"
 msgstr "প্রোফাইল?"
 
+msgid "ERROR"
+msgstr ""
+
+msgid "Following items are required:"
+msgstr ""
+
 #, fuzzy
 #| msgid "Upload Layer"
 msgid "Upload Layer Metadata"
 msgstr "আপলোড লেয়ার"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers upload"
-msgstr "একটি স্তর আপলোড করা হয় নি"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr ""
-
-msgid "Incomplete Uploads"
-msgstr "অসম্পূর্ণ আপলোড"
-
-msgid "You have the following incomplete uploads"
-msgstr "আপনি নিম্নলিখিত অসম্পূর্ণ আপলোডসমূহ আছে"
-
-msgid "last updated on"
-msgstr "গত আপডেট"
-
-msgid "Resume"
-msgstr "সারসংকলন"
-
-msgid "Delete"
-msgstr "মুছে দিন"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "যদি আপনি এই আপলোড মুছে ফেলার ব্যাপারে নিশ্চিত?"
-
-msgid "Delete, and don't ask me again."
-msgstr "মুছে দিন, এবং আবার আমাকে জিজ্ঞাসা করবেন না."
 
 msgid "Remove Layers"
 msgstr "স্তর অপসারণ"
@@ -2674,26 +2626,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "লেয়ার প্রতিস্থাপন"
 
-#, fuzzy
-#| msgid "Edit Service Metadata"
-msgid "Preserve Metadata XML"
-msgstr "সম্পাদনা পরিষেবা মেটাডাটা"
-
-msgid "Select the charset or leave default"
-msgstr "অক্ষরসেট নির্বাচন করুন অথবা ডিফল্ট ছেড়ে"
-
 msgid "Manage Styles"
 msgstr "শৈলী পরিচালনা"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"জন্য উপলব্ধ শৈলী পরিচালনা <a href=\"/layers/%(layer_title)s\">%(layer_title)s</"
+"জন্য উপলব্ধ শৈলী পরিচালনা <a href=\"{{ layer_url }}\">%(layer_title)s</"
 "a>"
 
 msgid "Layer Default Style"
@@ -2736,6 +2680,53 @@ msgstr "আরোপ করা"
 
 msgid "Upload Layer"
 msgstr "আপলোড লেয়ার"
+
+#, fuzzy
+#| msgid "Download Metadata"
+msgid "Upload status"
+msgstr "ডাউনলোড মেটাডাটা"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "মুছে দিন"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "আপলোড ডকুমেন্ট"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "তৈরি করুন"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "of"
+msgstr "এর"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "অসম্পূর্ণ আপলোড"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "যদি আপনি এই আপলোড মুছে ফেলার ব্যাপারে নিশ্চিত?"
 
 #, fuzzy
 #| msgid "Upload Layer Step 2"
@@ -3223,31 +3214,50 @@ msgstr "এখন"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr "আপনি একটি রাস্টার স্থর দ্বারা জ্যামিতিক স্থর পরিবর্তন করতে যাচ্ছেন"
 
-msgid "You are attempting to replace a vector layer with a raster."
+msgid ""
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
+msgid "You are attempting to {action_type} a vector layer with a raster."
 msgstr "আপনি একটি রাস্টার স্থর দ্বারা জ্যামিতিক স্থর পরিবর্তন করতে যাচ্ছেন"
 
-msgid "You are attempting to replace a raster layer with a vector."
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a raster layer with a vector."
+msgid "You are attempting to {action_type} a raster layer with a vector."
 msgstr "আপনি একটি জ্যামিতিক স্থর দ্বারা রাস্টার স্থর পরিবর্তন করতে যাচ্ছেন"
 
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr "আপনি একটি রাস্টার স্থর দ্বারা জ্যামিতিক স্থর পরিবর্তন করতে যাচ্ছেন"
+
+#, python-brace-format
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
 msgstr ""
 
 msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 
 msgid ""
@@ -3282,18 +3292,21 @@ msgstr "আপনি এই স্তর দেখতে অনুমতি ন�
 msgid "Failed to upload the layer"
 msgstr "ফাইল আপলোড করা"
 
-#, fuzzy
-#| msgid "Unable to delete layer"
-msgid "Unable to delete layer"
-msgstr "স্তর মুছতে অক্ষম"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr "আপনি একটি রাস্টার স্থর দ্বারা জ্যামিতিক স্থর পরিবর্তন করতে যাচ্ছেন"
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr "আপনি একটি জ্যামিতিক স্থর দ্বারা রাস্টার স্থর পরিবর্তন করতে যাচ্ছেন"
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
 "group before deleting."
 msgstr ""
 
-msgid "couldn't generate thumbnail"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Remote Thumbnail"
+msgid "couldn't generate thumbnail: %s"
+msgstr "Remote Thumbnail"
 
 msgid "Map Created"
 msgstr "মানচিত্র তৈরী করা"
@@ -3395,9 +3408,6 @@ msgstr "লেয়ার প্যারাম"
 msgid "source params"
 msgstr "উৎস প্যারাম"
 
-msgid "maps"
-msgstr ""
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr ""
 
@@ -3432,6 +3442,9 @@ msgstr "এই ম্যাপ কপি করুন"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "এই ম্যাপ সদৃশ এবং আপনার নিজের কাজের জন্য এটি পরিবর্তন"
+
+msgid "Create a New Map"
+msgstr "একটি নতুন মানচিত্র তৈরি করুন"
 
 msgid ""
 "\n"
@@ -3488,10 +3501,11 @@ msgstr "সমাপ্তি ডাউনলোড"
 msgid "Download Failed"
 msgstr "ডাউনলোড ব্যর্থ"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "maps explore"
-msgstr "GeoExplorer"
+msgid "Edit Map"
+msgstr "সম্পাদনা ম্যাপ"
+
+msgid "Explore Maps"
+msgstr "মানচিত্র টেলিভিশন"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3503,6 +3517,11 @@ msgstr ""
 "উল্লেখ্য: এই ম্যাপ এর মূল মিটাডাটা একটি মেটাডাটা XML ফাইল ইম্পোর্ট দ্বারা পূর্ণ ছিল. "
 "GeoNode এর মেটাডেটা আমদানি আইএসও, FGDC, এবং ডাবলিন কোর মেটাডাটা উপাদানের "
 "একটি উপসেট সমর্থন করে. আপনার মূল মেটাডাটা কিছু হারিয়ে হয়ে থাকতে পারে."
+
+#, fuzzy
+#| msgid "Return to"
+msgid "Return to Map"
+msgstr "ফিরুন"
 
 msgid "Remove Map"
 msgstr ""
@@ -3535,11 +3554,6 @@ msgstr "আপনি এই ম্যাপ দেখতে অনুমতি �
 
 #, fuzzy
 #| msgid "Thumbnail"
-msgid "Thumbnail saved"
-msgstr "Thumbnail"
-
-#, fuzzy
-#| msgid "Thumbnail"
 msgid "error saving thumbnail"
 msgstr "Thumbnail"
 
@@ -3557,7 +3571,7 @@ msgstr ""
 msgid "Alert situation reported by monitoring"
 msgstr ""
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr ""
 
 #, fuzzy
@@ -3632,7 +3646,8 @@ msgstr "উদাহৃত সম্পদ জন্য রেফারেন্
 msgid "Show data for specific label"
 msgstr "উদাহৃত সম্পদ জন্য রেফারেন্স তারিখ"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, python-brace-format
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr ""
 
 msgid ""
@@ -3801,7 +3816,8 @@ msgstr ""
 msgid "Is it active"
 msgstr ""
 
-msgid "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
 msgstr ""
 
 msgid "Value must be above"
@@ -4029,11 +4045,6 @@ msgstr "প্রোফাইল তৈরি করুন"
 msgid "Profile of "
 msgstr "এর প্রোফাইল"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "people explore"
-msgstr "GeoExplorer"
-
 msgid "Not provided."
 msgstr "প্রদান করা হয়নি"
 
@@ -4042,9 +4053,6 @@ msgstr "অবস্থান"
 
 msgid "Organization"
 msgstr "প্রতিষ্ঠান"
-
-msgid "Location"
-msgstr "অঞ্চল"
 
 msgid "Not provided"
 msgstr "উপলব্ধ নেই"
@@ -4108,11 +4116,6 @@ msgstr "ব্যবহারকারী ক্রিয়াকলাপ"
 msgid "Resources"
 msgstr "সম্পদ"
 
-#, fuzzy
-#| msgid "Invite people"
-msgid "edit people"
-msgstr "মানুষ আমন্ত্রণ করুন"
-
 msgid "Edit Your Profile"
 msgstr "আপনার প্রোফাইল সম্পাদনা করুন"
 
@@ -4128,7 +4131,9 @@ msgstr "আপডেট প্রফাইল"
 msgid "Explore People"
 msgstr "মানুষ টেলিভিশন"
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "আপনার ব্যবহারকারী নাম"
 
 msgid "Your username has been emailed to you."
@@ -4438,9 +4443,9 @@ msgstr ""
 msgid "Resource is already being processed"
 msgstr ""
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Resources"
-msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "সম্পদ"
 
 #, fuzzy
@@ -4456,9 +4461,9 @@ msgstr "আপনি এই সেবা অপসারণ করার অন�
 msgid "You are not permitted to remove this service."
 msgstr "আপনি এই সেবা অপসারণ করার অনুমতি নেই."
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Service has been created:"
-msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "পরিষেবা তৈরি করা হয়েছে:"
 
 msgid "created"
@@ -4709,6 +4714,14 @@ msgstr ""
 #| msgid "Delete from Favorites"
 msgid "Delete Geo Limits"
 msgstr "পছন্দ সমূহ হতে মুছুন"
+
+#, fuzzy
+#| msgid "Message Inbox"
+msgid "Message box"
+msgstr "বার্তা ইনবক্স"
+
+msgid "OK"
+msgstr ""
 
 msgid "Mandatory files : SHP , DBF"
 msgstr ""
@@ -5458,13 +5471,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5473,9 +5486,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5484,9 +5497,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5520,7 +5533,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5536,7 +5549,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 
@@ -5711,22 +5724,11 @@ msgstr "নিম্নলিখিত গ্রুপ:"
 msgid "Updating Metadata..."
 msgstr "ডাউনলোড মেটাডাটা"
 
-msgid "ERROR"
-msgstr ""
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr ""
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr ""
-
-msgid "Return to Document"
-msgstr ""
-
-#, fuzzy
-#| msgid "Return to"
-msgid "Return to Map"
-msgstr "ফিরুন"
 
 msgid "Identification"
 msgstr ""
@@ -5789,6 +5791,9 @@ msgid "Online Link"
 msgstr ""
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 #, fuzzy
@@ -6196,12 +6201,6 @@ msgstr "yyyy-mm-dd"
 msgid "Date ends before:"
 msgstr "জন্ম আগে শেষ:"
 
-msgid "page"
-msgstr ""
-
-msgid "of"
-msgstr "এর"
-
 #, fuzzy
 #| msgid "Search"
 msgid "Search by region"
@@ -6259,9 +6258,6 @@ msgstr "টু Z - একটি"
 
 msgid "Most popular"
 msgstr "সর্বাধিক জনপ্রিয়"
-
-msgid "Thesaurus"
-msgstr ""
 
 msgid "Text"
 msgstr "পাঠ"
@@ -6411,6 +6407,11 @@ msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
 #, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "সমস্ত বিষয়বস্তু"
+
+#, fuzzy
 #| msgid "Could not find any layers in a compatible projection."
 msgid "Could not access to uploaded data."
 msgstr "একটি সামঞ্জস্যপূর্ণ অভিক্ষেপ যে কোন স্তর খুঁজে পাওয়া যায়নি."
@@ -6431,6 +6432,22 @@ msgid "Layer already exists"
 msgstr "স্থর তৈরী করা হয়েছে"
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6479,20 +6496,19 @@ msgid ""
 "To support the time step, you must enable the OGC_SERVER DATASTORE option"
 msgstr ""
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, python-brace-format
+msgid "Unsupported file type: {e.message}"
 msgstr ""
 
-#, python-format
-msgid "File does not exist: %s"
+#, python-brace-format
+msgid "File does not exist: {absolute_base_file}"
 msgstr ""
 
-#, python-format
-msgid "unknown item state: %s"
+#, python-brace-format
+msgid "unknown item state: {task.state}"
 msgstr ""
 
-#, python-format
-msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr ""
 
 #, fuzzy
@@ -6511,3 +6527,118 @@ msgstr "অবৈধ অনুমতি স্তর."
 
 msgid "Permission Denied"
 msgstr "অনুমতি অস্বীকার"
+
+#, fuzzy
+#~| msgid "Set permissions"
+#~ msgid "set permissions"
+#~ msgstr "অনুমতি স্থাপন করুন"
+
+#, fuzzy
+#~| msgid "Documents"
+#~ msgid "documents"
+#~ msgstr "কাগজপত্র"
+
+#, fuzzy
+#~| msgid "dataset"
+#~ msgid "data"
+#~ msgstr "ডেটা সেটটি"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "apps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "groups explore"
+#~ msgstr "ফোরাম"
+
+#, fuzzy
+#~| msgid "A Map was created"
+#~ msgid "groups create"
+#~ msgstr "একটি মানচিত্র তৈরি করা হয়েছে"
+
+#, fuzzy
+#~| msgid "group"
+#~ msgid "groups"
+#~ msgstr "গ্রুপ"
+
+#, fuzzy
+#~| msgid "A Map was updated"
+#~ msgid "groups update"
+#~ msgstr "একটি মানচিত্র হালনাগাদ করা হয়েছিল"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers append"
+#~ msgstr "একটি স্তর আপলোড করা হয় নি"
+
+#, fuzzy
+#~| msgid "Layers"
+#~ msgid "layers"
+#~ msgstr "স্তরসমূহ"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers explore"
+#~ msgstr "একটি স্তর আপলোড করা হয় নি"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers upload"
+#~ msgstr "একটি স্তর আপলোড করা হয় নি"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "অসম্পূর্ণ আপলোড"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "আপনি নিম্নলিখিত অসম্পূর্ণ আপলোডসমূহ আছে"
+
+#~ msgid "Resume"
+#~ msgstr "সারসংকলন"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "maps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "people explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Invite people"
+#~ msgid "edit people"
+#~ msgstr "মানুষ আমন্ত্রণ করুন"
+
+#~ msgid "last updated on"
+#~ msgstr "গত আপডেট"
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "মুছে দিন, এবং আবার আমাকে জিজ্ঞাসা করবেন না."
+
+#, fuzzy
+#~| msgid "Available styles"
+#~ msgid "Available layers"
+#~ msgstr "উপলভ্য শৈলী"
+
+#, fuzzy
+#~| msgid "Create a Map"
+#~ msgid "Save Map"
+#~ msgstr "একটি মানচিত্র তৈরি করুন"
+
+#, fuzzy
+#~| msgid "User Activities"
+#~ msgid "Utilities"
+#~ msgstr "ব্যবহারকারী ক্রিয়াকলাপ"
+
+#, fuzzy
+#~| msgid "Unable to delete layer"
+#~ msgid "Unable to delete layer"
+#~ msgstr "স্তর মুছতে অক্ষম"
+
+#, fuzzy
+#~| msgid "Thumbnail"
+#~ msgid "Thumbnail saved"
+#~ msgstr "Thumbnail"

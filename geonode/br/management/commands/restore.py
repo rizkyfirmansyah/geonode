@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -51,7 +50,8 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
-
+from django_jsonfield_backport.features import extend_features
+from django.db import connection
 
 logger = logging.getLogger(__name__)
 
@@ -161,6 +161,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, **options):
+        extend_features(connection)
         skip_read_only = options.get('skip_read_only')
         config = Configuration.load()
 
@@ -268,20 +269,20 @@ class Command(BaseCommand):
                 locale_files_folders = os.path.join(target_folder, utils.LOCALE_PATHS)
 
                 try:
-                    print((f"[Sanity Check] Full Write Access to '{restore_folder}' ..."))
+                    print(f"[Sanity Check] Full Write Access to '{restore_folder}' ...")
                     chmod_tree(restore_folder)
-                    print((f"[Sanity Check] Full Write Access to '{media_root}' ..."))
+                    print(f"[Sanity Check] Full Write Access to '{media_root}' ...")
                     chmod_tree(media_root)
-                    print((f"[Sanity Check] Full Write Access to '{static_root}' ..."))
+                    print(f"[Sanity Check] Full Write Access to '{static_root}' ...")
                     chmod_tree(static_root)
                     for static_files_folder in static_folders:
-                        print((f"[Sanity Check] Full Write Access to '{static_files_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{static_files_folder}' ...")
                         chmod_tree(static_files_folder)
                     for template_files_folder in template_folders:
-                        print((f"[Sanity Check] Full Write Access to '{template_files_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{template_files_folder}' ...")
                         chmod_tree(template_files_folder)
                     for locale_files_folder in locale_folders:
-                        print((f"[Sanity Check] Full Write Access to '{locale_files_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{locale_files_folder}' ...")
                         chmod_tree(locale_files_folder)
                 except Exception as exception:
                     if notify:
@@ -294,7 +295,7 @@ class Command(BaseCommand):
 
                 if not skip_geoserver:
                     try:
-                        print((f"[Sanity Check] Full Write Access to '{target_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{target_folder}' ...")
                         chmod_tree(target_folder)
                         self.restore_geoserver_backup(config, settings, target_folder,
                                                       skip_geoserver_info, skip_geoserver_security,
@@ -358,7 +359,7 @@ class Command(BaseCommand):
                         # Restore Fixtures
                         abortlater = False
                         for app_name, dump_name in zip(config.app_names, config.dump_names):
-                            fixture_file = os.path.join(target_folder, dump_name+'.json')
+                            fixture_file = os.path.join(target_folder, f"{dump_name}.json")
 
                             print(f"Deserializing '{fixture_file}'")
                             try:
@@ -405,7 +406,7 @@ class Command(BaseCommand):
                             # (check to prevent overriding files from site-packages
                             #  in project-template based GeoNode projects)
                             if getattr(settings, 'LOCAL_ROOT', None) and \
-                            not static_files_folder.startswith(settings.LOCAL_ROOT):
+                                    not static_files_folder.startswith(settings.LOCAL_ROOT):
                                 print(
                                     f"Skipping static directory: {static_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
@@ -430,7 +431,7 @@ class Command(BaseCommand):
                             # (check to prevent overriding files from site-packages
                             #  in project-template based GeoNode projects)
                             if getattr(settings, 'LOCAL_ROOT', None) and \
-                            not template_files_folder.startswith(settings.LOCAL_ROOT):
+                                    not template_files_folder.startswith(settings.LOCAL_ROOT):
                                 print(
                                     f"Skipping template directory: {template_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
@@ -455,7 +456,7 @@ class Command(BaseCommand):
                             # (check to prevent overriding files from site-packages
                             #  in project-template based GeoNode projects)
                             if getattr(settings, 'LOCAL_ROOT', None) and \
-                            not locale_files_folder.startswith(settings.LOCAL_ROOT):
+                                    not locale_files_folder.startswith(settings.LOCAL_ROOT):
                                 print(
                                     f"Skipping locale directory: {locale_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
@@ -599,7 +600,7 @@ class Command(BaseCommand):
         archive_md5_file = f"{backup_file.rsplit('.', 1)[0]}.md5"
 
         if os.path.exists(archive_md5_file):
-            with open(archive_md5_file, 'r') as md5_file:
+            with open(archive_md5_file) as md5_file:
                 original_backup_md5 = md5_file.readline().strip().split(" ")[0]
 
             if original_backup_md5 != backup_hash:
@@ -642,7 +643,7 @@ class Command(BaseCommand):
         geoserver_bk_file = os.path.join(target_folder, 'geoserver_catalog.zip')
 
         if not os.path.exists(geoserver_bk_file) or not os.access(geoserver_bk_file, os.R_OK):
-            raise Exception((f'ERROR: geoserver restore: file "{geoserver_bk_file}" not found.'))
+            raise Exception(f'ERROR: geoserver restore: file "{geoserver_bk_file}" not found.')
 
         print(f"Restoring 'GeoServer Catalog [{url}]' from '{geoserver_bk_file}'.")
 
@@ -663,8 +664,7 @@ class Command(BaseCommand):
         }
         r = requests.post(f'{url}rest/br/restore/', data=json.dumps(data),
                           headers=headers, auth=HTTPBasicAuth(user, passwd))
-        error_backup = 'Could not successfully restore GeoServer ' + \
-                       'catalog [{}rest/br/restore/]: {} - {}'
+        error_backup = "Could not successfully restore GeoServer catalog [{{}}rest/br/restore/]: {{}} - {{}}"
 
         if r.status_code in (200, 201, 406):
             try:
@@ -761,8 +761,7 @@ class Command(BaseCommand):
                     copy_tree(gs_data_folder, gs_data_root)
                     print(f"GeoServer Uploaded Raster Data Restored to '{gs_data_root}'.")
                 else:
-                    print(('Skipping geoserver raster data restore: ' +
-                          f'directory "{gs_data_folder}" not found.'))
+                    print(f"Skipping geoserver raster data restore: directory \"{gs_data_folder}\" not found.")
 
                 # Restore '$config.gs_data_dir/data/geonode'
                 gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'geonode')
@@ -777,8 +776,7 @@ class Command(BaseCommand):
                     copy_tree(gs_data_folder, gs_data_root)
                     print(f"GeoServer Uploaded Data Restored to '{gs_data_root}'.")
                 else:
-                    print(('Skipping geoserver raster data restore: ' +
-                           f'directory "{gs_data_folder}" not found.'))
+                    print(f"Skipping geoserver raster data restore: directory \"{gs_data_folder}\" not found.")
 
     def restore_geoserver_vector_data(self, config, settings, target_folder, soft_reset):
         """Restore Vectorial Data from DB"""
@@ -786,8 +784,7 @@ class Command(BaseCommand):
 
             gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'geonode')
             if not os.path.exists(gs_data_folder):
-                print(('Skipping geoserver vector data restore: ' +
-                      f'directory "{gs_data_folder}" not found.'))
+                print(f"Skipping geoserver vector data restore: directory \"{gs_data_folder}\" not found.")
                 return
 
             datastore = settings.OGC_SERVER['default']['DATASTORE']

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -23,7 +22,7 @@ import traceback
 from itertools import chain
 import warnings
 
-from guardian.shortcuts import get_perms, get_objects_for_user
+from guardian.shortcuts import get_objects_for_user
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -54,7 +53,7 @@ from geonode.documents.forms import DocumentForm, DocumentCreateForm, DocumentRe
 from geonode.utils import build_social_links
 from geonode.groups.models import GroupProfile
 from geonode.base.views import batch_modify
-from geonode.monitoring import register_event
+from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_visible_resources
 
@@ -119,9 +118,10 @@ def document_detail(request, docid):
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(document)
 
-    perms_list = get_perms(
-        request.user,
-        document.get_self_resource()) + get_perms(request.user, document)
+    perms_list = list(
+        document.get_self_resource().get_user_perms(request.user)
+        .union(document.get_user_perms(request.user))
+    )
 
     group = None
     if document.group:
@@ -196,7 +196,7 @@ class DocumentUploadView(CreateView):
     form_class = DocumentCreateForm
 
     def get_context_data(self, **kwargs):
-        context = super(DocumentUploadView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['ALLOWED_DOC_TYPES'] = ALLOWED_DOC_TYPES
         return context
 
@@ -225,8 +225,11 @@ class DocumentUploadView(CreateView):
 
         if settings.ADMIN_MODERATE_UPLOADS:
             self.object.is_approved = False
+            self.object.was_approved = False
         if settings.RESOURCE_PUBLISHING:
             self.object.is_published = False
+            self.object.was_published = False
+
         self.object.save()
         form.save_many2many()
         self.object.set_permissions(form.cleaned_data['permissions'])
@@ -268,15 +271,6 @@ class DocumentUploadView(CreateView):
             bbox = BBOXHelper.from_xy(bbox)
             self.object.bbox_polygon = bbox.as_polygon()
 
-        if getattr(settings, 'SLACK_ENABLED', False):
-            try:
-                from geonode.contrib.slack.utils import build_slack_message_document, send_slack_message
-                send_slack_message(
-                    build_slack_message_document(
-                        "document_new", self.object))
-            except Exception:
-                logger.error("Could not send slack message for new document.")
-
         self.object.save(notify=True)
         register_event(self.request, EventType.EVENT_UPLOAD, self.object)
 
@@ -312,7 +306,7 @@ class DocumentUpdateView(UpdateView):
     context_object_name = 'document'
 
     def get_context_data(self, **kwargs):
-        context = super(DocumentUpdateView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['ALLOWED_DOC_TYPES'] = ALLOWED_DOC_TYPES
         return context
 
@@ -363,7 +357,13 @@ def document_metadata(
             request.POST,
             instance=document,
             prefix="resource")
+<<<<<<< HEAD
         category_form = CategoryForm(request.POST, prefix="category_choice_field")
+=======
+        category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
+            request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
+            request.POST["category_choice_field"] else None)
+>>>>>>> 3.3.x
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -398,8 +398,7 @@ def document_metadata(
                             if len(tkl) > 0:
                                 tkl_ids = ",".join(
                                     map(str, tkl.values_list('id', flat=True)))
-                                tkeywords_list += "," + \
-                                tkl_ids if len(
+                                tkeywords_list += f",{tkl_ids}" if len(
                                     tkeywords_list) > 0 else tkl_ids
                     except Exception:
                         tb = traceback.format_exc()
@@ -557,6 +556,11 @@ def document_metadata(
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
+        "UI_MANDATORY_FIELDS": list(
+            set(getattr(settings, 'UI_DEFAULT_MANDATORY_FIELDS', []))
+            |
+            set(getattr(settings, 'UI_REQUIRED_FIELDS', []))
+        )
     })
 
 

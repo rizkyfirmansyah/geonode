@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -21,6 +20,8 @@
 import time
 import logging
 from hashlib import md5
+
+from django.template.defaultfilters import slugify
 
 from . import models
 from . import enumerations
@@ -52,7 +53,7 @@ def harvest_resource(self, harvest_job_id):
     details = ""
     try:
         handler = get_service_handler(
-            base_url=harvest_job.service.base_url,
+            base_url=harvest_job.service.service_url,
             proxy_base=harvest_job.service.proxy_base,
             service_type=harvest_job.service.type
         )
@@ -64,15 +65,30 @@ def harvest_resource(self, harvest_job_id):
         _cnt = 0
         while _cnt < 5 and not result:
             try:
-                layer = Layer.objects.get(
-                    alternate=f"{workspace.name}:{harvest_job.resource_id}")
+                layer = None
+                if Layer.objects.filter(alternate=f"{harvest_job.resource_id}").count():
+                    layer = Layer.objects.get(
+                        alternate=f"{harvest_job.resource_id}")
+                else:
+                    layer = Layer.objects.get(
+                        alternate=f"{workspace.name}:{harvest_job.resource_id}")
                 layer.save(notify=True)
                 result = True
             except Exception as e:
                 _cnt += 1
                 logger.error(
                     f"Notfiy resource {workspace.name}:{harvest_job.resource_id} tentative {_cnt}: {e}")
-                time.sleep(10)
+                try:
+                    layer = Layer.objects.get(
+                        alternate=f"{slugify(harvest_job.service.base_url)}:{harvest_job.resource_id}")
+                    layer.save(notify=True)
+                    result = True
+                except Exception as e:
+                    logger.error(
+                        "Notfiy resource "
+                        f"{slugify(harvest_job.service.base_url)}:{harvest_job.resource_id} "
+                        f"tentative {_cnt}: {e}")
+                    time.sleep(1.0)
     except Exception as err:
         logger.exception(msg="An error has occurred while harvesting "
                              f"resource {harvest_job.resource_id}")
@@ -105,9 +121,12 @@ def probe_services(self):
     lock_id = f'{name.decode()}-lock-{hexdigest}'
     with AcquireLock(lock_id) as lock:
         if lock.acquire() is True:
-            for service in models.Service.objects.all():
-                try:
-                    service.probe = service.probe_service()
-                    service.save()
-                except Exception as e:
-                    logger.error(e)
+            try:
+                for service in models.Service.objects.all():
+                    try:
+                        _probe = service.probe_service()
+                        models.Service.objects.filter(id=service.id).update(probe=_probe)
+                    except Exception as e:
+                        logger.error(e)
+            except Exception as e:
+                logger.error(e)

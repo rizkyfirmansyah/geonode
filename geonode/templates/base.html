@@ -62,13 +62,15 @@
       <style type="text/css">
         /* Additional styles by custom themes */
         {% if custom_theme.body_color %}
-        body {
-          background: {{ custom_theme.body_color }};
-          {% if custom_theme.body_text_color %}
-          color: {{ custom_theme.body_text_color }};
-          {% endif %}
-        }
-
+          body {
+            background: {{ custom_theme.body_color }};
+            {% if custom_theme.body_text_color %}
+            color: {{ custom_theme.body_text_color }};
+            {% endif %}
+          }
+          #wrap {
+            background: {{ custom_theme.body_color }};
+          }
         .home #partners {
           background: {{ custom_theme.body_color }};
           padding: 2em 0;
@@ -262,34 +264,86 @@
     <!-- RTL styles -->
     {% get_current_language_bidi as LANGUAGE_BIDI %}
     {% if LANGUAGE_BIDI %}
-        <link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/v3.3.4/dist/css/bootstrap-rtl.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.3.4/css/bootstrap-rtl.min.css">
         {% if DEBUG_STATIC %}
           <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.css" %}">
         {% else %}
           <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.min.css" %}">
         {% endif %}
     {% endif %}
+
+    {% if request.user_agent.is_mobile %}
+    <script type="text/javascript">
+      (function() {
+        window.addEventListener('DOMContentLoaded', function() {
+          // fill all the available screen space with the menu
+          const navbar = document.querySelector('.navbar-fixed-top');
+          const navHeader = navbar && navbar.querySelector('.navbar-header');
+          const navContent = navbar && navbar.querySelector('#navbar');
+          if (navHeader && navContent) {
+            navContent.style.maxHeight = 'calc(100vh - ' + navHeader.clientHeight + 'px)';
+          }
+          const resourcesListHeader = document.querySelector('.resources-list-header');
+          if (navHeader && resourcesListHeader) {
+            resourcesListHeader.style.top = navHeader.clientHeight + 'px';
+          }
+        });
+      })();
+    </script>
+    {% endif %}
   </head>
 
-  <body class="{% block body_class %}{% endblock %}">
+  <body class="{% block body_class %}{% endblock %}{% if request.user_agent.is_mobile %} gn-mobile{% endif %}">
+    <!-- Loading Mask -->
+    <div class='lmask'></div>
     <!-- Navbar -->
     {% block header %}
+    
   <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="nav-container">
         <div class="navbar-header">
+<<<<<<< HEAD
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
           <i class="fa fa-navicon fa-lg"></i>
         </button>
         <a class="navbar-brand" href="{% url "home" %}">SDI</a>
       </div>
+=======
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <i class="fa fa-navicon fa-lg"></i>
+          </button>
+          <a class="navbar-brand" href="{% url "home" %}">GeoNode</a>
+        </div>
+>>>>>>> 3.3.x
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav toolbar">
-
+          {% if request.user_agent.is_mobile %}
+            <li>
+              <div class="search">
+                <form id="search" action="{% url "search" %}" >
+                  <span class="fa fa-search"></span>
+                  <div id="search-container" class="autocomplete-input">
+                    {% if HAYSTACK_SEARCH %}
+                    <input autocomplete="off" id="search_input" type="text" placeholder="{% trans 'Search' %}" name="q">
+                    <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
+                    <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
+                    <input type="hidden" name="f_method" id="filtering_type" value="or" >
+                    {% else %}
+                    <input autocomplete="off" type="text" name="title__icontains" id="search_input" placeholder="{% trans 'Search' %}" >
+                    <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
+                    <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
+                    <input type="hidden" name="f_method" id="filtering_type" value="or" >
+                    {% endif %}
+                  </div>
+                </form>
+              </div>
+            </li>
+            {% endif %}
           {% block tabs %}
-
           <li id="nav_layers">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Data" %}<i class="fa fa-angle-down fa-lg"></i></a>
               <ul class="dropdown-menu">
+<<<<<<< HEAD
                 <li><a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Spatial" %}</a></li>
                 <li><a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "BigTIFF/Non-Spatial Data" %}</a></li>
                 <li><a href="{% url "services" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Remote Services" %}</a></li>
@@ -304,12 +358,30 @@
                 {% if user.is_superuser or user.is_staff %}
                   {%  if not READ_ONLY_MODE %}
                     <li><a href="{% url "register_service" %}">{% trans "Add Remote Service" %}</a></li>
+=======
+                <li><a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Layers" %}</a></li>
+                <li><a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Documents" %}</a></li>
+                {% if not request.user_agent.is_mobile %}
+                <li><a href="{% url "services" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Remote Services" %}</a></li>
+                  {% if user.is_authenticated and not READ_ONLY_MODE %}
+                      <li role="separator" class="divider"></li>
+                      <li><a href="{% url "layer_upload" %}">{% trans "Upload Layer" %}</a></li>
+                      {% if USE_GEOSERVER and CREATE_LAYER %}
+                          <li><a href="{% url "layer_create" %}">{% trans "Create Layer" %}</a></li>
+                      {% endif %}
+                      <li><a href="{% url "document_upload" %}">{% trans "Upload Document" %}</a></li>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_staff %}
+                    {%  if not READ_ONLY_MODE %}
+                      <li><a href="{% url "register_service" %}">{% trans "Add Remote Service" %}</a></li>
+                    {% endif %}
+>>>>>>> 3.3.x
                   {% endif %}
                 {% endif %}
               </ul>
             </li>
           <li id="nav_maps">
-              {% if user.is_authenticated %}
+              {% if user.is_authenticated and not request.user_agent.is_mobile %}
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Maps" %}<i class="fa fa-angle-down fa-lg"></i></a>
                 <ul class="dropdown-menu">
                   <li><a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Explore Maps" %}</a></li>
@@ -323,7 +395,7 @@
           </li>
           {% if GEONODE_APPS_ENABLE and GEONODE_APPS_NAV_MENU_ENABLE %}
           <li id="nav_maps">
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and not request.user_agent.is_mobile %}
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %}<i class="fa fa-angle-down fa-lg"></i></a>
               <ul class="dropdown-menu">
                   <li><a href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Explore" %} {% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %}</a></li>
@@ -333,6 +405,7 @@
             {% endif %}
           </li>
           {% endif %}
+          {% if not request.user_agent.is_mobile %}
           <li>
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "About" %}<i class="fa fa-angle-down fa-lg"></i></a>
               <ul class="dropdown-menu">
@@ -354,6 +427,7 @@
                 {% endif %}
               </ul>
           </li>
+          {% endif %}
 
           <li>
                 <a href="{% url "faq" %}">{% trans "FAQs" %}</a>
@@ -375,7 +449,8 @@
             {% block my_extra_right_tab %}
                {% render_nav_menu 'TOPBAR_MENU' %}
             {% endblock my_extra_right_tab %}
-
+          
+            {% if not request.user_agent.is_mobile %}
             <li>
               <div class="search">
                 <form id="search" action="{% url "search" %}" >
@@ -396,6 +471,7 @@
                 </form>
               </div>
             </li>
+            {% endif %}
             {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
               <li><a href="{% url "account_signup" %}">{% trans "Register" %}</a></li>
             {% endif %}
@@ -414,12 +490,15 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a href="{{ user.get_absolute_url }}">{% trans "Profile" %}</a></li>
-                <li><a href="{% url "recent-activity" %}">{% trans "Recent Activity" %}</a></li>
-                {% if FAVORITE_ENABLED and user.is_authenticated %}
-                <li><a href="{% url "favorite_list" %}">{% trans "Favorites" %}</a></li>
-                {% endif %}
-                <li><a href="{% url "messages_inbox" %}">{% trans "Inbox" %}</a></li>
+                {% if not request.user_agent.is_mobile %}
+                  <li><a href="{% url "recent-activity" %}">{% trans "Recent Activity" %}</a></li>
+                  {% if FAVORITE_ENABLED %}
+                  <li><a href="{% url "favorite_list" %}">{% trans "Favorites" %}</a></li>
+                  {% endif %}   
+                  <li><a href="{% url "messages_inbox" %}">{% trans "Inbox" %}</a></li>
+                {% endif %}                
                 {% if user.is_superuser or user.is_staff %}
+                  {% if not request.user_agent.is_mobile %}
                     <li role="separator" class="divider"></li>
                     <li><a href="{% url "admin:index" %}">{% trans "Admin" %}</a></li>
                     {% if 'geonode.geoserver' in INSTALLED_APPS %}
@@ -429,9 +508,12 @@
                     <li role="separator" class="divider"></li>
                     <li><a href="{% url "monitoring:index" %}">{% trans "Monitoring & Analytics" %}</a></li>
                     {% endif %}
+                  {% endif %}
                 {% endif %}
+                {% if not request.user_agent.is_mobile %}
                 <li role="separator" class="divider"></li>
                 <li><a href="{% url "help" %}">{% trans "Help" %}</a></li>
+                {% endif %}
                 <li role="separator" class="divider"></li>
                 <li><a href="{% if SITEURL|default:""|slice:"-1:" == "/" %}{{SITEURL}}{% else %}{{SITEURL}}/{% endif %}account/logout/">{% trans "Log out" %}</a></li>
                 </ul>
@@ -483,6 +565,7 @@
   <footer>
     <div class="container">
       <div class="row">
+<<<<<<< HEAD
             <div class="col-md-8" id="footer-cp">
               <span>Copyright © 2021 WRI Indonesia | All Rights Reserved | Powered by Geonode</span>
             </div>
@@ -501,6 +584,97 @@
               </form>
               {% endif %}
             </div>
+=======
+        {% if not request.user_agent.is_mobile %}
+          <div class="col-md-2">
+            <ul class="list-unstyled">
+              <li>{% trans "Data" %}</li>
+              <li><a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Layers" %}</a></li>
+              <li><a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Documents" %}</a></li>
+              <li><a href="{% url "services" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Remote Services" %}</a></li>
+              {% if user.is_authenticated and not READ_ONLY_MODE %}
+                  <li role="separator" class="divider"></li>
+                  <li><a href="{% url "layer_upload" %}">{% trans "Upload Layer" %}</a></li>
+                  {% if USE_GEOSERVER and CREATE_LAYER %}
+                      <li><a href="{% url "layer_create" %}">{% trans "Create Layer" %}</a></li>
+                  {% endif %}
+                  <li><a href="{% url "document_upload" %}">{% trans "Upload Document" %}</a></li>
+              {% endif %}
+              {% if user.is_staff or user.is_superuser %}
+                {% if not READ_ONLY_MODE %}
+                  <li><a href="{% url "register_service" %}">{% trans "Add Remote Service" %}</a></li>
+                {% endif %}
+              {% endif %}
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <ul class="list-unstyled">
+              <li>{% trans "Maps" %}</li>
+              <li><a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">{% trans "Explore Maps" %}</a></li>
+              {% if user.is_authenticated and not READ_ONLY_MODE %}
+                <li> <a href="{% url "new_map" %}">{% trans "Create Map" %}</a></li>
+              {% endif %}
+            </ul>
+          </div>
+          <div class="col-md-2">
+            <ul class="list-unstyled">
+              <li>{% trans "About" %}</li>
+              <li><a href="{% url "profile_browse" %}">{% trans "People" %}</a></li>
+              <li><a href="{% url "group_list" %}">{% trans "Groups" %}</a></li>
+              {% if perms.announcements.can_manage %}
+              <li><a href="{% url "announcements_list" %}">{% trans "Announcements" %}</a></li>
+              {% endif %}
+              {% if user.is_authenticated and not READ_ONLY_MODE %}
+              <li><a href="{% url "geonode.invitations:geonode-send-invite" %}">{% trans "Invite Users" %}</a></li>
+              {% endif %}
+              {% if user.is_superuser and not READ_ONLY_MODE %}
+              <li><a href="{% if SITEURL|default:""|slice:"-1:" == "/" %}{{SITEURL}}{% else %}{{SITEURL}}/{% endif %}admin/people/profile/add/">{% trans "Add User" %}</a></li>
+              <li><a href="{% url "group_create" %}">{% trans "Create Group" %}</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        {% endif %}
+        <div class="col-md-6 text-right">
+          {% block contactus %}
+          {% if custom_theme.contactus %}
+          <ul class="list-unstyled">
+              <li style="text-align: left;"><h2 style="margin-top: 0px;">{% trans "Contact Us" %} </h2> </li>
+              {% if custom_theme.contact_name %}<li style="text-align: left;">{{ custom_theme.contact_name }}</li>{% endif %}
+              {% if custom_theme.contact_position %}<li style="text-align: left;">{{ custom_theme.contact_position }}</li>{% endif %}
+              {% if custom_theme.contact_administrative_area %}<li style="text-align: left;">{{ custom_theme.contact_administrative_area }}</li>{% endif %}
+              {% if custom_theme.contact_city %}<li style="text-align: left;">{{ custom_theme.contact_city }}</li>{% endif %}
+              {% if custom_theme.contact_street %}<li style="text-align: left;">{{ custom_theme.contact_street }}</li>{% endif %}
+              {% if custom_theme.contact_postal_code %}<li style="text-align: left;">{{ custom_theme.contact_postal_code }}</li>{% endif %}
+              {% if custom_theme.contact_country %}<li style="text-align: left;">{{ custom_theme.contact_country }}</li>{% endif %}
+              {% if custom_theme.contact_delivery_point %}<li style="text-align: left;">{{ custom_theme.contact_delivery_point }}</li>{% endif %}
+              {% if custom_theme.contact_voice %}<li style="text-align: left;">{% trans "Tel" %}: {{ custom_theme.contact_voice }}</li>{% endif %}
+              {% if custom_theme.contact_facsimile %}<li style="text-align: left;">{% trans "Fax" %}: {{ custom_theme.contact_facsimile }}</li>{% endif %}
+              {% if custom_theme.contact_email %}<li style="text-align: left;">{% trans "E-mail" %}: {{ custom_theme.contact_email }}</li>{% endif %}
+          </ul>
+          {% endif %}
+          {% endblock contactus %}
+          {% if not request.user_agent.is_mobile %}
+          <ul class="list-unstyled">
+            <li>{% trans "Powered by" %} <a href="http://geonode.org">{% trans "GeoNode" %}</a>{% if user.is_staff %} <em>{% trans "version" %} {{ VERSION }}</em>{% endif %}</li>
+            <li><a href="{% url "developer" %}">{% trans "Developers" %}</a> | <a href="{% url "about" %}">{% trans "About" %}</a><li>
+          </ul>
+          {% endif %}
+          <label class="hidden">{% trans "Language" %}</label>
+          {% if csrf_token != "NOTPROVIDED" %}
+          {% get_current_language as LANGUAGE %}
+          <form class="form-inline" action="/i18n/setlang/" method="post">
+          {% csrf_token %}
+            <select class="col-md-6 pull-right" name="language" onchange="javascript:form.submit()">
+              {% for lang in LANGUAGES %}
+              <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
+                {{ lang.1 }}
+              </option>
+              {% endfor %}
+            </select>
+          </form>
+          {% endif %}
+        </div>
+>>>>>>> 3.3.x
       </div>
     </div>
   </footer>

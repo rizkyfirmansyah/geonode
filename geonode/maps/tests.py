@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -20,7 +19,7 @@
 import json
 import logging
 
-from mock import patch
+from unittest.mock import patch
 from defusedxml import lxml as dlxml
 from django.test.utils import override_settings
 
@@ -32,7 +31,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 
-from geonode.maps.models import Map
+from geonode.maps.models import Map, MapLayer
 from geonode.settings import on_travis
 from geonode.maps import MapsAppConfig
 from geonode.layers.models import Layer
@@ -85,7 +84,7 @@ class MapsTest(GeoNodeBaseTestSupport):
     """
 
     def setUp(self):
-        super(MapsTest, self).setUp()
+        super().setUp()
 
         self.user = 'admin'
         self.passwd = 'admin'
@@ -329,6 +328,20 @@ community."
     def test_new_map_with_layer(self):
         layer = Layer.objects.all().first()
         self.client.get(f"{reverse('new_map')}?layer={layer.alternate}")
+
+    def test_new_map_with_layer_view(self):
+        layer = Layer.objects.all().first()
+        # anonymous user
+        response = self.client.get(f"{reverse('new_map')}?layer={layer.alternate}&view=True")
+        self.assertIn('view_resourcebase', response.context.get('perms_list', []))
+        self.assertFalse('change_resourcebase' in response.context.get('perms_list', []))
+        # admin
+        self.client.login(username=self.user, password=self.passwd)
+        response = self.client.get(f"{reverse('new_map')}?layer={layer.alternate}&view=True")
+        self.assertIn('publish_resourcebase', response.context.get('perms_list', []))
+        # Test with invalid layer name
+        response = self.client.get(f"{reverse('new_map')}?layer=invalid_name&view=True")
+        self.assertListEqual([], response.context.get('perms_list', []))
 
     def test_new_map_with_empty_bbox_layer(self):
         layer = Layer.objects.all().first()
@@ -961,11 +974,20 @@ community."
             for word in resource.keywords.all():
                 self.assertTrue(word.name in keywords.split(','))
 
+    def test_get_legend(self):
+        layer = Layer.objects.all().first()
+        map_layer = MapLayer.objects.filter(name=layer.alternate).exclude(layer_params='').first()
+        if map_layer and layer.default_style:
+            self.assertIsNone(map_layer.get_legend)
+        elif map_layer:
+            # when there is no style in layer_params
+            self.assertIsNone(map_layer.get_legend)
+
 
 class MapModerationTestCase(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        super(MapModerationTestCase, self).setUp()
+        super().setUp()
 
         self.user = 'admin'
         self.passwd = 'admin'
@@ -1012,7 +1034,7 @@ class MapModerationTestCase(GeoNodeBaseTestSupport):
 class MapsNotificationsTestCase(NotificationsTestsHelper):
 
     def setUp(self):
-        super(MapsNotificationsTestCase, self).setUp()
+        super().setUp()
 
         self.user = 'admin'
         self.passwd = 'admin'

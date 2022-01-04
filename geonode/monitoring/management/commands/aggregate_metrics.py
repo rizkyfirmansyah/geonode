@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -17,11 +16,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
 import logging
-
+from django.conf import settings
 from django.core.management.base import BaseCommand
-
 from geonode.monitoring.collector import CollectorAPI
 
 log = logging.getLogger(__name__)
@@ -30,5 +27,8 @@ log = logging.getLogger(__name__)
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
+        # Exit early if MONITORING_ENABLED=False
+        if not settings.MONITORING_ENABLED:
+            return
         c = CollectorAPI()
         c.aggregate_past_periods()

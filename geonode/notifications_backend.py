@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -33,7 +32,7 @@ class EmailBackend(BaseBackend):
     spam_sensitivity = 2
 
     def can_send(self, user, notice_type, scoping):
-        can_send = super(EmailBackend, self).can_send(user, notice_type, scoping)
+        can_send = super().can_send(user, notice_type, scoping)
         if can_send and user.email:
             return True
         return False
@@ -78,8 +77,12 @@ class EmailBackend(BaseBackend):
             connection.open()
             connection.send_messages([email, ])
             # The connection was already open so send_messages() doesn't close it.
-        except Exception:
-            send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [email])
+        except Exception as e:
+            logger.error(e)
+            try:
+                send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [email])
+            except Exception as e:
+                logger.error(e)
         finally:
             # We need to manually close the connection.
             connection.close()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -27,7 +26,8 @@ from geonode.security.views import _perms_info_json
 from geonode.base.utils import remove_duplicate_links
 from geonode.geoserver.helpers import (
     create_gs_thumbnail,
-    set_attributes_from_geoserver
+    set_attributes_from_geoserver,
+    sync_instance_with_geoserver
 )
 
 
@@ -37,7 +37,8 @@ def sync_geonode_layers(ignore_errors,
                         removeduplicates,
                         updatepermissions,
                         updatethumbnails,
-                        updateattributes):
+                        updateattributes,
+                        updatebbox):
     layers = Layer.objects.all().order_by('name')
     if filter:
         layers = layers.filter(name__icontains=filter)
@@ -66,7 +67,10 @@ def sync_geonode_layers(ignore_errors,
                 # remove duplicates
                 print("Removing duplicate links...")
                 remove_duplicate_links(layer)
-        except Exception:
+            if updatebbox:
+                print("Regenerating BBOX...")
+                sync_instance_with_geoserver(layer.id, updatemetadata=False, updatebbox=True)
+        except (Exception, RuntimeError):
             layer_errors.append(layer.alternate)
             exception_type, error, traceback = sys.exc_info()
             print(exception_type, error, traceback)
@@ -132,6 +136,12 @@ class Command(BaseCommand):
             dest="updateattributes",
             default=False,
             help="Update the layer attributes.")
+        parser.add_argument(
+            '--updatebbox',
+            action='store_true',
+            dest="updatebbox",
+            default=False,
+            help="Update the layer BBOX.")
 
     def handle(self, **options):
         ignore_errors = options.get('ignore_errors')
@@ -139,6 +149,7 @@ class Command(BaseCommand):
         updatepermissions = options.get('updatepermissions')
         updatethumbnails = options.get('updatethumbnails')
         updateattributes = options.get('updateattributes')
+        updatebbox = options.get('updatebbox')
         filter = options.get('filter')
         if not options.get('username'):
             username = None
@@ -151,4 +162,5 @@ class Command(BaseCommand):
             removeduplicates,
             updatepermissions,
             updatethumbnails,
-            updateattributes)
+            updateattributes,
+            updatebbox)

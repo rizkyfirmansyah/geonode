@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -47,18 +46,16 @@ def load_backend(backend_name):
         # listing all possible (built-in) CSW backends.
         backend_dir = os.path.join(os.path.dirname(__file__), 'backends')
         try:
-            available_backends = [f for f in os.listdir(backend_dir) if os.path.isdir(os.path.join(backend_dir, f)) and
-                                  not f.startswith('.')]
-            available_backends.sort()
-        except EnvironmentError:
+            available_backends = sorted([f for f in os.listdir(backend_dir) if os.path.isdir(os.path.join(backend_dir, f)) and
+                                         not f.startswith('.')])
+        except OSError:
             available_backends = []
 
         if backend_name not in available_backends:
             backend_reprs = list(map(repr, available_backends))
-            error_msg = ("%r isn't an available catalogue backend.\n"
-                         "Try using geonode.catalogue.backends.BACKEND"
-                         ", where BACKEND is one of:\n    %s\nError was: %s" %
-                         (backend_name, ", ".join(backend_reprs), e_user))
+            error_msg = (f"{backend_name!r} isn't an available catalogue backend.\n"
+                         "Try using geonode.catalogue.backends.BACKEND, where BACKEND is one of:\n"
+                         f"    {', '.join(backend_reprs)}\nError was: {e_user}")
             raise ImproperlyConfigured(error_msg)
         else:
             # If there's some other error, this must be an error in GeoNode

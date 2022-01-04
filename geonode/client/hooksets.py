@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -20,7 +19,7 @@
 import json
 
 
-class BaseHookSet(object):
+class BaseHookSet:
 
     # Layers
     def layer_list_template(self, context=None):
@@ -48,6 +47,9 @@ class BaseHookSet(object):
         return NotImplemented
 
     def layer_style_edit_template(self, context=None):
+        return NotImplemented
+
+    def layer_export_template(self, context=None):
         return NotImplemented
 
     # Maps

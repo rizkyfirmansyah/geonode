@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -18,6 +17,7 @@
 #
 #########################################################################
 
+from geonode.base.models import ResourceBase
 from geonode.tests.base import GeoNodeBaseTestSupport
 
 import json
@@ -28,7 +28,13 @@ from django.urls import reverse
 from django.db.models import Max
 
 from .models import Favorite
+from geonode.geoapps.models import GeoApp
 from geonode.documents.models import Document
+from geonode.base.populate_test_data import (
+    all_public,
+    create_models,
+    remove_models,
+    create_single_layer)
 
 
 class FavoriteTest(GeoNodeBaseTestSupport):
@@ -39,10 +45,27 @@ class FavoriteTest(GeoNodeBaseTestSupport):
     Tests geonode.favorite app/module
     """
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        create_models(type=cls.get_type, integration=cls.get_integration)
+        all_public()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        remove_models(cls.get_obj_ids, type=cls.get_type, integration=cls.get_integration)
+
     def setUp(self):
-        super(FavoriteTest, self).setUp()
+        super().setUp()
         self.adm_un = "admin"
         self.adm_pw = "admin"
+        self.admin = get_user_model().objects.get(username="admin")
+        self.geoapp = GeoApp.objects.create(
+            resource_type='geoapp',
+            name="test geoapp1",
+            owner=self.admin
+        )
 
     # tests of Favorite and FavoriteManager methods.
     def test_favorite(self):
@@ -50,6 +73,8 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         test_user = get_user_model().objects.first()
         test_document_1 = Document.objects.first()
         test_document_2 = Document.objects.last()
+        self.assertIsNotNone(test_document_1)
+        self.assertIsNotNone(test_document_2)
 
         # test create favorite.
         Favorite.objects.create_favorite(test_document_1, test_user)
@@ -86,9 +111,29 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         # test bulk favorites.
         bulk_favorites = Favorite.objects.bulk_favorite_objects(test_user)
         self.assertEqual(len(bulk_favorites[ct.name]), 2)
-        self.assertEqual(len(bulk_favorites["layer"]), 0)
-        self.assertEqual(len(bulk_favorites["map"]), 0)
         self.assertEqual(len(bulk_favorites["user"]), 0)
+
+    def test_given_resource_base_object_will_assign_subtype_as_content_type(self):
+        test_user = get_user_model().objects.first()
+
+        '''
+        If the input object is a ResourceBase, in favorite content type, should be saved he
+        subtype content type (Doc, Layer, Map or GeoApp)
+        '''
+        create_single_layer('foo_layer')
+        resource = ResourceBase.objects.get(title='foo_layer')
+        created_fav = Favorite.objects.create_favorite(resource, test_user)
+        self.assertEqual('layer', created_fav.content_type.model)
+
+        '''
+        If the input object is a subtype, should save the relative content type
+        '''
+        test_document_1 = Document.objects.first()
+        self.assertIsNotNone(test_document_1)
+        Favorite.objects.create_favorite(test_document_1, test_user)
+        fav = Favorite.objects.last()
+        ct = ContentType.objects.get_for_model(test_document_1)
+        self.assertEqual(fav.content_type, ct)
 
     # tests of view methods.
     def test_create_favorite_view(self):
@@ -98,7 +143,9 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         """
         self.client.login(username=self.adm_un, password=self.adm_pw)
 
-        document_pk = Document.objects.first().pk
+        document = Document.objects.first()
+        self.assertIsNotNone(document)
+        document_pk = document.pk
         response = self._get_response("add_favorite_document", (document_pk,))
 
         # check persisted.
@@ -118,7 +165,9 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         self.assertEqual(json_content["delete_url"], expected_delete_url)
 
         # call method again, check for idempotent.
-        document_pk = Document.objects.first().pk
+        document = Document.objects.first()
+        self.assertIsNotNone(document)
+        document_pk = document.pk
         response2 = self._get_response("add_favorite_document", (document_pk,))
 
         # check still one only persisted, same as before second call.
@@ -130,6 +179,16 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         json_content2 = json.loads(response2.content)
         self.assertEqual(json_content2["has_favorite"], "true")
         self.assertEqual(json_content2["delete_url"], expected_delete_url)
+
+        # test favourite geoapp from view
+        response = self._get_response("add_favorite_geoapp", (self.geoapp.pk,))
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        if isinstance(content, bytes):
+            content = content.decode('UTF-8')
+        json_content = json.loads(content)
+        self.assertEqual(json_content["has_favorite"], "true")
+        expected_delete_url = reverse("delete_favorite", args=[self.geoapp.pk])
 
     def test_create_favorite_view_login_required(self):
         """
@@ -146,6 +205,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         """
         # get a pk that is not in the db for Document object.
         max_document_pk = Document.objects.aggregate(Max("pk"))
+        self.assertIsNotNone(max_document_pk)
         pk_not_in_db = str(max_document_pk["pk__max"] + 1)
 
         self.client.login(username=self.adm_un, password=self.adm_pw)
@@ -160,7 +220,9 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         self.client.login(username=self.adm_un, password=self.adm_pw)
 
         # first, add one to delete.
-        document_pk = Document.objects.first().pk
+        document = Document.objects.first()
+        self.assertIsNotNone(document)
+        document_pk = document.pk
         response = self._get_response("add_favorite_document", (document_pk,))
 
         # check persisted.
@@ -193,6 +255,15 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         self.assertEqual(response2.status_code, 200)
         json_content2 = json.loads(response2.content)
         self.assertEqual(json_content2["has_favorite"], "false")
+
+        # test delete geoapp from favorite
+        response = self._get_response("delete_favorite", (self.geoapp.pk,))
+        self.assertEqual(response.status_code, 200)
+        content = response.content
+        if isinstance(content, bytes):
+            content = content.decode('UTF-8')
+        json_content = json.loads(content)
+        self.assertEqual(json_content["has_favorite"], "false")
 
     def test_delete_favorite_view_login_required(self):
         """

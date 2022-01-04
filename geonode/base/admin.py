@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -42,6 +41,7 @@ from geonode.base.models import (
     RestrictionCodeType,
     ContactRole,
     Link,
+    DataType,
     License,
     HierarchicalKeyword,
     MenuPlaceholder,
@@ -305,7 +305,7 @@ class ThesaurusAdmin(admin.ModelAdmin):
     ordering = ('identifier',)
 
     def get_urls(self):
-        urls = super(ThesaurusAdmin, self).get_urls()
+        urls = super().get_urls()
         my_urls = [
             path('importrdf/', self.import_rdf, name="base_thesaurus_importrdf")
         ]

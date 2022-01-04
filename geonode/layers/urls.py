@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ##############################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -22,7 +21,7 @@ from geonode import geoserver  # noqa
 from geonode.utils import check_ogc_backend
 from django.conf.urls import url, include
 from django.views.generic import TemplateView
-from geonode.monitoring import register_url_event
+from geonode.base import register_url_event
 
 from . import views
 
@@ -42,7 +41,6 @@ urlpatterns = [
     url(r'^upload_metadata$', views.layer_metadata_upload,
         name='layer_metadata_upload'),
     url(r'^upload_style$', views.layer_sld_upload, name='layer_sld_upload'),
-    url(r'^load_layer_data$', views.load_layer_data, name='load_layer_data'),
     url(r'^(?P<layername>[^/]*)$', views.layer_detail, name="layer_detail"),
     url(r'^(?P<layername>[^/]*)/metadata$',
         views.layer_metadata, name="layer_metadata"),
@@ -54,8 +52,8 @@ urlpatterns = [
         name="layer_granule_remove"),
     url(r'^(?P<layername>[^/]*)/replace$',
         views.layer_replace, name="layer_replace"),
-    url(r'^(?P<layername>[^/]*)/thumbnail$',
-        views.layer_thumbnail, name='layer_thumbnail'),
+    url(r'^(?P<layername>[^/]*)/append$',
+        views.layer_append, name="layer_append"),
     url(r'^(?P<layername>[^/]*)/get$', views.get_layer, name='get_layer'),
     url(r'^(?P<layername>[^/]*)/metadata_detail$',
         views.layer_metadata_detail, name='layer_metadata_detail'),
@@ -67,6 +65,8 @@ urlpatterns = [
         views.layer_sld_upload, name='layer_sld_upload'),
     url(r'^(?P<layername>[^/]*)/style_edit$',
         views.layer_sld_edit, name='layer_sld_edit'),
+    url(r'^(?P<layername>[^/]*)/layer_export$',
+        views.layer_export, name='layer_export'),
     url(r'^(?P<layername>[^/]*)/feature_catalogue$',
         views.layer_feature_catalogue, name='layer_feature_catalogue'),
     url(r'^metadata/batch/$',

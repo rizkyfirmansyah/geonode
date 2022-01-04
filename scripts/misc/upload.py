@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -56,7 +55,6 @@ if __name__ == '__main__':
     error = upload_file_s3(filepath, bucket_name)
 
     if error is not None:
-        print((filename + " failed uploading to " +
-              bucket_name + " with error " + error))
+        print(f"{filename} failed uploading to {bucket_name} with error {error}")
     else:
-        print((filename + " uploaded to " + bucket_name))
+        print(f"{filename} uploaded to {bucket_name}")

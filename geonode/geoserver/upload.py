@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -18,6 +17,7 @@
 #
 #########################################################################
 import uuid
+import shutil
 import logging
 import geoserver
 
@@ -116,7 +116,7 @@ def geoserver_upload(
     logger.debug('>>> Step 4. Starting upload of [%s] to GeoServer...', name)
 
     # Get the helper files if they exist
-    files = get_files(base_file)
+    files, _tmpdir = get_files(base_file)
     data = files
     if 'shp' not in files:
         data = base_file
@@ -142,13 +142,13 @@ def geoserver_upload(
         logger.warn(msg)
         e.args = (msg,)
         raise
-    else:
-        logger.debug('Finished upload of [%s] to GeoServer without '
-                     'errors.', name)
+    finally:
+        if _tmpdir is not None:
+            shutil.rmtree(_tmpdir, ignore_errors=True)
+    logger.debug(f'Finished upload of {name} to GeoServer without errors.')
 
     # Step 5. Create the resource in GeoServer
-    logger.debug('>>> Step 5. Generating the metadata for [%s] after '
-                 'successful import to GeoSever', name)
+    logger.debug(f'>>> Step 5. Generating the metadata for {name} after successful import to GeoSever')
 
     # Verify the resource was created
     if not gs_resource:
@@ -157,9 +157,7 @@ def geoserver_upload(
             workspace=workspace)
 
     if not gs_resource:
-        msg = ('GeoNode encountered problems when creating layer %s.'
-               'It cannot find the Layer that matches this Workspace.'
-               'try renaming your files.' % name)
+        msg = f'GeoNode encountered problems when creating layer {name}.It cannot find the Layer that matches this Workspace.try renaming your files.'
         logger.warn(msg)
         raise GeoNodeException(msg)
 
@@ -177,7 +175,7 @@ def geoserver_upload(
         box = _native_bbox[:4]
         minx, maxx, miny, maxy = [float(a) for a in box]
         if -180 <= round(minx, 5) <= 180 and -180 <= round(maxx, 5) <= 180 and \
-        -90 <= round(miny, 5) <= 90 and -90 <= round(maxy, 5) <= 90:
+                -90 <= round(miny, 5) <= 90 and -90 <= round(maxy, 5) <= 90:
             gs_resource.latlon_bbox = _native_bbox
             gs_resource.projection = "EPSG:4326"
         else:
@@ -229,8 +227,7 @@ def geoserver_upload(
                 style = cat.get_style(name, workspace=workspace) or cat.get_style(name)
             except Exception as e:
                 style = cat.get_style('point')
-                msg = ('Could not find any suitable style in GeoServer '
-                       'for Layer: "%s"' % (name))
+                msg = f'Could not find any suitable style in GeoServer for Layer: "{name}"'
                 e.args = (msg,)
                 logger.exception(e)
 
@@ -247,7 +244,7 @@ def geoserver_upload(
 
     # Step 8. Create the Django record for the layer
     logger.debug('>>> Step 8. Creating Django record for [%s]', name)
-    alternate = workspace.name + ':' + gs_resource.name
+    alternate = f"{workspace.name}:{gs_resource.name}"
     layer_uuid = str(uuid.uuid1())
 
     defaults = dict(store=gs_resource.store.name,

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -24,6 +23,8 @@
 # Standard Modules
 import re
 import logging
+from urllib.parse import urljoin
+
 from dateutil.parser import isoparse
 from datetime import datetime, timedelta
 
@@ -34,15 +35,12 @@ from django.contrib.auth import get_user_model
 # Geonode functionality
 from guardian.shortcuts import get_perms, remove_perm, assign_perm
 
-from geonode.documents.models import Document
 from geonode.layers.models import Layer
 from geonode.base.models import ResourceBase, Link, Configuration
-from geonode.geoserver.helpers import ogc_server_settings
-from geonode.maps.models import Map
-from geonode.services.models import Service
-from geonode.base.thumb_utils import (
+from geonode.thumbs.utils import (
     get_thumbs,
     remove_thumb)
+from geonode.utils import get_legend_url
 
 logger = logging.getLogger('geonode.base.utils')
 
@@ -52,7 +50,7 @@ _names = ['Zipped Shapefile', 'Zipped', 'Shapefile', 'GML 2.0', 'GML 3.1.1', 'CS
           'Dublin Core', 'ebRIM', 'FGDC', 'ISO', 'ISO with XSL']
 
 thumb_filename_regex = re.compile(
-    r"^(document|map|layer)-([a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})-thumb\.png$")
+    r"^(document|map|layer)-([a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})-thumb-([a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})\.png$")
 
 
 def get_thumb_uuid(filename):
@@ -98,19 +96,12 @@ def remove_duplicate_links(resource):
     if isinstance(resource, Layer):
         # fixup Legend links
         layer = resource
-        legend_url_template = \
-            ogc_server_settings.PUBLIC_LOCATION + \
-            'ows?service=WMS&request=GetLegendGraphic&format=image/png&WIDTH=20&HEIGHT=20&LAYER=' + \
-            '{alternate}&STYLE={style_name}' + \
-            '&legend_options=fontAntiAliasing:true;fontSize:12;forceLabels:on'
         if layer.default_style and not layer.get_legend_url(style_name=layer.default_style.name):
             Link.objects.update_or_create(
                 resource=layer.resourcebase_ptr,
                 name='Legend',
                 extension='png',
-                url=legend_url_template.format(
-                    alternate=layer.alternate,
-                    style_name=layer.default_style.name),
+                url=get_legend_url(layer, layer.default_style.name),
                 mime='image/png',
                 link_type='image')
 
@@ -133,6 +124,12 @@ def configuration_session_cache(session):
             cached_config['configuration'][field_name] = getattr(config, field_name)
 
         session['config'] = cached_config
+
+
+def build_absolute_uri(url):
+    if url and 'http' not in url:
+        url = urljoin(settings.SITEURL, url)
+    return url
 
 
 class OwnerRightsRequestViewUtils:
@@ -164,14 +161,7 @@ class OwnerRightsRequestViewUtils:
 
     @staticmethod
     def get_resource(resource_base):
-        if resource_base.polymorphic_ctype.name == 'layer':
-            return Layer.objects.get(pk=resource_base.pk)
-        elif resource_base.polymorphic_ctype.name == 'document':
-            return Document.objects.get(pk=resource_base.pk)
-        elif resource_base.polymorphic_ctype.name == 'map':
-            return Map.objects.get(pk=resource_base.pk)
-        else:
-            return Service.objects.get(pk=resource_base.pk)
+        return resource_base.get_real_instance()
 
     @staticmethod
     def is_admin_publish_mode():

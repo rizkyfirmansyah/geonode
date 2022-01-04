@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -18,6 +17,7 @@
 #
 #########################################################################
 
+from geonode.utils import get_subclasses_by_model
 import warnings
 from django.conf import settings
 from geonode import get_version
@@ -27,11 +27,13 @@ from django.contrib.sites.models import Site
 from geonode.notifications_helper import has_notifications
 from geonode.base.models import Configuration, Thesaurus
 
+from allauth.socialaccount.models import SocialApp
+
 
 def resource_urls(request):
     """Global values to pass to templates"""
     site = Site.objects.get_current()
-    thesaurus = Thesaurus.objects.filter(facet=True).all()
+    thesaurus = Thesaurus.objects.filter(facet=True).all().order_by('order', 'id')
     if hasattr(settings, 'THESAURUS'):
         warnings.warn(
             'Thesaurus settings is going to be'
@@ -159,7 +161,7 @@ def resource_urls(request):
             'never'),
         USE_GEOSERVER=getattr(settings, 'USE_GEOSERVER', False),
         USE_NOTIFICATIONS=has_notifications,
-        USE_MONITORING='geonode.monitoring' in settings.INSTALLED_APPS and settings.MONITORING_ENABLED,
+        USE_MONITORING=settings.MONITORING_ENABLED,
         DEFAULT_ANONYMOUS_VIEW_PERMISSION=getattr(settings, 'DEFAULT_ANONYMOUS_VIEW_PERMISSION', False),
         DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION=getattr(settings, 'DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION', False),
         EXIF_ENABLED=getattr(
@@ -199,5 +201,9 @@ def resource_urls(request):
             for x in Thesaurus.objects.all()
             if (x.card_max == -1 and x.card_min == 1) or (x.card_max == 1 and x.card_min == 1)
         ],
+        ADVANCED_EDIT_EXCLUDE_FIELD=getattr(settings, "ADVANCED_EDIT_EXCLUDE_FIELD", []),
+        PROFILE_EDIT_EXCLUDE_FIELD=getattr(settings, "PROFILE_EDIT_EXCLUDE_FIELD", []),
+        GEONODE_APPS_INSTALLED=get_subclasses_by_model('GeoApp'),
+        AVAILABLE_SOCIAL_APPS_COUNT=SocialApp.objects.count(),
     )
     return defaults

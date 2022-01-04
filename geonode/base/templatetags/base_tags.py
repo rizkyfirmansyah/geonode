@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -414,10 +413,10 @@ def display_edit_request_button(resource, user, perms):
                          resource.BASE_PERMISSIONS.get('download')) - \
             set(perms)
         return _owner_set == set() or \
-            _owner_set == set(['change_resourcebase_permissions', 'publish_resourcebase'])
+            _owner_set == {'change_resourcebase_permissions', 'publish_resourcebase'}
 
     if not _has_owner_his_permissions() and \
-    (user.is_superuser or resource.owner.pk == user.pk):
+            (user.is_superuser or resource.owner.pk == user.pk):
         return True
     return False
 
@@ -434,3 +433,11 @@ def display_change_perms_button(resource, user, perms):
         return True
     else:
         return not getattr(settings, 'ADMIN_MODERATE_UPLOADS', False)
+
+
+@register.simple_tag
+def get_layer_count_by_services(service_id, user):
+    return get_visible_resources(
+        queryset=Layer.objects.filter(remote_service=service_id),
+        user=user
+    ).count()

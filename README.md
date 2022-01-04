@@ -33,7 +33,12 @@ own applications.
 Install
 -------
 
+<<<<<<< HEAD
     This repo is forked from official Geonode on branch 3.2.x
+=======
+    - The latest stable release is: 3.3.0
+    - The latest maintenance release is: 3.2.2
+>>>>>>> 3.3.x
 
  This repository was developed and installed using docker.
  All the required libraries and services was set up in the docker-compose and dockerfile.

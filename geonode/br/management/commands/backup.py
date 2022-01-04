@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -35,6 +34,9 @@ from urllib.parse import urlparse, urljoin
 from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
+
+from django_jsonfield_backport.features import extend_features
+from django.db import connection
 
 from geonode.utils import (DisableDjangoSignals,
                            get_dir_time_suffix,
@@ -94,6 +96,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, **options):
+        extend_features(connection)
         skip_read_only = options.get('skip_read_only')
         config = Configuration.load()
 
@@ -193,7 +196,7 @@ class Command(BaseCommand):
                     # skip dumping of static files of apps not located under LOCAL_ROOT path
                     # (check to prevent saving files from site-packages in project-template based GeoNode projects)
                     if getattr(settings, 'LOCAL_ROOT', None) and \
-                    not static_files_folder.startswith(settings.LOCAL_ROOT):
+                            not static_files_folder.startswith(settings.LOCAL_ROOT):
                         print(f"Skipping static directory: {static_files_folder}. "
                               f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
                         continue
@@ -225,7 +228,7 @@ class Command(BaseCommand):
                     # skip dumping of template files of apps not located under LOCAL_ROOT path
                     # (check to prevent saving files from site-packages in project-template based GeoNode projects)
                     if getattr(settings, 'LOCAL_ROOT', None) and \
-                    not template_files_folder.startswith(settings.LOCAL_ROOT):
+                            not template_files_folder.startswith(settings.LOCAL_ROOT):
                         print(f"Skipping template directory: {template_files_folder}. "
                               f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
                         continue
@@ -250,7 +253,7 @@ class Command(BaseCommand):
                     # skip dumping of locale files of apps not located under LOCAL_ROOT path
                     # (check to prevent saving files from site-packages in project-template based GeoNode projects)
                     if getattr(settings, 'LOCAL_ROOT', None) and \
-                    not locale_files_folder.startswith(settings.LOCAL_ROOT):
+                            not locale_files_folder.startswith(settings.LOCAL_ROOT):
                         logger.info(f"Skipping locale directory: {locale_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
                         continue
@@ -306,8 +309,7 @@ class Command(BaseCommand):
         if r.status_code != 200:
             raise ValueError('Could not reload GeoServer catalog!')
 
-        error_backup = 'Could not successfully backup GeoServer ' + \
-                       'catalog [{}rest/br/backup/]: {} - {}'
+        error_backup = "Could not successfully backup GeoServer catalog [{{}}rest/br/backup/]: {{}} - {{}}"
 
         _options = [
             'BK_CLEANUP_TEMP=true',

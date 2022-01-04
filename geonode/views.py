@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -103,7 +102,7 @@ def ajax_lookup(request):
             Q(slug__icontains=keyword)).exclude(
                 Q(access='private') & ~Q(
                     slug__in=request.user.groupmember_set.all().values_list("group__slug", flat=True))
-            )
+        )
     json_dict = {
         'users': [({'username': u.username}) for u in users],
         'count': users.count(),
@@ -119,9 +118,7 @@ def ajax_lookup(request):
 def err403(request, exception):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(
-            reverse('account_login') +
-            '?next=' +
-            request.get_full_path())
+            f"{reverse('account_login')}?next={request.get_full_path()}")
     else:
         return TemplateResponse(request, '401.html', {}, status=401).render()
 
@@ -166,7 +163,8 @@ def ident_json(request):
 def h_keywords(request):
     from geonode.base.models import HierarchicalKeyword as hk
     p_type = request.GET.get('type', None)
-    keywords = hk.dump_bulk_tree(request.user, type=p_type)
+    resource_name = request.GET.get('resource_name', None)
+    keywords = hk.resource_keywords_tree(request.user, resource_type=p_type, resource_name=resource_name)
 
     subtypes = []
     if p_type == 'geoapp':
@@ -178,7 +176,7 @@ def h_keywords(request):
                         subtypes.append(_model.__name__.lower())
 
     for _type in subtypes:
-        _bulk_tree = hk.dump_bulk_tree(request.user, type=_type)
+        _bulk_tree = hk.resource_keywords_tree(request.user, resource_type=_type, resource_name=resource_name)
         if isinstance(_bulk_tree, list):
             for _elem in _bulk_tree:
                 keywords.append(_elem)

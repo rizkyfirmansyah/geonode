@@ -27,7 +27,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2016-08-23 13:57+0000\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Chinese (http://www.transifex.com/geonode/geonode/language/"
@@ -145,9 +145,6 @@ msgstr "数据每三个月更新一次"
 msgid "No information provided"
 msgstr "无信息提供"
 
-msgid "Category"
-msgstr "类别"
-
 msgid "Category is required."
 msgstr "类别是必需的。"
 
@@ -215,6 +212,9 @@ msgstr "地区"
 msgid "Group"
 msgstr "群体"
 
+msgid "Category"
+msgstr "类别"
+
 msgid "License"
 msgstr "许可"
 
@@ -249,6 +249,9 @@ msgstr ""
 msgid "function performed by the responsible party"
 msgstr "责任方履行职务"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "资料简介"
+
 msgid "reference date for the cited resource"
 msgstr "资料引用日期"
 
@@ -258,8 +261,13 @@ msgstr "特定事件发生的标识码"
 msgid "version of the cited resource"
 msgstr "引用文献的版本"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "资料简介"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr ""
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "总结生成资源的动机"
@@ -323,27 +331,17 @@ msgid ""
 "dataset"
 msgstr "数据生产者对于数据集沿袭知识的基本解释"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr ""
-
-msgid "DOI"
-msgstr ""
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "属性"
-
 msgid "title"
 msgstr "标题"
 
 msgid "name by which the cited resource is known"
 msgstr "用已知资源命名"
+
+msgid "abstract"
+msgstr "摘要"
+
+msgid "purpose"
+msgstr "目标"
 
 msgid "date"
 msgstr "日期"
@@ -354,11 +352,13 @@ msgstr "日期类型"
 msgid "edition"
 msgstr "版本"
 
-msgid "abstract"
-msgstr "摘要"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "属性"
 
-msgid "purpose"
-msgstr "目标"
+msgid "DOI"
+msgstr ""
 
 msgid "maintenance frequency"
 msgstr "维护频率"
@@ -445,6 +445,12 @@ msgstr ""
 #| msgid "Resources"
 msgid "Resource Type"
 msgstr "资源"
+
+msgid "Metadata"
+msgstr "元数据"
+
+msgid "If true, will be excluded from search"
+msgstr ""
 
 msgid "For example \"kml\""
 msgstr "比如“kml”"
@@ -544,9 +550,6 @@ msgstr ""
 msgid "offline"
 msgstr ""
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr ""
 
@@ -572,9 +575,6 @@ msgstr "浏览地图"
 msgid "Batch Edit"
 msgstr "高级编辑"
 
-msgid "batch edit"
-msgstr ""
-
 msgid "Cancel"
 msgstr "取消"
 
@@ -584,11 +584,6 @@ msgstr "提交"
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Set Permissions"
-msgstr "设置权限"
-
-#, fuzzy
-#| msgid "Set permissions"
-msgid "set permissions"
 msgstr "设置权限"
 
 msgid "Discover the available datasets."
@@ -704,34 +699,6 @@ msgstr "描述"
 msgid "GeoNode Client Library"
 msgstr "GeoNode帮助"
 
-msgid "Explore Maps"
-msgstr "浏览地图"
-
-msgid "Edit Map"
-msgstr "编辑地图"
-
-msgid "Update"
-msgstr "更新"
-
-msgid "Create a New Map"
-msgstr "生成新地图"
-
-#, fuzzy
-#| msgid "Available styles"
-msgid "Available layers"
-msgstr "可用的样式"
-
-msgid "Save"
-msgstr "保存"
-
-#, fuzzy
-#| msgid "Remove Map"
-msgid "Save Map"
-msgstr "移除地图"
-
-msgid "Close"
-msgstr "关闭"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -752,7 +719,7 @@ msgid ""
 "climate, atmospheric conditions, climate change, precipitation."
 msgstr ""
 
-msgid "Climate"
+msgid "Climatology Meteorology Atmosphere"
 msgstr ""
 
 msgid ""
@@ -769,6 +736,9 @@ msgid ""
 "Height above or below sea level. Examples: altitude, bathymetry, digital "
 "elevation models, slope, derived products."
 msgstr ""
+
+msgid "Elevation"
+msgstr "高程"
 
 msgid ""
 "Environmental resources, protection and conservation. Examples: "
@@ -798,8 +768,10 @@ msgid ""
 "erosion."
 msgstr ""
 
-msgid "Geoscience"
-msgstr ""
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "补充信息"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -815,10 +787,13 @@ msgid ""
 "images, annotations."
 msgstr ""
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 
 msgid "Inland Waters"
@@ -829,13 +804,16 @@ msgid ""
 "grounds, military transportation, information collection."
 msgstr ""
 
-msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr ""
 
 msgid ""
 "Positional information and services. Examples: addresses, geodetic networks, "
 "control points, postal zones and services, place names."
 msgstr ""
+
+msgid "Location"
+msgstr "位置"
 
 msgid ""
 "Features and characteristics of salt water bodies (excluding inland waters). "
@@ -852,7 +830,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Warning"
-msgid "Planning"
+msgid "Planning Cadastre"
 msgstr "注意"
 
 msgid ""
@@ -904,10 +882,8 @@ msgid ""
 "telecommunication, radio, communication networks."
 msgstr ""
 
-#, fuzzy
-#| msgid "User Activities"
-msgid "Utilities"
-msgstr "用户活动"
+msgid "Utilities Communication"
+msgstr ""
 
 msgid "Document Created"
 msgstr "创建文件"
@@ -1016,11 +992,6 @@ msgstr "的文档的URL，如果它是外部的。"
 msgid "URL"
 msgstr "网址"
 
-#, fuzzy
-#| msgid "Documents"
-msgid "documents"
-msgstr "文件"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1063,9 +1034,6 @@ msgstr "编辑文件"
 msgid "Request change"
 msgstr "请求下载"
 
-msgid "Metadata"
-msgstr "元数据"
-
 msgid "Wizard"
 msgstr "向导"
 
@@ -1083,6 +1051,9 @@ msgstr "代替"
 
 msgid "Remove"
 msgstr "删除"
+
+msgid "Close"
+msgstr "关闭"
 
 msgid "Download Metadata"
 msgstr "下载元数据"
@@ -1131,11 +1102,6 @@ msgstr "浏览文件"
 msgid "Upload Documents"
 msgstr "上传文件"
 
-#, fuzzy
-#| msgid "dataset"
-msgid "data"
-msgstr "数据集"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr "- %(document_title)s"
@@ -1163,6 +1129,9 @@ msgstr "元数据提供者"
 msgid "<< Back"
 msgstr "<<返回"
 
+msgid "Update"
+msgstr "更新"
+
 #, fuzzy
 #| msgid "Next"
 msgid "Next >>"
@@ -1178,6 +1147,9 @@ msgstr "修改元数据"
 
 msgid "Editing details for"
 msgstr "编辑细节于"
+
+msgid "Return to Document"
+msgstr "返回文档"
 
 msgid "Deleting"
 msgstr "删除"
@@ -1264,6 +1236,11 @@ msgstr "基础元数据"
 msgid "Location and Licenses"
 msgstr "位置和许可"
 
+#, fuzzy
+#| msgid "Basic Metadata"
+msgid "Required Metadata"
+msgstr "基础元数据"
+
 msgid "Optional Metadata"
 msgstr "可选元数据"
 
@@ -1283,14 +1260,11 @@ msgstr "责任方"
 msgid "Responsible and Permissions"
 msgstr "所有者和权限"
 
-msgid "Message box"
-msgstr "消息框"
-
-msgid "OK"
-msgstr "好的"
-
 msgid "Publishing"
 msgstr "发布属性"
+
+msgid "You are not allowed to view this document."
+msgstr "您不"
 
 msgid "You are not permitted to delete this document"
 msgstr "您无权删除此文件"
@@ -1316,9 +1290,6 @@ msgstr "不允许撤销"
 #| msgid "Page Not Found"
 msgid "Not found"
 msgstr "找不到网页"
-
-msgid "You are not allowed to view this document."
-msgstr "您不"
 
 msgid "You must set a point of contact for this resource"
 msgstr "您必须为该资源设置一个联系点"
@@ -1485,11 +1456,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "GeoExplorer"
-msgid "apps explore"
-msgstr "GeoExplorer"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "生成新地图"
@@ -1608,6 +1574,17 @@ msgstr "图层评分"
 msgid "A rating was given to a layer"
 msgstr "一个图层被评分"
 
+#, fuzzy
+#| msgid "Contact Points"
+msgid "Points"
+msgstr "联系点"
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 msgid "Layer name"
 msgstr "图层名"
 
@@ -1637,6 +1614,22 @@ msgstr "属性"
 
 msgid "Create"
 msgstr "创建地图"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "间隔"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "未提供"
 
 msgid "No abstract provided"
 msgstr "没有摘要"
@@ -1785,11 +1778,6 @@ msgstr "尚无活动信息"
 msgid "Explore Group Categories"
 msgstr "浏览群体类别"
 
-#, fuzzy
-#| msgid "Group Categories"
-msgid "groups explore"
-msgstr "群体类别"
-
 msgid "Create a New Group Category"
 msgstr "创建群体类别"
 
@@ -1807,16 +1795,6 @@ msgstr "删除群体"
 
 msgid "Create Group"
 msgstr "创建群体"
-
-#, fuzzy
-#| msgid "A Map was created"
-msgid "groups create"
-msgstr "一张地图完成"
-
-#, fuzzy
-#| msgid "group"
-msgid "groups"
-msgstr "群体"
 
 msgid "Last Modified"
 msgstr "最近修改"
@@ -1887,9 +1865,6 @@ msgstr "添加新成员"
 msgid "Add Group Members"
 msgstr "添加群体成员"
 
-msgid "groups remove"
-msgstr ""
-
 #, python-format
 msgid ""
 "\n"
@@ -1904,11 +1879,6 @@ msgstr "从群体中删除地图/数据"
 
 msgid "Remove selected maps/data"
 msgstr "删除所选地图/数据"
-
-#, fuzzy
-#| msgid "A Map was updated"
-msgid "groups update"
-msgstr "一个地图更新"
 
 #, fuzzy
 #| msgid "Edit Group Details"
@@ -1927,16 +1897,19 @@ msgstr "创建一个群体类别"
 msgid "Edit Group Category"
 msgstr "编辑群体类别"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "保存"
+
+#, python-brace-format
+msgid "The e-mail address '{email}' has already been invited."
 msgstr ""
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, python-brace-format
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr ""
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, python-brace-format
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr ""
 
 #, fuzzy
@@ -2194,6 +2167,22 @@ msgstr "最近修改"
 msgid "date when attribute statistics were last updated"
 msgstr "上一次统计更新的时间"
 
+#, fuzzy
+#| msgid "Return to Layer"
+msgid "Append to Layer"
+msgstr "返回图层"
+
+msgid "Return to Layer"
+msgstr "返回图层"
+
+#, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Preserve Metadata XML"
+msgstr "编辑元数据服务"
+
+msgid "Select the charset or leave default"
+msgstr "选择的字符集或保留默认值"
+
 msgid "Home"
 msgstr "主页"
 
@@ -2202,11 +2191,6 @@ msgstr "改变联络地址"
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "给以下图层添加一个新的联系点"
-
-#, fuzzy
-#| msgid "Layers"
-msgid "layers"
-msgstr "图层"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr ""
@@ -2225,9 +2209,6 @@ msgstr "边界矩形"
 
 msgid "Time"
 msgstr "时间"
-
-msgid "Elevation"
-msgstr "高程"
 
 msgid "Actions"
 msgstr "操作"
@@ -2363,6 +2344,9 @@ msgid "Layer"
 msgid_plural "Layers"
 msgstr[0] "图层"
 
+msgid "Append Data"
+msgstr ""
+
 msgid "Edit data"
 msgstr "编辑数据"
 
@@ -2495,11 +2479,6 @@ msgstr "此操作会影响以下地图："
 msgid "No maps are using this layer"
 msgstr "没有地图使用此图层。"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers explore"
-msgstr "一个图层已被上传"
-
 msgid "Upload Layers"
 msgstr "上传图层"
 
@@ -2526,9 +2505,6 @@ msgstr ""
 "导入支持ISO，FGDC和都柏林核心元数据元素的一个子集。         一些您原来的元数"
 "据可能已经丢失。"
 
-msgid "Return to Layer"
-msgstr "返回图层"
-
 #, python-format
 msgid ""
 "\n"
@@ -2554,37 +2530,17 @@ msgstr "显示顺序"
 msgid "Visible"
 msgstr "可见？"
 
+msgid "ERROR"
+msgstr "错误"
+
+msgid "Following items are required:"
+msgstr ""
+
 msgid "Upload Layer Metadata"
 msgstr "上传图层元数据"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers upload"
-msgstr "一个图层已被上传"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr ""
-
-msgid "Incomplete Uploads"
-msgstr "不完整的上传"
-
-msgid "You have the following incomplete uploads"
-msgstr "您有以下不完整的上传"
-
-msgid "last updated on"
-msgstr "最新更新"
-
-msgid "Resume"
-msgstr "简历"
-
-msgid "Delete"
-msgstr "删除"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "您要删除此上传吗？"
-
-msgid "Delete, and don't ask me again."
-msgstr "删除，不要再问我。"
 
 msgid "Remove Layers"
 msgstr "移除图层"
@@ -2604,26 +2560,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "替换图层"
 
-#, fuzzy
-#| msgid "Edit Service Metadata"
-msgid "Preserve Metadata XML"
-msgstr "编辑元数据服务"
-
-msgid "Select the charset or leave default"
-msgstr "选择的字符集或保留默认值"
-
 msgid "Manage Styles"
 msgstr "管理样式"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"为 <a href=\"/layers/%(layer_title)s\">%(layer_title)s</a>管理可用的样式</a>"
+"为 <a href=\"{{ layer_url }}\">%(layer_title)s</a>管理可用的样式</a>"
 
 msgid "Layer Default Style"
 msgstr "默认样式"
@@ -2662,6 +2610,53 @@ msgstr "数据集属性"
 
 msgid "Upload Layer"
 msgstr "上传图层"
+
+#, fuzzy
+#| msgid "Download Metadata"
+msgid "Upload status"
+msgstr "下载元数据"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "删除"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "上传文件"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "创建地图"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr "页码"
+
+msgid "of"
+msgstr "/"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "不完整的上传"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "您要删除此上传吗？"
 
 #, fuzzy
 #| msgid "Upload Layer Step 2"
@@ -3146,31 +3141,50 @@ msgstr "现在"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr "您正在试图用栅格数据代替一个矢量图层。"
 
-msgid "You are attempting to replace a vector layer with a raster."
+msgid ""
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
+msgid "You are attempting to {action_type} a vector layer with a raster."
 msgstr "您正在试图用栅格数据代替一个矢量图层。"
 
-msgid "You are attempting to replace a raster layer with a vector."
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a raster layer with a vector."
+msgid "You are attempting to {action_type} a raster layer with a vector."
 msgstr "您正在试图用一个矢量代替一个栅格图层。"
 
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr "您正在试图用栅格数据代替一个矢量图层。"
+
+#, python-brace-format
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
 msgstr ""
 
 msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 
 msgid ""
@@ -3205,18 +3219,21 @@ msgstr "您无权以查看此图层"
 msgid "Failed to upload the layer"
 msgstr "文件上传"
 
-#, fuzzy
-#| msgid "Unable to delete layer"
-msgid "Unable to delete layer"
-msgstr "不能删除图层"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr "您正在试图用栅格数据代替一个矢量图层。"
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr "您正在试图用一个矢量代替一个栅格图层。"
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
 "group before deleting."
 msgstr "该图层是一个图层组的成员，您必须在删除之前从群体中移除该图层。"
 
-msgid "couldn't generate thumbnail"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Remote Thumbnail"
+msgid "couldn't generate thumbnail: %s"
+msgstr "遥感缩略图"
 
 msgid "Map Created"
 msgstr "地图生成"
@@ -3320,9 +3337,6 @@ msgstr "图层参数"
 msgid "source params"
 msgstr "数据源参数"
 
-msgid "maps"
-msgstr ""
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr ""
 
@@ -3356,6 +3370,9 @@ msgstr "复制该地图"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "复制该地图并且根据您自己的需要进行修改"
+
+msgid "Create a New Map"
+msgstr "生成新地图"
 
 msgid ""
 "\n"
@@ -3412,10 +3429,11 @@ msgstr "下载完成"
 msgid "Download Failed"
 msgstr "下载失败"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "maps explore"
-msgstr "GeoExplorer"
+msgid "Edit Map"
+msgstr "编辑地图"
+
+msgid "Explore Maps"
+msgstr "浏览地图"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3427,6 +3445,11 @@ msgstr ""
 "注：此图的原单的元数据被填充通过导入元数据的XML文件。        GeoNode的元数据"
 "导入支持ISO，FGDC和都柏林核心元数据元素的一个子集。        一些您原来的元数据"
 "可能已经丢失。"
+
+#, fuzzy
+#| msgid "Return to"
+msgid "Return to Map"
+msgstr "返回到"
 
 msgid "Remove Map"
 msgstr "移除地图"
@@ -3461,9 +3484,6 @@ msgstr "您不得修改此地图元数据。"
 msgid "You are not allowed to view this map."
 msgstr "您无权查看此地图。"
 
-msgid "Thumbnail saved"
-msgstr "缩略图已保存"
-
 msgid "error saving thumbnail"
 msgstr "缩略图保存出错"
 
@@ -3481,7 +3501,7 @@ msgstr ""
 msgid "Alert situation reported by monitoring"
 msgstr ""
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr ""
 
 #, fuzzy
@@ -3556,7 +3576,8 @@ msgstr "资料引用日期"
 msgid "Show data for specific label"
 msgstr "资料引用日期"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, python-brace-format
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr ""
 
 msgid ""
@@ -3725,7 +3746,8 @@ msgstr ""
 msgid "Is it active"
 msgstr ""
 
-msgid "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
 msgstr ""
 
 msgid "Value must be above"
@@ -3943,11 +3965,6 @@ msgstr "创建个人信息"
 msgid "Profile of "
 msgstr "简介-"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "people explore"
-msgstr "GeoExplorer"
-
 msgid "Not provided."
 msgstr "未提供信息。"
 
@@ -3956,9 +3973,6 @@ msgstr "位置"
 
 msgid "Organization"
 msgstr "组织"
-
-msgid "Location"
-msgstr "位置"
 
 msgid "Not provided"
 msgstr "未提供"
@@ -4018,11 +4032,6 @@ msgstr "用户活动"
 msgid "Resources"
 msgstr "资源"
 
-#, fuzzy
-#| msgid "Invite people"
-msgid "edit people"
-msgstr "邀请用户"
-
 msgid "Edit Your Profile"
 msgstr "编辑您的个人信息"
 
@@ -4038,7 +4047,9 @@ msgstr "更新个人信息"
 msgid "Explore People"
 msgstr "浏览用户"
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "您的用户名"
 
 msgid "Your username has been emailed to you."
@@ -4358,9 +4369,9 @@ msgstr "一个资源的下载请求已提交"
 msgid "Resource is already being processed"
 msgstr "一个资源的下载请求已提交"
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "A resource's download has been requested"
-msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "一个资源的下载请求已提交"
 
 #, fuzzy
@@ -4376,9 +4387,9 @@ msgstr "您不得删除此服务。"
 msgid "You are not permitted to remove this service."
 msgstr "您不得删除此服务。"
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Service has been created:"
-msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "服务已创建："
 
 msgid "created"
@@ -4644,6 +4655,12 @@ msgstr ""
 #| msgid "Delete from Favorites"
 msgid "Delete Geo Limits"
 msgstr "从喜爱中删除"
+
+msgid "Message box"
+msgstr "消息框"
+
+msgid "OK"
+msgstr "好的"
 
 msgid "Mandatory files : SHP , DBF"
 msgstr ""
@@ -5594,13 +5611,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5609,9 +5626,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5620,9 +5637,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5656,7 +5673,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5672,7 +5689,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 "\n"
@@ -5680,29 +5697,29 @@ msgstr ""
 "地图的地图编辑应用。</p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">浏览图层</h4>\n"
-"    <p><a href=\"/layers\">Layers</a>标签允许您去浏览那些被上传到GeoNode上的"
+"    <p><a href=\"{{ url_layer_browse }}\">Layers</a>标签允许您去浏览那些被上传到GeoNode上的"
 "数据。</p>\n"
 "    <p>为了在其他应用上使用，所有数据都可以以多种格式下载。</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">开发者使用权</h4>\n"
-"    <p><a href=\"/developer\">开发者</a>页面是一个开发者开始构建不同于GeoNode"
+"    <p><a href=\"{{ url_developer }}\">开发者</a>页面是一个开发者开始构建不同于GeoNode"
 "应用的地方。它包括网络服务的使用说明，GeoNode源代码的链接和用于创建它的关于开"
 "源项目的信息。</p>\n"
 "\n"
 "    <h4 id=\"browsing-maps\">浏览地图</h4>\n"
 "    <p>GeoNode允许用户创建和分享地图给他人。</p>\n"
-"    <p><a href=\"/maps\">Maps</a>标签是一个在GeoNode上浏览地图的途径。从这里"
+"    <p><a href=\"{{ url_maps_browse }}\">Maps</a>标签是一个在GeoNode上浏览地图的途径。从这里"
 "您可以<strong>搜索一张地图</strong>或者<strong>创建一张地图</strong>, 这将会"
-"打开<a href=\"/maps/new\">地图编辑器</a>。</p>\n"
+"打开<a href=\"{{ url_maps_new }}\">地图编辑器</a>。</p>\n"
 "    <h5>谷歌地球模式</h5>\n"
 "    <p>任何在交互地图编辑器上观察的地图可以利用谷歌地球的插件用3D的形式进行观"
 "看。为了转换至3D模式，选择谷歌地球按钮，它在上方工具栏中最右方的。如果您没有"
 "安装谷歌地球的插件，您将会被提示安装插件。</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">创建地图</h4>\n"
-"    <p>为了创建一张新的地图，进入<a href=\"/maps\">查看地图</a>标签，然后点击"
-"<a href=\"/maps/new\">创建您自己的地图</a>链接。</p>\n"
-"    <p>这将会带您进入<a href=\"/maps/new\">地图编辑器</a>，同时加载一个基础图"
+"    <p>为了创建一张新的地图，进入<a href=\"{{ url_maps_browse }}\">查看地图</a>标签，然后点击"
+"<a href=\"{{ url_maps_new }}\">创建您自己的地图</a>链接。</p>\n"
+"    <p>这将会带您进入<a href=\"{{ url_maps_new }}\">地图编辑器</a>，同时加载一个基础图"
 "层。</p>\n"
 "    <p>为了从GeoNode添加数据图层，点击绿色加号按钮，它位于图层底部，在屏幕的"
 "左手边。这将会打开一个会话，该会话中列出了GeoNode上所有可用的图层。</p>\n"
@@ -5731,7 +5748,7 @@ msgstr ""
 "    </ol>\n"
 "    <p>这将会放置一个交互的装置在您的网络页面上展示您的地图或者博客站点。</"
 "p>\n"
-"    <p>注意<a href=\"/maps/new\">地图编辑器</a>也有一个发布地图的按钮。如果您"
+"    <p>注意<a href=\"{{ url_maps_new }}\">地图编辑器</a>也有一个发布地图的按钮。如果您"
 "有任何希望其他人看见的改动，请在发布地图前确认保存过地图。地图编辑器会发布最"
 "后一次保存的地图版本而不是最后看见的版本。</p>\n"
 "\n"
@@ -5745,7 +5762,7 @@ msgstr ""
 "地图。</li>\n"
 "      <li>保存地图。</li>\n"
 "    </ol>\n"
-"    <p>当您搜索地图自<a href=\"/maps\">Maps</a>标签，您将能够看见您的新地图</"
+"    <p>当您搜索地图自<a href=\"{{ url_maps_browse }}\">Maps</a>标签，您将能够看见您的新地图</"
 "p>\n"
 "    "
 
@@ -5917,22 +5934,11 @@ msgstr "以下群体："
 msgid "Updating Metadata..."
 msgstr "更新元数据中…"
 
-msgid "ERROR"
-msgstr "错误"
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr "主题类别是强制性的，不能是空的！"
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr "群体是强制性的，不能是空的！"
-
-msgid "Return to Document"
-msgstr "返回文档"
-
-#, fuzzy
-#| msgid "Return to"
-msgid "Return to Map"
-msgstr "返回到"
 
 msgid "Identification"
 msgstr "身份认证"
@@ -5993,6 +5999,9 @@ msgid "Online Link"
 msgstr "在线链接"
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 #, fuzzy
@@ -6328,12 +6337,6 @@ msgstr "YYYY-MM-DD"
 msgid "Date ends before:"
 msgstr "日前结束："
 
-msgid "page"
-msgstr "页码"
-
-msgid "of"
-msgstr "/"
-
 msgid "Search by region"
 msgstr "通过地区搜索"
 
@@ -6389,9 +6392,6 @@ msgstr "字符倒序"
 
 msgid "Most popular"
 msgstr "热门度"
-
-msgid "Thesaurus"
-msgstr ""
 
 msgid "Text"
 msgstr "文本"
@@ -6539,6 +6539,11 @@ msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
 #, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "所有内容"
+
+#, fuzzy
 #| msgid "Could not find any layers in a compatible projection."
 msgid "Could not access to uploaded data."
 msgstr "无法找到兼容的投影任何图层。"
@@ -6559,6 +6564,22 @@ msgid "Layer already exists"
 msgstr "图层被创建"
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6607,20 +6628,19 @@ msgid ""
 "To support the time step, you must enable the OGC_SERVER DATASTORE option"
 msgstr ""
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, python-brace-format
+msgid "Unsupported file type: {e.message}"
 msgstr ""
 
-#, python-format
-msgid "File does not exist: %s"
+#, python-brace-format
+msgid "File does not exist: {absolute_base_file}"
 msgstr ""
 
-#, python-format
-msgid "unknown item state: %s"
+#, python-brace-format
+msgid "unknown item state: {task.state}"
 msgstr ""
 
-#, python-format
-msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr ""
 
 #, fuzzy
@@ -6639,3 +6659,116 @@ msgstr "权限等级不够。"
 
 msgid "Permission Denied"
 msgstr "权限级别"
+
+#, fuzzy
+#~| msgid "Set permissions"
+#~ msgid "set permissions"
+#~ msgstr "设置权限"
+
+#, fuzzy
+#~| msgid "Documents"
+#~ msgid "documents"
+#~ msgstr "文件"
+
+#, fuzzy
+#~| msgid "dataset"
+#~ msgid "data"
+#~ msgstr "数据集"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "apps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Group Categories"
+#~ msgid "groups explore"
+#~ msgstr "群体类别"
+
+#, fuzzy
+#~| msgid "A Map was created"
+#~ msgid "groups create"
+#~ msgstr "一张地图完成"
+
+#, fuzzy
+#~| msgid "group"
+#~ msgid "groups"
+#~ msgstr "群体"
+
+#, fuzzy
+#~| msgid "A Map was updated"
+#~ msgid "groups update"
+#~ msgstr "一个地图更新"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers append"
+#~ msgstr "一个图层已被上传"
+
+#, fuzzy
+#~| msgid "Layers"
+#~ msgid "layers"
+#~ msgstr "图层"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers explore"
+#~ msgstr "一个图层已被上传"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers upload"
+#~ msgstr "一个图层已被上传"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "不完整的上传"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "您有以下不完整的上传"
+
+#~ msgid "Resume"
+#~ msgstr "简历"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "maps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "people explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Invite people"
+#~ msgid "edit people"
+#~ msgstr "邀请用户"
+
+#~ msgid "last updated on"
+#~ msgstr "最新更新"
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "删除，不要再问我。"
+
+#, fuzzy
+#~| msgid "Available styles"
+#~ msgid "Available layers"
+#~ msgstr "可用的样式"
+
+#, fuzzy
+#~| msgid "Remove Map"
+#~ msgid "Save Map"
+#~ msgstr "移除地图"
+
+#, fuzzy
+#~| msgid "User Activities"
+#~ msgid "Utilities"
+#~ msgstr "用户活动"
+
+#, fuzzy
+#~| msgid "Unable to delete layer"
+#~ msgid "Unable to delete layer"
+#~ msgstr "不能删除图层"
+
+#~ msgid "Thumbnail saved"
+#~ msgstr "缩略图已保存"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -19,58 +18,59 @@
 #########################################################################
 import re
 import os
-import sys
-import logging
+import json
 import shutil
+<<<<<<< HEAD
 import traceback
 from types import TracebackType
 import warnings
 import itertools
+=======
+>>>>>>> 3.3.x
 import decimal
-import pickle
-from django.db.models import Q
+import logging
+import tempfile
+import warnings
+import traceback
+
+from itertools import chain
+from dal import autocomplete
+from requests import Request
 from urllib.parse import quote
 
-from django.http import Http404
-from django.core.exceptions import PermissionDenied
-from django.template.response import TemplateResponse
-from django.views.decorators.clickjacking import xframe_options_exempt
-from requests import Request
-from itertools import chain
-from owslib.wfs import WebFeatureService
-
-from guardian.shortcuts import get_perms, get_objects_for_user
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
-from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.conf import settings
-from django.utils.translation import ugettext as _
-from django.views.decorators.http import require_http_methods
 
-from geonode.thumbs.thumbnails import create_thumbnail
-
-from dal import autocomplete
-
-import json
-from django.utils.html import escape
-from django.template.defaultfilters import slugify
-from django.forms.models import inlineformset_factory
-from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.db.models import F
+from django.http import Http404
+from django.urls import reverse
+from django.contrib import messages
+from django.shortcuts import render
+from django.utils.html import escape
 from django.forms.utils import ErrorList
+from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext as _
+from django.db import IntegrityError, transaction
+from django.core.exceptions import PermissionDenied
+from django.forms.models import inlineformset_factory
+from django.template.response import TemplateResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.clickjacking import xframe_options_exempt
 
+from guardian.shortcuts import get_objects_for_user
+
+from geonode import geoserver
 from geonode.base.auth import get_or_create_token
+from geonode.layers.metadata import parse_metadata
+from geonode.upload.upload import _update_layer_with_xml_info
 from geonode.base.forms import CategoryForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
-from geonode.base.views import batch_modify
+from geonode.base.views import batch_modify, get_url_for_model
 from geonode.base.models import (
     Thesaurus,
     TopicCategory)
 from geonode.base.enumerations import CHARSETS
 from geonode.decorators import check_keyword_write_perms
-
 from geonode.layers.forms import (
     LayerForm,
     LayerUploadForm,
@@ -81,22 +81,20 @@ from geonode.layers.models import (
     Attribute,
     UploadSession)
 from geonode.layers.utils import (
-    file_upload,
-    is_raster,
-    is_vector,
-    surrogate_escape_string)
-
+    file_upload, get_files, gs_append_data_to_layer,
+    is_raster, is_sld_upload_only,
+    is_vector, is_xml_upload_only,
+    validate_input_source)
+from geonode.upload.views import _select_relevant_files, _write_uploaded_files_to_disk
 from geonode.maps.models import Map
 from geonode.services.models import Service
-from geonode.monitoring import register_event
+from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.groups.models import GroupProfile
 from geonode.security.views import _perms_info_json
-from geonode.people.forms import ProfileForm, PocForm
+from geonode.people.forms import ProfileForm
 from geonode.documents.models import get_related_documents
-from geonode import geoserver
-from geonode.security.utils import get_visible_resources
-
+from geonode.security.utils import get_visible_resources, set_geowebcache_invalidate_cache
 from geonode.utils import (
     resolve_object,
     default_map_config,
@@ -106,9 +104,9 @@ from geonode.utils import (
     build_social_links,
     GXPLayer,
     GXPMap)
-
-from geonode.geoserver.helpers import (ogc_server_settings,
-                                       set_layer_style)
+from geonode.geoserver.helpers import (
+    ogc_server_settings,
+    set_layer_style)
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.tasks.tasks import set_permissions
 
@@ -144,7 +142,7 @@ def log_snippet(log_file):
     if not log_file or not os.path.isfile(log_file):
         return f"No log file at {log_file}"
 
-    with open(log_file, "r") as f:
+    with open(log_file) as f:
         f.seek(0, 2)  # Seek @ EOF
         fsize = f.tell()  # Get Size
         f.seek(max(fsize - 10024, 0), 0)  # Set pos @ last n chars
@@ -157,14 +155,11 @@ def _resolve_layer(request, alternate, permission='base.view_resourcebase',
     Resolve the layer by the provided typename (which may include service name) and check the optional permission.
     """
     service_typename = alternate.split(":", 1)
-    if Service.objects.filter(name=service_typename[0]).exists():
+    if Service.objects.filter(name=service_typename[0]).count() == 1:
         query = {
-            'alternate': service_typename[1]
+            'alternate': service_typename[1],
+            'remote_service': Service.objects.filter(name=service_typename[0]).get()
         }
-        if len(service_typename) > 1:
-            query['store'] = service_typename[0]
-        else:
-            query['storeType'] = 'remoteStore'
         return resolve_object(
             request,
             Layer,
@@ -212,192 +207,132 @@ def layer_upload_handle_get(request, template):
         'charsets': CHARSETS,
         'is_layer': True,
     }
+    if 'geonode.upload' in settings.INSTALLED_APPS and \
+            settings.UPLOADER['BACKEND'] == 'geonode.importer':
+        from geonode.upload import utils as upload_utils, models
+        ctx['async_upload'] = upload_utils._ASYNC_UPLOAD
+        ctx['incomplete'] = models.Upload.objects.get_incomplete_uploads(
+            request.user)
     return render(request, template, context=ctx)
 
 
-def layer_upload_handle_post(request, template):
-    name = None
-    form = NewLayerUploadForm(request.POST, request.FILES)
-    tempdir = None
-    saved_layer = None
+def layer_upload_metadata(request):
+    out = {}
     errormsgs = []
-    input_charset = None
-    out = {'success': False}
+
+    form = NewLayerUploadForm(request.POST, request.FILES)
+
     if form.is_valid():
-        title = form.cleaned_data["layer_title"]
 
-        # Replace dots in filename - GeoServer REST API upload bug
-        # and avoid any other invalid characters.
-        # Use the title if possible, otherwise default to the filename
-        if title is not None and len(title) > 0:
-            name_base = title
-        else:
-            name_base, __ = os.path.splitext(
-                form.cleaned_data["base_file"].name)
-            title = slugify(name_base.replace(".", "_"))
-        name = slugify(name_base.replace(".", "_"))
+        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
 
-        if form.cleaned_data["abstract"] is not None and len(
-                form.cleaned_data["abstract"]) > 0:
-            abstract = form.cleaned_data["abstract"]
-        else:
-            abstract = "No abstract provided."
+        relevant_files = _select_relevant_files(
+            ['xml'],
+            iter(request.FILES.values())
+        )
 
-        # charset
-        input_charset = form.cleaned_data["charset"]
+        logger.debug(f"relevant_files: {relevant_files}")
 
-        try:
-            # Moved this inside the try/except block because it can raise
-            # exceptions when unicode characters are present.
-            # This should be followed up in upstream Django.
-            tempdir, base_file = form.write_files()
-            if not form.cleaned_data["style_upload_form"]:
-                saved_layer = file_upload(
-                    base_file,
-                    name=name,
-                    user=request.user,
-                    overwrite=False,
-                    charset=input_charset,
-                    abstract=abstract,
-                    title=title,
-                    metadata_uploaded_preserve=form.cleaned_data[
-                        "metadata_uploaded_preserve"],
-                    metadata_upload_form=form.cleaned_data["metadata_upload_form"])
-            else:
-                saved_layer = Layer.objects.get(alternate=title)
-                if not saved_layer:
-                    msg = 'Failed to process. Could not find matching layer.'
-                    raise Exception(msg)
-                with open(base_file) as sld_file:
-                    sld = sld_file.read()
-                set_layer_style(saved_layer, title, base_file, sld)
+        _write_uploaded_files_to_disk(tempdir, relevant_files)
+
+        base_file = os.path.join(tempdir, form.cleaned_data["base_file"].name)
+
+        name = form.cleaned_data['layer_title']
+        layer = Layer.objects.filter(typename=name)
+        if layer.exists():
+            layer_uuid, vals, regions, keywords, _ = parse_metadata(
+                open(base_file).read())
+            if layer_uuid and layer.first().uuid != layer_uuid:
+                out['success'] = False
+                out['errors'] = "The UUID identifier from the XML Metadata, is different from the one saved"
+                return HttpResponse(
+                    json.dumps(out),
+                    content_type='application/json',
+                    status=404)
+
+            updated_layer = _update_layer_with_xml_info(layer.first(), base_file, regions, keywords, vals)
+            updated_layer.save()
+            out['status'] = ['finished']
+            out['url'] = updated_layer.get_absolute_url()
+            out['bbox'] = updated_layer.bbox_string
+            out['crs'] = {
+                'type': 'name',
+                'properties': updated_layer.srid
+            }
+            out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
+            if hasattr(updated_layer, 'upload_session') and updated_layer.upload_session:
+                upload_session = updated_layer.upload_session
+                upload_session.processed = True
+                upload_session.save()
+            status_code = 200
             out['success'] = True
-        except Exception as e:
-            exception_type, error, tb = sys.exc_info()
-            logger.exception(e)
+            return HttpResponse(
+                json.dumps(out),
+                content_type='application/json',
+                status=status_code)
+        else:
             out['success'] = False
-            out['errormsgs'] = _('Failed to upload the layer')
-            try:
-                out['errors'] = ''.join(error)
-            except Exception:
-                try:
-                    out['errors'] = str(error)
-                except Exception:
-                    try:
-                        tb = traceback.format_exc()
-                        out['errors'] = tb
-                    except Exception:
-                        pass
-
-            # Assign the error message to the latest UploadSession from
-            # that user.
-            latest_uploads = UploadSession.objects.filter(
-                user=request.user).order_by('-date')
-            if latest_uploads.count() > 0:
-                upload_session = latest_uploads.first()
-                # Ref issue #4232
-                if not isinstance(error, TracebackType):
-                    try:
-                        upload_session.error = pickle.dumps(error).decode("utf-8", "replace")
-                    except Exception:
-                        err_msg = 'The error could not be parsed'
-                        upload_session.error = err_msg
-                        logger.error("TypeError: can't pickle traceback objects")
-                else:
-                    err_msg = 'The error could not be parsed'
-                    upload_session.error = err_msg
-                    logger.error("TypeError: can't pickle traceback objects")
-                try:
-                    upload_session.traceback = traceback.format_exc(tb)
-                except TypeError:
-                    upload_session.traceback = traceback.format_tb(tb)
-                upload_session.context = log_snippet(CONTEXT_LOG_FILE)
-                try:
-                    upload_session.save()
-                    out['traceback'] = upload_session.traceback
-                    out['context'] = upload_session.context
-                    out['upload_session'] = upload_session.id
-                except Exception as e:
-                    logger.debug(e)
-            else:
-                # Prevent calls to None
-                if saved_layer:
-                    out['success'] = True
-                    if hasattr(saved_layer, 'info'):
-                        out['info'] = saved_layer.info
-                    out['url'] = reverse(
-                        'layer_detail', args=[
-                            saved_layer.service_typename])
-                    if hasattr(saved_layer, 'bbox_string'):
-                        out['bbox'] = saved_layer.bbox_string
-                    if hasattr(saved_layer, 'srid'):
-                        out['crs'] = {
-                            'type': 'name',
-                            'properties': saved_layer.srid
-                        }
-                    out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
-                    upload_session = saved_layer.upload_session
-                    if upload_session:
-                        upload_session.processed = True
-                        upload_session.save()
-                    permissions = form.cleaned_data["permissions"]
-                    if permissions is not None and len(permissions.keys()) > 0:
-                        saved_layer.set_permissions(permissions)
-                    saved_layer.handle_moderated_uploads()
-        finally:
-            if tempdir is not None:
-                shutil.rmtree(tempdir)
+            out['errors'] = "Layer selected does not exists"
+            status_code = 404
+        return HttpResponse(
+            json.dumps(out),
+            content_type='application/json',
+            status=status_code)
     else:
         for e in form.errors.values():
             errormsgs.extend([escape(v) for v in e])
         out['errors'] = form.errors
         out['errormsgs'] = errormsgs
-    if out['success']:
-        out['status'] = 'finished'
-        out['url'] = saved_layer.get_absolute_url()
-        out['bbox'] = saved_layer.bbox_string
-        out['crs'] = {
-            'type': 'name',
-            'properties': saved_layer.srid
-        }
-        out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
-        upload_session = saved_layer.upload_session
-        if upload_session:
-            upload_session.processed = True
-            upload_session.save()
-        status_code = 200
-        register_event(request, 'upload', saved_layer)
-    else:
-        status_code = 400
-
-    # null-safe charset
-    layer_charset = 'UTF-8'
-    if saved_layer:
-        layer_charset = getattr(saved_layer, 'charset', layer_charset)
-    elif input_charset and 'undefined' not in input_charset:
-        layer_charset = input_charset
-
-    _keys = ['info', 'errors']
-    for _k in _keys:
-        if _k in out:
-            if isinstance(out[_k], str):
-                out[_k] = surrogate_escape_string(out[_k], layer_charset)
-            elif isinstance(out[_k], dict):
-                for key, value in out[_k].copy().items():
-                    try:
-                        item = out[_k][key]
-                        # Ref issue #4241
-                        if isinstance(item, ErrorList):
-                            out[_k][key] = item.as_text().encode(
-                                layer_charset, 'surrogateescape').decode('utf-8', 'surrogateescape')
-                        else:
-                            out[_k][key] = surrogate_escape_string(item, layer_charset)
-                        out[_k][surrogate_escape_string(key, layer_charset)] = out[_k].pop(key)
-                    except Exception as e:
-                        logger.exception(e)
 
     return HttpResponse(
         json.dumps(out),
+        content_type='application/json',
+        status=500)
+
+
+def layer_style_upload(request):
+    form = NewLayerUploadForm(request.POST, request.FILES)
+    body = {}
+    if not form.is_valid():
+        body['success'] = False
+        body['errors'] = form.errors
+        return HttpResponse(
+            json.dumps(body),
+            content_type='application/json',
+            status=500)
+
+    status_code = 200
+    try:
+        data = form.cleaned_data
+        body = {
+            'success': True,
+            'style': data.get('layer_title'),
+        }
+
+        layer = _resolve_layer(
+            request,
+            data.get('layer_title'),
+            'base.change_resourcebase',
+            _PERMISSION_MSG_MODIFY)
+
+        sld = request.FILES['sld_file'].read()
+
+        set_layer_style(layer, data.get('layer_title'), sld)
+        body['url'] = layer.get_absolute_url()
+        body['bbox'] = layer.bbox_string
+        body['crs'] = {
+            'type': 'name',
+            'properties': layer.srid
+        }
+        body['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
+        body['status'] = ['finished']
+    except Exception as e:
+        status_code = 500
+        body['success'] = False
+        body['errors'] = str(e.args[0])
+
+    return HttpResponse(
+        json.dumps(body),
         content_type='application/json',
         status=status_code)
 
@@ -406,8 +341,19 @@ def layer_upload_handle_post(request, template):
 def layer_upload(request, template='upload/layer_upload.html'):
     if request.method == 'GET':
         return layer_upload_handle_get(request, template)
-    elif request.method == 'POST':
-        return layer_upload_handle_post(request, template)
+    elif request.method == 'POST' and is_xml_upload_only(request):
+        return layer_upload_metadata(request)
+    elif request.method == 'POST' and is_sld_upload_only(request):
+        return layer_style_upload(request)
+    out = {"errormsgs": "Please, upload a valid XML file"}
+    return HttpResponse(
+        json.dumps(out),
+        content_type='application/json',
+        status=500)
+
+
+def layer_export(request, layername, template='layers/layer_export.html'):
+    return layer_detail(request, layername, template)
 
 
 def layer_detail(request, layername, template='layers/layer_detail.html'):
@@ -423,7 +369,6 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         raise Http404(_("Not found"))
     if not layer:
         raise Http404(_("Not found"))
-
     permission_manager = ManageResourceOwnerPermissions(layer)
     permission_manager.set_owner_permissions_according_to_workflow()
 
@@ -444,9 +389,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
             "legend": {
                 "height": "40",
                 "width": "22",
-                "href": layer.ows_url +
-                "?service=wms&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=" +
-                quote(layer.service_typename, safe=''),
+                "href": f"{layer.ows_url}?service=wms&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer={quote(layer.service_typename, safe='')}",
                 "format": "image/png"
             },
             "name": style.name
@@ -488,6 +431,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "store": layer.store,
         "name": layer.alternate,
         "title": layer.title,
+        "style": '',
         "queryable": True,
         "storeType": layer.storeType,
         "bbox": {
@@ -610,9 +554,10 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(layer)
 
-    perms_list = get_perms(
-        request.user,
-        layer.get_self_resource()) + get_perms(request.user, layer)
+    perms_list = list(
+        layer.get_self_resource().get_user_perms(request.user)
+        .union(layer.get_user_perms(request.user))
+    )
 
     group = None
     if layer.group:
@@ -761,62 +706,6 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
                                   request.user.has_perm('view_resourcebase', map_layer.map.get_self_resource())]
     return TemplateResponse(
         request, template, context=context_dict)
-
-
-# Loads the data using the OWS lib when the "Do you want to filter it"
-# button is clicked.
-def load_layer_data(request, template='layers/layer_detail.html'):
-    context_dict = {}
-    data_dict = json.loads(request.POST.get('json_data'))
-    layername = data_dict['layer_name']
-    filtered_attributes = ''
-    if not isinstance(data_dict['filtered_attributes'], str):
-        filtered_attributes = [x for x in data_dict['filtered_attributes'] if '/load_layer_data' not in x]
-    name = layername if ':' not in layername else layername.split(':')[1]
-    location = f"{(settings.OGC_SERVER['default']['LOCATION'])}wms"
-    headers = {}
-    if request and 'access_token' in request.session:
-        access_token = request.session['access_token']
-        headers['Authorization'] = f'Bearer {access_token}'
-
-    try:
-        wfs = WebFeatureService(
-            location,
-            version='1.1.0',
-            headers=headers
-        )
-        response = wfs.getfeature(
-            typename=name,
-            propertyname=filtered_attributes,
-            outputFormat='application/json')
-        x = response.read()
-        x = json.loads(x)
-        features_response = json.dumps(x)
-        decoded = json.loads(features_response)
-        decoded_features = decoded['features']
-        properties = {}
-        for key in decoded_features[0]['properties']:
-            properties[key] = []
-
-        # loop the dictionary based on the values on the list and add the properties
-        # in the dictionary (if doesn't exist) together with the value
-        from collections.abc import Iterable
-        for i in range(len(decoded_features)):
-            for key, value in decoded_features[i]['properties'].items():
-                if value != '' and isinstance(value, (str, int, float)) and (
-                        (isinstance(value, Iterable) and '/load_layer_data' not in value) or value):
-                    properties[key].append(value)
-
-        for key in properties:
-            properties[key] = list(set(properties[key]))
-            properties[key].sort()
-
-        context_dict["feature_properties"] = properties
-    except Exception:
-        traceback.print_exc()
-        logger.error("Possible error with OWSLib.")
-    return HttpResponse(json.dumps(context_dict),
-                        content_type="application/json")
 
 
 def layer_feature_catalogue(
@@ -1061,9 +950,8 @@ def layer_metadata(
                             if len(tkl) > 0:
                                 tkl_ids = ",".join(
                                     map(str, tkl.values_list('id', flat=True)))
-                                tkeywords_list += "," + \
-                                    tkl_ids if len(
-                                        tkeywords_list) > 0 else tkl_ids
+                                tkeywords_list += f",{tkl_ids}" if len(
+                                    tkeywords_list) > 0 else tkl_ids
                     except Exception:
                         tb = traceback.format_exc()
                         logger.error(tb)
@@ -1116,6 +1004,15 @@ def layer_metadata(
             if author_form.has_changed and author_form.is_valid():
                 new_author = author_form.save()
 
+<<<<<<< HEAD
+=======
+        new_category = None
+        if category_form and 'category_choice_field' in category_form.cleaned_data and\
+                category_form.cleaned_data['category_choice_field']:
+            new_category = TopicCategory.objects.get(
+                id=int(category_form.cleaned_data['category_choice_field']))
+
+>>>>>>> 3.3.x
         for form in attribute_form.cleaned_data:
             la = Attribute.objects.get(id=int(form['id'].id))
             la.description = form["description"]
@@ -1256,6 +1153,11 @@ def layer_metadata(
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
+        "UI_MANDATORY_FIELDS": list(
+            set(getattr(settings, 'UI_DEFAULT_MANDATORY_FIELDS', []))
+            |
+            set(getattr(settings, 'UI_REQUIRED_FIELDS', []))
+        )
     })
 
 
@@ -1265,27 +1167,6 @@ def layer_metadata_advanced(request, layername):
         request,
         layername,
         template='layers/layer_metadata_advanced.html')
-
-
-@login_required
-def layer_change_poc(request, ids, template='layers/layer_change_poc.html'):
-    layers = Layer.objects.filter(id__in=ids.split('_'))
-
-    if request.method == 'POST':
-        form = PocForm(request.POST)
-        if form.is_valid():
-            for layer in layers:
-                layer.poc = form.cleaned_data['contact']
-                layer.save()
-
-            # Process the data in form.cleaned_data
-            # ...
-            # Redirect after POST
-            return HttpResponseRedirect('/admin/maps/layer')
-    else:
-        form = PocForm()  # An unbound form
-    return render(
-        request, template, context={'layers': layers, 'form': form})
 
 
 @login_required
@@ -1362,7 +1243,7 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
                 out['errors'] = str(e)
             finally:
                 if tempdir is not None:
-                    shutil.rmtree(tempdir)
+                    shutil.rmtree(tempdir, ignore_errors=True)
         else:
             errormsgs = []
             for e in form.errors.values():
@@ -1375,6 +1256,88 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
             register_event(request, 'change', layer)
         else:
             status_code = 400
+        return HttpResponse(
+            json.dumps(out),
+            content_type='application/json',
+            status=status_code)
+
+
+@login_required
+def layer_append(request, layername, template='layers/layer_append.html'):
+    try:
+        layer = _resolve_layer(
+            request,
+            layername,
+            'base.change_resourcebase',
+            _PERMISSION_MSG_MODIFY)
+    except PermissionDenied:
+        return HttpResponse(_("Not allowed"), status=403)
+    except Exception:
+        raise Http404(_("Not found"))
+    if not layer:
+        raise Http404(_("Not found"))
+
+    if request.method == 'GET':
+        ctx = {
+            'charsets': CHARSETS,
+            'resource': layer,
+            'is_featuretype': layer.is_vector(),
+            'is_layer': True,
+        }
+        return render(request, template, context=ctx)
+    elif request.method == 'POST':
+        form = LayerUploadForm(request.POST, request.FILES)
+        out = {}
+        if form.is_valid():
+            try:
+                tempdir, base_file = form.write_files()
+                files, _tmpdir = get_files(base_file)
+                #  validate input source
+                resource_is_valid = validate_input_source(
+                    layer=layer, filename=base_file, files=files, action_type="append"
+                )
+                out = {}
+                if (
+                    os.getenv("DEFAULT_BACKEND_DATASTORE", None) == "datastore"
+                    and os.getenv("DEFAULT_BACKEND_UPLOADER", None) == "geonode.importer"
+                    and resource_is_valid
+                ):
+                    upload_session = gs_append_data_to_layer(layer, list(files.values()), request.user)
+                    upload_session.processed = True
+                    upload_session.save()
+                    out['success'] = True
+                    out['url'] = reverse(
+                        'layer_detail', args=[
+                            layer.service_typename])
+                    #  invalidating resource chache
+                    set_geowebcache_invalidate_cache(layer.typename)
+                    #  updating layer
+                    layer.save()
+                else:
+                    out['success'] = False
+                    out['errors'] = "Please select a valid Geoserver backend"
+            except Exception as e:
+                logger.exception(e)
+                out['success'] = False
+                out['errors'] = str(e)
+            finally:
+                if tempdir is not None:
+                    shutil.rmtree(tempdir, ignore_errors=True)
+                if _tmpdir is not None:
+                    shutil.rmtree(_tmpdir, ignore_errors=True)
+        else:
+            errormsgs = []
+            for e in form.errors.values():
+                errormsgs.append([escape(v) for v in e])
+            out['errors'] = form.errors
+            out['errormsgs'] = errormsgs
+
+        if out['success']:
+            status_code = 200
+            register_event(request, 'change', layer)
+        else:
+            status_code = 400
+
         return HttpResponse(
             json.dumps(out),
             content_type='application/json',
@@ -1476,6 +1439,7 @@ def layer_granule_remove(
         return HttpResponse("Not allowed", status=403)
 
 
+<<<<<<< HEAD
 @require_http_methods(["POST"])
 def layer_thumbnail(request, layername):
     try:
@@ -1510,6 +1474,8 @@ def layer_thumbnail(request, layername):
         )
 
 
+=======
+>>>>>>> 3.3.x
 def get_layer(request, layername):
     """Get Layer object as JSON"""
 
@@ -1577,12 +1543,14 @@ def layer_metadata_detail(
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
 
     register_event(request, 'view_metadata', layer)
+    perms_list = list(
+        layer.get_self_resource().get_user_perms(request.user)
+        .union(layer.get_user_perms(request.user))
+    )
 
     return render(request, template, context={
         "resource": layer,
-        "perms_list": get_perms(
-            request.user,
-            layer.get_self_resource()) + get_perms(request.user, layer),
+        "perms_list": perms_list,
         "group": group,
         'SITEURL': site_url
     })
@@ -1670,7 +1638,7 @@ def batch_permissions(request, model):
 
     if "cancel" in request.POST or not ids:
         return HttpResponseRedirect(
-            f'/admin/{model.lower()}s/{model.lower()}/'
+            get_url_for_model(model)
         )
 
     if request.method == 'POST':
@@ -1683,12 +1651,12 @@ def batch_permissions(request, model):
             users_usernames = [_data['user'].username, ] if _data['user'] else None
             groups_names = [_data['group'].name, ] if _data['group'] else None
             if users_usernames and 'AnonymousUser' in users_usernames and \
-            (not groups_names or 'anonymous' not in groups_names):
+                    (not groups_names or 'anonymous' not in groups_names):
                 if not groups_names:
                     groups_names = []
                 groups_names.append('anonymous')
             if groups_names and 'anonymous' in groups_names and \
-            (not users_usernames or 'AnonymousUser' not in users_usernames):
+                    (not users_usernames or 'AnonymousUser' not in users_usernames):
                 if not users_usernames:
                     users_usernames = []
                 users_usernames.append('AnonymousUser')
@@ -1705,7 +1673,7 @@ def batch_permissions(request, model):
                 except set_permissions.OperationalError as exc:
                     celery_logger.exception('Sending task raised: %r', exc)
             return HttpResponseRedirect(
-                f'/admin/{model.lower()}s/{model.lower()}/'
+                get_url_for_model(model)
             )
         return render(
             request,

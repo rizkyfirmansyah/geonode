@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -19,16 +18,15 @@
 #########################################################################
 
 import os
-from unittest.mock import patch, Mock
-from urllib.parse import urlparse
-
 import requests
-from django.core.exceptions import ObjectDoesNotExist
+
+from PIL import Image
+from io import BytesIO
+from urllib.parse import urlparse
+from unittest.mock import patch, Mock
+from imagekit.cachefiles.backends import Simple
 
 from guardian.shortcuts import assign_perm, get_perms
-from imagekit.cachefiles.backends import Simple
-from io import BytesIO
-from PIL import Image
 
 from geonode.base.utils import OwnerRightsRequestViewUtils, ManageResourceOwnerPermissions
 from geonode.base.templatetags.base_tags import display_change_perms_button
@@ -37,7 +35,7 @@ from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.services.models import Service
 from geonode.tests.base import GeoNodeBaseTestSupport
-from geonode.base import thumb_utils
+from geonode.thumbs import utils as thumb_utils
 from geonode.base.models import (
     ResourceBase,
     MenuPlaceholder,
@@ -46,20 +44,23 @@ from geonode.base.models import (
     Configuration,
     TopicCategory,
     Thesaurus,
-    ThesaurusKeyword
+    ThesaurusKeyword,
+    generate_thesaurus_reference
 )
+
 from django.conf import settings
+from django.shortcuts import reverse
 from django.template import Template, Context
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import default_storage as storage
 from django.test import Client, TestCase, override_settings, SimpleTestCase
-from django.shortcuts import reverse
 
-from geonode.base.middleware import ReadOnlyMiddleware, MaintenanceMiddleware
 from geonode.base.models import CuratedThumbnail
+from geonode.base.middleware import ReadOnlyMiddleware, MaintenanceMiddleware
 from geonode.base.templatetags.base_tags import get_visibile_resources, facets
 from geonode.base.templatetags.thesaurus import (
-    get_name_translation, get_unique_thesaurus_set,
+    get_name_translation, get_thesaurus_localized_label, get_thesaurus_translation_by_id, get_unique_thesaurus_set,
     get_thesaurus_title,
     get_thesaurus_date,
 )
@@ -79,8 +80,8 @@ test_image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
 class ThumbnailTests(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        super(ThumbnailTests, self).setUp()
-        self.rb = ResourceBase.objects.create()
+        super().setUp()
+        self.rb = ResourceBase.objects.create(owner=get_user_model().objects.get(username='admin'))
 
     def tearDown(self):
         super().tearDown()
@@ -140,8 +141,8 @@ class ThumbnailTests(GeoNodeBaseTestSupport):
 class TestThumbnailUrl(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        super(TestThumbnailUrl, self).setUp()
-        rb = ResourceBase.objects.create()
+        super().setUp()
+        rb = ResourceBase.objects.create(owner=get_user_model().objects.get(username='admin'))
         f = BytesIO(test_image.tobytes())
         f.name = 'test_image.jpeg'
         self.curated_thumbnail = CuratedThumbnail.objects.create(resource=rb, img=File(f))
@@ -182,7 +183,7 @@ class RenderMenuTagTest(GeoNodeBaseTestSupport):
     """
 
     def setUp(self):
-        super(RenderMenuTagTest, self).setUp()
+        super().setUp()
         self.placeholder_0 = MenuPlaceholder.objects.create(
             name='test_menu_placeholder_0'
         )
@@ -790,7 +791,7 @@ class TestGetVisibleResource(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create(username='mikel_arteta')
         self.category = TopicCategory.objects.create(identifier='biota')
-        self.rb = ResourceBase.objects.create(category=self.category)
+        self.rb = ResourceBase.objects.create(category=self.category, owner=self.user)
 
     def test_category_data_not_shown_for_missing_resourcebase_permissions(self):
         """
@@ -873,9 +874,8 @@ class TestTagThesaurus(TestCase):
         self.tkeywords = ThesaurusKeyword.objects.all()
 
     def test_get_unique_thesaurus_list(self):
-        tid = self.__get_last_thesaurus().id
         actual = get_unique_thesaurus_set(self.tkeywords)
-        self.assertSetEqual({tid}, actual)
+        self.assertSetEqual({1, 3}, actual)
 
     def test_get_thesaurus_title(self):
         tid = self.__get_last_thesaurus().id
@@ -896,6 +896,21 @@ class TestTagThesaurus(TestCase):
         lang.return_value = 'ke'
         actual = get_name_translation('inspire-theme')
         expected = "GEMET - INSPIRE themes, version 1.0"
+        self.assertEqual(expected, actual)
+
+    @patch('geonode.base.templatetags.thesaurus.get_language')
+    def test_get_thesaurus_translation_by_id(self, lang):
+        lang.return_value = 'it'
+        actual = get_thesaurus_translation_by_id(1)
+        expected = "Tema GEMET - INSPIRE, versione 1.0"
+        self.assertEqual(expected, actual)
+
+    @patch('geonode.base.templatetags.thesaurus.get_language')
+    def test_get_thesaurus_localized_label(self, lang):
+        lang.return_value = 'de'
+        keyword = ThesaurusKeyword.objects.get(id=1)
+        actual = get_thesaurus_localized_label(keyword)
+        expected = "Adressen"
         self.assertEqual(expected, actual)
 
     @patch('geonode.base.templatetags.thesaurus.get_language')
@@ -946,6 +961,26 @@ class TestThesaurusAvailableForm(TestCase):
         obj_class = required.widget.attrs.get('class')
         self.assertTrue(obj_class == '')
 
+    def test_will_return_thesaurus_with_the_expected_defined_order(self):
+        actual = self.sut(data={"1": 1})
+        fields = list(actual.fields.items())
+        #  will check if the first element of the tuple is the thesaurus_id = 2
+        self.assertEqual(fields[0][0], '2')
+        #  will check if the second element of the tuple is the thesaurus_id = 1
+        self.assertEqual(fields[1][0], '1')
+
+    def test_will_return_thesaurus_with_the_defaul_order_as_0(self):
+        # Update thesaurus order to 0 in order to check if the default order by id is observed
+        t = Thesaurus.objects.get(identifier='inspire-theme')
+        t.order = 0
+        t.save()
+        actual = ThesaurusAvailableForm(data={"1": 1})
+        fields = list(actual.fields.items())
+        #  will check if the first element of the tuple is the thesaurus_id = 2
+        self.assertEqual(fields[0][0], '1')
+        #  will check if the second element of the tuple is the thesaurus_id = 1
+        self.assertEqual(fields[1][0], '2')
+
 
 class TestFacets(TestCase):
     def setUp(self):
@@ -979,6 +1014,7 @@ class TestFacets(TestCase):
         self.request_mock = Mock(spec=requests.Request, GET=Mock())
 
     def test_facets_filter_layers_returns_correctly(self):
+        ResourceBase.objects.all().update(dirty_state=False)
         self.request_mock.GET.get.side_effect = lambda key, self: {
             'title__icontains': 'boxes',
             'abstract__icontains': 'boxes',
@@ -993,3 +1029,77 @@ class TestFacets(TestCase):
         results = facets({'request': self.request_mock})
         self.assertEqual(results['vector'], 3)
         self.assertEqual(results['raster'], 4)
+
+
+class TestGenerateThesaurusReference(TestCase):
+    fixtures = [
+        "test_thesaurus.json"
+    ]
+
+    def setUp(self):
+        self.site_url = settings.SITEURL if hasattr(settings, "SITEURL") else "http://localhost"
+
+    '''
+    If the keyword.about does not exists, the url created will have a prefix and a specifier:
+    as prefix:
+        - use the Keyword's thesaurus.about URI if it exists,
+        - otherwise use as prefix the geonode site URL composed with some thesaurus info: f'{settings.SITEURL}/thesaurus/{thesaurus.identifier}'
+    as specifier:
+        - we may use the ThesaurusKeyword.alt_label if it exists, otherwise its id
+    So the final about field value will be composed as f'{prefix}#{specifier}'
+    '''
+
+    def test_should_return_keyword_url(self):
+        expected = "http://inspire.ec.europa.eu/theme/ad"
+        keyword = ThesaurusKeyword.objects.get(id=1)
+        actual = generate_thesaurus_reference(keyword)
+        keyword.refresh_from_db()
+        '''
+        Check if the expected about has been created and that the instance is correctly updated
+        '''
+        self.assertEqual(expected, actual)
+        self.assertEqual(expected, keyword.about)
+
+    def test_should_return_as_url_thesaurus_about_and_keyword_alt_label(self):
+        expected = "http://inspire.ec.europa.eu/theme#foo_keyword"
+        keyword = ThesaurusKeyword.objects.get(alt_label='foo_keyword')
+        actual = generate_thesaurus_reference(keyword)
+        keyword.refresh_from_db()
+        '''
+        Check if the expected about has been created and that the instance is correctly updated
+        '''
+        self.assertEqual(expected, actual)
+        self.assertEqual(expected, keyword.about)
+
+    def test_should_return_as_url_thesaurus_about_and_keyword_id(self):
+        expected = "http://inspire.ec.europa.eu/theme#37"
+        keyword = ThesaurusKeyword.objects.get(id=37)
+        actual = generate_thesaurus_reference(keyword)
+        keyword.refresh_from_db()
+        '''
+        Check if the expected about has been created and that the instance is correctly updated
+        '''
+        self.assertEqual(expected, actual)
+        self.assertEqual(expected, keyword.about)
+
+    def test_should_return_as_url_site_url_and_keyword_label(self):
+        expected = f"{self.site_url}/thesaurus/no-about-thesauro#bar_keyword"
+        keyword = ThesaurusKeyword.objects.get(id=39)
+        actual = generate_thesaurus_reference(keyword)
+        keyword.refresh_from_db()
+        '''
+        Check if the expected about has been created and that the instance is correctly updated
+        '''
+        self.assertEqual(expected, actual)
+        self.assertEqual(expected, keyword.about)
+
+    def test_should_return_as_url_site_url_and_keyword_id(self):
+        expected = f"{self.site_url}/thesaurus/no-about-thesauro#38"
+        keyword = ThesaurusKeyword.objects.get(id=38)
+        actual = generate_thesaurus_reference(keyword)
+        keyword.refresh_from_db()
+        '''
+        Check if the expected about has been created and that the instance is correctly updated
+        '''
+        self.assertEqual(expected, actual)
+        self.assertEqual(expected, keyword.about)

@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2020-07-31 13:58+0200\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Polish (http://www.transifex.com/geonode/geonode/language/"
@@ -136,9 +136,6 @@ msgstr "dane są aktualizowane co trzy miesiące"
 msgid "No information provided"
 msgstr "Nie podano informacji"
 
-msgid "Category"
-msgstr "Kategoria"
-
 msgid "Category is required."
 msgstr "Kategoria jest wymagana."
 
@@ -206,6 +203,9 @@ msgstr "Regiony"
 msgid "Group"
 msgstr "Grupa"
 
+msgid "Category"
+msgstr "Kategoria"
+
 msgid "License"
 msgstr "Licencja"
 
@@ -242,6 +242,9 @@ msgstr "Krótkie uzasadnienie prośby"
 msgid "function performed by the responsible party"
 msgstr "funkcja wykonywana przez podmiot odpowiedzialny"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "krótkie podsumowanie zawartości zasobu"
+
 msgid "reference date for the cited resource"
 msgstr "data odniesienia dla cytowanego zasobu"
 
@@ -251,8 +254,13 @@ msgstr "identyfikacja, kiedy dane wydarzenie miało miejsce"
 msgid "version of the cited resource"
 msgstr "wersja cytowanego zasobu"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "krótkie podsumowanie zawartości zasobu"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr "numer DOI zostanie dodany przez admina przed publikacją."
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "podsumowanie celu, z jakim źródło zostało opracowane"
@@ -326,27 +334,17 @@ msgid ""
 msgstr ""
 "ogólne wyjaśnienie wytwórcy danych dotyczące pochodzenia zestawu danych"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr "numer DOI zostanie dodany przez admina przed publikacją."
-
-msgid "DOI"
-msgstr "DOI"
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "Atrybut"
-
 msgid "title"
 msgstr "tytuł"
 
 msgid "name by which the cited resource is known"
 msgstr "nazwa, pod którą cytowany zasób jest znany"
+
+msgid "abstract"
+msgstr "streszczenie"
+
+msgid "purpose"
+msgstr "cel"
 
 msgid "date"
 msgstr "data"
@@ -357,11 +355,13 @@ msgstr "typ daty"
 msgid "edition"
 msgstr "wersja"
 
-msgid "abstract"
-msgstr "streszczenie"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "Atrybut"
 
-msgid "purpose"
-msgstr "cel"
+msgid "DOI"
+msgstr "DOI"
 
 msgid "maintenance frequency"
 msgstr "częstotliwość aktualizacji"
@@ -448,6 +448,12 @@ msgstr "Zasady bezpieczeństwa nie są zsynchronizowane z GeoServerem!"
 #| msgid "Resource base"
 msgid "Resource Type"
 msgstr "Baza zasobów"
+
+msgid "Metadata"
+msgstr "Metadane"
+
+msgid "If true, will be excluded from search"
+msgstr ""
 
 msgid "For example \"kml\""
 msgstr "Na przykład \"KML\""
@@ -539,9 +545,6 @@ msgstr "online"
 msgid "offline"
 msgstr "offline"
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr "BEZPIECZEŃSTWO NIE JEST JESZCZE ZSYNCHRONIZOWANE"
 
@@ -563,9 +566,6 @@ msgstr "Zobacz mapę"
 msgid "Batch Edit"
 msgstr "Edycja zbiorcza"
 
-msgid "batch edit"
-msgstr "edycja zbiorcza"
-
 msgid "Cancel"
 msgstr "Anuluj"
 
@@ -574,9 +574,6 @@ msgstr "Zatwierdź"
 
 msgid "Set Permissions"
 msgstr "Ustaw Uprawnienia"
-
-msgid "set permissions"
-msgstr "ustaw uprawnienia"
 
 msgid "Discover the available datasets."
 msgstr "Odkryj dostępne zbiory danych."
@@ -675,30 +672,6 @@ msgstr "Opis"
 msgid "GeoNode Client Library"
 msgstr "Biblioteka klienta GeoNode"
 
-msgid "Explore Maps"
-msgstr "Przeglądaj Mapy"
-
-msgid "Edit Map"
-msgstr "Edytuj mapę"
-
-msgid "Update"
-msgstr "Aktualizuj"
-
-msgid "Create a New Map"
-msgstr "Stwórz nową mapę"
-
-msgid "Available layers"
-msgstr "Dostępne warstwy"
-
-msgid "Save"
-msgstr "Zapisz"
-
-msgid "Save Map"
-msgstr "Zapisz mapę"
-
-msgid "Close"
-msgstr "Zamknij"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -725,8 +698,8 @@ msgstr ""
 "Procesy i zjawiska atmosferyczne. Przykłady: zachmurzenie, pogoda, klimat, "
 "warunki atmosferyczne, zmiany klimatu, opady."
 
-msgid "Climate"
-msgstr "Klimat"
+msgid "Climatology Meteorology Atmosphere"
+msgstr ""
 
 msgid ""
 "Economic activities, conditions and employment. Examples: production, "
@@ -749,6 +722,9 @@ msgstr ""
 "Wysokość w stosunku do poziomu morza (powyżej lub poniżej). Przykłady: "
 "wysokość nad poziomem morza, batymetria, cyfrowe modele terenu, nachylenie, "
 "produkty pochodne."
+
+msgid "Elevation"
+msgstr "Wysokość"
 
 msgid ""
 "Environmental resources, protection and conservation. Examples: "
@@ -788,8 +764,10 @@ msgstr ""
 "wulkaniczna, osuwiska, informacje o grawitacji, gleby, wieczna zmarzlina, "
 "hydrogeologia, erozja."
 
-msgid "Geoscience"
-msgstr "Nauki o Ziemi"
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "Informacje uzupełniające"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -810,15 +788,18 @@ msgstr ""
 "Mapy zasadnicze. Przykłady: pokrycie terenu, mapy topograficzne, zdjęcia, "
 "niesklasyfikowane obrazy, adnotacje."
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 #, fuzzy
 #| msgid ""
 #| "Inland water features, drainage systems and their characteristics. "
 #| "Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
 #| "currents, floods, water quality, hydrographic charts."
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 "Obiekty wód śródlądowych, systemy odwadniające i ich cechy. Przykłady: rzeki "
 "i lodowce, słone jeziora, plany wykorzystania wody, tamy, prądy, powodzie, "
@@ -834,7 +815,9 @@ msgstr ""
 "Bazy wojskowe, struktury, działania wojskowe. Przykłady: koszary, poligony, "
 "transport wojskowy, zbieranie informacji."
 
-msgid "Intelligence"
+#, fuzzy
+#| msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr "Wojsko"
 
 msgid ""
@@ -843,6 +826,9 @@ msgid ""
 msgstr ""
 "Informacje i usługi o położeniu. Przykłady: adresy, sieci geodezyjne, punkty "
 "kontrolne, strefy i usługi pocztowe, nazwy miejscowości."
+
+msgid "Location"
+msgstr "Lokalizacja"
 
 msgid ""
 "Features and characteristics of salt water bodies (excluding inland waters). "
@@ -862,7 +848,9 @@ msgstr ""
 "przyszłym wykorzystaniem terenu. Przykłady: mapy użytkowania gruntów, mapy "
 "zagospodarowania przestrzennego, badania katastralne, własność gruntów."
 
-msgid "Planning"
+#, fuzzy
+#| msgid "Planning"
+msgid "Planning Cadastre"
 msgstr "Planowanie"
 
 msgid ""
@@ -929,8 +917,8 @@ msgstr ""
 "i usuwanie ścieków, dystrybucja energii elektrycznej i gazu, przesyłanie "
 "danych, telekomunikacja, radio, sieci komunikacyjne."
 
-msgid "Utilities"
-msgstr "Usługi użyteczności publicznej"
+msgid "Utilities Communication"
+msgstr ""
 
 msgid "Document Created"
 msgstr "Stworzono dokument"
@@ -1031,9 +1019,6 @@ msgstr "Adres URL dokumentu, jeśli jest zewnętrzny."
 msgid "URL"
 msgstr "Adres URL"
 
-msgid "documents"
-msgstr "dokumenty"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1070,9 +1055,6 @@ msgstr "Edytuj dokument"
 msgid "Request change"
 msgstr "Poproś o zmianę"
 
-msgid "Metadata"
-msgstr "Metadane"
-
 msgid "Wizard"
 msgstr "Kreator"
 
@@ -1090,6 +1072,9 @@ msgstr "Zastąp"
 
 msgid "Remove"
 msgstr "Usuń"
+
+msgid "Close"
+msgstr "Zamknij"
 
 msgid "Download Metadata"
 msgstr "Pobierz metadane"
@@ -1130,9 +1115,6 @@ msgstr "Przeglądaj dokumenty"
 msgid "Upload Documents"
 msgstr "Prześlij dokumenty"
 
-msgid "data"
-msgstr "dane"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr "dla %(document_title)s"
@@ -1158,6 +1140,9 @@ msgstr "Dostawca metadanych"
 msgid "<< Back"
 msgstr "< < Wstecz"
 
+msgid "Update"
+msgstr "Aktualizuj"
+
 msgid "Next >>"
 msgstr "Następny > >"
 
@@ -1169,6 +1154,9 @@ msgstr "Edytuj metadane"
 
 msgid "Editing details for"
 msgstr "Edycja szczegółów dla"
+
+msgid "Return to Document"
+msgstr "Wróć do dokumentu"
 
 msgid "Deleting"
 msgstr "Usuwanie"
@@ -1251,6 +1239,11 @@ msgstr "Podstawowe metadane"
 msgid "Location and Licenses"
 msgstr "Lokalizacja i licencje"
 
+#, fuzzy
+#| msgid "Resource Metadata"
+msgid "Required Metadata"
+msgstr "Metadane zasobu"
+
 msgid "Optional Metadata"
 msgstr "Dodatkowe metadane"
 
@@ -1266,14 +1259,11 @@ msgstr "Podmioty odpowiedzialne"
 msgid "Responsible and Permissions"
 msgstr "Osoba odpowiedzialna i zezwolenia"
 
-msgid "Message box"
-msgstr "Skrzynka odbiorcza"
-
-msgid "OK"
-msgstr "OK"
-
 msgid "Publishing"
 msgstr "Publikowanie"
+
+msgid "You are not allowed to view this document."
+msgstr "Nie masz uprawnień, aby zobaczyć ten dokument."
 
 msgid "You are not permitted to delete this document"
 msgstr "Nie masz uprawnień, aby usunąć ten dokument"
@@ -1299,9 +1289,6 @@ msgstr "Nie podano"
 #| msgid "Maps found"
 msgid "Not found"
 msgstr "Mapy"
-
-msgid "You are not allowed to view this document."
-msgstr "Nie masz uprawnień, aby zobaczyć ten dokument."
 
 msgid "You must set a point of contact for this resource"
 msgstr "Musisz określić osobę kontaktową dla tego zasobu"
@@ -1469,11 +1456,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "maps explore"
-msgid "apps explore"
-msgstr "przeglądać mapy"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "Stwórz nową mapę"
@@ -1590,6 +1572,17 @@ msgstr "Ocena warstwy"
 msgid "A rating was given to a layer"
 msgstr "Warstwa została oceniona"
 
+#, fuzzy
+#| msgid "Contact Points"
+msgid "Points"
+msgstr "Osoby kontaktowe"
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 msgid "Layer name"
 msgstr "Nazwa warstwy"
 
@@ -1613,6 +1606,22 @@ msgstr "Dodaj atrybut"
 
 msgid "Create"
 msgstr "Stwórz"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "Przedziały"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "Nie podano"
 
 msgid "No abstract provided"
 msgstr "Brak streszczenia"
@@ -1767,9 +1776,6 @@ msgstr "Brak działań"
 msgid "Explore Group Categories"
 msgstr "Przeglądaj kategorie grup"
 
-msgid "groups explore"
-msgstr "przeglądać grupy"
-
 msgid "Create a New Group Category"
 msgstr "Stwórz nową kategorię grupy"
 
@@ -1787,12 +1793,6 @@ msgstr "Usuń grupę"
 
 msgid "Create Group"
 msgstr "Stwórz grupę"
-
-msgid "groups create"
-msgstr "stworzyć grupy"
-
-msgid "groups"
-msgstr "grupy"
 
 msgid "Last Modified"
 msgstr "Ostatnio zmodyfikowano"
@@ -1865,9 +1865,6 @@ msgstr "Dodaj nowych członków"
 msgid "Add Group Members"
 msgstr "Dodaj członków grupy"
 
-msgid "groups remove"
-msgstr "usunąć grupy"
-
 #, python-format
 msgid ""
 "\n"
@@ -1884,9 +1881,6 @@ msgstr "Usuń mapy/dane z grupy"
 msgid "Remove selected maps/data"
 msgstr "Usuń wybrane mapy/dane"
 
-msgid "groups update"
-msgstr "aktualizować grupy"
-
 msgid "Edit Group Category Details"
 msgstr "Edytuj szczegóły kategorii grup"
 
@@ -1902,16 +1896,22 @@ msgstr "Stwórz kategorię grupy"
 msgid "Edit Group Category"
 msgstr "Edytuj kategorię grupy"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "Zapisz"
+
+#, fuzzy, python-brace-format
+#| msgid "The e-mail address '%(email)s' has already been invited."
+msgid "The e-mail address '{email}' has already been invited."
 msgstr "Adres e-mail '%(email)s' już został zaproszony."
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, fuzzy, python-brace-format
+#| msgid "The e-mail address '%(email)s' has already accepted an invite."
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr "Adres e-mail '%(email)s' zaakceptował zaproszenie."
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, fuzzy, python-brace-format
+#| msgid "An active user is already using the e-mail address '%(email)s'"
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr "Adres '%(email)s' już jest używany przez aktywnego użykownika"
 
 msgid "E-mail"
@@ -2157,6 +2157,20 @@ msgstr "ostatnio zmodyfikowano"
 msgid "date when attribute statistics were last updated"
 msgstr "data ostatniej aktualizacji statystyk atrybutu"
 
+#, fuzzy
+#| msgid "Return to Layer"
+msgid "Append to Layer"
+msgstr "Wróć do warstwy"
+
+msgid "Return to Layer"
+msgstr "Wróć do warstwy"
+
+msgid "Preserve Metadata XML"
+msgstr "Zachowaj metadane XML"
+
+msgid "Select the charset or leave default"
+msgstr "Wybierz zestaw znaków lub pozostaw domyślny"
+
 msgid "Home"
 msgstr "Strona główna"
 
@@ -2165,9 +2179,6 @@ msgstr "Zmień osobę kontaktową"
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "Przypisz nową osobę kontaktową do poniższej warstwy:"
-
-msgid "layers"
-msgstr "warstwy"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr "Dokument WMS GetCapabilities warstwy"
@@ -2186,9 +2197,6 @@ msgstr "Bounding Box"
 
 msgid "Time"
 msgstr "Czas"
-
-msgid "Elevation"
-msgstr "Wysokość"
 
 msgid "Actions"
 msgstr "Działania"
@@ -2307,6 +2315,9 @@ msgid_plural "Layers"
 msgstr[0] "Warstwa"
 msgstr[1] "Warstwy"
 msgstr[2] "Warstw"
+
+msgid "Append Data"
+msgstr ""
 
 msgid "Edit data"
 msgstr "Edytuj dane"
@@ -2432,9 +2443,6 @@ msgstr "To działanie to ma wpływ na następujące mapy:"
 msgid "No maps are using this layer"
 msgstr "Brak map korzystających z tej warstwy"
 
-msgid "layers explore"
-msgstr "przeglądać warstwy"
-
 msgid "Upload Layers"
 msgstr "Prześlij warstwy"
 
@@ -2463,9 +2471,6 @@ msgstr ""
 "ISO, FGDC i Dublin Core.\n"
 "          Niektóre z oryginalnych metadanych mogły zostać utracone."
 
-msgid "Return to Layer"
-msgstr "Wróć do warstwy"
-
 #, python-format
 msgid ""
 "\n"
@@ -2492,35 +2497,17 @@ msgstr "Kolejność wyświetlania"
 msgid "Visible"
 msgstr "widoczne?"
 
+msgid "ERROR"
+msgstr "BŁĄD"
+
+msgid "Following items are required:"
+msgstr ""
+
 msgid "Upload Layer Metadata"
 msgstr "Prześlij metadane warstwy"
 
-msgid "layers upload"
-msgstr "przesłać warstwy"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr "(XML - ISO, FGDC, ebRIM, Dublin Core)"
-
-msgid "Incomplete Uploads"
-msgstr "Niekompletnie przesłane pliki"
-
-msgid "You have the following incomplete uploads"
-msgstr "Masz następujące niekompletnie przesłane pliki"
-
-msgid "last updated on"
-msgstr "ostatnio zaktualizowano"
-
-msgid "Resume"
-msgstr "Wznów"
-
-msgid "Delete"
-msgstr "Usuń"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "Czy na pewno chcesz usunąć ten plik?"
-
-msgid "Delete, and don't ask me again."
-msgstr "Usuń, i nie pytaj mnie ponownie."
 
 msgid "Remove Layers"
 msgstr "Usuń warstwy"
@@ -2540,24 +2527,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "Zastąp warstwę"
 
-msgid "Preserve Metadata XML"
-msgstr "Zachowaj metadane XML"
-
-msgid "Select the charset or leave default"
-msgstr "Wybierz zestaw znaków lub pozostaw domyślny"
-
 msgid "Manage Styles"
 msgstr "Zarządzanie stylami"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"      Zarządzaj dostępnymi stylami dla <a href=\"/layers/%(layer_title)s\">"
+"      Zarządzaj dostępnymi stylami dla <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "     "
 
@@ -2597,6 +2578,53 @@ msgstr "Atrybuty zbioru danych"
 
 msgid "Upload Layer"
 msgstr "Prześlij warstwę"
+
+#, fuzzy
+#| msgid "Upload Metadata"
+msgid "Upload status"
+msgstr "Prześlij metadane"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "Usuń"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "Prześlij dokument"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "Stwórz"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr "strona"
+
+msgid "of"
+msgstr "z"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "Niekompletnie przesłane pliki"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "Czy na pewno chcesz usunąć ten plik?"
 
 msgid "Upload Layer Step: Set SRS"
 msgstr "Przesyłanie warstwy: określ układ współrzędnych"
@@ -3068,37 +3096,65 @@ msgstr "teraz"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr "Próbujesz zastąpić warstwę wektorową nieznanym formatem."
 
-msgid "You are attempting to replace a vector layer with a raster."
+msgid ""
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
+msgid "You are attempting to {action_type} a vector layer with a raster."
 msgstr "Próbujesz zastąpić warstwę wektorową rastrem."
 
-msgid "You are attempting to replace a raster layer with a vector."
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a raster layer with a vector."
+msgid "You are attempting to {action_type} a raster layer with a vector."
 msgstr "Próbujesz zastąpić warstwę rastrową wektorem."
 
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with an unknown format."
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr "Próbujesz zastąpić warstwę wektorową nieznanym formatem."
+
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Please ensure the name is consistent with the file you are trying to "
+#| "replace."
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 "Proszę upewnić się, że nazwa jest zgodna z plikiem, który chcesz zastąpić."
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr "Warstwa lokalna GeoNode nie ma typu geometrii."
 
+#, fuzzy, python-brace-format
+#| msgid ""
+#| "Please ensure there is at least one geometry "
+#| "type                                 that is consistent with the file you "
+#| "are trying to replace."
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 "Proszę upewnić się, że istnieje co najmniej jeden typ "
 "geometrii                                 zgodny z plikiem, który chcesz "
 "zastąpić."
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
+msgstr ""
+
+#, fuzzy
+#| msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid ""
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 "Wystąpił błąd podczas próby uzyskania dostępu do przesłanego schematu: %s"
-
-msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
-msgstr ""
 
 msgid ""
 "There was an error while attempting to upload your data. Please try again, "
@@ -3132,8 +3188,11 @@ msgstr "Nie masz uprawnień, aby zobaczyć tę warstwę"
 msgid "Failed to upload the layer"
 msgstr "Nie udało się przesłać warstwy"
 
-msgid "Unable to delete layer"
-msgstr "Nie można usunąć warstwy"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr "Próbujesz zastąpić warstwę wektorową rastrem."
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr "Próbujesz zastąpić warstwę rastrową wektorem."
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
@@ -3142,7 +3201,9 @@ msgstr ""
 "Ta warstwa należy do grupy warstw, przed jej usunięciem musisz usunąć "
 "warstwę z grupy."
 
-msgid "couldn't generate thumbnail"
+#, fuzzy, python-format
+#| msgid "couldn't generate thumbnail"
+msgid "couldn't generate thumbnail: %s"
 msgstr "nie można wygenerować miniatury"
 
 msgid "Map Created"
@@ -3229,9 +3290,6 @@ msgstr "parametry warstwy"
 msgid "source params"
 msgstr "parametry źródłowe"
 
-msgid "maps"
-msgstr "mapy"
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr "Dokument WMS GetCapabilities warstw mapy"
 
@@ -3267,6 +3325,9 @@ msgstr "Skopiuj mapę"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "Skopiuj tę mapę i zmodyfikuj ją dla własnych potrzeb"
+
+msgid "Create a New Map"
+msgstr "Stwórz nową mapę"
 
 msgid ""
 "\n"
@@ -3328,8 +3389,11 @@ msgstr "Pobieranie ukończone"
 msgid "Download Failed"
 msgstr "Pobieranie nie powiodło się"
 
-msgid "maps explore"
-msgstr "przeglądać mapy"
+msgid "Edit Map"
+msgstr "Edytuj mapę"
+
+msgid "Explore Maps"
+msgstr "Przeglądaj Mapy"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3342,6 +3406,9 @@ msgstr ""
 "        Import metadanych GeoNode obsługuje podzbiór elementów metadanych "
 "ISO, FGDC i Dublin Core.\n"
 "        Niektóre z oryginalnych metadanych mogły zostać utracone."
+
+msgid "Return to Map"
+msgstr "Wróć do mapy"
 
 msgid "Remove Map"
 msgstr "Usuń mapę"
@@ -3376,9 +3443,6 @@ msgstr "Nie masz uprawnień, aby zmodyfikować metadane tej mapy."
 msgid "You are not allowed to view this map."
 msgstr "Nie masz uprawnień, aby zobaczyć tę mapę."
 
-msgid "Thumbnail saved"
-msgstr "Miniatura zapisana"
-
 msgid "error saving thumbnail"
 msgstr "błąd zapisu miniatury"
 
@@ -3394,7 +3458,9 @@ msgstr "Alarm systemu monitrowania"
 msgid "Alert situation reported by monitoring"
 msgstr "Sytuacja alarmowa zgłoszona przez system monitorowania"
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+#, fuzzy
+#| msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr "System monitorowania GeoNode {} zgłasza błędy: {}"
 
 msgid "Enter valid email addresses."
@@ -3464,7 +3530,9 @@ msgstr "Pokaż dane dla określonego zasobu"
 msgid "Show data for specific label"
 msgstr "Pokaż dane dla określonej etykiety"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, fuzzy, python-brace-format
+#| msgid "Write result to file, default GEOIP_PATH: {}"
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr "Zapisz wynik w pliku, domyślnie GEOIP_PATH: {}"
 
 msgid ""
@@ -3609,8 +3677,9 @@ msgstr "Jak poważny byłby błąd z tego powiadomienia"
 msgid "Is it active"
 msgstr "Jest aktywne"
 
-msgid "{}: {}"
-msgstr "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
+msgstr ""
 
 msgid "Value must be above"
 msgstr "Wartość musi być wyższa niż"
@@ -3834,9 +3903,6 @@ msgstr "Stwórz profil"
 msgid "Profile of "
 msgstr "Profil "
 
-msgid "people explore"
-msgstr "przeglądać ludzi"
-
 msgid "Not provided."
 msgstr "Nie podano."
 
@@ -3845,9 +3911,6 @@ msgstr "Stanowisko"
 
 msgid "Organization"
 msgstr "Organizacja"
-
-msgid "Location"
-msgstr "Lokalizacja"
 
 msgid "Not provided"
 msgstr "Nie podano"
@@ -3903,9 +3966,6 @@ msgstr "Działania użytkownika"
 msgid "Resources"
 msgstr "Zasoby"
 
-msgid "edit people"
-msgstr "edytuj ludzi"
-
 msgid "Edit Your Profile"
 msgstr "Edytuj swój profil"
 
@@ -3921,7 +3981,9 @@ msgstr "Aktualizuj profil"
 msgid "Explore People"
 msgstr "Przeglądaj ludzi"
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "Twoja nazwa użytkownika "
 
 msgid "Your username has been emailed to you."
@@ -4080,6 +4142,8 @@ msgstr "Zasoby usługi"
 msgid "No resources have been imported yet."
 msgstr "Żadne zasoby nie zostały jeszcze zaimportowane."
 
+#, fuzzy
+#| msgid "Retry job"
 msgid "Retry job"
 msgstr "Spróbuj ponownie"
 
@@ -4185,7 +4249,9 @@ msgstr "Wybrane zasoby zostały zaimportowane"
 msgid "Resource is already being processed"
 msgstr "Zasób jest już przetwarzany"
 
-msgid "Resource {} is being processed"
+#, fuzzy, python-brace-format
+#| msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "Zasób {} jest przetwarzany"
 
 msgid "Service rescanned successfully"
@@ -4197,7 +4263,9 @@ msgstr "Nie masz uprawnień, aby zmienić tę usługę."
 msgid "You are not permitted to remove this service."
 msgstr "Nie masz uprawnień, aby usunąć tę usługę."
 
-msgid "Service {} has been deleted"
+#, fuzzy, python-brace-format
+#| msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "Usługa {} została usunięta"
 
 msgid "created"
@@ -4436,6 +4504,12 @@ msgstr "Zapisz ograniczenia geograficzne"
 
 msgid "Delete Geo Limits"
 msgstr "Usuń ograniczenia geograficzne"
+
+msgid "Message box"
+msgstr "Skrzynka odbiorcza"
+
+msgid "OK"
+msgstr "OK"
 
 msgid "Mandatory files : SHP , DBF"
 msgstr "Obowiązkowe pliki: SHP, DBF"
@@ -5206,13 +5280,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5221,9 +5295,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5232,9 +5306,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5268,7 +5342,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5284,7 +5358,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 
@@ -5437,20 +5511,11 @@ msgstr "jest członkiem następujących grup:"
 msgid "Updating Metadata..."
 msgstr "Aktualizowanie metadanych..."
 
-msgid "ERROR"
-msgstr "BŁĄD"
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr "Kategoria tematu jest obowiązkowa i nie może być pusta!"
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr "Grupa jest obowiązkowa i nie może być pusta!"
-
-msgid "Return to Document"
-msgstr "Wróć do dokumentu"
-
-msgid "Return to Map"
-msgstr "Wróć do mapy"
 
 msgid "Identification"
 msgstr "Identyfikacja"
@@ -5507,6 +5572,9 @@ msgid "Online Link"
 msgstr "Link online"
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 msgid "Request perission"
@@ -5810,12 +5878,6 @@ msgstr "rrrr-mm-dd"
 msgid "Date ends before:"
 msgstr "Data kończy się przed:"
 
-msgid "page"
-msgstr "strona"
-
-msgid "of"
-msgstr "z"
-
 msgid "Search by region"
 msgstr "Szukaj według regionu"
 
@@ -5869,9 +5931,6 @@ msgstr "Z - A"
 
 msgid "Most popular"
 msgstr "Najbardziej popularne"
-
-msgid "Thesaurus"
-msgstr "Tezaurus"
 
 msgid "Text"
 msgstr "Tekst"
@@ -6011,6 +6070,11 @@ msgstr ""
 msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
+#, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "Cała zawartość"
+
 msgid "Could not access to uploaded data."
 msgstr "Brak dostępu do przesłanych danych."
 
@@ -6034,6 +6098,22 @@ msgid "Layer already exists"
 msgstr "Warstwa stworzona"
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6083,20 +6163,24 @@ msgid ""
 msgstr ""
 "Aby obsługiwać przedział czasowy, musisz włączyć opcję OGC_SERVER DATASTORE"
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, fuzzy, python-brace-format
+#| msgid "Unsupported file type: %s"
+msgid "Unsupported file type: {e.message}"
 msgstr "Nieobsługiwany typ pliku: %s"
 
-#, python-format
-msgid "File does not exist: %s"
+#, fuzzy, python-brace-format
+#| msgid "File does not exist: %s"
+msgid "File does not exist: {absolute_base_file}"
 msgstr "Plik nie istnieje: %s"
 
-#, python-format
-msgid "unknown item state: %s"
+#, fuzzy, python-brace-format
+#| msgid "unknown item state: %s"
+msgid "unknown item state: {task.state}"
 msgstr "nieznany stan przedmiotu: %s"
 
-#, python-format
-msgid "error during import: %s"
+#, fuzzy
+#| msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr "błąd podczas importu: %s"
 
 msgid "Could not find any valid Time Regex for the Mosaic files."
@@ -6115,3 +6199,103 @@ msgstr "Nieprawidłowy poziom uprawnień."
 
 msgid "Permission Denied"
 msgstr "Odmowa dostępu"
+
+#~ msgid "batch edit"
+#~ msgstr "edycja zbiorcza"
+
+#~ msgid "set permissions"
+#~ msgstr "ustaw uprawnienia"
+
+#~ msgid "documents"
+#~ msgstr "dokumenty"
+
+#~ msgid "data"
+#~ msgstr "dane"
+
+#, fuzzy
+#~| msgid "maps explore"
+#~ msgid "apps explore"
+#~ msgstr "przeglądać mapy"
+
+#~ msgid "groups explore"
+#~ msgstr "przeglądać grupy"
+
+#~ msgid "groups create"
+#~ msgstr "stworzyć grupy"
+
+#~ msgid "groups"
+#~ msgstr "grupy"
+
+#~ msgid "groups remove"
+#~ msgstr "usunąć grupy"
+
+#~ msgid "groups update"
+#~ msgstr "aktualizować grupy"
+
+#, fuzzy
+#~| msgid "layers upload"
+#~ msgid "layers append"
+#~ msgstr "przesłać warstwy"
+
+#~ msgid "layers"
+#~ msgstr "warstwy"
+
+#~ msgid "layers explore"
+#~ msgstr "przeglądać warstwy"
+
+#~ msgid "layers upload"
+#~ msgstr "przesłać warstwy"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "Niekompletnie przesłane pliki"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "Masz następujące niekompletnie przesłane pliki"
+
+#~ msgid "Resume"
+#~ msgstr "Wznów"
+
+#~ msgid "maps"
+#~ msgstr "mapy"
+
+#~ msgid "maps explore"
+#~ msgstr "przeglądać mapy"
+
+#~ msgid "people explore"
+#~ msgstr "przeglądać ludzi"
+
+#~ msgid "edit people"
+#~ msgstr "edytuj ludzi"
+
+#~ msgid "last updated on"
+#~ msgstr "ostatnio zaktualizowano"
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "Usuń, i nie pytaj mnie ponownie."
+
+#~ msgid "Available layers"
+#~ msgstr "Dostępne warstwy"
+
+#~ msgid "Save Map"
+#~ msgstr "Zapisz mapę"
+
+#~ msgid "Climate"
+#~ msgstr "Klimat"
+
+#~ msgid "Geoscience"
+#~ msgstr "Nauki o Ziemi"
+
+#~ msgid "Utilities"
+#~ msgstr "Usługi użyteczności publicznej"
+
+#~ msgid "Unable to delete layer"
+#~ msgstr "Nie można usunąć warstwy"
+
+#~ msgid "Thumbnail saved"
+#~ msgstr "Miniatura zapisana"
+
+#~ msgid "{}: {}"
+#~ msgstr "{}: {}"
+
+#~ msgid "Thesaurus"
+#~ msgstr "Tezaurus"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -51,7 +50,7 @@ CONFIGURATION = {
     },
     'repository': {
         'source': 'geonode.catalogue.backends.pycsw_plugin.GeoNodeRepository',
-        'filter': f'dirty_state = {false_value}',
+        'filter': 'uuid IS NOT NULL',
         'mappings': os.path.join(os.path.dirname(__file__), 'pycsw_local_mappings.py')
     }
 }
@@ -59,7 +58,7 @@ CONFIGURATION = {
 
 class CatalogueBackend(GenericCatalogueBackend):
     def __init__(self, *args, **kwargs):
-        super(CatalogueBackend, self).__init__(*args, **kwargs)
+        GenericCatalogueBackend.__init__(CatalogueBackend, self, *args, **kwargs)
         self.catalogue.formats = ['Atom', 'DIF', 'Dublin Core', 'ebRIM', 'FGDC', 'ISO']
         self.catalogue.local = True
 

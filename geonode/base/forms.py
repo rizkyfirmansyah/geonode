@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -62,7 +61,7 @@ def get_tree_data():
             children_list_of_tuples.append(
                 tuple((path + parent.name, tuple((child.id, child.name))))
             )
-            childrens = rectree(child, parent.name + '/')
+            childrens = rectree(child, f"{parent.name}/")
             if childrens:
                 children_list_of_tuples.extend(childrens)
 
@@ -105,10 +104,10 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):
         return '<i class="fa ' + obj.fa_class + ' fa-2x unchecked"></i>' \
-                         '<i class="fa ' + obj.fa_class + ' fa-2x checked"></i>' \
-                         '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
-                         'data-content="' + obj.description + '" trigger="hover">' \
-                                                              '<br/><strong>' + obj.gn_description + '</strong></span>'
+            '<i class="fa ' + obj.fa_class + ' fa-2x checked"></i>' \
+            '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
+            'data-content="' + obj.description + '" trigger="hover">' \
+            '<br/><strong>' + obj.gn_description + '</strong></span>'
 
 
 # NOTE: This is commented as it needs updating to work with select2 and autocomlete light.
@@ -218,7 +217,7 @@ class RegionsSelect(forms.Select):
             else:
                 return choice.id
 
-        selected_choices = set(force_text(_region_id_from_choice(v)) for v in selected_choices)
+        selected_choices = {force_text(_region_id_from_choice(v)) for v in selected_choices}
         output = []
 
         output.append(format_html('<optgroup label="{}">', 'Global'))
@@ -279,7 +278,12 @@ class CategoryForm(forms.Form):
 
     category_choice_field = CategoryChoiceField(
         required=False,
+<<<<<<< HEAD
         label='*' + _('Category'),
+=======
+        label=f"*{_('Category')}",
+        empty_label=None,
+>>>>>>> 3.3.x
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
             order_by=['gn_description']))
@@ -322,9 +326,9 @@ class TKeywordForm(forms.ModelForm):
 
 class ThesaurusAvailableForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(ThesaurusAvailableForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         lang = get_language()
-        for item in Thesaurus.objects.all():
+        for item in Thesaurus.objects.all().order_by('order', 'id'):
             tname = self._get_thesauro_title_label(item, lang)
             if item.card_max == 0:
                 continue
@@ -393,7 +397,7 @@ class ResourceBaseDateTimePicker(DateTimePicker):
         if extra_attrs:
             base_attrs.update(extra_attrs)
         base_attrs.update(kwargs)
-        return super(ResourceBaseDateTimePicker, self).build_attrs(base_attrs)
+        return super().build_attrs(base_attrs)
         # return base_attrs
 
 
@@ -407,22 +411,33 @@ class ResourceBaseForm(TranslationModelForm):
         label=_("Supplemental information"),
         required=False,
         widget=TinyMCE())
+
     purpose = forms.CharField(
         label=_("Purpose"),
         required=False,
         widget=TinyMCE())
+
     constraints_other = forms.CharField(
         label=_("Other constraints"),
         required=False,
         widget=TinyMCE())
+<<<<<<< HEAD
+=======
+
+    supplemental_information = forms.CharField(
+        label=_('Supplemental information'),
+        required=False,
+        widget=TinyMCE())
+>>>>>>> 3.3.x
     data_quality_statement = forms.CharField(
         label=_("Data quality statement"),
         required=False,
         widget=TinyMCE())
+
     owner = forms.ModelChoiceField(
         empty_label=_("Owner"),
         label=_("Owner"),
-        required=False,
+        required=True,
         queryset=get_user_model().objects.exclude(username='AnonymousUser'),
         widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
 
@@ -432,6 +447,7 @@ class ResourceBaseForm(TranslationModelForm):
         input_formats=['%Y-%m-%d %H:%M %p'],
         widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
     )
+
     temporal_extent_start = forms.DateTimeField(
         label=_("Temporal extent start"),
         required=False,
@@ -439,6 +455,7 @@ class ResourceBaseForm(TranslationModelForm):
         input_formats=['%Y-%m-%d %H:%M %p'],
         widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
     )
+
     temporal_extent_end = forms.DateTimeField(
         label=_("Temporal extent end"),
         required=False,
@@ -470,13 +487,6 @@ class ResourceBaseForm(TranslationModelForm):
         # widget=TreeWidget(url='autocomplete_hierachical_keyword'), #Needs updating to work with select2
         widget=TaggitSelect2Custom(url='autocomplete_hierachical_keyword'))
 
-    """
-    regions = TreeNodeMultipleChoiceField(
-        label=_("Regions"),
-        required=False,
-        queryset=Region.objects.all(),
-        level_indicator=u'___')
-    """
     regions = RegionsMultipleChoiceField(
         label=_("Regions"),
         required=False,
@@ -486,7 +496,7 @@ class ResourceBaseForm(TranslationModelForm):
     regions.widget.attrs = {"size": 20}
 
     def __init__(self, *args, **kwargs):
-        super(ResourceBaseForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
             if help_text != '':
@@ -525,6 +535,12 @@ class ResourceBaseForm(TranslationModelForm):
                 else:
                     _unsescaped_kwds.append(str(_k))
         return _unsescaped_kwds
+
+    def clean_title(self):
+        title = self.cleaned_data.get("title", None)
+        if title:
+            title = title.replace(",", "_")
+        return title
 
     class Meta:
         exclude = (
@@ -640,7 +656,7 @@ class BatchPermissionsForm(forms.Form):
 
 class UserAndGroupPermissionsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(UserAndGroupPermissionsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['layers'].label_from_instance = self.label_from_instance
 
     layers = forms.ModelMultipleChoiceField(

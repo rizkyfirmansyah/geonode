@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -36,7 +35,7 @@ from guardian.shortcuts import get_anonymous_user
 # make sure login_url can be mapped to redirection URL and will match request.path
 login_url = settings.LOGIN_URL.replace(settings.SITEURL.rstrip('/'), '')
 if not login_url.startswith('/'):
-    login_url = '/' + login_url
+    login_url = f"/{login_url}"
 
 if check_ogc_backend(geoserver.BACKEND_PACKAGE):
     white_list_paths = (

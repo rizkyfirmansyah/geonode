@@ -99,3 +99,6 @@ scripts/spcgeonode/_volume_*
 /output.bin
 
 /worker.state
+
+# Docker Hub hooks
+!hooks/*

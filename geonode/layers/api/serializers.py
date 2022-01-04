@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2020 OSGeo
@@ -19,6 +18,10 @@
 #########################################################################
 from rest_framework import serializers
 
+from urllib.parse import urlparse
+
+from django.conf import settings
+
 from dynamic_rest.serializers import DynamicModelSerializer
 from dynamic_rest.fields.fields import DynamicRelationField
 
@@ -36,11 +39,20 @@ class StyleSerializer(DynamicModelSerializer):
         model = Style
         name = 'style'
         fields = (
-            'pk', 'name', 'workspace', 'sld_title', 'sld_body', 'sld_version', 'sld_url'
+            'pk', 'name', 'workspace', 'sld_title', 'sld_url'
         )
 
     name = serializers.CharField(read_only=True)
     workspace = serializers.CharField(read_only=True)
+    sld_url = serializers.SerializerMethodField()
+
+    def get_sld_url(self, instance):
+        if bool(urlparse(instance.sld_url).netloc):
+            return instance.sld_url.replace(
+                settings.OGC_SERVER['default']['LOCATION'],
+                settings.OGC_SERVER['default']['PUBLIC_LOCATION']
+            )
+        return instance.sld_url
 
 
 class AttributeSerializer(DynamicModelSerializer):
@@ -63,16 +75,18 @@ class LayerSerializer(ResourceBaseSerializer):
 
     def __init__(self, *args, **kwargs):
         # Instantiate the superclass normally
-        super(LayerSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = Layer
         name = 'layer'
+        view_name = 'layers-list'
         fields = (
             'pk', 'uuid', 'name', 'workspace', 'store', 'storeType', 'charset',
             'is_mosaic', 'has_time', 'has_elevation', 'time_regex', 'elevation_regex',
             'use_featureinfo_custom_template', 'featureinfo_custom_template',
-            'default_style', 'styles', 'attribute_set'
+            'default_style', 'styles', 'attribute_set',
+            'ptype', 'ows_url'
         )
 
     name = serializers.CharField(read_only=True)

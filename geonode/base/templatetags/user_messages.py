@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -78,6 +77,6 @@ def get_item(dictionary, key):
 def show_notification(notice_type_label, current_user):
     adms_notice_types = getattr(settings, 'ADMINS_ONLY_NOTICE_TYPES', [])
     if not current_user.is_superuser and adms_notice_types and \
-    notice_type_label in adms_notice_types:
+            notice_type_label in adms_notice_types:
         return False
     return True

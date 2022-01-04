@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -171,7 +170,7 @@ class CommonModelApi(ModelResource):
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
         if filters is None:
             filters = {}
-        orm_filters = super(CommonModelApi, self).build_filters(
+        orm_filters = super().build_filters(
             filters=filters, ignore_bad_filters=ignore_bad_filters, **kwargs)
         if 'type__in' in filters and filters['type__in'] in FILTER_TYPES.keys():
             orm_filters.update({'type': filters.getlist('type__in')})
@@ -196,6 +195,7 @@ class CommonModelApi(ModelResource):
         types = applicable_filters.pop('type', None)
         extent = applicable_filters.pop('extent', None)
         keywords = applicable_filters.pop('keywords__slug__in', None)
+        metadata_only = applicable_filters.pop('metadata_only', False)
         filtering_method = applicable_filters.pop('f_method', 'and')
         if filtering_method == 'or':
             filters = Q()
@@ -203,9 +203,7 @@ class CommonModelApi(ModelResource):
                 filters |= Q(f)
             semi_filtered = self.get_object_list(request).filter(filters)
         else:
-            semi_filtered = super(
-                CommonModelApi,
-                self).apply_filters(
+            semi_filtered = super().apply_filters(
                 request,
                 applicable_filters)
         filtered = None
@@ -238,46 +236,20 @@ class CommonModelApi(ModelResource):
         else:
             filtered = semi_filtered
 
-        if settings.RESOURCE_PUBLISHING or settings.ADMIN_MODERATE_UPLOADS:
-            filtered = self.filter_published(filtered, request)
-
-        if settings.GROUP_PRIVATE_RESOURCES:
-            filtered = self.filter_group(filtered, request)
-
         if extent:
             filtered = filter_bbox(filtered, extent)
 
         if keywords:
             filtered = self.filter_h_keywords(filtered, keywords)
 
-        # Hide Dirty State Resources
-        user = request.user if request else None
-        if not user or not user.is_superuser:
-            if user:
-                filtered = filtered.exclude(Q(dirty_state=True) & ~(
-                    Q(owner__username__iexact=str(user))))
-            else:
-                filtered = filtered.exclude(Q(dirty_state=True))
-        return filtered
-
-    def filter_published(self, queryset, request):
-        filter_set = get_visible_resources(
-            queryset,
+        # return filtered
+        return get_visible_resources(
+            filtered,
             request.user if request else None,
-            request=request,
+            metadata_only=metadata_only,
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
-            unpublished_not_visible=settings.RESOURCE_PUBLISHING)
-
-        return filter_set
-
-    def filter_group(self, queryset, request):
-        filter_set = get_visible_resources(
-            queryset,
-            request.user if request else None,
-            request=request,
+            unpublished_not_visible=settings.RESOURCE_PUBLISHING,
             private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
-
-        return filter_set
 
     def filter_h_keywords(self, queryset, keywords):
         treeqs = HierarchicalKeyword.objects.none()
@@ -412,7 +384,7 @@ class CommonModelApi(ModelResource):
         # filter by category
         if category:
             sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
-                'category:%s' % ','.join(map(str, category)))
+                f"category:{','.join(map(str, category))}")
 
         # filter by keyword: use filter_or with keywords_exact
         # not using exact leads to fuzzy matching and too many results
@@ -688,13 +660,19 @@ class CommonModelApi(ModelResource):
     def prepend_urls(self):
         if settings.HAYSTACK_SEARCH:
             return [
-                url(r"^(?P<resource_name>%s)/search%s$" % (
+                url(r"^(?P<resource_name>{})/search{}$".format(
                     self._meta.resource_name, trailing_slash()
                 ),
                     self.wrap_view('get_search'), name="api_get_search"),
             ]
         else:
             return []
+
+    def hydrate_title(self, bundle):
+        title = bundle.data.get("title", None)
+        if title:
+            bundle.data["title"] = title.replace(",", "_")
+        return bundle
 
 
 class ResourceBaseResource(CommonModelApi):
@@ -747,7 +725,7 @@ class LayerResource(CommonModelApi):
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
         _filters = filters.copy()
         metadata_only = _filters.pop('metadata_only', False)
-        orm_filters = super(LayerResource, self).build_filters(_filters)
+        orm_filters = super().build_filters(_filters)
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 
@@ -916,7 +894,7 @@ class MapResource(CommonModelApi):
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
         _filters = filters.copy()
         metadata_only = _filters.pop('metadata_only', False)
-        orm_filters = super(MapResource, self).build_filters(_filters)
+        orm_filters = super().build_filters(_filters)
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 
@@ -1086,7 +1064,7 @@ class DocumentResource(CommonModelApi):
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
         _filters = filters.copy()
         metadata_only = _filters.pop('metadata_only', False)
-        orm_filters = super(DocumentResource, self).build_filters(_filters)
+        orm_filters = super().build_filters(_filters)
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 

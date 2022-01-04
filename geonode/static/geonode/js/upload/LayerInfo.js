@@ -380,10 +380,12 @@ define(function (require, exports) {
             default_message += gettext(" - 510 Not Extended. This error occurs when an extension attached to the HTTP request is not supported by the web server. To resolve the issue, you may need to update the server.");
         }
         else {
-            default_message += " - " + status + gettext(" Error Code. Contact the system administrator for more information regarding this error message.");
+            default_message += " - " + gettext("Unknwon") + gettext(" Error Code. Contact the system administrator for more information regarding this error message.");
         }
-        var error = (error != undefined ? error : default_message);
-        common.logError(error, this.element.find('#status'));
+        if (error != undefined) {
+            default_message += " " + gettext("Additional info: ") + "[" + error + "]";
+        }
+        common.logError(default_message, this.element.find('#status'));
     };
 
     /** Function to mark the start of the upload
@@ -478,20 +480,20 @@ define(function (require, exports) {
         } catch (err) {
             // pass
         }
-        var a = '<a href="' + resp.url + '" class="btn btn-success">' + gettext(resourceType.capitalize() + ' Info') + '</a>';
-        var b = '<a href="' + resp.url + '/metadata" class="btn btn-warning">' + gettext('Edit Metadata') + '</a>';
-        var c = '<a href="' + resp.url + '/metadata_upload" class="btn btn-warning">' + gettext('Upload Metadata') + '</a>';
-        var d = '<a href="' + resp.url + '/style_upload" class="btn btn-warning">' + gettext('Upload SLD') + '</a>';
-        var e = '<a href="' + resp.url.replace(/^\/layers/, '/gs') + '/style/manage" class="btn btn-warning">' + gettext('Manage Styles') + '</a>';
+        var info_message = gettext('Your ' + resourceType +' was successfully created.');
+        var a = '<a href="' + resp.url + '" class="btn btn-success">' + gettext(resourceType.capitalize() + ' Info') + '</a>&nbsp;&nbsp;&nbsp;';
+        var b = '<a href="' + resp.url + '/metadata" class="btn btn-warning">' + gettext('Edit Metadata') + '</a>&nbsp;&nbsp;&nbsp;';
+        var c = '<a href="' + resp.url + '/metadata_upload" class="btn btn-warning">' + gettext('Upload Metadata') + '</a>&nbsp;&nbsp;&nbsp;';
+        var d = '<a href="' + resp.url + '/style_upload" class="btn btn-warning">' + gettext('Upload SLD') + '</a>&nbsp;&nbsp;&nbsp;';
+        var e = '<a href="' + resp.url.replace(/^\/layers/, '/gs') + '/style/manage" class="btn btn-warning">' + gettext('Manage Styles') + '</a>&nbsp;&nbsp;&nbsp;';
         if(resourceType != 'layer') {
             // Only Layers have Metadata and SLD Upload features for the moment
             c = '';
             d = '';
             e = '';
-        }
-        if(resp.ogc_backend != 'geonode.geoserver'){
-            // Server has no manage style interaction.
-            d = '';
+        } else {
+            info_message += ' ' + gettext('Please wait until GeoNode finished configuring it!');
+            a = '';
         }
         var msg_col = "";
         if (resp.info){
@@ -501,7 +503,7 @@ define(function (require, exports) {
             }
         }
         self.logStatus({
-            msg: '<p>' + gettext('Your ' + resourceType +' was successfully updated') + '<br/>' + msg_col + '<br/>' + a + '&nbsp;&nbsp;&nbsp;' + b + '&nbsp;&nbsp;&nbsp;' + c + '&nbsp;&nbsp;&nbsp;' + d + '&nbsp;&nbsp;&nbsp;' + e + '</p>',
+            msg: '<p>' + info_message + '<br/>' + msg_col + '<br/>' + a + b + c + d + e + '</p>',
             level: 'alert-success',
             empty: 'true'
         });
@@ -526,22 +528,16 @@ define(function (require, exports) {
         var self = this;
         if (resp.hasOwnProperty('redirect_to') && resp.redirect_to.indexOf('upload/final') > -1) {
             common.make_request({
-                url: resp.redirect_to,
+                url: '#',
                 async: true,
                 beforeSend: function() {
                     self.logStatus({
-                        msg: '<p>' + gettext('Performing Final GeoServer Config Step') + '<img class="pull-right" src="../../static/geonode/img/loading.gif"></p>',
+                        msg: '<p>' + gettext('Performing Final GeoServer Config Step. Check the Upload status above!') + '</p>',
                         level: 'alert-success',
                         empty: 'true'
                     });
                     self.polling = true;
                     self.startPolling();
-                },
-                failure: function (resp, status) {
-                    self.polling = false;
-                    self.markError(resp.errors, status);
-
-                    callback(array);
                 },
                 success: function (resp, status) {
                     self.polling = false;
@@ -558,11 +554,9 @@ define(function (require, exports) {
                     } else if (resp.status === 'error') {
                         self.polling = false;
                         self.markError(resp.error_msg, resp.status);
-
                         callback(array);
                     } else {
-                        self.displayUploadedLayerLinks(resp);
-
+                        // self.displayUploadedLayerLinks(resp);
                         callback(array);
                     }
                 }
@@ -653,7 +647,9 @@ define(function (require, exports) {
                         if (resp.input_required === true) {
                             self.doFinal(resp, callback, array);
                         } else {
-                            self.doStep(resp, callback, array);
+                            setTimeout(() => {
+                                self.doStep(resp, callback, array);
+                            }, 1000);
                         }
                     } else if (resp.status === 'error') {
                         self.polling = false;
@@ -724,8 +720,14 @@ define(function (require, exports) {
             },
             error: function (jqXHR) {
                 self.polling = false;
-                if(jqXHR.status === 500 || jqXHR.status === 0 || jqXHR.readyState === 0){
-                  self.markError('Server Error: ' + jqXHR.statusText + gettext('<br>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.'));
+                if (jqXHR.status === 500 || jqXHR.status === 0 || jqXHR.readyState === 0) {
+                  var error = 'Server Error: ' + jqXHR.statusText + gettext('<br>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.');
+                  if (jqXHR.responseJSON !== undefined && jqXHR.responseJSON !== null) {
+                      if (jqXHR.responseJSON.errors !== undefined || jqXHR.responseJSON.error_msg !== undefined) {
+                          error = jqXHR.responseJSON.errors !== undefined ? jqXHR.responseJSON.errors : jqXHR.responseJSON.error_msg;
+                      }
+                  }
+                  self.markError(error);
                 } else if (jqXHR.status === 400 || jqXHR.status === 404) {
                   if (jqXHR.responseJSON !== undefined && jqXHR.responseJSON !== null) {
                       if (jqXHR.responseJSON.errors !== undefined) {

@@ -4,11 +4,11 @@
 
 {% block title %} {% trans "Explore Layers" %} - {{ block.super }} {% endblock %}
 
-{% block body_class %}{% trans "layers explore" %}{% endblock %}
+{% block body_class %}layers explore{% endblock %}
 
 {% block body %}
 <div class="page-header">
-  {% if not READ_ONLY_MODE %}
+  {% if user.is_authenticated and not READ_ONLY_MODE and not request.user_agent.is_mobile %}
     <a href="{% url "layer_upload" %}" class="btn btn-primary pull-right">{% trans "Upload Layers" %}</a>
   {% endif %}
   <h2 class="page-title">{% trans "Explore Layers" %}</h2>
@@ -52,4 +52,8 @@
   {% with include_spatial='true' %}
     {% include 'search/search_scripts.html' %}
   {% endwith %}
+
+  {% if GEONODE_SECURITY_ENABLED %}
+  {% include "_permissions_form_js.html" %}
+  {% endif %}
 {% endblock extra_script %}

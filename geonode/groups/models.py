@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -19,6 +18,7 @@
 #########################################################################
 import os
 import logging
+
 from shutil import copyfile
 
 from django.conf import settings
@@ -35,12 +35,9 @@ from django.contrib.staticfiles.templatetags import staticfiles
 
 from taggit.managers import TaggableManager
 
-from guardian.shortcuts import (
-    get_objects_for_user,
-    get_objects_for_group,
-    assign_perm,
-    remove_perm
-)
+from guardian.shortcuts import get_objects_for_user, get_objects_for_group
+
+from geonode.security.permissions import VIEW_PERMISSIONS, ADMIN_PERMISSIONS
 
 logger = logging.getLogger(__name__)
 
@@ -109,14 +106,14 @@ class GroupProfile(models.Model):
     def save(self, *args, **kwargs):
         group, created = Group.objects.get_or_create(name=self.slug)
         self.group = group
-        super(GroupProfile, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         try:
             Group.objects.filter(name=str(self.slug)).delete()
         except Exception as e:
             logger.exception(e)
-        super(GroupProfile, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
     @classmethod
     def groups_for_user(cls, user):
@@ -158,8 +155,7 @@ class GroupProfile(models.Model):
                 except Exception as e:
                     logger.debug(e)
         queryset = _queryset if _queryset else queryset
-        for resource in queryset:
-            yield resource
+        yield from queryset
 
     def member_queryset(self):
         return self.groupmember_set.all()
@@ -259,33 +255,51 @@ class GroupMember(models.Model):
     def save(self, *args, **kwargs):
         # add django.contrib.auth.group to user
         self.user.groups.add(self.group.group)
-        super(GroupMember, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         self.user.groups.remove(self.group.group)
-        super(GroupMember, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
     def promote(self, *args, **kwargs):
         self.role = "manager"
-        if settings.ADMIN_MODERATE_UPLOADS or settings.RESOURCE_PUBLISHING:
-            from geonode.security.models import ADMIN_PERMISSIONS
-            queryset = get_objects_for_user(
-                self.user, 'base.view_resourcebase').filter(group=self.group.group)
-            for _r in queryset.exclude(owner=self.user):
-                for perm in ADMIN_PERMISSIONS:
-                    assign_perm(perm, self.user, _r.get_self_resource())
-        super(GroupMember, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        self._handle_perms(perms=VIEW_PERMISSIONS + ADMIN_PERMISSIONS)
 
     def demote(self, *args, **kwargs):
         self.role = "member"
-        if settings.ADMIN_MODERATE_UPLOADS or settings.RESOURCE_PUBLISHING:
-            from geonode.security.models import ADMIN_PERMISSIONS
-            queryset = get_objects_for_user(
-                self.user, 'base.view_resourcebase').filter(group=self.group.group)
-            for _r in queryset.exclude(owner=self.user):
-                for perm in ADMIN_PERMISSIONS:
-                    remove_perm(perm, self.user, _r.get_self_resource())
-        super(GroupMember, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        self._handle_perms(perms=VIEW_PERMISSIONS)
+
+    def _handle_perms(self, perms=None):
+        '''
+        Internally the set_permissions function will automatically handle the permissions
+        that needs to be assigned to re resource.
+        Background at: https://github.com/GeoNode/geonode/pull/8145
+        If the user is demoted, we assign by default at least the view and the download permission
+        to the resource
+        '''
+        queryset = (
+            get_objects_for_user(
+                self.user,
+                ["base.view_resourcebase", "base.change_resourcebase"],
+                any_perm=True)
+            .filter(group=self.group.group)
+            .exclude(owner=self.user)
+        )
+        # A.F.: By including 'self.group.resources()' here, we will look also for resources
+        #       having permissions related to the current 'group' and not only the ones assigned
+        #       to the 'group' through the metadata settings.
+        # _resources = set([_r for _r in queryset.iterator()] + [_r for _r in self.group.resources()])
+        _resources = queryset.iterator()
+        for _r in _resources:
+            perm_spec = None
+            if perms:
+                perm_spec = _r.get_all_level_info()
+                if "users" not in perm_spec:
+                    perm_spec["users"] = {}
+                perm_spec["users"][self.user] = perms
+            _r.set_permissions(perm_spec)
 
 
 def group_pre_delete(instance, sender, **kwargs):

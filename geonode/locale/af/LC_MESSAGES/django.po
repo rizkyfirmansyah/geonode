@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2016-08-23 13:57+0000\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Afrikaans (http://www.transifex.com/geonode/geonode/language/"
@@ -148,9 +148,6 @@ msgstr "data word elke drie maande opgedateer"
 msgid "No information provided"
 msgstr "Geen inligting verskaf"
 
-msgid "Category"
-msgstr "Kategorie"
-
 msgid "Category is required."
 msgstr "Kategorie word vereis."
 
@@ -222,6 +219,9 @@ msgstr "Streke"
 msgid "Group"
 msgstr "Groepe"
 
+msgid "Category"
+msgstr "Kategorie"
+
 msgid "License"
 msgstr "Lisensie"
 
@@ -255,6 +255,9 @@ msgstr ""
 msgid "function performed by the responsible party"
 msgstr "funksie wat uitgevoer word deur die verantwoordelike party"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "kort vertelling opsomming van die inhoud van die hulpbron (s)"
+
 msgid "reference date for the cited resource"
 msgstr "verwysing datum vir die aangehaal hulpbron"
 
@@ -264,8 +267,13 @@ msgstr "identifisering van wanneer 'n gegewe gebeurtenis plaasgevind het"
 msgid "version of the cited resource"
 msgstr "weergawe van die aangehaal hulpbron"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "kort vertelling opsomming van die inhoud van die hulpbron (s)"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr ""
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "opsomming van die bedoelings waarmee die hulpbron (s) ontwikkel"
@@ -343,27 +351,17 @@ msgstr ""
 "algemene verduideliking van die data produsent se kennis oor die geslag van "
 "'n dataset"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr ""
-
-msgid "DOI"
-msgstr ""
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "Kenmerk"
-
 msgid "title"
 msgstr "titel"
 
 msgid "name by which the cited resource is known"
 msgstr "naam wat die aangehaal hulpbron is bekende"
+
+msgid "abstract"
+msgstr "abstrakte"
+
+msgid "purpose"
+msgstr "doel"
 
 msgid "date"
 msgstr "datum"
@@ -374,11 +372,13 @@ msgstr "datum tipe"
 msgid "edition"
 msgstr "uitgawe"
 
-msgid "abstract"
-msgstr "abstrakte"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "Kenmerk"
 
-msgid "purpose"
-msgstr "doel"
+msgid "DOI"
+msgstr ""
 
 msgid "maintenance frequency"
 msgstr "onderhoud frekwensie"
@@ -476,6 +476,12 @@ msgstr ""
 msgid "Resource Type"
 msgstr "Hulpbronne"
 
+msgid "Metadata"
+msgstr ""
+
+msgid "If true, will be excluded from search"
+msgstr ""
+
 msgid "For example \"kml\""
 msgstr "Byvoorbeeld \"kml\""
 
@@ -572,9 +578,6 @@ msgstr ""
 msgid "offline"
 msgstr ""
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr ""
 
@@ -598,9 +601,6 @@ msgstr "View Map"
 msgid "Batch Edit"
 msgstr ""
 
-msgid "batch edit"
-msgstr ""
-
 msgid "Cancel"
 msgstr "Kanselleer"
 
@@ -610,11 +610,6 @@ msgstr "Stuur"
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Set Permissions"
-msgstr "Stel regte"
-
-#, fuzzy
-#| msgid "Set permissions"
-msgid "set permissions"
 msgstr "Stel regte"
 
 msgid "Discover the available datasets."
@@ -730,34 +725,6 @@ msgstr "Beskrywing"
 msgid "GeoNode Client Library"
 msgstr "GeoNode Hulp"
 
-msgid "Explore Maps"
-msgstr "Verken Maps"
-
-msgid "Edit Map"
-msgstr "Wysig Map"
-
-msgid "Update"
-msgstr "Werk"
-
-msgid "Create a New Map"
-msgstr "Skep 'n nuwe gids"
-
-#, fuzzy
-#| msgid "Available styles"
-msgid "Available layers"
-msgstr "Beskikbaar style"
-
-msgid "Save"
-msgstr "Save"
-
-#, fuzzy
-#| msgid "Create a Map"
-msgid "Save Map"
-msgstr "Skep 'n kaart"
-
-msgid "Close"
-msgstr "Close"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -778,7 +745,7 @@ msgid ""
 "climate, atmospheric conditions, climate change, precipitation."
 msgstr ""
 
-msgid "Climate"
+msgid "Climatology Meteorology Atmosphere"
 msgstr ""
 
 msgid ""
@@ -794,6 +761,9 @@ msgstr ""
 msgid ""
 "Height above or below sea level. Examples: altitude, bathymetry, digital "
 "elevation models, slope, derived products."
+msgstr ""
+
+msgid "Elevation"
 msgstr ""
 
 msgid ""
@@ -824,8 +794,10 @@ msgid ""
 "erosion."
 msgstr ""
 
-msgid "Geoscience"
-msgstr ""
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "Laerskool Inligting"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -841,10 +813,13 @@ msgid ""
 "images, annotations."
 msgstr ""
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 
 msgid "Inland Waters"
@@ -855,12 +830,15 @@ msgid ""
 "grounds, military transportation, information collection."
 msgstr ""
 
-msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr ""
 
 msgid ""
 "Positional information and services. Examples: addresses, geodetic networks, "
 "control points, postal zones and services, place names."
+msgstr ""
+
+msgid "Location"
 msgstr ""
 
 msgid ""
@@ -876,7 +854,7 @@ msgid ""
 "Examples: land use maps, zoning maps, cadastral surveys, land ownership."
 msgstr ""
 
-msgid "Planning"
+msgid "Planning Cadastre"
 msgstr ""
 
 msgid ""
@@ -928,10 +906,8 @@ msgid ""
 "telecommunication, radio, communication networks."
 msgstr ""
 
-#, fuzzy
-#| msgid "User Activities"
-msgid "Utilities"
-msgstr "Gebruikers Aktiwiteite"
+msgid "Utilities Communication"
+msgstr ""
 
 #, fuzzy
 #| msgid "Documents related to this map"
@@ -1060,11 +1036,6 @@ msgstr "Die URL van die dokument as dit ekstern."
 msgid "URL"
 msgstr "URL"
 
-#, fuzzy
-#| msgid "Documents"
-msgid "documents"
-msgstr "Dokumente"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1105,9 +1076,6 @@ msgstr "Wysig Document"
 msgid "Request change"
 msgstr ""
 
-msgid "Metadata"
-msgstr ""
-
 msgid "Wizard"
 msgstr ""
 
@@ -1124,6 +1092,9 @@ msgstr ""
 
 msgid "Remove"
 msgstr "Verwyder"
+
+msgid "Close"
+msgstr "Close"
 
 msgid "Download Metadata"
 msgstr "Aflaai Metadata"
@@ -1172,11 +1143,6 @@ msgstr "Verken dokumente"
 msgid "Upload Documents"
 msgstr "Oplaai dokumente"
 
-#, fuzzy
-#| msgid "dataset"
-msgid "data"
-msgstr "dataset"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr ""
@@ -1202,6 +1168,9 @@ msgstr "Metadata Verskaffer"
 msgid "<< Back"
 msgstr ""
 
+msgid "Update"
+msgstr "Werk"
+
 #, fuzzy
 #| msgid "Next"
 msgid "Next >>"
@@ -1216,6 +1185,9 @@ msgid "Edit Metadata"
 msgstr "Wysig Metadata"
 
 msgid "Editing details for"
+msgstr ""
+
+msgid "Return to Document"
 msgstr ""
 
 msgid "Deleting"
@@ -1310,6 +1282,11 @@ msgid "Location and Licenses"
 msgstr ""
 
 #, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Required Metadata"
+msgstr "Wysig Service Metadata"
+
+#, fuzzy
 #| msgid "Download Metadata"
 msgid "Optional Metadata"
 msgstr "Aflaai Metadata"
@@ -1333,17 +1310,12 @@ msgid "Responsible and Permissions"
 msgstr "Verandering Layer Permissions"
 
 #, fuzzy
-#| msgid "Message Inbox"
-msgid "Message box"
-msgstr "Boodskap Inbox"
-
-msgid "OK"
-msgstr ""
-
-#, fuzzy
 #| msgid "Public"
 msgid "Publishing"
 msgstr "Openbare"
+
+msgid "You are not allowed to view this document."
+msgstr "Jy word nie toegelaat om hierdie dokument te besigtig."
 
 msgid "You are not permitted to delete this document"
 msgstr "Jy word nie toegelaat om hierdie dokument te verwyder"
@@ -1369,9 +1341,6 @@ msgstr "Nie voorsien"
 #| msgid "Page Not Found"
 msgid "Not found"
 msgstr "Bladsy nie gevind"
-
-msgid "You are not allowed to view this document."
-msgstr "Jy word nie toegelaat om hierdie dokument te besigtig."
 
 #, fuzzy
 #| msgid "Set permissions for this resource"
@@ -1544,11 +1513,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "GeoExplorer"
-msgid "apps explore"
-msgstr "GeoExplorer"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "Skep 'n nuwe gids"
@@ -1668,6 +1632,15 @@ msgstr "Waardering vir laag"
 msgid "A rating was given to a layer"
 msgstr "A-gradering is om 'n laag gegee"
 
+msgid "Points"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 #, fuzzy
 #| msgid "Layer Name"
 msgid "Layer name"
@@ -1703,6 +1676,22 @@ msgstr "Kenmerk"
 
 msgid "Create"
 msgstr "Skep"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "Intervalle"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "Nie voorsien"
 
 #, fuzzy
 #| msgid "Not provided"
@@ -1868,11 +1857,6 @@ msgid "Explore Group Categories"
 msgstr "Verken Groepe"
 
 #, fuzzy
-#| msgid "Categories"
-msgid "groups explore"
-msgstr "Kategorieë"
-
-#, fuzzy
 #| msgid "Create a Group"
 msgid "Create a New Group Category"
 msgstr "Skep 'n groep"
@@ -1891,16 +1875,6 @@ msgstr "Verwyder groep"
 
 msgid "Create Group"
 msgstr "Skep Groep"
-
-#, fuzzy
-#| msgid "A Map was created"
-msgid "groups create"
-msgstr "'N Plan is geskep"
-
-#, fuzzy
-#| msgid "group"
-msgid "groups"
-msgstr "groep"
 
 #, fuzzy
 #| msgid "last modified"
@@ -1980,9 +1954,6 @@ msgstr "Voeg lede"
 msgid "Add Group Members"
 msgstr "Bestuur Groep Lede"
 
-msgid "groups remove"
-msgstr ""
-
 #, python-format
 msgid ""
 "\n"
@@ -1997,11 +1968,6 @@ msgstr "Verwyder kaarte / Data uit Groep"
 
 msgid "Remove selected maps/data"
 msgstr "Verwyder gekies kaarte / data"
-
-#, fuzzy
-#| msgid "updated"
-msgid "groups update"
-msgstr "updated"
 
 #, fuzzy
 #| msgid "Edit Group Details"
@@ -2026,16 +1992,19 @@ msgstr "Skep 'n groep"
 msgid "Edit Group Category"
 msgstr "Skep Groep"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "Save"
+
+#, python-brace-format
+msgid "The e-mail address '{email}' has already been invited."
 msgstr ""
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, python-brace-format
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr ""
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, python-brace-format
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr ""
 
 #, fuzzy
@@ -2315,6 +2284,22 @@ msgstr "Die laaste wysiging"
 msgid "date when attribute statistics were last updated"
 msgstr "datum wanneer kenmerk statistieke was laas"
 
+#, fuzzy
+#| msgid "Edit Layer"
+msgid "Append to Layer"
+msgstr "Wysig Layer"
+
+msgid "Return to Layer"
+msgstr ""
+
+#, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Preserve Metadata XML"
+msgstr "Wysig Service Metadata"
+
+msgid "Select the charset or leave default"
+msgstr "Kies die karakterstel of laat verstek"
+
 msgid "Home"
 msgstr "Huis"
 
@@ -2323,11 +2308,6 @@ msgstr "Verander punt van kontak"
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "Ken 'n nuwe punt van kontak met die lae hieronder:"
-
-#, fuzzy
-#| msgid "Layers"
-msgid "layers"
-msgstr "Lae"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr ""
@@ -2345,9 +2325,6 @@ msgid "Bounding Box"
 msgstr ""
 
 msgid "Time"
-msgstr ""
-
-msgid "Elevation"
 msgstr ""
 
 msgid "Actions"
@@ -2481,6 +2458,9 @@ msgid_plural "Layers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Append Data"
+msgstr ""
+
 msgid "Edit data"
 msgstr ""
 
@@ -2613,11 +2593,6 @@ msgstr "Hierdie aksie raak die volgende kaarte:"
 msgid "No maps are using this layer"
 msgstr "Geen kaarte gebruik hierdie laag"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers explore"
-msgstr "'N laag is opgelaai"
-
 msgid "Upload Layers"
 msgstr "Oplaai Lae"
 
@@ -2637,9 +2612,6 @@ msgid ""
 "          GeoNode's metadata import supports a subset of ISO, FGDC, and "
 "Dublin Core metadata elements.\n"
 "          Some of your original metadata may have been lost."
-msgstr ""
-
-msgid "Return to Layer"
 msgstr ""
 
 #, python-format
@@ -2667,39 +2639,19 @@ msgstr "Wys Order"
 msgid "Visible"
 msgstr "sigbaar?"
 
+msgid "ERROR"
+msgstr ""
+
+msgid "Following items are required:"
+msgstr ""
+
 #, fuzzy
 #| msgid "Upload Layer"
 msgid "Upload Layer Metadata"
 msgstr "Oplaai Layer"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers upload"
-msgstr "'N laag is opgelaai"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr ""
-
-msgid "Incomplete Uploads"
-msgstr "Onvolledige Uploads"
-
-msgid "You have the following incomplete uploads"
-msgstr "Jy het die volgende onvolledige oplaai"
-
-msgid "last updated on"
-msgstr "laas op"
-
-msgid "Resume"
-msgstr "CV"
-
-msgid "Delete"
-msgstr "Verwyder"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "Is jy seker jy wil hierdie oplaai te verwyder?"
-
-msgid "Delete, and don't ask me again."
-msgstr "Verwyder, en my nie weer vra nie."
 
 msgid "Remove Layers"
 msgstr ""
@@ -2715,26 +2667,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "Vervang Layer"
 
-#, fuzzy
-#| msgid "Edit Service Metadata"
-msgid "Preserve Metadata XML"
-msgstr "Wysig Service Metadata"
-
-msgid "Select the charset or leave default"
-msgstr "Kies die karakterstel of laat verstek"
-
 msgid "Manage Styles"
 msgstr "Bestuur Styles"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"Bestuur beskikbaar style vir <a href=\"/layers/%(layer_title)s\">"
+"Bestuur beskikbaar style vir <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>"
 
 msgid "Layer Default Style"
@@ -2777,6 +2721,53 @@ msgstr "Eienskappe"
 
 msgid "Upload Layer"
 msgstr "Oplaai Layer"
+
+#, fuzzy
+#| msgid "Download Metadata"
+msgid "Upload status"
+msgstr "Aflaai Metadata"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "Verwyder"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "Oplaai Document"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "Skep"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "of"
+msgstr "van"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "Onvolledige Uploads"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "Is jy seker jy wil hierdie oplaai te verwyder?"
 
 #, fuzzy
 #| msgid "Upload Layer Step 2"
@@ -3271,31 +3262,47 @@ msgstr "nou"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr ""
 
-msgid "You are attempting to replace a vector layer with a raster."
-msgstr ""
-
-msgid "You are attempting to replace a raster layer with a vector."
-msgstr ""
-
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, python-brace-format
+msgid "You are attempting to {action_type} a vector layer with a raster."
+msgstr ""
+
+#, python-brace-format
+msgid "You are attempting to {action_type} a raster layer with a vector."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
 msgstr ""
 
 msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 
 msgid ""
@@ -3330,18 +3337,21 @@ msgstr "Jy word nie toegelaat om hierdie laag te sien"
 msgid "Failed to upload the layer"
 msgstr "Lêers opgelaai word"
 
-#, fuzzy
-#| msgid "Files to be uploaded"
-msgid "Unable to delete layer"
-msgstr "Lêers opgelaai word"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr ""
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr ""
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
 "group before deleting."
 msgstr ""
 
-msgid "couldn't generate thumbnail"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Remote Thumbnail"
+msgid "couldn't generate thumbnail: %s"
+msgstr "Remote Thumbnail"
 
 msgid "Map Created"
 msgstr "Kaart geskep"
@@ -3447,9 +3457,6 @@ msgstr "laag params"
 msgid "source params"
 msgstr "bron params"
 
-msgid "maps"
-msgstr ""
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr ""
 
@@ -3484,6 +3491,9 @@ msgstr "Kopieer die kaart"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "Dupliseer die kaart en verander dit vir jou eie doeleindes"
+
+msgid "Create a New Map"
+msgstr "Skep 'n nuwe gids"
 
 msgid ""
 "\n"
@@ -3541,10 +3551,11 @@ msgstr "Aflaai Complete"
 msgid "Download Failed"
 msgstr "Aflaai misluk"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "maps explore"
-msgstr "GeoExplorer"
+msgid "Edit Map"
+msgstr "Wysig Map"
+
+msgid "Explore Maps"
+msgstr "Verken Maps"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3558,6 +3569,11 @@ msgstr ""
 "GeoNode se metadata invoer ondersteun 'n subset van die ISO, Fgdc en Dublin "
 "Core metadata elemente. \n"
 "Sommige van jou oorspronklike metadata verlore gewees het."
+
+#, fuzzy
+#| msgid "Return to"
+msgid "Return to Map"
+msgstr "Terug te keer na"
 
 msgid "Remove Map"
 msgstr ""
@@ -3590,11 +3606,6 @@ msgstr "Jy word nie toegelaat om die kaart te sien."
 
 #, fuzzy
 #| msgid "Thumbnail"
-msgid "Thumbnail saved"
-msgstr "Thumbnail"
-
-#, fuzzy
-#| msgid "Thumbnail"
 msgid "error saving thumbnail"
 msgstr "Thumbnail"
 
@@ -3610,7 +3621,7 @@ msgstr ""
 msgid "Alert situation reported by monitoring"
 msgstr ""
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr ""
 
 #, fuzzy
@@ -3685,7 +3696,8 @@ msgstr "verwysing datum vir die aangehaal hulpbron"
 msgid "Show data for specific label"
 msgstr "verwysing datum vir die aangehaal hulpbron"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, python-brace-format
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr ""
 
 msgid ""
@@ -3854,7 +3866,8 @@ msgstr ""
 msgid "Is it active"
 msgstr ""
 
-msgid "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
 msgstr ""
 
 msgid "Value must be above"
@@ -4096,11 +4109,6 @@ msgstr "Skep Profiel"
 msgid "Profile of "
 msgstr "Profiel van"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "people explore"
-msgstr "GeoExplorer"
-
 msgid "Not provided."
 msgstr ""
 
@@ -4108,9 +4116,6 @@ msgid "Position"
 msgstr ""
 
 msgid "Organization"
-msgstr ""
-
-msgid "Location"
 msgstr ""
 
 msgid "Not provided"
@@ -4175,11 +4180,6 @@ msgstr "Gebruikers Aktiwiteite"
 msgid "Resources"
 msgstr "Hulpbronne"
 
-#, fuzzy
-#| msgid "Invite people"
-msgid "edit people"
-msgstr "Nooi mense"
-
 msgid "Edit Your Profile"
 msgstr "Verander jou profiel"
 
@@ -4195,7 +4195,9 @@ msgstr "Werk profiel"
 msgid "Explore People"
 msgstr "Verken Mense"
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "Jou gebruikersnaam vir"
 
 msgid "Your username has been emailed to you."
@@ -4503,9 +4505,9 @@ msgstr ""
 msgid "Resource is already being processed"
 msgstr ""
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Resources"
-msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "Hulpbronne"
 
 #, fuzzy
@@ -4521,9 +4523,9 @@ msgstr "Jy word nie toegelaat om hierdie diens te verwyder nie."
 msgid "You are not permitted to remove this service."
 msgstr "Jy word nie toegelaat om hierdie diens te verwyder nie."
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Service has been created:"
-msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "Diens is geskep:"
 
 msgid "created"
@@ -4777,6 +4779,14 @@ msgstr ""
 #| msgid "Delete These"
 msgid "Delete Geo Limits"
 msgstr "Vee hierdie"
+
+#, fuzzy
+#| msgid "Message Inbox"
+msgid "Message box"
+msgstr "Boodskap Inbox"
+
+msgid "OK"
+msgstr ""
 
 msgid "Mandatory files : SHP , DBF"
 msgstr ""
@@ -5519,13 +5529,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5534,9 +5544,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5545,9 +5555,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5581,7 +5591,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5597,7 +5607,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 
@@ -5773,22 +5783,11 @@ msgstr "Die volgende groepe:"
 msgid "Updating Metadata..."
 msgstr "Aflaai Metadata"
 
-msgid "ERROR"
-msgstr ""
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr ""
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr ""
-
-msgid "Return to Document"
-msgstr ""
-
-#, fuzzy
-#| msgid "Return to"
-msgid "Return to Map"
-msgstr "Terug te keer na"
 
 msgid "Identification"
 msgstr ""
@@ -5851,6 +5850,9 @@ msgid "Online Link"
 msgstr ""
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 #, fuzzy
@@ -6252,12 +6254,6 @@ msgstr "yyyy-mm-dd"
 msgid "Date ends before:"
 msgstr "Datum eindig voor:"
 
-msgid "page"
-msgstr ""
-
-msgid "of"
-msgstr "van"
-
 #, fuzzy
 #| msgid "Search"
 msgid "Search by region"
@@ -6315,9 +6311,6 @@ msgstr "Z - A"
 
 msgid "Most popular"
 msgstr "Gewildste"
-
-msgid "Thesaurus"
-msgstr ""
 
 msgid "Text"
 msgstr "Teks"
@@ -6467,6 +6460,11 @@ msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
 #, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "Alle inhoud"
+
+#, fuzzy
 #| msgid "Could not find any layers in a compatible projection."
 msgid "Could not access to uploaded data."
 msgstr "Kon nie enige lae in 'n aanpasbare projeksie vind."
@@ -6487,6 +6485,22 @@ msgid "Layer already exists"
 msgstr "Kaart geskep"
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6535,20 +6549,19 @@ msgid ""
 "To support the time step, you must enable the OGC_SERVER DATASTORE option"
 msgstr ""
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, python-brace-format
+msgid "Unsupported file type: {e.message}"
 msgstr ""
 
-#, python-format
-msgid "File does not exist: %s"
+#, python-brace-format
+msgid "File does not exist: {absolute_base_file}"
 msgstr ""
 
-#, python-format
-msgid "unknown item state: %s"
+#, python-brace-format
+msgid "unknown item state: {task.state}"
 msgstr ""
 
-#, python-format
-msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr ""
 
 #, fuzzy
@@ -6567,3 +6580,118 @@ msgstr "Ongeldig toestemming vlak."
 
 msgid "Permission Denied"
 msgstr "Toestemming geweier"
+
+#, fuzzy
+#~| msgid "Set permissions"
+#~ msgid "set permissions"
+#~ msgstr "Stel regte"
+
+#, fuzzy
+#~| msgid "Documents"
+#~ msgid "documents"
+#~ msgstr "Dokumente"
+
+#, fuzzy
+#~| msgid "dataset"
+#~ msgid "data"
+#~ msgstr "dataset"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "apps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "groups explore"
+#~ msgstr "Kategorieë"
+
+#, fuzzy
+#~| msgid "A Map was created"
+#~ msgid "groups create"
+#~ msgstr "'N Plan is geskep"
+
+#, fuzzy
+#~| msgid "group"
+#~ msgid "groups"
+#~ msgstr "groep"
+
+#, fuzzy
+#~| msgid "updated"
+#~ msgid "groups update"
+#~ msgstr "updated"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers append"
+#~ msgstr "'N laag is opgelaai"
+
+#, fuzzy
+#~| msgid "Layers"
+#~ msgid "layers"
+#~ msgstr "Lae"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers explore"
+#~ msgstr "'N laag is opgelaai"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers upload"
+#~ msgstr "'N laag is opgelaai"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "Onvolledige Uploads"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "Jy het die volgende onvolledige oplaai"
+
+#~ msgid "Resume"
+#~ msgstr "CV"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "maps explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "people explore"
+#~ msgstr "GeoExplorer"
+
+#, fuzzy
+#~| msgid "Invite people"
+#~ msgid "edit people"
+#~ msgstr "Nooi mense"
+
+#~ msgid "last updated on"
+#~ msgstr "laas op"
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "Verwyder, en my nie weer vra nie."
+
+#, fuzzy
+#~| msgid "Available styles"
+#~ msgid "Available layers"
+#~ msgstr "Beskikbaar style"
+
+#, fuzzy
+#~| msgid "Create a Map"
+#~ msgid "Save Map"
+#~ msgstr "Skep 'n kaart"
+
+#, fuzzy
+#~| msgid "User Activities"
+#~ msgid "Utilities"
+#~ msgstr "Gebruikers Aktiwiteite"
+
+#, fuzzy
+#~| msgid "Files to be uploaded"
+#~ msgid "Unable to delete layer"
+#~ msgstr "Lêers opgelaai word"
+
+#, fuzzy
+#~| msgid "Thumbnail"
+#~ msgid "Thumbnail saved"
+#~ msgstr "Thumbnail"

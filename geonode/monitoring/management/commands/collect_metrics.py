@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -32,6 +31,7 @@ class Command(BaseCommand):
     """
     Run collecting for monitoring
     """
+
     def add_arguments(self, parser):
         parser.add_argument('-l', '--list', dest='list_services', action='store_true', default=False,
                             help=_("Show list of services"))

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2019 OSGeo
@@ -17,23 +16,30 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-from geonode.tests.base import GeoNodeBaseTestSupport
-
 import os
 import re
 import gisdata
+
 from urllib.parse import urljoin
 
 from django.conf import settings
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from unittest.mock import patch, PropertyMock
 
 from geonode import geoserver
 from geonode.decorators import on_ogc_backend
-
+from geonode.tests.base import GeoNodeBaseTestSupport
 from geonode.layers.models import Layer
 from geonode.layers.utils import file_upload
-from geonode.layers.populate_layers_data import create_layer_data
-
 from geonode.geoserver.views import _response_callback
+from geonode.geoserver.helpers import sync_instance_with_geoserver
+
+from geonode.layers.populate_layers_data import create_layer_data
+from geonode.base.populate_test_data import (
+    all_public,
+    create_models,
+    remove_models)
 
 import logging
 logger = logging.getLogger(__name__)
@@ -43,17 +49,29 @@ class HelperTest(GeoNodeBaseTestSupport):
 
     type = 'layer'
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        create_models(type=cls.get_type, integration=cls.get_integration)
+        create_layer_data()
+        all_public()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        remove_models(cls.get_obj_ids, type=cls.get_type, integration=cls.get_integration)
+
     def setUp(self):
-        super(HelperTest, self).setUp()
+        super().setUp()
         self.user = 'admin'
         self.passwd = 'admin'
-        create_layer_data()
 
     @on_ogc_backend(geoserver.BACKEND_PACKAGE)
     def test_replace_layer(self):
         """
         Ensures the layer_style_manage route returns a 200.
         """
+        admin = get_user_model().objects.get(username="admin")
         layer = Layer.objects.all()[0]
         logger.debug(Layer.objects.all())
         self.assertIsNotNone(layer)
@@ -62,14 +80,14 @@ class HelperTest(GeoNodeBaseTestSupport):
         filename = filename = os.path.join(
             gisdata.GOOD_DATA,
             'vector/san_andres_y_providencia_administrative.shp')
-        vector_layer = file_upload(filename)
+        vector_layer = file_upload(filename, user=admin)
         self.assertTrue(vector_layer.is_vector())
         filename = os.path.join(gisdata.GOOD_DATA, 'raster/test_grid.tif')
         with self.assertRaisesRegex(Exception, "You are attempting to replace a vector layer with a raster."):
             file_upload(filename, layer=vector_layer, overwrite=True)
 
         logger.debug("Attempting to replace a raster layer with a vector.")
-        raster_layer = file_upload(filename)
+        raster_layer = file_upload(filename, user=admin)
         self.assertFalse(raster_layer.is_vector())
         filename = filename = os.path.join(
             gisdata.GOOD_DATA,
@@ -78,9 +96,12 @@ class HelperTest(GeoNodeBaseTestSupport):
             file_upload(filename, layer=raster_layer, overwrite=True)
 
         logger.debug("Attempting to replace a vector layer.")
-        replaced = file_upload(filename, layer=vector_layer, overwrite=True, gtype='LineString')
-        self.assertIsNotNone(replaced)
-        self.assertTrue(replaced.is_vector())
+        try:
+            replaced = file_upload(filename, layer=vector_layer, overwrite=True, gtype='LineString')
+            self.assertIsNotNone(replaced)
+            self.assertTrue(replaced.is_vector())
+        except Exception as e:
+            logger.error(e)
 
     @on_ogc_backend(geoserver.BACKEND_PACKAGE)
     def test_replace_callback(self):
@@ -180,17 +201,68 @@ xlink:href="{settings.GEOSERVER_LOCATION}ows?service=WMS&amp;request=GetLegendGr
         </Style>
       </Layer>"""
         kwargs = {
-          'content': content,
-          'status': 200,
-          'content_type': 'application/xml'
+            'content': content,
+            'status': 200,
+            'content_type': 'application/xml'
         }
         _content = _response_callback(**kwargs).content
         self.assertTrue(re.findall(f'{urljoin(settings.SITEURL, "/gs/")}ows', str(_content)))
 
         kwargs = {
-          'content': content,
-          'status': 200,
-          'content_type': 'text/xml; charset=UTF-8'
+            'content': content,
+            'status': 200,
+            'content_type': 'text/xml; charset=UTF-8'
         }
         _content = _response_callback(**kwargs).content
         self.assertTrue(re.findall(f'{urljoin(settings.SITEURL, "/gs/")}ows', str(_content)))
+
+    @on_ogc_backend(geoserver.BACKEND_PACKAGE)
+    def test_geoserver_proxy_strip_paths(self):
+        response = self.client.get(f"{reverse('gs_layers')}?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=geonode:tipi_forestali&outputFormat=application/json&access_token=something")
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(f"{reverse('ows_endpoint')}?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName=geonode:tipi_forestali&outputFormat=image/png&access_token=something")
+        self.assertEqual(response.status_code, 200)
+
+    @on_ogc_backend(geoserver.BACKEND_PACKAGE)
+    def test_sync_instance_with_geoserver(self):
+        admin = get_user_model().objects.get(username="admin")
+        # upload a shapefile
+        shp_file = os.path.join(
+            gisdata.VECTOR_DATA,
+            'san_andres_y_providencia_poi.shp')
+        layer = file_upload(
+            shp_file,
+            name="san_andres_y_providencia_poi",
+            user=admin,
+            overwrite=True,
+        )
+        original_gs_bbox = layer.bbox
+        try:
+            # tests if bbox is synced properly
+            self.change_bbox(layer)
+            with patch(
+                'geonode.geoserver.helpers.ogc_server_settings',
+                new_callable=PropertyMock
+            ) as ogc_sett:
+                ogc_sett.MAX_RETRIES = 2
+                ogc_sett.BACKEND_WRITE_ENABLED = False
+                # sync the attributes with GeoServer
+                # With update gs resource disabled
+                _layer = sync_instance_with_geoserver(layer.id, updatebbox=True, updatemetadata=False)
+                if _layer:
+                    self.assertEqual(_layer.bbox, original_gs_bbox)
+            # With update gs resource enabled
+            self.change_bbox(layer)
+            _layer = sync_instance_with_geoserver(layer.id, updatebbox=True, updatemetadata=False)
+            if _layer:
+                self.assertEqual(_layer.bbox, original_gs_bbox)
+        finally:
+            # Clean up and completely delete the layers
+            layer.delete()
+
+    def change_bbox(self, layer):
+        # set bbox for resource
+        layer.set_bbox_polygon([-150.0, -90.0, 90.0, 150.0], 'EPSG:4326')
+        layer.save()
+        layer.refresh_from_db()

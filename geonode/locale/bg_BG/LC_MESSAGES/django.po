@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
+"POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2016-08-23 13:57+0000\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Bulgarian (Bulgaria) (http://www.transifex.com/geonode/"
@@ -142,9 +142,6 @@ msgstr "данните се обновяват на всеки три месец
 msgid "No information provided"
 msgstr "Няма предоставена информация"
 
-msgid "Category"
-msgstr "Категория"
-
 msgid "Category is required."
 msgstr "Изисква се категория"
 
@@ -216,6 +213,9 @@ msgstr "Региони"
 msgid "Group"
 msgstr "Групи "
 
+msgid "Category"
+msgstr "Категория"
+
 msgid "License"
 msgstr "Лиценз"
 
@@ -251,6 +251,9 @@ msgstr ""
 msgid "function performed by the responsible party"
 msgstr "функцията се изпълнява от отговорния екип"
 
+msgid "brief narrative summary of the content of the resource(s)"
+msgstr "кратко описателно обобщение на съдържанието на ресурса(и)"
+
 msgid "reference date for the cited resource"
 msgstr "референтни данни за цитирания ресурс"
 
@@ -260,8 +263,13 @@ msgstr "идентификация за това кога се е случило
 msgid "version of the cited resource"
 msgstr "версия на цитирания ресурс"
 
-msgid "brief narrative summary of the content of the resource(s)"
-msgstr "кратко описателно обобщение на съдържанието на ресурса(и)"
+msgid ""
+"authority or function assigned, as to a ruler, legislative assembly, "
+"delegate, or the like."
+msgstr ""
+
+msgid "a DOI will be added by Admin before publication."
+msgstr ""
 
 msgid "summary of the intentions with which the resource(s) was developed"
 msgstr "обобщение на намеренията, с които е разработен ресурса(и)"
@@ -337,27 +345,17 @@ msgstr ""
 "общо описание на знанията на създателя на данни относно произхода на набора "
 "данни"
 
-msgid "a DOI will be added by Admin before publication."
-msgstr ""
-
-msgid "DOI"
-msgstr ""
-
-msgid ""
-"authority or function assigned, as to a ruler, legislative assembly, "
-"delegate, or the like."
-msgstr ""
-
-#, fuzzy
-#| msgid "Attribute"
-msgid "Attribution"
-msgstr "Атрибут "
-
 msgid "title"
 msgstr "заглавие"
 
 msgid "name by which the cited resource is known"
 msgstr "име, с което е познат цитирания ресурс"
+
+msgid "abstract"
+msgstr "резюме"
+
+msgid "purpose"
+msgstr "предназначение"
 
 msgid "date"
 msgstr "дата"
@@ -368,11 +366,13 @@ msgstr "тип дата"
 msgid "edition"
 msgstr "издание"
 
-msgid "abstract"
-msgstr "резюме"
+#, fuzzy
+#| msgid "Attribute"
+msgid "Attribution"
+msgstr "Атрибут "
 
-msgid "purpose"
-msgstr "предназначение"
+msgid "DOI"
+msgstr ""
 
 msgid "maintenance frequency"
 msgstr "честота на поддръжката"
@@ -467,6 +467,12 @@ msgstr ""
 #| msgid "Resources"
 msgid "Resource Type"
 msgstr "Ресурси "
+
+msgid "Metadata"
+msgstr "Метаданни"
+
+msgid "If true, will be excluded from search"
+msgstr ""
 
 msgid "For example \"kml\""
 msgstr "Например \"kml\""
@@ -568,9 +574,6 @@ msgstr ""
 msgid "offline"
 msgstr ""
 
-msgid "Layer not ready yet. Still finalizing layer ingestion..."
-msgstr ""
-
 msgid "SECURITY NOT YET SYNCHRONIZED"
 msgstr ""
 
@@ -594,9 +597,6 @@ msgstr "Преглед на карта"
 msgid "Batch Edit"
 msgstr ""
 
-msgid "batch edit"
-msgstr ""
-
 msgid "Cancel"
 msgstr "Отмени"
 
@@ -606,11 +606,6 @@ msgstr "Предай"
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Set Permissions"
-msgstr "Задай разрешения за достъп"
-
-#, fuzzy
-#| msgid "Set permissions"
-msgid "set permissions"
 msgstr "Задай разрешения за достъп"
 
 msgid "Discover the available datasets."
@@ -726,34 +721,6 @@ msgstr "Описание"
 msgid "GeoNode Client Library"
 msgstr "GeoNode помощ "
 
-msgid "Explore Maps"
-msgstr "Преглед на карти"
-
-msgid "Edit Map"
-msgstr "Редакция на карта"
-
-msgid "Update"
-msgstr "Обновяване"
-
-msgid "Create a New Map"
-msgstr "Създаване на нова карта"
-
-#, fuzzy
-#| msgid "Available styles"
-msgid "Available layers"
-msgstr "Налични стилове "
-
-msgid "Save"
-msgstr "Запеметяване"
-
-#, fuzzy
-#| msgid "Remove Map"
-msgid "Save Map"
-msgstr "Премахване на карта "
-
-msgid "Close"
-msgstr "Затваряне"
-
 msgid ""
 "Flora and/or fauna in natural environment. Examples: wildlife, vegetation, "
 "biological sciences, ecology, wilderness, sealife, wetlands, habitat."
@@ -774,7 +741,7 @@ msgid ""
 "climate, atmospheric conditions, climate change, precipitation."
 msgstr ""
 
-msgid "Climate"
+msgid "Climatology Meteorology Atmosphere"
 msgstr ""
 
 msgid ""
@@ -790,6 +757,9 @@ msgstr ""
 msgid ""
 "Height above or below sea level. Examples: altitude, bathymetry, digital "
 "elevation models, slope, derived products."
+msgstr ""
+
+msgid "Elevation"
 msgstr ""
 
 msgid ""
@@ -820,8 +790,10 @@ msgid ""
 "erosion."
 msgstr ""
 
-msgid "Geoscience"
-msgstr ""
+#, fuzzy
+#| msgid "Supplemental Information"
+msgid "Geoscientific Information"
+msgstr "Допълнителна Информация"
 
 msgid ""
 "Health, health services, human ecology, and safety. Examples: disease and "
@@ -837,10 +809,13 @@ msgid ""
 "images, annotations."
 msgstr ""
 
+msgid "Imagery Base Maps Earth Cover"
+msgstr ""
+
 msgid ""
-"Base MapsInland water features, drainage systems and their characteristics. "
-"Examples: rivers and glaciers, salt lakes, water utilization plans, dams, "
-"currents, floods, water quality, hydrographic charts."
+"Inland water features, drainage systems and their characteristics. Examples: "
+"rivers and glaciers, salt lakes, water utilization plans, dams, currents, "
+"floods, water quality, hydrographic charts."
 msgstr ""
 
 msgid "Inland Waters"
@@ -851,13 +826,16 @@ msgid ""
 "grounds, military transportation, information collection."
 msgstr ""
 
-msgid "Intelligence"
+msgid "Intelligence Military"
 msgstr ""
 
 msgid ""
 "Positional information and services. Examples: addresses, geodetic networks, "
 "control points, postal zones and services, place names."
 msgstr ""
+
+msgid "Location"
+msgstr "Локация"
 
 msgid ""
 "Features and characteristics of salt water bodies (excluding inland waters). "
@@ -872,7 +850,7 @@ msgid ""
 "Examples: land use maps, zoning maps, cadastral surveys, land ownership."
 msgstr ""
 
-msgid "Planning"
+msgid "Planning Cadastre"
 msgstr ""
 
 msgid ""
@@ -924,10 +902,8 @@ msgid ""
 "telecommunication, radio, communication networks."
 msgstr ""
 
-#, fuzzy
-#| msgid "User Activities"
-msgid "Utilities"
-msgstr "Дейности на потребителя"
+msgid "Utilities Communication"
+msgstr ""
 
 #, fuzzy
 #| msgid "Document Updated"
@@ -1038,11 +1014,6 @@ msgstr "URL адресът на документа, ако е външен."
 msgid "URL"
 msgstr "URL"
 
-#, fuzzy
-#| msgid "Documents"
-msgid "documents"
-msgstr "Документи"
-
 msgid "Your browser does not support the audio element."
 msgstr ""
 
@@ -1085,9 +1056,6 @@ msgstr "Редактирай документ"
 msgid "Request change"
 msgstr "Заявка за изтегляне"
 
-msgid "Metadata"
-msgstr "Метаданни"
-
 msgid "Wizard"
 msgstr ""
 
@@ -1106,6 +1074,9 @@ msgstr "Замяна"
 
 msgid "Remove"
 msgstr "Премахване"
+
+msgid "Close"
+msgstr "Затваряне"
 
 msgid "Download Metadata"
 msgstr "Сваляне на метаданни"
@@ -1154,11 +1125,6 @@ msgstr "Преглед на документи"
 msgid "Upload Documents"
 msgstr "Зареждане на документи"
 
-#, fuzzy
-#| msgid "dataset"
-msgid "data"
-msgstr "набор на данни"
-
 #, python-format
 msgid "for %(document_title)s"
 msgstr ""
@@ -1184,6 +1150,9 @@ msgstr "Доставчик на метаданни"
 msgid "<< Back"
 msgstr ""
 
+msgid "Update"
+msgstr "Обновяване"
+
 #, fuzzy
 #| msgid "Next"
 msgid "Next >>"
@@ -1199,6 +1168,9 @@ msgstr "Редакция на метаданни"
 
 msgid "Editing details for"
 msgstr "Редакционни детайли за"
+
+msgid "Return to Document"
+msgstr ""
 
 msgid "Deleting"
 msgstr "Изтриване"
@@ -1295,6 +1267,11 @@ msgid "Location and Licenses"
 msgstr ""
 
 #, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Required Metadata"
+msgstr "Редактирай метаданни за услуга "
+
+#, fuzzy
 #| msgid "Download Metadata"
 msgid "Optional Metadata"
 msgstr "Сваляне на метаданни"
@@ -1318,17 +1295,12 @@ msgid "Responsible and Permissions"
 msgstr "Промяна в настройките за достъп до слой. "
 
 #, fuzzy
-#| msgid "Message Inbox"
-msgid "Message box"
-msgstr "Съобщения"
-
-msgid "OK"
-msgstr ""
-
-#, fuzzy
 #| msgid "Is Published"
 msgid "Publishing"
 msgstr "Е публикуван"
+
+msgid "You are not allowed to view this document."
+msgstr "Вие нямате право да видите този документ."
 
 msgid "You are not permitted to delete this document"
 msgstr "Вие нямате разрешение да изтриете този документ"
@@ -1354,9 +1326,6 @@ msgstr "Не е предоставен "
 #| msgid "Page Not Found"
 msgid "Not found"
 msgstr "Страницата не е открита  "
-
-msgid "You are not allowed to view this document."
-msgstr "Вие нямате право да видите този документ."
 
 msgid "You must set a point of contact for this resource"
 msgstr "Трябва да зададете точка за контакт към този ресурс"
@@ -1526,11 +1495,6 @@ msgid "%(GEONODE_APPS_NAME)s"
 msgstr ""
 
 #, fuzzy
-#| msgid "GeoExplorer"
-msgid "apps explore"
-msgstr "GeoEplorer"
-
-#, fuzzy
 #| msgid "Create a New Map"
 msgid "Create New"
 msgstr "Създаване на нова карта"
@@ -1652,6 +1616,15 @@ msgstr "Оценка за слой"
 msgid "A rating was given to a layer"
 msgstr "Беше дадена оценка на слой"
 
+msgid "Points"
+msgstr ""
+
+msgid "Lines"
+msgstr ""
+
+msgid "Polygons"
+msgstr ""
+
 #, fuzzy
 #| msgid "Layer Name"
 msgid "Layer name"
@@ -1687,6 +1660,22 @@ msgstr "Атрибут "
 
 msgid "Create"
 msgstr "Създай"
+
+msgid "String"
+msgstr ""
+
+#, fuzzy
+#| msgid "Intervals"
+msgid "Integer"
+msgstr "интервали"
+
+msgid "Float"
+msgstr ""
+
+#, fuzzy
+#| msgid "Not provided"
+msgid "No title provided"
+msgstr "Не е предоставен "
 
 #, fuzzy
 #| msgid "Not provided"
@@ -1850,11 +1839,6 @@ msgid "Explore Group Categories"
 msgstr "Преглед на групи"
 
 #, fuzzy
-#| msgid "Categories"
-msgid "groups explore"
-msgstr "Категории"
-
-#, fuzzy
 #| msgid "Create a Group"
 msgid "Create a New Group Category"
 msgstr "Създай група"
@@ -1873,16 +1857,6 @@ msgstr "Премахни група"
 
 msgid "Create Group"
 msgstr "Създай група"
-
-#, fuzzy
-#| msgid "A Map was created"
-msgid "groups create"
-msgstr "Нова карта беше създадена"
-
-#, fuzzy
-#| msgid "group"
-msgid "groups"
-msgstr "група"
 
 #, fuzzy
 #| msgid "last modified"
@@ -1961,9 +1935,6 @@ msgstr "Добави членове"
 msgid "Add Group Members"
 msgstr "Управлявай Членове на Групата"
 
-msgid "groups remove"
-msgstr ""
-
 #, python-format
 msgid ""
 "\n"
@@ -1978,11 +1949,6 @@ msgstr "Премахни карти/данни от група"
 
 msgid "Remove selected maps/data"
 msgstr "Премахни избраните карти/данни"
-
-#, fuzzy
-#| msgid "A Map was updated"
-msgid "groups update"
-msgstr "Карта беше актуализирана"
 
 #, fuzzy
 #| msgid "Edit Group Details"
@@ -2007,16 +1973,19 @@ msgstr "Създай група"
 msgid "Edit Group Category"
 msgstr "Създай група"
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already been invited."
+msgid "Save"
+msgstr "Запеметяване"
+
+#, python-brace-format
+msgid "The e-mail address '{email}' has already been invited."
 msgstr ""
 
-#, python-format
-msgid "The e-mail address '%(email)s' has already accepted an invite."
+#, python-brace-format
+msgid "The e-mail address '{email}' has already accepted an invite."
 msgstr ""
 
-#, python-format
-msgid "An active user is already using the e-mail address '%(email)s'"
+#, python-brace-format
+msgid "An active user is already using the e-mail address '{email}'"
 msgstr ""
 
 #, fuzzy
@@ -2280,6 +2249,22 @@ msgstr "последно редактиран"
 msgid "date when attribute statistics were last updated"
 msgstr "дата, на която статистиките на атрибута последно са актуализирани"
 
+#, fuzzy
+#| msgid "Edit Layer"
+msgid "Append to Layer"
+msgstr "Редактиране на слой "
+
+msgid "Return to Layer"
+msgstr ""
+
+#, fuzzy
+#| msgid "Edit Service Metadata"
+msgid "Preserve Metadata XML"
+msgstr "Редактирай метаданни за услуга "
+
+msgid "Select the charset or leave default"
+msgstr "Изберете набора от знаци или оставете по подразбиране "
+
 msgid "Home"
 msgstr "Начало"
 
@@ -2288,11 +2273,6 @@ msgstr "Промяна точка за контакт"
 
 msgid "Assign a new point of contact to the layers below:"
 msgstr "Присвояване на нова точка за контакт към слоевете по-долу:"
-
-#, fuzzy
-#| msgid "Layers"
-msgid "layers"
-msgstr "Слоеве"
 
 msgid "Layer WMS GetCapabilities document"
 msgstr ""
@@ -2310,9 +2290,6 @@ msgid "Bounding Box"
 msgstr ""
 
 msgid "Time"
-msgstr ""
-
-msgid "Elevation"
 msgstr ""
 
 msgid "Actions"
@@ -2447,6 +2424,9 @@ msgid "Layer"
 msgid_plural "Layers"
 msgstr[0] "Слоеве "
 msgstr[1] "Слоеве"
+
+msgid "Append Data"
+msgstr ""
 
 msgid "Edit data"
 msgstr "Редактиране на данни "
@@ -2584,11 +2564,6 @@ msgstr "Действието засяга следните карти: "
 msgid "No maps are using this layer"
 msgstr "Няма карти, които използват този слой "
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers explore"
-msgstr "Слой беше зареден"
-
 msgid "Upload Layers"
 msgstr "Зареждане на слоеве"
 
@@ -2615,9 +2590,6 @@ msgstr ""
 "и Dublin Core.\n"
 "Някои от оригиналните ви метаданни може да са изгубени. "
 
-msgid "Return to Layer"
-msgstr ""
-
 #, python-format
 msgid ""
 "\n"
@@ -2643,39 +2615,19 @@ msgstr "Ред на показване "
 msgid "Visible"
 msgstr "видим?"
 
+msgid "ERROR"
+msgstr ""
+
+msgid "Following items are required:"
+msgstr ""
+
 #, fuzzy
 #| msgid "Upload Layer"
 msgid "Upload Layer Metadata"
 msgstr "Зареждане на слой"
 
-#, fuzzy
-#| msgid "A layer was uploaded"
-msgid "layers upload"
-msgstr "Слой беше зареден"
-
 msgid "(XML - ISO, FGDC, ebRIM, Dublin Core)"
 msgstr ""
-
-msgid "Incomplete Uploads"
-msgstr "Незавършено зареждане"
-
-msgid "You have the following incomplete uploads"
-msgstr "Имате следните непълни качвания "
-
-msgid "last updated on"
-msgstr "последно обновяване на "
-
-msgid "Resume"
-msgstr "Започни отново"
-
-msgid "Delete"
-msgstr "Изтрий"
-
-msgid "Are you sure you want to delete this upload?"
-msgstr "Сигурни ли сте, че искате да изтриете качения файл? "
-
-msgid "Delete, and don't ask me again."
-msgstr "Изтрий и не ме питай повече. "
 
 msgid "Remove Layers"
 msgstr "Премахване на слоеве "
@@ -2694,26 +2646,18 @@ msgstr ""
 msgid "Replace Layer"
 msgstr "Заместване на слой "
 
-#, fuzzy
-#| msgid "Edit Service Metadata"
-msgid "Preserve Metadata XML"
-msgstr "Редактирай метаданни за услуга "
-
-msgid "Select the charset or leave default"
-msgstr "Изберете набора от знаци или оставете по подразбиране "
-
 msgid "Manage Styles"
 msgstr "Управляване на стилове"
 
 #, python-format
 msgid ""
 "\n"
-"      Manage Available Styles for <a href=\"/layers/%(layer_title)s\">"
+"      Manage Available Styles for <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a>\n"
 "    "
 msgstr ""
 "\n"
-"Управление на налични стилове за <a href=\"/layers/%(layer_title)s\">"
+"Управление на налични стилове за <a href=\"{{ layer_url }}\">"
 "%(layer_title)s</a> "
 
 msgid "Layer Default Style"
@@ -2756,6 +2700,53 @@ msgstr "Атрибути "
 
 msgid "Upload Layer"
 msgstr "Зареждане на слой"
+
+#, fuzzy
+#| msgid "Download Metadata"
+msgid "Upload status"
+msgstr "Сваляне на метаданни"
+
+msgid ""
+"This file needs additional configuration to complete the upload process. "
+"Please click on the button to fill the required configuration"
+msgstr ""
+
+msgid "Delete"
+msgstr "Изтрий"
+
+#, fuzzy
+#| msgid "Upload Document"
+msgid "Upload process completed"
+msgstr "Зареждане на документи"
+
+msgid ""
+"The upload process cannot be completed because the original file is no more "
+"available"
+msgstr ""
+
+#, fuzzy
+#| msgid "Create"
+msgid "Created"
+msgstr "Създай"
+
+msgid "Progress"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "of"
+msgstr "на"
+
+#, fuzzy
+#| msgid "Incomplete Uploads"
+msgid "Delete incomplete upload"
+msgstr "Незавършено зареждане"
+
+#, fuzzy
+#| msgid "Are you sure you want to delete this upload?"
+msgid "Are you sure you want to remove this incomplete upload?"
+msgstr "Сигурни ли сте, че искате да изтриете качения файл? "
 
 #, fuzzy
 #| msgid "Upload Layer Step 2"
@@ -3256,31 +3247,50 @@ msgstr "сега"
 msgid "You are attempting to replace a vector layer with an unknown format."
 msgstr "Вие се опитвате да замените векторен слой с растерен."
 
-msgid "You are attempting to replace a vector layer with a raster."
+msgid ""
+"The UUID identifier from the XML Metadata is already in use in this system."
+msgstr ""
+
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
+msgid "You are attempting to {action_type} a vector layer with a raster."
 msgstr "Вие се опитвате да замените векторен слой с растерен."
 
-msgid "You are attempting to replace a raster layer with a vector."
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a raster layer with a vector."
+msgid "You are attempting to {action_type} a raster layer with a vector."
 msgstr "Вие се опитвате да замените растерен слой с векторен."
 
+#, fuzzy, python-brace-format
+#| msgid "You are attempting to replace a vector layer with a raster."
 msgid ""
-"Please ensure the name is consistent with the file you are trying to replace."
+"You are attempting to {action_type} a vector layer with an unknown format."
+msgstr "Вие се опитвате да замените векторен слой с растерен."
+
+#, python-brace-format
+msgid ""
+"Please ensure the name is consistent with the file you are trying to "
+"{action_type}."
 msgstr ""
 
 msgid "Local GeoNode layer has no geometry type."
 msgstr ""
 
+#, python-brace-format
 msgid ""
 "Please ensure there is at least one geometry "
-"type                                 that is consistent with the file you "
-"are trying to replace."
+"type                             that is consistent with the file you are "
+"trying to {action_type}."
 msgstr ""
 
-#, python-format
-msgid "Some error occurred while trying to access the uploaded schema: %s"
+msgid "The selected Layer does not exists in the catalog."
+msgstr ""
+
+msgid "Please ensure that the layer structure is consistent "
 msgstr ""
 
 msgid ""
-"The UUID identifier from the XML Metadata is already in use in this system."
+"Some error occurred while trying to access the uploaded schema: {str(e)}"
 msgstr ""
 
 msgid ""
@@ -3315,10 +3325,11 @@ msgstr "Нямате рзрешение да разглеждате този с�
 msgid "Failed to upload the layer"
 msgstr "Слоеве за зареждане"
 
-#, fuzzy
-#| msgid "Unable to delete layer"
-msgid "Unable to delete layer"
-msgstr "Невъзможност слоят да бъде изтрит"
+msgid "You are attempting to replace a vector layer with a raster."
+msgstr "Вие се опитвате да замените векторен слой с растерен."
+
+msgid "You are attempting to replace a raster layer with a vector."
+msgstr "Вие се опитвате да замените растерен слой с векторен."
 
 msgid ""
 "This layer is a member of a layer group, you must remove the layer from the "
@@ -3327,8 +3338,10 @@ msgstr ""
 "Този слой е част от група слоеве, вие трябва да премахнете този слой от "
 "групата преди изтриване."
 
-msgid "couldn't generate thumbnail"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Remote Thumbnail"
+msgid "couldn't generate thumbnail: %s"
+msgstr "Remote Thumbnail"
 
 msgid "Map Created"
 msgstr "Картата е създадане"
@@ -3430,9 +3443,6 @@ msgstr "параметри на слоя"
 msgid "source params"
 msgstr "параметри на източника"
 
-msgid "maps"
-msgstr ""
-
 msgid "Map layers WMS GetCapabilities document"
 msgstr ""
 
@@ -3467,6 +3477,9 @@ msgstr "Копиране на карта"
 
 msgid "Duplicate this map and modify it for your own purposes"
 msgstr "Направи копие на тази карта или я промени за своите цели"
+
+msgid "Create a New Map"
+msgstr "Създаване на нова карта"
 
 msgid ""
 "\n"
@@ -3524,10 +3537,11 @@ msgstr "Свалянето приключено "
 msgid "Download Failed"
 msgstr "Свалянето е неуспешно "
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "maps explore"
-msgstr "GeoEplorer"
+msgid "Edit Map"
+msgstr "Редакция на карта"
+
+msgid "Explore Maps"
+msgstr "Преглед на карти"
 
 msgid ""
 "Note: this map's orginal metadata was populated by importing a metadata XML "
@@ -3541,6 +3555,11 @@ msgstr ""
 "Въвеждането на метаданни в GeoNode поддържа подсет елементи от ISO, FGDC, и "
 "Dublin Core метаданни.\n"
 "Някои от вашите оригинални метаданни може да са загубени."
+
+#, fuzzy
+#| msgid "Return to"
+msgid "Return to Map"
+msgstr "Върни се към"
 
 msgid "Remove Map"
 msgstr "Премахване на карта "
@@ -3576,11 +3595,6 @@ msgstr "Нямате достъп до преглед на тази карта"
 
 #, fuzzy
 #| msgid "Thumbnail"
-msgid "Thumbnail saved"
-msgstr "Thumbnail"
-
-#, fuzzy
-#| msgid "Thumbnail"
 msgid "error saving thumbnail"
 msgstr "Thumbnail"
 
@@ -3598,7 +3612,7 @@ msgstr ""
 msgid "Alert situation reported by monitoring"
 msgstr ""
 
-msgid "GeoNode Monitoring on {} reports errors: {}"
+msgid "GeoNode Monitoring on {base_ctx['host']} "
 msgstr ""
 
 #, fuzzy
@@ -3673,7 +3687,8 @@ msgstr "референтни данни за цитирания ресурс"
 msgid "Show data for specific label"
 msgstr "референтни данни за цитирания ресурс"
 
-msgid "Write result to file, default GEOIP_PATH: {}"
+#, python-brace-format
+msgid "Write result to file, default GEOIP_PATH: {settings.GEOIP_PATH}"
 msgstr ""
 
 msgid ""
@@ -3842,7 +3857,8 @@ msgstr ""
 msgid "Is it active"
 msgstr ""
 
-msgid "{}: {}"
+#, python-brace-format
+msgid "{self.severity}: {self.name}"
 msgstr ""
 
 msgid "Value must be above"
@@ -4079,11 +4095,6 @@ msgstr "Създаване профил"
 msgid "Profile of "
 msgstr "Профил на"
 
-#, fuzzy
-#| msgid "GeoExplorer"
-msgid "people explore"
-msgstr "GeoEplorer"
-
 msgid "Not provided."
 msgstr "Не е предоставено."
 
@@ -4092,9 +4103,6 @@ msgstr "Позиция"
 
 msgid "Organization"
 msgstr "Организация"
-
-msgid "Location"
-msgstr "Локация"
 
 msgid "Not provided"
 msgstr "Не е предоставен "
@@ -4158,11 +4166,6 @@ msgstr "Дейности на потребителя"
 msgid "Resources"
 msgstr "Ресурси "
 
-#, fuzzy
-#| msgid "Invite people"
-msgid "edit people"
-msgstr "Покани хора"
-
 msgid "Edit Your Profile"
 msgstr "Редактиране на профил "
 
@@ -4178,7 +4181,9 @@ msgstr "Обновяване на профил "
 msgid "Explore People"
 msgstr "Преглед на потребители "
 
-msgid "Your username for "
+#, fuzzy, python-brace-format
+#| msgid "Your username for "
+msgid "Your username for {site.name}"
 msgstr "Вашето потребителско име за "
 
 msgid "Your username has been emailed to you."
@@ -4498,9 +4503,9 @@ msgstr "Поискано е сваляне на ресурс"
 msgid "Resource is already being processed"
 msgstr "Поискано е сваляне на ресурс"
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "A resource's download has been requested"
-msgid "Resource {} is being processed"
+msgid "Resource {resource_id} is being processed"
 msgstr "Поискано е сваляне на ресурс"
 
 #, fuzzy
@@ -4516,9 +4521,9 @@ msgstr "Не можете да премахнете тази услуга. "
 msgid "You are not permitted to remove this service."
 msgstr "Не можете да премахнете тази услуга. "
 
-#, fuzzy
+#, fuzzy, python-brace-format
 #| msgid "Service has been created:"
-msgid "Service {} has been deleted"
+msgid "Service {service.name} has been deleted"
 msgstr "Услугата е създадена:"
 
 msgid "created"
@@ -4786,6 +4791,14 @@ msgstr ""
 #| msgid "Delete from Favorites"
 msgid "Delete Geo Limits"
 msgstr "Изтрий от Любими"
+
+#, fuzzy
+#| msgid "Message Inbox"
+msgid "Message box"
+msgstr "Съобщения"
+
+msgid "OK"
+msgstr ""
 
 msgid "Mandatory files : SHP , DBF"
 msgstr ""
@@ -5553,13 +5566,13 @@ msgstr ""
 #| "</p>\n"
 #| "\n"
 #| "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-#| "    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+#| "    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 #| "uploaded to this GeoNode.</p>\n"
 #| "    <p>All data can be downloaded in a variety of formats, for use in "
 #| "other applications.</p>\n"
 #| "\n"
 #| "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-#| "    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+#| "    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 #| "developers to get started building applications against the GeoNode. It "
 #| "includes instructions on using the web services, links to the source code "
 #| "of the GeoNode, and information about the open source projects used to "
@@ -5568,7 +5581,7 @@ msgstr ""
 #| "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 #| "    <p>The GeoNode allows users to create and share maps with one another."
 #| "</p>\n"
-#| "    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration "
+#| "    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration "
 #| "on GeoNode.  From here you can <strong>search for a map</strong> or "
 #| "<strong>create a map</strong>, which will open the <a href=\"/maps/new"
 #| "\">Map Composer</a>.</p>\n"
@@ -5580,10 +5593,10 @@ msgstr ""
 #| "p>\n"
 #| "\n"
 #| "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-#| "    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</"
-#| "a> tab and click the <a href=\"/maps/new\">create your own map</a> link.</"
+#| "    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</"
+#| "a> tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</"
 #| "p>\n"
-#| "    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> "
+#| "    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> "
 #| "with a base layer loaded.</p>\n"
 #| "    <p>To add data layers from the GeoNode click on the green plus button "
 #| "located below the layers tab on the left hand side of the screen. This "
@@ -5618,7 +5631,7 @@ msgstr ""
 #| "    </ol>\n"
 #| "    <p>This will put an interactive widget showing you map in your web "
 #| "page or blog post.</p>\n"
-#| "    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+#| "    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 #| "button to export the map. Just be sure to save the map before exporting "
 #| "if there are changes that you want others to see. It exports the last "
 #| "saved version, not the last viewed version.</p>\n"
@@ -5635,7 +5648,7 @@ msgstr ""
 #| "      <li>Save the map.</li>\n"
 #| "    </ol>\n"
 #| "    <p>You will be able to see your new map when you search for it from "
-#| "the <a href=\"/maps\">Maps</a> tab.</p> \n"
+#| "the <a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p> \n"
 #| "    "
 msgid ""
 "\n"
@@ -5644,13 +5657,13 @@ msgid ""
 "p>\n"
 "\n"
 "    <h4 id=\"browsing-data\">Browsing Layers</h4>\n"
-"    <p>The <a href=\"/layers\">Layers</a> tab allows you to browse data "
+"    <p>The <a href=\"{{ url_layer_browse }}\">Layers</a> tab allows you to browse data "
 "uploaded to this GeoNode.</p>\n"
 "    <p>All data can be downloaded in a variety of formats, for use in other "
 "applications.</p>\n"
 "\n"
 "    <h4 id=\"developer-access\">Developer Access</h4>\n"
-"    <p>The <a href=\"/developer\"> Developer</a> page is the place for "
+"    <p>The <a href=\"{{ url_developer }}\"> Developer</a> page is the place for "
 "developers to get started building applications against the GeoNode. It "
 "includes instructions on using the web services, links to the source code of "
 "the GeoNode, and information about the open source projects used to create "
@@ -5659,9 +5672,9 @@ msgid ""
 "    <h4 id=\"browsing-maps\">Browsing Maps</h4>\n"
 "    <p>The GeoNode allows users to create and share maps with one another.</"
 "p>\n"
-"    <p>The <a href=\"/maps\">Maps</a> tab is a gateway to map exploration on "
+"    <p>The <a href=\"{{ url_maps_browse }}\">Maps</a> tab is a gateway to map exploration on "
 "GeoNode.  From here you can <strong>search for a map</strong> or "
-"<strong>create a map</strong>, which will open the <a href=\"/maps/new\">Map "
+"<strong>create a map</strong>, which will open the <a href=\"{{ url_maps_new }}\">Map "
 "Composer</a>.</p>\n"
 "    <h5>Google Earth Mode</h5>\n"
 "    <p>Any map viewed in the interactive map editor can be seen in 3D mode "
@@ -5670,9 +5683,9 @@ msgid ""
 "Google Earth plugin installed you will be prompted to install it.</p>\n"
 "\n"
 "    <h4 id=\"creating-a-map\">Creating a Map</h4>\n"
-"    <p>To create a new map go to the <a href=\"/maps\">Contributed Maps</a> "
-"tab and click the <a href=\"/maps/new\">create your own map</a> link.</p>\n"
-"    <p>This will take you to the <a href=\"/maps/new\">Map Composer</a> with "
+"    <p>To create a new map go to the <a href=\"{{ url_maps_browse }}\">Contributed Maps</a> "
+"tab and click the <a href=\"{{ url_maps_new }}\">create your own map</a> link.</p>\n"
+"    <p>This will take you to the <a href=\"{{ url_maps_new }}\">Map Composer</a> with "
 "a base layer loaded.</p>\n"
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
@@ -5706,7 +5719,7 @@ msgid ""
 "    </ol>\n"
 "    <p>This will put an interactive widget showing you map in your web page "
 "or blog post.</p>\n"
-"    <p>Note that the <a href=\"/maps/new\">Map Composer</a> also has a "
+"    <p>Note that the <a href=\"{{ url_maps_new }}\">Map Composer</a> also has a "
 "button to publish the map. Just be sure to save the map before publishing if "
 "there are changes that you want others to see. It publishes the last saved "
 "version, not the last viewed version.</p>\n"
@@ -5722,7 +5735,7 @@ msgid ""
 "      <li>Save the map.</li>\n"
 "    </ol>\n"
 "    <p>You will be able to see your new map when you search for it from the "
-"<a href=\"/maps\">Maps</a> tab.</p>\n"
+"<a href=\"{{ url_maps_browse }}\">Maps</a> tab.</p>\n"
 "    "
 msgstr ""
 "\n"
@@ -5731,20 +5744,20 @@ msgstr ""
 "споделят свои.</p>\n"
 "\n"
 "<h4 id=\"browsing-data\">Търсене на слоеве</h4>\n"
-"<p>Бутонът <a href=\"/layers\">за слоеве</a> ви позволява да търсите данни, "
+"<p>Бутонът <a href=\"{{ url_layer_browse }}\">за слоеве</a> ви позволява да търсите данни, "
 "качени на GeoNode.</p>\n"
 "<p> Всички данни могат да бъдат свалени в различни формати и да се ползват в "
 "други програми.</p>\n"
 "\n"
 "<h4 id=\"developer-access\">Достъп за дивевелопъри</h4>\n"
-"<p><a href=\"/developer\"> </a> страница за дивелопъри е мястото за "
+"<p><a href=\"{{ url_developer }}\"> </a> страница за дивелопъри е мястото за "
 "изготвяне на приложения в GeoNode. Има инструкции за използването на уеб "
 "сервизи, линкове към кодовете на GeoNode и информация за отвореният код, "
 "използван за създаването.</p>\n"
 "\n"
 "<h4 id=\"browsing-maps\">Разглеждане на карти</h4>\n"
 "<p>GeoNode позволява на потребителите да създават и споделят карти.</p>\n"
-"<p><a href=\"/maps\">Бутона</a> за карти дава възможност за разглеждане на "
+"<p><a href=\"{{ url_maps_browse }}\">Бутона</a> за карти дава възможност за разглеждане на "
 "картите в GeoNode. От тук можете <strong>търсите карта</strong> или "
 "<strong>създавате карта</strong>, което ще отвори <a href=\"/maps/new"
 "\">Композитора на карти</a>.</p>\n"
@@ -5755,10 +5768,10 @@ msgstr ""
 "бъде предложено да го инсталирате.</p>\n"
 "\n"
 "<h4 id=\"creating-a-map\">Създаване на карта</h4>\n"
-"<p>За да създадете нова карта, отидете на <a href=\"/maps\">Публикуване на "
-"карти</a> натиснете <a href=\"/maps/new\">създай собствена карта</a> линк.</"
+"<p>За да създадете нова карта, отидете на <a href=\"{{ url_maps_browse }}\">Публикуване на "
+"карти</a> натиснете <a href=\"{{ url_maps_new }}\">създай собствена карта</a> линк.</"
 "p>\n"
-"<p>Това ще ви отведе до <a href=\"/maps/new\">Композитора на карти</a> със "
+"<p>Това ще ви отведе до <a href=\"{{ url_maps_new }}\">Композитора на карти</a> със "
 "зареден базов слой.</p>\n"
 "<p>За да добавите слоеве с данни от GeoNode, натиснете зеления бутон плюс, "
 "който се намира под за слоевете в лявата част на екрана. Това ще отвори "
@@ -5789,7 +5802,7 @@ msgstr ""
 "</ol>\n"
 "<p>Това ще покаже вашата карта интерактвно в вашата уеб страница или блог.</"
 "p>\n"
-"<p>Имайте предвид, че <a href=\"/maps/new\">Композитора на карти</a>също има "
+"<p>Имайте предвид, че <a href=\"{{ url_maps_new }}\">Композитора на карти</a>също има "
 "бутон за експортиране на карти. Бъдете сигурни, че карта е запенетена преди "
 "експортиране на картата, ако има промени, които искате другите да могат да "
 "виждат. Ще бъде експортирана последната запеметена версия, не последната, "
@@ -5981,22 +5994,11 @@ msgstr "Следните групи:"
 msgid "Updating Metadata..."
 msgstr "Сваляне на метаданни"
 
-msgid "ERROR"
-msgstr ""
-
 msgid "Topic Category is mandatory and cannot be empty!"
 msgstr ""
 
 msgid "Group is mandatory and cannot be empty!"
 msgstr ""
-
-msgid "Return to Document"
-msgstr ""
-
-#, fuzzy
-#| msgid "Return to"
-msgid "Return to Map"
-msgstr "Върни се към"
 
 msgid "Identification"
 msgstr ""
@@ -6059,6 +6061,9 @@ msgid "Online Link"
 msgstr ""
 
 msgid "* Field declared Mandatory by the Metadata Schema"
+msgstr ""
+
+msgid "Please, fill the following items before clicking on preview:"
 msgstr ""
 
 #, fuzzy
@@ -6403,12 +6408,6 @@ msgstr "гггг-мм-дд"
 msgid "Date ends before:"
 msgstr "Денят приключва преди:"
 
-msgid "page"
-msgstr ""
-
-msgid "of"
-msgstr "на"
-
 #, fuzzy
 #| msgid "Search"
 msgid "Search by region"
@@ -6466,9 +6465,6 @@ msgstr "Я - А"
 
 msgid "Most popular"
 msgstr "Най-популярен"
-
-msgid "Thesaurus"
-msgstr ""
 
 msgid "Text"
 msgstr "Текст"
@@ -6618,6 +6614,11 @@ msgid "Choose between using jumbotron background and slide show"
 msgstr ""
 
 #, fuzzy
+#| msgid "All contents"
+msgid "Empty content"
+msgstr "Цялото съдържание"
+
+#, fuzzy
 #| msgid "Could not find any layers in a compatible projection."
 msgid "Could not access to uploaded data."
 msgstr "Не може да се намери слой в съвместима проекция. "
@@ -6638,6 +6639,22 @@ msgid "Layer already exists"
 msgstr "Създаден слой "
 
 msgid "Name already in use and overwrite is False"
+msgstr ""
+
+msgid "Error configuring time:"
+msgstr ""
+
+msgid "The GeoServer Import Session is no more available"
+msgstr ""
+
+#, python-brace-format
+msgid "Expected to find layer named '{name}' in geoserver"
+msgstr ""
+
+msgid "Exception occurred while parsing the provided Metadata file."
+msgstr ""
+
+msgid "Error configuring Layer"
 msgstr ""
 
 msgid "Invalid zip file detected"
@@ -6686,20 +6703,19 @@ msgid ""
 "To support the time step, you must enable the OGC_SERVER DATASTORE option"
 msgstr ""
 
-#, python-format
-msgid "Unsupported file type: %s"
+#, python-brace-format
+msgid "Unsupported file type: {e.message}"
 msgstr ""
 
-#, python-format
-msgid "File does not exist: %s"
+#, python-brace-format
+msgid "File does not exist: {absolute_base_file}"
 msgstr ""
 
-#, python-format
-msgid "unknown item state: %s"
+#, python-brace-format
+msgid "unknown item state: {task.state}"
 msgstr ""
 
-#, python-format
-msgid "error during import: %s"
+msgid "error during import: {progress.get('message')}"
 msgstr ""
 
 #, fuzzy
@@ -6718,3 +6734,118 @@ msgstr "Невалидно ниво на достъп"
 
 msgid "Permission Denied"
 msgstr "Отказано разрешение"
+
+#, fuzzy
+#~| msgid "Set permissions"
+#~ msgid "set permissions"
+#~ msgstr "Задай разрешения за достъп"
+
+#, fuzzy
+#~| msgid "Documents"
+#~ msgid "documents"
+#~ msgstr "Документи"
+
+#, fuzzy
+#~| msgid "dataset"
+#~ msgid "data"
+#~ msgstr "набор на данни"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "apps explore"
+#~ msgstr "GeoEplorer"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "groups explore"
+#~ msgstr "Категории"
+
+#, fuzzy
+#~| msgid "A Map was created"
+#~ msgid "groups create"
+#~ msgstr "Нова карта беше създадена"
+
+#, fuzzy
+#~| msgid "group"
+#~ msgid "groups"
+#~ msgstr "група"
+
+#, fuzzy
+#~| msgid "A Map was updated"
+#~ msgid "groups update"
+#~ msgstr "Карта беше актуализирана"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers append"
+#~ msgstr "Слой беше зареден"
+
+#, fuzzy
+#~| msgid "Layers"
+#~ msgid "layers"
+#~ msgstr "Слоеве"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers explore"
+#~ msgstr "Слой беше зареден"
+
+#, fuzzy
+#~| msgid "A layer was uploaded"
+#~ msgid "layers upload"
+#~ msgstr "Слой беше зареден"
+
+#~ msgid "Incomplete Uploads"
+#~ msgstr "Незавършено зареждане"
+
+#~ msgid "You have the following incomplete uploads"
+#~ msgstr "Имате следните непълни качвания "
+
+#~ msgid "Resume"
+#~ msgstr "Започни отново"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "maps explore"
+#~ msgstr "GeoEplorer"
+
+#, fuzzy
+#~| msgid "GeoExplorer"
+#~ msgid "people explore"
+#~ msgstr "GeoEplorer"
+
+#, fuzzy
+#~| msgid "Invite people"
+#~ msgid "edit people"
+#~ msgstr "Покани хора"
+
+#~ msgid "last updated on"
+#~ msgstr "последно обновяване на "
+
+#~ msgid "Delete, and don't ask me again."
+#~ msgstr "Изтрий и не ме питай повече. "
+
+#, fuzzy
+#~| msgid "Available styles"
+#~ msgid "Available layers"
+#~ msgstr "Налични стилове "
+
+#, fuzzy
+#~| msgid "Remove Map"
+#~ msgid "Save Map"
+#~ msgstr "Премахване на карта "
+
+#, fuzzy
+#~| msgid "User Activities"
+#~ msgid "Utilities"
+#~ msgstr "Дейности на потребителя"
+
+#, fuzzy
+#~| msgid "Unable to delete layer"
+#~ msgid "Unable to delete layer"
+#~ msgstr "Невъзможност слоят да бъде изтрит"
+
+#, fuzzy
+#~| msgid "Thumbnail"
+#~ msgid "Thumbnail saved"
+#~ msgstr "Thumbnail"

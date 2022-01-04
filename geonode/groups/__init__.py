@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -43,5 +42,5 @@ def init_registered_members_groupprofile():
     User = get_user_model()
     for _u in User.objects.filter(is_active=True):
         if not _u.is_anonymous and _u != User.get_anonymous() and \
-        not groupprofile.user_is_member(_u):
+                not groupprofile.user_is_member(_u):
             groupprofile.join(_u)

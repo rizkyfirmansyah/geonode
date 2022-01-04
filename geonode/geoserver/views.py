@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -17,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
 import os
 import re
 import json
@@ -56,7 +54,9 @@ from geonode.layers.forms import LayerStyleUploadForm
 from geonode.layers.models import Layer, Style
 from geonode.layers.views import _resolve_layer, _PERMISSION_MSG_MODIFY
 from geonode.maps.models import Map
-from geonode.proxy.views import proxy
+from geonode.proxy.views import (
+    proxy,
+    fetch_response_headers)
 from .tasks import geoserver_update_layers
 from geonode.utils import (
     json_response,
@@ -176,7 +176,7 @@ def layer_style_upload(request, layername):
         try:
             if sld:
                 if isfile(sld):
-                    with open(sld, "r") as sld_file:
+                    with open(sld) as sld_file:
                         sld = sld_file.read()
                 etree.XML(sld)
         except Exception:
@@ -262,7 +262,7 @@ def layer_style_manage(request, layername):
                     "default_style": default_style
                 }
             )
-        except (FailedRequestError, EnvironmentError):
+        except (FailedRequestError, OSError):
             tb = traceback.format_exc()
             logger.debug(tb)
             msg = (f'Could not connect to geoserver at "{ogc_server_settings.LOCATION}"'
@@ -328,7 +328,7 @@ def layer_style_manage(request, layername):
                     args=(
                         layer.service_typename,
                     )))
-        except (FailedRequestError, EnvironmentError, MultiValueDictKeyError):
+        except (FailedRequestError, OSError, MultiValueDictKeyError):
             tb = traceback.format_exc()
             logger.debug(tb)
             msg = (f'Error Saving Styles for Layer "{layer.name}"')
@@ -341,51 +341,6 @@ def layer_style_manage(request, layername):
                     "error": msg
                 }
             )
-
-
-def feature_edit_check(request, layername, permission='change_layer_data'):
-    """
-    If the layer is not a raster and the user has edit permission, return a status of 200 (OK).
-    Otherwise, return a status of 401 (unauthorized).
-    """
-    try:
-        layer = _resolve_layer(request, layername)
-    except Exception:
-        # Intercept and handle correctly resource not found exception
-        return HttpResponse(
-            json.dumps({'authorized': False}), content_type="application/json")
-    datastore = ogc_server_settings.DATASTORE
-    feature_edit = datastore
-    is_admin = False
-    is_staff = False
-    is_owner = False
-    is_manager = False
-    if request.user:
-        is_admin = request.user.is_superuser if request.user else False
-        is_staff = request.user.is_staff if request.user else False
-        is_owner = (str(request.user) == str(layer.owner))
-        try:
-            is_manager = request.user.groupmember_set.all().filter(
-                role='manager').exists()
-        except Exception:
-            is_manager = False
-    if is_admin or is_staff or is_owner or is_manager or request.user.has_perm(
-            permission,
-            obj=layer) and \
-            layer.storeType == 'dataStore' and feature_edit:
-        return HttpResponse(
-            json.dumps({'authorized': True}), content_type="application/json")
-    else:
-        return HttpResponse(
-            json.dumps({'authorized': False}), content_type="application/json")
-
-
-def style_edit_check(request, layername):
-    """
-    If the layer is not a raster and the user has edit permission, return a status of 200 (OK).
-    Otherwise, return a status of 401 (unauthorized).
-    """
-    return feature_edit_check(request, layername, permission='change_layer_style')
 
 
 def style_change_check(request, path):
@@ -515,7 +470,7 @@ def geoserver_proxy(request,
             raw_url = _url
 
     if downstream_path in 'ows' and (
-        'rest' in path or
+        re.match(r'/(rest).*$', path, re.IGNORECASE) or
             re.match(r'/(w.*s).*$', path, re.IGNORECASE) or
             re.match(r'/(ows).*$', path, re.IGNORECASE)):
         _url = str("".join([ogc_server_settings.LOCATION, '', path[1:]]))
@@ -541,21 +496,21 @@ def geoserver_proxy(request,
                 logger.debug(
                     f"[geoserver_proxy] Updating Style ---> url {url.geturl()}")
                 _style_name, _style_ext = os.path.splitext(os.path.basename(urlsplit(url.geturl()).path))
+                _parsed_get_args = dict(parse_qsl(urlsplit(url.geturl()).query))
                 if _style_name == 'styles.json' and request.method == "PUT":
-                    _parsed_get_args = dict(parse_qsl(urlsplit(url.geturl()).query))
-                    if 'name' in _parsed_get_args:
-                        _style_name, _style_ext = os.path.splitext(_parsed_get_args['name'])
+                    if _parsed_get_args.get('name'):
+                        _style_name, _style_ext = os.path.splitext(_parsed_get_args.get('name'))
                 else:
                     _style_name, _style_ext = os.path.splitext(_style_name)
-                if _style_name != 'style-check' and _style_ext == '.json' and \
-                not re.match(temp_style_name_regex, _style_name):
-                    affected_layers = style_update(request, raw_url)
+                if _style_name != 'style-check' and (_style_ext == '.json' or _parsed_get_args.get('raw')) and \
+                        not re.match(temp_style_name_regex, _style_name):
+                    affected_layers = style_update(request, raw_url, workspace)
             elif downstream_path == 'rest/layers':
                 logger.debug(
                     f"[geoserver_proxy] Updating Layer ---> url {url.geturl()}")
                 try:
                     _layer_name = os.path.splitext(os.path.basename(request.path))[0]
-                    _layer = Layer.objects.get(name__icontains=_layer_name)
+                    _layer = Layer.objects.get(name=_layer_name)
                     affected_layers = [_layer]
                 except Exception:
                     logger.warn(f"Could not find any Layer {os.path.basename(request.path)} on DB")
@@ -570,9 +525,10 @@ def geoserver_proxy(request,
 
 
 def _response_callback(**kwargs):
-    content = kwargs['content']
-    status = kwargs['status']
-    content_type = kwargs['content_type']
+    status = kwargs.get('status')
+    content = kwargs.get('content')
+    content_type = kwargs.get('content_type')
+    response_headers = kwargs.get('response_headers', None)
     content_type_list = ['application/xml', 'text/xml', 'text/plain', 'application/json', 'text/json']
 
     if content:
@@ -589,10 +545,13 @@ def _response_callback(**kwargs):
         # Replace Proxy URL
         try:
             if isinstance(content, bytes):
-                _content = content.decode('UTF-8')
+                try:
+                    _content = content.decode('UTF-8')
+                except UnicodeDecodeError:
+                    _content = content
             else:
                 _content = content
-            if re.findall(r"(?=(\b" + '|'.join(content_type_list) + r"\b))", content_type):
+            if re.findall(f"(?=(\\b{'|'.join(content_type_list)}\\b))", content_type):
                 _gn_proxy_url = urljoin(settings.SITEURL, '/gs/')
                 content = _content\
                     .replace(ogc_server_settings.LOCATION, _gn_proxy_url)\
@@ -606,10 +565,11 @@ def _response_callback(**kwargs):
         for layer in kwargs['affected_layers']:
             geoserver_post_save_local(layer)
 
-    return HttpResponse(
+    _response = HttpResponse(
         content=content,
         status=status,
         content_type=content_type)
+    return fetch_response_headers(_response, response_headers)
 
 
 def resolve_user(request):
@@ -761,14 +721,14 @@ def format_online_resource(workspace, layer, element, namespaces):
     if layerName is None:
         return
 
-    layerName.text = workspace + ":" + layer if workspace else layer
+    layerName.text = f"{workspace}:{layer}" if workspace else layer
     layerresources = element.findall('.//wms:OnlineResource', namespaces)
     if layerresources is None:
         return
 
     for resource in layerresources:
         wtf = resource.attrib['{http://www.w3.org/1999/xlink}href']
-        replace_string = "/" + workspace + "/" + layer if workspace else "/" + layer
+        replace_string = f"/{workspace}/{layer}" if workspace else f"/{layer}"
         resource.attrib['{http://www.w3.org/1999/xlink}href'] = wtf.replace(
             replace_string, "")
 
@@ -831,8 +791,7 @@ def get_capabilities(request, layerid=None, user=None,
                         import traceback
                         traceback.print_exc()
                         logger.error(
-                            "Error occurred creating GetCapabilities for %s: %s" %
-                            (layer.typename, str(e)))
+                            f"Error occurred creating GetCapabilities for {layer.typename}: {str(e)}")
                         rootdoc = None
                 if layercap is None or not len(layercap) or rootdoc is None or not len(rootdoc):
                     # Get the required info from layer model
@@ -851,8 +810,7 @@ def get_capabilities(request, layerid=None, user=None,
                 import traceback
                 traceback.print_exc()
                 logger.error(
-                    "Error occurred creating GetCapabilities for %s:%s" %
-                    (layer.typename, str(e)))
+                    f"Error occurred creating GetCapabilities for {layer.typename}:{str(e)}")
                 rootdoc = None
     if rootdoc is not None:
         capabilities = etree.tostring(

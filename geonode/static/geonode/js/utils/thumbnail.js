@@ -29,6 +29,7 @@ var createMapThumbnail = function(obj_id) {
     $.ajax({
         type: "POST",
         url: thumbnailUpdateUrl,
+        contentType: "application/json",
         data: JSON.stringify(body),
         async: true,
         cache: false,
@@ -50,8 +51,20 @@ var createMapThumbnail = function(obj_id) {
         },
         success: function (data, status, jqXHR) {
             try {
+<<<<<<< HEAD
                 $("#_thumbnail_feedbacks").find('.modal-title').text("Generate thumbnail");
                 $("#_thumbnail_feedbacks").find('.modal-body').text(data);
+=======
+                var title = "";
+                var body = data.message;
+                if (data.success || status === 'success') {
+                    title = "OK";
+                } else {
+                    title = "Warning";
+                }
+                $("#_thumbnail_feedbacks").find('.modal-title').text(title);
+                $("#_thumbnail_feedbacks").find('.modal-body').text(body);
+>>>>>>> 3.3.x
                 $("#_thumbnail_feedbacks").modal("show");
             } catch (err) {
                 console.log(err);
