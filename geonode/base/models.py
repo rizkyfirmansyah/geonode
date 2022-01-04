@@ -1060,7 +1060,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 kwargs['ll_bbox_polygon'] = Polygon.from_bbox(bbox)
         except Exception as e:
             logger.exception(e)
-        super().__init__(*args, **kwargs)
+        super(ResourceBase, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return str(self.title)

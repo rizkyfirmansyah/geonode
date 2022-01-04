@@ -55,7 +55,7 @@ from geonode.base.models import (
 
 from geonode.base.forms import (
     BatchEditForm,
-    BatchPermissionsForm, ThesaurusImportForm,
+    ThesaurusImportForm,
     UserAndGroupPermissionsForm
 )
 from geonode.base.widgets import TaggitSelect2Custom
@@ -68,7 +68,7 @@ def metadata_batch_edit(modeladmin, request, queryset):
         'ids': ids
     })
     name_space_mapper = {
-        'layer': 'layer_batch_metadata',
+        'dataset': 'dataset_batch_metadata',
         'map': 'map_batch_metadata',
         'document': 'document_batch_metadata'
     }
@@ -91,30 +91,6 @@ def metadata_batch_edit(modeladmin, request, queryset):
 
 
 metadata_batch_edit.short_description = 'Metadata batch edit'
-
-
-def set_batch_permissions(modeladmin, request, queryset):
-    ids = ','.join([str(element.pk) for element in queryset])
-    resource = queryset[0].class_name.lower()
-    form = BatchPermissionsForm(
-        {
-            'permission_type': ('r', ),
-            'mode': 'set',
-            'ids': ids
-        })
-
-    return render(
-        request,
-        "base/batch_permissions.html",
-        context={
-            'form': form,
-            'model': resource,
-        }
-    )
-
-
-set_batch_permissions.short_description = 'Set permissions'
-
 
 def set_user_and_group_layer_permission(modeladmin, request, queryset):
     ids = ','.join(str(element.pk) for element in queryset)

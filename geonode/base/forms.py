@@ -273,9 +273,6 @@ class RegionsSelect(forms.Select):
 
 
 class CategoryForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(CategoryForm, self).__init__(*args, **kwargs) 
-
     category_choice_field = CategoryChoiceField(
         required=False,
         label=f"*{_('Category')}",
@@ -294,10 +291,6 @@ class CategoryForm(forms.Form):
 
         # Always return the full collection of cleaned data.
         return cleaned_data
-
-    @staticmethod
-    def label_from_instance(obj):
-        return obj.id
 
 
 class TKeywordForm(forms.ModelForm):
