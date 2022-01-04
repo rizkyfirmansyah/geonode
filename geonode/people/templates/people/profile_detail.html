@@ -85,26 +85,7 @@
         <td class="table-user-profile-attribute">{% trans 'Location' %}</td>
         <td>{{ profile.location | default:_('Not provided.') }}</td>
       </tr>
-<<<<<<< HEAD
       {% endif %}
-=======
-      <tr>
-        <td class="table-user-profile-attribute">{% trans 'Voice' %}</td>
-        {% if profile.voice %}
-            <td><a href="tel:{{ profile.voice }}">{{ profile.voice }}</a></td>
-        {% else %}
-            <td>{% trans "Not provided" %}.</td>
-        {% endif %}
-      </tr>
-      <tr>
-        <td class="table-user-profile-attribute">{% trans 'Fax' %}</td>
-        <td>{{ profile.fax | default:_('Not provided.') }}</td>
-      </tr>
-      <tr>
-        <td class="table-user-profile-attribute">{% trans 'Description' %}</td>
-        <td>{{ profile.profile | default:_('Not provided.') }}</td>
-      </tr>
->>>>>>> 3.3.x
       <tr>
         <td class="table-user-profile-attribute">{% trans 'Keywords' %}</td>
         <td>

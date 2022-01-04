@@ -89,8 +89,6 @@
                 <li><a href="{{ item.detail_url }}#share"><i class="fa fa-share"></i>{{ item.share_count }}</a></li>
                 <li><a href="{{ item.detail_url }}#rate"><i class="fa fa-star"></i>{{ item.rating }}</a></li>
                 {% endverbatim %}
-<<<<<<< HEAD
-=======
                   {% if user.is_authenticated and not READ_ONLY_MODE %}
                     {% verbatim %}
                     <li><a ng-if="item.detail_url.indexOf('/layers/') > -1" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
@@ -98,7 +96,6 @@
                       <i class="fa fa-map-marker"></i>{% trans "Create a Map" %}</a>
                     </li>
                   {% endif %}
->>>>>>> 3.3.x
                 {% verbatim %}
                 <li><a ng-if="item.detail_url.indexOf('/maps/') > -1" href="{{ item.site_url }}maps/{{item.id}}/view">
                   {% endverbatim %}

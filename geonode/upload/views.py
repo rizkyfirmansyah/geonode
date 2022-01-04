@@ -625,14 +625,6 @@ def final_step_view(req, upload_session):
                 )
                 register_event(req, EventType.EVENT_UPLOAD, saved_layer)
                 return _json_response
-<<<<<<< HEAD
-            except LayerNotReady:
-                force_ajax = '&force_ajax=true' if 'force_ajax' in req.GET and req.GET['force_ajax'] == 'true' else ''
-                return json_response({'status': 'pending',
-                                      'success': True,
-                                      'id': req.GET['id'],
-                                      'redirect_to': '/upload/final' + "?id=%s%s" % (req.GET['id'], force_ajax)})
-=======
             except (LayerNotReady, AssertionError):
                 force_ajax = '&force_ajax=true' if req and 'force_ajax' in req.GET and req.GET['force_ajax'] == 'true' else ''
                 return json_response(
@@ -655,25 +647,16 @@ def final_step_view(req, upload_session):
                     }
                 )
                 return _json_response
->>>>>>> 3.3.x
     else:
         # url = reverse('layer_browse') + '?limit={}'.format(settings.CLIENT_RESULTS_LIMIT)
         url = "upload/layer_upload_invalid.html"
         _json_response = json_response(
-<<<<<<< HEAD
-            {'status': 'error',
-             'url': url,
-             'error_msg': 'Upload Session invalid or no more accessible!',
-             'success': True
-             }
-=======
             {
                 'status': 'error',
                 'url': url,
                 'error_msg': _('Upload Session invalid or no more accessible!'),
                 'success': False
             }
->>>>>>> 3.3.x
         )
         return _json_response
 

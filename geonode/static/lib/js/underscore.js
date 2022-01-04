@@ -7,21 +7,13 @@
     exports.noConflict = function () { global._ = current; return exports; };
   }()));
 }(this, (function () {
-<<<<<<< HEAD
-  //     Underscore.js 1.11.0
-=======
   //     Underscore.js 1.13.1
->>>>>>> 3.3.x
   //     https://underscorejs.org
   //     (c) 2009-2021 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
   //     Underscore may be freely distributed under the MIT license.
 
   // Current version.
-<<<<<<< HEAD
-  var VERSION = '1.11.0';
-=======
   var VERSION = '1.13.1';
->>>>>>> 3.3.x
 
   // Establish the root object, `window` (`self`) in the browser, `global`
   // on the server, or `this` in some virtual machines. We use `self`
@@ -588,21 +580,6 @@
     return obj;
   }
 
-<<<<<<< HEAD
-  // Shortcut function for checking if an object has a given property directly on
-  // itself (in other words, not on a prototype). Unlike the internal `has`
-  // function, this public version can also traverse nested properties.
-  function has$1(obj, path) {
-    if (!isArray(path)) {
-      return has(obj, path);
-    }
-    var length = path.length;
-    for (var i = 0; i < length; i++) {
-      var key = path[i];
-      if (obj == null || !hasOwnProperty.call(obj, key)) {
-        return false;
-      }
-=======
   // Normalize a (deep) property `path` to array.
   // Like `_.iteratee`, this function can be customized.
   function toPath$1(path) {
@@ -644,7 +621,6 @@
     for (var i = 0; i < length; i++) {
       var key = path[i];
       if (!has$1(obj, key)) return false;
->>>>>>> 3.3.x
       obj = obj[key];
     }
     return !!length;
@@ -677,13 +653,7 @@
   // Creates a function that, when passed an object, will traverse that object’s
   // properties down the given `path`, specified as an array of keys or indices.
   function property(path) {
-<<<<<<< HEAD
-    if (!isArray(path)) {
-      return shallowProperty(path);
-    }
-=======
     path = toPath(path);
->>>>>>> 3.3.x
     return function(obj) {
       return deepGet(obj, path);
     };
@@ -930,11 +900,7 @@
   // is invoked with its parent as context. Returns the value of the final
   // child, or `fallback` if any child is undefined.
   function result(obj, path, fallback) {
-<<<<<<< HEAD
-    if (!isArray(path)) path = [path];
-=======
     path = toPath(path);
->>>>>>> 3.3.x
     var length = path.length;
     if (!length) {
       return isFunction$1(fallback) ? fallback.call(obj) : fallback;
@@ -1414,12 +1380,8 @@
     var contextPath, func;
     if (isFunction$1(path)) {
       func = path;
-<<<<<<< HEAD
-    } else if (isArray(path)) {
-=======
     } else {
       path = toPath(path);
->>>>>>> 3.3.x
       contextPath = path.slice(0, -1);
       path = path[path.length - 1];
     }
@@ -1907,20 +1869,13 @@
     create: create,
     clone: clone,
     tap: tap,
-<<<<<<< HEAD
-    has: has$1,
-=======
     get: get,
     has: has,
->>>>>>> 3.3.x
     mapObject: mapObject,
     identity: identity,
     constant: constant,
     noop: noop,
-<<<<<<< HEAD
-=======
     toPath: toPath$1,
->>>>>>> 3.3.x
     property: property,
     propertyOf: propertyOf,
     matcher: matcher,

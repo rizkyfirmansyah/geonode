@@ -51,10 +51,6 @@ var createMapThumbnail = function(obj_id) {
         },
         success: function (data, status, jqXHR) {
             try {
-<<<<<<< HEAD
-                $("#_thumbnail_feedbacks").find('.modal-title').text("Generate thumbnail");
-                $("#_thumbnail_feedbacks").find('.modal-body').text(data);
-=======
                 var title = "";
                 var body = data.message;
                 if (data.success || status === 'success') {
@@ -64,7 +60,6 @@ var createMapThumbnail = function(obj_id) {
                 }
                 $("#_thumbnail_feedbacks").find('.modal-title').text(title);
                 $("#_thumbnail_feedbacks").find('.modal-body').text(body);
->>>>>>> 3.3.x
                 $("#_thumbnail_feedbacks").modal("show");
             } catch (err) {
                 console.log(err);

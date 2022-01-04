@@ -8,13 +8,8 @@
 
 {% block body %}
   <div class="page-header">
-<<<<<<< HEAD
-    {% if not READ_ONLY_MODE %}
-      <a href="{% url "document_upload" %}" class="btn btn-primary pull-right">{% trans "Upload BigTIFF/Non-Spatial Data" %}</a>
-=======
     {% if user.is_authenticated and not READ_ONLY_MODE and not request.user_agent.is_mobile %}
-      <a href="{% url "document_upload" %}" class="btn btn-primary pull-right">{% trans "Upload Documents" %}</a>
->>>>>>> 3.3.x
+      <a href="{% url "document_upload" %}" class="btn btn-primary pull-right">{% trans "Upload BigTIFF/Non-Spatial Data" %}</a>
     {% endif %}
     <h2>{% trans "Explore BigTIFF/Non-Spatial Data" %}</h2>
   </div>

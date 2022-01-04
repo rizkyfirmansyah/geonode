@@ -20,13 +20,6 @@ import re
 import os
 import json
 import shutil
-<<<<<<< HEAD
-import traceback
-from types import TracebackType
-import warnings
-import itertools
-=======
->>>>>>> 3.3.x
 import decimal
 import logging
 import tempfile
@@ -1004,15 +997,6 @@ def layer_metadata(
             if author_form.has_changed and author_form.is_valid():
                 new_author = author_form.save()
 
-<<<<<<< HEAD
-=======
-        new_category = None
-        if category_form and 'category_choice_field' in category_form.cleaned_data and\
-                category_form.cleaned_data['category_choice_field']:
-            new_category = TopicCategory.objects.get(
-                id=int(category_form.cleaned_data['category_choice_field']))
-
->>>>>>> 3.3.x
         for form in attribute_form.cleaned_data:
             la = Attribute.objects.get(id=int(form['id'].id))
             la.description = form["description"]
@@ -1439,43 +1423,6 @@ def layer_granule_remove(
         return HttpResponse("Not allowed", status=403)
 
 
-<<<<<<< HEAD
-@require_http_methods(["POST"])
-def layer_thumbnail(request, layername):
-    try:
-        layer_obj = _resolve_layer(request, layername)
-    except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
-    except Exception:
-        raise Http404(_("Not found"))
-    if not layer_obj:
-        raise Http404(_("Not found"))
-
-    try:
-        request_body = json.loads(request.body)
-        bbox = request_body['bbox'] + [request_body['srid']]
-        zoom = request_body.get('zoom', None)
-
-        create_thumbnail(
-            layer_obj,
-            bbox=bbox,
-            background_zoom=zoom,
-            overwrite=True
-        )
-
-        return HttpResponse('Yeay, your thumbnail saved successfully!')
-
-    except Exception as e:
-        logger.exception(e)
-        return HttpResponse(
-            content=_('couldn\'t generate thumbnail: %s' % str(e)),
-            status=500,
-            content_type='text/plain'
-        )
-
-
-=======
->>>>>>> 3.3.x
 def get_layer(request, layername):
     """Get Layer object as JSON"""
 

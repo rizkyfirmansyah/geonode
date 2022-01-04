@@ -93,11 +93,7 @@
         <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
              Unfortunately this needs to appear at the bottom of the form since tkeywords_form is a complete other django form. 
              There might be a better way to solve this. -->
-<<<<<<< HEAD
         <div class="form-controls">
-=======
-        <div class="col-md-12 form-controls">
->>>>>>> 3.3.x
           {% block layer_fields %}
           {% for field in layer_form %}
             {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' and field.name not in ADVANCED_EDIT_EXCLUDE_FIELD  %}
@@ -135,17 +131,10 @@
               {% autoescape off %}
               {% for choice in category_form.category_choice_field.field.choices %}
               <div class="col-md-6">
-<<<<<<< HEAD
-                <label class="fancy-checkbox">
+                <label class="fancy-checkbox form_item_spacing">
                     <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
                       {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
                     {{ choice.1 }}
-=======
-                <label class="fancy-checkbox form_item_spacing">
-                    <input type="radio" name="category_choice_field" value="{{ choice.0 }}"
-                      {% ifequal category_form.initial choice.0 %} checked="checked" {% endifequal %} />
-                      {{ choice.1 }}
->>>>>>> 3.3.x
                 </label>
               </div>
               <!-- div class="radio col-md-6">

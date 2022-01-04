@@ -83,15 +83,11 @@
             {% endif %}
         </dd>
 
-<<<<<<< HEAD
         {% if resource.source %}
         <dt>{% trans "Source" %}</dt>
         <dd>{{ resource.source|safe|urlize }}</dd>
         {% endif %}
 
-=======
-        {% endblock license %}
->>>>>>> 3.3.x
 
         {% block date %}
         {% if resource.date %}
@@ -135,7 +131,6 @@
             {% endif %}
         {% endblock keyword_list %}
 
-<<<<<<< HEAD
         {% if resource.data_type %}
         <dt>{% trans "Data Type" %}</dt>
         <dd><a href="/search/?datatype__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
@@ -161,17 +156,6 @@
             {% trans category.description %}
             </dd>
         {% endfor %}
-=======
-        {% block category %}
-        {% if resource.category %}
-        <dt>{% trans "Category" %}</dt>
-        <dd><a href="{% url 'search' %}/?category__identifier__in={{ resource.category.identifier }}">{{ resource.category }}</a> {% if resource.category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
-        {% if resource.category.description %}
-        <dd class="category-more collapse">
-            {{ resource.category.description }}
-        </dd>
-        {% endif %}
->>>>>>> 3.3.x
         {% endif %}
         {% endblock category %}
 
@@ -206,20 +190,10 @@
 
         {% block doi %}
         <dt>{% trans "DOI" %}</dt>
-<<<<<<< HEAD
         <dd>{{ resource.doi|safe|escape }}</dd>
 
         <dt>{% trans "Author" %}</dt>
         <dd>{{ resource.author }}</dd>
-=======
-        <dd>{{ resource.doi }}</dd>
-        {% endblock doi %}
-
-        {% block attribution %}
-        <dt>{% trans "Attribution" %}</dt>
-        <dd>{{ resource.attribution }}</dd>
-        {% endblock attribution %}
->>>>>>> 3.3.x
 
         {% block extra_tag %}{% endblock extra_tag %}
     </dl>
@@ -258,20 +232,6 @@
         <dd>{{ poc.location }}</dd>
         {% endblock location %}
 
-<<<<<<< HEAD
-=======
-        {% block voice %}
-        <dt>{% trans "Voice" %}</dt>
-        <dd>{{ poc.voice }}</dd>
-        {% endblock voice %}
-
-        {% block fax %}
-        <dt>{% trans "Fax" %}</dt>
-        <dd>{{ poc.fax }}</dd>
-        {% endblock fax %}
-
-        {% block poc_keyword_list %}
->>>>>>> 3.3.x
         {% if poc.keyword_list %}
         <dt>{% trans "Keywords" %}</dt>
         <dd>{% for keyword in poc.keyword_list %}
@@ -399,18 +359,7 @@
         {% block data_quality_statement %}
         {% if resource.data_quality_statement %}
         <dt>{% trans "Data Quality" %}</dt>
-<<<<<<< HEAD
         <dd>{{ resource.data_quality_statement|safe|escape }}</dd>
-=======
-        <dd>{{ resource.data_quality_statement|safe }}</dd>
-        {% endif %}
-        {% endblock data_quality_statement %}
-
-        {% block supplemental_information %}
-        {% if resource.supplemental_information %}
-        <dt>{% trans "Supplemental Information" %}</dt>
-        <dd>{{ resource.supplemental_information|safe }}</dd>
->>>>>>> 3.3.x
         {% endif %}
         {% endblock supplemental_information %}
 
@@ -459,20 +408,6 @@
         <dd>{{ resource.poc.location }}</dd>
         {% endblock poc_location %}
 
-<<<<<<< HEAD
-=======
-        {% block poc_voice %}
-        <dt>{% trans "Voice" %}</dt>
-        <dd>{{ resource.poc.voice }}</dd>
-        {% endblock poc_voice %}
-
-        {% block poc_fax %}
-        <dt>{% trans "Fax" %}</dt>
-        <dd>{{ resource.poc.fax }}</dd>
-        {% endblock poc_fax %}
-
-        {% block poc_keyword %}
->>>>>>> 3.3.x
         {% if poc.keyword_list %}
         <dt>{% trans "Keywords" %}</dt>
         <dd>{% for keyword in resource.poc.keyword_list %}
@@ -564,20 +499,6 @@
         <dd>{{ poc.location }}</dd>
         {% endblock metadata_author_location %}
 
-<<<<<<< HEAD
-=======
-        {% block metadata_author_voice %}
-        <dt>{% trans "Voice" %}</dt>
-        <dd>{{ poc.voice }}</dd>
-        {% endblock metadata_author_voice %}
-
-        {% block metadata_author_fax %}
-        <dt>{% trans "Fax" %}</dt>
-        <dd>{{ poc.fax }}</dd>
-        {% endblock metadata_author_fax %}
-
-        {% block metadata_author_keyword_list %}
->>>>>>> 3.3.x
         {% if poc.keyword_list %}
         <dt>{% trans "Keywords" %}</dt>
         <dd>{% for keyword in poc.keyword_list %}

@@ -159,7 +159,6 @@ def csw_global_dispatch(request, layer_filter=None, config_updater=None):
         if isinstance(content, list):  # pycsw 2.0+
             content = content[1]
 
-<<<<<<< HEAD
         spaces = {'csw': 'http://www.opengis.net/cat/csw/2.0.2',
                   'dc': 'http://purl.org/dc/elements/1.1/',
                   'dct': 'http://purl.org/dc/terms/',
@@ -192,8 +191,6 @@ def csw_global_dispatch(request, layer_filter=None, config_updater=None):
                 except Exception:
                     pass
             content = ET.tostring(tree, encoding='utf8', method='xml')
-=======
->>>>>>> 3.3.x
     finally:
         # Restore original filter before doing anything
         mdict['repository']['filter'] = mdict_filter
@@ -270,33 +267,20 @@ def csw_render_extra_format_txt(request, layeruuid, resname):
     s = chrs['separator']
     c = chrs['carriage_return']
     sc = s + c
-<<<<<<< HEAD
-    content = 'Resource metadata' + sc
-    content += 'uuid' + s + fst(resource.uuid) + sc
-    content += 'title' + s + fst(resource.title) + sc
-    content += 'resource owner' + s + fst(resource.owner) + sc
-    content += 'date' + s + fst(resource.date) + sc
-    content += 'date type' + s + fst(resource.date_type) + sc
-    content += 'date of content' + s + fst(resource.date_content) + sc
-    content += 'abstract' + s + fst(resource.abstract) + sc
-    content += 'data description' + s + fst(resource.data_description) + sc
-    content += 'source' + s + fst(resource.source) + sc
-    content += 'edition' + s + fst(resource.edition) + sc
-    content += 'purpose' + s + fst(resource.purpose) + sc
-    content += 'maintenance frequency' + s + fst(
-        resource.maintenance_frequency) + sc
-=======
+
     content = f"Resource metadata{sc}"
     content += f"uuid{s}{fst(resource.uuid)}{sc}"
     content += f"title{s}{fst(resource.title)}{sc}"
     content += f"resource owner{s}{fst(resource.owner)}{sc}"
     content += f"date{s}{fst(resource.date)}{sc}"
     content += f"date type{s}{fst(resource.date_type)}{sc}"
+    content += f"date of content{s}{fst(resource.date_content)}{sc}"
     content += f"abstract{s}{fst(resource.abstract)}{sc}"
+    content += f"data description{s}{fst(resource.data_description)}{sc}"
+    content += f"source{s}{fst(resource.source)}{sc}"
     content += f"edition{s}{fst(resource.edition)}{sc}"
     content += f"purpose{s}{fst(resource.purpose)}{sc}"
     content += f"maintenance frequency{s}{fst(resource.maintenance_frequency)}{sc}"
->>>>>>> 3.3.x
 
     try:
         sprt = SpatialRepresentationType.objects.get(
@@ -320,17 +304,10 @@ def csw_render_extra_format_txt(request, layeruuid, resname):
     content += f"data quality statement{s}{fst(resource.data_quality_statement)}{sc}"
 
     ext = resource.bbox_polygon.extent
-<<<<<<< HEAD
-    content += 'extent ' + s + fst(ext[0]) + ',' + fst(ext[2]) + \
-        ',' + fst(ext[1]) + ',' + fst(ext[3]) + sc
-    content += 'SRID  ' + s + fst(resource.srid) + sc
-    content += 'Spatial Resolution ' + s + fst(resource.spatial_resolution) + sc
-    content += 'Thumbnail url' + s + fst(resource.thumbnail_url) + sc
-=======
     content += f"extent {s}{fst(ext[0])},{fst(ext[2])},{fst(ext[1])},{fst(ext[3])}{sc}"
     content += f"SRID  {s}{fst(resource.srid)}{sc}"
+    content += f"Spatial Resolution {s}{fst(resource.spatial_resolution)}{sc}"
     content += f"Thumbnail url{s}{fst(resource.thumbnail_url)}{sc}"
->>>>>>> 3.3.x
 
     content += f"keywords;{get_keywords(resource)}{s}"
     content += f"category{s}{fst(resource.category)}{sc}"

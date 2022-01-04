@@ -1,19 +1,11 @@
 /*!
-<<<<<<< HEAD
- * Cropper.js v1.5.9
-=======
  * Cropper.js v1.5.12
->>>>>>> 3.3.x
  * https://fengyuanchen.github.io/cropperjs
  *
  * Copyright 2015-present Chen Fengyuan
  * Released under the MIT license
  *
-<<<<<<< HEAD
- * Date: 2020-09-10T13:16:26.743Z
-=======
  * Date: 2021-06-12T08:00:17.411Z
->>>>>>> 3.3.x
  */
 
 (function (global, factory) {

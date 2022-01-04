@@ -2,11 +2,7 @@
 {% autoescape off %}
 {% blocktrans %}Hi Folks!{% endblocktrans %}
 
-<<<<<<< HEAD
 {{ inviter_name }} {% blocktrans %}is inviting you to join Spatial Data Infrastructure {% endblocktrans %} ({{ site_name }}).
-=======
-{{ inviter_name }} {% blocktrans %}is inviting you to join{% endblocktrans %} ({{ site_name|urlencode }}).
->>>>>>> 3.3.x
 
 {% blocktrans %}To do so, please register at{% endblocktrans %} {{ invite_url }} .
 

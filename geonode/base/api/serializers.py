@@ -40,13 +40,8 @@ from geonode.base.models import (
     RestrictionCodeType,
     License,
     TopicCategory,
-<<<<<<< HEAD
     DataType,
     SpatialRepresentationType
-=======
-    SpatialRepresentationType,
-    ThesaurusKeyword,
->>>>>>> 3.3.x
 )
 from geonode.groups.models import (
     GroupCategory,
@@ -357,13 +352,7 @@ class ResourceBaseSerializer(
         self.fields['regions'] = DynamicRelationField(
             SimpleRegionSerializer, embed=True, many=True, read_only=True)
         self.fields['category'] = DynamicRelationField(
-<<<<<<< HEAD
-            TopicCategorySerializer, embed=True, many=False)
-        self.fields['data_type'] = DynamicRelationField(
-            DataTypeSerializer, embed=True, many=False)
-=======
             SimpleTopicCategorySerializer, embed=True, many=False)
->>>>>>> 3.3.x
         self.fields['restriction_code_type'] = DynamicRelationField(
             RestrictionCodeTypeSerializer, embed=True, many=False)
         self.fields['license'] = DynamicRelationField(

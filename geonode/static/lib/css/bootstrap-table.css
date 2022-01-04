@@ -1,10 +1,6 @@
 /**
  * @author zhixin wen <wenzhixin2010@gmail.com>
-<<<<<<< HEAD
- * version: 1.18.0
-=======
  * version: 1.18.3
->>>>>>> 3.3.x
  * https://github.com/wenzhixin/bootstrap-table/
  */
 .bootstrap-table .fixed-table-toolbar::after {
@@ -146,13 +142,10 @@
   text-align: left !important;
 }
 
-<<<<<<< HEAD
-=======
 .bootstrap-table .fixed-table-container .table tbody tr .card-view .card-view-value {
   width: 100% !important;
 }
 
->>>>>>> 3.3.x
 .bootstrap-table .fixed-table-container .table .bs-checkbox {
   text-align: center;
 }

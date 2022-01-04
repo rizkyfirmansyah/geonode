@@ -278,12 +278,8 @@ class CategoryForm(forms.Form):
 
     category_choice_field = CategoryChoiceField(
         required=False,
-<<<<<<< HEAD
-        label='*' + _('Category'),
-=======
         label=f"*{_('Category')}",
         empty_label=None,
->>>>>>> 3.3.x
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
             order_by=['gn_description']))
@@ -421,14 +417,11 @@ class ResourceBaseForm(TranslationModelForm):
         label=_("Other constraints"),
         required=False,
         widget=TinyMCE())
-<<<<<<< HEAD
-=======
 
     supplemental_information = forms.CharField(
         label=_('Supplemental information'),
         required=False,
         widget=TinyMCE())
->>>>>>> 3.3.x
     data_quality_statement = forms.CharField(
         label=_("Data quality statement"),
         required=False,

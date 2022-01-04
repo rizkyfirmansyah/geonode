@@ -1,10 +1,6 @@
 {
   "name": "geonode-assets",
-<<<<<<< HEAD
-  "version": "3.2",
-=======
   "version": "3.3.0",
->>>>>>> 3.3.x
   "description": "Builds static (JS, CSS, IMG) assets for GeoNode 2.0",
   "main": "gruntfile.js",
   "dependencies": {
@@ -29,10 +25,7 @@
     "fastsearch": "^1.11.1",
     "fastselect": "^0.7.3",
     "fontselect-jquery-plugin": "^1.1.0",
-<<<<<<< HEAD
-=======
     "grunt-cli": "^1.4.3",
->>>>>>> 3.3.x
     "handlebars": "^4.1.2",
     "jq-ajax-progress": "^1.0.0",
     "jquery": "3.5.1",

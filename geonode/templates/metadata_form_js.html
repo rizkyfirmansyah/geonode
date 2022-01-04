@@ -87,20 +87,9 @@
             }
             mandatoryMissing = empty > 0;
           }
-<<<<<<< HEAD
       var licenseMissing = $('#licenses').find('.input-empty').length > 0;
           if (licenseMissing) {
             var inputs = $('#licenses').find('.input-empty');
-=======
-        var imgMissing = $('img#image').attr('src');
-        if (imgMissing && imgMissing.includes('missing_thumb')) {
-            mandatoryMissing = true
-        }
-      var advancedMissing = $('#advanced').find('.input-empty').length > 0;
-          if (advancedMissing) {
-            var not_tinymce = true
-            var inputs = $('#advanced').find('.input-empty');
->>>>>>> 3.3.x
             var empty = inputs.length;
             for (var i=0; i<inputs.length; i++) {
               if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
@@ -235,7 +224,6 @@
         });
     });
 
-<<<<<<< HEAD
     $(document).ready(function() {
         var prevNum = 0, totalNum = 0;
         var empty = 0;
@@ -244,11 +232,6 @@
         $('#completeness-hints .content-hint').click(getTab.bind(null, 3));
 
         // set proper classes to count empty fields and display them
-=======
-    var prevNum = 0, totalNum = 0;
-    var empty = 0;
-    // set proper classes to count empty fields and display them
->>>>>>> 3.3.x
         var setInputEmpty = function( target, empty ) {
           if($(target).hasClass('value-select')) {
             // tkeywords
@@ -338,16 +321,12 @@
                 }
             }
 
-<<<<<<< HEAD
-          var is_mandatory = (el.id.indexOf("autocomplete") < 0 &&
-                        (typeof $(el).attr("class") !== 'undefined' && $(el).attr("class").indexOf("select2") < 0) &&
-                        !$(el).hasClass('value-select') &&
-                        el.type !== 'radio' &&
-                        el.type !== 'button');
-            return is_mandatory;
-        }
+        //   var is_mandatory = (el.id.indexOf("autocomplete") < 0 &&
+        //                 (typeof $(el).attr("class") !== 'undefined' && $(el).attr("class").indexOf("select2") < 0) &&
+        //                 !$(el).hasClass('value-select') &&
+        //                 el.type !== 'radio' &&
+        //                 el.type !== 'button');
 
-=======
             // Workaround for Thesauri
             if (el.id.startsWith('id_tkeywords') && $(el).hasClass('treq')) {
                 is_mandatory = true;
@@ -359,7 +338,6 @@
         };
 
     {% block onInputChange %}
->>>>>>> 3.3.x
         var onInputChange = function(e){
             var e_target = null;
             var e_target_value = null;
@@ -372,15 +350,6 @@
                 e_target_value = e.target.value;
             }
             toggleRestrictionsConstraints(e);
-<<<<<<< HEAD
-
-            if(e.target.value !== undefined && e.target.value.trim() === ''){
-                if(!$(e.target).hasClass("input-empty")){
-                    if(isMandatoryField(this)) {
-                        setInputEmpty(e.target, true);
-                        if(!!$(this).closest('#mdinfo').length) {
-                            $(e.target).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"));
-=======
             if(e_target_value !== undefined && e_target_value.trim() === ''){
                 if(!$(e_target).hasClass("input-empty")){
                     if(isMandatoryField(this)) {
@@ -395,7 +364,6 @@
                         } else if (e.target.id == 'tinymce') {
                             $(e_target).parent().append(gettext(mandatoryWarning));
 
->>>>>>> 3.3.x
                         }
                         empty++;
                     }
@@ -407,10 +375,6 @@
                     if(isMandatoryField(this)) {
                         empty--;
                     }
-<<<<<<< HEAD
-                    setInputEmpty(e.target, false);
-                    $(e.target).parent().find(".mandatory-warning").remove();
-=======
                     setInputEmpty(e_target, false);
                     if (!!$(e_target).closest('.date').length) { 
                         $(e_target).parent().parent().find(".mandatory-warning").remove();
@@ -418,7 +382,6 @@
                         $(e_target).parent().find(".mandatory-warning").remove();
                     }
                     
->>>>>>> 3.3.x
                 }
             }
 
@@ -433,45 +396,10 @@
                 }
             }
         };
-<<<<<<< HEAD
 
         $('#category_form').change(onInputChange).change();
         $('#id_resource-group').change(onInputChange).change();
         document.querySelector('select[name="resource-keywords"]').onchange=onInputChange
-=======
-        {% endblock onInputChange %}
-
-    $(document).ready(function() {
-        {% block hints %}
-
-        $('#completeness-hints .mandatory-hint').click(getTab.bind(null, 1));
-        $('#completeness-hints .advanced-hint').click(getTab.bind(null, 2));
-        {% endblock hints %}
-
-        
-        
-        
-        {% block trigger_onInputChange %}
-
-        {{UI_REQUIRED_FIELDS}}.forEach(element => $('#' + element).change(onInputChange).change());
-
-        ui_mandatory_fields.forEach(function(field){
-            $('#'+field).change(onInputChange).change();
-        })
-
-        var selection = document.querySelector('select[name="resource-keywords"]');
-        if (selection  !== null) {
-            selection.onchange=onInputChange
-        }
-        
-        {{REQ_THESAURI}}.forEach(element => document.querySelector('select[name="'+ element + '"]').onchange=onInputChange);
-        
-        // workaround to trigger the change in advanced metadata editing
-        // otherwise will remain not-required untill a change on the item
-        for (item in {{REQ_THESAURI}}) {
-            $("#id_" + {{REQ_THESAURI}}[item]).trigger("change");
-        }
->>>>>>> 3.3.x
 
         $('#id_resource-regions').change(onInputChange).change();
         $('#mandatory').find(":input:not(.value-select):not(.autocomplete)").each(function(){

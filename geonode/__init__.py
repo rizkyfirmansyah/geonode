@@ -19,11 +19,7 @@
 
 import os
 
-<<<<<<< HEAD
-__version__ = (3, 2, 0, 'final', 0)
-=======
 __version__ = (3, 3, 1, 'final', 0)
->>>>>>> 3.3.x
 
 
 default_app_config = "geonode.apps.AppConfig"

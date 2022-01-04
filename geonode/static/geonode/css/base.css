@@ -8700,7 +8700,6 @@ form-inline {
 .jumbotron .gn-container {
   margin-top: -2px;
 }
-<<<<<<< HEAD
 
 .stretch {
     height: 100%;
@@ -8756,7 +8755,6 @@ form-inline {
   text-align: left;
   width: 140%;
   font-size: 18px;
-=======
 .map-layers {
   display: flex;
   word-break: break-all;
@@ -8866,5 +8864,4 @@ form-inline {
   100% {
     -webkit-transform: rotate(360deg);
   }
->>>>>>> 3.3.x
 }

@@ -38,13 +38,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2021-03-02 14:49+0000\n"
-"PO-Revision-Date: 2021-01-21 22:30+0100\n"
-=======
 "POT-Creation-Date: 2021-05-03 14:51+0000\n"
 "PO-Revision-Date: 2021-04-29 13:43+0200\n"
->>>>>>> 3.3.x
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Italian (http://www.transifex.com/geonode/geonode/language/"
 "it/)\n"
@@ -6318,13 +6313,6 @@ msgstr "Livello di permessi non valido."
 msgid "Permission Denied"
 msgstr "Permesso negato"
 
-<<<<<<< HEAD
-msgid "If true, will be excluded from search"
-msgstr "Se Vero, l'elemento verrà escluso dalla ricerca"
-
-msgid "Please, fill the following items before clicking on preview:"
-msgstr "Perfavore, completa i seguenti campi prima di andare su Anteprima:"
-=======
 #~ msgid "Point"
 #~ msgstr "Punto"
 
@@ -6426,4 +6414,3 @@ msgstr "Perfavore, completa i seguenti campi prima di andare su Anteprima:"
 
 #~ msgid "Thesaurus"
 #~ msgstr "Thesaurus"
->>>>>>> 3.3.x
