@@ -62,13 +62,14 @@ class LayerAdmin(TabbedTranslationAdmin):
         'alternate',
         'title',
         'date',
+        'category',
         'group',
         'is_approved',
         'is_published',
         'metadata_completeness')
     list_display_links = ('id',)
-    list_editable = ('title', 'group', 'is_approved', 'is_published')
-    list_filter = ('storeType', 'owner', 'group',
+    list_editable = ('title', 'category', 'group', 'is_approved', 'is_published')
+    list_filter = ('storeType', 'owner', 'category', 'group',
                    'restriction_code_type__identifier', 'date', 'date_type',
                    'is_approved', 'is_published')
     search_fields = ('alternate', 'title', 'abstract', 'purpose',
@@ -79,6 +80,30 @@ class LayerAdmin(TabbedTranslationAdmin):
     inlines = [AttributeInline]
     form = LayerAdminForm
     actions = [metadata_batch_edit, set_batch_permissions]
+
+
+class AttributeAdmin(admin.ModelAdmin):
+    model = Attribute
+    list_display_links = ('id',)
+    list_display = (
+        'id',
+        'layer',
+        'attribute',
+        'description',
+        'attribute_label',
+        'attribute_type',
+        'display_order')
+    list_filter = ('layer', 'attribute_type')
+    search_fields = ('attribute', 'attribute_label',)
+
+
+class StyleAdmin(admin.ModelAdmin):
+    model = Style
+    list_display_links = ('sld_title',)
+    list_display = ('id', 'name', 'sld_title', 'workspace', 'sld_url')
+    list_filter = ('workspace',)
+    search_fields = ('name', 'workspace',)
+
 
 class LayerFileInline(admin.TabularInline):
     model = LayerFile
@@ -91,4 +116,6 @@ class UploadSessionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Layer, LayerAdmin)
+admin.site.register(Attribute, AttributeAdmin)
+admin.site.register(Style, StyleAdmin)
 admin.site.register(UploadSession, UploadSessionAdmin)
