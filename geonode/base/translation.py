@@ -19,7 +19,7 @@
 
 from modeltranslation.translator import translator, TranslationOptions
 from geonode.base.models import (TopicCategory, DataType, SpatialRepresentationType, Region,
-                                 RestrictionCodeType, License, ResourceBase)
+                                 RestrictionCodeType, License, ResourceBase, Ropa)
 
 
 class TopicCategoryTranslationOptions(TranslationOptions):
@@ -28,18 +28,17 @@ class TopicCategoryTranslationOptions(TranslationOptions):
 class DataTypeTranslationOptions(TranslationOptions):
     fields = ('description', 'gn_description',)
 
+class RopaTranslationOptions(TranslationOptions):
+    fields = ('purposes',)
 
 class SpatialRepresentationTypeTranslationOptions(TranslationOptions):
     fields = ('description', 'gn_description',)
 
-
 class RegionTranslationOptions(TranslationOptions):
     fields = ('name',)
 
-
 class RestrictionCodeTypeTranslationOptions(TranslationOptions):
     fields = ('description', 'gn_description',)
-
 
 class LicenseTranslationOptions(TranslationOptions):
     fields = ('name', 'description', 'license_text',)
@@ -47,6 +46,7 @@ class LicenseTranslationOptions(TranslationOptions):
 
 translator.register(TopicCategory, TopicCategoryTranslationOptions)
 translator.register(DataType, DataTypeTranslationOptions)
+translator.register(Ropa, RopaTranslationOptions)
 translator.register(SpatialRepresentationType, SpatialRepresentationTypeTranslationOptions)
 translator.register(Region, RegionTranslationOptions)
 translator.register(RestrictionCodeType, RestrictionCodeTypeTranslationOptions)
