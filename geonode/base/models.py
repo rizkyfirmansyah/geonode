@@ -155,7 +155,7 @@ class TopicCategory(models.Model):
     identifier = models.CharField(max_length=255, default='location')
     description = models.TextField(default='')
     gn_description = models.TextField(
-        'GeoNode description', default='', null=True)
+        'SDI description', default='', null=True)
     is_choice = models.BooleanField(default=True)
     fa_class = models.CharField(max_length=64, default='fa-times')
 
@@ -166,6 +166,41 @@ class TopicCategory(models.Model):
         ordering = ("identifier",)
         verbose_name_plural = 'Metadata Topic Categories'
 
+class DataType(models.Model):
+    """
+    """
+    identifier = models.CharField(max_length=255)
+    description = models.TextField(default='')
+    gn_description = models.TextField('SDI description', default='', null=True)
+    is_choice = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.gn_description
+
+    class Meta:
+        ordering = ("identifier",)
+        verbose_name_plural = "Metadata Type of Data"
+
+class Ropa(models.Model):
+    """
+    requester_name', 'requester_email', 'requester_position', 'purposes', 'retention', 'resource_title', 'resource_name', 'resource_owner'
+    """
+    identifier = models.CharField(max_length=255)
+    requester_name = models.TextField(default='')
+    requester_email = models.TextField(default='', null=True)
+    requester_position = models.CharField(max_length=255)
+    purposes = models.TextField(default='')
+    retention = models.CharField(max_length=255)
+    resource_title = models.CharField(max_length=255)
+    resource_name = models.CharField(max_length=255)
+    resource_owner = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.resource_name
+
+    class Meta:
+        ordering = ("identifier",)
+        verbose_name_plural = "Record of Processing Activity"
 
 class SpatialRepresentationType(models.Model):
     """
@@ -174,9 +209,9 @@ class SpatialRepresentationType(models.Model):
     See: http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
     <CodeListDictionary gml:id="MD_SpatialRepresentationTypeCode">
     """
-    identifier = models.CharField(max_length=255, editable=False)
+    identifier = models.CharField(max_length=255)
     description = models.CharField(max_length=255, editable=False)
-    gn_description = models.CharField('GeoNode description', max_length=255)
+    gn_description = models.CharField('SDI description', max_length=255)
     is_choice = models.BooleanField(default=True)
 
     def __str__(self):
@@ -270,9 +305,9 @@ class RestrictionCodeType(models.Model):
     See: http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
     <CodeListDictionary gml:id="MD_RestrictionCode">
     """
-    identifier = models.CharField(max_length=255, editable=False)
+    identifier = models.CharField(max_length=255)
     description = models.TextField(max_length=255, editable=False)
-    gn_description = models.TextField('GeoNode description', max_length=255)
+    gn_description = models.TextField('SDI description', max_length=255)
     is_choice = models.BooleanField(default=True)
 
     def __str__(self):
@@ -627,7 +662,7 @@ class ResourceBaseManager(PolymorphicManager):
         superusers = get_user_model().objects.filter(is_superuser=True).order_by('id')
         if superusers.count() == 0:
             raise RuntimeError(
-                'GeoNode needs at least one admin/superuser set')
+                'SDI needs at least one admin/superuser set')
 
         return superusers[0]
 
@@ -666,15 +701,14 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     date_help_text = _('reference date for the cited resource')
     date_type_help_text = _('identification of when a given event occurred')
     edition_help_text = _('version of the cited resource')
-    attribution_help_text = _(
-        'authority or function assigned, as to a ruler, legislative assembly, delegate, or the like.')
-    doi_help_text = _(
-        'a DOI will be added by Admin before publication.')
+    abstract_help_text = _(
+        'brief narrative summary of the content of the resource(s)')
+    data_description_help_text = _(
+        'description or abstract of the data and methodology')
     purpose_help_text = _(
         'summary of the intentions with which the resource(s) was developed')
     maintenance_frequency_help_text = _(
-        'frequency with which modifications and deletions are made to the data after '
-        'it is first produced')
+        'Information about maintenance and update frequency of the dataset')
     keywords_help_text = _(
         'commonly used word(s) or formalised word(s) or phrase(s) used to describe the subject '
         '(space or comma-separated)')
@@ -689,18 +723,27 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         ' metadata')
     license_help_text = _('license of the dataset')
     language_help_text = _('language used within the dataset')
+    data_type_help_text = _('type of your data.')
     category_help_text = _(
         'high-level geographic data thematic classification to assist in the grouping and search of '
         'available geographic data sets.')
+    data_type_help_text = _(
+        'type of your data.')
     spatial_representation_type_help_text = _(
         'method used to represent geographic information in the dataset.')
     temporal_extent_start_help_text = _(
         'time period covered by the content of the dataset (start)')
     temporal_extent_end_help_text = _(
         'time period covered by the content of the dataset (end)')
+    spatial_resolution_help_text = _(
+        'describes the spatial resolution: e.g. 1:50.000 or 30m')
+    date_content_help_text = _(
+        'date or time period that the data represents')
     data_quality_statement_help_text = _(
         'general explanation of the data producer\'s knowledge about the lineage of a'
         ' dataset')
+    doi_help_text = _(
+        'a DOI will be added by Admin before publication.')
     # internal fields
     uuid = models.CharField(max_length=36)
     title = models.CharField(_('title'), max_length=255, help_text=_(
@@ -714,13 +757,30 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         _('purpose'),
         max_length=500,
         null=True,
+        help_text=doi_help_text)
+    author_help_text = _(
+        'data custodian or people/organizations that contributed to the data set (separated by commas). A short description rather than source column.')
+    author = models.CharField(
+        _('Author'),
+        max_length=2048,
         blank=True,
-        help_text=purpose_help_text)
+        null=True,
+        help_text=author_help_text)
+    source_help_text = _(
+        'people/organizations that contributed to the data set (separate by commas), or link to the journal article, from which institutions the data was obtained')
+    source = models.CharField(
+        _('Source'),
+        max_length=2048,
+        blank=True,
+        null=True,
+        help_text=source_help_text)
+    # internal fields
+    uuid = models.CharField(max_length=36)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='owned_resource',
-        verbose_name=_("Owner"),
-        on_delete=models.PROTECT)
+        verbose_name=_("owner"),
+        on_delete=models.CASCADE)
     contacts = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='ContactRole')
@@ -735,6 +795,12 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         choices=VALID_DATE_TYPES,
         default='publication',
         help_text=date_type_help_text)
+    date_content = models.CharField(
+        _('date of content'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=date_content_help_text)
     edition = models.CharField(
         _('edition'),
         max_length=255,
@@ -745,8 +811,18 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         _('Attribution'),
         max_length=2048,
         blank=True,
+        help_text=abstract_help_text)
+    data_description = models.TextField(
+        _('data description'),
+        max_length=2000,
+        blank=True,
         null=True,
-        help_text=attribution_help_text)
+        help_text=data_description_help_text)
+    purpose = models.TextField(
+        _('purpose'),
+        max_length=500,
+        null=True,
+        help_text=purpose_help_text)
     doi = models.CharField(
         _('DOI'),
         max_length=255,
@@ -780,14 +856,14 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         help_text=regions_help_text)
     restriction_code_type = models.ForeignKey(
         RestrictionCodeType,
-        verbose_name=_('restrictions'),
+        verbose_name=_('Restrictions'),
         help_text=restriction_code_type_help_text,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         limit_choices_to=Q(is_choice=True))
     constraints_other = models.TextField(
-        _('restrictions other'),
+        _('Restrictions other'),
         blank=True,
         null=True,
         help_text=constraints_other_help_text)
@@ -799,47 +875,59 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         help_text=license_help_text,
         on_delete=models.SET_NULL)
     language = models.CharField(
-        _('language'),
+        _('Language'),
         max_length=3,
         choices=ALL_LANGUAGES,
         default='eng',
         help_text=language_help_text)
-    category = models.ForeignKey(
+    category = models.ManyToManyField(
         TopicCategory,
+        null=True,
+        blank=True,
+        help_text=category_help_text)
+    data_type = models.ForeignKey(
+        DataType,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         limit_choices_to=Q(is_choice=True),
-        help_text=category_help_text)
+        help_text=data_type_help_text)
     spatial_representation_type = models.ForeignKey(
         SpatialRepresentationType,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         limit_choices_to=Q(is_choice=True),
-        verbose_name=_("spatial representation type"),
+        verbose_name=_("Spatial representation type"),
         help_text=spatial_representation_type_help_text)
 
     # Section 5
     temporal_extent_start = models.DateTimeField(
-        _('temporal extent start'),
+        _('Temporal extent start'),
         blank=True,
         null=True,
         help_text=temporal_extent_start_help_text)
     temporal_extent_end = models.DateTimeField(
-        _('temporal extent end'),
+        _('Temporal extent end'),
         blank=True,
         null=True,
         help_text=temporal_extent_end_help_text)
+    spatial_resolution = models.CharField(
+        _('Spatial resolution/scale'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=spatial_resolution_help_text)
+
     supplemental_information = models.TextField(
-        _('supplemental information'),
+        _('Supplemental information'),
         max_length=2000,
         default=DEFAULT_SUPPLEMENTAL_INFORMATION,
         help_text=_('any other descriptive information about the dataset'))
 
     # Section 8
     data_quality_statement = models.TextField(
-        _('data quality statement'),
+        _('Data quality statement'),
         max_length=2000,
         blank=True,
         null=True,
@@ -904,26 +992,16 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         blank=True)
     popular_count = models.IntegerField(default=0)
     share_count = models.IntegerField(default=0)
-    featured = models.BooleanField(
-        _("Featured"),
-        default=False,
-        help_text=_('Should this resource be advertised in home page?'))
-    was_published = models.BooleanField(
-        _("Was Published"),
-        default=True,
-        help_text=_('Previous Published state.'))
+    featured = models.BooleanField(_("Featured"), default=False, help_text=_(
+        'should this resource be advertised in home page?'))
     is_published = models.BooleanField(
         _("Is Published"),
         default=True,
-        help_text=_('Should this resource be published and searchable?'))
-    was_approved = models.BooleanField(
-        _("Was Approved"),
-        default=True,
-        help_text=_('Previous Approved state.'))
+        help_text=_('should this resource be published and searchable?'))
     is_approved = models.BooleanField(
         _("Approved"),
         default=True,
-        help_text=_('Is this resource validated from a publisher or editor?'))
+        help_text=_('is this resource validated from a publisher or editor?'))
 
     # fields necessary for the apis
     thumbnail_url = models.TextField(_("Thumbnail url"), null=True, blank=True)
@@ -959,7 +1037,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     metadata_only = models.BooleanField(
         _("Metadata"),
         default=False,
-        help_text=_('If true, will be excluded from search'))
+        help_text=_('if true, will be excluded from search'))
 
     objects = ResourceBaseManager()
 
@@ -1003,6 +1081,22 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     @property
     def raw_abstract(self):
         return self._remove_html_tags(self.abstract)
+
+    @property
+    def raw_data_description(self):
+        return self._remove_html_tags(self.data_description)
+
+    @property
+    def raw_date_content(self):
+        return self._remove_html_tags(self.date_content)
+
+    @property
+    def raw_spatial_resolution(self):
+        return self._remove_html_tags(self.spatial_resolution)
+
+    @property
+    def raw_source(self):
+        return self._remove_html_tags(self.source)
 
     @property
     def raw_purpose(self):
@@ -1273,7 +1367,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     if not field.all():
                         continue
                 if required_field == 'category':
-                    if not field.identifier:
+                    if not field.all():
                         continue
                 filled_fields.append(field)
         return f'{len(filled_fields) * 100 / len(required_fields)}%'
@@ -1286,6 +1380,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             return False
         except Exception:
             return False
+
+    def category_list(self):
+        return [c.identifier for c in self.category.all()]
 
     def keyword_list(self):
         return [kw.name for kw in self.keywords.all()]
@@ -2040,7 +2137,9 @@ def resourcebase_post_save(instance, *args, **kwargs):
             poly1 = GEOSGeometry(wkt1, srid=int(srid1[0]))
             poly1.transform(4326)
 
-            queryset = Region.objects.all().order_by('name')
+            # queryset = Region.objects.all().order_by('name')
+            ## Get only specific region that is Indonesia
+            queryset = Region.objects.filter(code__iexact="IDN")
             global_regions = []
             regions_to_add = []
             for region in queryset:
@@ -2073,7 +2172,6 @@ def resourcebase_post_save(instance, *args, **kwargs):
         # refresh catalogue metadata records
         from geonode.catalogue.models import catalogue_post_save
         catalogue_post_save(instance=instance, sender=instance.__class__)
-
 
 def rating_post_save(instance, *args, **kwargs):
     """
