@@ -168,10 +168,6 @@ class TopicCategory(models.Model):
 
 class DataType(models.Model):
     """
-<<<<<<< HEAD
-
-=======
->>>>>>> 3.3.x
     """
     identifier = models.CharField(max_length=255)
     description = models.TextField(default='')
@@ -185,26 +181,8 @@ class DataType(models.Model):
         ordering = ("identifier",)
         verbose_name_plural = "Metadata Type of Data"
 
-<<<<<<< HEAD
-"""
-Table for record of processing activities
-When users request to download and use of classified data, this table holds information needed to record all requests
-"""
 class Ropa(models.Model):
     """
-
-    """
-    identifier = models.CharField(max_length=255)
-    requester_name = models.CharField(max_length=255)
-    requester_email = models.CharField(max_length=255)
-    requester_position = models.CharField(max_length=255)
-    purposes = models.TextField(default='')
-    retention = models.CharField(max_length=255)
-    resourcebase_ptr_id = models.IntegerField()
-=======
-class Ropa(models.Model):
-    """
-    requester_name', 'requester_email', 'requester_position', 'purposes', 'retention', 'resource_title', 'resource_name', 'resource_owner'
     """
     identifier = models.CharField(max_length=255)
     requester_name = models.TextField(default='')
@@ -212,26 +190,16 @@ class Ropa(models.Model):
     requester_position = models.CharField(max_length=255)
     purposes = models.TextField(default='')
     retention = models.CharField(max_length=255)
->>>>>>> 3.3.x
     resource_title = models.CharField(max_length=255)
     resource_name = models.CharField(max_length=255)
     resource_owner = models.CharField(max_length=255)
     
     def __str__(self):
-<<<<<<< HEAD
-        return self.resource_title
-
-    class Meta:
-        ordering = ("identifier",)
-        verbose_name_plural = "Record of Processing Activities"
-
-=======
         return self.resource_name
 
     class Meta:
         ordering = ("identifier",)
         verbose_name_plural = "Record of Processing Activity"
->>>>>>> 3.3.x
 
 class SpatialRepresentationType(models.Model):
     """
@@ -1069,12 +1037,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         _("Metadata"),
         default=False,
         help_text=_('if true, will be excluded from search'))
-<<<<<<< HEAD
-
-    __is_approved = False
-    __is_published = False
-=======
->>>>>>> 3.3.x
 
     objects = ResourceBaseManager()
 
