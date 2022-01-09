@@ -49,7 +49,6 @@ from geonode.base.models import (
     MenuItem,
     CuratedThumbnail,
     Configuration,
-    Ropa,
     Thesaurus, ThesaurusLabel, ThesaurusKeyword, ThesaurusKeywordLabel,
 )
 
@@ -186,18 +185,6 @@ class DataTypeAdmin(TabbedTranslationAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return True
-
-class RopaAdmin(TabbedTranslationAdmin):
-    model = Ropa
-    list_display_links = ('identifier',)
-    list_display = ('requester_name', 'requester_email', 'requester_position', 'purposes', 'retention', 'resource_title', 'resource_name', 'resource_owner')
-
-    def has_add_permission(self, request):
-        return True
-
-    def has_delete_permission(self, request, obj=None):
-        return True
-
 
 class RegionAdmin(TabbedTranslationAdmin):
     model = Region
@@ -381,7 +368,6 @@ class ThesaurusKeywordLabelAdmin(admin.ModelAdmin):
 
 admin.site.register(TopicCategory, TopicCategoryAdmin)
 admin.site.register(DataType, DataTypeAdmin)
-admin.site.register(Ropa, RopaAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(SpatialRepresentationType, SpatialRepresentationTypeAdmin)
 admin.site.register(RestrictionCodeType, RestrictionCodeTypeAdmin)
