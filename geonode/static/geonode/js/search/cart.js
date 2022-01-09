@@ -177,7 +177,8 @@
       }
 
       this.category = function(key) {
-        const url = 'https://data.wri-indonesia.id/api/categories/'; 
+        const siteUrl = '{{ SITEURL }}'.replace(/\/?$/, '/');
+        const url = siteUrl + 'api/categories/'; 
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -185,7 +186,7 @@
                 response.objects.forEach(function(value, index, array) {
                   if (value.gn_description == key) {
                     const cid = value.identifier;
-                    const redirect_to = "https://data.wri-indonesia.id/search/?category__identifier__in="+cid
+                    const redirect_to = siteUrl + "search/?category__identifier__in="+cid
                     window.location.replace(redirect_to);
                   }
               })
