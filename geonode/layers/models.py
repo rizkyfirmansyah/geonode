@@ -216,9 +216,13 @@ class Layer(ResourceBase):
     def processed(self):
         self.upload_session = UploadSession.objects.filter(resource=self).first()
         if self.upload_session:
-            return self.upload_session.processed
+            if self.upload_session.processed:
+                self.clear_dirty_state()
+            else:
+                self.set_dirty_state()
         else:
-            return True
+            self.clear_dirty_state()
+        return not self.dirty_state
 
     @property
     def display_type(self):
@@ -401,13 +405,13 @@ class LayerFile(models.Model):
     """Helper class to store original files.
     """
     upload_session = models.ForeignKey(UploadSession, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=4096)
     base = models.BooleanField(default=False)
     file = models.FileField(
         upload_to='layers/%Y/%m/%d',
         storage=FileSystemStorage(
             base_url=settings.LOCAL_MEDIA_URL),
-        max_length=255)
+        max_length=4096)
 
 
 class AttributeManager(models.Manager):
@@ -643,8 +647,9 @@ def pre_save_layer(instance, sender, **kwargs):
         instance.set_bbox_polygon((-180, -90, 180, 90), 'EPSG:4326')
     instance.set_bounds_from_bbox(
         instance.bbox_polygon,
-        instance.bbox_polygon.srid
+        instance.srid or instance.bbox_polygon.srid
     )
+
     # Send a notification when a layer is created
     if instance.pk is None and instance.title:
         # Resource Created
@@ -668,7 +673,6 @@ def pre_delete_layer(instance, sender, **kwargs):
         MapLayer.objects.filter(
             name=instance.alternate,
             ows_url=instance.ows_url).delete()
-        return
 
     logger.debug(
         "Going to delete the styles associated for [%s]",
@@ -684,17 +688,37 @@ def pre_delete_layer(instance, sender, **kwargs):
             if style != default_style:
                 style.delete()
 
+    if 'geonode.upload' in settings.INSTALLED_APPS and \
+            settings.UPLOADER['BACKEND'] == 'geonode.importer':
+        from geonode.upload.models import Upload
+        # Need to call delete one by one in ordee to invoke the
+        #  'delete' overridden method
+        for upload in Upload.objects.filter(layer_id=instance.id):
+            upload.delete()
+
     # Delete object permissions
     remove_object_permissions(instance)
 
 
 def post_delete_layer(instance, sender, **kwargs):
     """
-    Removed the layer from any associated map, if any.
-    Remove the layer default style.
+    - Remove any associated style to the layer, if it is not used by other layers.
+    - Default style will be deleted in post_delete_dataset.
+    - Remove the layer from any associated map, if any.
+    - Remove the layer default style.
     """
-    if instance.remote_service is not None and instance.remote_service.method == INDEXED:
-        return
+    try:
+        if instance.get_real_instance().remote_service is not None:
+            from geonode.services.models import HarvestJob
+            _resource_id = instance.get_real_instance().alternate
+            HarvestJob.objects.filter(
+                service=instance.get_real_instance().remote_service, resource_id=_resource_id).delete()
+            _resource_id = instance.get_real_instance().alternate.split(":")[-1] if len(instance.get_real_instance().alternate.split(":")) else None
+            if _resource_id:
+                HarvestJob.objects.filter(
+                    service=instance.get_real_instance().remote_service, resource_id=_resource_id).delete()
+    except Exception as e:
+        logger.exception(e)
 
     from geonode.maps.models import MapLayer
     logger.debug(

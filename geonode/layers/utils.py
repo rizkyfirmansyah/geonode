@@ -25,6 +25,7 @@
 import re
 import os
 import glob
+import shutil
 import string
 import sys
 import json
@@ -57,11 +58,12 @@ from geonode.layers.models import UploadSession, LayerFile
 from geonode.base.models import SpatialRepresentationType,  \
     TopicCategory, Region, License, ResourceBase
 from geonode.layers.models import shp_exts, csv_exts, vec_exts, cov_exts, Layer
-from geonode.layers.metadata import set_metadata
-from geonode.upload.utils import _fixup_base_file
+from geonode.layers.metadata import convert_keyword, parse_metadata
+from geonode.upload.utils import KeywordHandler, _fixup_base_file
 from geonode.utils import (check_ogc_backend,
                            unzip_file,
                            extract_tarfile)
+from geonode.geoserver.helpers import gs_catalog, gs_uploader
 
 READ_PERMISSIONS = [
     'view_resourcebase'
@@ -83,7 +85,7 @@ OWNER_PERMISSIONS = [
 
 logger = logging.getLogger('geonode.layers.utils')
 
-_separator = '\n' + ('-' * 100) + '\n'
+_separator = f"\n{'-' * 100}\n"
 
 
 def _clean_string(
@@ -127,13 +129,13 @@ def get_files(filename):
     try:
         filename.encode('ascii')
     except UnicodeEncodeError:
-        msg = "Please use only characters from the english alphabet for the filename. '%s' is not yet supported." \
-            % os.path.basename(filename).encode('UTF-8', 'strict')
+        msg = f"Please use only characters from the english alphabet for the filename. '{os.path.basename(filename).encode('UTF-8', 'strict')}' is not yet supported."
         raise GeoNodeException(msg)
 
     # Let's unzip the filname in case it is a ZIP file
     import tempfile
     from geonode.utils import unzip_file
+    tempdir = None
     if is_zipfile(filename):
         tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
         _filename = unzip_file(filename,
@@ -156,6 +158,8 @@ def get_files(filename):
     if not os.path.exists(filename):
         msg = f'Could not open {filename}. Make sure you are using a valid file'
         logger.debug(msg)
+        if tempdir is not None:
+            shutil.rmtree(tempdir, ignore_errors=True)
         raise GeoNodeException(msg)
 
     base_name, extension = os.path.splitext(filename)
@@ -171,20 +175,26 @@ def get_files(filename):
                 msg = (f'Expected helper file {base_name}.{ext} does not exist; a Shapefile '
                        'requires helper files with the following extensions: '
                        f'{list(required_extensions.keys())}')
+                if tempdir is not None:
+                    shutil.rmtree(tempdir, ignore_errors=True)
                 raise GeoNodeException(msg)
             elif len(matches) > 1:
                 msg = ('Multiple helper files for %s exist; they need to be '
                        'distinct by spelling and not just case.') % filename
+                if tempdir is not None:
+                    shutil.rmtree(tempdir, ignore_errors=True)
                 raise GeoNodeException(msg)
             else:
                 files[ext] = matches[0]
 
-        matches = glob.glob(glob_name + ".[pP][rR][jJ]")
+        matches = glob.glob(f"{glob_name}.[pP][rR][jJ]")
         if len(matches) == 1:
             files['prj'] = matches[0]
         elif len(matches) > 1:
             msg = ('Multiple helper files for %s exist; they need to be '
                    'distinct by spelling and not just case.') % filename
+            if tempdir is not None:
+                shutil.rmtree(tempdir, ignore_errors=True)
             raise GeoNodeException(msg)
 
     elif extension.lower() in cov_exts:
@@ -192,33 +202,37 @@ def get_files(filename):
 
     # Only for GeoServer
     if check_ogc_backend(geoserver.BACKEND_PACKAGE):
-        matches = glob.glob(os.path.dirname(glob_name) + ".[sS][lL][dD]")
+        matches = glob.glob(f"{os.path.dirname(glob_name)}.[sS][lL][dD]")
         if len(matches) == 1:
             files['sld'] = matches[0]
         else:
-            matches = glob.glob(glob_name + ".[sS][lL][dD]")
+            matches = glob.glob(f"{glob_name}.[sS][lL][dD]")
             if len(matches) == 1:
                 files['sld'] = matches[0]
             elif len(matches) > 1:
                 msg = ('Multiple style files (sld) for %s exist; they need to be '
                        'distinct by spelling and not just case.') % filename
+                if tempdir is not None:
+                    shutil.rmtree(tempdir, ignore_errors=True)
                 raise GeoNodeException(msg)
 
-    matches = glob.glob(glob_name + ".[xX][mM][lL]")
+    matches = glob.glob(f"{glob_name}.[xX][mM][lL]")
 
     # shapefile XML metadata is sometimes named base_name.shp.xml
     # try looking for filename.xml if base_name.xml does not exist
     if len(matches) == 0:
-        matches = glob.glob(filename + ".[xX][mM][lL]")
+        matches = glob.glob(f"{filename}.[xX][mM][lL]")
 
     if len(matches) == 1:
         files['xml'] = matches[0]
     elif len(matches) > 1:
         msg = ('Multiple XML files for %s exist; they need to be '
                'distinct by spelling and not just case.') % filename
+        if tempdir is not None:
+            shutil.rmtree(tempdir, ignore_errors=True)
         raise GeoNodeException(msg)
 
-    return files
+    return files, tempdir
 
 
 def layer_type(filename):
@@ -434,8 +448,6 @@ def file_upload(filename,
         keywords = []
     if regions is None:
         regions = []
-    if category is None:
-        category = []
 
     # Get a valid user
     theuser = get_valid_user(user)
@@ -454,59 +466,14 @@ def file_upload(filename,
 
     # Get all the files uploaded with the layer
     if os.path.exists(filename):
-        files = get_files(filename)
+        files, _ = get_files(filename)
     else:
         raise Exception(
             _("You are attempting to replace a vector layer with an unknown format."))
 
     # We are going to replace an existing Layer...
     if layer and overwrite:
-        if layer.is_vector() and is_raster(filename):
-            raise Exception(_(
-                "You are attempting to replace a vector layer with a raster."))
-        elif (not layer.is_vector()) and is_vector(filename):
-            raise Exception(_(
-                "You are attempting to replace a raster layer with a vector."))
-
-        if layer.is_vector():
-            absolute_base_file = None
-            try:
-                if 'shp' in files and os.path.exists(files['shp']):
-                    absolute_base_file = _fixup_base_file(files['shp'])
-                elif 'zip' in files and os.path.exists(files['zip']):
-                    absolute_base_file = _fixup_base_file(files['zip'])
-            except Exception:
-                absolute_base_file = None
-
-            if not absolute_base_file or \
-            os.path.splitext(absolute_base_file)[1].lower() != '.shp':
-                raise Exception(
-                    _("You are attempting to replace a vector layer with an unknown format."))
-            else:
-                try:
-                    gtype = layer.gtype if not gtype else gtype
-                    inDataSource = ogr.Open(absolute_base_file)
-                    lyr = inDataSource.GetLayer(str(layer.name))
-                    if not lyr:
-                        raise Exception(
-                            _("Please ensure the name is consistent with the file you are trying to replace."))
-                    schema_is_compliant = False
-                    _ff = json.loads(lyr.GetFeature(0).ExportToJson())
-                    if gtype:
-                        logger.warning(
-                            _("Local GeoNode layer has no geometry type."))
-                        if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
-                            schema_is_compliant = True
-                    elif "geometry" in _ff and _ff["geometry"]["type"]:
-                        schema_is_compliant = True
-
-                    if not schema_is_compliant:
-                        raise Exception(
-                            _("Please ensure there is at least one geometry type \
-                                that is consistent with the file you are trying to replace."))
-                except Exception as e:
-                    raise Exception(
-                        _(f"Some error occurred while trying to access the uploaded schema: {str(e)}"))
+        validate_input_source(layer, filename, files, gtype, action_type='replace')
 
     # Set a default title that looks nice ...
     if title is None:
@@ -562,7 +529,7 @@ def file_upload(filename,
     bbox_polygon = BBOXHelper.from_xy(bbox).as_polygon()
 
     if srid:
-        srid_url = "http://www.spatialreference.org/ref/" + srid.replace(':', '/').lower() + "/"  # noqa
+        srid_url = f"http://www.spatialreference.org/ref/{srid.replace(':', '/').lower()}/"  # noqa
         bbox_polygon.srid = int(srid.split(':')[1])
 
     # by default, if RESOURCE_PUBLISHING=True then layer.is_published
@@ -583,7 +550,8 @@ def file_upload(filename,
         'srid': 'EPSG:4326',
         'is_approved': is_approved,
         'is_published': is_published,
-        'license': license
+        'license': license,
+        'category': category
     }
 
     # set metadata
@@ -595,7 +563,7 @@ def file_upload(filename,
         defaults['metadata_uploaded_preserve'] = metadata_uploaded_preserve
 
         # get model properties from XML
-        identifier, vals, regions, keywords = set_metadata(xml_file)
+        identifier, vals, regions, keywords, custom = parse_metadata(xml_file)
 
         if defaults['metadata_uploaded_preserve']:
             defaults['metadata_xml'] = xml_file
@@ -619,7 +587,8 @@ def file_upload(filename,
             defaults[key] = value
 
     regions_resolved, regions_unresolved = resolve_regions(regions)
-    keywords.extend(regions_unresolved)
+    if keywords and regions_unresolved:
+        keywords.extend(convert_keyword(regions_unresolved))
 
     # If it is a vector file, create the layer in postgis.
     if is_vector(filename):
@@ -645,13 +614,14 @@ def file_upload(filename,
                     if not layer:
                         layer = Layer.objects.create(
                             name=valid_name,
+                            owner=user,
                             workspace=settings.DEFAULT_WORKSPACE
                         )
                         created = True
                 elif identifier:
                     layer = Layer.objects.filter(uuid=identifier).first()
                     if not layer:
-                        layer = Layer.objects.create(uuid=identifier)
+                        layer = Layer.objects.create(uuid=identifier, owner=user)
                         created = True
     except IntegrityError:
         raise
@@ -662,6 +632,7 @@ def file_upload(filename,
     # doing a layer.save()
     if not created and overwrite:
         # update with new information
+        defaults['owner'] = defaults.get('owner', None) or layer.owner
         defaults['title'] = defaults.get('title', None) or layer.title
         defaults['abstract'] = defaults.get('abstract', None) or layer.abstract
         defaults['bbox_polygon'] = defaults.get('bbox_polygon', None) or layer.bbox_polygon
@@ -671,6 +642,7 @@ def file_upload(filename,
         defaults['is_published'] = defaults.get(
             'is_published', is_published) or layer.is_published
         defaults['license'] = defaults.get('license', None) or layer.license
+        defaults['category'] = defaults.get('category', None) or layer.category
 
         if upload_session:
             if layer.upload_session:
@@ -688,14 +660,7 @@ def file_upload(filename,
         upload_session.processed = False
         upload_session.save()
 
-    # Assign the keywords (needs to be done after saving)
-    keywords = list(set(keywords))
-    if keywords:
-        if len(keywords) > 0:
-            if not layer.keywords:
-                layer.keywords = keywords
-            else:
-                layer.keywords.add(*keywords)
+    layer = KeywordHandler(layer, keywords).set_keywords()
 
     # Assign the regions (needs to be done after saving)
     regions_resolved = list(set(regions_resolved))
@@ -706,16 +671,6 @@ def file_upload(filename,
             else:
                 layer.regions.clear()
                 layer.regions.add(*regions_resolved)
-
-    # Assign the categories (needs to be done after saving)
-    categories = list(set(categories))
-    if categories:
-        if len(categories) > 0:
-            if not layer.category:
-                layer.category = categories
-            else:
-                layer.category.clear()
-                layer.category.add(*categories)
 
     # Assign and save the charset using the Layer class' object (layer)
     if charset != 'UTF-8':
@@ -922,7 +877,7 @@ def delete_orphaned_layers():
 
     for filename in files:
         if LayerFile.objects.filter(file__icontains=filename).count() == 0:
-            logger.debug("Deleting orphaned layer file " + filename)
+            logger.debug(f"Deleting orphaned layer file {filename}")
             try:
                 storage.delete(os.path.join("layers", filename))
                 deleted.append(filename)
@@ -969,7 +924,7 @@ def set_layers_permissions(permissions_name, resources_names=None,
                     permissions = READ_PERMISSIONS
                 else:
                     permissions = READ_PERMISSIONS + WRITE_PERMISSIONS \
-                                  + DOWNLOAD_PERMISSIONS + OWNER_PERMISSIONS
+                        + DOWNLOAD_PERMISSIONS + OWNER_PERMISSIONS
             elif permissions_name.lower() in ('write', 'w'):
                 if not delete_flag:
                     permissions = READ_PERMISSIONS + WRITE_PERMISSIONS
@@ -983,7 +938,7 @@ def set_layers_permissions(permissions_name, resources_names=None,
             elif permissions_name.lower() in ('owner', 'o'):
                 if not delete_flag:
                     permissions = READ_PERMISSIONS + WRITE_PERMISSIONS \
-                                  + DOWNLOAD_PERMISSIONS + OWNER_PERMISSIONS
+                        + DOWNLOAD_PERMISSIONS + OWNER_PERMISSIONS
                 else:
                     permissions = OWNER_PERMISSIONS
             if not permissions:
@@ -1134,3 +1089,107 @@ def set_layers_permissions(permissions_name, resources_names=None,
 def get_uuid_handler():
     from django.utils.module_loading import import_string
     return import_string(settings.LAYER_UUID_HANDLER)
+
+
+def gs_append_data_to_layer(layer, base_files, user):
+    gs_layer = gs_catalog.get_layer(layer.name)
+    if gs_layer and gs_layer.type == 'VECTOR':
+        #  opening upload session for the selected layer
+        upload_session, created = UploadSession.objects.get_or_create(resource=layer, user=user)
+        upload_session.resource = layer
+        upload_session.processed = False
+        upload_session.save()
+
+        #  opening Import session for the selected layer
+        import_session = gs_uploader.start_import(
+            import_id=upload_session.id, name=layer.name, target_store=gs_layer.resource.store.name
+        )
+
+        import_session.upload_task(base_files)
+        task = import_session.tasks[0]
+        #  Changing layer name, mode and target
+        task.layer.set_target_layer_name(layer.name)
+        task.set_update_mode("APPEND")
+        task.set_target(store_name=gs_layer.resource.store.name, workspace=gs_layer.resource.workspace.name)
+        #  Starting import process
+        import_session.commit()
+        return upload_session
+
+
+def validate_input_source(layer, filename, files, gtype=None, action_type='replace'):
+    if layer.is_vector() and is_raster(filename):
+        raise Exception(_(
+            f"You are attempting to {action_type} a vector layer with a raster."))
+    elif (not layer.is_vector()) and is_vector(filename):
+        raise Exception(_(
+            f"You are attempting to {action_type} a raster layer with a vector."))
+
+    if layer.is_vector():
+        absolute_base_file = None
+        try:
+            if 'shp' in files and os.path.exists(files['shp']):
+                absolute_base_file = _fixup_base_file(files['shp'])
+            elif 'zip' in files and os.path.exists(files['zip']):
+                absolute_base_file = _fixup_base_file(files['zip'])
+        except Exception:
+            absolute_base_file = None
+
+        if not absolute_base_file or \
+                os.path.splitext(absolute_base_file)[1].lower() != '.shp':
+            raise Exception(
+                _(f"You are attempting to {action_type} a vector layer with an unknown format."))
+        else:
+            try:
+                gtype = layer.gtype if not gtype else gtype
+                inDataSource = ogr.Open(absolute_base_file)
+                lyr = inDataSource.GetLayer(str(layer.name))
+                if not lyr:
+                    raise Exception(
+                        _(f"Please ensure the name is consistent with the file you are trying to {action_type}."))
+                schema_is_compliant = False
+                _ff = json.loads(lyr.GetFeature(0).ExportToJson())
+                if gtype:
+                    logger.warning(
+                        _("Local GeoNode layer has no geometry type."))
+                    if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
+                        schema_is_compliant = True
+                elif "geometry" in _ff and _ff["geometry"]["type"]:
+                    schema_is_compliant = True
+
+                if not schema_is_compliant:
+                    raise Exception(
+                        _(f"Please ensure there is at least one geometry type \
+                            that is consistent with the file you are trying to {action_type}."))
+
+                new_schema_fields = [field.name for field in lyr.schema]
+                gs_layer = gs_catalog.get_layer(layer.name)
+
+                if not gs_layer:
+                    raise Exception(
+                        _("The selected Layer does not exists in the catalog."))
+
+                gs_layer = gs_layer.resource.attributes
+                schema_is_compliant = all([x.replace("-", '_') in gs_layer for x in new_schema_fields])
+
+                if not schema_is_compliant:
+                    raise Exception(
+                        _("Please ensure that the layer structure is consistent "
+                          f"with the file you are trying to {action_type}."))
+                return True
+            except Exception as e:
+                raise Exception(
+                    _(f"Some error occurred while trying to access the uploaded schema: {str(e)}"))
+
+
+def is_xml_upload_only(request):
+    # will check if only the XML file is provided
+    return mdata_search_by_type(request, 'xml')
+
+
+def is_sld_upload_only(request):
+    return mdata_search_by_type(request, 'sld')
+
+
+def mdata_search_by_type(request, filetype):
+    files = list({v.name for k, v in request.FILES.items()})
+    return len(files) == 1 and all([filetype in f for f in files])

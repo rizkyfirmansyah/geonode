@@ -523,50 +523,42 @@ define(function (require, exports) {
      *  @returns {string}
      */
     LayerInfo.prototype.doFinal = function (resp, callback, array) {
-        var self = this;
-        if (resp.hasOwnProperty('redirect_to') && resp.redirect_to.indexOf('upload/final') > -1) {
-            common.make_request({
-                url: resp.redirect_to,
-                async: true,
-                beforeSend: function() {
-                    self.logStatus({
-                        msg: '<p>' + gettext('Performing Final GeoServer Config Step') + '<img class="pull-right" src="../../static/geonode/img/loading.gif"></p>',
-                        level: 'alert-success',
-                        empty: 'true'
-                    });
-                    self.polling = true;
-                    self.startPolling();
-                },
-                failure: function (resp, status) {
-                    self.polling = false;
-                    self.markError(resp.errors, status);
-
-                    callback(array);
-                },
-                success: function (resp, status) {
-                    self.polling = false;
-                    if (resp.status === "other") {
-                        self.logStatus({
-                            msg:'<p>' + gettext('You need to specify more information in order to complete your upload') + '</p>',
-                            level: 'alert-success',
-                            empty: 'true'
-                        });
-                    } else if (resp.status === "pending") {
-                        setTimeout(function() {
-                            self.doFinal(resp, callback, array);
-                        }, 5000);
-                    } else if (resp.status === 'error') {
-                        self.polling = false;
-                        self.markError(resp.error_msg, resp.status);
-
-                        callback(array);
-                    } else {
-                        self.displayUploadedLayerLinks(resp);
-
-                        callback(array);
-                    }
-                }
-            });
+      var self = this;
+      if (resp.hasOwnProperty('redirect_to') && resp.redirect_to.indexOf('upload/final') > -1) {
+          common.make_request({
+              url: '#',
+              async: true,
+              beforeSend: function() {
+                  self.logStatus({
+                      msg: '<p>' + gettext('Performing Final GeoServer Config Step. Check the Upload status above!') + '</p>',
+                      level: 'alert-success',
+                      empty: 'true'
+                  });
+                  self.polling = true;
+                  self.startPolling();
+              },
+              success: function (resp, status) {
+                  self.polling = false;
+                  if (resp.status === "other") {
+                      self.logStatus({
+                          msg:'<p>' + gettext('You need to specify more information in order to complete your upload') + '</p>',
+                          level: 'alert-success',
+                          empty: 'true'
+                      });
+                  } else if (resp.status === "pending") {
+                      setTimeout(function() {
+                          self.doFinal(resp, callback, array);
+                      }, 5000);
+                  } else if (resp.status === 'error') {
+                      self.polling = false;
+                      self.markError(resp.error_msg, resp.status);
+                      callback(array);
+                  } else {
+                      // self.displayUploadedLayerLinks(resp);
+                      callback(array);
+                  }
+              }
+          });
         } else if (resp.status === "incomplete") {
             var id = common.parseQueryString(resp.url).id;
             var element = 'next_step_' + id
@@ -686,14 +678,13 @@ define(function (require, exports) {
         var form_data = this.prepareFormData(), self = this;
         var prog = "";
         var start = new Date().getTime();
-        console.log(form_data);
         $.ajax({
             url: form_target,
             async: true,
             mode: "queue",
             type: "POST",
             data: form_data,
-            // timeout: 3600000, // sets timeout to 60 minutes
+            timeout: 3600000, // sets timeout to 60 minutes
             processData: false,
             contentType: false,
             xhr: function() {

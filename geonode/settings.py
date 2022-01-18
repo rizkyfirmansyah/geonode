@@ -169,7 +169,7 @@ geonode_data:geonode_data@localhost:5432/geonode_data')
 # If set to 'True' it will refresh/regenrate all resource links everytime a 'migrate' will be performed
 UPDATE_RESOURCE_LINKS_AT_MIGRATE = ast.literal_eval(os.getenv('UPDATE_RESOURCE_LINKS_AT_MIGRATE', 'False'))
 
-MANAGERS = ADMINS = os.getenv('ADMINS', ['Rizky Firmansyah', 'wri.indonesia.gis@gmail.com'])
+MANAGERS = ADMINS = os.getenv('ADMINS', [])
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -191,6 +191,7 @@ LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
 _DEFAULT_LANGUAGES = """(
     ('id', 'Bahasa Indonesia'),
     ('en', 'English'),
+    ('de', 'Deutsch'),
 )"""
 
 LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', _DEFAULT_LANGUAGES))
@@ -314,16 +315,13 @@ if not DEBUG and S3_MEDIA_ENABLED:
 
 # Cache Bustin Settings
 CACHE_BUSTING_STATIC_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_STATIC_ENABLED', 'False'))
-CACHE_BUSTING_MEDIA_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_MEDIA_ENABLED', 'False'))
 
 if not DEBUG and not S3_STATIC_ENABLED and not S3_MEDIA_ENABLED:
-    if CACHE_BUSTING_STATIC_ENABLED or CACHE_BUSTING_MEDIA_ENABLED:
+    if CACHE_BUSTING_STATIC_ENABLED:
         from django.contrib.staticfiles import storage
         storage.ManifestStaticFilesStorage.manifest_strict = False
     if CACHE_BUSTING_STATIC_ENABLED:
         STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-    if CACHE_BUSTING_MEDIA_ENABLED:
-        DEFAULT_FILE_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 CACHES = {
     # DUMMY CACHE FOR DEVELOPMENT
@@ -332,10 +330,10 @@ CACHES = {
     },
 
     # MEMCACHED EXAMPLE
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    },
+    # 'default': {
+    #     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+    #     'LOCATION': '127.0.0.1:11211',
+    # },
 
     # FILECACHE EXAMPLE
     # 'default': {
@@ -372,7 +370,7 @@ MEMCACHED_ENABLED = ast.literal_eval(os.getenv('MEMCACHED_ENABLED', 'False'))
 MEMCACHED_BACKEND = os.getenv('MEMCACHED_BACKEND', 'django.core.cache.backends.memcached.MemcachedCache')
 MEMCACHED_LOCATION = os.getenv('MEMCACHED_LOCATION', '127.0.0.1:11211')
 MEMCACHED_LOCK_EXPIRE = int(os.getenv('MEMCACHED_LOCK_EXPIRE', 3600))
-MEMCACHED_LOCK_TIMEOUT = int(os.getenv('MEMCACHED_LOCK_TIMEOUT', 30))
+MEMCACHED_LOCK_TIMEOUT = int(os.getenv('MEMCACHED_LOCK_TIMEOUT', 10))
 
 if MEMCACHED_ENABLED:
     CACHES['default'] = {
@@ -416,7 +414,8 @@ GEONODE_INTERNAL_APPS = (
     'geonode.upload',
     'geonode.tasks',
     'geonode.messaging',
-    'geonode.monitoring',
+    'geonode.favorite',
+    'geonode.monitoring'
 )
 
 GEONODE_CONTRIB_APPS = (
@@ -459,6 +458,10 @@ INSTALLED_APPS = (
     'storages',
     'floppyforms',
     'tinymce',
+    'widget_tweaks',
+    'django_celery_beat',
+    'django_celery_results',
+    'markdownify',
 
     # REST APIs
     'rest_framework',
@@ -492,12 +495,17 @@ INSTALLED_APPS = (
     'geonode',
 )
 
-INSTALLED_APPS += ('markdownify',)
-MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
-markdown_white_listed_tags = {
+markdown_white_listed_tags = [
     'a', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'ul', 'li', 'span', 'blockquote', 'strong', 'code'
+]
+
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": os.getenv('MARKDOWNIFY_WHITELIST_TAGS', markdown_white_listed_tags)
+    }
 }
-MARKDOWNIFY_WHITELIST_TAGS = os.getenv('MARKDOWNIFY_WHITELIST_TAGS', markdown_white_listed_tags)
+
+MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 
 INSTALLED_APPS += GEONODE_APPS
 
@@ -512,6 +520,9 @@ REST_FRAMEWORK = {
         'dynamic_rest.renderers.DynamicBrowsableAPIRenderer',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_PARENT_LOOKUP_KWARG_NAME_PREFIX': '',
 }
 
 REST_API_DEFAULT_PAGE = os.getenv('REST_API_DEFAULT_PAGE', 1)
@@ -678,6 +689,22 @@ INTEGRATION = 'geonode.tests.integration' in sys.argv
 #
 
 # Django automatically includes the "templates" dir in all the INSTALLED_APPS.
+CONTEXT_PROCESSORS = [
+    'django.template.context_processors.debug',
+    'django.template.context_processors.i18n',
+    'django.template.context_processors.tz',
+    'django.template.context_processors.request',
+    'django.template.context_processors.media',
+    'django.template.context_processors.static',
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
+    'django.contrib.auth.context_processors.auth',
+    'geonode.context_processors.resource_urls',
+    'geonode.themes.context_processors.custom_theme'
+]
+if 'geonode.geoserver' in INSTALLED_APPS:
+    CONTEXT_PROCESSORS += ['geonode.geoserver.context_processors.geoserver_urls', ]
+
 TEMPLATES = [
     {
         'NAME': 'GeoNode Project Templates',
@@ -685,20 +712,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(PROJECT_ROOT, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.tz',
-                'django.template.context_processors.request',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'django.contrib.auth.context_processors.auth',
-                'geonode.context_processors.resource_urls',
-                'geonode.geoserver.context_processors.geoserver_urls',
-                'geonode.themes.context_processors.custom_theme'
-            ],
+            'context_processors': CONTEXT_PROCESSORS,
             # Either remove APP_DIRS or remove the 'loaders' option.
             # 'loaders': [
             #      'django.template.loaders.filesystem.Loader',
@@ -737,7 +751,7 @@ if SESSION_EXPIRED_CONTROL_ENABLED:
     # This middleware checks for ACCESS_TOKEN validity and if expired forces
     # user logout
     MIDDLEWARE += \
-            ('geonode.security.middleware.SessionControlMiddleware',)
+        ('geonode.security.middleware.SessionControlMiddleware',)
 
 SESSION_COOKIE_SECURE = ast.literal_eval(os.environ.get('SESSION_COOKIE_SECURE', 'False'))
 SESSION_COOKIE_AGE = 3 * 24 * 60 *60 # 3 days
@@ -754,7 +768,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = ast.literal_eval(os.environ.get('SECURE_HSTS_IN
 # Replacement of the default authentication backend in order to support
 # permissions per object.
 AUTHENTICATION_BACKENDS = (
-    'oauth2_provider.backends.OAuth2Backend',
+    # 'oauth2_provider.backends.OAuth2Backend',
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -775,9 +789,10 @@ OAUTH2_PROVIDER = {
 
     'CLIENT_ID_GENERATOR_CLASS': 'oauth2_provider.generators.ClientIdGenerator',
     'OAUTH2_SERVER_CLASS': 'geonode.security.oauth2_servers.OIDCServer',
-    'OAUTH2_VALIDATOR_CLASS': 'geonode.security.oauth2_validators.OIDCValidator',
+    # 'OAUTH2_VALIDATOR_CLASS': 'geonode.security.oauth2_validators.OIDCValidator',
 
     # OpenID Connect
+    "OIDC_ENABLED": True,
     "OIDC_ISS_ENDPOINT": SITEURL,
     "OIDC_USERINFO_ENDPOINT": f"{SITEURL}api/o/v4/tokeninfo/",
     "OIDC_RSA_PRIVATE_KEY": """-----BEGIN RSA PRIVATE KEY-----
@@ -867,6 +882,9 @@ PINAX_RATINGS_CATEGORY_CHOICES = {
     },
     "documents.Document": {
         "document": "How good is this document?"
+    },
+    "geoapps.GeoApp": {
+        "geoapp": "How good is this geoapp?"
     }
 }
 
@@ -881,7 +899,7 @@ ACTSTREAM_SETTINGS = {
 
 # Email for users to contact admins.
 THEME_ACCOUNT_CONTACT_EMAIL = os.getenv(
-    'THEME_ACCOUNT_CONTACT_EMAIL', 'wri.indonesia.gis@gmail.com'
+    'THEME_ACCOUNT_CONTACT_EMAIL', 'admin@example.com'
 )
 
 #
@@ -981,8 +999,7 @@ OGC_SERVER = {
         'WMST_ENABLED': ast.literal_eval(os.getenv('WMST_ENABLED', 'False')),
         'BACKEND_WRITE_ENABLED': ast.literal_eval(os.getenv('BACKEND_WRITE_ENABLED', 'True')),
         'WPS_ENABLED': ast.literal_eval(os.getenv('WPS_ENABLED', 'False')),
-        'LOG_FILE': '%s/geoserver/data/logs/geoserver.log'
-        % os.path.abspath(os.path.join(PROJECT_ROOT, os.pardir)),
+        'LOG_FILE': f'{os.path.abspath(os.path.join(PROJECT_ROOT, os.pardir))}/geoserver/data/logs/geoserver.log',
         # Set to name of database in DATABASES dictionary to enable
         # 'datastore',
         'DATASTORE': os.getenv('DEFAULT_BACKEND_DATASTORE', ''),
@@ -1002,7 +1019,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
     DEFAULT_BACKEND_UPLOADER = {'geonode.rest', 'geonode.importer'}
 """
 UPLOADER = {
-    'BACKEND': os.getenv('DEFAULT_BACKEND_UPLOADER', 'geonode.rest'),
+    'BACKEND': os.getenv('DEFAULT_BACKEND_UPLOADER', 'geonode.importer'),
     'OPTIONS': {
         'TIME_ENABLED': ast.literal_eval(os.getenv('TIME_ENABLED', 'False')),
         'MOSAIC_ENABLED': ast.literal_eval(os.getenv('MOSAIC_ENABLED', 'False')),
@@ -1195,7 +1212,7 @@ except ValueError:
 #
 # AUTH_IP_WHITELIST = ['192.168.1.158', '192.168.1.159']
 AUTH_IP_WHITELIST = [HOSTNAME, 'localhost', 'django', 'geonode'] if os.getenv('AUTH_IP_WHITELIST') is None \
-        else re.split(r' *[,|:|;] *', os.getenv('AUTH_IP_WHITELIST'))
+    else re.split(r' *[,|:|;] *', os.getenv('AUTH_IP_WHITELIST'))
 
 # A tuple of hosts the proxy can send requests to.
 try:
@@ -1206,8 +1223,8 @@ except ValueError:
     PROXY_ALLOWED_HOSTS = [
         HOSTNAME, 'localhost', 'django', 'geonode',
         'spatialreference.org', 'nominatim.openstreetmap.org', 'dev.openlayers.org'] \
-            if os.getenv('PROXY_ALLOWED_HOSTS') is None \
-            else re.split(r' *[,|:|;] *', os.getenv('PROXY_ALLOWED_HOSTS'))
+        if os.getenv('PROXY_ALLOWED_HOSTS') is None \
+        else re.split(r' *[,|:|;] *', os.getenv('PROXY_ALLOWED_HOSTS'))
 
 # The proxy to use when making cross origin requests.
 PROXY_URL = os.environ.get('PROXY_URL', '/proxy/?url=')
@@ -1283,10 +1300,10 @@ try:
 except ValueError:
     # fallback to regular list of values separated with misc chars
     AVATAR_PROVIDERS = (
-    'avatar.providers.PrimaryAvatarProvider',
-    'avatar.providers.GravatarAvatarProvider',
-    'avatar.providers.DefaultAvatarProvider'
-   ) if os.getenv('AVATAR_PROVIDERS') is None \
+        'avatar.providers.PrimaryAvatarProvider',
+        'avatar.providers.GravatarAvatarProvider',
+        'avatar.providers.DefaultAvatarProvider'
+    ) if os.getenv('AVATAR_PROVIDERS') is None \
         else re.split(r' *[,|:|;] *', os.getenv('AVATAR_PROVIDERS'))
 
 # Number of results per page listed in the GeoNode search pages
@@ -1319,11 +1336,6 @@ if CREATE_LAYER:
 # Settings for FAVORITE plugin
 FAVORITE_ENABLED = ast.literal_eval(os.getenv('FAVORITE_ENABLED', 'True'))
 
-if FAVORITE_ENABLED:
-    if 'geonode.favorite' not in INSTALLED_APPS:
-        INSTALLED_APPS += ('geonode.favorite',)
-
-
 # Settings for RECAPTCHA plugin
 RECAPTCHA_ENABLED = ast.literal_eval(os.environ.get('RECAPTCHA_ENABLED', 'False'))
 
@@ -1351,6 +1363,7 @@ GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_M
 DEFAULT_MAP_CRS = os.environ.get('DEFAULT_MAP_CRS', "EPSG:3857")
 
 DEFAULT_LAYER_FORMAT = os.environ.get('DEFAULT_LAYER_FORMAT', "image/png")
+DEFAULT_TILE_SIZE = os.environ.get('DEFAULT_TILE_SIZE', 512)
 
 # Where should newly created maps be focused?
 DEFAULT_MAP_CENTER = (os.environ.get('DEFAULT_MAP_CENTER_X', -3), os.environ.get('DEFAULT_MAP_CENTER_Y', 118))
@@ -1473,8 +1486,11 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
                         "url": CATALOGUE['default']['URL'],
                         "type": "csw",
                         "title": pycsw_config['metadata:main']['identification_title'],
-                        "autoload": True
+                        "autoload": True,
+                        "layerOptions": {
+                            "tileSize": DEFAULT_TILE_SIZE
                         }
+                    }
                 }
                 return pycsw_catalogue
         return None
@@ -1487,7 +1503,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "type": "wms",
             "title": "Demo WMS Service",
             "autoload": False
-         },
+        },
         "Demo WMTS Service": {
             "url": "https://demo.geo-solutions.it/geoserver/gwc/service/wmts",
             "type": "wmts",
@@ -1528,7 +1544,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "group": "background",
             "thumbURL": f"{SITEURL}static/mapstorestyle/img/s2cloudless-s2cloudless.png",
             "visibility": False
-       }, {
+        }, {
             "source": "ol",
             "group": "background",
             "id": "none",
@@ -1537,7 +1553,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "type": "empty",
             "visibility": False,
             "args": ["Empty Background", {"visibility": False}]
-       }
+        }
     ]
 
     if MAPBOX_ACCESS_TOKEN:
@@ -1582,7 +1598,6 @@ SEARCH_FILTERS = {
     'T_KEYWORDS_ENABLED': True,
     'DATE_ENABLED': True,
     'REGION_ENABLED': True,
-    'DATATYPE_ENABLED': True,
     'EXTENT_ENABLED': True,
     'GROUPS_ENABLED': True,
     'GROUP_CATEGORIES_ENABLED': True,
@@ -1591,7 +1606,7 @@ SEARCH_FILTERS = {
 # HTML WYSIWYG Editor (TINYMCE) Menu Bar Settings
 TINYMCE_DEFAULT_CONFIG = {
     "theme": "silver",
-    "height": 500,
+    "height": 200,
     "plugins": 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',  # noqa
     "imagetools_cors_hosts": ['picsum.photos'],
     "menubar": 'file edit view insert format tools table help',
@@ -1629,6 +1644,7 @@ TINYMCE_DEFAULT_CONFIG = {
     ],
     "template_cdate_format": '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
     "template_mdate_format": '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+    "setup": 'function(editor) {editor.on("input", onInputChange)}'
 }
 
 # Make Free-Text Kaywords writable from users or read-only
@@ -1674,14 +1690,9 @@ LOCAL_SIGNALS_BROKER_URL = 'memory://'
 
 if ASYNC_SIGNALS:
     _BROKER_URL = RABBITMQ_SIGNALS_BROKER_URL
-    CELERY_RESULT_BACKEND = 'rpc://'
 else:
     _BROKER_URL = LOCAL_SIGNALS_BROKER_URL
-    CELERY_RESULT_BACKEND_PATH = os.getenv(
-        'CELERY_RESULT_BACKEND_PATH', os.path.join(PROJECT_ROOT, '.celery_results'))
-    if not os.path.exists(CELERY_RESULT_BACKEND_PATH):
-        os.makedirs(CELERY_RESULT_BACKEND_PATH)
-    CELERY_RESULT_BACKEND = f'file:///{CELERY_RESULT_BACKEND_PATH}'
+CELERY_RESULT_BACKEND = 'django-db'
 
 CELERY_BROKER_URL = os.environ.get('BROKER_URL', _BROKER_URL)
 CELERY_RESULT_PERSISTENT = ast.literal_eval(os.environ.get('CELERY_RESULT_PERSISTENT', 'False'))
@@ -1756,13 +1767,8 @@ if USE_GEOSERVER:
 #          'task': 'my_app.tasks.send_notification',
 #          'schedule': crontab(hour=16, day_of_week=5),
 #     },
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_BEAT_SCHEDULE = {}
-
-if 'geonode.services' in INSTALLED_APPS:
-    CELERY_BEAT_SCHEDULE['probe_services'] = {
-        'task': 'geonode.services.tasks.probe_services',
-        'schedule': 600.0,
-    }
 
 DELAYED_SECURITY_SIGNALS = ast.literal_eval(os.environ.get('DELAYED_SECURITY_SIGNALS', 'False'))
 CELERY_ENABLE_UTC = ast.literal_eval(os.environ.get('CELERY_ENABLE_UTC', 'True'))
@@ -1824,9 +1830,8 @@ ADMINS_ONLY_NOTICE_TYPES = ast.literal_eval(os.getenv('ADMINS_ONLY_NOTICE_TYPES'
 USER_MESSAGES_ALLOW_MULTIPLE_RECIPIENTS = ast.literal_eval(
     os.environ.get('USER_MESSAGES_ALLOW_MULTIPLE_RECIPIENTS', 'True'))
 
-if NOTIFICATION_ENABLED:
-    if NOTIFICATIONS_MODULE not in INSTALLED_APPS:
-        INSTALLED_APPS += (NOTIFICATIONS_MODULE, )
+if NOTIFICATIONS_MODULE and NOTIFICATIONS_MODULE not in INSTALLED_APPS:
+    INSTALLED_APPS += (NOTIFICATIONS_MODULE, )
 
 # ########################################################################### #
 # SECURITY SETTINGS
@@ -2008,7 +2013,7 @@ if USE_GEOSERVER:
             "title": "GeoServer - Public Layers",
             "attribution": f"&copy; {SITEURL}",
             "ptype": LOCAL_GXP_PTYPE,
-            "url": OGC_SERVER['default']['PUBLIC_LOCATION'] + "ows",
+            "url": f"{OGC_SERVER['default']['PUBLIC_LOCATION']}ows",
             "restUrl": "/gs/rest"
         }
     }
@@ -2040,8 +2045,6 @@ MONITORING_DATA_TTL = timedelta(days=int(os.getenv("MONITORING_DATA_TTL", 365)))
 MONITORING_DISABLE_CSRF = ast.literal_eval(os.environ.get('MONITORING_DISABLE_CSRF', 'False'))
 
 if MONITORING_ENABLED:
-    if 'geonode.monitoring' not in INSTALLED_APPS:
-        INSTALLED_APPS += ('geonode.monitoring',)
     if 'geonode.monitoring.middleware.MonitoringMiddleware' not in MIDDLEWARE:
         MIDDLEWARE += \
             ('geonode.monitoring.middleware.MonitoringMiddleware',)
@@ -2067,11 +2070,6 @@ if MONITORING_ENABLED:
         (timedelta(days=14), timedelta(days=1),),
     )
 
-    CELERY_BEAT_SCHEDULE['collect_metrics'] = {
-        'task': 'geonode.monitoring.tasks.collect_metrics',
-        'schedule': 300.0,
-    }
-
 USER_ANALYTICS_ENABLED = ast.literal_eval(os.getenv('USER_ANALYTICS_ENABLED', 'False'))
 USER_ANALYTICS_GZIP = ast.literal_eval(os.getenv('USER_ANALYTICS_GZIP', 'False'))
 
@@ -2081,3 +2079,20 @@ SEARCH_RESOURCES_EXTENDED = strtobool(os.getenv('SEARCH_RESOURCES_EXTENDED', 'Tr
 # -- END Settings for MONITORING plugin
 
 CATALOG_METADATA_TEMPLATE = os.getenv("CATALOG_METADATA_TEMPLATE", "catalogue/full_metadata.xml")
+UI_DEFAULT_MANDATORY_FIELDS = [
+    'id_resource-title',
+    'id_resource-abstract',
+    'id_resource-language',
+    'id_resource-license',
+    'id_resource-regions',
+    'id_resource-date_type',
+    'id_resource-date',
+    'category_form',
+    'id_resource-attribution',
+    'id_resource-constraints_other',
+    'id_resource-data_quality_statement',
+    'id_resource-restriction_code_type'
+]
+UI_REQUIRED_FIELDS = ast.literal_eval(os.getenv('UI_REQUIRED_FIELDS ', '[]'))
+
+UPLOAD_SESSION_EXPIRY_HOURS = os.getenv('UPLOAD_SESSION_EXPIRY_HOURS ', 24)

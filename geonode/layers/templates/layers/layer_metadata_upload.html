@@ -36,8 +36,8 @@
       <div class="clearfix uip" id="incomplete-{{ u.import_id }}">
         <div class="pull-left">{{ u.name }}, {% trans "last updated on" %} {{ u.date }}</div>
         <div class="upload_actions pull-right">
-          <a class="btn btn-mini" href="#" id="resume-{{ u.import_id }}">{% trans "Resume" %}</a>
-          <a class="btn btn-mini" href="#" id="delete-{{ u.import_id }}"><i class="icon-trash"></i> {% trans "Delete" %}</a>
+          <a class="btn btn-update" href="#" id="resume-{{ u.import_id }}">{% trans "Resume" %}</a>
+          <a class="btn btn-danger" style="margin-bottom: 10px;" href="#" id="delete-{{ u.import_id }}"><i class="icon-trash"></i> {% trans "Delete" %}</a>
         </div>
       </div>
       {% endfor %}
@@ -100,7 +100,7 @@
 
     <section>
       <a href="{% url "layer_metadata_upload" resource.alternate %}" id="clear-button" class="btn btn-default">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-danger">{% trans "Upload files" %}</a>
+      <a href="#" id="upload-button" class="btn btn-update">{% trans "Upload files" %}</a>
     </section>
   </div>
 

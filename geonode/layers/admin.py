@@ -81,6 +81,30 @@ class LayerAdmin(TabbedTranslationAdmin):
     form = LayerAdminForm
     actions = [metadata_batch_edit, set_batch_permissions]
 
+
+class AttributeAdmin(admin.ModelAdmin):
+    model = Attribute
+    list_display_links = ('id',)
+    list_display = (
+        'id',
+        'layer',
+        'attribute',
+        'description',
+        'attribute_label',
+        'attribute_type',
+        'display_order')
+    list_filter = ('layer', 'attribute_type')
+    search_fields = ('attribute', 'attribute_label',)
+
+
+class StyleAdmin(admin.ModelAdmin):
+    model = Style
+    list_display_links = ('sld_title',)
+    list_display = ('id', 'name', 'sld_title', 'workspace', 'sld_url')
+    list_filter = ('workspace',)
+    search_fields = ('name', 'workspace',)
+
+
 class LayerFileInline(admin.TabularInline):
     model = LayerFile
 
@@ -92,4 +116,6 @@ class UploadSessionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Layer, LayerAdmin)
+admin.site.register(Attribute, AttributeAdmin)
+admin.site.register(Style, StyleAdmin)
 admin.site.register(UploadSession, UploadSessionAdmin)

@@ -16,22 +16,20 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
 """Utilities for enabling ESRI:ArcGIS:MapServer and ESRI:ArcGIS:ImageServer remote services in geonode."""
-
 import os
+import re
 import logging
 import traceback
 
 from uuid import uuid4
 
 from django.conf import settings
-from django.template.defaultfilters import slugify, safe
 from django.utils.translation import ugettext as _
+from django.template.defaultfilters import slugify, safe
 
 from geonode.base.models import Link
 from geonode.layers.models import Layer
-from geonode.thumbs.thumbnails import create_thumbnail
 from geonode.base.bbox_utils import BBOXHelper
 
 from arcrest import MapService as ArcMapService, ImageService as ArcImageService
@@ -69,7 +67,6 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
         base.ServiceHandlerBase.__init__(self, url)
         self.proxy_base = None
         self.url = url
-        self.parsed_service = ArcMapService(self.url)
         extent, srs = utils.get_esri_extent(self.parsed_service)
         try:
             _sname = utils.get_esri_service_name(self.url)
@@ -89,9 +86,13 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
 
         self.indexing_method = INDEXED
         self.name = slugify(self.url)[:255]
-        self.title = _title
+        self.title = str(_title).encode("utf-8", "ignore").decode('utf-8')
 
-    def create_cascaded_store(self):
+    @property
+    def parsed_service(self):
+        return ArcMapService(self.url)
+
+    def create_cascaded_store(self, service):
         return None
 
     def create_geonode_service(self, owner, parent=None):
@@ -101,7 +102,6 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
         :type owner: geonode.people.models.Profile
 
         """
-
         instance = models.Service(
             uuid=str(uuid4()),
             base_url=self.url,
@@ -110,24 +110,32 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
             method=self.indexing_method,
             owner=owner,
             parent=parent,
-            version=self.parsed_service._json_struct["currentVersion"],
+            metadata_only=True,
+            version=str(self.parsed_service._json_struct.get("currentVersion", 0.0)).encode("utf-8", "ignore").decode('utf-8'),
             name=self.name,
             title=self.title,
-            abstract=self.parsed_service._json_struct["serviceDescription"] or _(
+            abstract=str(self.parsed_service._json_struct.get("serviceDescription")).encode("utf-8", "ignore").decode('utf-8') or _(
                 "Not provided"),
             online_resource=self.parsed_service.url,
         )
         return instance
 
     def get_keywords(self):
-        return self.parsed_service._json_struct["capabilities"].split(",")
+        return self.parsed_service._json_struct.get("capabilities", "").split(",")
 
     def get_resource(self, resource_id):
         ll = None
         try:
             ll = self.parsed_service.layers[int(resource_id)]
-        except Exception:
-            traceback.print_exc()
+        except Exception as e:
+            logger.exception(e)
+            for layer in self.parsed_service.layers:
+                try:
+                    if int(layer.id) == int(resource_id):
+                        ll = layer
+                        break
+                except Exception as e:
+                    logger.exception(e)
 
         return self._layer_meta(ll) if ll else None
 
@@ -152,18 +160,49 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
         return map_layers
 
     def _layer_meta(self, layer):
+        _ll_keys = [
+            'id',
+            'title',
+            'abstract',
+            'type',
+            'geometryType',
+            'copyrightText',
+            'extent',
+            'fields',
+            'minScale',
+            'maxScale'
+        ]
         _ll = {}
-        _ll['id'] = layer.id
-        _ll['title'] = layer.name
-        _ll['abstract'] = layer.name
-        _ll['type'] = layer.type
-        _ll['geometryType'] = layer.geometryType
-        _ll['copyrightText'] = layer.copyrightText
-        _ll['extent'] = layer.extent
-        _ll['fields'] = layer.fields
-        _ll['minScale'] = layer.minScale
-        _ll['maxScale'] = layer.maxScale
+        if isinstance(layer, dict):
+            for _key in _ll_keys:
+                _ll[_key] = layer[_key] if _key in layer else None
+        else:
+            for _key in _ll_keys:
+                _ll[_key] = getattr(layer, _key, None)
+        if not _ll['title'] and getattr(layer, 'name'):
+            _ll['title'] = getattr(layer, 'name')
         return MapLayer(**_ll)
+
+    def _harvest_resource(self, layer_meta, geonode_service):
+        resource_fields = self._get_indexed_layer_fields(layer_meta)
+        keywords = resource_fields.pop("keywords")
+        existance_test_qs = Layer.objects.filter(
+            name=resource_fields["name"],
+            store=resource_fields["store"],
+            workspace=resource_fields["workspace"]
+        )
+        if existance_test_qs.exists():
+            raise RuntimeError(
+                f"Resource {resource_fields['name']} has already been harvested")
+        resource_fields["keywords"] = keywords
+        resource_fields["is_approved"] = True
+        resource_fields["is_published"] = True
+        if settings.RESOURCE_PUBLISHING or settings.ADMIN_MODERATE_UPLOADS:
+            resource_fields["is_approved"] = False
+            resource_fields["is_published"] = False
+        geonode_layer = self._create_layer(
+            geonode_service, **resource_fields)
+        self._create_layer_service_link(geonode_layer)
 
     def harvest_resource(self, resource_id, geonode_service):
         """Harvest a single resource from the service
@@ -179,27 +218,7 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
         """
         layer_meta = self.get_resource(resource_id)
         if layer_meta:
-            resource_fields = self._get_indexed_layer_fields(layer_meta)
-            keywords = resource_fields.pop("keywords")
-            existance_test_qs = Layer.objects.filter(
-                name=resource_fields["name"],
-                store=resource_fields["store"],
-                workspace=resource_fields["workspace"]
-            )
-            if existance_test_qs.exists():
-                raise RuntimeError(
-                    f"Resource {resource_id} has already been harvested")
-            resource_fields["keywords"] = keywords
-            resource_fields["is_approved"] = True
-            resource_fields["is_published"] = True
-            if settings.RESOURCE_PUBLISHING or settings.ADMIN_MODERATE_UPLOADS:
-                resource_fields["is_approved"] = False
-                resource_fields["is_published"] = False
-            geonode_layer = self._create_layer(
-                geonode_service, **resource_fields)
-            # self._enrich_layer_metadata(geonode_layer)
-            self._create_layer_service_link(geonode_layer)
-            # self._create_layer_legend_link(geonode_layer)
+            self._harvest_resource(layer_meta, geonode_service)
         else:
             raise RuntimeError(
                 f"Resource {resource_id} cannot be harvested")
@@ -228,7 +247,7 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
             "storeType": "remoteStore",
             "workspace": "remoteWorkspace",
             "typename": typename,
-            "alternate": typename,
+            "alternate": f"{slugify(self.url)}:{layer_meta.id}",
             "title": layer_meta.title,
             "abstract": layer_meta.abstract,
             "bbox_polygon": BBOXHelper.from_xy([bbox[0], bbox[2], bbox[1], bbox[3]]).as_polygon(),
@@ -249,21 +268,34 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
             uuid=str(uuid4()),
             **resource_fields
         )
+        srid = geonode_layer.srid
+        bbox_polygon = geonode_layer.bbox_polygon
         geonode_layer.full_clean()
         geonode_layer.save(notify=True)
         geonode_layer.keywords.add(*keywords)
         geonode_layer.set_default_permissions()
+        if bbox_polygon and srid:
+            try:
+                # Dealing with the BBOX: this is a trick to let GeoDjango storing original coordinates
+                Layer.objects.filter(id=geonode_layer.id).update(
+                    bbox_polygon=bbox_polygon, srid='EPSG:4326')
+                match = re.match(r'^(EPSG:)?(?P<srid>\d{4,6})$', str(srid))
+                bbox_polygon.srid = int(match.group('srid')) if match else 4326
+                Layer.objects.filter(id=geonode_layer.id).update(
+                    ll_bbox_polygon=bbox_polygon, srid=srid)
+            except Exception as e:
+                logger.error(e)
+
+            # Refresh from DB
+            geonode_layer.refresh_from_db()
         return geonode_layer
 
     def _create_layer_thumbnail(self, geonode_layer):
         """Create a thumbnail with a WMS request."""
-        create_thumbnail(
-            instance=geonode_layer,
-            wms_version=self.parsed_service.version,
-            bbox=geonode_layer.bbox,
-            forced_crs=geonode_layer.srid,
-            overwrite=True,
-        )
+        # The thumbnail generation implementation relies on WMS image retrieval, which fails for layers from ESRI
+        # services (not all of them support GetCapabilities or GetCapabilities path is different from the service's
+        # URL); in order to create a thumbnail for ESRI layer, a user must upload one.
+        logger.debug("Skipping thumbnail execution for layer from ESRI service.")
 
     def _create_layer_service_link(self, geonode_layer):
         Link.objects.get_or_create(
@@ -289,7 +321,6 @@ class ArcImageServiceHandler(ArcMapServiceHandler):
         ArcMapServiceHandler.__init__(self, url)
         self.proxy_base = None
         self.url = url
-        self.parsed_service = ArcImageService(self.url)
         extent, srs = utils.get_esri_extent(self.parsed_service)
         try:
             _sname = utils.get_esri_service_name(self.url)
@@ -310,3 +341,7 @@ class ArcImageServiceHandler(ArcMapServiceHandler):
         self.indexing_method = INDEXED
         self.name = slugify(self.url)[:255]
         self.title = _title
+
+    @property
+    def parsed_service(self):
+        return ArcImageService(self.url)

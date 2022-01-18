@@ -30,23 +30,18 @@ from lxml import etree
 from itertools import islice
 from defusedxml import lxml as dlxml
 
-from django.conf import settings
 from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 
-from geoserver.catalog import FailedRequestError, ConflictingDataError
-
-from geonode.upload import UploadException
 from geonode.utils import json_response as do_json_response, unzip_file
-from geonode.geoserver.helpers import (gs_catalog,
-                                       gs_uploader,
-                                       ogc_server_settings,
-                                       get_store,
-                                       set_time_dimension,
-                                       create_geoserver_db_featurestore)  # mosaic_delete_first_granule
-
+from geonode.geoserver.helpers import (
+    gs_uploader,
+    ogc_server_settings,
+    create_geoserver_db_featurestore)  # mosaic_delete_first_granule
+from geonode.base.models import HierarchicalKeyword, ThesaurusKeyword
 ogr.UseExceptions()
 
 logger = logging.getLogger(__name__)
@@ -133,9 +128,9 @@ def json_response(*args, **kw):
 
 def error_response(req, exception=None, errors=None, force_ajax=True):
     if exception:
-        logger.exception('Unexpected error in upload step')
+        logger.exception(f'Unexpected error in upload step: {exception}')
     else:
-        logger.error(f'upload error: {errors}')
+        logger.error(f'Upload error response: {errors}')
     if req.is_ajax() or force_ajax:
         content_type = 'text/html' if not req.is_ajax() else None
         return json_response(exception=exception, errors=errors,
@@ -265,6 +260,8 @@ def get_next_step(upload_session, offset=1):
 
 
 def get_previous_step(upload_session, post_to):
+    assert upload_session.upload_type is not None
+
     pages = _pages[upload_session.upload_type]
     if post_to == "undefined":
         post_to = "final"
@@ -283,10 +280,10 @@ def _advance_step(req, upload_session):
 
 
 def next_step_response(req, upload_session, force_ajax=True):
-    _force_ajax = '&force_ajax=true' if force_ajax and 'force_ajax' not in req.GET else ''
+    _force_ajax = '&force_ajax=true' if req and force_ajax and 'force_ajax' not in req.GET else ''
     import_session = upload_session.import_session
     # if the current step is the view POST for this step, advance one
-    if req.method == 'POST':
+    if req and req.method == 'POST':
         if upload_session.completed_step:
             _advance_step(req, upload_session)
         else:
@@ -296,93 +293,103 @@ def next_step_response(req, upload_session, force_ajax=True):
 
     if next == 'error':
         return json_response(
-            {'status': 'error',
-             'success': False,
-             'id': import_session.id,
-             'error_msg': str(upload_session.error_msg),
-             }
+            {
+                'status': 'error',
+                'success': False,
+                'id': import_session.id,
+                'error_msg': str(upload_session.error_msg),
+            }
         )
 
     if next == 'check':
-        # @TODO we skip time steps for coverages currently
         store_type = import_session.tasks[0].target.store_type
         if store_type == 'coverageStore' or _force_ajax:
+            # @TODO we skip time steps for coverages currently
             upload_session.completed_step = 'check'
             return next_step_response(req, upload_session, force_ajax=True)
-    if next == 'check' and force_ajax:
-        url = f"{reverse('data_upload')}?id={import_session.id}"
-        return json_response(
-            {'url': url,
-             'status': 'incomplete',
-             'success': True,
-             'id': import_session.id,
-             'redirect_to': f"{settings.SITEURL}upload/check?id={import_session.id}{_force_ajax}",
-             }
-        )
+        if force_ajax:
+            url = f"{reverse('data_upload')}?id={import_session.id}"
+            return json_response(
+                {
+                    'url': url,
+                    'status': 'incomplete',
+                    'success': True,
+                    'id': import_session.id,
+                    'redirect_to': f"{settings.SITEURL}upload/check?id={import_session.id}{_force_ajax}",
+                }
+            )
 
     if next == 'time':
-        # @TODO we skip time steps for coverages currently
         store_type = import_session.tasks[0].target.store_type
         layer = import_session.tasks[0].layer
         (has_time_dim, layer_values) = layer_eligible_for_time_dimension(req,
                                                                          layer,
                                                                          upload_session=upload_session)
         if store_type == 'coverageStore' or not has_time_dim:
+            # @TODO we skip time steps for coverages currently
             upload_session.completed_step = 'time'
             return next_step_response(req, upload_session, False)
-    if next == 'time' and (
-            upload_session.time is None or not upload_session.time):
-        upload_session.completed_step = 'time'
-        return next_step_response(req, upload_session, force_ajax)
-    if next == 'time' and force_ajax:
-        url = f"{reverse('data_upload')}?id={import_session.id}"
-        return json_response(
-            {'url': url,
-             'status': 'incomplete',
-             'success': True,
-             'id': import_session.id,
-             'redirect_to': f"{settings.SITEURL}upload/time?id={import_session.id}{_force_ajax}",
-             }
-        )
+        if upload_session.time is None or not upload_session.time:
+            upload_session.completed_step = 'time'
+        if force_ajax:
+            url = f"{reverse('data_upload')}?id={import_session.id}"
+            return json_response(
+                {
+                    'url': url,
+                    'status': 'incomplete',
+                    'required_input': has_time_dim,
+                    'success': True,
+                    'id': import_session.id,
+                    'redirect_to': f"{settings.SITEURL}upload/time?id={import_session.id}{_force_ajax}",
+                }
+            )
+        else:
+            return next_step_response(req, upload_session, force_ajax)
 
     if next == 'mosaic' and force_ajax:
         url = f"{reverse('data_upload')}?id={import_session.id}"
         return json_response(
-            {'url': url,
-             'status': 'incomplete',
-             'success': True,
-             'id': import_session.id,
-             'redirect_to': f"{settings.SITEURL}upload/mosaic?id={import_session.id}{_force_ajax}",
-             }
+            {
+                'url': url,
+                'status': 'incomplete',
+                'required_input': len(_force_ajax) == 0,
+                'success': True,
+                'id': import_session.id,
+                'redirect_to': f"{settings.SITEURL}upload/mosaic?id={import_session.id}{_force_ajax}",
+            }
         )
 
     if next == 'srs' and force_ajax:
         url = f"{reverse('data_upload')}?id={import_session.id}"
         return json_response(
-            {'url': url,
-             'status': 'incomplete',
-             'success': True,
-             'id': import_session.id,
-             'redirect_to': f"{settings.SITEURL}upload/srs?id={import_session.id}{_force_ajax}",
-             }
+            {
+                'url': url,
+                'status': 'incomplete',
+                'required_input': len(_force_ajax) == 0,
+                'success': True,
+                'id': import_session.id,
+                'redirect_to': f"{settings.SITEURL}upload/srs?id={import_session.id}{_force_ajax}",
+            }
         )
 
     if next == 'csv' and force_ajax:
         url = f"{reverse('data_upload')}?id={import_session.id}"
         return json_response(
-            {'url': url,
-             'status': 'incomplete',
-             'success': True,
-             'id': import_session.id,
-             'redirect_to': f"{settings.SITEURL}upload/csv?id={import_session.id}{_force_ajax}",
-             }
+            {
+                'url': url,
+                'status': 'incomplete',
+                'required_input': len(_force_ajax) == 0,
+                'success': True,
+                'id': import_session.id,
+                'redirect_to': f"{settings.SITEURL}upload/csv?id={import_session.id}{_force_ajax}",
+            }
         )
 
     # @todo this is not handled cleanly - run is not a real step in that it
     # has no corresponding view served by the 'view' function.
     if next == 'run':
         upload_session.completed_step = next
-        if _ASYNC_UPLOAD and req.is_ajax():
+        if (_ASYNC_UPLOAD and not req) or (req and req.is_ajax()):
             return run_response(req, upload_session)
         else:
             # on sync we want to run the import and advance to the next step
@@ -390,13 +397,13 @@ def next_step_response(req, upload_session, force_ajax=True):
             return next_step_response(req, upload_session,
                                       force_ajax=force_ajax)
     session_id = None
-    if 'id' in req.GET:
+    if req and 'id' in req.GET:
         session_id = f"?id={req.GET['id']}"
     elif import_session and import_session.id:
         session_id = f"?id={import_session.id}"
 
-    if req.is_ajax() or force_ajax:
-        content_type = 'text/html' if not req.is_ajax() else None
+    if req and req.is_ajax() or force_ajax:
+        content_type = 'text/html' if req and not req.is_ajax() else None
         if session_id:
             return json_response(
                 redirect_to=reverse(
@@ -504,20 +511,21 @@ def _get_time_dimensions(layer, upload_session):
 
 
 def _fixup_base_file(absolute_base_file, tempdir=None):
-    if not tempdir:
+    if not tempdir or not os.path.exists(tempdir):
         tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
-    if not os.path.isfile(absolute_base_file):
-        tmp_files = [f for f in os.listdir(tempdir) if os.path.isfile(os.path.join(tempdir, f))]
-        for f in tmp_files:
-            if zipfile.is_zipfile(os.path.join(tempdir, f)):
-                absolute_base_file = unzip_file(os.path.join(tempdir, f), '.shp', tempdir=tempdir)
-                absolute_base_file = os.path.join(tempdir,
-                                                  absolute_base_file)
-    elif zipfile.is_zipfile(absolute_base_file):
-        absolute_base_file = unzip_file(absolute_base_file,
-                                        '.shp', tempdir=tempdir)
-        absolute_base_file = os.path.join(tempdir,
-                                          absolute_base_file)
+    if os.path.exists(tempdir):
+        if not os.path.isfile(absolute_base_file):
+            tmp_files = [f for f in os.listdir(tempdir) if os.path.isfile(os.path.join(tempdir, f))]
+            for f in tmp_files:
+                if zipfile.is_zipfile(os.path.join(tempdir, f)):
+                    absolute_base_file = unzip_file(os.path.join(tempdir, f), '.shp', tempdir=tempdir)
+                    absolute_base_file = os.path.join(tempdir,
+                                                      absolute_base_file)
+        elif zipfile.is_zipfile(absolute_base_file):
+            absolute_base_file = unzip_file(absolute_base_file,
+                                            '.shp', tempdir=tempdir)
+            absolute_base_file = os.path.join(tempdir,
+                                              absolute_base_file)
     if os.path.exists(absolute_base_file):
         return absolute_base_file
     else:
@@ -534,8 +542,8 @@ def _get_layer_values(layer, upload_session, expand=0):
         inDataSource = ogr.Open(absolute_base_file)
         lyr = inDataSource.GetLayer(str(layer.name))
         limit = 10
-        for feat in islice(lyr, 0, limit):
-            try:
+        try:
+            for feat in islice(lyr, 0, limit):
                 feat_values = json_loads_byteified(
                     feat.ExportToJson(),
                     upload_session.charset).get('properties')
@@ -550,8 +558,8 @@ def _get_layer_values(layer, upload_session, expand=0):
                         else:
                             feat_values[k] = feat_value
                     layer_values.append(feat_values)
-            except Exception as e:
-                logger.exception(e)
+        except Exception as e:
+            logger.exception(e)
     return layer_values
 
 
@@ -639,235 +647,86 @@ def run_response(req, upload_session):
 """
 
 
-def _get_time_regex(spatial_files, base_file_name):
-    head, tail = os.path.splitext(base_file_name)
+class KeywordHandler:
+    '''
+    Object needed to handle the keywords coming from the XML
+    The expected input are:
+     - instance (Layer/Document/Map): instance of any object inherited from ResourceBase.
+     - keywords (list(dict)): Is required to analyze the keywords to find if some thesaurus is available.
+    '''
 
-    # 1. Look for 'timeregex.properties' files among auxillary_files
-    regex = None
-    format = None
-    for aux in spatial_files[0].auxillary_files:
-        basename = os.path.basename(aux)
-        aux_head, aux_tail = os.path.splitext(basename)
-        if 'timeregex' == aux_head and '.properties' == aux_tail:
-            with open(aux, 'r') as timeregex_prop_file:
-                rr = timeregex_prop_file.read()
-                if rr and rr.split(","):
-                    rrff = rr.split(",")
-                    regex = rrff[0].split("=")[1]
-                    if len(rrff) > 1:
-                        for rf in rrff:
-                            if 'format' in rf:
-                                format = rf.split("=")[1]
-                break
-    if regex:
-        time_regexp = re.compile(regex)
-        if time_regexp.match(head):
-            time_tokens = time_regexp.match(head).groups()
-            if time_tokens:
-                return regex, format
-    return None, None
+    def __init__(self, instance, keywords):
+        self.instance = instance
+        self.keywords = keywords
+
+    def set_keywords(self):
+        '''
+        Method with the responsible to set the keywords (free and thesaurus) to the object.
+        At return there is always a call to final_step to let it hookable.
+        '''
+        keywords, tkeyword = self.handle_metadata_keywords()
+        self._set_free_keyword(keywords)
+        self._set_tkeyword(tkeyword)
+        return self.instance
+
+    def handle_metadata_keywords(self):
+        '''
+        Method the extract the keyword from the dict.
+        If the keyword are passed, try to extract them from the dict
+        by splitting free-keyword from the thesaurus
+        '''
+        fkeyword = []
+        tkeyword = []
+        if len(self.keywords) > 0:
+            for dkey in self.keywords:
+                if isinstance(dkey, HierarchicalKeyword):
+                    fkeyword += [dkey.name]
+                    continue
+                if dkey['type'] == 'place':
+                    continue
+                thesaurus = dkey['thesaurus']
+                if thesaurus['date'] or thesaurus['datetype'] or thesaurus['title']:
+                    for k in dkey['keywords']:
+                        tavailable = self.is_thesaurus_available(thesaurus, k)
+                        if tavailable.exists():
+                            tkeyword += [tavailable.first()]
+                        else:
+                            fkeyword += [k]
+                else:
+                    fkeyword += dkey['keywords']
+            return fkeyword, tkeyword
+        return self.keywords, []
+
+    @staticmethod
+    def is_thesaurus_available(thesaurus, keyword):
+        is_available = ThesaurusKeyword.objects.filter(alt_label=keyword).filter(thesaurus__title=thesaurus['title'])
+        return is_available
+
+    def _set_free_keyword(self, keywords):
+        if len(keywords) > 0:
+            if not self.instance.keywords:
+                self.instance.keywords = keywords
+            else:
+                self.instance.keywords.add(*keywords)
+        return keywords
+
+    def _set_tkeyword(self, tkeyword):
+        if len(tkeyword) > 0:
+            if not self.instance.tkeywords:
+                self.instance.tkeywords = tkeyword
+            else:
+                self.instance.tkeywords.add(*tkeyword)
+        return [t.alt_label for t in tkeyword]
 
 
-def import_imagemosaic_granules(
-        spatial_files,
-        append_to_mosaic_opts,
-        append_to_mosaic_name,
-        mosaic_time_regex,
-        mosaic_time_value,
-        time_presentation,
-        time_presentation_res,
-        time_presentation_default_value,
-        time_presentation_reference_value):
-
-    # The very first step is to rename the granule by adding the selected regex
-    #  matching value to the filename.
-
-    f = spatial_files[0].base_file
-    dirname = os.path.dirname(f)
-    basename = os.path.basename(f)
-    head, tail = os.path.splitext(basename)
-
-    if not mosaic_time_regex:
-        mosaic_time_regex, mosaic_time_format = _get_time_regex(spatial_files, basename)
-
-    # 0. A Time Regex is mandartory to validate the files
-    if not mosaic_time_regex:
-        raise UploadException(_("Could not find any valid Time Regex for the Mosaic files."))
-
-    for spatial_file in spatial_files:
-        f = spatial_file.base_file
-        basename = os.path.basename(f)
-        head, tail = os.path.splitext(basename)
-        regexp = re.compile(mosaic_time_regex)
-        if regexp.match(head).groups():
-            mosaic_time_value = regexp.match(head).groups()[0]
-            head = head.replace(regexp.match(head).groups()[0], '{mosaic_time_value}')
-        if mosaic_time_value:
-            dst_file = os.path.join(
-                dirname,
-                head.replace('{mosaic_time_value}', mosaic_time_value) + tail)
-            os.rename(f, dst_file)
-            spatial_file.base_file = dst_file
-
-    # We use the GeoServer REST APIs in order to create the ImageMosaic
-    #  and later add the granule through the GeoServer Importer.
-    head = head.replace('{mosaic_time_value}', '')
-    head = re.sub('^[^a-zA-Z]*|[^a-zA-Z]*$', '', head)
-
-    # 1. Create a zip file containing the ImageMosaic .properties files
-    # 1a. Let's check and prepare the DB based DataStore
-    cat = gs_catalog
-    workspace = cat.get_workspace(settings.DEFAULT_WORKSPACE)
-    db = ogc_server_settings.datastore_db
-    db_engine = 'postgis' if \
-        'postgis' in db['ENGINE'] else db['ENGINE']
-
-    if not db_engine == 'postgis':
-        raise UploadException(_("Unsupported DataBase for Mosaics!"))
-
-    # dsname = ogc_server_settings.DATASTORE
-    dsname = db['NAME']
-
-    ds_exists = False
-    try:
-        ds = get_store(cat, dsname, workspace=workspace)
-        ds_exists = (ds is not None)
-    except FailedRequestError:
-        ds = cat.create_datastore(dsname, workspace=workspace)
-        db = ogc_server_settings.datastore_db
-        db_engine = 'postgis' if \
-            'postgis' in db['ENGINE'] else db['ENGINE']
-        ds.connection_parameters.update(
-            {'validate connections': 'true',
-             'max connections': '10',
-             'min connections': '1',
-             'fetch size': '1000',
-             'host': db['HOST'],
-             'port': db['PORT'] if isinstance(
-                 db['PORT'], str) else str(db['PORT']) or '5432',
-             'database': db['NAME'],
-             'user': db['USER'],
-             'passwd': db['PASSWORD'],
-             'dbtype': db_engine}
-        )
-        cat.save(ds)
-        ds = get_store(cat, dsname, workspace=workspace)
-        ds_exists = (ds is not None)
-
-    if not ds_exists:
-        raise UploadException(_("Unsupported DataBase for Mosaics!"))
-
-    context = {
-        "abs_path_flag": "True",
-        "time_attr": "time",
-        "aux_metadata_flag": "False",
-        "mosaic_time_regex": mosaic_time_regex,
-        "db_host": db['HOST'],
-        "db_port": db['PORT'],
-        "db_name": db['NAME'],
-        "db_user": db['USER'],
-        "db_password": db['PASSWORD'],
-        "db_conn_timeout": db['CONN_TOUT'] if 'CONN_TOUT' in db else "10",
-        "db_conn_min": db['CONN_MIN'] if 'CONN_MIN' in db else "1",
-        "db_conn_max": db['CONN_MAX'] if 'CONN_MAX' in db else "5",
-        "db_conn_validate": db['CONN_VALIDATE'] if 'CONN_VALIDATE' in db else "true",
-    }
-
-    indexer_template = """AbsolutePath={abs_path_flag}
-Schema= the_geom:Polygon,location:String,{time_attr}
-CheckAuxiliaryMetadata={aux_metadata_flag}
-SuggestedSPI=it.geosolutions.imageioimpl.plugins.tiff.TIFFImageReaderSpi"""
-    if mosaic_time_regex:
-        indexer_template = """AbsolutePath={abs_path_flag}
-TimeAttribute={time_attr}
-Schema= the_geom:Polygon,location:String,{time_attr}:java.util.Date
-PropertyCollectors=TimestampFileNameExtractorSPI[timeregex]({time_attr})
-CheckAuxiliaryMetadata={aux_metadata_flag}
-SuggestedSPI=it.geosolutions.imageioimpl.plugins.tiff.TIFFImageReaderSpi"""
-
-        timeregex_template = """regex=(?<=_)({mosaic_time_regex})"""
-
-        if not os.path.exists(dirname + '/timeregex.properties'):
-            with open(dirname + '/timeregex.properties', 'w') as timeregex_prop_file:
-                timeregex_prop_file.write(timeregex_template.format(**context))
-
-    datastore_template = r"""SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory
-host={db_host}
-port={db_port}
-database={db_name}
-user={db_user}
-passwd={db_password}
-Loose\ bbox=true
-Estimated\ extends=false
-validate\ connections={db_conn_validate}
-Connection\ timeout={db_conn_timeout}
-min\ connections={db_conn_min}
-max\ connections={db_conn_max}"""
-
-    if not os.path.exists(dirname + '/indexer.properties'):
-        with open(dirname + '/indexer.properties', 'w') as indexer_prop_file:
-            indexer_prop_file.write(indexer_template.format(**context))
-
-    if not os.path.exists(dirname + '/datastore.properties'):
-        with open(dirname + '/datastore.properties', 'w') as datastore_prop_file:
-            datastore_prop_file.write(datastore_template.format(**context))
-
-    files_to_upload = []
-    if not append_to_mosaic_opts and spatial_files:
-        z = zipfile.ZipFile(dirname + '/' + head + '.zip', "w", allowZip64=True)
-        for spatial_file in spatial_files:
-            f = spatial_file.base_file
-            dst_basename = os.path.basename(f)
-            dst_head, dst_tail = os.path.splitext(dst_basename)
-            if not files_to_upload:
-                # Let's import only the first granule
-                z.write(spatial_file.base_file, arcname=dst_head + dst_tail)
-            files_to_upload.append(spatial_file.base_file)
-        if os.path.exists(dirname + '/indexer.properties'):
-            z.write(dirname + '/indexer.properties', arcname='indexer.properties')
-        if os.path.exists(dirname + '/datastore.properties'):
-            z.write(
-                dirname +
-                '/datastore.properties',
-                arcname='datastore.properties')
-        if mosaic_time_regex:
-            z.write(
-                dirname + '/timeregex.properties',
-                arcname='timeregex.properties')
-        z.close()
-
-        # 2. Send a "create ImageMosaic" request to GeoServer through gs_config
-        # - name = name of the ImageMosaic (equal to the base_name)
-        # - data = abs path to the zip file
-        # - configure = parameter allows for future configuration after harvesting
-        name = head
-
-        with open(f"{dirname}/{head}.zip", 'rb') as data:
-            try:
-                cat.create_imagemosaic(name, data)
-            except ConflictingDataError:
-                # Trying to append granules to an existing mosaic
-                pass
-
-        # configure time as LIST
-        if mosaic_time_regex:
-            set_time_dimension(
-                cat,
-                name,
-                workspace,
-                time_presentation,
-                time_presentation_res,
-                time_presentation_default_value,
-                time_presentation_reference_value)
-
-        # - since GeoNode will upload the first granule again through the Importer, we need to /
-        #   delete the one created by the gs_config
-        # mosaic_delete_first_granule(cat, name)
-        if len(spatial_files) > 1:
-            spatial_files = spatial_files[0]
-        return head, files_to_upload
-    else:
-        cat._cache.clear()
-        cat.reset()
-        # cat.reload()
-        return append_to_mosaic_name, files_to_upload
+def metadata_storers(layer, custom={}):
+    from django.utils.module_loading import import_string
+    available_storers = (
+        settings.METADATA_STORERS
+        if hasattr(settings, "METADATA_STORERS")
+        else []
+    )
+    for storer_path in available_storers:
+        storer = import_string(storer_path)
+        storer(layer, custom)
+    return layer

@@ -19,14 +19,17 @@
 #########################################################################
 import re
 import os
-import sys
-import logging
+import json
 import shutil
+import decimal
+import logging
+import tempfile
 import traceback
+import sys
 from types import TracebackType
 import warnings
 import itertools
-import decimal
+
 import pickle
 from django.db.models import Q
 from urllib.parse import quote
@@ -54,7 +57,6 @@ from geonode.thumbs.thumbnails import create_thumbnail
 
 from dal import autocomplete
 
-import json
 from django.utils.html import escape
 from django.template.defaultfilters import slugify
 from django.forms.models import inlineformset_factory
@@ -63,6 +65,8 @@ from django.db.models import F
 from django.forms.utils import ErrorList
 
 from geonode.base.auth import get_or_create_token
+from geonode.layers.metadata import parse_metadata
+from geonode.upload.upload import _update_layer_with_xml_info
 from geonode.base.forms import CategoryForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
 from geonode.base.views import batch_modify
 from geonode.base.models import (
@@ -81,11 +85,12 @@ from geonode.layers.models import (
     Attribute,
     UploadSession)
 from geonode.layers.utils import (
-    file_upload,
-    is_raster,
-    is_vector,
-    surrogate_escape_string)
+    file_upload, get_files, gs_append_data_to_layer,
+    is_raster, is_sld_upload_only,
+    is_vector, is_xml_upload_only,
+    validate_input_source)
 
+from geonode.upload.views import _select_relevant_files, _write_uploaded_files_to_disk
 from geonode.maps.models import Map
 from geonode.services.models import Service
 from geonode.monitoring import register_event
@@ -157,14 +162,11 @@ def _resolve_layer(request, alternate, permission='base.view_resourcebase',
     Resolve the layer by the provided typename (which may include service name) and check the optional permission.
     """
     service_typename = alternate.split(":", 1)
-    if Service.objects.filter(name=service_typename[0]).exists():
+    if Service.objects.filter(name=service_typename[0]).count() == 1:
         query = {
-            'alternate': service_typename[1]
+            'alternate': service_typename[1],
+            'remote_service': Service.objects.filter(name=service_typename[0]).get()
         }
-        if len(service_typename) > 1:
-            query['store'] = service_typename[0]
-        else:
-            query['storeType'] = 'remoteStore'
         return resolve_object(
             request,
             Layer,
@@ -212,8 +214,132 @@ def layer_upload_handle_get(request, template):
         'charsets': CHARSETS,
         'is_layer': True,
     }
+    if 'geonode.upload' in settings.INSTALLED_APPS and \
+            settings.UPLOADER['BACKEND'] == 'geonode.importer':
+        from geonode.upload import utils as upload_utils, models
+        ctx['async_upload'] = upload_utils._ASYNC_UPLOAD
+        ctx['incomplete'] = models.Upload.objects.get_incomplete_uploads(
+            request.user)
     return render(request, template, context=ctx)
 
+def layer_upload_metadata(request):
+    out = {}
+    errormsgs = []
+
+    form = NewLayerUploadForm(request.POST, request.FILES)
+
+    if form.is_valid():
+
+        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
+
+        relevant_files = _select_relevant_files(
+            ['xml'],
+            iter(request.FILES.values())
+        )
+
+        logger.debug(f"relevant_files: {relevant_files}")
+
+        _write_uploaded_files_to_disk(tempdir, relevant_files)
+
+        base_file = os.path.join(tempdir, form.cleaned_data["base_file"].name)
+
+        name = form.cleaned_data['layer_title']
+        layer = Layer.objects.filter(typename=name)
+        if layer.exists():
+            layer_uuid, vals, regions, keywords, _ = parse_metadata(
+                open(base_file).read())
+            if layer_uuid and layer.first().uuid != layer_uuid:
+                out['success'] = False
+                out['errors'] = "The UUID identifier from the XML Metadata, is different from the one saved"
+                return HttpResponse(
+                    json.dumps(out),
+                    content_type='application/json',
+                    status=404)
+
+            updated_layer = _update_layer_with_xml_info(layer.first(), base_file, regions, keywords, vals)
+            updated_layer.save()
+            out['status'] = ['finished']
+            out['url'] = updated_layer.get_absolute_url()
+            out['bbox'] = updated_layer.bbox_string
+            out['crs'] = {
+                'type': 'name',
+                'properties': updated_layer.srid
+            }
+            out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
+            if hasattr(updated_layer, 'upload_session') and updated_layer.upload_session:
+                upload_session = updated_layer.upload_session
+                upload_session.processed = True
+                upload_session.save()
+            status_code = 200
+            out['success'] = True
+            return HttpResponse(
+                json.dumps(out),
+                content_type='application/json',
+                status=status_code)
+        else:
+            out['success'] = False
+            out['errors'] = "Layer selected does not exists"
+            status_code = 404
+        return HttpResponse(
+            json.dumps(out),
+            content_type='application/json',
+            status=status_code)
+    else:
+        for e in form.errors.values():
+            errormsgs.extend([escape(v) for v in e])
+        out['errors'] = form.errors
+        out['errormsgs'] = errormsgs
+
+    return HttpResponse(
+        json.dumps(out),
+        content_type='application/json',
+        status=500)
+
+def layer_style_upload(request):
+    form = NewLayerUploadForm(request.POST, request.FILES)
+    body = {}
+    if not form.is_valid():
+        body['success'] = False
+        body['errors'] = form.errors
+        return HttpResponse(
+            json.dumps(body),
+            content_type='application/json',
+            status=500)
+
+    status_code = 200
+    try:
+        data = form.cleaned_data
+        body = {
+            'success': True,
+            'style': data.get('layer_title'),
+        }
+
+        layer = _resolve_layer(
+            request,
+            data.get('layer_title'),
+            'base.change_resourcebase',
+            _PERMISSION_MSG_MODIFY)
+
+        sld = request.FILES['sld_file'].read()
+
+        set_layer_style(layer, data.get('layer_title'), sld)
+        body['url'] = layer.get_absolute_url()
+        body['bbox'] = layer.bbox_string
+        body['crs'] = {
+            'type': 'name',
+            'properties': layer.srid
+        }
+        body['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
+        body['status'] = ['finished']
+    except Exception as e:
+        status_code = 500
+        body['success'] = False
+        body['errors'] = str(e.args[0])
+
+    return HttpResponse(
+        json.dumps(body),
+        content_type='application/json',
+        status=status_code)
 
 def layer_upload_handle_post(request, template):
     name = None
@@ -406,8 +532,15 @@ def layer_upload_handle_post(request, template):
 def layer_upload(request, template='upload/layer_upload.html'):
     if request.method == 'GET':
         return layer_upload_handle_get(request, template)
-    elif request.method == 'POST':
-        return layer_upload_handle_post(request, template)
+    elif request.method == 'POST' and is_xml_upload_only(request):
+        return layer_upload_metadata(request)
+    elif request.method == 'POST' and is_sld_upload_only(request):
+        return layer_style_upload(request)
+    out = {"errormsgs": "Please, upload a valid XML file"}
+    return HttpResponse(
+        json.dumps(out),
+        content_type='application/json',
+        status=500)
 
 
 def layer_detail(request, layername, template='layers/layer_detail.html'):
