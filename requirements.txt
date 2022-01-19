@@ -103,8 +103,9 @@ gn-gsimporter==2.0.1
 gisdata==0.5.4
 
 # haystack/elasticsearch
-django-haystack==3.0
-elasticsearch7>=7.6.0,<7.16.3
+django-haystack==3.1.1
+# no version here, use latest one with fresh data
+elasticsearch5
 
 # datetimepicker widget
 django-bootstrap3-datetimepicker-2==2.8.2
