@@ -66,7 +66,7 @@ def view_or_basicauth(view, request, test_func, realm="", *args, **kwargs):
     are already logged in or if they have provided proper http-authorization
     and returning the view if all goes well, otherwise responding with a 401.
     """
-    if test_func(request.user):
+    if test_func(auth.get_user(request)):
         # Already logged in, just return the view.
         #
         return view(request, *args, **kwargs)
@@ -74,19 +74,18 @@ def view_or_basicauth(view, request, test_func, realm="", *args, **kwargs):
     # They are not logged in. See if they provided login credentials
     #
     if 'HTTP_AUTHORIZATION' in request.META:
-        auth = request.META['HTTP_AUTHORIZATION'].split()
-        if len(auth) == 2:
+        basic_auth = request.META['HTTP_AUTHORIZATION'].split()
+        if len(basic_auth) == 2:
             # NOTE: We are only support basic authentication for now.
             #
-            if auth[0].lower() == "basic":
-                uname, passwd = base64.b64decode(auth[1]).decode('utf-8').split(':', 1)
+            if basic_auth[0].lower() == "basic":
+                uname, passwd = base64.b64decode(basic_auth[1]).decode('utf-8').split(':', 1)
                 user = authenticate(username=uname, password=passwd)
-                if user is not None:
-                    if user.is_active:
-                        login(request, user)
-                        request.user = user
-                        if test_func(request.user):
-                            return view(request, *args, **kwargs)
+                if user and user.is_active:
+                    login(request, user)
+                    request.user = user
+                    auth.update_session_auth_hash(request, user)
+                    return view(request, *args, **kwargs)
 
     # Either they did not provide an authorization header or
     # something in the authorization attempt failed. Send a 401
@@ -204,7 +203,7 @@ def superuser_only(function):
 def check_keyword_write_perms(function):
     def _inner(request, *args, **kwargs):
         keyword_readonly = settings.FREETEXT_KEYWORDS_READONLY and request.method == "POST" \
-                           and not auth.get_user(request).is_superuser
+            and not auth.get_user(request).is_superuser
         request.keyword_readonly = keyword_readonly
         if keyword_readonly and 'resource-keywords' in request.POST:
             return HttpResponse(
