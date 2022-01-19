@@ -613,6 +613,35 @@ class ThesaurusKeywordResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSuppor
         self.assertValidJSONResponse(resp)
         self.assertListEqual(expected_labels, actual_labels)
 
+class DataTypeResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
+    fixtures = [
+        'initial_data.json',
+        'group_test_data.json',
+        'default_oauth_apps.json'
+    ]
+
+    def setUp(self):
+        super(DataTypeResourceTests, self).setUp()
+        self.user = get_user_model().objects.get(username="admin")
+        self.list_url = reverse(
+            'api_dispatch_list',
+            kwargs={
+                'api_name': 'api',
+                'resource_name': 'datatype'})
+        all_public()
+        self.token = get_or_create_token(self.user)
+        self.auth_header = f'Bearer {self.token}'
+
+    def test_the_api_should_return_all_layers_with_metadata_false(self):
+        resp = self.api_client.get(self.list_url, authentication=self.auth_header)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(8, resp.json()["meta"]["total_count"])
+
+    def test_the_api_should_return_all_layers_with_metadata_true(self):
+        url = f"{self.list_url}?metadata_only=True"
+        resp = self.api_client.get(url, authentication=self.auth_header)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(1, resp.json()["meta"]["total_count"])
 
 class LayerResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
     fixtures = [
