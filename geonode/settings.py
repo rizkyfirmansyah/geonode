@@ -1245,8 +1245,8 @@ if HAYSTACK_SEARCH:
         INSTALLED_APPS += ('haystack', )
     HAYSTACK_CONNECTIONS = {
         'default': {
-            'ENGINE': 'haystack.backends.elasticsearch2_backend.Elasticsearch2SearchEngine',
-            'URL': os.getenv('HAYSTACK_ENGINE_URL', 'http://127.0.0.1:9200/'),
+            'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
+            'URL': os.getenv('HAYSTACK_ENGINE_URL', 'http://elasticsearch:9200/'),
             'INDEX_NAME': os.getenv('HAYSTACK_ENGINE_INDEX_NAME', 'haystack'),
         },
     }
