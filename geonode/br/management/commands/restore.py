@@ -51,7 +51,8 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
-
+from django_jsonfield_backport.features import extend_features
+from django.db import connection
 
 logger = logging.getLogger(__name__)
 
@@ -161,6 +162,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, **options):
+        extend_features(connection)
         skip_read_only = options.get('skip_read_only')
         config = Configuration.load()
 
@@ -358,7 +360,7 @@ class Command(BaseCommand):
                         # Restore Fixtures
                         abortlater = False
                         for app_name, dump_name in zip(config.app_names, config.dump_names):
-                            fixture_file = os.path.join(target_folder, dump_name+'.json')
+                            fixture_file = os.path.join(target_folder, f"{dump_name}.json")
 
                             print(f"Deserializing '{fixture_file}'")
                             try:
@@ -405,7 +407,7 @@ class Command(BaseCommand):
                             # (check to prevent overriding files from site-packages
                             #  in project-template based GeoNode projects)
                             if getattr(settings, 'LOCAL_ROOT', None) and \
-                            not static_files_folder.startswith(settings.LOCAL_ROOT):
+                                    not static_files_folder.startswith(settings.LOCAL_ROOT):
                                 print(
                                     f"Skipping static directory: {static_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
@@ -430,7 +432,7 @@ class Command(BaseCommand):
                             # (check to prevent overriding files from site-packages
                             #  in project-template based GeoNode projects)
                             if getattr(settings, 'LOCAL_ROOT', None) and \
-                            not template_files_folder.startswith(settings.LOCAL_ROOT):
+                                    not template_files_folder.startswith(settings.LOCAL_ROOT):
                                 print(
                                     f"Skipping template directory: {template_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
@@ -455,7 +457,7 @@ class Command(BaseCommand):
                             # (check to prevent overriding files from site-packages
                             #  in project-template based GeoNode projects)
                             if getattr(settings, 'LOCAL_ROOT', None) and \
-                            not locale_files_folder.startswith(settings.LOCAL_ROOT):
+                                    not locale_files_folder.startswith(settings.LOCAL_ROOT):
                                 print(
                                     f"Skipping locale directory: {locale_files_folder}. "
                                     f"It's not located under LOCAL_ROOT path: {settings.LOCAL_ROOT}.")
@@ -663,8 +665,7 @@ class Command(BaseCommand):
         }
         r = requests.post(f'{url}rest/br/restore/', data=json.dumps(data),
                           headers=headers, auth=HTTPBasicAuth(user, passwd))
-        error_backup = 'Could not successfully restore GeoServer ' + \
-                       'catalog [{}rest/br/restore/]: {} - {}'
+        error_backup = "Could not successfully restore GeoServer catalog [{{}}rest/br/restore/]: {{}} - {{}}"
 
         if r.status_code in (200, 201, 406):
             try:
@@ -761,8 +762,7 @@ class Command(BaseCommand):
                     copy_tree(gs_data_folder, gs_data_root)
                     print(f"GeoServer Uploaded Raster Data Restored to '{gs_data_root}'.")
                 else:
-                    print(('Skipping geoserver raster data restore: ' +
-                          f'directory "{gs_data_folder}" not found.'))
+                    print(f"Skipping geoserver raster data restore: directory \"{gs_data_folder}\" not found.")
 
                 # Restore '$config.gs_data_dir/data/geonode'
                 gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'geonode')
@@ -777,8 +777,7 @@ class Command(BaseCommand):
                     copy_tree(gs_data_folder, gs_data_root)
                     print(f"GeoServer Uploaded Data Restored to '{gs_data_root}'.")
                 else:
-                    print(('Skipping geoserver raster data restore: ' +
-                           f'directory "{gs_data_folder}" not found.'))
+                    print(f"Skipping geoserver raster data restore: directory \"{gs_data_folder}\" not found.")
 
     def restore_geoserver_vector_data(self, config, settings, target_folder, soft_reset):
         """Restore Vectorial Data from DB"""
@@ -786,8 +785,7 @@ class Command(BaseCommand):
 
             gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'geonode')
             if not os.path.exists(gs_data_folder):
-                print(('Skipping geoserver vector data restore: ' +
-                      f'directory "{gs_data_folder}" not found.'))
+                print(f"Skipping geoserver vector data restore: directory \"{gs_data_folder}\" not found.")
                 return
 
             datastore = settings.OGC_SERVER['default']['DATASTORE']
