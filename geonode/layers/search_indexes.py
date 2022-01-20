@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+from operator import index
 from pinax.ratings.models import OverallRating
 from dialogos.models import Comment
 from django.contrib.contenttypes.models import ContentType
@@ -42,6 +43,7 @@ class LayerIndex(indexes.SearchIndex, indexes.Indexable):
     uuid = indexes.CharField(model_attr="uuid")
     title = indexes.CharField(model_attr="title", boost=2)
     date = indexes.DateTimeField(model_attr="date")
+    data_type = indexes.CharField(model_attr="data_type")
 
     text = indexes.EdgeNgramField(document=True, use_template=True, stored=False)
     type = indexes.CharField(faceted=True)

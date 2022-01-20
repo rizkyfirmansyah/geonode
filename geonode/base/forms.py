@@ -419,6 +419,10 @@ class ResourceBaseForm(TranslationModelForm):
         label=_("Data quality statement"),
         required=False,
         widget=TinyMCE())
+    data_type = forms.ModelChoiceField(
+        label=_("Data Type"),
+        required=False,
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
     owner = forms.ModelChoiceField(
         empty_label=_("Owner"),
         label=_("Owner"),
