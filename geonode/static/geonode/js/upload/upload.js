@@ -555,6 +555,7 @@ define(['underscore',
                             if (render) {
                                 render(true);
                             }
+                            abort();
                         }
                         loading = false;
                     }

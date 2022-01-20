@@ -40,7 +40,7 @@ class MapIndex(indexes.SearchIndex, indexes.Indexable):
     uuid = indexes.CharField(model_attr="uuid")
     title = indexes.CharField(model_attr="title", boost=2)
     date = indexes.DateTimeField(model_attr="date")
-    data_type = indexes.CharField(model_attr="data_type")
+    data_type = indexes.CharField(model_attr="data_type", null=True)
 
     text = indexes.EdgeNgramField(document=True, use_template=True, stored=False)
     type = indexes.CharField(faceted=True)
