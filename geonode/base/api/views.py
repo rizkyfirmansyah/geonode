@@ -18,7 +18,7 @@
 #
 #########################################################################
 import ast
-from geonode.geonode.base.models import DataType
+from geonode.base.models import DataType
 from geonode.thumbs.exceptions import ThumbnailError
 from geonode.thumbs.thumbnails import create_thumbnail
 import json
