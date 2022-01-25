@@ -1,6 +1,6 @@
 {% extends "geonode_base.html" %}
 {% load markdownify %}
-{% load i18n %}`
+{% load i18n %}
 {% load static from staticfiles %}
 {% load base_tags %}
 
@@ -110,6 +110,7 @@
       				{% endif %}
       			</form>
       		</div>
+      		<p><a class="btn btn-default btn-lg" href="{% url "search" %}">{% trans "Advanced Search" %}</a></p>
       	</div>
       </div>
       {% endif %}

@@ -38,30 +38,31 @@ import re
 import json
 import logging
 import zipfile
-import traceback
-import gsimporter
 import tempfile
+import gsimporter
 
 from http.client import BadStatusLine
 
 from django.contrib import auth
-from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.utils.html import escape
-from django.shortcuts import get_object_or_404
+from django.conf import settings
 from django.shortcuts import render
+from django.utils.html import escape
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, DeleteView
+from django.contrib.auth.decorators import login_required
 
 from geonode.layers.models import Layer
-from geonode.utils import fixup_shp_columnnames
-from geonode.decorators import logged_in_or_basicauth
+from geonode.upload import UploadException
 from geonode.base.models import Configuration
 from geonode.base.enumerations import CHARSETS
-from geonode.monitoring import register_event
+from geonode.utils import fixup_shp_columnnames
+from geonode.decorators import logged_in_or_basicauth
+
+from geonode.base import register_event
 from geonode.monitoring.models import EventType
 
 from .forms import (
@@ -107,7 +108,7 @@ def _get_upload_session(req):
         upload_id = str(req.GET['id'])
         upload_obj = get_object_or_404(
             Upload, import_id=upload_id, user=req.user)
-        upload_session = upload_obj.get_session()
+        upload_session = upload_obj.get_session
     return upload_session
 
 
@@ -199,7 +200,7 @@ def save_step_view(req, session):
                 name = _layer.first().name
                 target_store = _layer.first().store
 
-        import_session = save_step(
+        import_session, upload = save_step(
             req.user,
             name,
             spatial_files,
@@ -233,7 +234,7 @@ def save_step_view(req, session):
         upload_session = UploaderSession(
             tempdir=tempdir,
             base_file=spatial_files,
-            name=name,
+            name=upload.name,
             charset=form.cleaned_data["charset"],
             import_session=import_session,
             layer_abstract=form.cleaned_data["abstract"],
@@ -247,7 +248,7 @@ def save_step_view(req, session):
             append_to_mosaic_name=form.cleaned_data['append_to_mosaic_name'],
             mosaic_time_regex=form.cleaned_data['mosaic_time_regex'],
             mosaic_time_value=form.cleaned_data['mosaic_time_value'],
-            user=req.user
+            user=upload.user
         )
         Upload.objects.update_from_session(upload_session)
         return next_step_response(req, upload_session, force_ajax=True)
@@ -335,6 +336,7 @@ def srs_step_view(request, upload_session):
         upload_session.completed_step = 'srs'
 
     return next_step_response(request, upload_session)
+
 
 def csv_step_view(request, upload_session):
     if not upload_session:
@@ -494,6 +496,7 @@ def time_step_view(request, upload_session):
     import_session = upload_session.import_session
     assert import_session is not None
 
+    force_ajax = '&force_ajax=true' if request and 'force_ajax' in request.GET and request.GET['force_ajax'] == 'true' else ''
     if request.method == 'GET':
         layer = check_import_session_is_valid(
             request, upload_session, import_session)
@@ -501,22 +504,19 @@ def time_step_view(request, upload_session):
             (has_time_dim, layer_values) = layer_eligible_for_time_dimension(request,
                                                                              layer, upload_session=upload_session)
             if has_time_dim and layer_values:
-                context = {
-                    'time_form': create_time_form(request, upload_session, None),
-                    'layer_name': layer.name,
-                    'layer_values': layer_values,
-                    'layer_attributes': list(layer_values[0].keys()),
-                    'async_upload': is_async_step(upload_session)
-                }
                 upload_session.completed_step = 'check'
-                return render(request, 'upload/layer_upload_time.html', context=context)
+                if not force_ajax:
+                    context = {
+                        'time_form': create_time_form(request, upload_session, None),
+                        'layer_name': layer.name,
+                        'layer_values': layer_values,
+                        'layer_attributes': list(layer_values[0].keys()),
+                        'async_upload': is_async_step(upload_session)
+                    }
+                    return render(request, 'upload/layer_upload_time.html', context=context)
             else:
                 upload_session.completed_step = 'time' if _ALLOW_TIME_STEP else 'check'
-                return next_step_response(request, upload_session)
-        else:
-            # TODO: Error
-            upload_session.completed_step = 'check'
-            return next_step_response(request, upload_session)
+        return next_step_response(request, upload_session)
     elif request.method != 'POST':
         raise Exception()
 
@@ -546,7 +546,12 @@ def time_step_view(request, upload_session):
                 )
                 upload_session.import_session.tasks[0].save_transforms()
 
-    upload_session.import_session = import_session.reload()
+    try:
+        upload_session.import_session = import_session.reload()
+    except gsimporter.api.NotFound as e:
+        Upload.objects.invalidate_from_session(upload_session)
+        raise UploadException.from_exc(
+            _("The GeoServer Import Session is no more available"), e)
 
     if start_attribute_and_type:
         def tx(type_name):

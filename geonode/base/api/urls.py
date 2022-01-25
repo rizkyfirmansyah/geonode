@@ -24,5 +24,11 @@ from . import views
 router.register(r'users', views.UserViewSet, 'users')
 router.register(r'groups', views.GroupViewSet, 'group-profiles')
 router.register(r'resources', views.ResourceBaseViewSet, 'base-resources')
+router.register(r'owners', views.OwnerViewSet, 'owners')
+router.register(r'categories', views.TopicCategoryViewSet, 'categories')
+router.register(r'keywords', views.HierarchicalKeywordViewSet, 'keywords')
+router.register(r'tkeywords', views.ThesaurusKeywordViewSet, 'tkeywords')
+router.register(r'regions', views.RegionViewSet, 'regions')
+router.register(r'data_type', views.DataTypeViewSet, 'data_type')
 
 urlpatterns = []

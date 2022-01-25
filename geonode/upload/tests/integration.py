@@ -93,11 +93,9 @@ def get_wms(version='1.1.1', type_name=None, username=None, password=None):
     # right now owslib does not support auth for get caps
     # requests. Either we should roll our own or fix owslib
     if type_name:
-        url = GEOSERVER_URL + \
-            f"{type_name.replace(':', '/')}wms?request=getcapabilities"
+        url = f"{GEOSERVER_URL}{type_name.replace(':', '/')}wms?request=getcapabilities"
     else:
-        url = GEOSERVER_URL + \
-            'wms?request=getcapabilities'
+        url = f"{GEOSERVER_URL}wms?request=getcapabilities"
     ogc_server_settings = settings.OGC_SERVER['default']
     if username and password:
         return WebMapService(
@@ -140,7 +138,7 @@ class UploaderBase(GeoNodeBaseTestSupport):
             GEONODE_URL, GEONODE_USER, GEONODE_PASSWD
         )
         self.catalog = Catalog(
-            GEOSERVER_URL + 'rest',
+            f"{GEOSERVER_URL}rest",
             GEOSERVER_USER,
             GEOSERVER_PASSWD,
             retries=ogc_server_settings.MAX_RETRIES,
@@ -409,7 +407,7 @@ class UploaderBase(GeoNodeBaseTestSupport):
             if json_data and json_data.get('state', '') == 'COMPLETE':
                 return json_data
             elif json_data and json_data.get('state', '') == 'RUNNING' and \
-            wait_for_progress_cnt < 30:
+                    wait_for_progress_cnt < 30:
                 logger.error(f"[{wait_for_progress_cnt}] ... wait_for_progress @ {progress_url}")
                 json_data = self.wait_for_progress(progress_url, wait_for_progress_cnt=wait_for_progress_cnt + 1)
             return json_data
@@ -636,6 +634,77 @@ class TestUpload(UploaderBase):
             self.assertTrue(data['success'])
             self.assertTrue(data['redirect_to'], "/upload/csv")
 
+    def test_final_step_for_csv_file(self):
+        '''make sure a csv upload fails gracefully/normally when not activated'''
+        csv_file = self.make_csv(['lat', 'lon', 'thing'], {'lat': -100, 'lon': -40, 'thing': 'foo'})
+        layer_name, ext = os.path.splitext(os.path.basename(csv_file))
+        # - First step - Upload file
+        resp, data = self.client.upload_file(csv_file)
+        #     - Assertions
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data.get('status', ''), 'incomplete')
+        self.assertTrue(data.get('required_input', ''))
+        self.assertTrue(data.get('success', ''))
+        upload_id = data['id']
+        expected_url = f"/upload/csv?id={upload_id}"
+        self.assertIn(expected_url, data.get('redirect_to', ''))
+
+        # - Next step - Setup lat and lng fields
+        self.client.make_request(expected_url, ajax=False, force_login=True)
+        resp = self.client.make_request(expected_url, data={"lat": "lat", "lng": "lon"}, ajax=True, force_login=True)
+        data = resp.json()
+        #    - Assertions
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data.get('status', ''), 'incomplete')
+        self.assertTrue(data.get('required_input', ''))
+        self.assertTrue(data.get('success', ''))
+        expected_url = f"/upload/srs?id={upload_id}"
+        self.assertIn(expected_url, data.get('redirect_to', ''))
+
+        # - Next step - srs
+        resp = self.client.make_request(expected_url, data={"source": "EPSG:4326", "target": ""}, ajax=True, force_login=True)
+        data = resp.json()
+        #    - Assertions
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data.get('status', ''), 'incomplete')
+        self.assertEqual(data.get('required_input', ''), '')
+        self.assertTrue(data.get('success', ''))
+        expected_url = f"/upload/check?id={upload_id}"
+        self.assertIn(expected_url, data.get('redirect_to', ''))
+
+        # - Next step - check
+        resp = self.client.make_request(expected_url, ajax=True, force_login=True)
+        data = resp.json()
+        #    - Assertions
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(data.get('success', False))
+        expected_url = f"/upload/final?id={upload_id}"
+        self.assertIn(expected_url, data.get('redirect_to', ''))
+
+        # - Before final step assert that status is WAITING
+        upload_file_url = "/api/v2/uploads/?filter{import_id}=" + str(upload_id)
+        resp = self.client.make_request(upload_file_url, force_login=True)
+        data = resp.json()
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data['uploads'][0]['state'], 'WAITING')
+        self.assertFalse(data['uploads'][0]['complete'])
+
+        # - Next step - final
+        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=60)
+        data = resp.json()
+        #    - Assertions
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data.get('status', ''), 'finished')
+        self.assertEqual(data.get('required_input', ''), '')
+        self.assertTrue(data.get('success', False))
+
+        # - After final step assert that status is PROCESSED
+        resp = self.client.make_request(upload_file_url, force_login=True)
+        data = resp.json()
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(data['uploads'][0]['state'], 'COMPLETE')
+        self.assertTrue(data['uploads'][0]['complete'])
+
 
 @unittest.skipUnless(ogc_server_settings.datastore_db,
                      'Vector datastore not enabled')
@@ -725,7 +794,13 @@ class TestUploadDBDataStore(UploaderBase):
         thefile = os.path.join(
             GOOD_DATA, 'time', f'{layer_name}.shp'
         )
-        resp, data = self.client.upload_file(thefile)
+        # Test upload with custom permissions
+        resp, data = self.client.upload_file(
+            thefile, perms='{"users": {"AnonymousUser": []}, "groups":{}}'
+        )
+        _layer = Layer.objects.get(name=layer_name)
+        _user = get_user_model().objects.get(username='AnonymousUser')
+        self.assertEqual(_layer.get_user_perms(_user).count(), 0)
 
         # initial state is no positions or info
         self.assertTrue(get_wms_timepositions() is None)
