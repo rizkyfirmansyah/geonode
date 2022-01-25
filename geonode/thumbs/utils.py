@@ -17,21 +17,26 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
+import os
 import time
 import base64
 import logging
 
-from pyproj import Transformer
+from pyproj import Transformer, CRS
+from owslib.wms import WebMapService
 from typing import List, Tuple, Callable, Union
+from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.staticfiles.templatetags import staticfiles
+from django.core.files.storage import default_storage as storage
+
 
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
 from geonode.base.auth import get_or_create_token
-from geonode.utils import http_client
+from geonode.thumbs.exceptions import ThumbnailError
 from geonode.geoserver.helpers import OGC_Servers_Handler
 
 logger = logging.getLogger(__name__)
@@ -94,8 +99,8 @@ def expand_bbox_to_ratio(
     :return: BBOX (in input's format) with provided height/width ratio, and unchanged center point
              (in regard to the input BBOX)
     """
-    # convert bbox to EPSG:3857
-    x_min, x_max, y_min, y_max, _ = transform_bbox(bbox)
+
+    x_min, x_max, y_min, y_max, crs = bbox
 
     # scale up to ratio
     ratio = target_height / target_width
@@ -118,7 +123,7 @@ def expand_bbox_to_ratio(
         x_mid + new_width / 2,
         y_mid - new_height / 2,
         y_mid + new_height / 2,
-        "epsg:3857",
+        crs,
     ]
 
     # make sure we do not fell into a 'zero-area' use case
@@ -131,7 +136,7 @@ def expand_bbox_to_ratio(
         new_bbox[3] += TOLERANCE
 
     # convert bbox to target_crs
-    return transform_bbox(new_bbox, target_crs=bbox[-1].lower())
+    return new_bbox
 
 
 def assign_missing_thumbnail(instance: Union[Layer, Map]) -> None:
@@ -143,48 +148,39 @@ def assign_missing_thumbnail(instance: Union[Layer, Map]) -> None:
     instance.save_thumbnail("", image=None)
 
 
-def construct_wms_url(
-    ogc_server_location: str,
-    layers: List,
-    bbox: List,
-    wms_version: str = settings.OGC_SERVER["default"].get("WMS_VERSION", "1.1.0"),
-    mime_type: str = "image/png",
-    styles: str = None,
-    width: int = 240,
-    height: int = 200,
-) -> str:
+def get_map(
+        ogc_server_location: str,
+        layers: List,
+        bbox: List,
+        wms_version: str = settings.OGC_SERVER["default"].get("WMS_VERSION", "1.1.1"),
+        mime_type: str = "image/png",
+        styles: List = None,
+        width: int = 240,
+        height: int = 200,
+        max_retries: int = 3,
+        retry_delay: int = 1,
+):
     """
-    Method constructing a GetMap URL to the OGC server.
+    Function fetching an image from OGC server.
+    For the requests to the configured OGC backend (ogc_server_settings.LOCATION) the function tries to generate
+    an access_token and attach it to the URL.
+    If access_token is not added ant the request is against Geoserver Basic Authentication is used instead.
+    If image retrieval fails, function retries to fetch the image max_retries times, waiting
+    retry_delay seconds between consecutive requests.
 
     :param ogc_server_location: OGC server URL
     :param layers: layers which should be fetched from the OGC server
     :param bbox: area's bounding box in format: [west, east, south, north, CRS]
-    :param wms_version: WMS version of the query
+    :param wms_version: WMS version of the query (default: 1.1.1)
     :param mime_type: mime type of the returned image
     :param styles: styles, which OGC server should use for rendering an image
     :param width: width of the returned image
     :param height: height of the returned image
-
-    :return: GetMap URL
+    :param max_retries: maximum number of retries before skipping retrieval
+    :param retry_delay: number of seconds waited between retries
+    :returns: retrieved image
     """
-    # create GetMap query parameters
-    params = {
-        "service": "WMS",
-        "version": wms_version,
-        "request": "GetMap",
-        "layers": ",".join(layers),
-        "bbox": ",".join([str(bbox[0]), str(bbox[2]), str(bbox[1]), str(bbox[3])]),
-        "crs": bbox[-1],
-        "width": width,
-        "height": height,
-        "format": mime_type,
-        "transparent": True,
-    }
 
-    if styles is not None:
-        params["styles"] = styles
-
-    # create GetMap request
     ogc_server_settings = OGC_Servers_Handler(settings.OGC_SERVER)["default"]
 
     if ogc_server_location is not None:
@@ -192,7 +188,11 @@ def construct_wms_url(
     else:
         thumbnail_url = ogc_server_settings.LOCATION
 
+    if thumbnail_url.startswith(ogc_server_settings.PUBLIC_LOCATION):
+        thumbnail_url = thumbnail_url.replace(ogc_server_settings.PUBLIC_LOCATION, ogc_server_settings.LOCATION)
+
     wms_endpoint = ""
+    additional_kwargs = {}
     if thumbnail_url == ogc_server_settings.LOCATION:
         # add access token to requests to Geoserver (logic based on the previous implementation)
         username = ogc_server_settings.credentials.username
@@ -200,66 +200,177 @@ def construct_wms_url(
         if user:
             access_token = get_or_create_token(user)
             if access_token and not access_token.is_expired():
-                params["access_token"] = access_token.token
+                additional_kwargs['access_token'] = access_token.token
 
         # add WMS endpoint to requests to Geoserver
         wms_endpoint = getattr(ogc_server_settings, "WMS_ENDPOINT") or "ows"
 
-    thumbnail_url = thumbnail_url + f"{wms_endpoint}?" + "&".join(f"{key}={val}" for key, val in params.items())
-
-    return thumbnail_url
-
-
-def fetch_wms(url: str, max_retries: int = 3, retry_delay: int = 1):
-    """
-    Function fetching an image from OGC server. The request is performed based on the WMS URL.
-    In case access_token in not present in the URL , and Geoserver is used and the OGC backend, Basic Authentication
-    is used instead. If image retrieval fails, function retries to fetch the image max_retries times, waiting
-    retry_delay seconds between consecutive requests.
-
-    :param url: WMS URL of the image
-    :param max_retries: maximum number of retries before skipping retrieval
-    :param retry_delay: number of seconds waited between retries
-    :returns: retrieved image
-    """
-
     # prepare authorization for WMS service
     headers = {}
-    if "access_token" not in url:
-        if url.startswith(settings.OGC_SERVER["default"]["LOCATION"]):
+
+    if thumbnail_url.startswith(ogc_server_settings.LOCATION):
+        if "access_token" not in additional_kwargs.keys():
             # for the Geoserver backend, use Basic Auth, if access_token is not provided
-            _user = settings.OGC_SERVER["default"].get("USER")
-            _pwd = settings.OGC_SERVER["default"].get("PASSWORD")
+            _user, _pwd = ogc_server_settings.credentials
             encoded_credentials = base64.b64encode(f"{_user}:{_pwd}".encode("UTF-8")).decode("ascii")
             headers["Authorization"] = f"Basic {encoded_credentials}"
+        else:
+            headers["Authorization"] = f"Bearer {additional_kwargs['access_token']}"
+
+    wms = WebMapService(f"{thumbnail_url}{wms_endpoint}", version=wms_version, headers=headers)
 
     image = None
-
     for retry in range(max_retries):
         try:
             # fetch data
-            resp, image = http_client.request(
-                url, headers=headers, timeout=settings.OGC_SERVER["default"].get("TIMEOUT", 60)
+            image = wms.getmap(
+                layers=layers,
+                styles=styles,
+                srs=bbox[-1],
+                bbox=[bbox[0], bbox[2], bbox[1], bbox[3]],
+                size=(width, height),
+                format=mime_type,
+                transparent=True,
+                timeout=getattr(ogc_server_settings, "TIMEOUT", None),
+                **additional_kwargs,
             )
 
             # validate response
-            if not resp or resp.status_code < 200 or resp.status_code > 299 or "ServiceException" in str(image):
-                _status_code = resp.status_code if resp else 'Unknown'
-                logger.debug(
-                    f"Fetching partial thumbnail from {url} failed with status code: "
-                    f"{_status_code} and response: {str(image)}"
+            if not image or "ServiceException" in str(image.read()):
+                raise ThumbnailError(
+                    f"Fetching partial thumbnail from {thumbnail_url} failed with response: {str(image)}"
                 )
-                image = None
-                time.sleep(retry_delay)
-                continue
 
         except Exception as e:
             if retry + 1 >= max_retries:
                 logger.exception(e)
+                return
 
             time.sleep(retry_delay)
             continue
         else:
             break
 
-    return image
+    return image.read()
+
+
+def epsg_3857_area_of_use():
+    """
+    Shortcut function, returning area of use of EPSG:3857 (in EPSG:4326) in a layer compliant BBOX
+    """
+    epsg3857 = CRS.from_user_input('EPSG:3857')
+    return [
+        getattr(epsg3857.area_of_use, 'west'),
+        getattr(epsg3857.area_of_use, 'east'),
+        getattr(epsg3857.area_of_use, 'south'),
+        getattr(epsg3857.area_of_use, 'north'),
+        'EPSG:4326'
+    ]
+
+
+def crop_to_3857_area_of_use(bbox: List) -> List:
+
+    # perform the comparison in EPSG:4326 (the pivot for EPSG:3857)
+    bbox4326 = transform_bbox(bbox, target_crs='EPSG:4326')
+
+    # get area of use of EPSG:3857 in EPSG:4326
+    epsg3857_bounds_bbox = epsg_3857_area_of_use()
+
+    bbox = []
+    for coord, bound_coord in zip(bbox4326[:-1], epsg3857_bounds_bbox[:-1]):
+        if abs(coord) > abs(bound_coord):
+            logger.debug(
+                "Thumbnail generation: cropping BBOX's coord to EPSG:3857 area of use."
+            )
+            bbox.append(bound_coord)
+        else:
+            bbox.append(coord)
+
+    bbox.append('EPSG:4236')
+
+    return bbox
+
+
+def exceeds_epsg3857_area_of_use(bbox: List) -> bool:
+    """
+    Function checking if a provided BBOX extends the are of use of EPSG:3857. Comparison is performed after casting
+    the BBOX to EPSG:4326 (pivot for EPSG:3857).
+
+    :param bbox: a layer compliant BBOX in a certain CRS, in (xmin, xmax, ymin, ymax, 'EPSG:xxxx') order
+    :returns: List of indicators whether BBOX's coord exceeds the area of use of EPSG:3857
+    """
+
+    # perform the comparison in EPSG:4326 (the pivot for EPSG:3857)
+    bbox4326 = transform_bbox(bbox, target_crs='EPSG:4326')
+
+    # get area of use of EPSG:3857 in EPSG:4326
+    epsg3857_bounds_bbox = epsg_3857_area_of_use()
+
+    exceeds = False
+    for coord, bound_coord in zip(bbox4326[:-1], epsg3857_bounds_bbox[:-1]):
+        if abs(coord) > abs(bound_coord):
+            exceeds = True
+
+    return exceeds
+
+
+def thumb_path(filename):
+    """Return the complete path of the provided thumbnail file accessible
+    via Django storage API"""
+    return os.path.join(settings.THUMBNAIL_LOCATION, filename)
+
+
+def thumb_exists(filename):
+    """Determine if a thumbnail file exists in storage"""
+    return storage.exists(thumb_path(filename))
+
+
+def thumb_size(filepath):
+    """Determine if a thumbnail file size in storage"""
+    if storage.exists(filepath):
+        return storage.size(filepath)
+    elif os.path.exists(filepath):
+        return os.path.getsize(filepath)
+    return 0
+
+
+def thumb_open(filename):
+    """Returns file handler of a thumbnail on the storage"""
+    return storage.open(thumb_path(filename))
+
+
+def get_thumbs():
+    """Fetches a list of all stored thumbnails"""
+    if not storage.exists(settings.THUMBNAIL_LOCATION):
+        return []
+    subdirs, thumbs = storage.listdir(settings.THUMBNAIL_LOCATION)
+    return thumbs
+
+
+def remove_thumb(filename):
+    """Delete a thumbnail from storage"""
+    storage.delete(thumb_path(filename))
+
+
+def remove_thumbs(name):
+    """Removes all stored thumbnails that start with the same name as the
+    file specified"""
+    for thumb in get_thumbs():
+        if thumb.startswith(name):
+            remove_thumb(thumb)
+
+
+def get_unique_upload_path(resource, filename):
+    """ Generates a unique name from the given filename and
+    creates a unique file upload path"""
+    mising_thumb = staticfiles.static(settings.MISSING_THUMBNAIL)
+    if resource.thumbnail_url and not resource.thumbnail_url == mising_thumb:
+        # remove thumbnail from storage
+        thumb_name = os.path.basename(resource.thumbnail_url)
+        name, _ext = os.path.splitext(thumb_name)
+        remove_thumbs(name)
+    # create an upload path from a unique filename
+    filename, ext = os.path.splitext(filename)
+    unique_file_name = f'{filename}-{uuid4()}{ext}'
+    upload_path = thumb_path(unique_file_name)
+    return upload_path
