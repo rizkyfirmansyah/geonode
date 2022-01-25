@@ -282,7 +282,6 @@ define(['underscore',
         var lastUploadsIds = [];
         var uploads = [];
         var loading = false;
-        const status = false;
 
         function getUploadItems(options) {
             $.ajax({
@@ -295,7 +294,6 @@ define(['underscore',
                     if (options.resolve) {
                         options.resolve(response);
                     }
-                    
                 })
                 .fail(function (error) {
                     if (options.reject) {
@@ -594,11 +592,11 @@ define(['underscore',
         render(true);
         // continuously request update for the current page to the api
         // and re-render the table
-        // setInterval(function() {
-        //     if (!loading) {
-        //         render(true);
-        //     }
-        // }, intervalTime);
+        setInterval(function() {
+            if (!loading) {
+                render(true);
+            }
+        }, intervalTime);
     }
 
     /** Initialization function. Called from main.js
