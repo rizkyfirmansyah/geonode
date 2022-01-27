@@ -605,6 +605,8 @@ def final_step_view(req, upload_session):
                     if _layer.exists():
                         layer_id = _layer.first().resourcebase_ptr_id
 
+                print(layer_id)
+                print(upload_session)
                 saved_layer = final_step(upload_session, upload_session.user, layer_id)
 
                 assert saved_layer

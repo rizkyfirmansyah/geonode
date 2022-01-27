@@ -25,6 +25,10 @@ unittest). These will both pass when you run "manage.py test".
 Replace these with more appropriate tests for your application.
 """
 import json
+import os
+import io
+import gisdata
+import zipfile
 
 try:
     from unittest.mock import MagicMock
@@ -38,6 +42,7 @@ from django.test.utils import override_settings
 from geonode import geoserver
 from geonode.base.models import Link
 from geonode.layers.models import Layer
+from geonode.layers.utils import file_upload
 from geonode.decorators import on_ogc_backend
 from geonode.tests.base import GeoNodeBaseTestSupport
 from geonode.base.populate_test_data import create_models
@@ -50,6 +55,7 @@ class ProxyTest(GeoNodeBaseTestSupport):
 
     def setUp(self):
         super(ProxyTest, self).setUp()
+        self.maxDiff = None
         self.admin = get_user_model().objects.get(username='admin')
 
         # FIXME(Ariel): These tests do not work when the computer is offline.
@@ -119,6 +125,58 @@ class ProxyTest(GeoNodeBaseTestSupport):
         self.client.get(f'{self.proxy_url}?url={url}')
         assert request_mock.call_args[0][0] == 'http://example.org/index.html'
 
+    def test_proxy_preserve_headers(self):
+        """The GeoNode Proxy should preserve the original request headers."""
+        import geonode.proxy.views
+
+        _test_headers = {
+            'Access-Control-Allow-Credentials': False,
+            'Access-Control-Allow-Headers': 'Content-Type, Accept, Authorization, Origin, User-Agent',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, OPTIONS',
+            'Cache-Control': 'public, must-revalidate, max-age = 30',
+            'Connection': 'keep-alive',
+            'Content-Language': 'en',
+            'Content-Length': 116559,
+            'Content-Type': 'image/tiff',
+            'Content-Disposition': 'attachment; filename="filename.tif"',
+            'Date': 'Fri, 05 Nov 2021 17: 19: 11 GMT',
+            'Server': 'nginx/1.17.2',
+            'Set-Cookie': 'sessionid = bogus-pocus; HttpOnly; Path=/; SameSite=Lax',
+            'Strict-Transport-Security': 'max-age=3600; includeSubDomains',
+            'Vary': 'Authorization, Accept-Language, Cookie, Origin',
+            'X-Content-Type-Options': 'nosniff',
+            'X-XSS-Protection': '1; mode=block'
+        }
+
+        class Response:
+            status_code = 200
+            content = 'Hello World'
+            headers = _test_headers
+
+        request_mock = MagicMock()
+        request_mock.return_value = (Response(), None)
+
+        geonode.proxy.views.http_client.request = request_mock
+        url = "http://example.org/test/test/../../image.tiff"
+
+        response = self.client.get(f'{self.proxy_url}?url={url}')
+        if hasattr(response, 'headers'):
+            response_headers = response.headers
+        else:
+            response_headers = response._headers
+        self.assertDictContainsSubset(
+            dict(response_headers.copy()),
+            {
+                'content-type': ('Content-Type', 'text/plain'),
+                'vary': ('Vary', 'Authorization, Accept-Language, Cookie, Origin'),
+                'x-content-type-options': ('X-Content-Type-Options', 'nosniff'),
+                'x-xss-protection': ('X-XSS-Protection', '1; mode=block'),
+                'x-frame-options': ('X-Frame-Options', 'SAMEORIGIN'),
+                'content-language': ('Content-Language', 'en'),
+                'content-length': ('Content-Length', '119')
+            }
+        )
+
 
 class DownloadResourceTestCase(GeoNodeBaseTestSupport):
 
@@ -140,6 +198,37 @@ class DownloadResourceTestCase(GeoNodeBaseTestSupport):
         data = content
         self.assertTrue(
             "No files have been found for this resource. Please, contact a system administrator." in data)
+
+    @on_ogc_backend(geoserver.BACKEND_PACKAGE)
+    def test_download_files(self):
+        admin = get_user_model().objects.get(username="admin")
+        # upload a shapefile
+        shp_file = os.path.join(
+            gisdata.VECTOR_DATA,
+            'san_andres_y_providencia_poi.shp')
+        layer = file_upload(
+            shp_file,
+            name="san_andres_y_providencia_poi",
+            user=admin,
+            overwrite=True,
+        )
+        self.client.login(username='admin', password='admin')
+
+        response = self.client.get(reverse('download', args=(layer.id,)))
+        # headers and status assertions
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get('content-type'), "application/zip")
+        self.assertEqual(response.get('content-disposition'), 'attachment; filename="san_andres_y_providencia_poi.zip"')
+        # Inspect content
+        zip_content = io.BytesIO(b"".join(response.streaming_content))
+        zip = zipfile.ZipFile(zip_content)
+        zip_files = zip.namelist()
+        self.assertEqual(len(zip_files), 11)
+        self.assertIn(".metadata/", "".join(zip_files))
+        self.assertIn(".shp", "".join(zip_files))
+        self.assertIn(".dbf", "".join(zip_files))
+        self.assertIn(".shx", "".join(zip_files))
+        self.assertIn(".prj", "".join(zip_files))
 
 
 class OWSApiTestCase(GeoNodeBaseTestSupport):

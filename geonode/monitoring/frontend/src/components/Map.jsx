@@ -119,19 +119,19 @@ export default function Map({ id, data }) {
                                     style={{
                                         default: {
                                             fill: color,
-                                            stroke: '#f0ab00',
+                                            stroke: '#2c689c',
                                             strokeWidth: 0.5,
                                             outline: 'none'
                                         },
                                         hover: {
                                             fill: color,
-                                            stroke: '#f0ab00',
+                                            stroke: '#2c689c',
                                             strokeWidth: 0.5,
                                             outline: 'none'
                                         },
                                         pressed: {
                                             fill: color,
-                                            stroke: '#f0ab00',
+                                            stroke: '#2c689c',
                                             strokeWidth: 0.5,
                                             outline: 'none'
                                         }
@@ -149,7 +149,7 @@ export default function Map({ id, data }) {
                     <div key={idx} style={{ display: 'flex', alignItems: 'center' }}>
                         <div
                             style={{
-                                border: `1px solid #f0ab00`,
+                                border: `1px solid #2c689c`,
                                 backgroundColor,
                                 width: 10,
                                 height: 10,

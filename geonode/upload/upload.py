@@ -63,8 +63,8 @@ from ..people.utils import get_default_user
 from ..layers.metadata import convert_keyword, parse_metadata
 from ..layers.utils import get_valid_layer_name, resolve_regions
 from ..layers.models import Layer, UploadSession
-from ..geoserver.tasks import geoserver_finalize_upload
-from ..geoserver.helpers import (
+from ..geoserver_.tasks import geoserver_finalize_upload
+from ..geoserver_.helpers import (
     set_time_info,
     gs_catalog,
     gs_uploader,
