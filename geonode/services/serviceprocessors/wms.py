@@ -45,7 +45,7 @@ from geonode.base.models import (
     ResourceBase,
     TopicCategory)
 from geonode.layers.models import Layer
-from geonode.layers.utils import resolve_regions
+from geonode.layers.utils import resolve_regions, resolve_categories
 from geonode.thumbs.thumbnails import create_thumbnail
 from geonode.geoserver.helpers import set_attributes_from_geoserver
 from geonode.utils import http_client, get_legend_url
@@ -637,6 +637,9 @@ class GeoNodeServiceHandler(WmsServiceHandler):
                 if _json_obj['meta']['total_count'] == 1:
                     _layer = _json_obj['objects'][0]
                     if _layer:
+                        print("==== LAYER =====")
+                        print(_layer)
+                        print("==== LAYER =====")
                         r_fields = {}
 
                         # Update plain fields
@@ -690,14 +693,19 @@ class GeoNodeServiceHandler(WmsServiceHandler):
                                 geonode_layer.regions.add(*regions_resolved)
 
                         # Add Topic Category
-                        if "category__gn_description" in _layer and _layer["category__gn_description"]:
-                            try:
-                                categories = TopicCategory.objects.filter(
-                                    Q(gn_description__iexact=_layer["category__gn_description"]))
-                                if categories:
-                                    geonode_layer.category = categories[0]
-                            except Exception:
-                                traceback.print_exc()
+                        # if "category" in _layer and _layer["category"]:
+                        #     (categories_resolved, categories_unresolved) = resolve_categories(_layer["category"])
+                        #     if categories_resolved:
+                        #         geonode_layer.category.clear()
+                        #         geonode_layer.category.add(*categories_resolved)
+                        # if "category__gn_description" in _layer and _layer["category__gn_description"]:
+                        #     try:
+                        #         categories = TopicCategory.objects.filter(
+                        #             Q(gn_description__iexact=_layer["category__gn_description"]))
+                        #         if categories:
+                        #             geonode_layer.category = categories[0]
+                            # except Exception:
+                                # traceback.print_exc()
             except Exception:
                 traceback.print_exc()
             finally:
