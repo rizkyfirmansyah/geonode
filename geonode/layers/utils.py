@@ -568,8 +568,7 @@ def file_upload(filename,
         'srid': 'EPSG:4326',
         'is_approved': is_approved,
         'is_published': is_published,
-        'license': license,
-        'category': category
+        'license': license
     }
 
     # set metadata
@@ -597,14 +596,20 @@ def file_upload(filename,
         for key, value in vals.items():
             if key == 'spatial_representation_type':
                 value = SpatialRepresentationType(identifier=value)
-            elif key == 'topic_category':
-                value, created = TopicCategory.objects.get_or_create(
-                    identifier=value,
-                    defaults={'description': '', 'gn_description': value})
-                key = 'category'
+            print("====== VALS UTILS LAYERS ===== ")
+            print(key)
+            print("====== VALS UTILS LAYERS ===== ")
+
+            # elif key == 'topic_category':
+            #     value, created = TopicCategory.objects.get_or_create(
+            #         identifier=value,
+            #         defaults={'description': '', 'gn_description': value})
+            #     key = 'category'
             defaults[key] = value
 
     regions_resolved, regions_unresolved = resolve_regions(regions)
+    categories_resolved, categories_unresolved = resolve_categories(category)
+
     if keywords and regions_unresolved:
         keywords.extend(convert_keyword(regions_unresolved))
 
@@ -660,7 +665,7 @@ def file_upload(filename,
         defaults['is_published'] = defaults.get(
             'is_published', is_published) or layer.is_published
         defaults['license'] = defaults.get('license', None) or layer.license
-        defaults['category'] = defaults.get('category', None) or layer.category
+        # defaults['category'] = defaults.get('category', None) or layer.category
 
         if upload_session:
             if layer.upload_session:
@@ -691,14 +696,14 @@ def file_upload(filename,
                 layer.regions.add(*regions_resolved)
 
     # Assign the categories (needs to be done after saving)
-    categories = list(set(categories))
-    if categories:
-        if len(categories) > 0:
-            if not layer.category:
-                layer.category = categories
-            else:
-                layer.category.clear()
-                layer.category.add(*categories)
+    # categories_resolved = list(set(categories_resolved))
+    # if categories_resolved:
+    #     if len(categories_resolved) > 0:
+    #         if not layer.category:
+    #             layer.category = categories_resolved
+    #         else:
+    #             layer.category.clear()
+    #             layer.category.add(*categories_resolved)
 
     # Assign and save the charset using the Layer class' object (layer)
     if charset != 'UTF-8':

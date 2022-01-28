@@ -1183,7 +1183,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     @property
     def topiccategory(self):
-        return self.category.identifier if self.category else None
+        return self.category.identifier
 
     @property
     def csw_crs(self):
@@ -1332,7 +1332,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     if not field.all():
                         continue
                 if required_field == 'category':
-                    if not field.identifier:
+                    if not field.all():
                         continue
                 filled_fields.append(field)
         return f'{len(filled_fields) * 100 / len(required_fields)}%'

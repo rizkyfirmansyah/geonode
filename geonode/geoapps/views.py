@@ -347,9 +347,11 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
     else:
         geoapp_form = GeoAppForm(instance=geoapp_obj, prefix="resource")
         geoapp_form.disable_keywords_widget_for_non_superuser(request.user)
+        #  set initial values for category form
+        ids = list(c.id for c in topic_category)
         category_form = CategoryForm(
             prefix="category_choice_field",
-            initial=topic_category.id if topic_category else None)
+            initial=ids)
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
