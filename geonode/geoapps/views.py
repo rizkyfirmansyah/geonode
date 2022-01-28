@@ -20,7 +20,7 @@
 import json
 import logging
 import traceback
-
+import warnings
 from itertools import chain
 
 from django.conf import settings
@@ -34,8 +34,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 
-from guardian.shortcuts import get_perms
-
 from geonode.groups.models import GroupProfile
 from geonode.base.auth import get_or_create_token
 from geonode.security.views import _perms_info_json
@@ -45,7 +43,7 @@ from geonode.base import register_event
 from geonode.monitoring.models import EventType
 
 from geonode.people.forms import ProfileForm
-from geonode.base.forms import CategoryForm, TKeywordForm
+from geonode.base.forms import CategoryForm, TKeywordForm, ThesaurusAvailableForm
 
 from geonode.base.models import (
     Thesaurus,
@@ -140,10 +138,10 @@ def geoapp_detail(request, geoappid, template='apps/app_detail.html'):
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(geoapp_obj)
 
-    perms_list = get_perms(
-        request.user,
-        geoapp_obj.get_self_resource()) + get_perms(request.user, geoapp_obj)
-
+    perms_list = list(
+        geoapp_obj.get_self_resource().get_user_perms(request.user)
+        .union(geoapp_obj.get_user_perms(request.user))
+    )
     group = None
     if geoapp_obj.group:
         try:
@@ -209,9 +207,10 @@ def geoapp_edit(request, geoappid, template='apps/app_edit.html'):
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(geoapp_obj)
 
-    perms_list = get_perms(
-        request.user,
-        geoapp_obj.get_self_resource()) + get_perms(request.user, geoapp_obj)
+    perms_list = list(
+        geoapp_obj.get_self_resource().get_user_perms(request.user)
+        .union(geoapp_obj.get_user_perms(request.user))
+    )
 
     group = None
     if geoapp_obj.group:
@@ -329,54 +328,65 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
     topic_category = geoapp_obj.category.all()
     current_keywords = [keyword.name for keyword in geoapp_obj.keywords.all()]
 
+    topic_thesaurus = geoapp_obj.tkeywords.all()
+
     if request.method == "POST":
         geoapp_form = GeoAppForm(
             request.POST,
             instance=geoapp_obj,
             prefix="resource")
-        category_form = CategoryForm(request.POST, prefix="category_choice_field",
-                    initial=(
-                        request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
-                        request.POST.getlist("category_choice_field") else []
-                        ))
+        category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
+            request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
+            request.POST["category_choice_field"] else None)
 
-        tkeywords_form = TKeywordForm(request.POST)
+        if hasattr(settings, 'THESAURUS'):
+            tkeywords_form = TKeywordForm(request.POST)
+        else:
+            tkeywords_form = ThesaurusAvailableForm(request.POST, prefix='tkeywords')
+
     else:
         geoapp_form = GeoAppForm(instance=geoapp_obj, prefix="resource")
         geoapp_form.disable_keywords_widget_for_non_superuser(request.user)
-        #  set initial values for category form
-        ids = list(c.id for c in topic_category)
         category_form = CategoryForm(
-                    prefix="category_choice_field",
-                    initial=ids)
+            prefix="category_choice_field",
+            initial=topic_category.id if topic_category else None)
 
-        # Keywords from THESAURUS management
-        doc_tkeywords = geoapp_obj.tkeywords.all()
-        tkeywords_list = ''
-        lang = 'en'  # TODO: use user's language
-        if doc_tkeywords and len(doc_tkeywords) > 0:
-            tkeywords_ids = doc_tkeywords.values_list('id', flat=True)
-            if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
-                el = settings.THESAURUS
-                thesaurus_name = el['name']
-                try:
-                    t = Thesaurus.objects.get(identifier=thesaurus_name)
-                    for tk in t.thesaurus.filter(pk__in=tkeywords_ids):
-                        tkl = tk.keyword.filter(lang=lang)
-                        if len(tkl) > 0:
-                            tkl_ids = ",".join(
-                                map(str, tkl.values_list('id', flat=True)))
-                            tkeywords_list += "," + \
-                            tkl_ids if len(
-                                tkeywords_list) > 0 else tkl_ids
-                except Exception:
-                    tb = traceback.format_exc()
-                    logger.error(tb)
+        # Create THESAURUS widgets
+        lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
+        if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
+            warnings.warn('The settings for Thesaurus has been moved to Model, \
+            this feature will be removed in next releases', DeprecationWarning)
+            layer_tkeywords = geoapp_obj.tkeywords.all()
+            tkeywords_list = ''
+            if layer_tkeywords and len(layer_tkeywords) > 0:
+                tkeywords_ids = layer_tkeywords.values_list('id', flat=True)
+                if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
+                    el = settings.THESAURUS
+                    thesaurus_name = el['name']
+                    try:
+                        t = Thesaurus.objects.get(identifier=thesaurus_name)
+                        for tk in t.thesaurus.filter(pk__in=tkeywords_ids):
+                            tkl = tk.keyword.filter(lang=lang)
+                            if len(tkl) > 0:
+                                tkl_ids = ",".join(
+                                    map(str, tkl.values_list('id', flat=True)))
+                                tkeywords_list += f",{tkl_ids}" if len(
+                                    tkeywords_list) > 0 else tkl_ids
+                    except Exception:
+                        tb = traceback.format_exc()
+                        logger.error(tb)
+            tkeywords_form = TKeywordForm(instance=geoapp_obj)
+        else:
+            tkeywords_form = ThesaurusAvailableForm(prefix='tkeywords')
+            #  set initial values for thesaurus form
+            for tid in tkeywords_form.fields:
+                values = []
+                values = [keyword.id for keyword in topic_thesaurus if int(tid) == keyword.thesaurus.id]
+                tkeywords_form.fields[tid].initial = values
 
-        tkeywords_form = TKeywordForm(instance=geoapp_obj)
-
+    initial_thumb_url = geoapp_obj.thumbnail_url
     if request.method == "POST" and geoapp_form.is_valid(
-    ) and category_form.is_valid():
+    ) and category_form.is_valid() and tkeywords_form.is_valid():
         new_poc = geoapp_form.cleaned_data['poc']
         new_author = geoapp_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else geoapp_form.cleaned_data['keywords']
@@ -423,6 +433,10 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         if new_poc is not None and new_author is not None:
             geoapp_obj.poc = new_poc
             geoapp_obj.metadata_author = new_author
+
+        if initial_thumb_url and not geoapp_obj.thumbnail_url:
+            geoapp_obj.thumbnail_url = initial_thumb_url
+
         geoapp_obj.keywords.clear()
         geoapp_obj.keywords.add(*new_keywords)
         geoapp_obj.regions.clear()
@@ -430,7 +444,6 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         geoapp_obj.category.clear()
         geoapp_obj.category.add(*new_categories)
         geoapp_obj.save(notify=True)
-        # geoapp_form.save_many2many()
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, geoapp_obj)
         if not ajax:
@@ -449,14 +462,17 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             if not tkeywords_form.is_valid():
                 return HttpResponse(json.dumps({'message': "Invalid thesaurus keywords"}, status_code=400))
 
-            tkeywords_data = tkeywords_form.cleaned_data['tkeywords']
-
             thesaurus_setting = getattr(settings, 'THESAURUS', None)
             if thesaurus_setting:
+                tkeywords_data = tkeywords_form.cleaned_data['tkeywords']
                 tkeywords_data = tkeywords_data.filter(
                     thesaurus__identifier=thesaurus_setting['name']
                 )
                 geoapp_obj.tkeywords.set(tkeywords_data)
+            elif Thesaurus.objects.all().exists():
+                fields = tkeywords_form.cleaned_data
+                geoapp_obj.tkeywords.set(tkeywords_form.cleanx(fields))
+
         except Exception:
             tb = traceback.format_exc()
             logger.error(tb)
@@ -519,6 +535,11 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
+        "UI_MANDATORY_FIELDS": list(
+            set(getattr(settings, 'UI_DEFAULT_MANDATORY_FIELDS', []))
+            |
+            set(getattr(settings, 'UI_REQUIRED_FIELDS', []))
+        )
     })
 
 

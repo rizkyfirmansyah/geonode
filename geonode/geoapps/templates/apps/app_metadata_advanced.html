@@ -39,7 +39,7 @@
     <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
       {% if geoapp.metadata_uploaded %}
       <div style="background-color: orange;">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing a metadata XML file.
-        GeoNode's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+        SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
         Some of your original metadata may have been lost.{% endblocktrans %}</div>
       {% endif %}
 
@@ -65,11 +65,33 @@
       <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
            Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
            There might be a better way to solve this. -->
-        <div class="col-md-6 form-controls">
-          {{ geoapp_form|as_bootstrap }}
+        <div class="col-md-12 form-controls">
+          {% block geoapp_fields %}
+          {% for field in geoapp_form %}
+            {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' and field.name not in ADVANCED_EDIT_EXCLUDE_FIELD  %}
+            <div class="form_item_spacing">
+              <div {% if field.auto_id in UI_MANDATORY_FIELDS %} id='adv_req' {% else %}{% endif %} >
+                <span><label for="{{ field.auto_id }}">{{ field.label }}</label></span>
+                {{ field }}
+                </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+          {% endblock geoapp_fields %}
+
+
+          {% block thesauri %}
           {% if THESAURI_FILTERS %}
-              {{ tkeywords_form }}
+            {% for field in tkeywords_form %}
+            <div class="form_item_spacing thesauri_keywords" id="tadv_req">
+              <p>
+              <label for="{{ field.thesaurus_id }}">{{ field.label }}</label>
+              {{ field }}
+              </p>
+            </div>
+            {% endfor %}
           {% endif %}
+          {% endblock thesauri %}
         </div>
         <div class="row">
           <div class="col-md-12">
@@ -108,7 +130,8 @@
               </fieldset>
 
               <div class="form-actions">
-                <input type="submit" id="btn_upd_md_dwn" class="btn btn-primary" value="{% trans "Update" %}"/>
+                <a href="{% url 'geoapp_detail' geoappid=resource.id %}" class="btn btn-primary">{% trans "Return to GeoApp" %}</a>                 
+                <input type="submit" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}"/>
               </div>
           </div>
         </div>
