@@ -577,6 +577,8 @@ def time_step_view(request, upload_session):
 
 
 def final_step_view(req, upload_session):
+    print(req)
+    print(req.GET['layer_id'])
     _json_response = None
     if not upload_session:
         upload_session = _get_upload_session(req)
@@ -605,8 +607,6 @@ def final_step_view(req, upload_session):
                     if _layer.exists():
                         layer_id = _layer.first().resourcebase_ptr_id
 
-                print(layer_id)
-                print(upload_session)
                 saved_layer = final_step(upload_session, upload_session.user, layer_id)
 
                 assert saved_layer
