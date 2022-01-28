@@ -119,6 +119,22 @@ def resolve_regions(regions):
     return regions_resolved, regions_unresolved
 
 
+def resolve_categories(categories):
+    categories_resolved = []
+    categories_unresolved = []
+    if categories:
+        if len(categories) > 0:
+            for category in categories:
+                try:
+                    category_resolved = TopicCategory.objects.get(
+                        Q(name__iexact=category) | Q(code__iexact=category))
+                    categories_resolved.append(category_resolved)
+                except ObjectDoesNotExist:
+                    categories_unresolved.append(category)
+
+    return categories_resolved, categories_unresolved
+
+
 def get_files(filename):
     """Converts the data to Shapefiles or Geotiffs and returns
        a dictionary with all the required files
@@ -448,6 +464,8 @@ def file_upload(filename,
         keywords = []
     if regions is None:
         regions = []
+    if category is None:
+        category = []
 
     # Get a valid user
     theuser = get_valid_user(user)
@@ -671,6 +689,16 @@ def file_upload(filename,
             else:
                 layer.regions.clear()
                 layer.regions.add(*regions_resolved)
+
+    # Assign the categories (needs to be done after saving)
+    categories = list(set(categories))
+    if categories:
+        if len(categories) > 0:
+            if not layer.category:
+                layer.category = categories
+            else:
+                layer.category.clear()
+                layer.category.add(*categories)
 
     # Assign and save the charset using the Layer class' object (layer)
     if charset != 'UTF-8':

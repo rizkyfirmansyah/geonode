@@ -124,7 +124,7 @@
       <h3><i class="fa fa-cloud-upload" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "shapefile or raster files" %}</span>{% trans " or click here to upload" %}</h3>
       <form id="file-uploader" method="post" enctype="multipart/form-data">
         <!-- UI change to hide the list of previously uploaded files from the user -->
-        <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
+        <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.xml,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
       </form>
     </section>
 
@@ -135,7 +135,7 @@
       <div class="modal-dialog modal-sm">
           <div class="modal-content learn-more-modal-content">
               <p><strong>List of supported file formats:</strong></p><br/>
-              <p>Shapefile data: .shp, .shx, .dbf and .prj</p>
+              <p>Shapefile data: .shp, .shx, .dbf, .xml and .prj</p>
               <p>Raster data: .tif</p><br/>
               <p>If you find yourself cannot uploaded the data and found some problem like</p><br/>
               <p><strong>Server Error: timeout</strong></p>

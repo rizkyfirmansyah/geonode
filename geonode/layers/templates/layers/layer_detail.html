@@ -27,6 +27,7 @@
   <script type="text/javascript">
     // this is used by thumbnail.js to POST to the thumbnail update view
     window.thumbnailUpdateUrl = '{% url 'layer_thumbnail' resource.alternate %}';
+    window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
   </script>
   <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
   {% get_layer_detail %}
@@ -45,11 +46,6 @@
     </style>
 
     <h2 class="page-title">{{ resource.title|default:resource.alternate }}</h2>
-    {% if not processed %}
-    <em>
-      <i class="fa fa-cog fa-spin fa-fw"></i>{% trans "Layer not ready yet. Still finalizing layer ingestion..." %}
-    </em>
-    {% endif %}
     {% if storeType == 'remoteStore' %}
     <em>
       <i class="fa fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %} {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %} 
@@ -416,7 +412,17 @@
                       <h4>{% trans "Pick your download format:" %}</h4>
                       <ul>
                         {% for link in links_download %}
-                          <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li>
+                          {% if link.name == 'Original Dataset' %}
+                            {% original_link_available resource.id link.url as original_dwn_link_available %}
+                            {% if original_dwn_link_available %}
+                            <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li>
+                            {% else %}
+                            <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
+                            <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
+                            {% endif %}
+                          {% else %}
+                            <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li>
+                          {% endif %}
                         {% endfor %}
                       </ul>
                     </div>
@@ -505,6 +511,9 @@
                   {% if "change_resourcebase" in perms_list and resource.storeType != "remoteStore" %}
                   <a class="btn btn-default btn-block btn-xs" href="{% url "layer_replace" resource.service_typename %}">{% trans "Replace" %}</a>
                   {% endif %}
+                  {% if "change_resourcebase" in perms_list and resource.storeType != "remoteStore" %}
+                  <a class="btn btn-default btn-block btn-xs" href="{% url "layer_append" resource.service_typename %}">{% trans "Append Data" %}</a>
+                  {% endif %}
                   {% if "change_layer_data" in layer_perms and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
                     {% if layer_type != "raster" and resource.storeType != "remoteStore" %}
                     <a class="btn btn-default btn-block btn-xs" href="{% url "new_map" %}?layer={{resource.service_typename}}&storeType={{resource.storeType}}">{% trans "Edit data" %}</a>
@@ -547,8 +556,8 @@
                 {% trans "Full metadata" %}
                 </h5>
                 <ul>
-                    <li><a target="_blank" href="../catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title | slugify }}.txt"> {% trans "Text format" %} </a></li>
-                    <li><a target="_blank" href="../catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title | slugify }}.html"> {% trans "HTML format" %} </a></li>
+                  <li><a target="_blank" href="{% url 'csw_render_extra_format_txt'  resource.uuid resource.title|slugify %}"> {% trans "Text format" %} </a></li>
+                  <li><a target="_blank" href="{% url 'csw_render_extra_format_html' resource.uuid resource.title|slugify %}"> {% trans "HTML format" %} </a></li>
                 </ul>
             </div>
             <div style="margin-bottom:20px">
@@ -581,11 +590,12 @@
       {% if resource.default_style %}
       {% get_all_resource_styles resource as resource_styles_all%}
       {% for style in resource_styles_all %}
-          {% if resource.default_style == style or resource.default_style.name == style.name or resource.default_style.sld_title == style.sld_title %}
+        {% if style.name or style.sld_title %}
+          {% if resource.default_style == style or resource.default_style.name == style.name or style.sld_title and resource.default_style.sld_title == style.sld_title %}
               {% for legend in resource.get_legend %}
                   {% get_sld_name_from_url style.sld_url as sld_name %}
-                  {% with "STYLE="|add:sld_name as style_name %}
-                  {% if legend.link_type == 'image' and style_name in legend.url %}
+                  {% get_style_name_from_legend_url legend.url as legend_style_name %}
+                  {% if legend.link_type == 'image' and sld_name == legend_style_name %}
                     <p id="legend_sld_title" style="font-size:10px">{{ style.sld_title|default:style.name }}</p>
                     {% if request.user.is_authenticated and access_token %}
                         <p><img id="legend_icon" src="{{ legend.url }}&access_token={{access_token}}"></p>
@@ -595,9 +605,9 @@
                   {% else %}
                   <div id='legend_placeholder'></div>
                   {% endif %}
-                  {% endwith %}
               {% endfor %}
           {% endif %}
+        {% endif %}
       {% endfor %}
       {% else %}
         {% for legend in resource.get_legend %}
@@ -619,7 +629,7 @@
           {% endfor %}
         </ul>
     </li>
-    {% if not READ_ONLY_MODE %}
+    {% if user.is_authenticated and not READ_ONLY_MODE %}
       <li class="list-group-item">
         <h4>{% trans "Create a map using this layer" %}</h4>
         <p>{% trans "Click the button below to generate a new map based on this layer." %}</p>
@@ -683,7 +693,7 @@
     {% if resource.storeType == "remoteStore" %}
     <li class="list-group-item">
       <h4>{% trans "External service layer" %}</h4>
-      <div>{% trans "Source" %}: <a href="/services/{{resource.remote_service.id}}">{{ resource.remote_service.title }}</a>
+      <div>{% trans "Source" %}: <a href="{% url 'service_detail' resource.remote_service.id %}">{{ resource.remote_service.title }}</a>
       </div>
       <div>{% trans "Type" %}: {{ resource.remote_service.type }}</div>
     </li>
@@ -724,22 +734,7 @@
     {% include "base/_resourcebase_contact_snippet.html" %}
   </ul>
 
-  <div class="modal fade" style="width: 100%; height: 100%;" id="_perms_processing" data-backdrop="static" data-keyboard="false" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h1>{% trans "Processing..." %}</h1>
-              </div>
-              <div class="modal-body">
-                  <div class="progress">
-                    <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%">
-                      {% trans "Updating Permissions..." %}
-                    </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+  {% include "_update_permissions_modal.html" %}
 
   {% if GEONODE_SECURITY_ENABLED %}
     {% include "_permissions_form.html" %}

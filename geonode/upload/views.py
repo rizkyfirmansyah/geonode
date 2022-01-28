@@ -577,8 +577,6 @@ def time_step_view(request, upload_session):
 
 
 def final_step_view(req, upload_session):
-    print(req)
-    print(req.GET['layer_id'])
     _json_response = None
     if not upload_session:
         upload_session = _get_upload_session(req)

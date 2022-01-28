@@ -24,57 +24,48 @@ import shutil
 import decimal
 import logging
 import tempfile
-import traceback
-import sys
-from types import TracebackType
 import warnings
-import itertools
+import traceback
 
-import pickle
-from django.db.models import Q
-from urllib.parse import quote
-
-from django.http import Http404
-from django.core.exceptions import PermissionDenied
-from django.template.response import TemplateResponse
-from django.views.decorators.clickjacking import xframe_options_exempt
-from requests import Request
 from itertools import chain
+from dal import autocomplete
+from requests import Request
+from urllib.parse import quote
 from owslib.wfs import WebFeatureService
 
-from guardian.shortcuts import get_perms, get_objects_for_user
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
-from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
 from django.conf import settings
-from django.utils.translation import ugettext as _
-from django.views.decorators.http import require_http_methods
 
-from geonode.thumbs.thumbnails import create_thumbnail
-
-from dal import autocomplete
-
-from django.utils.html import escape
-from django.template.defaultfilters import slugify
-from django.forms.models import inlineformset_factory
-from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.db.models import F
+from django.http import Http404
+from django.urls import reverse
+from django.contrib import messages
+from django.shortcuts import render
+from django.utils.html import escape
 from django.forms.utils import ErrorList
+from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext as _
+from django.db import IntegrityError, transaction
+from django.core.exceptions import PermissionDenied
+from django.forms.models import inlineformset_factory
+from django.template.response import TemplateResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
+from django.views.decorators.clickjacking import xframe_options_exempt
 
+from guardian.shortcuts import get_objects_for_user
+
+from geonode import geoserver
 from geonode.base.auth import get_or_create_token
 from geonode.layers.metadata import parse_metadata
 from geonode.upload.upload import _update_layer_with_xml_info
 from geonode.base.forms import CategoryForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
-from geonode.base.views import batch_modify
+from geonode.base.views import batch_modify, get_url_for_model
 from geonode.base.models import (
     Thesaurus,
     TopicCategory)
 from geonode.base.enumerations import CHARSETS
 from geonode.decorators import check_keyword_write_perms
-
 from geonode.layers.forms import (
     LayerForm,
     LayerUploadForm,
@@ -89,7 +80,6 @@ from geonode.layers.utils import (
     is_raster, is_sld_upload_only,
     is_vector, is_xml_upload_only,
     validate_input_source)
-
 from geonode.upload.views import _select_relevant_files, _write_uploaded_files_to_disk
 from geonode.maps.models import Map
 from geonode.services.models import Service
@@ -97,11 +87,9 @@ from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.groups.models import GroupProfile
 from geonode.security.views import _perms_info_json
-from geonode.people.forms import ProfileForm, PocForm
+from geonode.people.forms import ProfileForm
 from geonode.documents.models import get_related_documents
-from geonode import geoserver
-from geonode.security.utils import get_visible_resources
-
+from geonode.security.utils import get_visible_resources, set_geowebcache_invalidate_cache
 from geonode.utils import (
     resolve_object,
     default_map_config,
@@ -111,9 +99,9 @@ from geonode.utils import (
     build_social_links,
     GXPLayer,
     GXPMap)
-
-from geonode.geoserver.helpers import (ogc_server_settings,
-                                       set_layer_style)
+from geonode.geoserver.helpers import (
+    ogc_server_settings,
+    set_layer_style)
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.tasks.tasks import set_permissions
 
@@ -222,6 +210,7 @@ def layer_upload_handle_get(request, template):
             request.user)
     return render(request, template, context=ctx)
 
+
 def layer_upload_metadata(request):
     out = {}
     errormsgs = []
@@ -295,6 +284,7 @@ def layer_upload_metadata(request):
         content_type='application/json',
         status=500)
 
+
 def layer_style_upload(request):
     form = NewLayerUploadForm(request.POST, request.FILES)
     body = {}
@@ -341,192 +331,6 @@ def layer_style_upload(request):
         content_type='application/json',
         status=status_code)
 
-def layer_upload_handle_post(request, template):
-    name = None
-    form = NewLayerUploadForm(request.POST, request.FILES)
-    tempdir = None
-    saved_layer = None
-    errormsgs = []
-    input_charset = None
-    out = {'success': False}
-    if form.is_valid():
-        title = form.cleaned_data["layer_title"]
-
-        # Replace dots in filename - GeoServer REST API upload bug
-        # and avoid any other invalid characters.
-        # Use the title if possible, otherwise default to the filename
-        if title is not None and len(title) > 0:
-            name_base = title
-        else:
-            name_base, __ = os.path.splitext(
-                form.cleaned_data["base_file"].name)
-            title = slugify(name_base.replace(".", "_"))
-        name = slugify(name_base.replace(".", "_"))
-
-        if form.cleaned_data["abstract"] is not None and len(
-                form.cleaned_data["abstract"]) > 0:
-            abstract = form.cleaned_data["abstract"]
-        else:
-            abstract = "No abstract provided."
-
-        # charset
-        input_charset = form.cleaned_data["charset"]
-
-        try:
-            # Moved this inside the try/except block because it can raise
-            # exceptions when unicode characters are present.
-            # This should be followed up in upstream Django.
-            tempdir, base_file = form.write_files()
-            if not form.cleaned_data["style_upload_form"]:
-                saved_layer = file_upload(
-                    base_file,
-                    name=name,
-                    user=request.user,
-                    overwrite=False,
-                    charset=input_charset,
-                    abstract=abstract,
-                    title=title,
-                    metadata_uploaded_preserve=form.cleaned_data[
-                        "metadata_uploaded_preserve"],
-                    metadata_upload_form=form.cleaned_data["metadata_upload_form"])
-            else:
-                saved_layer = Layer.objects.get(alternate=title)
-                if not saved_layer:
-                    msg = 'Failed to process. Could not find matching layer.'
-                    raise Exception(msg)
-                with open(base_file) as sld_file:
-                    sld = sld_file.read()
-                set_layer_style(saved_layer, title, base_file, sld)
-            out['success'] = True
-        except Exception as e:
-            exception_type, error, tb = sys.exc_info()
-            logger.exception(e)
-            out['success'] = False
-            out['errormsgs'] = _('Failed to upload the layer')
-            try:
-                out['errors'] = ''.join(error)
-            except Exception:
-                try:
-                    out['errors'] = str(error)
-                except Exception:
-                    try:
-                        tb = traceback.format_exc()
-                        out['errors'] = tb
-                    except Exception:
-                        pass
-
-            # Assign the error message to the latest UploadSession from
-            # that user.
-            latest_uploads = UploadSession.objects.filter(
-                user=request.user).order_by('-date')
-            if latest_uploads.count() > 0:
-                upload_session = latest_uploads.first()
-                # Ref issue #4232
-                if not isinstance(error, TracebackType):
-                    try:
-                        upload_session.error = pickle.dumps(error).decode("utf-8", "replace")
-                    except Exception:
-                        err_msg = 'The error could not be parsed'
-                        upload_session.error = err_msg
-                        logger.error("TypeError: can't pickle traceback objects")
-                else:
-                    err_msg = 'The error could not be parsed'
-                    upload_session.error = err_msg
-                    logger.error("TypeError: can't pickle traceback objects")
-                try:
-                    upload_session.traceback = traceback.format_exc(tb)
-                except TypeError:
-                    upload_session.traceback = traceback.format_tb(tb)
-                upload_session.context = log_snippet(CONTEXT_LOG_FILE)
-                try:
-                    upload_session.save()
-                    out['traceback'] = upload_session.traceback
-                    out['context'] = upload_session.context
-                    out['upload_session'] = upload_session.id
-                except Exception as e:
-                    logger.debug(e)
-            else:
-                # Prevent calls to None
-                if saved_layer:
-                    out['success'] = True
-                    if hasattr(saved_layer, 'info'):
-                        out['info'] = saved_layer.info
-                    out['url'] = reverse(
-                        'layer_detail', args=[
-                            saved_layer.service_typename])
-                    if hasattr(saved_layer, 'bbox_string'):
-                        out['bbox'] = saved_layer.bbox_string
-                    if hasattr(saved_layer, 'srid'):
-                        out['crs'] = {
-                            'type': 'name',
-                            'properties': saved_layer.srid
-                        }
-                    out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
-                    upload_session = saved_layer.upload_session
-                    if upload_session:
-                        upload_session.processed = True
-                        upload_session.save()
-                    permissions = form.cleaned_data["permissions"]
-                    if permissions is not None and len(permissions.keys()) > 0:
-                        saved_layer.set_permissions(permissions)
-                    saved_layer.handle_moderated_uploads()
-        finally:
-            if tempdir is not None:
-                shutil.rmtree(tempdir)
-    else:
-        for e in form.errors.values():
-            errormsgs.extend([escape(v) for v in e])
-        out['errors'] = form.errors
-        out['errormsgs'] = errormsgs
-    if out['success']:
-        out['status'] = 'finished'
-        out['url'] = saved_layer.get_absolute_url()
-        out['bbox'] = saved_layer.bbox_string
-        out['crs'] = {
-            'type': 'name',
-            'properties': saved_layer.srid
-        }
-        out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
-        upload_session = saved_layer.upload_session
-        if upload_session:
-            upload_session.processed = True
-            upload_session.save()
-        status_code = 200
-        register_event(request, 'upload', saved_layer)
-    else:
-        status_code = 400
-
-    # null-safe charset
-    layer_charset = 'UTF-8'
-    if saved_layer:
-        layer_charset = getattr(saved_layer, 'charset', layer_charset)
-    elif input_charset and 'undefined' not in input_charset:
-        layer_charset = input_charset
-
-    _keys = ['info', 'errors']
-    for _k in _keys:
-        if _k in out:
-            if isinstance(out[_k], str):
-                out[_k] = surrogate_escape_string(out[_k], layer_charset)
-            elif isinstance(out[_k], dict):
-                for key, value in out[_k].copy().items():
-                    try:
-                        item = out[_k][key]
-                        # Ref issue #4241
-                        if isinstance(item, ErrorList):
-                            out[_k][key] = item.as_text().encode(
-                                layer_charset, 'surrogateescape').decode('utf-8', 'surrogateescape')
-                        else:
-                            out[_k][key] = surrogate_escape_string(item, layer_charset)
-                        out[_k][surrogate_escape_string(key, layer_charset)] = out[_k].pop(key)
-                    except Exception as e:
-                        logger.exception(e)
-
-    return HttpResponse(
-        json.dumps(out),
-        content_type='application/json',
-        status=status_code)
-
 
 @login_required
 def layer_upload(request, template='upload/layer_upload.html'):
@@ -556,7 +360,6 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         raise Http404(_("Not found"))
     if not layer:
         raise Http404(_("Not found"))
-
     permission_manager = ManageResourceOwnerPermissions(layer)
     permission_manager.set_owner_permissions_according_to_workflow()
 
@@ -577,9 +380,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
             "legend": {
                 "height": "40",
                 "width": "22",
-                "href": layer.ows_url +
-                "?service=wms&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=" +
-                quote(layer.service_typename, safe=''),
+                "href": f"{layer.ows_url}?service=wms&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer={quote(layer.service_typename, safe='')}",
                 "format": "image/png"
             },
             "name": style.name
@@ -621,6 +422,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "store": layer.store,
         "name": layer.alternate,
         "title": layer.title,
+        "style": '',
         "queryable": True,
         "storeType": layer.storeType,
         "bbox": {
@@ -743,9 +545,10 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(layer)
 
-    perms_list = get_perms(
-        request.user,
-        layer.get_self_resource()) + get_perms(request.user, layer)
+    perms_list = list(
+        layer.get_self_resource().get_user_perms(request.user)
+        .union(layer.get_user_perms(request.user))
+    )
 
     group = None
     if layer.group:
@@ -1127,7 +930,6 @@ def layer_metadata(
                 json.dumps(out),
                 content_type='application/json',
                 status=400)
-
         category_form = CategoryForm(request.POST, prefix="category_choice_field",
                     initial=(
                         request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
@@ -1149,7 +951,7 @@ def layer_metadata(
             tkeywords_form = TKeywordForm(request.POST)
         else:
             tkeywords_form = ThesaurusAvailableForm(request.POST, prefix='tkeywords')
-            
+            #  set initial values for thesaurus form
         if not tkeywords_form.is_valid():
             logger.error(f"Layer Thesauri Keywords form is not valid: {tkeywords_form.errors}")
             out = {
@@ -1162,7 +964,6 @@ def layer_metadata(
                 content_type='application/json',
                 status=400)
     else:
-
         layer_form = LayerForm(instance=layer, prefix="resource")
         layer_form.disable_keywords_widget_for_non_superuser(request.user)
         attribute_form = layer_attribute_set(
@@ -1194,9 +995,8 @@ def layer_metadata(
                             if len(tkl) > 0:
                                 tkl_ids = ",".join(
                                     map(str, tkl.values_list('id', flat=True)))
-                                tkeywords_list += "," + \
-                                    tkl_ids if len(
-                                        tkeywords_list) > 0 else tkl_ids
+                                tkeywords_list += f",{tkl_ids}" if len(
+                                    tkeywords_list) > 0 else tkl_ids
                     except Exception:
                         tb = traceback.format_exc()
                         logger.error(tb)
@@ -1209,7 +1009,8 @@ def layer_metadata(
                 values = [keyword.id for keyword in topic_thesaurus if int(tid) == keyword.thesaurus.id]
                 tkeywords_form.fields[tid].initial = values
 
-    if request.method == "POST" and layer_form.is_valid() and attribute_form.is_valid() and category_form.is_valid() and tkeywords_form.is_valid():
+    if request.method == "POST" and layer_form.is_valid() and attribute_form.is_valid(
+    ) and category_form.is_valid() and tkeywords_form.is_valid():
         new_poc = layer_form.cleaned_data['poc']
         new_author = layer_form.cleaned_data['metadata_author']
 
@@ -1270,13 +1071,13 @@ def layer_metadata(
         if category_form and 'category_choice_field' in category_form.cleaned_data and category_form.cleaned_data['category_choice_field']:
             new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
+
         layer.keywords.clear()
         if new_keywords:
             layer.keywords.add(*new_keywords)
         layer.regions.clear()
         if new_regions:
             layer.regions.add(*new_regions)
-
         layer.category.clear()
         if new_categories:
             layer.category.add(*new_categories)
@@ -1389,6 +1190,11 @@ def layer_metadata(
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
+        "UI_MANDATORY_FIELDS": list(
+            set(getattr(settings, 'UI_DEFAULT_MANDATORY_FIELDS', []))
+            |
+            set(getattr(settings, 'UI_REQUIRED_FIELDS', []))
+        )
     })
 
 
@@ -1398,27 +1204,6 @@ def layer_metadata_advanced(request, layername):
         request,
         layername,
         template='layers/layer_metadata_advanced.html')
-
-
-@login_required
-def layer_change_poc(request, ids, template='layers/layer_change_poc.html'):
-    layers = Layer.objects.filter(id__in=ids.split('_'))
-
-    if request.method == 'POST':
-        form = PocForm(request.POST)
-        if form.is_valid():
-            for layer in layers:
-                layer.poc = form.cleaned_data['contact']
-                layer.save()
-
-            # Process the data in form.cleaned_data
-            # ...
-            # Redirect after POST
-            return HttpResponseRedirect('/admin/maps/layer')
-    else:
-        form = PocForm()  # An unbound form
-    return render(
-        request, template, context={'layers': layers, 'form': form})
 
 
 @login_required
@@ -1495,7 +1280,7 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
                 out['errors'] = str(e)
             finally:
                 if tempdir is not None:
-                    shutil.rmtree(tempdir)
+                    shutil.rmtree(tempdir, ignore_errors=True)
         else:
             errormsgs = []
             for e in form.errors.values():
@@ -1508,6 +1293,88 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
             register_event(request, 'change', layer)
         else:
             status_code = 400
+        return HttpResponse(
+            json.dumps(out),
+            content_type='application/json',
+            status=status_code)
+
+
+@login_required
+def layer_append(request, layername, template='layers/layer_append.html'):
+    try:
+        layer = _resolve_layer(
+            request,
+            layername,
+            'base.change_resourcebase',
+            _PERMISSION_MSG_MODIFY)
+    except PermissionDenied:
+        return HttpResponse(_("Not allowed"), status=403)
+    except Exception:
+        raise Http404(_("Not found"))
+    if not layer:
+        raise Http404(_("Not found"))
+
+    if request.method == 'GET':
+        ctx = {
+            'charsets': CHARSETS,
+            'resource': layer,
+            'is_featuretype': layer.is_vector(),
+            'is_layer': True,
+        }
+        return render(request, template, context=ctx)
+    elif request.method == 'POST':
+        form = LayerUploadForm(request.POST, request.FILES)
+        out = {}
+        if form.is_valid():
+            try:
+                tempdir, base_file = form.write_files()
+                files, _tmpdir = get_files(base_file)
+                #  validate input source
+                resource_is_valid = validate_input_source(
+                    layer=layer, filename=base_file, files=files, action_type="append"
+                )
+                out = {}
+                if (
+                    os.getenv("DEFAULT_BACKEND_DATASTORE", None) == "datastore"
+                    and os.getenv("DEFAULT_BACKEND_UPLOADER", None) == "geonode.importer"
+                    and resource_is_valid
+                ):
+                    upload_session = gs_append_data_to_layer(layer, list(files.values()), request.user)
+                    upload_session.processed = True
+                    upload_session.save()
+                    out['success'] = True
+                    out['url'] = reverse(
+                        'layer_detail', args=[
+                            layer.service_typename])
+                    #  invalidating resource chache
+                    set_geowebcache_invalidate_cache(layer.typename)
+                    #  updating layer
+                    layer.save()
+                else:
+                    out['success'] = False
+                    out['errors'] = str("Please select a valid Geoserver backend")
+            except Exception as e:
+                logger.exception(e)
+                out['success'] = False
+                out['errors'] = str(e)
+            finally:
+                if tempdir is not None:
+                    shutil.rmtree(tempdir, ignore_errors=True)
+                if _tmpdir is not None:
+                    shutil.rmtree(_tmpdir, ignore_errors=True)
+        else:
+            errormsgs = []
+            for e in form.errors.values():
+                errormsgs.append([escape(v) for v in e])
+            out['errors'] = form.errors
+            out['errormsgs'] = errormsgs
+
+        if out['success']:
+            status_code = 200
+            register_event(request, 'change', layer)
+        else:
+            status_code = 400
+
         return HttpResponse(
             json.dumps(out),
             content_type='application/json',
@@ -1609,40 +1476,6 @@ def layer_granule_remove(
         return HttpResponse("Not allowed", status=403)
 
 
-@require_http_methods(["POST"])
-def layer_thumbnail(request, layername):
-    try:
-        layer_obj = _resolve_layer(request, layername)
-    except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
-    except Exception:
-        raise Http404(_("Not found"))
-    if not layer_obj:
-        raise Http404(_("Not found"))
-
-    try:
-        request_body = json.loads(request.body)
-        bbox = request_body['bbox'] + [request_body['srid']]
-        zoom = request_body.get('zoom', None)
-
-        create_thumbnail(
-            layer_obj,
-            bbox=bbox,
-            background_zoom=zoom,
-            overwrite=True
-        )
-
-        return HttpResponse('Yeay, your thumbnail saved successfully!')
-
-    except Exception as e:
-        logger.exception(e)
-        return HttpResponse(
-            content=_('couldn\'t generate thumbnail: %s' % str(e)),
-            status=500,
-            content_type='text/plain'
-        )
-
-
 def get_layer(request, layername):
     """Get Layer object as JSON"""
 
@@ -1710,12 +1543,14 @@ def layer_metadata_detail(
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
 
     register_event(request, 'view_metadata', layer)
+    perms_list = list(
+        layer.get_self_resource().get_user_perms(request.user)
+        .union(layer.get_user_perms(request.user))
+    )
 
     return render(request, template, context={
         "resource": layer,
-        "perms_list": get_perms(
-            request.user,
-            layer.get_self_resource()) + get_perms(request.user, layer),
+        "perms_list": perms_list,
         "group": group,
         'SITEURL': site_url
     })
@@ -1803,7 +1638,7 @@ def batch_permissions(request, model):
 
     if "cancel" in request.POST or not ids:
         return HttpResponseRedirect(
-            f'/admin/{model.lower()}s/{model.lower()}/'
+            get_url_for_model(model)
         )
 
     if request.method == 'POST':
@@ -1816,12 +1651,12 @@ def batch_permissions(request, model):
             users_usernames = [_data['user'].username, ] if _data['user'] else None
             groups_names = [_data['group'].name, ] if _data['group'] else None
             if users_usernames and 'AnonymousUser' in users_usernames and \
-            (not groups_names or 'anonymous' not in groups_names):
+                    (not groups_names or 'anonymous' not in groups_names):
                 if not groups_names:
                     groups_names = []
                 groups_names.append('anonymous')
             if groups_names and 'anonymous' in groups_names and \
-            (not users_usernames or 'AnonymousUser' not in users_usernames):
+                    (not users_usernames or 'AnonymousUser' not in users_usernames):
                 if not users_usernames:
                     users_usernames = []
                 users_usernames.append('AnonymousUser')
@@ -1838,7 +1673,7 @@ def batch_permissions(request, model):
                 except set_permissions.OperationalError as exc:
                     celery_logger.exception('Sending task raised: %r', exc)
             return HttpResponseRedirect(
-                f'/admin/{model.lower()}s/{model.lower()}/'
+                get_url_for_model(model)
             )
         return render(
             request,

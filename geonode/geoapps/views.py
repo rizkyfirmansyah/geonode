@@ -326,7 +326,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
     geoapp_obj.add_missing_metadata_author_or_poc()
     poc = geoapp_obj.poc
     metadata_author = geoapp_obj.metadata_author
-    topic_category = geoapp_obj.category
+    topic_category = geoapp_obj.category.all()
     current_keywords = [keyword.name for keyword in geoapp_obj.keywords.all()]
 
     if request.method == "POST":
@@ -334,16 +334,21 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             request.POST,
             instance=geoapp_obj,
             prefix="resource")
-        category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
-            request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
-                                                        request.POST["category_choice_field"] else None)
+        category_form = CategoryForm(request.POST, prefix="category_choice_field",
+                    initial=(
+                        request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
+                        request.POST.getlist("category_choice_field") else []
+                        ))
+
         tkeywords_form = TKeywordForm(request.POST)
     else:
         geoapp_form = GeoAppForm(instance=geoapp_obj, prefix="resource")
         geoapp_form.disable_keywords_widget_for_non_superuser(request.user)
+        #  set initial values for category form
+        ids = list(c.id for c in topic_category)
         category_form = CategoryForm(
-            prefix="category_choice_field",
-            initial=topic_category.id if topic_category else None)
+                    prefix="category_choice_field",
+                    initial=ids)
 
         # Keywords from THESAURUS management
         doc_tkeywords = geoapp_obj.tkeywords.all()
@@ -376,12 +381,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         new_author = geoapp_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else geoapp_form.cleaned_data['keywords']
         new_regions = geoapp_form.cleaned_data['regions']
-
-        new_category = None
-        if category_form and 'category_choice_field' in category_form.cleaned_data and \
-                category_form.cleaned_data['category_choice_field']:
-            new_category = TopicCategory.objects.get(
-                id=int(category_form.cleaned_data['category_choice_field']))
+        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:
             if poc is None:
@@ -427,8 +427,10 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         geoapp_obj.keywords.add(*new_keywords)
         geoapp_obj.regions.clear()
         geoapp_obj.regions.add(*new_regions)
-        geoapp_obj.category = new_category
+        geoapp_obj.category.clear()
+        geoapp_obj.category.add(*new_categories)
         geoapp_obj.save(notify=True)
+        # geoapp_form.save_many2many()
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, geoapp_obj)
         if not ajax:
