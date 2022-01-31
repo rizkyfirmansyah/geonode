@@ -112,8 +112,8 @@ class CountJSONSerializer(Serializer):
         counts = list()
         if subtypes:
             for subtype in subtypes:
-                counts.append(
-                    subtype.values(options['count_type']).annotate(count=Count(options['count_type'])).first()
+                counts.extend(
+                    list(subtype.values(options['count_type']).annotate(count=Count(options['count_type'])))
                 )
         else:
             counts = list(resources.values(options['count_type']).annotate(count=Count(options['count_type'])))
@@ -366,6 +366,7 @@ class GroupCategoryResource(TypeFilteredResource):
         include_resource_uri = False
         filtering = {'slug': ALL,
                      'name': ALL}
+        ordering = ['name']
         authorization = ApiLockdownAuthorization()
 
     def apply_filters(self, request, applicable_filters):
@@ -581,6 +582,26 @@ class ProfileResource(TypeFilteredResource):
                     bundle.obj).pk,
                 'object_id': bundle.obj.pk})
 
+    def dehydrate(self, bundle):
+        """
+        Protects user's personal information from non staff
+        """
+        is_owner = bundle.request.user == bundle.obj
+        is_admin = bundle.request.user.is_staff or bundle.request.user.is_superuser
+        if not (is_owner or is_admin):
+            bundle.data = dict(
+                id=bundle.data.get('id', ''),
+                username=bundle.data.get('username', ''),
+                first_name=bundle.data.get('first_name', ''),
+                last_name=bundle.data.get('last_name', ''),
+                avatar_100=bundle.data.get('avatar_100', ''),
+                profile_detail_url=bundle.data.get('profile_detail_url', ''),
+                documents_count=bundle.data.get('documents_count', 0),
+                maps_count=bundle.data.get('maps_count', 0),
+                layers_count=bundle.data.get('layers_count', 0),
+            )
+        return bundle
+
     def prepend_urls(self):
         if settings.HAYSTACK_SEARCH:
             return [
@@ -626,6 +647,16 @@ class OwnersResource(TypeFilteredResource):
         if bundle.request.user.is_superuser:
             email = bundle.obj.email
         return email
+
+    def dehydrate(self, bundle):
+        """
+        Protects user's personal information from non staff
+        """
+        is_owner = bundle.request.user == bundle.obj
+        is_admin = bundle.request.user.is_staff or bundle.request.user.is_superuser
+        if not (is_owner or is_admin):
+            bundle.data = dict(id=bundle.obj.id, username=bundle.obj)
+        return bundle
 
     def serialize(self, request, data, format, options=None):
         if options is None:

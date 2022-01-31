@@ -24,7 +24,7 @@ from dialogos.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg
 from haystack import indexes
-from geonode.maps.models import Layer
+from geonode.layers.models import Layer
 
 
 class LayerIndex(indexes.SearchIndex, indexes.Indexable):
