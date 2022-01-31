@@ -2078,6 +2078,7 @@ def json_serializer_producer(dictionary):
         'is_active',
         'is_superuser',
         'permissions',
+        'category',
         'user_permissions',
     ]
 

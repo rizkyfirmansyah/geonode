@@ -394,12 +394,12 @@ class Command(BaseCommand):
         if (config.gs_data_dir):
             if (config.gs_dump_raster_data):
                 # Dump '$config.gs_data_dir/geonode'
-                gs_data_root = os.path.join(config.gs_data_dir, 'geonode')
+                gs_data_root = os.path.join(config.gs_data_dir, 'sdi')
                 if not os.path.isabs(gs_data_root):
                     gs_data_root = os.path.join(settings.PROJECT_ROOT, '..', gs_data_root)
                 logger.info(f"Dumping GeoServer Uploaded Data from '{gs_data_root}'.")
                 if os.path.exists(gs_data_root):
-                    gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'geonode')
+                    gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'sdi')
                     if not os.path.exists(gs_data_folder):
                         os.makedirs(gs_data_folder)
                     copy_tree(gs_data_root, gs_data_folder,
@@ -409,12 +409,12 @@ class Command(BaseCommand):
                     logger.info(f"Skipped GeoServer Uploaded Data '{gs_data_root}'.")
 
                 # Dump '$config.gs_data_dir/data/geonode'
-                gs_data_root = os.path.join(config.gs_data_dir, 'data', 'geonode')
+                gs_data_root = os.path.join(config.gs_data_dir, 'data', 'sdi')
                 if not os.path.isabs(gs_data_root):
                     gs_data_root = os.path.join(settings.PROJECT_ROOT, '..', gs_data_root)
                 logger.info(f"Dumping GeoServer Uploaded Data from '{gs_data_root}'.")
                 if os.path.exists(gs_data_root):
-                    gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'geonode')
+                    gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'sdi')
                     if not os.path.exists(gs_data_folder):
                         os.makedirs(gs_data_folder)
 
@@ -435,7 +435,7 @@ class Command(BaseCommand):
                 ogc_db_host = settings.DATABASES[datastore]['HOST']
                 ogc_db_port = settings.DATABASES[datastore]['PORT']
 
-                gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'geonode')
+                gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'sdi')
                 if not os.path.exists(gs_data_folder):
                     os.makedirs(gs_data_folder)
 

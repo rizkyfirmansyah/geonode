@@ -750,9 +750,9 @@ class Command(BaseCommand):
         if (config.gs_data_dir):
             if (config.gs_dump_raster_data):
                 # Restore '$config.gs_data_dir/geonode'
-                gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'geonode')
+                gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'sdi')
                 if os.path.exists(gs_data_folder):
-                    gs_data_root = os.path.join(config.gs_data_dir, 'geonode')
+                    gs_data_root = os.path.join(config.gs_data_dir, 'sdi')
                     if not os.path.isabs(gs_data_root):
                         gs_data_root = os.path.join(settings.PROJECT_ROOT, '..', gs_data_root)
 
@@ -765,9 +765,9 @@ class Command(BaseCommand):
                     print(f"Skipping geoserver raster data restore: directory \"{gs_data_folder}\" not found.")
 
                 # Restore '$config.gs_data_dir/data/geonode'
-                gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'geonode')
+                gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'sdi')
                 if os.path.exists(gs_data_folder):
-                    gs_data_root = os.path.join(config.gs_data_dir, 'data', 'geonode')
+                    gs_data_root = os.path.join(config.gs_data_dir, 'data', 'sdi')
                     if not os.path.isabs(gs_data_root):
                         gs_data_root = os.path.join(settings.PROJECT_ROOT, '..', gs_data_root)
 
@@ -783,7 +783,7 @@ class Command(BaseCommand):
         """Restore Vectorial Data from DB"""
         if (config.gs_dump_vector_data):
 
-            gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'geonode')
+            gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'sdi')
             if not os.path.exists(gs_data_folder):
                 print(f"Skipping geoserver vector data restore: directory \"{gs_data_folder}\" not found.")
                 return

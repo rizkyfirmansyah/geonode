@@ -34,6 +34,8 @@ from .utils import sync_resources_with_guardian
     retry_backoff=True,
     retry_backoff_max=700,
     retry_jitter=True)
+
+@staticmethod
 def synch_guardian():
     """
     Sync resources with Guardian and clear their dirty state
