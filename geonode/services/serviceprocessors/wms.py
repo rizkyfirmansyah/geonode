@@ -637,9 +637,6 @@ class GeoNodeServiceHandler(WmsServiceHandler):
                 if _json_obj['meta']['total_count'] == 1:
                     _layer = _json_obj['objects'][0]
                     if _layer:
-                        print("==== LAYER =====")
-                        print(_layer)
-                        print("==== LAYER =====")
                         r_fields = {}
 
                         # Update plain fields

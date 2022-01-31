@@ -596,9 +596,6 @@ def file_upload(filename,
         for key, value in vals.items():
             if key == 'spatial_representation_type':
                 value = SpatialRepresentationType(identifier=value)
-            print("====== VALS UTILS LAYERS ===== ")
-            print(key)
-            print("====== VALS UTILS LAYERS ===== ")
 
             # elif key == 'topic_category':
             #     value, created = TopicCategory.objects.get_or_create(
