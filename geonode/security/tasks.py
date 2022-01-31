@@ -35,10 +35,9 @@ from .utils import sync_resources_with_guardian
     retry_backoff_max=700,
     retry_jitter=True)
 
-@staticmethod
-def synch_guardian():
+def synch_guardian(self):
     """
     Sync resources with Guardian and clear their dirty state
     """
     if getattr(settings, 'DELAYED_SECURITY_SIGNALS', False):
-        sync_resources_with_guardian()
+        sync_resources_with_guardian(self)
