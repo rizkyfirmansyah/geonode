@@ -26,7 +26,6 @@
   {% endif %}
   <script type="text/javascript">
     // this is used by thumbnail.js to POST to the thumbnail update view
-    window.thumbnailUpdateUrl = '{% url 'layer_thumbnail' resource.alternate %}';
     window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
   </script>
   <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
@@ -738,10 +737,6 @@
 
   {% if GEONODE_SECURITY_ENABLED %}
     {% include "_permissions_form.html" %}
-  {% endif %}
-
-  {% if GEONODE_SECURITY_ENABLED %}
-    {% include "_request_download_form.html" %}
   {% endif %}
 
   </div> <!-- col-md-4 -->
