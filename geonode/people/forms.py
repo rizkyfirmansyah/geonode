@@ -28,6 +28,7 @@ from django.utils.translation import ugettext as _
 from geonode.base.models import ContactRole
 
 from captcha.fields import ReCaptchaField
+from captcha.fields import CaptchaField
 
 # Ported in from django-registration
 attrs_dict = {'class': 'required'}
@@ -41,6 +42,12 @@ class AllauthReCaptchaSignupForm(forms.Form):
         """ Required, or else it thorws deprecation warnings """
         pass
 
+class AllauthCaptchaSignupForm(forms.Form):
+    
+    captcha = CaptchaField()
+
+    def signup(self, request, user):
+      pass
 
 class ProfileCreationForm(UserCreationForm):
 
