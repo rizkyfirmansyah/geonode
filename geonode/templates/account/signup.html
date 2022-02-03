@@ -26,7 +26,6 @@
                     <fieldset>
                         {% csrf_token %}
                         {{ form|as_bootstrap }}
-                        {{ form.captcha }}
                         {% if redirect_field_value %}
                             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                         {% endif %}

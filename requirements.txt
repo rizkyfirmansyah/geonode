@@ -141,7 +141,6 @@ gunicorn==20.1.0
 ipython==7.24.1
 docker==4.4.4
 invoke==1.5.0
-django-simple-captcha==0.5.14
 
 # tests
 coverage==5.5
