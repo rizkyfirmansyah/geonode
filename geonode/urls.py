@@ -242,12 +242,6 @@ if "djmp" in settings.INSTALLED_APPS:
 # Set up proxy
 urlpatterns += geonode.proxy.urls.urlpatterns
 
-# Set up captcha
-if settings.CAPTCHA_ENABLED:
-  urlpatterns += [
-    url(r'^captcha/', include('captcha.urls')),
-  ]
-
 # Serve static files
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.LOCAL_MEDIA_URL,
