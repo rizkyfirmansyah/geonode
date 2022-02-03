@@ -1354,15 +1354,6 @@ if RECAPTCHA_ENABLED:
 
 GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_METADATA_XSL', 'True'))
 
-# settings for simple-captcha plugin
-CAPTCHA_ENABLED = ast.literal_eval(os.environ.get('CAPTCHA_ENABLED', 'False'))
-
-if CAPTCHA_ENABLED:
-  if 'captcha' not in INSTALLED_APPS:
-      INSTALLED_APPS += ('captcha',)
-
-  ACCOUNT_SIGNUP_FORMC_CLASS = os.getenv("ACCOUNT_SIGNUP_FORMC_CLASS",
-                                          'geonode.people.forms.AllauthCaptchaSignupForm')
 # -- START Client Hooksets Setup
 
 # GeoNode javascript client configuration
