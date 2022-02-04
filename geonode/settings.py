@@ -915,8 +915,8 @@ ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 
 # Backend
-DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'sdi')
-CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'sdi')
+DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
+CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'geonode')
 
 OGP_URL = os.getenv('OGP_URL', "http://geodata.tufts.edu/solr/select")
 
