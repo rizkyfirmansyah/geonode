@@ -164,6 +164,7 @@ class Command(BaseCommand):
         abstract = options.get('abstract', None)
         date = options.get('date', None)
         license = options.get('license', None)
+        category = options.get('category', None)
         private = options.get('private', False)
         metadata_uploaded_preserve = options.get('metadata_uploaded_preserve',
                                                  False)
@@ -175,12 +176,6 @@ class Command(BaseCommand):
             console = None
 
         skip = not overwrite
-
-        category = options.get('category').split(',')
-        if len(category) == 1 and category[0] == '':
-            category = []
-        else:
-            category = [c.strip() for c in category]
         keywords = options.get('keywords').split(',')
         if len(keywords) == 1 and keywords[0] == '':
             keywords = []
