@@ -3,7 +3,7 @@
 from django.db import migrations, models
 from django.utils.timezone import now
 from django.conf import settings
-
+import django.utils.timezone
 
 class Migration(migrations.Migration):
 
@@ -31,6 +31,11 @@ class Migration(migrations.Migration):
                 ('mosaic_elev_value', models.CharField(max_length=128, null=True)),
                 ('layer', models.ForeignKey(to='layers.Layer', on_delete=models.SET_NULL, null=True)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)),
+                ('append_to_mosaic_name', models.CharField(max_length=128, null=True)),
+                ('append_to_mosaic_opts', models.BooleanField(default=False)),
+                ('create_date', models.DateTimeField(default=django.utils.timezone.now, verbose_name='create_date')),
+                ('mosaic', models.BooleanField(default=False)),
+                ('resume_url', models.CharField(max_length=256, null=True)),
             ],
             options={
                 'ordering': ['-date'],
@@ -43,6 +48,8 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(upload_to='uploads')),
                 ('slug', models.SlugField(blank=True)),
                 ('upload', models.ForeignKey(blank=True, to='upload.Upload', on_delete=models.SET_NULL, null=True)),
+                ('base', models.BooleanField(default=False)),
+                ('name', models.CharField(blank=True, max_length=4096)),
             ],
         ),
     ]

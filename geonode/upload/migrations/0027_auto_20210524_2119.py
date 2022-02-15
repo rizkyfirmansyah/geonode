@@ -7,34 +7,10 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('upload', '0030_upload_create_date'),
+        ('upload', '24_initial'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='upload',
-            name='append_to_mosaic_name',
-        ),
-        migrations.RemoveField(
-            model_name='upload',
-            name='append_to_mosaic_opts',
-        ),
-        migrations.RemoveField(
-            model_name='upload',
-            name='create_date',
-        ),
-        migrations.RemoveField(
-            model_name='upload',
-            name='mosaic',
-        ),
-        migrations.RemoveField(
-            model_name='uploadfile',
-            name='base',
-        ),
-        migrations.RemoveField(
-            model_name='uploadfile',
-            name='name',
-        ),
         migrations.AlterField(
             model_name='upload',
             name='layer',
@@ -56,3 +32,4 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='upload.Upload'),
         ),
     ]
+

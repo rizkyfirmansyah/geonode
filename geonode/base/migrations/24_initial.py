@@ -6,7 +6,7 @@ import mptt.fields
 import geonode.security.models
 from django.conf import settings
 from django.utils.timezone import now
-
+import django.contrib.gis.db.models.fields
 
 class Migration(migrations.Migration):
 
@@ -112,6 +112,7 @@ class Migration(migrations.Migration):
                 ('thumbnail_url', models.TextField(null=True, blank=True)),
                 ('detail_url', models.CharField(max_length=255, null=True, blank=True)),
                 ('rating', models.IntegerField(default=0, null=True, blank=True)),
+                ('ll_bbox_polygon', django.contrib.gis.db.models.fields.PolygonField(blank=True, null=True, srid=4326)),
             ],
             options={
                 'permissions': (('view_resourcebase', 'Can view resource'), ('change_resourcebase_permissions', 'Can change resource permissions'), ('download_resourcebase', 'Can download resource'), ('publish_resourcebase', 'Can publish resource'), ('change_resourcebase_metadata', 'Can change resource metadata')),
@@ -168,12 +169,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='resourcebase',
-            name='category',
-            field=models.ForeignKey(blank=True, on_delete=models.CASCADE, to='base.TopicCategory',
-                                    help_text='high-level geographic data thematic classification to assist in the grouping and search of available geographic data sets.', null=True),
-        ),
-        migrations.AddField(
-            model_name='resourcebase',
             name='contacts',
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='base.ContactRole'),
         ),
@@ -227,3 +222,4 @@ class Migration(migrations.Migration):
             unique_together=set([('contact', 'resource', 'role')]),
         ),
     ]
+

@@ -34,8 +34,6 @@ class Migration(migrations.Migration):
                 ('workspace_ref', models.URLField(null=True, verbose_name=False, blank=True)),
                 ('store_ref', models.URLField(null=True, blank=True)),
                 ('resources_ref', models.URLField(null=True, blank=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('last_updated', models.DateTimeField(auto_now=True)),
                 ('first_noanswer', models.DateTimeField(null=True, blank=True)),
                 ('noanswer_retries', models.PositiveIntegerField(null=True, blank=True)),
                 ('external_id', models.IntegerField(null=True, blank=True)),
