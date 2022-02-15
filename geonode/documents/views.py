@@ -119,9 +119,10 @@ def document_detail(request, docid):
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(document)
 
-    perms_list = get_perms(
-        request.user,
-        document.get_self_resource()) + get_perms(request.user, document)
+    perms_list = list(
+        document.get_self_resource().get_user_perms(request.user)
+        .union(document.get_user_perms(request.user))
+    )
 
     group = None
     if document.group:
@@ -561,6 +562,11 @@ def document_metadata(
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
+        "UI_MANDATORY_FIELDS": list(
+            set(getattr(settings, 'UI_DEFAULT_MANDATORY_FIELDS', []))
+            |
+            set(getattr(settings, 'UI_REQUIRED_FIELDS', []))
+        )
     })
 
 

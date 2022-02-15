@@ -59,7 +59,7 @@
         </ul>
       {% endif %}
         <div class="form-actions">
-          <input type="submit" id="btn_upd_md_up" class="btn btn-primary" value="{% trans "Update" %}"/>
+          <input type="submit" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
         </div>
       {% csrf_token %}
       <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
@@ -79,17 +79,11 @@
               {% for choice in category_form.category_choice_field.field.choices %}
               <div class="col-md-6">
                 <label class="fancy-checkbox">
-                    <input type="radio" name="category_choice_field" value="{{ choice.0 }}"
+                    <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
                       {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
                     {{ choice.1 }}
                 </label>
               </div>
-              <!-- div class="radio col-md-6">
-                <input type="radio" name="category_choice_field" value="{{ choice.0 }}"
-                  {% ifequal category_form.initial choice.0 %} checked="checked" {% endifequal %}>
-                  {{ choice.1 }}
-                </input>
-              </div -->
               {% endfor %}
               {% endautoescape %}
             </fieldset>

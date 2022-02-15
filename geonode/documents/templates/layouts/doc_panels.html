@@ -382,6 +382,34 @@ span.grippy::after {
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-lg-6">
+                        <div class="panel panel-default" style="margin-top: 20px">
+                          <div class="panel-heading">{% trans "Responsible Parties" %}</div>
+                          <div class="panel-body">
+                            <span><label for="{{ document_form.poc|id }}">{{ document_form.poc.label }}</label></span>
+                            {{ document_form.poc }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-lg-6">
+                        <div class="panel panel-default" style="margin-top: 20px">
+                          <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
+                          <div class="panel-body">
+                              <div>
+                                  <span><label for="{{ document_form.owner|id }}">{{ document_form.owner.label }}</label></span>
+                                  <!--<p class="xxs-font-size">(Responsible of the cited resource)</p>-->
+                                  {{ document_form.owner }}
+                              </div>
+                              <div>
+                                  <span><label for="{{ document_form.metadata_author|id }}">{{ document_form.metadata_author.label }}</label></span>
+                                  <!--<p class="xxs-font-size">(Author of the metadata)</p>-->
+                                  {{ document_form.metadata_author }}
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
                 </div>
             </div>
         </div>
@@ -497,34 +525,6 @@ span.grippy::after {
                 {{ document_form.supplemental_information }}
             </div>
           </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-lg-6">
-              <div class="panel panel-default" style="margin-top: 20px">
-                <div class="panel-heading">{% trans "Responsible Parties" %}</div>
-                <div class="panel-body">
-                  <span><label for="{{ document_form.poc|id }}">{{ document_form.poc.label }}</label></span>
-                  {{ document_form.poc }}
-                </div>
-              </div>
-            </div>
-            <div class="col-xs-12 col-lg-6">
-              <div class="panel panel-default" style="margin-top: 20px">
-                <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
-                <div class="panel-body">
-                    <div>
-                        <span><label for="{{ document_form.owner|id }}">{{ document_form.owner.label }}</label></span>
-                        <!--<p class="xxs-font-size">(Responsible of the cited resource)</p>-->
-                        {{ document_form.owner }}
-                    </div>
-                    <div>
-                        <span><label for="{{ document_form.metadata_author|id }}">{{ document_form.metadata_author.label }}</label></span>
-                        <!--<p class="xxs-font-size">(Author of the metadata)</p>-->
-                        {{ document_form.metadata_author }}
-                    </div>
-                </div>
-              </div>
-            </div>
         </div>
       </div>
     </div>

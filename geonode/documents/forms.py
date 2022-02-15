@@ -92,6 +92,20 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 
     def __init__(self, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'has-external-popover',
+                        'data-content': help_text,
+                        'placeholder': help_text,
+                        'data-placement': 'right',
+                        'data-container': 'body',
+                        'data-html': 'true'
+                    }
+                )
         self.fields['links'].choices = self.generate_link_choices()
         self.fields['links'].initial = self.generate_link_values(
             resources=get_related_resources(self.instance)
@@ -111,8 +125,8 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 class DocumentDescriptionForm(forms.Form):
     title = forms.CharField(max_length=300)
     abstract = forms.CharField(max_length=2000, widget=forms.Textarea, required=False)
+    purpose = forms.CharField(max_length=500, required=False)
     keywords = forms.CharField(max_length=500, required=False)
-
 
 class DocumentReplaceForm(forms.ModelForm):
 
