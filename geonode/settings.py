@@ -1352,6 +1352,21 @@ if RECAPTCHA_ENABLED:
     RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY", 'geonode_RECAPTCHA_PUBLIC_KEY')
     RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", 'geonode_RECAPTCHA_PRIVATE_KEY')
 
+# Settings for hCaptcha plugin
+HCAPTCHA_ENABLED = ast.literal_eval(os.environ.get('HCAPTCHA_ENABLED', 'False'))
+
+if HCAPTCHA_ENABLED:
+    if 'hcaptcha' not in INSTALLED_APPS:
+        INSTALLED_APPS += ('hcaptcha',)
+    ACCOUNT_SIGNUP_FORM_CLASS = os.getenv("ACCOUNT_SIGNUP_FORM_CLASS",
+                                          'geonode.people.forms.AllauthHCaptchaSignupForm')
+    """
+     In order to generate reCaptcha keys, please see:
+      - https://pypi.org/project/django-hCaptcha/
+    """
+    HCAPTCHA_PUBLIC_KEY = os.getenv("HCAPTCHA_PUBLIC_KEY", 'geonode_HCAPTCHA_PUBLIC_KEY')
+    HCAPTCHA_PRIVATE_KEY = os.getenv("HCAPTCHA_PRIVATE_KEY", 'geonode_HCAPTCHA_PRIVATE_KEY')
+
 GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_METADATA_XSL', 'True'))
 
 # -- START Client Hooksets Setup
