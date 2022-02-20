@@ -28,7 +28,7 @@
       {% endwith %}
       {% if not custom_theme.jumbotron_cta_hide %}
       <p><a class="btn btn-default btn-lg" target="_blank"
-          href="{{custom_theme.jumbotron_cta_link|default:"https://data.wri-indonesia.id/layers/"}}"
+          href="{{custom_theme.jumbotron_cta_link|default:"{{SITEURL}}layers/"}}"
           role="button">{{custom_theme.jumbotron_cta_text|default:_("Explore Spatial Layers &raquo;")}}</a></p>
       {% endif %}
   </div>

@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_bar_text',
-            field=models.TextField(default='This website uses cookies to improve your experience,         check <strong><a style="color:#000000" href="/privacy_cookies/">this page</a></strong> for details.         We\'ll assume you\'re ok with this, but you can opt-out if you wish.'),
+            field=models.TextField(default='This website uses cookies to improve your experience,         check <strong><a style="color:#000000" href="/privacy/">this page</a></strong> for details.         We\'ll assume you\'re ok with this, but you can opt-out if you wish.'),
         ),
         migrations.AddField(
             model_name='geonodethemecustomization',

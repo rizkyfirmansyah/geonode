@@ -140,7 +140,7 @@ class GeoNodeThemeCustomization(models.Model):
     cookie_law_info_bar_text = models.TextField(
         null=False, blank=False,
         default="""This website uses cookies to improve your experience, \
-        check <strong><a style="color:#000000" href="/privacy_cookies/">this page</a></strong> for details. \
+        check <strong><a style="color:#000000" href="/privacy/">this page</a></strong> for details. \
         We'll assume you're ok with this, but you can opt-out if you wish.""")
     cookie_law_info_leave_url = models.TextField(null=False, blank=False, default="#")
     cookie_law_info_showagain_head = models.TextField(null=False, blank=False, default="Privacy & Cookies Policy")
