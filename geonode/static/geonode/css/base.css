@@ -1387,7 +1387,7 @@ html {
 }
 
 body {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Solanel-Medium', sans-serif;
     font-size: 16px;
     line-height: 1.42857143;
     color: #c4bab7;
@@ -6834,7 +6834,7 @@ button.close {
     position: absolute;
     z-index: 1070;
     display: block;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Solanel-Medium', sans-serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.42857143;
@@ -6968,7 +6968,7 @@ button.close {
     display: none;
     max-width: 276px;
     padding: 1px;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Solanel-Medium', sans-serif;
     font-style: normal;
     font-weight: 400;
     line-height: 1.42857143;
@@ -7703,24 +7703,45 @@ button.close {
 }
 
 @font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/lato_bold.ttf) format('truetype');
-}
-
-@font-face {
-    font-family: 'Lato';
+    font-family: 'Solanel-Light';
     font-style: normal;
     font-weight: 300;
-    src: local('Lato Light'), local('Lato-Light'), url(../fonts/lato_light.ttf) format('truetype');
+    src: local('Solanel-Light'), local('Solanel-Light-Bold'), url(../fonts/Solanel-Light.ttf) format('truetype');
 }
 
 @font-face {
-    font-family: 'Lato';
+    font-family: 'Solanel-Light-Bold';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Solanel-Light'), local('Solanel-Light-Bold'), url(../fonts/Solanel-Light.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Light-Italic';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Solanel-Light-Italic'), local('Solanel-Medium-Light'), url(../fonts/SolanelLight-Light.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Medium-Italic';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Solanel-Medium Italic'), local('Solanel-Medium-Light'), url(../fonts/SolanelMedium-Italic.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Medium';
     font-style: normal;
     font-weight: 400;
-    src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/lato_regular.ttf) format('truetype');
+    src: local('Solanel-Medium'), local('Solanel-Medium-Regular'), url(../fonts/Solanel-Medium.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Medium-Bold';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Solanel-Medium'), local('Solanel-Medium-Regular'), url(../fonts/Solanel-Medium.ttf) format('truetype');
 }
 
 
@@ -7762,7 +7783,7 @@ div#user_messages {
 }
 
 body {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Solanel-Medium', sans-serif;
     font-size: 16px;
     padding-top: 20px;
 }

@@ -46,6 +46,7 @@
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_regular.ttf" %}" crossorigin="" />
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_bold.ttf" %}" crossorigin="" />
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
+    <link rel="preload" as="style" href="{% static "geonode/css/ionicons.min.css" %}" />▐
 
     {% block head %}
 
@@ -327,7 +328,7 @@
 
     <!-- Modal must stay outside the navbar -->
     {% if not user.is_authenticated %}
-    <div class="modal fade" id="SigninModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    {% comment %} <div class="modal fade" id="SigninModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
@@ -364,7 +365,105 @@
           </form>
         </div>
       </div>
-    </div>
+    </div> {% endcomment %}
+    <div class="modal fade" id="SigninModal" tabindex="-1" role="dialog" aria-labelledby="SigninModalTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="row no-gutters">
+			      <div class="col-md-6 d-flex">
+				      <div class="modal-body p-5 img d-flex img text-center d-flex align-items-center" style="background-image: url({% static "geonode/img/bg-sign.png" %});">
+				      </div>
+				    </div>
+				    <div class="col-md-6 d-flex">
+				      <div class="modal-body p-4 p-md-5 align-items-center color-2">
+				      	<div class="tabulation tabulation2">
+									<div class="d-flex tabs">
+										<ul class="nav nav-tabs border-0">
+										  <li class="nav-item">
+										    <a class="nav-link active" data-toggle="tab" href="#signin" id="SigninModalTitle">Sign In</a>
+										  </li>
+										  <li class="nav-item">
+										    <a class="nav-link" data-toggle="tab" href="#signup">Sign Up</a>
+										  </li>
+                        <button type="button" class="close text-right" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>                     
+										</ul>
+									</div>
+
+									<!-- Tab panes -->
+									<div class="tab-content border-0">
+									  <div class="tab-pane p-0 container active" id="signin">
+									  	<div class="text w-100">
+										  	<h3 class="mb-4">Sign In</h3>
+							      		<form action="#" class="signin-form">
+								      		<div class="form-group mb-3">
+								      			<label class="label" for="name">Username</label>
+								      			<input type="text" class="form-control" placeholder="Username">
+								      		</div>
+							            <div class="form-group mb-3">
+							            	<label class="label" for="password">Password</label>
+							              <input type="password" class="form-control" placeholder="Password">
+							            </div>
+							            <div class="form-group">
+							            	<button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
+							            </div>
+							            <div class="form-group d-md-flex">
+							            	<div class="form-check w-50 text-left">
+								            	<label class="custom-control fill-checkbox">
+																<input type="checkbox" class="fill-control-input">
+																<span class="fill-control-indicator"></span>
+																<span class="fill-control-description">Remember Me</span>
+															</label>
+														</div>
+														<div class="w-50 text-md-right">
+															<a href="#">Forgot Password</a>
+														</div>
+							            </div>
+							          </form>
+							          <p>Not a member? <a data-toggle="tab" href="#signup">Sign Up</a></p>
+							        </div>
+									  </div>
+									  <div class="tab-pane p-0 container fade" id="signup">
+									  	<div class="text w-100">
+										  	<h3 class="mb-4">Sign Up</h3>
+							      		<form action="#" class="signup-form">
+								      		<div class="form-group mb-3">
+								      			<label class="label" for="name">Full Name</label>
+								      			<input type="text" class="form-control" placeholder="AFi SEA">
+								      		</div>
+								      		<div class="form-group mb-3">
+								      			<label class="label" for="email">Email Address</label>
+								      			<input type="text" class="form-control" placeholder="afi@afiseacoalition.com">
+								      		</div>
+							            <div class="form-group mb-3">
+							            	<label class="label" for="password">Password</label>
+							              <input type="password" class="form-control" placeholder="Password">
+							            </div>
+							            <div class="form-group d-md-flex">
+							            	<div class="form-check w-100 text-left">
+								            	<label class="custom-control fill-checkbox">
+																<input type="checkbox" class="fill-control-input">
+																<span class="fill-control-indicator"></span>
+																<span class="fill-control-description">I agree all statements in <a href="#">terms of service</a></span>
+															</label>
+														</div>
+							            </div>
+							            <div class="form-group">
+							            	<button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign Up</button>
+							            </div>
+							          </form>
+							          <p>I'm already a member! <a data-toggle="tab" href="#signin">Sign In</a></p>
+							        </div>
+									  </div>
+									</div>
+								</div>
+				      </div>
+				    </div>
+				  </div>
+		    </div>
+		  </div>
+		</div>
     {% endif %}
     <!-- End of Modal -->
 
@@ -390,6 +489,7 @@
     {% endif %}
     <script src="{% static "geonode/js/utils/utils.js" %}"></script>
     <script src="{% static "geonode/js/base/base.js" %}"></script>
+    <script src="{% static "geonode/js/base/popper.js" %}"></script>
     <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
     {% block extra_script %}{% endblock extra_script %}
     <script type="text/javascript">

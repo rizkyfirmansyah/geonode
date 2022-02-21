@@ -137,6 +137,16 @@
         });
     };
 
+    // $('#exampleModalCenter').modal('show')
+
+    var fullHeight = function() {
+
+        $('.js-fullheight').css('height', $(window).height());
+        $(window).resize(function() {
+            $('.js-fullheight').css('height', $(window).height());
+        });
+
+    };
 
     /* Initialize
      * ------------------------------------------------------ */
@@ -148,7 +158,7 @@
         clAlertBoxes();
         clAOS();
         clBackToTop();
-
+        fullHeight();
     })();
 
 
