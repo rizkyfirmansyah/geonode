@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load base_tags %}
+
+<section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="images/hero-bg.jpg"
+data-natural-width=3000 data-natural-height=2000 data-position-y=center>
+
+<div class="overlay"></div>
+<div class="shadow-overlay"></div>
+
+<div class="home-content">
+
+  <div class="row home-content__main">
+
+    <h3>Welcome to AFISEACOALITION</h3>
+
+    <h1>
+      AFi SEA COALITION <br>
+      is a platform for <br>
+      geospatial data sharing
+    </h1>
+
+    <div class="search-field">
+      <button class="btn-search" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path
+            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+          </path>
+        </svg>
+      </button>
+      <input id="search" type="text" placeholder="What are you looking for?"
+        data-com.bitwarden.browser.user-edited="yes">
+    </div>
+  </div>
+
+  <div class="home-content__scroll">
+    <a href="#about" class="scroll-link smoothscroll">
+      <span>Scroll Down</span>
+    </a>
+  </div>
+
+  <div class="home-content__line"></div>
+
+</div> <!-- end home-content -->
+
+<!-- end home-social -->
+
+</section> <!-- end s-home -->
