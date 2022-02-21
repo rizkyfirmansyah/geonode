@@ -19,6 +19,10 @@ package-lock.json
 .github/
 .circleci/
 
+# migrations
+migrations/*
+uwsgi.ini
+
 docs/i18n/pot/
 
 # Static media handling

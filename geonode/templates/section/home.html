@@ -2,7 +2,7 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 
-<section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="images/hero-bg.jpg"
+<section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% static "geonode/img/hero-bg.jpg" %}"
 data-natural-width=3000 data-natural-height=2000 data-position-y=center>
 
 <div class="overlay"></div>
@@ -28,8 +28,20 @@ data-natural-width=3000 data-natural-height=2000 data-position-y=center>
           </path>
         </svg>
       </button>
-      <input id="search" type="text" placeholder="What are you looking for?"
-        data-com.bitwarden.browser.user-edited="yes">
+      <form id="main_search" action="{% url "search" %}" >
+        <span class="fa fa-search fa-2x"></span>
+        {% if HAYSTACK_SEARCH %}
+        <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
+              <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
+              <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
+              <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
+        {% else %}
+        <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control" autocomplete="off" name="title__icontains" data-com.bitwarden.browser.user-edited="yes">
+              <input type="hidden" name="abstract__icontains" id="main_search_abstract_input">
+              <input type="hidden" name="purpose__icontains" id="main_search_purpose_input">
+              <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
+        {% endif %}
+      </form>
     </div>
   </div>
 
@@ -41,8 +53,92 @@ data-natural-width=3000 data-natural-height=2000 data-position-y=center>
 
   <div class="home-content__line"></div>
 
-</div> <!-- end home-content -->
+</div>
+</section>
 
-<!-- end home-social -->
+{% block extra_script %}
+  <script type="text/javascript">
+    $('#main_search').on('submit', (e) => {
+        $('#main_search_abstract_input')[0].value =$('#main_search_input')[0].value;
+        $('#main_search_purpose_input')[0].value = $('#main_search_input')[0].value;
+    });
+  </script>
 
-</section> <!-- end s-home -->
+  <script type="text/javascript">
+
+      // running text of search bar
+      function searchIt(words) {
+        var letterIndex = 0;
+        var wordIndex = 0;
+        var placeholder = $("#main_search_input");
+
+        (function nextWord() {
+          var SI = setInterval(function() {
+            placeholder.attr("placeholder", function() { return $(this).attr("placeholder") + words[wordIndex][letterIndex] });
+            letterIndex++;
+            if (letterIndex === words[wordIndex].length) {
+              wordIndex = (wordIndex + 1) % words.length;
+              letterIndex = 0;
+              clearInterval(SI);
+              setTimeout(function() {
+                placeholder.attr("placeholder", "");
+                nextWord();
+              }, 1000); // delay between words
+            }
+          }, 70)       // delay between letters
+        })();
+      }
+
+      $(function() {
+          searchIt([" ....", "forest", "papua", "peat", "riau", "concession", "tree cover", "type me!"]);
+      });
+
+  </script>
+  <script type='text/javascript'>
+  /* <![CDATA[ */
+  var Cli_Data = {"nn_cookie_ids":[],"cookielist":[]};
+  /* ]]> */
+  </script>
+<script type="text/javascript" src="{% static "geonode/js/cookie-law-info/cookie-law-info-public.js" %}"></script>
+<script type="text/javascript">
+
+  (function($) {
+      var cfg = {
+          scrollDuration: 800 // smoothscroll duration
+      };
+
+    /* Smooth Scrolling
+     * ------------------------------------------------------ */
+     var clSmoothScroll = function() {
+
+      $('.smoothscroll').on('click', function(e) {
+          var target = this.hash,
+              $target = $(target);
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          $('html, body').stop().animate({
+              'scrollTop': $target.offset().top
+          }, cfg.scrollDuration, 'swing').promise().done(function() {
+
+              // check if menu is open
+              if ($('body').hasClass('menu-is-open')) {
+                  $('.header-menu-toggle').trigger('click');
+              }
+
+              window.location.hash = target;
+          });
+      });
+
+    };
+          /* Initialize
+     * ------------------------------------------------------ */
+    (function ssInit() {
+        clSmoothScroll();
+    })();
+
+  })(jQuery);
+
+</script>
+{% endblock extra_script %}
