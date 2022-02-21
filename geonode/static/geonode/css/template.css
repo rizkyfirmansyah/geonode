@@ -1016,7 +1016,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-    font-family: "montserrat-medium", sans-serif;
+    font-family: "Solanel-Medium", sans-serif;
     color: #000000;
     font-style: normal;
     font-weight: normal;
@@ -1118,7 +1118,7 @@ p img {
 }
 
 p.lead {
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-size: 2rem;
     font-weight: 300;
     line-height: 1.8;
@@ -1176,7 +1176,7 @@ blockquote:before {
 }
 
 blockquote p {
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     padding: 0;
     font-size: 2.1rem;
     line-height: 1.857;
@@ -1189,7 +1189,7 @@ blockquote p {
 
 blockquote cite {
     display: block;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-size: 1.4rem;
     font-style: normal;
     line-height: 1.5;
@@ -1392,7 +1392,7 @@ td {
 
 th {
     color: #000000;
-    font-family: "montserrat-bold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
 }
 
 td {
@@ -1584,8 +1584,8 @@ select {
     padding: 1.5rem 0;
     border: 0;
     outline: none;
-    color: #333333;
-    font-family: "montserrat-light", sans-serif;
+    color: white !important;
+    font-family: "Solanel-Light", sans-serif;
     font-size: 1.4rem;
     line-height: 3rem;
     max-width: 100%;
@@ -1670,7 +1670,7 @@ select:focus {
 
 label,
 legend {
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-size: 1.4rem;
     font-weight: bold;
     margin-bottom: .9rem;
@@ -1687,7 +1687,7 @@ input[type="radio"] {
 label>.label-text {
     display: inline-block;
     margin-left: 1rem;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-weight: normal;
     line-height: inherit;
 }
@@ -1785,9 +1785,9 @@ input[type="submit"]:focus,
 input[type="reset"]:focus,
 input[type="hidden"]:focus,
 input[type="button"]:focus {
-    background-color: #b8b8b8;
-    border-color: #b8b8b8;
-    color: #000000;
+    background-color: #4F98AF;
+    border-color: #4F98AF;
+    color: white;
     outline: 0;
 }
 
@@ -1800,8 +1800,8 @@ button.btn--primary,
 input[type="submit"].btn--primary,
 input[type="reset"].btn--primary,
 input[type="button"].btn--primary {
-    background: #1C463F;
-    border-color: #1C463F;
+    background: #4F98AF;
+    border-color: #4F98AF;
     color: #FFFFFF;
 }
 
@@ -1883,7 +1883,7 @@ input::-moz-focus-inner {
     position: relative;
     margin-bottom: 3rem;
     border-radius: 3px;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-size: 1.5rem;
     line-height: 1.6;
 }
@@ -1933,7 +1933,7 @@ input::-moz-focus-inner {
     margin: 0;
     padding: 1.5rem .6rem 0 0;
     font-size: 8.4rem;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-weight: bold;
     line-height: 6rem;
     text-indent: 0;
@@ -2076,7 +2076,7 @@ input::-moz-focus-inner {
 .stats-tabs li a {
     display: inline-block;
     font-size: 2.5rem;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-weight: bold;
     border: none;
     color: #000000;
@@ -2090,7 +2090,7 @@ input::-moz-focus-inner {
     display: block;
     margin: .6rem 0 0 0;
     font-size: 1.4rem;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     color: #828282;
 }
 
@@ -2117,7 +2117,7 @@ input::-moz-focus-inner {
     position: absolute;
     left: 0;
     top: -3rem;
-    font-family: "montserrat-bold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     color: #000000;
     text-transform: uppercase;
     letter-spacing: .2rem;
@@ -2136,7 +2136,7 @@ input::-moz-focus-inner {
     right: 0;
     top: -3.6rem;
     display: block;
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     color: #FFFFFF;
     font-size: 1.1rem;
     line-height: 1;
@@ -2256,7 +2256,7 @@ input::-moz-focus-inner {
  * ------------------------------------------------------------------- */
 
 .display-1 {
-    font-family: "montserrat-medium", sans-serif;
+    font-family: "Solanel-Medium", sans-serif;
     font-size: 7.8rem;
     line-height: 1.25;
     color: #000000;
@@ -2268,7 +2268,7 @@ input::-moz-focus-inner {
 }
 
 .display-2 {
-    font-family: "montserrat-medium", sans-serif;
+    font-family: "Solanel-Medium", sans-serif;
     font-size: 5.2rem;
     line-height: 1.255;
     color: #000000;
@@ -2284,7 +2284,7 @@ input::-moz-focus-inner {
 }
 
 .subhead {
-    font-family: "montserrat-bold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     font-size: 1.7rem;
     line-height: 1.333;
     text-transform: uppercase;
@@ -2522,7 +2522,7 @@ input::-moz-focus-inner {
 .header-nav {
     background: #0C0C0C;
     color: #c4bab7;
-    font-family: "montserrat-light", sans-serif;
+    font-family: "Solanel-Light", sans-serif;
     font-size: 1.3rem;
     line-height: 1.846;
     padding: 3.6rem 3rem 3.6rem 3.6rem;
@@ -2556,7 +2556,7 @@ input::-moz-focus-inner {
 }
 
 .header-nav h3 {
-    font-family: "montserrat-semibold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     font-size: 11px;
     line-height: 1.5;
     text-transform: uppercase;
@@ -2578,7 +2578,7 @@ input::-moz-focus-inner {
 }
 
 .header-nav__list {
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     font-size: 1.8rem;
     margin: 3.6rem 0 3rem 0;
     padding: 0 0 1.8rem 0;
@@ -2699,7 +2699,7 @@ input::-moz-focus-inner {
     height: 42px;
     width: 42px;
     line-height: 42px;
-    font-family: "montserrat-medium", sans-serif;
+    font-family: "Solanel-Medium", sans-serif;
     font-size: 1.3rem;
     text-transform: uppercase;
     letter-spacing: .3rem;
@@ -2847,7 +2847,7 @@ input::-moz-focus-inner {
 }
 
 .home-content h3 {
-    font-family: "montserrat-medium", sans-serif;
+    font-family: "Solanel-Medium", sans-serif;
     font-size: 1.6rem;
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
@@ -2859,7 +2859,7 @@ input::-moz-focus-inner {
 }
 
 .home-content h1 {
-    font-family: "montserrat-medium", sans-serif;
+    font-family: "Solanel-Medium", sans-serif;
     font-size: 6.3rem;
     line-height: 1.333;
     margin-top: 0;
@@ -2957,7 +2957,7 @@ input::-moz-focus-inner {
 }
 
 .home-content__scroll a {
-    font-family: "montserrat-semibold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: .3rem;
@@ -3006,7 +3006,7 @@ input::-moz-focus-inner {
  * ------------------------------------------------------------------- */
 
 .home-social {
-    font-family: "montserrat-regular", sans-serif;
+    font-family: "Solanel-Regular", sans-serif;
     list-style: none;
     margin: 0;
     position: absolute;
@@ -3365,7 +3365,7 @@ html.no-csstransitions .home-content__main {
 }
 
 .stats__count {
-    font-family: "montserrat-bold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     font-size: 8.4rem;
     line-height: 1;
     color: #FFFFFF;
@@ -3376,7 +3376,7 @@ html.no-csstransitions .home-content__main {
 }
 
 .stats h5 {
-    font-family: "montserrat-semibold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     margin-top: 1.8rem;
     color: #000000;
     font-size: 1.8rem;
@@ -3731,7 +3731,7 @@ html.no-csstransitions .home-content__main {
 }
 
 .item-folio__title {
-    font-family: "montserrat-semibold", sans-serif;
+    font-family: "Solanel-Bold", sans-serif;
     font-size: 1.4rem;
     line-height: 1.286;
     color: #FFFFFF;
@@ -3742,7 +3742,7 @@ html.no-csstransitions .home-content__main {
 
 .item-folio__cat {
     color: rgba(255, 255, 255, 0.5);
-    font-family: "montserrat-light", sans-serif;
+    font-family: "Solanel-Light", sans-serif;
     font-size: 1.4rem;
     line-height: 1.714;
     margin-bottom: 0;
@@ -4065,7 +4065,7 @@ html.no-csstransitions .home-content__main {
 
 footer {
     padding: 9rem 0 6rem;
-    font-family: "montserrat-light", sans-serif;
+    font-family: "Solanel-Light", sans-serif;
     line-height: 2;
     text-align: center;
     color: rgba(255, 255, 255, 0.3);
@@ -4176,7 +4176,7 @@ footer div ul {
     margin-bottom: 1px !important;
     padding: 1px !important;
     color: white;
-    font-family: "montserrat-light", sans-serif;
+    font-family: "Solanel-Light", sans-serif;
     font-size: 1.7rem;
     font-style: normal;
     font-weight: normal;
