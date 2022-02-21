@@ -8,14 +8,32 @@
           <img src="{% static "geonode/img/logo-footer.png" %}" class="logo-footer">
         </figure>
       </div>
-      <div class="copyright-notice col-md-6 mobile-top-spacer">
-        <div class="menu-footer-nav-copyright-container">
-          <ul id="menu-footer-nav-copyright" class="nav">
-            <li id="menu-item-4490" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4490">
-              <a href="https://accountability-framework.org/privacy-policy/">Privacy policy</a></li>
-          </ul>
-        </div>
-        </span><span class="copyright-text"> | © Accountability Framework 2022 | Powered by Geonode</span>
+      <div class="row mobile-top-spacer">
+          <div class="col-lg-12 text-right" id="right-footer">
+            <ul id="menu-footer-nav-copyright" class="list-inline">
+              <li id="menu-item-4490" class="list-inline-item menu-item menu-item-type-post_type menu-item-object-page menu-item-4490">
+                <a href="{% url 'privacy-policy' %}" role="button">Privacy policy</a></li>
+              <li class="list-inline-item">
+                {% if csrf_token != "NOTPROVIDED" %}
+                {% get_current_language as LANGUAGE %}
+                <form class="form-inline" action="/i18n/setlang/" method="post">
+                {% csrf_token %}
+                  <select id="footer-language" name="language" onchange="javascript:form.submit()">
+                    {% for lang in LANGUAGES %}
+                    <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
+                      {{ lang.1 }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </form>
+                {% endif %}
+              </li>
+            </ul>
+            <ul id="menu-footer-nav-copyright" class="list-inline">
+              <li class="list-inline-item"><span class="copyright-text">© Accountability Framework 2022</span></li>
+              <li class="list-inline-item"><span class="copyright-text">|&nbsp;&nbsp;&nbsp;Powered by Geonode.</span></li>
+            </ul>
+          </div>
       </div>
   </div>
 

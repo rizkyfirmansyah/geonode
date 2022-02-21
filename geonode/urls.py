@@ -76,9 +76,9 @@ urlpatterns = [
     url(r'^about/$',
         TemplateView.as_view(template_name='about.html'),
         name='about'),
-    url(r'^privacy/$',
-        TemplateView.as_view(template_name='privacy.html'),
-        name='privacy'),
+    url(r'^privacy-policy/$',
+        TemplateView.as_view(template_name='privacy_policy.html'),
+        name='privacy-policy'),
 
     # Meta
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
@@ -246,10 +246,10 @@ urlpatterns += geonode.proxy.urls.urlpatterns
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.LOCAL_MEDIA_URL,
                       document_root=settings.MEDIA_ROOT)
-handler401 = 'geonode.views.err403'
-handler403 = 'geonode.views.err403'
-handler404 = 'geonode.views.handler404'
-handler500 = 'geonode.views.handler500'
+handler403 = 'geonode.views.permission_denied_view'
+handler401 = 'geonode.views.unauthorized_view'
+handler404 = 'geonode.views.page_not_found_view'
+handler500 = 'geonode.views.server_error_view'
 
 # Featured Maps Pattens
 urlpatterns += [  # '',

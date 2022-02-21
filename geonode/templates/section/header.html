@@ -22,6 +22,7 @@
       <ul class="header-nav__list">
         <li class="current"><a class="smoothscroll" href="{{ SITEURL }}" title="home">Home</a></li>
         <li><a class="smoothscroll" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" title="about">Spatial Data</a></li>
+        <li><a class="smoothscroll" href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Non Spatial Data</a></li>
         <li><a class="smoothscroll" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Maps</a></li>
         <li><a class="smoothscroll" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Apps</a></li>
       </ul>

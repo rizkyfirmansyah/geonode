@@ -314,6 +314,7 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-overflow-scrolling: touch;
     -webkit-text-size-adjust: none;
+    color: transparent !important;
 }
 
 body,
@@ -981,7 +982,7 @@ body .apps {
  * ------------------------------------------------------------------- */
 
 a {
-    color: #0087cc;
+    color: #4e98af;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
@@ -1438,7 +1439,6 @@ p,
 ul,
 ol,
 dl,
-form,
 .video-container,
 .cl-custom-select {
     margin-bottom: 3rem;
@@ -3312,7 +3312,7 @@ html.no-csstransitions .home-content__main {
  * ------------------------------------------------------------------- */
 
 .s-showcase {
-    padding-top: 16.2rem;
+    padding-top: 9rem;
     padding-bottom: 9rem;
     background-color: #1C463F;
     color: #c4bab7;
@@ -4116,6 +4116,7 @@ footer .logo {
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
+    top: -20px;
 }
 
 footer figure {
@@ -4123,7 +4124,7 @@ footer figure {
 }
 
 .logo-footer {
-    max-width: 100%;
+    max-width: 140%;
     height: auto;
     float: left;
 }
@@ -4149,6 +4150,10 @@ footer .nav {
     padding-left: 0;
 }
 
+footer form {
+    margin-left: 15px;
+}
+
 footer .copyright-notice ul li {
     float: left;
     margin: 0;
@@ -4158,6 +4163,35 @@ footer .copyright-notice ul li {
 
 footer li .a:hover {
     text-decoration: underline;
+}
+
+footer .menu-footer-nav-copyright,
+footer .menu-footer-nav-copyright li span,
+footer .menu-footer-nav-copyright select {
+    color: white;
+}
+
+footer li form select,
+footer div ul {
+    margin-bottom: 1px !important;
+    padding: 1px !important;
+    color: white;
+    font-family: "montserrat-light", sans-serif;
+    font-size: 1.7rem;
+    font-style: normal;
+    font-weight: normal;
+}
+
+footer #footer-language {
+    cursor: pointer;
+}
+
+#right-footer {
+    top: -35px;
+}
+
+.copyright-text {
+    color: white;
 }
 
 

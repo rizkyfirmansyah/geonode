@@ -29,7 +29,6 @@ data-natural-width=3000 data-natural-height=2000 data-position-y=center>
         </svg>
       </button>
       <form id="main_search" action="{% url "search" %}" >
-        <span class="fa fa-search fa-2x"></span>
         {% if HAYSTACK_SEARCH %}
         <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
               <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >

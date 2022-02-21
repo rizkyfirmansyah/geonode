@@ -116,21 +116,28 @@ def ajax_lookup(request):
     )
 
 
-def err403(request, exception):
+def permission_denied_view(req):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(
             f"{reverse('account_login')}?next={request.get_full_path()}")
     else:
-        return TemplateResponse(request, '401.html', {}, status=401).render()
+        return TemplateResponse(request, 'error/403.html', {}, status=403).render()
+
+def unauthorized_view(request, exception):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(
+            f"{reverse('account_login')}?next={request.get_full_path()}")
+    else:
+        return TemplateResponse(request, 'error/401.html', {}, status=401).render()
 
 
-def handler404(request, exception, template_name="404.html"):
+def page_not_found_view(request, exception, template_name="error/404.html"):
     response = render_to_response(template_name)
     response.status_code = 404
     return response
 
 
-def handler500(request, template_name="500.html"):
+def server_error_view(request, template_name="error/500.html"):
     response = render_to_response(template_name)
     response.status_code = 500
     return response
