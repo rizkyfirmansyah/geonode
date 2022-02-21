@@ -21,42 +21,42 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_background',
-            field=models.CharField(default='#f0ab00', max_length=30),
+            field=models.CharField(default='#F39F1E', max_length=30),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_1_link_colour',
-            field=models.CharField(default='#f0ab00', max_length=30),
+            field=models.CharField(default='#F39F1E', max_length=30),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_2_link_colour',
-            field=models.CharField(default='#f0ab00', max_length=30),
+            field=models.CharField(default='#F39F1E', max_length=30),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_3_link_colour',
-            field=models.CharField(default='#f0ab00', max_length=30),
+            field=models.CharField(default='#F39F1E', max_length=30),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='cookie_law_info_button_4_link_colour',
-            field=models.CharField(default='#f0ab00', max_length=30),
+            field=models.CharField(default='#F39F1E', max_length=30),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='copyright_color',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#F39F1E', max_length=10),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='jumbotron_color',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#F39F1E', max_length=10),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='navbar_dropdown_menu',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#F39F1E', max_length=10),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
@@ -71,11 +71,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='navbar_text_hover',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#F39F1E', max_length=10),
         ),
         migrations.AlterField(
             model_name='geonodethemecustomization',
             name='navbar_text_hover_focus',
-            field=models.CharField(default='#f0ab00', max_length=10),
+            field=models.CharField(default='#F39F1E', max_length=10),
         ),
     ]
