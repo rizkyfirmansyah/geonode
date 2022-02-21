@@ -2,10 +2,13 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 
+<link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
+<link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
+
 <header class="s-header">
 
   <div class="header-logo">
-    <a class="site-logo" href="index.html">
+    <a class="site-logo" href="{{ SITEURL }}">
       <img src="{% static "geonode/img/logo.png" %}" alt="Homepage">
     </a>
   </div>
@@ -18,9 +21,9 @@
       <h3>Navigation</h3>
       <ul class="header-nav__list">
         <li class="current"><a class="smoothscroll" href="{{ SITEURL }}" title="home">Home</a></li>
-        <li><a class="smoothscroll" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" onclick="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" title="about">Spatial Data</a></li>
-        <li><a class="smoothscroll" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">Maps</a></li>
-        <li><a class="smoothscroll" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}">Apps</a></li>
+        <li><a class="smoothscroll" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" title="about">Spatial Data</a></li>
+        <li><a class="smoothscroll" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Maps</a></li>
+        <li><a class="smoothscroll" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Apps</a></li>
       </ul>
 
       <ul class="col-lg-12 list-unstyled">

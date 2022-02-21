@@ -4,9 +4,6 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 
-<link rel="stylesheet" href="{% static "geonode/css/landing-page.css" %}" />
-<link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
-
 {% block middle %}
   {{ block.super }}
 
@@ -27,10 +24,5 @@
 {% endblock middle %}
 
 {% block extra_script %}
-  <script src="{% static "lib/js/jquery.js" %}"></script>
-  <script type="text/javascript" src="{% static "geonode/js/base/modernizr.js" %}"></script>
-  <script type="text/javascript" src="{% static "geonode/js/base/pace.min.js" %}"></script>
-  <script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
-  <script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
   <script type="text/javascript" src="{% static "geonode/js/cookie-law-info/cookie-law-info-public.js" %}"></script>
 {% endblock extra_script %}

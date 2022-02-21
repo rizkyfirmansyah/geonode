@@ -965,7 +965,6 @@ body {
     font-style: normal;
     font-weight: normal;
     line-height: 1.765;
-    color: #757575;
     margin: 0;
     padding: 0;
 }
@@ -973,7 +972,7 @@ body {
 body .layers,
 body .maps,
 body .apps {
-    background-color: white;
+    background-color: white !important;
 }
 
 
@@ -4088,7 +4087,7 @@ footer h4 {
 }
 
 footer li a {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
 
 .nav>li>a {
@@ -4098,7 +4097,7 @@ footer li a {
 footer li a:hover,
 footer li a:focus,
 footer li a:active {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     text-decoration: underline !important;
     background-color: transparent !important;
     padding: 0px 5px !important;
@@ -4124,7 +4123,7 @@ footer figure {
 }
 
 .logo-footer {
-    max-width: 150%;
+    max-width: 100%;
     height: auto;
     float: left;
 }

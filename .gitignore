@@ -21,7 +21,6 @@ package-lock.json
 
 # migrations
 migrations/*
-uwsgi.ini
 
 docs/i18n/pot/
 
@@ -103,3 +102,4 @@ scripts/spcgeonode/_volume_*
 /output.bin
 
 /worker.state
+uwsgi.ini
