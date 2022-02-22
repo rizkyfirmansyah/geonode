@@ -21,10 +21,10 @@
       <h3>Navigation</h3>
       <ul class="header-nav__list">
         <li class="current"><a class="smoothscroll" href="{{ SITEURL }}" title="home">Home</a></li>
-        <li><a class="smoothscroll" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" title="about">Spatial Data</a></li>
-        <li><a class="smoothscroll" href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Non Spatial Data</a></li>
-        <li><a class="smoothscroll" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Maps</a></li>
-        <li><a class="smoothscroll" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button">Apps</a></li>
+        <li><a class="smoothscroll" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Spatial data">Spatial Data</a></li>
+        <li><a class="smoothscroll" href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Documents/Non Spatial Data">Non Spatial Data</a></li>
+        <li><a class="smoothscroll" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Maps created by users">Maps</a></li>
+        <li><a class="smoothscroll" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Apps created by users">Apps</a></li>
       </ul>
 
       <ul class="col-lg-12 list-unstyled text-right">

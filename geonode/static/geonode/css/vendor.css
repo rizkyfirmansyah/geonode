@@ -1171,9 +1171,6 @@ body[data-aos-easing=ease-in-out-quart] [data-aos] {
 }
 
 
-/*# sourceMappingURL=aos.css.map*/
-
-
 /* ===================================================================
  * # slick slider
  *
@@ -1281,6 +1278,3 @@ body[data-aos-easing=ease-in-out-quart] [data-aos] {
 .slick-arrow.slick-hidden {
     display: none;
 }
-
-
-/*# sourceMappingURL=vendor.css.map */

@@ -2,14 +2,14 @@
 {% load static from staticfiles %}
 
 <footer>
-  <div class="col-lg-12">
+  <div class="row col-lg-12">
       <div class="logo col-md-6 mobile-top-spacer">
         <figure class="logo-image">
           <img src="{% static "geonode/img/logo-footer.png" %}" class="logo-footer">
         </figure>
       </div>
-      <div class="row mobile-top-spacer">
-          <div class="col-lg-12 text-right" id="right-footer">
+      <div class="col-md-6 mobile-top-spacer">
+          <div class="col-lg-12 text-right" id="right-footer" style="background-color: transparent;">
             <ul id="menu-footer-nav-copyright" class="list-inline">
               <li id="menu-item-4490" class="list-inline-item menu-item menu-item-type-post_type menu-item-object-page menu-item-4490">
                 <a href="{% url 'privacy-policy' %}" role="button">Privacy policy</a></li>
@@ -18,7 +18,7 @@
                 {% get_current_language as LANGUAGE %}
                 <form class="form-inline" action="/i18n/setlang/" method="post">
                 {% csrf_token %}
-                  <select id="footer-language" name="language" onchange="javascript:form.submit()">
+                  <select id="footer-language" class="primary-text-white" name="language" onchange="javascript:form.submit()">
                     {% for lang in LANGUAGES %}
                     <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
                       {{ lang.1 }}
