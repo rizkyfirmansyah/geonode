@@ -4506,8 +4506,8 @@ footer #footer-language {
 }
 
 .search-content ul input {
-    margin-left: -22px;
     background-color: #c4bab7;
     color: white !important;
     border-bottom: 2px solid #1c4742;
+    padding: 10px !important;
 }
