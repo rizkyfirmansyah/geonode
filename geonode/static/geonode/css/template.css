@@ -1647,7 +1647,7 @@ input[type="url"]:focus,
 input[type="password"]:focus,
 textarea:focus,
 select:focus {
-    color: #000000;
+    color: #a23133;
     border-bottom: 2px solid black;
 }
 
@@ -1782,9 +1782,15 @@ button.btn--primary,
 input[type="submit"].btn--primary,
 input[type="reset"].btn--primary,
 input[type="button"].btn--primary {
-    background: #4F98AF;
-    border-color: #4F98AF;
-    color: #FFFFFF;
+    color: #1c4742;
+    background-color: white;
+    border-color: white;
+    text-transform: uppercase;
+    letter-spacing: .3rem;
+    height: 5.4rem;
+    line-height: calc(5.4rem - .4rem);
+    padding: 0 3rem;
+    margin: 0 .3rem 1.2rem 0;
 }
 
 .btn.btn--primary:hover,
@@ -1797,8 +1803,9 @@ button.btn--primary:focus,
 input[type="submit"].btn--primary:focus,
 input[type="reset"].btn--primary:focus,
 input[type="button"].btn--primary:focus {
-    background: #33a242;
-    border-color: #33a242;
+    color: #1c4742;
+    background-color: #4e98af;
+    border-color: #4e98af;
 }
 
 
@@ -4168,6 +4175,7 @@ footer div ul {
 
 footer #footer-language {
     cursor: pointer;
+    background-color: black;
 }
 
 #right-footer {
@@ -4510,4 +4518,23 @@ footer #footer-language {
     color: white !important;
     border-bottom: 2px solid #1c4742;
     padding: 10px !important;
+}
+
+.search-content ul input:focus,
+.search-content ul input:active {
+    color: #a23133 !important;
+    background-color: #fff !important;
+}
+
+.ng-scope .btn {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: .3rem;
+    height: 4rem;
+    line-height: 2px;
+    padding: 10px;
+    margin: 0 auto;
+    margin-left: 0px;
+    color: #000000;
+    height: auto;
 }
