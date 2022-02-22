@@ -137,8 +137,6 @@
         });
     };
 
-    // $('#exampleModalCenter').modal('show')
-
     var fullHeight = function() {
 
         $('.js-fullheight').css('height', $(window).height());

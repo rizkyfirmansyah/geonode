@@ -12,24 +12,24 @@
 <script src="{% static "geonode/js/base/toastr.js" %}"></script>
 <script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
+
 <script type="text/javascript">
   $(document).ready(function() {
-
-    // get token from js cookie
+    
     let csrftoken = Cookies.get('csrftoken');
 
-    $('#reset-password').click(function(e) {
+    $('#signup_form').click(function(e) {
       e.preventDefault();
       $.ajax({
         data: $(this).serialize(),
         type: $(this).attr('method'),
-        url: `{% url 'account_reset_password' %}`,
+        url: `{% url "account_signup" %}?next={{ request.path }}`,
         headers: {
           "X-CSRFToken": csrftoken
         },
         success: function(res) {
-          let msg = "We have sent you an e-mail. Please contact us if you do not receive it within a few minutes.";
-          let title = "Reset Password";
+          let msg = `Sign up Successful. Please check email for verify your account {{ SITEURL }}`;
+          let title = "Register";
           const $toast = toastr["success"](msg, title);
           toastr.options = {
             "newestOnTop": false,

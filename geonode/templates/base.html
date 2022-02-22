@@ -47,6 +47,70 @@
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_bold.ttf" %}" crossorigin="" />
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
 
+    {% if DEBUG_STATIC %}
+    <script src="{% static "lib/js/jquery.js" %}"></script>
+    <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
+    <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
+    <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
+    <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
+    <script src="{% static "lib/js/select2.full.js" %}"></script>
+    <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
+    <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
+    <script src="{% static "lib/js/jquery-ui.js" %}"></script>
+    <script src="{% static "lib/js/jquery.raty.js" %}"></script>
+    <script src="{% static "lib/js/bootstrap.js" %}"></script>
+    <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
+    <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
+    <script src="{% static "lib/js/json2.js" %}"></script>
+    <script src="{% static "lib/js/waypoints.js" %}"></script>
+    <script src="{% static "lib/js/underscore.js" %}"></script>
+    <link rel="preload" as="style" href="{% static "geonode/css/toastr.css" %}" />
+    <script src="{% static "geonode/js/base/toastr.js" %}"></script>
+    {% else %}
+    <script src="{% static "lib/js/assets.min.js" %}"></script>
+    {% endif %}
+    
+    <script>
+        var siteUrl = '{{ SITEURL }}'.replace(/\/?$/, '/');
+        var staticUrl = '{% static '' %}';
+    </script>
+
+    <!-- Autocomplete script for input boxes -->
+    <script src="{% static "geonode/js/search/autocomplete.js" %}"></script>
+
+    <script type="text/javascript">
+      function thumbnailFeedbacks(data, status) {
+        try {
+          $("#_thumbnail_feedbacks").find('.modal-title').text(status);
+          $("#_thumbnail_feedbacks").find('.modal-body').text(data);
+          $("#_thumbnail_feedbacks").modal("show");
+        } catch (err) {
+          console.log(err);
+        } finally {
+          return true;
+        }
+      }
+    </script>
+
+    <!-- RTL styles -->
+    {% get_current_language_bidi as LANGUAGE_BIDI %}
+    {% if LANGUAGE_BIDI %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.3.4/css/bootstrap-rtl.min.css">
+        {% if DEBUG_STATIC %}
+          <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.css" %}">
+        {% else %}
+          <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.min.css" %}">
+        {% endif %}
+    {% endif %}
+    <script src="{% static "geonode/js/utils/utils.js" %}"></script>
+    <script src="{% static "geonode/js/base/base.js" %}"></script>
+    <script src="{% static "geonode/js/base/popper.js" %}"></script>
+    <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/modernizr.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/pace.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
+    {% comment %} <script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script> {% endcomment %}
+    {% block extra_script %}{% endblock extra_script %}
     {% block head %}
 
       {% if DEBUG_STATIC %}
@@ -245,38 +309,6 @@
     <![endif]-->
     <link rel="search" type="application/opensearchdescription+xml" href="{% if SITEURL|default:""|slice:"-1:" == "/" %}{{SITEURL}}{% else %}{{SITEURL}}/{% endif %}catalogue/opensearch" title="{% trans "GeoNode Search" %}"/>
 
-    <script>
-        var siteUrl = '{{ SITEURL }}'.replace(/\/?$/, '/');
-        var staticUrl = '{% static '' %}';
-    </script>
-
-    <!-- Autocomplete script for input boxes -->
-    <script src="{% static "geonode/js/search/autocomplete.js" %}"></script>
-
-    <script type="text/javascript">
-      function thumbnailFeedbacks(data, status) {
-        try {
-          $("#_thumbnail_feedbacks").find('.modal-title').text(status);
-          $("#_thumbnail_feedbacks").find('.modal-body').text(data);
-          $("#_thumbnail_feedbacks").modal("show");
-        } catch (err) {
-          console.log(err);
-        } finally {
-          return true;
-        }
-      }
-    </script>
-
-    <!-- RTL styles -->
-    {% get_current_language_bidi as LANGUAGE_BIDI %}
-    {% if LANGUAGE_BIDI %}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.3.4/css/bootstrap-rtl.min.css">
-        {% if DEBUG_STATIC %}
-          <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.css" %}">
-        {% else %}
-          <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.min.css" %}">
-        {% endif %}
-    {% endif %}
   </head>
 
   <body class="{% block body_class %}{% endblock %}" id="top">
@@ -366,37 +398,16 @@
       </div>
     </div> {% endcomment %}
     
-    {% include "modal/login.html" %}
-    {% include "modal/forgot_password.html" %}
+    {% block modal_login %}
+      {% include "modal/login.html" %}
+    {% endblock modal_login %}
+    {% block modal_forgot_password %}
+      {% include "modal/forgot_password.html" %}
+    {% endblock modal_forgot_password %}
      
     {% endif %}
     <!-- End of Modal -->
 
-    {% if DEBUG_STATIC %}
-    <script src="{% static "lib/js/jquery.js" %}"></script>
-    <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
-    <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
-    <script src="{% static "lib/js/select2.full.js" %}"></script>
-    <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
-    <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
-    <script src="{% static "lib/js/jquery-ui.js" %}"></script>
-    <script src="{% static "lib/js/jquery.raty.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap.js" %}"></script>
-    <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
-    <script src="{% static "lib/js/json2.js" %}"></script>
-    <script src="{% static "lib/js/waypoints.js" %}"></script>
-    <script src="{% static "lib/js/underscore.js" %}"></script>
-    {% else %}
-    <script src="{% static "lib/js/assets.min.js" %}"></script>
-    {% endif %}
-    <script src="{% static "geonode/js/utils/utils.js" %}"></script>
-    <script src="{% static "geonode/js/base/base.js" %}"></script>
-    <script src="{% static "geonode/js/base/popper.js" %}"></script>
-    <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
-    {% block extra_script %}{% endblock extra_script %}
     <script type="text/javascript">
 
       // Autocomplete instance for the search found in the header.
@@ -429,9 +440,9 @@
       }); {% endcomment %}
     </script>
 
-    {% include "modal/resource_uploading.html" %}
+    {% comment %} {% include "modal/resource_uploading.html" %}
     {% include "modal/thumbnail_processing.html" %}
-    {% include "modal/thumbnail_feedbacks.html" %}
+    {% include "modal/thumbnail_feedbacks.html" %} {% endcomment %}
 
   </body>
 </html>
