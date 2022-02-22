@@ -908,8 +908,8 @@ THEME_ACCOUNT_CONTACT_EMAIL = os.getenv(
 # per-deployment settings should go here
 
 # Login and logout urls override
-LOGIN_URL = os.getenv('LOGIN_URL', f'{SITEURL}account/login/')
-LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}account/logout/')
+LOGIN_URL = os.getenv('LOGIN_URL', f'{SITEURL}')
+LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}')
 
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)

@@ -12,4 +12,4 @@
 <br/>
 {% blocktrans %}Cheers,{% endblocktrans %}
 <br/>
-{% blocktrans %}The SDI team.{% endblocktrans %}
+{% blocktrans %}The {{site_name}} team.{% endblocktrans %}

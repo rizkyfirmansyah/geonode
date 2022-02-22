@@ -65,7 +65,7 @@
         function animateLogin() {
             // Wrap every letter in a span
             $('.ml13').each(function(){
-                $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter' onclick=\"window.location.href='{{SITEURL}}account/login/?next=/layers/';\">$&</span>"));
+                $(this).html($(this).text().replace(/([^\x00-\x80]|\w)/g, "<span class='letter' data-toggle='modal' data-target='#SigninModal'>$&</span>"));
             });
             anime.timeline({loop: true})
             .add({

@@ -6,11 +6,11 @@ Congratulations!
 
 Your account has been approved and is now active.
 
-Go explore through https://afiseacoalition.com/account/login using your registered user: {{ username }}
+Go explore through https://{{current_site}} using your registered user: {{ username }}
 
 
 Cheers,
-The SDI team.
+The {{site_name}} team.
 
 {% endblocktrans %}
 {% endautoescape %}
