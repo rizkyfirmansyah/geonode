@@ -47,6 +47,10 @@
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_bold.ttf" %}" crossorigin="" />
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
 
+    {% comment %} custom css and overriding styles {% endcomment %}
+    <link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
+    <link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
+
     {% block head %}
 
       {% if DEBUG_STATIC %}
@@ -396,6 +400,13 @@
     <script src="{% static "geonode/js/base/base.js" %}"></script>
     <script src="{% static "geonode/js/base/popper.js" %}"></script>
     <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
+
+    {% comment %} custom plugins {% endcomment %}
+    <script type="text/javascript" src="{% static "geonode/js/base/modernizr.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/pace.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
+
     {% block extra_script %}{% endblock extra_script %}
     <script type="text/javascript">
 

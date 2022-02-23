@@ -3675,7 +3675,7 @@ select[multiple].input-lg {
     cursor: pointer;
     background-image: none;
     border: 1px solid transparent;
-    padding: 6px 12px;
+    padding: 15px !important;
     font-size: 16px;
     line-height: 1.42857143;
     border-radius: 4px;
@@ -6208,14 +6208,14 @@ button.list-group-item-danger.active:focus {
 }
 
 .panel-heading>.dropdown .dropdown-toggle {
-    color: inherit;
+    color: #c4bab7;
 }
 
 .panel-title {
     margin-top: 0;
     margin-bottom: 0;
     font-size: 18px;
-    color: inherit;
+    color: #c4bab7;
 }
 
 .panel-title>a,
@@ -6223,7 +6223,15 @@ button.list-group-item-danger.active:focus {
 .panel-title>.small,
 .panel-title>small>a,
 .panel-title>.small>a {
-    color: inherit;
+    color: #c4bab7;
+}
+
+.panel-title>a:hover,
+.panel-title>small:hover,
+.panel-title>.small:hover,
+.panel-title>small>a:hover,
+.panel-title>.small>a:hover {
+    color: white;
 }
 
 .panel-footer {

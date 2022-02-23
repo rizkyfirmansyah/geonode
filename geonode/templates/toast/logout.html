@@ -1,12 +1,13 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load base_tags %}
+{% load avatar_tags %}
 
 {% block extra_script %}
 <script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
 <script type="text/javascript">
-  $(document).ready(function() {
+  {% comment %} $(document).ready(function() {
 
     // get token from js cookie
     const _user ='{{ user.is_authenticated }}';
@@ -30,11 +31,13 @@
       $.ajax({
         data: $(this).serialize(),
         type: $(this).attr('method'),
+        method: 'POST',
         url: `{% url "account_logout" %}?next={{ SITEURL }}`,
         headers: {
           "X-CSRFToken": csrftoken
         },
         success: function(res) {
+          /*
           let msg = "You have been successfully logout";
           let title = "Logout";
           const $toast = toastr["success"](msg, title);
@@ -44,17 +47,18 @@
             "positionClass": "toast-top-right",
             "preventDuplicates": true
           }
+          */
 
         },
         error: function(xhr, desc, err) {
           console.log(err);
         }
       }).done(function() {
-        setInterval('location.reload()', 2000); 
+        // setInterval('location.reload()', 2000); 
       });
       return false;
     });
 
-  });
+  }); {% endcomment %}
 </script>
 {% endblock extra_script %}

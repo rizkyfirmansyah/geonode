@@ -1,13 +1,13 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load base_tags %}
-{% load account %}
+{% load avatar_tags %}
 
 {% block extra_script %}
 <script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
 <script type="text/javascript">
-  $(document).ready(function() {
+  {% comment %} $(document).ready(function() {
     
     let csrftoken = Cookies.get('csrftoken');
 
@@ -21,6 +21,7 @@
           "X-CSRFToken": csrftoken
         },
         success: function(res) {
+          /*
           let msg = `Login Successful. Welcome to the {{ SITEURL }}`;
           let title = `Hi {{ user.first_name }}`;
           const $toast = toastr["success"](msg, title);
@@ -30,6 +31,7 @@
             "positionClass": "toast-top-right",
             "preventDuplicates": true
           }
+          */
 
         },
         error: function(xhr, desc, err) {
@@ -41,6 +43,6 @@
       return false;
     });
 
-  });
+  }); {% endcomment %}
 </script>
 {% endblock extra_script %}

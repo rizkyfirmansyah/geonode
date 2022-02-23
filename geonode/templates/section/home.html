@@ -2,60 +2,64 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 
-<section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% static "geonode/img/hero-bg.jpg" %}"
-data-natural-width=3000 data-natural-height=2000 data-position-y=center>
-
-<div class="overlay"></div>
-<div class="shadow-overlay"></div>
-
-<div class="home-content">
-
-  <div class="auto-margin home-content__main">
-
-    <h3>Welcome to AFISEACOALITION</h3>
-
-    <h1>
-      AFi SEA COALITION <br>
-      is a platform for <br>
-      sharing (geospatial) data
-    </h1>
-
-    <div class="search-field">
-      <button class="btn-search" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path
-            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
-          </path>
-        </svg>
-      </button>
-      <form id="main_search" action="{% url "search" %}" >
-        {% if HAYSTACK_SEARCH %}
-        <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
-              <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
-              <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
-              <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
-        {% else %}
-        <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control" autocomplete="off" name="title__icontains" data-com.bitwarden.browser.user-edited="yes">
-              <input type="hidden" name="abstract__icontains" id="main_search_abstract_input">
-              <input type="hidden" name="purpose__icontains" id="main_search_purpose_input">
-              <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
-        {% endif %}
-      </form>
+{% block section_home %}
+  
+  <section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% static "geonode/img/hero-bg.jpg" %}"
+  data-natural-width=3000 data-natural-height=2000 data-position-y=center>
+  
+  <div class="overlay"></div>
+  <div class="shadow-overlay"></div>
+  
+  <div class="home-content">
+  
+    <div class="auto-margin home-content__main">
+  
+      <h3>Welcome to AFISEACOALITION</h3>
+  
+      <h1>
+        AFi SEA COALITION <br>
+        is a platform for <br>
+        sharing (geospatial) data
+      </h1>
+  
+      <div class="search-field">
+        <button class="btn-search" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path
+              d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+            </path>
+          </svg>
+        </button>
+        <form id="main_search" action="{% url "search" %}" >
+          {% if HAYSTACK_SEARCH %}
+          <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
+                <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
+                <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
+                <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
+          {% else %}
+          <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control" autocomplete="off" name="title__icontains" data-com.bitwarden.browser.user-edited="yes">
+                <input type="hidden" name="abstract__icontains" id="main_search_abstract_input">
+                <input type="hidden" name="purpose__icontains" id="main_search_purpose_input">
+                <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
+          {% endif %}
+        </form>
+      </div>
     </div>
+  
+    <div class="home-content__scroll">
+      <a href="#showcase" class="scroll-link smoothscroll">
+        <span>Scroll Down</span>
+      </a>
+    </div>
+  
+    <div class="home-content__line"></div>
+  
   </div>
-
-  <div class="home-content__scroll">
-    <a href="#showcase" class="scroll-link smoothscroll">
-      <span>Scroll Down</span>
-    </a>
-  </div>
-
-  <div class="home-content__line"></div>
-
-</div>
-</section>
+  </section>
+{% endblock %}
 
 {% block extra_script %}
+{% comment %}   
   <script type="text/javascript">
     $('#main_search').on('submit', (e) => {
         $('#main_search_abstract_input')[0].value =$('#main_search_input')[0].value;
@@ -92,7 +96,7 @@ data-natural-width=3000 data-natural-height=2000 data-position-y=center>
         setTimeout(function() {
           searchIt([" ....", "forest", "peat", "concession", "oil palm", "type me!"]);
         }, 4000);
-      });
+      }); {% endcomment %}
 
   </script>
   <script type='text/javascript'>

@@ -399,7 +399,6 @@ th,
 td {
     margin: 0;
     padding: 0;
-    color: #1c4742 !important;
 }
 
 h1,
@@ -4053,7 +4052,7 @@ html.no-csstransitions .home-content__main {
  * ------------------------------------------------------------------- */
 
 footer {
-    padding: 9rem 0 6rem;
+    padding: 9rem 0 6rem !important;
     font-family: "Solanel-Light", sans-serif;
     line-height: 2;
     text-align: center;
@@ -4061,6 +4060,9 @@ footer {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     background-color: black;
+    max-height: 220px;
+    height: calc(100vh - 1rem);
+    padding-top: 80px;
 }
 
 footer .col-lg-12 {
@@ -4090,16 +4092,6 @@ footer li a:active {
     text-decoration: underline !important;
     background-color: transparent !important;
     padding: 0px 5px !important;
-}
-
-footer .row {
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin: 0 auto !important;
-    max-height: 220px;
-    height: calc(100vh - 1rem);
-    padding-top: 50px;
 }
 
 footer .logo {
@@ -4549,7 +4541,6 @@ footer #footer-language {
  * Typography resets on CMS content
  * ------------------------------------------------------------------- */
 
-#wrap .container div,
 #wrap .container dl,
 #wrap .container dt,
 #wrap .container dd,
@@ -4576,6 +4567,25 @@ footer #footer-language {
 #wrap .container input[type="password"],
 #wrap .container textarea {
     color: #1c4742 !important;
+}
+
+#showcase div,
+#showcase dl,
+#showcase dt,
+#showcase dd,
+#showcase ul,
+#showcase ol,
+#showcase li,
+#showcase h1,
+#showcase h2,
+#showcase h3,
+#showcase h4,
+#showcase h5,
+#showcase h6,
+#showcase pre,
+#showcase form,
+#showcase p {
+    color: white !important;
 }
 
 #faq {

@@ -2,9 +2,6 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 
-<link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
-<link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
-
 <header class="s-header">
 
   <div class="header-logo">
@@ -23,14 +20,3 @@
 </header>
 
 {% include 'toast/logout.html' %}
-
-
-{% block extra_script %}
-<script src="{% static "lib/js/jquery.js" %}"></script>
-<script type="text/javascript" src="{% static "geonode/js/base/modernizr.js" %}"></script>
-<script type="text/javascript" src="{% static "geonode/js/base/pace.min.js" %}"></script>
-<script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
-<script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
-<link rel="stylesheet" href="{% static "geonode/css/toastr.css" %}" />
-<script src="{% static "geonode/js/base/toastr.js" %}"></script>
-{% endblock extra_script %}
