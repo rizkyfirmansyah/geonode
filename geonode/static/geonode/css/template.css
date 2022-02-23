@@ -220,7 +220,7 @@ input,
 optgroup,
 select,
 textarea {
-    font-family: sans-serif;
+    font-family: 'Solanel-Light', sans-serif;
     font-size: 100%;
     line-height: 1.15;
     margin: 0;
@@ -378,7 +378,6 @@ video {
 * ## Typography resets 
 * ------------------------------------------------------------------- */
 
-div,
 dl,
 dt,
 dd,
@@ -399,6 +398,7 @@ th,
 td {
     margin: 0;
     padding: 0;
+    color: #1c4742;
 }
 
 h1,
@@ -997,7 +997,7 @@ body {
 }
 
 body {
-    font-family: "lora-regular", serif;
+    font-family: 'Solanel-Light', serif;
     font-size: 1.7rem;
     font-style: normal;
     font-weight: normal;
@@ -1180,12 +1180,12 @@ b {
 
 em,
 i {
-    font-family: "lora-italic", serif;
+    font-family: "Solanel-Light-Italic", serif;
 }
 
 strong,
 b {
-    font-family: "lora-bold", serif;
+    font-family: "Solanel-Medium", serif;
 }
 
 small {
@@ -1205,7 +1205,7 @@ blockquote:before {
     line-height: 0px;
     margin: 0;
     color: rgba(0, 0, 0, 0.25);
-    font-family: arial, sans-serif;
+    font-family: 'Solanel-Light', sans-serif;
     position: absolute;
     top: 3.6rem;
     left: 0;
@@ -1242,7 +1242,7 @@ blockquote cite a:visited {
 }
 
 abbr {
-    font-family: "lora-bold", serif;
+    font-family: "Solanel-Medium", serif;
     font-variant: small-caps;
     text-transform: lowercase;
     letter-spacing: .05rem;
@@ -1393,7 +1393,7 @@ table {
     border-width: 0;
     width: 100%;
     max-width: 100%;
-    font-family: "lora-regular", serif;
+    font-family: 'Solanel-Light', serif;
 }
 
 th,
@@ -1564,7 +1564,6 @@ textarea,
 select {
     display: block;
     height: 6rem;
-    padding: 1.5rem 0;
     border: 0;
     outline: none;
     color: black !important;
@@ -1784,12 +1783,11 @@ input[type="reset"].btn--primary,
 input[type="button"].btn--primary {
     color: #1c4742;
     background-color: white;
-    border-color: white;
     text-transform: uppercase;
     letter-spacing: .3rem;
     height: 5.4rem;
     line-height: calc(5.4rem - .4rem);
-    padding: 0 3rem;
+    padding: 0 3rem !important;
     margin: 0 .3rem 1.2rem 0;
 }
 
@@ -2006,7 +2004,7 @@ input::-moz-focus-inner {
     height: 1em;
     position: absolute;
     font-size: 10rem;
-    font-family: Arial, Sans-Serif;
+    font-family: 'Solanel-Light', Sans-Serif;
     color: rgba(0, 0, 0, 0.25);
 }
 
@@ -2516,7 +2514,7 @@ input::-moz-focus-inner {
     line-height: 1.846;
     padding: 3.6rem 3rem 3.6rem 3.6rem;
     height: 100%;
-    width: 280px;
+    width: 290px;
     position: fixed;
     right: 0;
     top: 0;
@@ -2838,7 +2836,7 @@ input::-moz-focus-inner {
 .home-content h3 {
     font-family: "Solanel-Medium", sans-serif;
     font-size: 1.6rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: #c4bab7 !important;
     text-transform: uppercase;
     letter-spacing: .3rem;
     position: relative;
@@ -2852,7 +2850,7 @@ input::-moz-focus-inner {
     font-size: 6.3rem;
     line-height: 1.333;
     margin-top: 0;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
 
 .home-content__main {
@@ -4099,7 +4097,6 @@ footer .logo {
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
-    top: -20px;
 }
 
 footer figure {
@@ -4107,9 +4104,9 @@ footer figure {
 }
 
 .logo-footer {
-    max-width: 140%;
     height: auto;
     float: left;
+    min-width: 340px;
 }
 
 footer .copyright-notice {
@@ -4168,10 +4165,6 @@ footer div ul {
 footer #footer-language {
     cursor: pointer;
     background-color: black;
-}
-
-#right-footer {
-    top: -35px;
 }
 
 .copyright-text {
@@ -4466,24 +4459,77 @@ footer #footer-language {
  * footer
  * ------------------------------------------------------------------- */
 
-@media (max-width: 992px) {
-    footer .row {
-        display: flex;
-        -ms-flex-wrap: wrap-reverse;
-        flex-wrap: wrap-reverse;
-        /* make it center */
-        transform: translate(20%, -20%);
-    }
+@media only screen and (min-width: 992px) {
     #right-footer {
-        text-align: left;
+        top: -30px;
     }
 }
 
-@media only screen and (max-width: 600px) {
-    footer .row span,
-    footer .row a,
-    footer .row select {
+@media (min-width: 600px) and (max-width: 760px) {
+    footer {
+        padding-top: 60px !important;
+    }
+    .logo-footer {
+        min-width: 240px;
+    }
+    /* make it center */
+    footer .logo {
+        transform: translate(30%, -20%);
+    }
+    #right-footer {
+        transform: translateX(calc(0% - 90px));
+        margin: 0 auto !important;
+        padding: 0 !important;
+        top: 20px;
+    }
+}
+
+@media (min-width: 760px) and (max-width: 992px) {
+    footer {
+        padding-top: 60px !important;
+        max-height: 240px;
+    }
+    .logo-footer {
+        min-width: 240px;
+    }
+    /* make it center */
+    footer .logo {
+        transform: translate(30%, -20%);
+    }
+    #right-footer {
+        top: 20px;
+        transform: translateX(calc(0% - 130px));
+    }
+}
+
+@media (min-width: 824px) and (max-width: 992px) {
+    #right-footer {
+        top: 20px;
+        transform: translateX(calc(0% - 230px));
+    }
+}
+
+@media (max-width: 600px) {
+    .logo-footer {
+        min-width: 240px;
+    }
+    footer div span,
+    footer div a,
+    footer div select {
         font-size: 14px !important;
+        padding: 0px !important;
+    }
+    footer {
+        padding-top: 60px !important;
+        min-height: 300px;
+    }
+    /* make it center */
+    footer .logo {
+        transform: translate(20%, -20%);
+    }
+    #right-footer {
+        top: 20px;
+        transform: translate(-10%, 20%);
     }
 }
 
@@ -4541,51 +4587,31 @@ footer #footer-language {
  * Typography resets on CMS content
  * ------------------------------------------------------------------- */
 
-#wrap .container dl,
-#wrap .container dt,
-#wrap .container dd,
-#wrap .container ul,
-#wrap .container ol,
-#wrap .container li,
-#wrap .container h1,
-#wrap .container h2,
-#wrap .container h3,
-#wrap .container h4,
-#wrap .container h5,
-#wrap .container h6,
-#wrap .container pre,
-#wrap .container form,
-#wrap .container p,
-#wrap .container blockquote,
-#wrap .container th,
-#wrap .container input[type="email"],
-#wrap .container input[type="number"],
-#wrap .container input[type="search"],
-#wrap .container input[type="text"],
-#wrap .container input[type="tel"],
-#wrap .container input[type="url"],
-#wrap .container input[type="password"],
-#wrap .container textarea {
-    color: #1c4742 !important;
+#showcase .container div,
+#showcase .container dl,
+#showcase .container dt,
+#showcase .container dd,
+#showcase .container ul,
+#showcase .container ol,
+#showcase .container li,
+#showcase .container h1,
+#showcase .container h2,
+#showcase .container h3,
+#showcase .container h4,
+#showcase .container h5,
+#showcase .container h6,
+#showcase .container pre,
+#showcase .container form,
+#showcase .container p {
+    color: white !important;
 }
 
-#showcase div,
-#showcase dl,
-#showcase dt,
-#showcase dd,
-#showcase ul,
-#showcase ol,
-#showcase li,
-#showcase h1,
-#showcase h2,
-#showcase h3,
-#showcase h4,
-#showcase h5,
-#showcase h6,
-#showcase pre,
-#showcase form,
-#showcase p {
-    color: white !important;
+#SiginModal div button {
+    padding: 4px 8px !important;
+}
+
+#SiginModal div p {
+    color: #1c4742 !important;
 }
 
 #faq {
@@ -4595,4 +4621,18 @@ footer #footer-language {
     scroll-behavior: smooth;
     margin: 0 auto;
     width: 100%;
+}
+
+.search-content div .btn {
+    font-size: 14px;
+    letter-spacing: .12rem;
+    height: 60px;
+}
+
+.btn-search-content {
+    height: 100% !important;
+    display: flex !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
 }

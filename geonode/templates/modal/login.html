@@ -15,10 +15,10 @@
             <div class="tabulation tabulation2">
               <div class="d-flex tabs">
                 <ul class="nav nav-tabs border-0">
-                  <li class="nav-item">
+                  <li class="nav-item" id="navSignIn">
                     <a class="nav-link active" data-toggle="tab" href="#signin" id="SigninModalTitle">Sign In</a>
                   </li>
-                  <li class="nav-item">
+                  <li class="nav-item" id="navSignUp">
                     <a class="nav-link" data-toggle="tab" href="#signup">Sign Up</a>
                   </li>
                     <button type="button" class="close text-right" data-dismiss="modal" aria-label="Close">
@@ -32,7 +32,7 @@
                 <div class="tab-pane p-0 container active" id="signin">
                   <div class="text w-100">
                     <h3 class="l-space">Sign In</h3>
-                    <form class="form-signin" role="form" method="post" id="form-signin">
+                      <form class="form-signin" role="form" method="post" id="form-signin">
                       {% csrf_token %}
                       <div class="form-group mb-3">
                         <label class="label" for="id_username">Username</label>
@@ -46,19 +46,23 @@
                         <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
                       </div>
                       <div class="form-group d-md-flex">
-                        <div class="form-check w-50 col-md-6 text-left">
+                        <div class="form-check w-50 col-md-12 text-left">
                           <label class="custom-control fill-checkbox">
                             <input type="checkbox" class="fill-control-input">
                             <span class="fill-control-indicator"></span>
                             <span class="fill-control-description">Remember Me</span>
                           </label>
                         </div>
-                        <div class="w-50 col-md-6 text-right">
-                          <a data-toggle="modal" data-target="#forgotPassModal" style="cursor: pointer;">Forgot Password</a>
-                        </div>
+                      </form>
+                    </div>
+                    <div class="d-md-flex">
+                      <div class="w-50 col-md-6 text-left">
+                        <p>Not a member?&nbsp&nbsp&nbsp<a data-toggle="tab" href="#signup" class="light" id="aSignUp">Sign Up</a></p>
                       </div>
-                    </form>
-                    <p>Not a member? <a data-toggle="tab" href="#signup">Sign Up</a></p>
+                      <div class="w-50 col-md-6 text-right">
+                        <a data-toggle="modal" data-target="#forgotPassModal" style="cursor: pointer;" class="light">Forgot Password</a>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="tab-pane p-0 container fade" id="signup">
@@ -82,7 +86,7 @@
                         <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign Up</button>
                       </div>
                     </form>
-                    <p>I'm already a member! <a data-toggle="tab" href="#signin">Sign In</a></p>
+                    <p>I'm already a member! <a data-toggle="tab" href="#signin" class="light" id="aSignIn">Sign In</a></p>
                   </div>
                 </div>
               </div>
@@ -95,3 +99,22 @@
 </div>
 
 {% include 'toast/login.html' %}
+
+{% block extra_script %}
+
+<script type="text/javascript">
+  $(document).ready(function() {
+
+  $("#aSignIn").click(function(){
+    $("#navSignUp").removeClass("active"); 
+    $("#navSignIn").addClass("active"); 
+  });
+
+  $("#aSignUp").click(function(){
+    $("#navSignIn").removeClass("active"); 
+    $("#navSignUp").addClass("active"); 
+  });
+
+  });
+</script>
+{% endblock %}

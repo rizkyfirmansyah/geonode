@@ -7,7 +7,7 @@
 <script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
 <script type="text/javascript">
-  {% comment %} $(document).ready(function() {
+  $(document).ready(function() {
     
     let csrftoken = Cookies.get('csrftoken');
 
@@ -43,6 +43,6 @@
       return false;
     });
 
-  }); {% endcomment %}
+  });
 </script>
 {% endblock extra_script %}

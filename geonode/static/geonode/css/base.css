@@ -160,6 +160,7 @@ input[type="reset"],
 input[type="submit"] {
     -webkit-appearance: button;
     cursor: pointer;
+    height: auto;
 }
 
 button[disabled],
@@ -1491,6 +1492,10 @@ hr {
     cursor: pointer;
 }
 
+tbody,
+th,
+tr,
+td,
 h1,
 h2,
 h3,
@@ -1506,7 +1511,11 @@ h6,
     font-family: inherit;
     font-weight: 700;
     line-height: 1.1;
-    color: inherit;
+    color: #1c4742 !important;
+}
+
+dd {
+    color: #1c4742ba;
 }
 
 h1 small,
@@ -1775,7 +1784,6 @@ a.bg-danger:focus {
 
 .page-header {
     padding-bottom: 10px;
-    margin: 44px 0 22px;
     border-bottom: 1px solid #1c4742;
 }
 
@@ -3683,6 +3691,13 @@ select[multiple].input-lg {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    overflow: hidden;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    height: auto;
 }
 
 .btn:focus,
@@ -4285,7 +4300,7 @@ tbody.collapse.in {
 
 .dropdown-menu>li>a:hover,
 .dropdown-menu>li>a:focus {
-    color: #262626;
+    color: white;
     text-decoration: none;
     background-color: #1c4742;
 }
@@ -4701,7 +4716,7 @@ select[multiple].input-group-sm>.input-group-btn>.btn {
     font-size: 16px;
     font-weight: 400;
     line-height: 1;
-    color: #1c4742;
+    color: white;
     text-align: center;
     background-color: #1c4742;
     border: 1px solid #ccc;
@@ -5477,7 +5492,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     display: inline;
     padding: 0.2em 0.6em 0.3em;
     font-size: 75%;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1;
     color: #fff;
     text-align: center;
@@ -6813,7 +6828,7 @@ button.close {
 }
 
 .m-modal-width {
-    max-width: 450px;
+    max-width: 680px;
 }
 
 .x-input-space {
@@ -7889,12 +7904,16 @@ div#user_messages {
 }
 
 body {
-    font-family: 'Solanel-Medium', sans-serif;
+    font-family: 'Solanel-Light', sans-serif;
     font-size: 16px;
     padding-top: 20px;
 }
 
 a {
+    color: #4e98af;
+}
+
+a:hover {
     color: #fdba12;
 }
 
@@ -7904,7 +7923,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-weight: 700;
+    font-weight: 400;
 }
 
 select {
@@ -8849,6 +8868,8 @@ nav.filter li a {
     box-shadow: none;
     border-radius: none;
     transition: box-shadow 0.3s, border 0.3s;
+    padding: 10px !important;
+    box-shadow: 0 0 1px 1px #c4bab7;
 }
 
 #upload_form input[type="text"]:focus {
@@ -9283,6 +9304,7 @@ form-inline {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    height: auto;
 }
 
 .text_area {

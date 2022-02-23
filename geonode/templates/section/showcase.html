@@ -32,9 +32,9 @@
               <h2><a href="{% url "document_browse" %}">{{ facets.document|default:_("No") }} {% blocktrans count counter=facets.document %}Non-Spatial Data{% plural %}Non-Spatial Data{% endblocktrans %}</a></h2>
               <p>{% trans "As for the layers and maps SDI allows to publish tabular and text data, manage theirs metadata and associated documents." %}</p>
               {% if user.is_authenticated %}
-              <p class="text-center l-space"><a class="btn btn--primary stretch" href="{% url "document_browse" %}" role="button">{% trans "Add Non Spatial Data" %} &raquo;</a></p>
+              <p class="text-center l-space"><a class="btn btn--primary" href="{% url "document_browse" %}" role="button">{% trans "Add Non Spatial Data" %} &raquo;</a></p>
               {% else %}
-              <p class="text-center l-space"><a class="btn btn--primary stretch" href="{% url "document_browse" %}" role="button">{% trans "Explore Non Spatial Data" %} &raquo;</a></p>
+              <p class="text-center l-space"><a class="btn btn--primary" href="{% url "document_browse" %}" role="button">{% trans "Explore Non Spatial Data" %} &raquo;</a></p>
               {% endif %}
             </div>
             <div class="col-md-6">

@@ -4,15 +4,16 @@
 {% load avatar_tags %}
 
 {% block extra_script %}
+<script src="{% static "lib/js/jquery.js" %}"></script>
+
 <script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
 <script type="text/javascript">
-  {% comment %} $(document).ready(function() {
+  $(document).ready(function() {
 
     // get token from js cookie
     const _user ='{{ user.is_authenticated }}';
     let csrftoken = Cookies.get('csrftoken');
-    console.log(_user);
 
     if (_user != 'False') {
       $('#logged-out').hover(function() {
@@ -32,7 +33,7 @@
         data: $(this).serialize(),
         type: $(this).attr('method'),
         method: 'POST',
-        url: `{% url "account_logout" %}?next={{ SITEURL }}`,
+        url: `{% url "account_logout" %}`,
         headers: {
           "X-CSRFToken": csrftoken
         },
@@ -54,11 +55,11 @@
           console.log(err);
         }
       }).done(function() {
-        // setInterval('location.reload()', 2000); 
+        setInterval('location.reload()', 2000); 
       });
       return false;
     });
 
-  }); {% endcomment %}
+  });
 </script>
 {% endblock extra_script %}
