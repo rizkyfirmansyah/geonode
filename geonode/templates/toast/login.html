@@ -20,7 +20,7 @@
         },
         success: function(res) {
           let msg = `Login Successful. Welcome to the {{ SITEURL }}`;
-          let title = "Welcome!";
+          let title = `Hi {{ user.first_name }}`;
           const $toast = toastr["success"](msg, title);
           toastr.options = {
             "newestOnTop": false,
