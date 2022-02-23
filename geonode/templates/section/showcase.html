@@ -14,7 +14,7 @@
               {% if user.is_authenticated %}
               <p class="text-center l-space"><a class="btn btn--primary" href="{% url "layer_upload" %}" role="button">{% trans "Add layers" %} &raquo;</a></p>
               {% else %}
-              <p class="text-center l-space"><a class="btn btn--primary" href="{% url "layer_browse" %}" role="button">{% trans "Explore layers" %} &raquo;</a></p>
+              <p class="text-center l-space"><a class="btn btn--primary" href="{% url "layer_browse" %}" role="button">{% trans "Explore Spatial Data" %} &raquo;</a></p>
               {% endif %}
             </div>
             <div class="col-md-6">

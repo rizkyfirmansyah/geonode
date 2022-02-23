@@ -1686,7 +1686,7 @@ msgstr "プロパティタイプ"
 msgid "Create Layer"
 msgstr "地図を作成"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "レイヤーを検索"
 
 #, fuzzy
@@ -5630,7 +5630,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

@@ -1564,7 +1564,7 @@ msgstr "Τύπος Γεωμετρίας"
 msgid "Create Layer"
 msgstr "Δημιουργήστε Επίπεδο"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Εξερεύνηση Επιπέδων"
 
 msgid "Create an empty layer"
@@ -5352,7 +5352,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Προσθήκη επιπέδων"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Εξερεύνηση επιπέδων"
 
 msgid ""

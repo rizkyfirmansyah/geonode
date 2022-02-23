@@ -1681,7 +1681,7 @@ msgstr "тип свойства"
 msgid "Create Layer"
 msgstr "Создать карту"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Посмотреть слои"
 
 #, fuzzy
@@ -5881,7 +5881,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Добавить слои"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Изучить слои"
 
 #, fuzzy

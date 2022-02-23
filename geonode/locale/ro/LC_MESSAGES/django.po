@@ -1694,7 +1694,7 @@ msgstr "Tipul de proprietate"
 msgid "Create Layer"
 msgstr "Creați un Hartă"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Exploreaza Straturi"
 
 #, fuzzy
@@ -5665,7 +5665,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

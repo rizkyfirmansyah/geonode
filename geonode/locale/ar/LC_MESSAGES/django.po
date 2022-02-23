@@ -1615,7 +1615,7 @@ msgstr "نوع الهندسة"
 msgid "Create Layer"
 msgstr "إنشاء طبقة"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "تصفح الطبقات"
 
 msgid "Create an empty layer"
@@ -6138,7 +6138,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "اضافة طبقات"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "تصفح الطبقات"
 
 msgid ""

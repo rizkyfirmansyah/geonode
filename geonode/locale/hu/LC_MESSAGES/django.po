@@ -1691,7 +1691,7 @@ msgstr "ingatlan típus"
 msgid "Create Layer"
 msgstr "Hozzon létre egy Map"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Fedezze fel a Rétegek"
 
 #, fuzzy
@@ -5639,7 +5639,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

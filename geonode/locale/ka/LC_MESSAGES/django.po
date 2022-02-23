@@ -1665,7 +1665,7 @@ msgstr "პარამეტრების ტიპი"
 msgid "Create Layer"
 msgstr "რუკის შექმნა"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "ფენების მიმოხილვა"
 
 #, fuzzy
@@ -5554,7 +5554,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "ფენები დამატება"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "ფენების მიმოხილვა"
 
 #, fuzzy

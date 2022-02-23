@@ -1602,7 +1602,7 @@ msgstr "Typ geometrii"
 msgid "Create Layer"
 msgstr "Stwórz warstwę"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Przeglądaj warstwy"
 
 msgid "Create an empty layer"
@@ -5332,7 +5332,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Dodaj warstwy"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Przeglądaj warstwy"
 
 msgid ""

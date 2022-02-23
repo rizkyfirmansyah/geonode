@@ -1666,7 +1666,7 @@ msgstr "속성 유형"
 msgid "Create Layer"
 msgstr "지도 생성"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "레이어 검색"
 
 #, fuzzy
@@ -5989,7 +5989,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "레이어 추가"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "레이어 검색"
 
 #, fuzzy

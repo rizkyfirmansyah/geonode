@@ -1672,7 +1672,7 @@ msgstr "вид собственост"
 msgid "Create Layer"
 msgstr "Създаване на карта"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Преглед на слоеве"
 
 #, fuzzy
@@ -5856,7 +5856,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Добави слоеве"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Преглед слоеве"
 
 #, fuzzy

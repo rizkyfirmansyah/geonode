@@ -1687,7 +1687,7 @@ msgstr "тип нерухомості"
 msgid "Create Layer"
 msgstr "Створення карти"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Досліджуйте Layers"
 
 #, fuzzy
@@ -5642,7 +5642,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

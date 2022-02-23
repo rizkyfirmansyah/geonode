@@ -153,7 +153,7 @@ class UploadApiTests(GeoNodeLiveTestSupport, APITestCase):
 
         # Wait until the response is received
         WebDriverWait(self.selenium, 10).until(
-            EC.title_contains("Explore Layers")
+            EC.title_contains("Explore Spatial Data")
         )
         self.set_session_cookies(url)
 

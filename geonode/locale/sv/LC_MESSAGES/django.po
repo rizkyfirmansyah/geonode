@@ -1684,7 +1684,7 @@ msgstr "fastighetstyp"
 msgid "Create Layer"
 msgstr "Skapa en karta"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Utforska Skikt"
 
 #, fuzzy
@@ -5628,7 +5628,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

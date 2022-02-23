@@ -1669,7 +1669,7 @@ msgstr "সম্পদের ধরণ"
 msgid "Create Layer"
 msgstr "একটি মানচিত্র তৈরি করুন"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "স্তরসমূহ টেলিভিশন"
 
 #, fuzzy
@@ -5587,7 +5587,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "স্থর সমূহ যুক্ত করুন"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "স্তর অন্বেষণ"
 
 #, fuzzy

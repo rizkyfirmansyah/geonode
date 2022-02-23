@@ -1654,7 +1654,7 @@ msgstr "ประเภทคุณสมบัติ"
 msgid "Create Layer"
 msgstr "สร้างแผนที่"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "สำรวจชั้นข้อมูล"
 
 #, fuzzy
@@ -5767,7 +5767,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "เพิ่มชั้นข้อมูล"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "สำรวจชั้นข้อมูล"
 
 #, fuzzy

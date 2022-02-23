@@ -1507,7 +1507,7 @@ msgstr ""
 msgid "Create Layer"
 msgstr "Create a map"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 msgid "Create an empty layer"
@@ -5033,7 +5033,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 msgid ""

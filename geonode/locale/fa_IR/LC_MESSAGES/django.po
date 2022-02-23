@@ -1678,7 +1678,7 @@ msgstr "نوع ویژگی"
 msgid "Create Layer"
 msgstr "ایجاد نقشه"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "مرور لایه ها"
 
 #, fuzzy
@@ -5601,7 +5601,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

@@ -1680,7 +1680,7 @@ msgstr "Tipe properti"
 msgid "Create Layer"
 msgstr "Buat Peta"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Telusuri Layer"
 
 #, fuzzy
@@ -5631,7 +5631,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

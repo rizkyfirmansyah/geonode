@@ -1695,7 +1695,7 @@ msgstr "aina ya uga"
 msgid "Create Layer"
 msgstr "Tengeneza Ramani"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Peruzi matabaka"
 
 #, fuzzy
@@ -5637,7 +5637,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

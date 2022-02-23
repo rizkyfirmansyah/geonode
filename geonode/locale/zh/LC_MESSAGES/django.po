@@ -1622,7 +1622,7 @@ msgstr "几何类型"
 msgid "Create Layer"
 msgstr "创建地图"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "浏览图层"
 
 #, fuzzy
@@ -5796,7 +5796,7 @@ msgstr "点击搜索其他用户，组织和公共资源出版的地理空间数
 msgid "Add layers"
 msgstr "添加图层"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "浏览图层"
 
 #, fuzzy

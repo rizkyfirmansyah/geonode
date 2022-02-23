@@ -1652,7 +1652,7 @@ msgstr "egenskapstype"
 msgid "Create Layer"
 msgstr "Lag et kart"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Utforsk kartlagene"
 
 #, fuzzy
@@ -5486,7 +5486,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Legg til kartlag"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Utforsk kartlagene"
 
 msgid ""

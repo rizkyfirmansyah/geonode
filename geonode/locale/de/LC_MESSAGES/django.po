@@ -1500,7 +1500,7 @@ msgstr "Geometrietyp"
 msgid "Create Layer"
 msgstr "Ebene erzeugen"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Ebenen erkunden"
 
 msgid "Create an empty layer"
@@ -5497,7 +5497,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Ebenen hinzufügen"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Ebenen erkunden"
 
 msgid ""

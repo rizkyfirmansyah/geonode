@@ -1681,7 +1681,7 @@ msgstr "نوع ملک"
 msgid "Create Layer"
 msgstr "ایجاد یک نقشه"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "کاوش لایه"
 
 #, fuzzy
@@ -5606,7 +5606,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

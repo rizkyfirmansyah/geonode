@@ -1668,7 +1668,7 @@ msgstr "சொத்து வகை"
 msgid "Create Layer"
 msgstr "வரைபடத்தை உருவாக்குதல்"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "படுகைகளை உலாவருதல்"
 
 #, fuzzy
@@ -5661,7 +5661,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "படுகையை சேர்க்கவும் "
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "படுகைகளை ஆராய்தல் "
 
 #, fuzzy

@@ -1669,7 +1669,7 @@ msgstr "ගුණාංගය"
 msgid "Create Layer"
 msgstr "සිතියමක් නිර්මාණය කරන්න"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "ස්ථර සොයන්න"
 
 #, fuzzy
@@ -5651,7 +5651,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "ස්ථර එක් කරන්න"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "ස්ථර ගවේෂණය"
 
 #, fuzzy

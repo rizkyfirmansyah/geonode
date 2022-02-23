@@ -1471,8 +1471,8 @@ msgstr "Geometry type"
 msgid "Create Layer"
 msgstr "Create Layer"
 
-msgid "Explore Layers"
-msgstr "Explore Layers"
+msgid "Explore Spatial Data"
+msgstr "Explore Spatial Data"
 
 msgid "Create an empty layer"
 msgstr "Create an empty layer"
@@ -5429,8 +5429,8 @@ msgstr ""
 msgid "Add layers"
 msgstr "Add layers"
 
-msgid "Explore layers"
-msgstr "Explore layers"
+msgid "Explore Spatial Data"
+msgstr "Explore Spatial Data"
 
 msgid ""
 "Data is available for browsing, aggregating and styling to generate maps "

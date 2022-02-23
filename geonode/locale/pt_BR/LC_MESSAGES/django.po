@@ -1679,7 +1679,7 @@ msgstr "tipo de propriedade"
 msgid "Create Layer"
 msgstr "Criar um mapa"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Explorar camadas"
 
 #, fuzzy
@@ -5887,7 +5887,7 @@ msgstr ""
 msgid "Add layers"
 msgstr "Adicionar camadas"
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Explorar camadas"
 
 #, fuzzy

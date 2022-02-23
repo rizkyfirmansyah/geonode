@@ -1772,7 +1772,7 @@ msgid "Create Layer"
 msgstr "Vytvorte vrstvu"
 
 #, fuzzy
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Preskúmajte vrstvy"
 
 #, fuzzy
@@ -6345,7 +6345,7 @@ msgid "Add layers"
 msgstr "Pridajte vrstvy"
 
 #, fuzzy
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr "Preskúmajte vrstvy"
 
 #, fuzzy

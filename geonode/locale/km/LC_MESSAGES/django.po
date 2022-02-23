@@ -1675,7 +1675,7 @@ msgstr "ប្រភេទ​អចលន​ទ្រព្យ"
 msgid "Create Layer"
 msgstr "បង្កើត​ផែនទី​មួយ"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "រុករក​ស្រទាប់"
 
 #, fuzzy
@@ -5593,7 +5593,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

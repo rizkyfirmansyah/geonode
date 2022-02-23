@@ -1679,7 +1679,7 @@ msgstr "kiinteistön tyyppi"
 msgid "Create Layer"
 msgstr "Luo Kartta"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Tutustu Tasot"
 
 #, fuzzy
@@ -5621,7 +5621,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy

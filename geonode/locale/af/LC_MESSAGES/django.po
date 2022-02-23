@@ -1688,7 +1688,7 @@ msgstr "eiendom tipe"
 msgid "Create Layer"
 msgstr "Skep 'n kaart"
 
-msgid "Explore Layers"
+msgid "Explore Spatial Data"
 msgstr "Vind Lae"
 
 #, fuzzy
@@ -5649,7 +5649,7 @@ msgstr ""
 msgid "Add layers"
 msgstr ""
 
-msgid "Explore layers"
+msgid "Explore Spatial Data"
 msgstr ""
 
 #, fuzzy
