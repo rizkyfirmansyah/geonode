@@ -441,6 +441,12 @@ li {
     display: block;
 }
 
+.restyle-text {
+    word-spacing: 0.3rem;
+    line-height: 2.9rem;
+    letter-spacing: 0.1rem;
+}
+
 
 /* ------------------------------------------------------------------- 
 * ## links 
@@ -2987,6 +2993,16 @@ input::-moz-focus-inner {
     bottom: 0;
 }
 
+.showcase-content__line {
+    display: block;
+    width: 2px;
+    height: 10.2rem;
+    background-color: white;
+    position: absolute;
+    right: 7.2rem;
+    bottom: 0;
+}
+
 
 /* ------------------------------------------------------------------- 
  * ## home social 
@@ -3299,8 +3315,6 @@ html.no-csstransitions .home-content__main {
  * ------------------------------------------------------------------- */
 
 .s-showcase {
-    padding-top: 9rem;
-    padding-bottom: 9rem;
     background-color: #1C463F;
     position: relative;
 }
@@ -4238,7 +4252,7 @@ footer #footer-language {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    max-height: 680px;
+    max-height: 720px;
     height: 100vh;
 }
 
@@ -4606,6 +4620,13 @@ footer #footer-language {
     color: white !important;
 }
 
+#showcase .container p {
+    word-spacing: 0.3rem;
+    line-height: 2.9rem;
+    font-size: 20px;
+    letter-spacing: 0.1rem;
+}
+
 #SiginModal div button {
     padding: 4px 8px !important;
 }
@@ -4635,4 +4656,19 @@ footer #footer-language {
     margin-left: auto !important;
     margin-right: auto !important;
     width: 100% !important;
+}
+
+
+/* ------------------------------------------------------------------- 
+ * Section datasets
+ * ------------------------------------------------------------------- */
+
+.full-height {
+    height: 100vh !important;
+}
+
+#datasets .row-datasets {
+    padding-top: 60px;
+    display: flex;
+    display: -webkit-flex;
 }

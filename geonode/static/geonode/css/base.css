@@ -9564,13 +9564,17 @@ form-inline {
 .iso-categories .row .col-lg-1 .category h4 {
     overflow: hidden;
     text-overflow: ellipsis;
+    text-transform: uppercase;
+    word-spacing: 0.3rem;
+    line-height: 2.9rem;
+    letter-spacing: 0.1rem;
 }
 
 .iso-categories .row span {
-    font-size: 0.7em !important;
+    font-size: 1em !important;
     position: absolute;
-    margin-top: 38%;
-    margin-left: 35%;
+    margin-top: 55%;
+    margin-left: 55%;
     background-color: #2d689c;
 }
 
