@@ -4095,7 +4095,7 @@ footer .row {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    margin: 0 auto;
+    margin: 0 auto !important;
     max-height: 220px;
     height: calc(100vh - 1rem);
     padding-top: 50px;
@@ -4238,8 +4238,8 @@ footer #footer-language {
 }
 
 .no-gutters {
-    margin-right: 0;
-    margin-left: 0;
+    margin: 0 auto !important;
+    padding: 0 !important;
 }
 
 .no-gutters>.col,

@@ -536,7 +536,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "விவரங்கள் ..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "அடுக்குகள் சேர்"
 
 #~ msgid "Area"

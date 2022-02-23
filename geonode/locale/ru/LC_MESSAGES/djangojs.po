@@ -534,7 +534,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "Подробности…"
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "Добавить слои"
 
 #~ msgid "Area"

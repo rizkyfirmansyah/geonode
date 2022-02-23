@@ -4623,7 +4623,7 @@ msgid "Create Map"
 msgstr "地図を作成"
 
 #, fuzzy
-#| msgid "Add Layers"
+#| msgid "Add Spatial Data"
 msgid "Add User"
 msgstr "レイヤーの追加"
 
@@ -4738,7 +4738,7 @@ msgid "Geo Limits"
 msgstr ""
 
 #, fuzzy
-#| msgid "Add Layers"
+#| msgid "Add Spatial Data"
 msgid "Users"
 msgstr "レイヤーの追加"
 
@@ -5534,7 +5534,7 @@ msgid ""
 "    <p>To add data layers from the GeoNode click on the green plus button "
 "located below the layers tab on the left hand side of the screen. This will "
 "open a dialog listing all the layers available on the GeoNode.</p>\n"
-"    <p>To add layers to your map select them and hit the <strong>Add Layers</"
+"    <p>To add layers to your map select them and hit the <strong>Add Spatial Data</"
 "strong> button. When finished you may hit <strong>Done</strong> to close the "
 "dialog and go back to the map.</p>\n"
 "\n"

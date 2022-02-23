@@ -587,7 +587,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "Einzelheiten..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "Ebenen hinzufügen"
 
 #, fuzzy

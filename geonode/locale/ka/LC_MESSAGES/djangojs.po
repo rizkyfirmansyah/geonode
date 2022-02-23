@@ -511,7 +511,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "დაწვრილებით ..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "ფენის დამატება"
 
 #~ msgid "Done"

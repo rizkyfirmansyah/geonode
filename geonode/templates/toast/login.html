@@ -1,8 +1,10 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load base_tags %}
+{% load account %}
 
 {% block extra_script %}
+<script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
 <script type="text/javascript">
   $(document).ready(function() {

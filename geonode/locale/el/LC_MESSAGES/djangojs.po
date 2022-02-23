@@ -518,7 +518,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "Λεπτομέρειες..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "Προσθήκη Επιπέδων"
 
 #~ msgid "Add ArcGIS REST Server"

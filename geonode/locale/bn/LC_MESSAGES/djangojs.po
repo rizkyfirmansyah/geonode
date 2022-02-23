@@ -528,7 +528,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "বিস্তারিত ..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "স্তরসমূহ যুক্ত করো"
 
 #~ msgid "Area"

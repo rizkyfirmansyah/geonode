@@ -522,7 +522,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "جزئيات"
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "اضافه کردن لایه ها"
 
 #~ msgid "Area"

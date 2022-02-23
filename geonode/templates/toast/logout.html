@@ -3,6 +3,7 @@
 {% load base_tags %}
 
 {% block extra_script %}
+<script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script>
 
 <script type="text/javascript">
   $(document).ready(function() {
@@ -10,9 +11,10 @@
     // get token from js cookie
     const _user ='{{ user.is_authenticated }}';
     let csrftoken = Cookies.get('csrftoken');
-    
+    console.log(_user);
+
     if (_user != 'False') {
-      $('#logged-in').hover(function() {
+      $('#logged-out').hover(function() {
         const $this = $(this);
         $this
           .data('users', $this.text())

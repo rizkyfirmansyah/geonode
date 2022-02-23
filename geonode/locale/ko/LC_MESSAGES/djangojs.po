@@ -543,7 +543,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "상세정보..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "레이어 추가"
 
 #~ msgid "Area"

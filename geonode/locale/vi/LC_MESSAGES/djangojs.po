@@ -523,7 +523,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "Xem chi tiết ..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "Thêm Layers"
 
 #~ msgid "Area"

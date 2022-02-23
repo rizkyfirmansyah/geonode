@@ -530,7 +530,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "විස්තර..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "ස්ථර එක් කරන්න"
 
 #~ msgid "Area"

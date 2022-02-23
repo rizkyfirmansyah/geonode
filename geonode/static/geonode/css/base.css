@@ -4266,11 +4266,11 @@ tbody.collapse.in {
     left: auto;
 }
 
-.dropdown-menu .divider {
+.divider {
+    background-color: white;
     height: 1px;
     margin: 10px 0;
     overflow: hidden;
-    background-color: #e5e5e5;
 }
 
 .dropdown-menu>li>a {

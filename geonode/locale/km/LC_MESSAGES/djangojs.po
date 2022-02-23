@@ -520,7 +520,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "ព័ត៌មាន​លំអិត ..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "បន្ថែម​ស្រទាប់"
 
 #~ msgid "Area"

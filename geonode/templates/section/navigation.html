@@ -1,0 +1,82 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load base_tags %}
+
+<link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
+<link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
+
+<nav class="header-nav">
+
+  <a href="#" class="header-nav__close" title="close"><span>Close</span></a>
+
+  <div class="header-nav__content">
+    <h3>Navigation</h3>
+    <ul class="header-nav__list" style="margin-bottom: 0px;">
+      <li class="current"><a class="smoothscroll" href="{{ SITEURL }}" title="home">Home</a></li>
+      <li><a class="smoothscroll" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Spatial data">Spatial Data</a></li>
+      <li><a class="smoothscroll" href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Documents/Non Spatial Data">Non Spatial Data</a></li>
+      <li><a class="smoothscroll" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Maps created by users">Maps</a></li>
+      <li><a class="smoothscroll" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Apps created by users">Apps</a></li>
+      <li><a class="smoothscroll" href="{% url "faqs" %}" role="button" target="_self" title="FAQs">FAQs</a></li>
+    </ul>
+
+    <ul class="col-lg-12 list-unstyled text-right">
+      {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
+        {% comment %} <li class="d-inline col-md-6"><a href="{% url "account_signup" %}">{% trans "Register" %}</a></li> {% endcomment %}
+        <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button" id="logged-in">{% trans "Login" %} </a></li>
+      {% elif user.is_authenticated %}
+          <li>
+            <a href="#" class="avatar" id="logged-out">
+              Logged in as
+              {% with full_name=user.first_name|add:' '|add:user.last_name %}
+                {% if full_name.strip %}
+                  {{ full_name | truncatechars:20 }}
+                {% else %}
+                  {{ user.username | truncatechars:20 }}
+                {% endif %}
+              {% endwith %}
+            </a>
+          </li>
+          <li role="separator" class="divider"></li>
+          <ul class="header-nav__list no-gutters">
+            <li><a class="smoothscroll light" href="{% url "layer_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Spatial data">Add Spatial Data</a></li>
+            <li><a class="smoothscroll light" href="{% url "document_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Non Spatial Data">Add Non Spatial Data</a></li>
+          </ul>
+          <li role="separator" class="divider"></li>
+          <div class="d-flex">
+            {% comment %} <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "/people/profile/{{ user.username }}" %}" role="button">{% trans "Profile" %} </a></div> {% endcomment %}
+            <div class="col-xs-6 no-gutters"><a href="{% url "favorite_list" %}" role="button">{% trans "Favorites" %} </a></div>
+          </div>
+          <div class="d-flex">
+            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "recent-activity" %}" role="button">{% trans "Recent Activity" %} </a></div>
+            <div class="col-xs-6 no-gutters"><a href="{% url "messages_inbox" %}" role="button">{% trans "Inbox" %} </a></div>
+          </div>
+          {% if user.is_superuser or user.is_staff %}
+            <li role="separator" class="divider"></li>
+            <li><a href="{% url "admin:index" %}">{% trans "Admin" %}</a></li>
+            {% if 'geonode.geoserver' in INSTALLED_APPS %}
+            <li><a href="{{ OGC_SERVER.default.WEB_UI_LOCATION }}">GeoServer</a></li>
+            {% endif %}
+            {% if USE_MONITORING %}
+            <li role="separator" class="divider"></li>
+            <li><a href="{% url "monitoring:index" %}">{% trans "Monitoring & Analytics" %}</a></li>
+            {% endif %}
+          {% endif %}
+      {% else %}
+        <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button" >{% trans "Sign in" %} </a></li>
+      {% endif %}
+    </ul>
+
+  </div> <!-- end header-nav__content -->
+
+</nav>
+
+{% block extra_script %}
+<script src="{% static "lib/js/jquery.js" %}"></script>
+<script type="text/javascript" src="{% static "geonode/js/base/modernizr.js" %}"></script>
+<script type="text/javascript" src="{% static "geonode/js/base/pace.min.js" %}"></script>
+<script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
+<script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
+<link rel="stylesheet" href="{% static "geonode/css/toastr.css" %}" />
+<script src="{% static "geonode/js/base/toastr.js" %}"></script>
+{% endblock extra_script %}

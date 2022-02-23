@@ -526,7 +526,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "Detaljer..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "Legg til kartlag"
 
 #~ msgid "Area"

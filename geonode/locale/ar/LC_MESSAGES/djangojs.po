@@ -681,7 +681,7 @@ msgstr ""
 #~ msgid "Details..."
 #~ msgstr "التفاصيل ..."
 
-#~ msgid "Add Layers"
+#~ msgid "Add Spatial Data"
 #~ msgstr "إضافة طبقات"
 
 #~ msgid "Add ArcGIS REST Server"
