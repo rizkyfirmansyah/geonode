@@ -259,6 +259,14 @@ urlpatterns += [  # '',
         geonode.maps.views.featured_map_info),
 ]
 
+# FAQ
+urlpatterns += [
+    url(r'^faqs/$',
+        TemplateView.as_view(template_name='faqs.html'),
+        name='faqs'
+    ),
+]
+
 
 if settings.MONITORING_ENABLED:
     urlpatterns += [url(r'^monitoring/',
