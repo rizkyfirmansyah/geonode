@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load base_tags %}
+{% load avatar_tags %}
 
 <link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
 <link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
@@ -41,10 +42,12 @@
           <ul class="header-nav__list no-gutters">
             <li><a class="smoothscroll light" href="{% url "layer_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Spatial data">Add Spatial Data</a></li>
             <li><a class="smoothscroll light" href="{% url "document_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Non Spatial Data">Add Non Spatial Data</a></li>
+            <li><a class="smoothscroll light" href="{% url "group_create" %}" role="button" target="_self" title="Create Group">Create Group</a></li>
+            <li><a class="smoothscroll light" href="{% url "group_category_create" %}" role="button" target="_self" title="Create Group Category">Create Group Category</a></li>
           </ul>
           <li role="separator" class="divider"></li>
           <div class="d-flex">
-            {% comment %} <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "/people/profile/{{ user.username }}" %}" role="button">{% trans "Profile" %} </a></div> {% endcomment %}
+            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_detail" user.username %}" role="button">{% trans "Profile" %} </a></div>
             <div class="col-xs-6 no-gutters"><a href="{% url "favorite_list" %}" role="button">{% trans "Favorites" %} </a></div>
           </div>
           <div class="d-flex">

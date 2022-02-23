@@ -399,6 +399,7 @@ th,
 td {
     margin: 0;
     padding: 0;
+    color: #1c4742 !important;
 }
 
 h1,
@@ -1026,7 +1027,7 @@ a {
 a:hover,
 a:focus,
 a:active {
-    color: #1C463F;
+    color: white;
 }
 
 a:hover,
@@ -4541,6 +4542,40 @@ footer #footer-language {
 .ng-scope .row {
     margin-right: -15px;
     margin-left: -15px;
+}
+
+
+/* ------------------------------------------------------------------- 
+ * Typography resets on CMS content
+ * ------------------------------------------------------------------- */
+
+#wrap .container div,
+#wrap .container dl,
+#wrap .container dt,
+#wrap .container dd,
+#wrap .container ul,
+#wrap .container ol,
+#wrap .container li,
+#wrap .container h1,
+#wrap .container h2,
+#wrap .container h3,
+#wrap .container h4,
+#wrap .container h5,
+#wrap .container h6,
+#wrap .container pre,
+#wrap .container form,
+#wrap .container p,
+#wrap .container blockquote,
+#wrap .container th,
+#wrap .container input[type="email"],
+#wrap .container input[type="number"],
+#wrap .container input[type="search"],
+#wrap .container input[type="text"],
+#wrap .container input[type="tel"],
+#wrap .container input[type="url"],
+#wrap .container input[type="password"],
+#wrap .container textarea {
+    color: #1c4742 !important;
 }
 
 #faq {
