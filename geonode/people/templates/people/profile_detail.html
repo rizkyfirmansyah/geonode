@@ -5,6 +5,8 @@
 {% load activity_tags %}
 {% load pagination_tags %}
 
+<link href="{% static "lib/css/bootstrap.css" %}" rel="stylesheet"/>
+
 {% block title %} {% trans "Profile of " %}{{ profile.first_name|default:profile.username }}{% endblock %}
 
 {% block head %}
@@ -123,7 +125,7 @@
       <li class="list-group-item"><a href="{% url "socialaccount_connections" %}"><i class="fa fa-sign-in"></i> {% trans "Connected social accounts" %}</a></li>
       <li class="list-group-item"><a href="{% url "account_email" %}"><i class="fa fa-envelope-o"></i> {% trans "Associated e-mails" %}</a></li>
       {% if not READ_ONLY_MODE %}
-        <li class="list-group-item"><a href="{% url "account_change_password" %}"><i class="fa fa-lock"></i> {% trans "Set/Change password" %}</a></li>
+        <li class="list-group-item"><a data-toggle="modal" data-target="#changePassModal" style="cursor: pointer;"><i class="fa fa-lock"></i> {% trans "Set/Change password" %}</a></li>
       {% endif %}
     </ul>
     <ul class="list-group">
@@ -201,3 +203,5 @@
   </script>
   {% include 'search/search_scripts.html' %}
 {% endblock %}
+
+{% include 'modal/change_password.html' %}
