@@ -11,7 +11,7 @@
     
     let csrftoken = Cookies.get('csrftoken');
 
-    $('#form-signin').click(function(e) {
+    $('#form-signin').submit(function(e) {
       e.preventDefault();
       $.ajax({
         data: $(this).serialize(),
@@ -35,10 +35,18 @@
 
         },
         error: function(xhr, desc, err) {
-          console.log(err);
+          let msg = 'Your password is incorrect.';
+          let title = 'Login Error';
+          const $toast = toastr["warning"](msg, title);
+          toastr.options = {
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true
+          }
         }
       }).done(function() {
-        setInterval('location.reload()', 2000); 
+        setInterval('location.reload()', 1000); 
       });
       return false;
     });

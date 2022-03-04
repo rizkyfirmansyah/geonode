@@ -59,7 +59,7 @@
 {% endblock %}
 
 {% block extra_script %}
-{% comment %}   
+  
   <script type="text/javascript">
     $('#main_search').on('submit', (e) => {
         $('#main_search_abstract_input')[0].value =$('#main_search_input')[0].value;
@@ -96,7 +96,7 @@
         setTimeout(function() {
           searchIt([" ....", "forest", "peat", "concession", "oil palm", "type me!"]);
         }, 4000);
-      }); {% endcomment %}
+      });
 
   </script>
   <script type='text/javascript'>

@@ -1364,8 +1364,8 @@ if HCAPTCHA_ENABLED:
      In order to generate reCaptcha keys, please see:
       - https://pypi.org/project/django-hCaptcha/
     """
-    HCAPTCHA_PUBLIC_KEY = os.getenv("HCAPTCHA_PUBLIC_KEY", 'geonode_HCAPTCHA_PUBLIC_KEY')
-    HCAPTCHA_PRIVATE_KEY = os.getenv("HCAPTCHA_PRIVATE_KEY", 'geonode_HCAPTCHA_PRIVATE_KEY')
+    HCAPTCHA_SITEKEY = os.getenv("HCAPTCHA_SITEKEY", 'c4422214-72cc-407a-96a7-a9a98469cc98')
+    HCAPTCHA_SECRET = os.getenv("HCAPTCHA_SECRET", '0x2fd897fB5e4E69acE3A63dEbfDedcD14dAdd25bA')
 
 GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_METADATA_XSL', 'True'))
 

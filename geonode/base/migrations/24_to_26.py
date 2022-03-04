@@ -13,24 +13,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Backup',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('identifier', models.CharField(max_length=255, editable=False)),
-                ('name', models.CharField(max_length=100)),
-                ('name_en', models.CharField(max_length=100, null=True)),
-                ('date', models.DateTimeField(auto_now_add=True)),
-                ('description', models.TextField(null=True, blank=True)),
-                ('description_en', models.TextField(null=True, blank=True)),
-                ('base_folder', models.CharField(max_length=100)),
-                ('location', models.TextField(null=True, blank=True)),
-            ],
-            options={
-                'ordering': ('date',),
-                'verbose_name_plural': 'Backups',
-            },
-        ),
-        migrations.CreateModel(
             name='HierarchicalKeyword',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),

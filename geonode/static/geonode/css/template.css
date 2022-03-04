@@ -1737,17 +1737,16 @@ select:-webkit-autofill:focus {
  *
  * ------------------------------------------------------------------- */
 
-.btn,
-button,
-input[type="submit"],
-input[type="reset"],
-input[type="button"],
-input[type="hidden"] {
+#SigninModal .btn,
+#SigninModal button,
+#SigninModal input[type="submit"],
+#SigninModal input[type="reset"],
+#SigninModal input[type="button"],
+#SigninModal input[type="hidden"] {
     display: inline-block;
     text-transform: uppercase;
     letter-spacing: .3rem;
     height: 5.4rem;
-    line-height: calc(5.4rem - .4rem);
     padding: 0 3rem;
     margin: 0 .3rem 1.2rem 0;
     color: #000000;
@@ -4252,7 +4251,7 @@ footer #footer-language {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    max-height: 720px;
+    max-height: 780px;
     height: 100vh;
 }
 
@@ -4671,4 +4670,5 @@ footer #footer-language {
     padding-top: 60px;
     display: flex;
     display: -webkit-flex;
+    height: 60vh;
 }

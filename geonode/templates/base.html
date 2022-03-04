@@ -72,12 +72,6 @@
       <style type="text/css">
         /* Additional styles by custom themes */
         {% if custom_theme.body_color %}
-          body {
-            background: {{ custom_theme.body_color }};
-            {% if custom_theme.body_text_color %}
-            color: {{ custom_theme.body_text_color }};
-            {% endif %}
-          }
           #wrap {
             background: {{ custom_theme.body_color }};
           }
@@ -292,7 +286,10 @@
       {% include 'section/header.html' %}
     {% endblock header %}
 
-
+    {% block navigation %}
+      {% include 'section/navigation.html' %}
+    {% endblock navigation %}
+      
     <div class="alert alert-danger alert-dismissible" role="alert" id="ieflag" style="display:none">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <h1>{% trans "You are using an outdated browser that is not supported by SDI." %}</h1>
@@ -372,7 +369,7 @@
     <script type="text/javascript">
 
       // Autocomplete instance for the search found in the header.
-      $(document).ready(function() {
+      {% comment %} $(document).ready(function() {
         window.autocomplete2 = new Autocomplete({
           form_btn: null,
           form_submit: '#search',
@@ -394,7 +391,7 @@
               document.body.scrollTop = 0;
               document.documentElement.scrollTop = 0;
           });
-        });
+        }); {% endcomment %}
 
       {% comment %} $(".datepicker").datepicker({
           format: "yyyy-mm-dd"
@@ -404,7 +401,8 @@
     {% include "modal/resource_uploading.html" %}
     {% include "modal/thumbnail_processing.html" %}
     {% include "modal/thumbnail_feedbacks.html" %}
-
+    {% include 'modal/change_password.html' %}
+    {% include 'modal/request_data.html' %}
 
   </body>
 </html>

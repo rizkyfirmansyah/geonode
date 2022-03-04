@@ -12,21 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='servicelayer',
-            name='layer',
-        ),
-        migrations.RemoveField(
-            model_name='servicelayer',
-            name='service',
-        ),
-        migrations.RemoveField(
-            model_name='webserviceharvestlayersjob',
-            name='service',
-        ),
-        migrations.DeleteModel(
-            name='WebServiceRegistrationJob',
-        ),
         migrations.AlterModelOptions(
             name='service',
             options={'permissions': (('add_resourcebase_from_service', 'Can add resources to Service'), ('change_resourcebase_metadata', 'Can change resources metadata'))},
@@ -80,11 +65,5 @@ class Migration(migrations.Migration):
             model_name='service',
             name='type',
             field=models.CharField(choices=[('AUTO', 'Auto-detect'), ('OWS', 'Paired WMS/WFS/WCS'), ('WMS', 'Web Map Service'), ('CSW', 'Catalogue Service'), ('REST_MAP', 'ArcGIS REST MapServer'), ('REST_IMG', 'ArcGIS REST ImageServer'), ('OGP', 'OpenGeoPortal'), ('HGL', 'Harvard Geospatial Library'), ('GN_WMS', 'GeoNode (Web Map Service)'), ('GN_CSW', 'GeoNode (Catalogue Service)')], max_length=10),
-        ),
-        migrations.DeleteModel(
-            name='ServiceLayer',
-        ),
-        migrations.DeleteModel(
-            name='WebServiceHarvestLayersJob',
         ),
     ]

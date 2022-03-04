@@ -8,12 +8,6 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 @import "../css/font-awesome.min.css";
-html {
-    font-family: sans-serif;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
-}
-
 body {
     margin: 0;
 }
@@ -5488,19 +5482,6 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     background-color: #fff;
 }
 
-.label {
-    display: inline;
-    padding: 0.2em 0.6em 0.3em;
-    font-size: 75%;
-    font-weight: 400;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: 0.25em;
-}
-
 a.label:hover,
 a.label:focus {
     color: #fff;
@@ -6765,6 +6746,7 @@ button.close {
     box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
     outline: 0;
     pointer-events: auto;
+    width: inherit;
 }
 
 .dark {
@@ -6939,6 +6921,7 @@ button.close {
     .modal-content {
         -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        width: inherit;
     }
     .modal-sm {
         width: 300px;
@@ -7931,6 +7914,7 @@ select {
     border: 1px solid #c4bab7;
     height: 30px;
     line-height: 30px;
+    padding-left: 10px;
 }
 
 code {
@@ -9287,12 +9271,12 @@ form-inline {
     width: auto;
 }
 
-.btn {
+
+/* .btn {
     display: inline-block;
     margin-bottom: 0;
     font-weight: normal;
     text-align: center;
-    vertical-align: inherit;
     touch-action: manipulation;
     cursor: pointer;
     background-image: none;
@@ -9305,7 +9289,7 @@ form-inline {
     -ms-user-select: none;
     user-select: none;
     height: auto;
-}
+} */
 
 .text_area {
     visibility: hidden;

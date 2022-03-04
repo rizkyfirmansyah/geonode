@@ -62,9 +62,6 @@ class Migration(migrations.Migration):
                 ('wkt', models.TextField(blank=True, db_column='wkt')),
             ],
         ),
-        migrations.DeleteModel(
-            name='Backup',
-        ),
         migrations.AlterModelOptions(
             name='resourcebase',
             options={'permissions': (('change_resourcebase_permissions', 'Can change resource permissions'), ('download_resourcebase', 'Can download resource'), ('publish_resourcebase', 'Can publish resource'), ('change_resourcebase_metadata', 'Can change resource metadata'))},

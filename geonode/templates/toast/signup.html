@@ -3,14 +3,13 @@
 {% load base_tags %}
 
 {% block extra_script %}
-<script src="{% static "lib/js/jquery.js" %}"></script>
 
 <script type="text/javascript">
   $(document).ready(function() {
     
     let csrftoken = Cookies.get('csrftoken');
 
-    $('#signup_form').click(function(e) {
+    $('#signup_form').submit(function(e) {
       e.preventDefault();
       $.ajax({
         data: $(this).serialize(),
@@ -35,7 +34,7 @@
           console.log(err);
         }
       }).done(function() {
-        setInterval('location.reload()', 2000); 
+        setInterval('location.reload()', 1000); 
       });
       return false;
     });

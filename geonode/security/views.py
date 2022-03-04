@@ -39,6 +39,8 @@ from geonode.groups.models import GroupProfile
 
 from geonode.notifications_helper import send_notification
 
+from geonode.datasets.forms import RopaForm
+
 logger = logging.getLogger(__name__)
 
 
@@ -447,6 +449,13 @@ def request_permissions(request):
         send_notification([resource.owner],
                           'request_download_resourcebase',
                           {'resource': resource, 'from_user': request.user})
+        if request.method == 'POST':
+            form = RopaForm()
+            if form.is_valid():
+                ropa = form.save(commit=False)
+                tb = traceback.format_exc()
+                logger.debug(tb)
+                ropa.save()
         return HttpResponse(
             json.dumps({'success': 'ok', }),
             status=200,

@@ -30,16 +30,15 @@
               <!-- Tab panes -->
               <div class="tab-content border-0">
                 <div class="tab-pane p-0 container active" id="signin">
-                  <div class="text w-100">
-                    <h3 class="l-space">Sign In</h3>
+                  <div class="text w-100" style="margin-top: 20px;">
                       <form class="form-signin" role="form" method="post" id="form-signin">
                       {% csrf_token %}
                       <div class="form-group mb-3">
-                        <label class="label" for="id_username">Username</label>
+                        <label class="" for="id_username">Username</label>
                         <input id="id_username" name="login" type="text" class="form-control x-space light-border m-input-space" placeholder="Username">
                       </div>
                       <div class="form-group mb-3">
-                        <label class="label" for="id_password">Password</label>
+                        <label class="" for="id_password">Password</label>
                         <input id="id_password" name="password" type="password" class="form-control x-space light-border m-input-space" placeholder="Password">
                       </div>
                       <div class="form-group l-space">
@@ -66,26 +65,26 @@
                   </div>
                 </div>
                 <div class="tab-pane p-0 container fade" id="signup">
-                  <div class="text w-100">
-                    <h3 class="l-space">Sign Up</h3>
+                  <div class="text w-100" style="margin-top: 20px;">
                     <form class="signup_form" role="form" method="post" id="signup_form" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                       {% csrf_token %}
                       <div class="form-group mb-3">
-                        <label class="label" for="name">Full/User Name</label>
+                        <label class="" for="name">Full/User Name</label>
                         <input id="id_username" type="text" name="username" autocomplete="username" class="form-control x-space light-border m-input-space" placeholder="AFi SEA">
                       </div>
                       <div class="form-group mb-3">
-                        <label class="label" for="email">Email Address</label>
+                        <label class="" for="email">Email Address</label>
                         <input id="id_email" type="email" name="email" autocomplete="email" class="form-control x-space light-border m-input-space" placeholder="afi@afiseacoalition.com">
                       </div>
                       <div class="form-group mb-3">
-                        <label class="label" for="password">Password</label>
+                        <label class="" for="password">Password</label>
                         <input id="id_password1" type="password" name="password1" autocomplete="new-password" class="form-control x-space light-border m-input-space" placeholder="Password">
                       </div>
                       <div class="form-group mb-3">
-                        <label class="label" for="password">Password Confirmation</label>
+                        <label class="" for="password">Password Confirmation</label>
                         <input id="id_password2" type="password" name="password2" class="form-control x-space light-border m-input-space" placeholder="Password Confirmation">
                       </div>
+                      <div class="h-captcha" data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98" data-theme="dark"></div>
                       <div class="form-group l-space">
                         <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign Up</button>
                       </div>
@@ -121,5 +120,11 @@
   });
 
   });
+  
 </script>
+<script
+  src="https://js.hcaptcha.com/1/api.js"
+  async
+  defer
+></script>
 {% endblock %}

@@ -9,20 +9,21 @@
 
     // get token from js cookie
     let csrftoken = Cookies.get('csrftoken');
-
-    $('#reset-password').submit(function(e) {
+    
+    $('#request-download-layer').submit(function(e) {
       e.preventDefault();
       $.ajax({
         data: $(this).serialize(),
         type: $(this).attr('method'),
         method: 'POST',
-        url: `{% url 'account_reset_password' %}`,
+        url: `{% url 'request_permissions' %}`,
+        data: { uuid: "{{ resource.uuid }}" },
         headers: {
           "X-CSRFToken": csrftoken
         },
         success: function(res) {
-          let msg = "We have sent you an e-mail. Please contact us if you do not receive it within a few minutes.";
-          let title = "Reset Password";
+          let msg = "We have sent an email to the resource owner on your request.";
+          let title = "Request Download";
           const $toast = toastr["success"](msg, title);
           toastr.options = {
             "newestOnTop": false,
@@ -32,7 +33,15 @@
           }
         },
         error: function(xhr, desc, err) {
-          console.log(err);
+          let msg = "Permission to download the resource could not be requested to resource owner because of an error.";
+          let title = "Request Error";
+          const $toast = toastr["warning"](msg, title);
+          toastr.options = {
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true
+          }
         }
       }).done(function() {
         setInterval('location.reload()', 1000); 

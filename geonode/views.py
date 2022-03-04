@@ -116,7 +116,7 @@ def ajax_lookup(request):
     )
 
 
-def permission_denied_view(req):
+def permission_denied_view(request, exception):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(
             f"{reverse('account_login')}?next={request.get_full_path()}")

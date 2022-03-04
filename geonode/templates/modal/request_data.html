@@ -1,0 +1,47 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load base_tags %}
+
+<div class="modal fade" id="requestDownloadLayer" tabindex="-1" role="dialog" aria-labelledby="requestDownloadLayerTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content rounded-0 m-modal-width">
+          <div class="p-4 to-front">
+              <div class="text-center">
+                  <h3 class="light">Request Data</h3>
+                  <p class="mb-4 ">Please fill the information below, and we'll notify the owner to grant access for you. </p>
+                  <form method="POST" class="mb-4" id="request-download-layer">
+                    {% csrf_token %}
+                    <div class="form-group col-lg-12">
+                      <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="requester_name">Name *</label>
+                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="requester_name" type="text" name="requester_name" class="form-control light-border m-input-space" placeholder="Name"></div>
+                    </div>
+                    <div class="form-group col-lg-12">
+                      <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="requester_email">Email *</label>
+                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="requester_email" type="email" name="requester_email" class="form-control light-border m-input-space" placeholder="Email"></div>
+                    </div>
+                    <div class="form-group col-lg-12">
+                      <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="requester_institution">Institution *</label>
+                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="requester_institution" type="text" name="requester_institution" class="form-control light-border m-input-space" placeholder="Institution"></div>
+                    </div>
+                    <div class="form-group col-lg-12">
+                      <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="requester_position">Position *</label>
+                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="requester_position" type="text" name="requester_position" class="form-control light-border m-input-space" placeholder="Position"></div>
+                    </div>
+                    <div class="form-group col-lg-12">
+                      <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="purposes">Purposes *</label>
+                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="purposes" type="text" name="purposes" class="form-control light-border m-input-space" placeholder="Please briefly describe how you intend to use this data?"></div>
+                    </div>
+                    <div class="form-group col-lg-12">
+                      <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="purposes">Data Retention</label>
+                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="retention" type="text" name="retention" class="form-control light-border m-input-space" placeholder="Duration use the data or the end date use the data?"></div>
+                    </div>
+                    <input type="submit" class="btn btn-primary form-actions" value="Submit">
+                  </form>
+                  <p class="mb-0 cancel l-space"><a href="#" data-dismiss="modal">Maybe later</a></p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% include 'toast/request_data.html' %}
