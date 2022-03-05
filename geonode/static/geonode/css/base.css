@@ -3686,12 +3686,15 @@ select[multiple].input-lg {
     -ms-user-select: none;
     user-select: none;
     overflow: hidden;
+    word-wrap: break-word;
+    height: auto;
+}
+
+.modal-content .btn {
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
-    word-wrap: break-word;
-    height: auto;
 }
 
 .btn:focus,
