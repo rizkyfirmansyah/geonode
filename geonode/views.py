@@ -29,16 +29,22 @@ from django.template.response import TemplateResponse
 from geonode.base.templatetags.base_tags import facets
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, get_user_model
+from django.core.exceptions import ValidationError
 
 from geonode import get_version
 from geonode.groups.models import GroupProfile
 from geonode.geoapps.models import GeoApp
 
+def validate_captcha(value):
+    data = {'secret': settings.HCAPTCHA_SECRET_KEY, 'response': value}
+    response = requests.post('https://hcaptcha.com/siteverify', data)
+    if not 'success' in response.json() or not response.json()['success']:
+        raise ValidationError('hcaptcha is not correct')
 
 class AjaxLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
     username = forms.CharField()
-
+    captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
 
 def ajax_login(request):
     if request.method != 'POST':
@@ -47,11 +53,15 @@ def ajax_login(request):
             status=405,
             content_type="text/plain"
         )
-    form = AjaxLoginForm(data=request.POST)
+    data = request.POST.copy()
+    if 'h-captcha-response' in data:
+        data['captcha'] = data['h-captcha-response']
+    form = AjaxLoginForm(data)
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        user = authenticate(username=username, password=password)
+        captcha = form.cleaned_data['captcha']
+        user = authenticate(username=username, password=password, captcha=captcha)
         if user is None or not user.is_active:
             return HttpResponse(
                 content="bad credentials or disabled user",
@@ -59,7 +69,7 @@ def ajax_login(request):
                 content_type="text/plain"
             )
         else:
-            login(request, user)
+            login(request, user, captcha)
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             return HttpResponse(

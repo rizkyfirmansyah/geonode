@@ -24,6 +24,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
+from django.core.exceptions import ValidationError
 
 from geonode.base.models import ContactRole
 
@@ -38,12 +39,11 @@ def validate_captcha(value):
     if not 'success' in response.json() or not response.json()['success']:
         raise ValidationError('hcaptcha is not correct')
 
-class AllauthHCaptchaSignupForm(forms.Form):
+class AllauthHCaptchaSignupForm(UserCreationForm):
 
-
+    captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
     def signup(self, request, user):
         """ Required, or else it throws deprecation warnings """
-        captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
         pass
 
 class ProfileCreationForm(UserCreationForm):
