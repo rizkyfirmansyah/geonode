@@ -43,8 +43,6 @@ from geonode.notifications_helper import send_notification
 
 from .adapters import get_data_extractor
 
-from .forms import validate_captcha
-
 logger = logging.getLogger(__name__)
 
 
@@ -74,7 +72,6 @@ def do_login(sender, user, request, **kwargs):
         token = None
         try:
             token = get_or_create_token(user)
-            captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
         except Exception:
             u = uuid1()
             token = u.hex

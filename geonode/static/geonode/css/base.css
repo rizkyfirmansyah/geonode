@@ -7827,7 +7827,7 @@ button.close {
     font-family: 'Solanel-Light-Italic';
     font-style: normal;
     font-weight: 300;
-    src: local('Solanel-Light-Italic'), local('Solanel-Medium-Light'), url(../fonts/SolanelLight-Light.ttf) format('truetype');
+    src: local('Solanel-Light-Italic'), local('Solanel-Medium-Light'), url(../fonts/Solanel-Light.ttf) format('truetype');
 }
 
 @font-face {
