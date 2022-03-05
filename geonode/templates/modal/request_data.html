@@ -33,7 +33,8 @@
                     </div>
                     <div class="form-group col-lg-12">
                       <label class="col-sm-3 no-gutters" style="padding-top: 6px !important; text-align: left;" for="purposes">Data Retention</label>
-                      <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="retention" type="text" name="retention" class="form-control light-border m-input-space" placeholder="Duration use the data or the end date use the data?"></div>
+                      {% comment %} <div class="col-sm-9 no-gutters" style="top: -10px;"><input id="retention" type="text" name="retention" class="form-control light-border m-input-space" placeholder="Duration use the data or the end date use the data?"></div> {% endcomment %}
+                      <div class="col-sm-9 no-gutters"><select class="retention-array form-control m-input-space" name="retention" style="width: 100% !important;"></select></div>
                     </div>
                     <input type="submit" class="btn btn-primary form-actions" value="Submit">
                   </form>

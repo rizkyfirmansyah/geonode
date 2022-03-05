@@ -7,6 +7,50 @@
 <script type="text/javascript">
   $(document).ready(function() {
 
+    let retentionChoices = [
+      {
+          id: '1 day',
+          text: '1 day'
+      },
+      {
+          id: '1 week',
+          text: '1 week'
+      },
+      {
+          id: '1 month',
+          text: '1 month'
+      },
+      {
+          id: '6 months',
+          text: '6 months'
+      },
+      {
+          id: '1 year',
+          text: '1 year'
+      },
+      {
+          id: '2 years',
+          text: '2 years'
+      },
+      {
+          id: '3 years',
+          text: '3 years'
+      },
+      {
+          id: '5 years',
+          text: '5 years'
+      },
+      {
+          id: 'Forever',
+          text: 'Forever'
+      }
+    ];
+
+    $(".retention-array").select2({
+      data: retentionChoices
+    })
+    
+
     // get token from js cookie
     let csrftoken = Cookies.get('csrftoken');
     
@@ -15,7 +59,6 @@
       let formData = $(this).serialize();
       formData += '&uuid={{ resource.uuid }}';
       formData += '&resource_title={{ resource.title }}';
-      formData += '&resource_owner_id={{ resource.owner_id }}';
       $.ajax({
         data: formData,
         type: $(this).attr('method'),

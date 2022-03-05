@@ -12,24 +12,23 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Ropa',
+            name='Roda',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('identifier', models.CharField(max_length=255)),
+                ('uuid', models.CharField(max_length=255)),
+                ('requester_username', models.CharField(max_length=150)),
                 ('requester_name', models.CharField(max_length=255)),
                 ('requester_email', models.CharField(max_length=255)),
                 ('requester_position', models.CharField(max_length=255)),
                 ('requester_institution', models.CharField(max_length=255)),
                 ('purposes', models.TextField(default='')),
                 ('retention', models.CharField(max_length=255)),
-                ('resourcebase_ptr_id', models.IntegerField()),
                 ('resource_title', models.CharField(max_length=255)),
-                ('resource_name', models.CharField(max_length=255)),
                 ('resource_owner', models.CharField(max_length=255)),
             ],
             options={
-                'verbose_name_plural': 'Record of Processing Activities',
-                'ordering': ('identifier',),
+                'verbose_name_plural': 'Record of Datasets Activities',
+                'ordering': ['id'],
             },
         ),
     ]
