@@ -191,7 +191,6 @@ LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
 _DEFAULT_LANGUAGES = """(
     ('id', 'Bahasa Indonesia'),
     ('en', 'English'),
-    ('de', 'Deutsch'),
 )"""
 
 LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', _DEFAULT_LANGUAGES))
@@ -222,8 +221,6 @@ EXTRA_LANG_INFO = {
         'name_local': 'sinhala',
     },
 }
-
-AUTH_USER_MODEL = os.getenv('AUTH_USER_MODEL', 'people.Profile')
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.SHA1PasswordHasher',
@@ -509,6 +506,8 @@ MARKDOWNIFY = {
 MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 
 INSTALLED_APPS += GEONODE_APPS
+
+AUTH_USER_MODEL = os.getenv('AUTH_USER_MODEL', 'people.Profile')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -1336,22 +1335,6 @@ if CREATE_LAYER:
 
 # Settings for FAVORITE plugin
 FAVORITE_ENABLED = ast.literal_eval(os.getenv('FAVORITE_ENABLED', 'True'))
-
-# Settings for RECAPTCHA plugin
-RECAPTCHA_ENABLED = ast.literal_eval(os.environ.get('RECAPTCHA_ENABLED', 'False'))
-
-if RECAPTCHA_ENABLED:
-    if 'captcha' not in INSTALLED_APPS:
-        INSTALLED_APPS += ('captcha',)
-    ACCOUNT_SIGNUP_FORM_CLASS = os.getenv("ACCOUNT_SIGNUP_FORM_CLASS",
-                                          'geonode.people.forms.AllauthReCaptchaSignupForm')
-    """
-     In order to generate reCaptcha keys, please see:
-      - https://pypi.org/project/django-recaptcha/#installation
-      - https://pypi.org/project/django-recaptcha/#local-development-and-functional-testing
-    """
-    RECAPTCHA_PUBLIC_KEY = os.getenv("RECAPTCHA_PUBLIC_KEY", 'geonode_RECAPTCHA_PUBLIC_KEY')
-    RECAPTCHA_PRIVATE_KEY = os.getenv("RECAPTCHA_PRIVATE_KEY", 'geonode_RECAPTCHA_PRIVATE_KEY')
 
 # Settings for hCaptcha plugin
 HCAPTCHA_ENABLED = ast.literal_eval(os.environ.get('HCAPTCHA_ENABLED', 'False'))

@@ -27,27 +27,23 @@ from django.utils.translation import ugettext as _
 
 from geonode.base.models import ContactRole
 
-from captcha.fields import ReCaptchaField
 from hcaptcha.fields import hCaptchaField
 
 # Ported in from django-registration
 attrs_dict = {'class': 'required'}
 
-
-class AllauthReCaptchaSignupForm(forms.Form):
-
-    captcha = ReCaptchaField()
-
-    def signup(self, request, user):
-        """ Required, or else it thorws deprecation warnings """
-        pass
+def validate_captcha(value):
+    data = {'secret': settings.HCAPTCHA_SECRET, 'response': value}
+    response = request.post('https://hcaptcha.com/siteverify', data)
+    if not 'success' in response.json() or not response.json()['success']:
+        raise ValidationError('hcaptcha is not correct')
 
 class AllauthHCaptchaSignupForm(forms.Form):
 
-    hcaptcha = hCaptchaField(theme='dark', size='compact')
 
     def signup(self, request, user):
-        """ Required, or else it thorws deprecation warnings """
+        """ Required, or else it throws deprecation warnings """
+        captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
         pass
 
 class ProfileCreationForm(UserCreationForm):
