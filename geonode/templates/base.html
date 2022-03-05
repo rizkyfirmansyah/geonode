@@ -333,7 +333,6 @@
 
     <!-- End of Modal -->
 
-    {% if DEBUG_STATIC %}
     <script src="{% static "lib/js/jquery.js" %}"></script>
     <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
     <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
@@ -350,9 +349,9 @@
     <script src="{% static "lib/js/json2.js" %}"></script>
     <script src="{% static "lib/js/waypoints.js" %}"></script>
     <script src="{% static "lib/js/underscore.js" %}"></script>
-    {% else %}
-    <script src="{% static "lib/js/assets.min.js" %}"></script>
-    {% endif %}
+
+    {% comment %} <script src="{% static "lib/js/assets.min.js" %}"></script> {% endcomment %}
+    {% comment %} {% endif %} {% endcomment %}
     <script src="{% static "geonode/js/utils/utils.js" %}"></script>
     <script src="{% static "geonode/js/base/base.js" %}"></script>
     <script src="{% static "geonode/js/base/popper.js" %}"></script>
