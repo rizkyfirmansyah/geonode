@@ -12,12 +12,15 @@
     
     $('#request-download-layer').submit(function(e) {
       e.preventDefault();
+      let formData = $(this).serialize();
+      formData += '&uuid={{ resource.uuid }}';
+      formData += '&resource_title={{ resource.title }}';
+      formData += '&resource_owner_id={{ resource.owner_id }}';
       $.ajax({
-        data: $(this).serialize(),
+        data: formData,
         type: $(this).attr('method'),
         method: 'POST',
         url: `{% url 'request_permissions' %}`,
-        data: { uuid: "{{ resource.uuid }}" },
         headers: {
           "X-CSRFToken": csrftoken
         },
@@ -33,18 +36,30 @@
           }
         },
         error: function(xhr, desc, err) {
-          let msg = "Permission to download the resource could not be requested to resource owner because of an error.";
-          let title = "Request Error";
-          const $toast = toastr["warning"](msg, title);
-          toastr.options = {
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": true
+          if (xhr.status = 403) {
+            let msg = "Please fill in the form completely.";
+            let title = "Request Error";
+            const $toast = toastr["warning"](msg, title);
+            toastr.options = {
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true
+            }
+          } else {
+            let msg = "Permission to download the resource could not be requested to resource owner because of an error.";
+            let title = "Request Error";
+            const $toast = toastr["warning"](msg, title);
+            toastr.options = {
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true
+            }
           }
         }
       }).done(function() {
-        setInterval('location.reload()', 1000); 
+        $('.modal').modal('hide');
       });
       return false;
     });

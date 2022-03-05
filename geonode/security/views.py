@@ -449,17 +449,22 @@ def request_permissions(request):
         send_notification([resource.owner],
                           'request_download_resourcebase',
                           {'resource': resource, 'from_user': request.user})
-        if request.method == 'POST':
-            form = RopaForm()
-            if form.is_valid():
-                ropa = form.save(commit=False)
-                tb = traceback.format_exc()
-                logger.debug(tb)
-                ropa.save()
-        return HttpResponse(
-            json.dumps({'success': 'ok', }),
-            status=200,
+        
+        ropa_form = RopaForm(data=request.POST)
+
+        if ropa_form.is_valid():
+            ropa = ropa_form.save(commit=False)
+            ropa.resource_owner = request.user
+            ropa.save()
+
+            return HttpResponse(json.dumps({'success': 'ok', }), status=200,
             content_type='text/plain')
+
+        else:
+          return HttpResponse(json.dumps({'error': 'Please fill in the form completely.', }), status=403,
+          content_type='text/plain')
+
+
     except Exception:
         # traceback.print_exc()
         return HttpResponse(

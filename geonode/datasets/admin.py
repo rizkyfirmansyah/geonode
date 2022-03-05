@@ -3,8 +3,8 @@ from geonode.datasets.models import Ropa
 
 class RopaAdmin(admin.ModelAdmin):
     model = Ropa
-    list_display_links = ('identifier',)
-    list_display = ('identifier', 'requester_name', 'requester_email', 'requester_position', 'requester_institution', 'purposes', 'retention', 'resource_title', 'resource_name', 'resource_owner')
+    list_display_links = ('uuid',)
+    list_display = ('uuid', 'requester_name', 'requester_email', 'requester_position', 'requester_institution', 'purposes', 'retention', 'resource_title', 'resource_owner_id', 'resource_owner')
 
     def has_add_permission(self, request):
         return True

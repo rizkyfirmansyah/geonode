@@ -390,6 +390,7 @@ GEONODE_CORE_APPS = (
     'geonode.security',
     'geonode.catalogue',
     'geonode.catalogue.metadataxsl',
+    'geonode.datasets',
 )
 
 # GeoNode Apps
