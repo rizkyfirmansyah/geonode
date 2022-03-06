@@ -35,6 +35,10 @@ from geonode import get_version
 from geonode.groups.models import GroupProfile
 from geonode.geoapps.models import GeoApp
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def validate_captcha(value):
     data = {'secret': settings.HCAPTCHA_SECRET_KEY, 'response': value}
     response = requests.post('https://hcaptcha.com/siteverify', data)
@@ -57,6 +61,7 @@ def ajax_login(request):
     if 'h-captcha-response' in data:
         data['captcha'] = data['h-captcha-response']
     form = AjaxLoginForm(data)
+    logger.info(f'FORM LOGIN: {form}')
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
@@ -69,7 +74,7 @@ def ajax_login(request):
                 content_type="text/plain"
             )
         else:
-            login(request, user, captcha)
+            login(request, user)
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             return HttpResponse(

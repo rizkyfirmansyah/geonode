@@ -1342,8 +1342,12 @@ HCAPTCHA_ENABLED = ast.literal_eval(os.environ.get('HCAPTCHA_ENABLED', 'False'))
 if HCAPTCHA_ENABLED:
     if 'hcaptcha' not in INSTALLED_APPS:
         INSTALLED_APPS += ('hcaptcha',)
-    ACCOUNT_SIGNUP_FORM_CLASS = os.getenv("ACCOUNT_SIGNUP_FORM_CLASS",
-                                          'geonode.people.forms.AllauthHCaptchaSignupForm')
+    # ACCOUNT_SIGNUP_FORM_CLASS = os.getenv("ACCOUNT_SIGNUP_FORM_CLASS",
+    #                                       'geonode.people.forms.AllauthHCaptchaSignupForm')
+    ACCOUNT_FORMS = {
+                    'login': 'geonode.people.forms.AllauthHCaptchaLoginForm',
+                    'signup': 'geonode.people.forms.AllauthHCaptchaSignupForm'
+    }
     """
      In order to generate reCaptcha keys, please see:
       - https://pypi.org/project/django-hCaptcha/
@@ -1932,7 +1936,7 @@ ACCOUNT_MAX_EMAIL_ADDRESSES = int(os.getenv('ACCOUNT_MAX_EMAIL_ADDRESSES', '2'))
 SOCIALACCOUNT_ADAPTER = 'geonode.people.adapters.SocialAccountAdapter'
 SOCIALACCOUNT_AUTO_SIGNUP = ast.literal_eval(os.environ.get('SOCIALACCOUNT_AUTO_SIGNUP', 'True'))
 # This will hide or show local registration form in allauth view. True will show form
-SOCIALACCOUNT_WITH_GEONODE_LOCAL_SINGUP = strtobool(os.environ.get('SOCIALACCOUNT_WITH_GEONODE_LOCAL_SINGUP', 'True'))
+SOCIALACCOUNT_WITH_GEONODE_LOCAL_SIGNUP = strtobool(os.environ.get('SOCIALACCOUNT_WITH_GEONODE_LOCAL_SIGNUP', 'True'))
 
 # Uncomment this to enable Linkedin and Facebook login
 # INSTALLED_APPS += (

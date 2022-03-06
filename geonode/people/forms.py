@@ -25,10 +25,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
-
+from allauth.account.forms import LoginForm, SignupForm
 from geonode.base.models import ContactRole
 
 from hcaptcha.fields import hCaptchaField
+from django.http import HttpResponse
+import json
 
 # Ported in from django-registration
 attrs_dict = {'class': 'required'}
@@ -39,12 +41,32 @@ def validate_captcha(value):
     if not 'success' in response.json() or not response.json()['success']:
         raise ValidationError('hcaptcha is not correct')
 
-class AllauthHCaptchaSignupForm(UserCreationForm):
+class AllauthHCaptchaLoginForm(LoginForm):
 
     captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
-    def signup(self, request, user):
-        """ Required, or else it throws deprecation warnings """
-        pass
+
+    def login(self, *args, **kwargs):
+
+        self.captcha = self.cleaned_data['captcha']
+
+        if self.capthca is None:
+            return HttpResponse(json.dumps({'error': "Verify again the captcha to ensure you are human.", }), status=400, content_type='text/plain')
+        else:
+            return super(AllauthHCaptchaLoginForm, self).login(*args, **kwargs)
+
+class AllauthHCaptchaSignupForm(SignupForm):
+
+    captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
+
+    def save(self, request):
+
+        # Ensure you call the parent class's save.
+        # .save() returns a User object.
+        user = super(AllauthHCaptchaSignupForm, self).save(request)
+        user.captcha = self.cleaned_data['captcha']
+        user.save()
+        # You must return the original result.
+        return user
 
 class ProfileCreationForm(UserCreationForm):
 

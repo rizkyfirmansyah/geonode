@@ -19,7 +19,7 @@
           "X-CSRFToken": csrftoken
         },
         success: function(res) {
-          let msg = `Sign up Successful. Please check email for verify your account {{ SITEURL }}`;
+          let msg = `Sign up Successful. Please check email to verify your account {{ SITEURL }}`;
           let title = "Register";
           const $toast = toastr["success"](msg, title);
           toastr.options = {

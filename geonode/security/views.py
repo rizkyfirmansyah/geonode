@@ -452,8 +452,8 @@ def request_permissions(request):
         
         roda_form = RodaForm(data=request.POST)
 
-        if 'h-captcha-response' in data:
-            data['captcha'] = data['h-captcha-response']
+        # if 'h-captcha-response' in data:
+        #     data['captcha'] = data['h-captcha-response']
         if roda_form.is_valid():
             ropa = roda_form.save(commit=False)
             ropa.resource_owner = resource.owner
