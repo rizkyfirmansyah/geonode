@@ -3562,7 +3562,7 @@ select[multiple].input-lg {
     display: block;
     margin-top: 5px;
     margin-bottom: 10px;
-    color: #fdba12;
+    color: #1c4742;
 }
 
 @media (min-width: 768px) {
@@ -8655,6 +8655,7 @@ span.icon.node-icon:before {
 .profile-image {
     padding-left: 0;
     padding-right: 0;
+    top: 20px;
 }
 
 .profile-image img {
@@ -8664,6 +8665,14 @@ span.icon.node-icon:before {
 .profile-details {
     background: white;
     color: #c4bab7;
+}
+
+@media only screen and (min-width: 768px) {
+    .profile-details {
+        position: relative;
+        left: 100px;
+        top: -10px;
+    }
 }
 
 .profile-details .group-logo {
@@ -8724,10 +8733,21 @@ nav.filter li a {
 
 #sort {
     cursor: pointer;
+    margin-bottom: 20px;
+    left: -35px;
+    position: relative;
 }
 
 #sort a {
     color: #c4bab7;
+}
+
+#sort a:hover,
+#sort a:focus {
+    color: #1b4060;
+    text-decoration: underline;
+    background-color: transparent;
+    font-weight: 500;
 }
 
 #sort .selected {

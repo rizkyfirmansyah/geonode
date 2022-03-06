@@ -333,25 +333,26 @@
 
     <!-- End of Modal -->
 
-    <script src="{% static "lib/js/jquery.js" %}"></script>
-    <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
-    <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
-    <script src="{% static "lib/js/select2.full.js" %}"></script>
-    <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
-    <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
-    <script src="{% static "lib/js/jquery-ui.js" %}"></script>
-    <script src="{% static "lib/js/jquery.raty.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap.js" %}"></script>
-    <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
-    <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
-    <script src="{% static "lib/js/json2.js" %}"></script>
-    <script src="{% static "lib/js/waypoints.js" %}"></script>
-    <script src="{% static "lib/js/underscore.js" %}"></script>
-
-    {% comment %} <script src="{% static "lib/js/assets.min.js" %}"></script> {% endcomment %}
-    {% comment %} {% endif %} {% endcomment %}
+    {% if DEBUG_STATIC %}
+      <script src="{% static "lib/js/jquery.js" %}"></script>
+      <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
+      <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
+      <script src="{% static "lib/js/select2.full.js" %}"></script>
+      <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
+      <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
+      <script src="{% static "lib/js/jquery-ui.js" %}"></script>
+      <script src="{% static "lib/js/jquery.raty.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap.js" %}"></script>
+      <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
+      <script src="{% static "lib/js/json2.js" %}"></script>
+      <script src="{% static "lib/js/waypoints.js" %}"></script>
+      <script src="{% static "lib/js/underscore.js" %}"></script>
+    {% else %}
+      <script src="{% static "lib/js/assets.min.js" %}"></script>
+    {% endif %}
     <script src="{% static "geonode/js/utils/utils.js" %}"></script>
     <script src="{% static "geonode/js/base/base.js" %}"></script>
     <script src="{% static "geonode/js/base/popper.js" %}"></script>

@@ -2891,10 +2891,16 @@ input::-moz-focus-inner {
 
 /* SEARCH FIELD */
 
+#main_search {
+    top: 20px;
+    position: relative;
+}
+
 .search-field {
     height: 80px;
     width: 100%;
     position: relative;
+    margin-top: 30px;
 }
 
 .btn-search {
@@ -4684,4 +4690,17 @@ footer #footer-language {
     display: flex;
     display: -webkit-flex;
     height: 60vh;
+}
+
+
+/* ------------------------------------------------------------------- 
+ * CMS CONTENT
+ * ------------------------------------------------------------------- */
+
+.form_block {
+    margin-bottom: 40px;
+}
+
+.nav-pills>li {
+    margin-right: 10px;
 }
