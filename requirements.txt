@@ -44,7 +44,7 @@ django-filter==2.4.0
 django-floppyforms==1.9.0
 django-forms-bootstrap==3.1.0
 django-geonode-mapstore-client==3.2.2
-django-grappelli==2.15.5
+django-grappelli==2.15.1
 django-guardian==2.4.0
 django-haystack==3.1.1
 django-hCaptcha==0.2.0
@@ -146,7 +146,6 @@ pycountry==22.1.10
 pycparser==2.21
 pycsw==2.6.0
 pyflakes==2.4.0
-pygdal==3.3.2.10
 Pygments==2.11.2
 PyJWT==2.3.0
 pylibmc==1.6.1
