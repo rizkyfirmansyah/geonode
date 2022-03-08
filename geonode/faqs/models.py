@@ -5,11 +5,16 @@ from colorfield.fields import ColorField
 # Create your models here.
 
 class GeonodeFaq(models.Model):
+  
+  BOOLEAN_CHOICES = [
+    (False, _("False")),
+    (True, _("True"))
+  ]
 
   header_title = models.CharField(max_length=255, help_text=_("Title Page"), default="Frequently Asked Questions")
   header_title_color = ColorField(default="#000000")
   contents = models.TextField(null=True, blank=True, help_text=_("Content of the FAQs page"))
-  contents_color = ColorField(default="#000000")
+  authenticated_users = models.BooleanField(default=True, verbose_name="Display for authenticated users", choices=BOOLEAN_CHOICES)
   
   class Meta:
       ordering = ("id", )

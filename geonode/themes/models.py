@@ -89,14 +89,15 @@ class GeoNodeThemeCustomization(models.Model):
     is_enabled = models.BooleanField(
         default=False,
         help_text="Enabling this theme will disable the current enabled theme (if any)")
-    logo = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at navigation header"))
-    logo_footer = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at footer"))
+    logo = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at the navigation header"))
+    logo_footer = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at the footer"))
     jumbotron_bg = models.ImageField(
-        upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display background at the landing page"))
+        upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display background image at the landing page"))
     jumbotron_welcome_hide = models.BooleanField(
         default=False,
         verbose_name="Hide text in the jumbotron",
         help_text="Check this if the jumbotron backgroud image already contains text")
+    modal_login_bg = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display image at the login window"))
     welcome_theme = models.CharField(max_length=255, default="JUMBOTRON_BG",
                                      choices=(("JUMBOTRON_BG", "jumbotron background"), ("SLIDE_SHOW", "slide show"),),
                                      help_text=_("Choose between using jumbotron background and slide show"))

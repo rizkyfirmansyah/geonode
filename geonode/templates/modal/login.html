@@ -7,7 +7,7 @@
     <div class="modal-content">
       <div class="row no-gutters">
         <div class="col-md-6 d-flex">
-          <div class="modal-body p-5 img d-flex img text-center d-flex align-items-center" style="background-image: url({% static "geonode/img/bg-sign.png" %});">
+          <div class="modal-body p-5 img d-flex img text-center d-flex align-items-center" style="background-image: url({% if custom_theme.modal_login_bg %}uploaded/{{ custom_theme.modal_login_bg }} {% else %} {% static "geonode/img/bg-sign.png" %} {% endif %});">
           </div>
         </div>
         <div class="col-md-6 d-flex">

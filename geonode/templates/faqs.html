@@ -17,8 +17,12 @@
     </h2>
   </div>
 
-  {% if faqs.contents %}
-    {{ faqs.contents|safe }}
+  {% if auth_faqs.contents %}
+    {% if user.is_authenticated%}
+      {{ auth_faqs.contents|safe }}
+    {% else %}
+      {{ anon_faqs.contents|safe }}
+    {% endif %}
   {% else %}
     <h3>Are all datasets in Data Catalog "Open" and freely shareable?</h3>
     <p>No. Depending on the license and restrictions with the data providers. Some datasets may have restricted access.</p>
