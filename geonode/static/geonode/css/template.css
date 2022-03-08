@@ -4063,6 +4063,10 @@ html.no-csstransitions .home-content__main {
     }
 }
 
+.container form {
+    margin-bottom: 50px;
+}
+
 
 /* ===================================================================
  * # footer
@@ -4668,27 +4672,6 @@ footer #footer-language {
     margin-bottom: 0px;
 }
 
-.profile-details {
-    padding: 5px;
-    padding-top: 0px;
-    margin-left: 3%;
-    min-height: 100px;
-}
-
-.profile-items {
-    padding: 0px;
-}
-
-#profile_info_name {
-    font-size: 1.2em;
-    margin-top: 1vh;
-}
-
-#profile_info_position {
-    color: lightslategray;
-    font-size: 0.9em;
-}
-
 .composition {
     color: #fff;
     flex: 1 100%;
@@ -4946,10 +4929,6 @@ html {
 /* ------------------------------------------------------------------- 
  * CMS CONTENT
  * ------------------------------------------------------------------- */
-
-.form_block {
-    margin-bottom: 40px;
-}
 
 .nav-pills>li {
     margin-right: 10px;

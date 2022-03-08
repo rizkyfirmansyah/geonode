@@ -1979,6 +1979,7 @@ pre code {
     margin-right: auto;
     margin-left: auto;
     margin-top: 60px;
+    height: calc(100vh - 300px);
 }
 
 @media (min-width: 768px) {
@@ -8145,6 +8146,7 @@ article.tab-pane {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-top: 40px;
 }
 
 
@@ -8418,36 +8420,6 @@ article.tab-pane {
     margin-right: 5px;
 }
 
-.profile-avatar {
-    background: white;
-    border: 1px solid #c4bab7;
-    padding: 0;
-}
-
-.profile-avatar h5 a {
-    color: #c4bab7;
-    display: block;
-    margin-bottom: -0.5em;
-    margin-top: 1em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.profile-avatar h5 a:hover {
-    color: #af0900;
-    text-decoration: none;
-}
-
-.profile-avatar h5 a i {
-    margin-left: 0.75em;
-}
-
-.profile-avatar h5 a i:hover {
-    color: #af0900;
-    text-decoration: none;
-}
-
 .item-thumb {
     padding-left: 0;
     padding-right: 0;
@@ -8582,15 +8554,11 @@ span.icon.node-icon:before {
 }
 
 
-/* Documents
------------------------ */
-
-
 /* People
 ----------------------- */
 
 .profile-container {
-    padding: 1em;
+    padding: 5px;
 }
 
 .profile-avatar {
@@ -8621,6 +8589,20 @@ span.icon.node-icon:before {
 .profile-avatar h5 a i:hover {
     color: #af0900;
     text-decoration: none;
+}
+
+.profile-items {
+    padding: 0;
+}
+
+#profile_info_name {
+    font-size: 1.2em;
+    margin-top: 1vh;
+}
+
+#profile_info_position {
+    color: lightslategray;
+    font-size: 1.1em;
 }
 
 .profile-avatar .profile-items {
@@ -8656,6 +8638,7 @@ span.icon.node-icon:before {
     padding-left: 0;
     padding-right: 0;
     top: 20px;
+    margin-right: 80px;
 }
 
 .profile-image img {
@@ -8663,16 +8646,12 @@ span.icon.node-icon:before {
 }
 
 .profile-details {
-    background: white;
-    color: #c4bab7;
-}
-
-@media only screen and (min-width: 768px) {
-    .profile-details {
-        position: relative;
-        left: 100px;
-        top: -10px;
-    }
+    background: transparent;
+    color: black;
+    margin: auto;
+    top: -10px;
+    position: relative;
+    min-height: 90px;
 }
 
 .profile-details .group-logo {

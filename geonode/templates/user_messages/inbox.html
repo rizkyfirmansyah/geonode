@@ -64,7 +64,7 @@
 
 {% block sidebar %}
   {% if not READ_ONLY_MODE %}
-    <a href="{% url 'message_create' %}" class="btn btn-primary" type="button">{% trans "Create Message" %}</a>
+    <a href="{% url 'message_create' %}" class="btn btn-primary" type="button" style="margin-top: 40px;">{% trans "Create Message" %}</a>
   {% endif %}
 {% endblock %}
 
