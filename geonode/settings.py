@@ -120,7 +120,7 @@ if DATABASE_URL.startswith("spatialite"):
     except FileNotFoundError as ex:
         print(ex)
 
-DATABASE_URL = 'postgis://geonode:geonode@localhost:5432/geonode'
+# DATABASE_URL = 'postgis://geonode:geonode@localhost:5432/geonode'
 
 # Defines settings for development
 
