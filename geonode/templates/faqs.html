@@ -9,16 +9,20 @@
 <div class="container_faqs">
   <div class="page-header">
     <h2>
-      {% if faqs.header_title %}
-        {{ faqs.header_title }}
+      {% if auth_faqs.header_title or anon_faqs.header_title %}
+        {% if user.is_authenticated %}
+          {{ auth_faqs.header_title }}
+        {% else %}
+          {{ anon_faqs.header_title|safe }}
+        {% endif %}  
       {% else %}
         {% trans "Frequently Asked Questions" %}
       {% endif %}
     </h2>
   </div>
 
-  {% if auth_faqs.contents %}
-    {% if user.is_authenticated%}
+  {% if auth_faqs.contents or anon_faqs.contents %}
+    {% if user.is_authenticated %}
       {{ auth_faqs.contents|safe }}
     {% else %}
       {{ anon_faqs.contents|safe }}
