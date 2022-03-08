@@ -44,7 +44,7 @@ django-filter==2.4.0
 django-floppyforms==1.9.0
 django-forms-bootstrap==3.1.0
 django-geonode-mapstore-client==3.2.2
-django-grappelli==2.15.1
+django-grappelli==2.15.5
 django-guardian==2.4.0
 django-haystack==3.1.1
 django-hCaptcha==0.2.0
@@ -70,6 +70,7 @@ django-widget-tweaks==1.4.8
 djangorestframework==3.11.2
 djangorestframework-gis==0.17
 djangorestframework-guardian==0.3.0
+django-colorfield==0.6.3
 dnspython==2.2.0
 docker==4.4.4
 drf-extensions==0.7.0

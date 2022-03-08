@@ -2789,7 +2789,7 @@ input::-moz-focus-inner {
 
 .s-home {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     min-height: 786px;
     background-color: transparent;
     position: relative;
@@ -2957,7 +2957,7 @@ input::-moz-focus-inner {
 
 .home-content__scroll a {
     font-family: "Solanel-Bold", sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: .3rem;
     color: #FFFFFF;
@@ -3323,6 +3323,7 @@ html.no-csstransitions .home-content__main {
 .s-showcase {
     background-color: #1C463F;
     position: relative;
+    height: 100vh;
 }
 
 .s-showcase a {
@@ -4932,4 +4933,8 @@ html {
 
 .nav-pills>li {
     margin-right: 10px;
+}
+
+.btm_section {
+    margin-bottom: 50px;
 }

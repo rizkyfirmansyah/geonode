@@ -120,7 +120,7 @@ if DATABASE_URL.startswith("spatialite"):
     except FileNotFoundError as ex:
         print(ex)
 
-# DATABASE_URL = 'postgresql://test_geonode:test_geonode@localhost:5432/geonode'
+DATABASE_URL = 'postgis://geonode:geonode@localhost:5432/geonode'
 
 # Defines settings for development
 
@@ -460,6 +460,7 @@ INSTALLED_APPS = (
     'django_celery_beat',
     'django_celery_results',
     'markdownify',
+    'colorfield',
 
     # REST APIs
     'rest_framework',

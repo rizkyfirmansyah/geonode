@@ -4,7 +4,7 @@
 
 {% block section_home %}
   
-  <section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% static "geonode/img/hero-bg.jpg" %}"
+  <section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% if custom_theme.jumbotron_bg %}uploaded/{{ custom_theme.jumbotron_bg }} {% else %} {% static "geonode/img/hero-bg.jpg" %}{% endif %}"
   data-natural-width=3000 data-natural-height=2000 data-position-y=center>
   
   <div class="overlay"></div>
@@ -13,11 +13,23 @@
   <div class="home-content">
   
     <div class="auto-margin home-content__main">
-  
-      <h3>Welcome to AFISEACOALITION</h3>
-  
-      <h1>AFi SEA COALITION</h1>
-      <h1 style="max-width: 680px;">is a platform for sharing (geospatial) data</h1>
+      
+      <h3>
+        {% if custom_theme.jumbotron_welcome_title %}
+          {{ custom_theme.jumbotron_welcome_title }}
+        {% else %}
+        Welcome to AFISEACOALITION
+        {% endif %}
+      </h3>
+      
+      <h1 style="max-width: 680px;">
+        {% if custom_theme.jumbotron_welcome_content %}
+          {{ custom_theme.jumbotron_welcome_content}}
+        {% else %}
+          AFi SEA COALITION
+          is a platform for sharing (geospatial) data
+        {% endif %}
+      </h1>
   
       <div class="search-field">
         <button class="btn-search" type="button">

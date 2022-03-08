@@ -72,9 +72,15 @@
       <style type="text/css">
         /* Additional styles by custom themes */
         {% if custom_theme.body_color %}
-          #wrap {
-            background: {{ custom_theme.body_color }};
-          }
+        body {
+          background: {{ custom_theme.body_color }};
+          {% if custom_theme.body_text_color %}
+          color: {{ custom_theme.body_text_color }};
+          {% endif %}
+        }
+        #wrap {
+          background: {{ custom_theme.body_color }};
+        }
         .home #partners {
           background: {{ custom_theme.body_color }};
           padding: 2em 0;
@@ -143,6 +149,20 @@
           background-repeat: no-repeat;
           background-position: center;
           background-size: contain;
+        }
+        {% endif %}
+
+        {% if custom_theme.textbox_bg_color %}
+        .select2-container--default,
+        .select2-selection--single,
+        .select2-selection__rendered {
+          background-color: {{ custom_theme.textbox_bg_color }};
+        }
+        {% endif %}
+
+        {% if custom_theme.textbox_input_color %}
+        .select2-container--default .select2-search--inline .select2-search__field {
+          color: {{ custom_theme.textbox_input_color }} !important;
         }
         {% endif %}
 
@@ -366,37 +386,6 @@
     <script type="text/javascript" src="{% static "geonode/js/base/toastr.js" %}"></script>
 
     {% block extra_script %}{% endblock extra_script %}
-    <script type="text/javascript">
-
-      // Autocomplete instance for the search found in the header.
-      {% comment %} $(document).ready(function() {
-        window.autocomplete2 = new Autocomplete({
-          form_btn: null,
-          form_submit: '#search',
-          form_selector: '#search',
-          input_selector: '#search_input',
-          container_selector: '#search-container',
-          url: '{% url "autocomplete_base" %}'
-        })
-        window.autocomplete2.setup()
-      })
-
-      $('#search').on('submit', (e) => {
-          $('#search_abstract_input')[0].value =$('#search_input')[0].value;
-          $('#search_purpose_input')[0].value = $('#search_input')[0].value;
-      });
-
-      $(window).on('load', function() {
-          setTimeout(() => {
-              document.body.scrollTop = 0;
-              document.documentElement.scrollTop = 0;
-          });
-        }); {% endcomment %}
-
-      {% comment %} $(".datepicker").datepicker({
-          format: "yyyy-mm-dd"
-      }); {% endcomment %}
-    </script>
 
     {% include "modal/resource_uploading.html" %}
     {% include "modal/thumbnail_processing.html" %}

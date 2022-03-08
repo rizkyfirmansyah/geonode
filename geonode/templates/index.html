@@ -5,7 +5,6 @@
 {% load base_tags %}
 
 {% block middle %}
-  {{ block.super }}
 
   {% block home %}
     {% include 'section/home.html' %}
@@ -25,4 +24,10 @@
 
 {% block extra_script %}
   <script type="text/javascript" src="{% static "geonode/js/cookie-law-info/cookie-law-info-public.js" %}"></script>
+  <script type="text/javascript">
+    
+    $(document).ready(function() {
+      
+    });
+  </script>
 {% endblock extra_script %}
