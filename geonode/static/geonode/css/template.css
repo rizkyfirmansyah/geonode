@@ -2511,6 +2511,21 @@ input::-moz-focus-inner {
  * ## main navigation 
  * ------------------------------------------------------------------- */
 
+.navigation_link {
+    background: linear-gradient(to right, #fdba12, hsl(43, 100%, 78%) 50%, white 50%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    background-position: 100%;
+    transition: background-position 275ms ease;
+}
+
+.navigation_link:hover {
+    background-position: 0 100%;
+    text-decoration: none;
+}
+
 .header-nav {
     background: #0C0C0C;
     color: #c4bab7;
@@ -2892,7 +2907,7 @@ input::-moz-focus-inner {
 /* SEARCH FIELD */
 
 #main_search {
-    top: 20px;
+    top: -60px;
     position: relative;
 }
 
@@ -2904,14 +2919,13 @@ input::-moz-focus-inner {
 }
 
 .btn-search {
-    position: absolute;
+    position: relative;
     left: 0;
     height: 100%;
     background: transparent;
     border: 0;
     padding: 0;
     cursor: pointer;
-    top: 20px;
 }
 
 .btn-search>svg {
@@ -4367,6 +4381,7 @@ footer #footer-language {
     max-width: 1140px;
     width: 100%;
     margin-top: 1px !important;
+    height: auto;
 }
 
 #signin h3,

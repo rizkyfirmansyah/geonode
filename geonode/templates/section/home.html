@@ -68,14 +68,7 @@
 {% endblock %}
 
 {% block extra_script %}
-  
-  <script type="text/javascript">
-    $('#main_search').on('submit', (e) => {
-        $('#main_search_abstract_input')[0].value =$('#main_search_input')[0].value;
-        $('#main_search_purpose_input')[0].value = $('#main_search_input')[0].value;
-    });
-  </script>
-
+ 
   <script type="text/javascript">
 
       // running text of search bar
@@ -108,52 +101,38 @@
       });
 
   </script>
-  <script type='text/javascript'>
-  /* <![CDATA[ */
-  var Cli_Data = {"nn_cookie_ids":[],"cookielist":[]};
-  /* ]]> */
+  <script type="text/javascript">
+
+    $(document).ready(function() {
+        var cfg = {
+            scrollDuration: 800 // smoothscroll duration
+        };
+
+        /* Smooth Scrolling
+        * ------------------------------------------------------ */
+        $('.smoothscroll').on('click', function(e) {
+            var target = this.hash,
+                $target = $(target);
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (target) {
+              $('html, body').stop().animate({
+                  'scrollTop': $target.offset().top
+              }, cfg.scrollDuration, 'swing').promise().done(function() {
+    
+                  // check if menu is open
+                  if ($('body').hasClass('menu-is-open')) {
+                      $('.header-menu-toggle').trigger('click');
+                  }
+    
+                  window.location.hash = target;
+              });
+            }
+        });
+        
+    });
+
   </script>
-<script type="text/javascript">
-
-  (function($) {
-      var cfg = {
-          scrollDuration: 800 // smoothscroll duration
-      };
-
-    /* Smooth Scrolling
-     * ------------------------------------------------------ */
-     var clSmoothScroll = function() {
-
-      $('.smoothscroll').on('click', function(e) {
-          var target = this.hash,
-              $target = $(target);
-
-          e.preventDefault();
-          e.stopPropagation();
-
-          if (target) {
-            $('html, body').stop().animate({
-                'scrollTop': $target.offset().top
-            }, cfg.scrollDuration, 'swing').promise().done(function() {
-  
-                // check if menu is open
-                if ($('body').hasClass('menu-is-open')) {
-                    $('.header-menu-toggle').trigger('click');
-                }
-  
-                window.location.hash = target;
-            });
-          }
-      });
-
-    };
-          /* Initialize
-     * ------------------------------------------------------ */
-    (function ssInit() {
-        clSmoothScroll();
-    })();
-
-  })(jQuery);
-
-</script>
 {% endblock extra_script %}
