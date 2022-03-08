@@ -13,15 +13,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='GeonodeFaq',
+            name='Site',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('header_title', models.CharField(default='Frequently Asked Questions', help_text='Title Page', max_length=255)),
                 ('contents', models.TextField(blank=True, help_text='Content of the FAQs page', null=True)),
-                ('contents_color', colorfield.fields.ColorField(default='#000000', image_field=None, max_length=18, samples=None)),
+                ('header_title_color', colorfield.fields.ColorField(default='#000000', image_field=None, max_length=18, samples=None)),
             ],
             options={
-                'verbose_name_plural': 'Geonode FAQs',
+                'verbose_name_plural': 'SDI FAQs',
                 'ordering': ('id',),
             },
         ),
