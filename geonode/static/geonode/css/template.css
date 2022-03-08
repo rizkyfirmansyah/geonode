@@ -2911,6 +2911,7 @@ input::-moz-focus-inner {
     border: 0;
     padding: 0;
     cursor: pointer;
+    top: 20px;
 }
 
 .btn-search>svg {
@@ -4599,6 +4600,255 @@ footer #footer-language {
 .ng-scope .row {
     margin-right: -15px;
     margin-left: -15px;
+}
+
+
+/* OVERRIDE styelsheet */
+
+.ac-results {
+    width: 100% !important;
+}
+
+.remaining-text {
+    position: absolute;
+    color: black;
+}
+
+#jump_to_top {
+    display: none;
+    bottom: 20px;
+    right: 30px;
+    z-index: 99;
+    font-size: 100px;
+    position: fixed;
+    cursor: pointer;
+}
+
+.create_map {
+    float: left;
+    font-style: normal;
+    color: black;
+    font-size: 100%;
+    font-weight: bold;
+    margin-left: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.create_map:hover {
+    color: #f0ab00;
+    font-style: italic;
+}
+
+.allowed_doctype {
+    font-size: 110%;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    color: white !important;
+}
+
+.text-categories {
+    font-size: 70%;
+    font-style: italic;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    float: right;
+}
+
+.text-categories>i:hover,
+.category>i:hover,
+.category>h4:hover {
+    color: orangered;
+    cursor: pointer;
+}
+
+.list-inline {
+    margin-bottom: 0px;
+}
+
+.profile-details {
+    padding: 5px;
+    padding-top: 0px;
+    margin-left: 3%;
+    min-height: 100px;
+}
+
+.profile-items {
+    padding: 0px;
+}
+
+#profile_info_name {
+    font-size: 1.2em;
+    margin-top: 1vh;
+}
+
+#profile_info_position {
+    color: lightslategray;
+    font-size: 0.9em;
+}
+
+.composition {
+    color: #fff;
+    flex: 1 100%;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    background: #fdba12;
+    position: fixed;
+    top: 0;
+    z-index: 999;
+}
+
+.ml13 {
+    font-size: 2.4em;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    font-weight: 600;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+}
+
+.close-signin {
+    position: fixed;
+    right: 5%;
+    top: 20%;
+    width: 2%;
+    height: 100vh;
+    opacity: 0.3;
+    z-index: 999;
+}
+
+@keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+.bounce {
+    animation-name: bounce;
+}
+
+.ml14 {
+    font-size: 3.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    font-weight: 600;
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    bottom: 50%;
+    text-align: center;
+}
+
+.ml14:hover {
+    font-size: 3.9em;
+    color: black !important;
+    text-decoration: underline;
+}
+
+.ml13 .letter {
+    display: inline-block;
+    line-height: 1em;
+}
+
+.animated {
+    animation-duration: 2.5s;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+}
+
+
+/* Non Retine Screen */
+
+@media screen and (min-width: 1025px) {
+    .navbar-nav .search {
+        left: 0px !important;
+        margin-right: 0px !important;
+    }
+    .fixed-button {
+        position: sticky;
+        position: -webkit-sticky;
+        width: 100%;
+        top: 150px;
+        padding-top: 10px;
+        z-index: 99;
+        background-color: white;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .fixed-button {
+        position: sticky;
+        position: -webkit-sticky;
+        width: 100%;
+        top: 140px;
+        padding-top: 20px;
+        z-index: 99;
+        background-color: white;
+    }
+}
+
+
+/* ================================= */
+
+
+/* CUSTOM SMOOTH SCROLLING STICKY NAVIGATION */
+
+
+/* ================================= */
+
+.section-nav {
+    margin-top: 2rem;
+    margin-left: 0;
+    border-left: 1px solid #efefef;
+    transition: all 100ms ease-in-out;
+    position: sticky;
+    top: 9rem;
+    align-self: start;
+}
+
+.section-nav a {
+    text-decoration: none;
+    display: block;
+    padding: .125rem;
+    color: #ccc;
+    transition: all 50ms ease-in-out;
+}
+
+.section-nav li {
+    margin-left: 1rem;
+}
+
+.section-nav a:hover,
+.section-nav a:focus {
+    color: rgb(34, 31, 31);
+}
+
+.section-nav>ul,
+ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 
