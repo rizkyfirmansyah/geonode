@@ -71,20 +71,11 @@
       <style type="text/css">[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}</style>
       <style type="text/css">
         /* Additional styles by custom themes */
-        {% if custom_theme.body_color %}
+        {% if custom_theme.body_text_color %}
         body {
-          background: {{ custom_theme.body_color }};
           {% if custom_theme.body_text_color %}
           color: {{ custom_theme.body_text_color }};
           {% endif %}
-        }
-        #wrap {
-          background: {{ custom_theme.body_color }};
-        }
-        .home #partners {
-          background: {{ custom_theme.body_color }};
-          padding: 2em 0;
-          text-align: center;
         }
         {% endif %}
 

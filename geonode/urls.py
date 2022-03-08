@@ -37,6 +37,7 @@ from . import version
 from geonode.api.urls import api, router
 from geonode.api.views import verify_token, user_info, roles, users, admin_role
 from geonode.base.views import thumbnail_upload
+from geonode.faqs.views import FAQView
 
 from geonode import geoserver
 from geonode.utils import check_ogc_backend
@@ -262,7 +263,7 @@ urlpatterns += [  # '',
 # FAQ
 urlpatterns += [
     url(r'^faqs/$',
-        TemplateView.as_view(template_name='faqs.html'),
+        FAQView,
         name='faqs'
     ),
 ]

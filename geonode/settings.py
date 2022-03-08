@@ -386,8 +386,7 @@ GEONODE_CORE_APPS = (
     'geonode.documents',
     'geonode.security',
     'geonode.catalogue',
-    'geonode.catalogue.metadataxsl',
-    'geonode.datasets',
+    'geonode.catalogue.metadataxsl'
 )
 
 # GeoNode Apps
@@ -404,6 +403,8 @@ GEONODE_INTERNAL_APPS = (
     'geonode.social',
     'geonode.groups',
     'geonode.services',
+    'geonode.datasets',
+    'geonode.faqs',
 
     # GeoServer Apps
     # Geoserver needs to come last because

@@ -534,7 +534,7 @@ def index(request):
     return render(request, 'monitoring/non_superuser.html')
 
 
-class NotificaitonCheckForm(forms.ModelForm):
+class NotificationCheckForm(forms.ModelForm):
     class Meta:
         model = NotificationCheck
         fields = ('name', 'description', 'severity', 'user_threshold',)
@@ -675,7 +675,7 @@ class NotificationsList(FilteredView):
         return NotificationCheck.objects.all()
 
     def create(self, request, *args, **kwargs):
-        f = NotificaitonCheckForm(data=request.POST)
+        f = NotificationCheckForm(data=request.POST)
         if f.is_valid():
             d = f.cleaned_data
             return NotificationCheck.create(**d)

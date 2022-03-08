@@ -22,7 +22,6 @@ from django import forms
 from django.contrib import admin
 
 from .models import Partner, GeoNodeThemeCustomization, JumbotronThemeSlide
-from tinymce.widgets import TinyMCE
 
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
