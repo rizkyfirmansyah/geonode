@@ -32,7 +32,7 @@ from geonode.utils import check_ogc_backend
 
 
 class GeoNodeAuthorization(DjangoAuthorization):
-    """Object level API authorization based on GeoNode granular
+    """Object level API authorization based on SDI granular
     permission system"""
 
     def read_list(self, object_list, bundle):

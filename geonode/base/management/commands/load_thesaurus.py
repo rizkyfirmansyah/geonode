@@ -45,7 +45,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--name',
             dest='name',
-            help='Identifier name for the thesaurus in this GeoNode instance.')
+            help='Identifier name for the thesaurus in this SDI instance.')
 
         parser.add_argument(
             '--file',

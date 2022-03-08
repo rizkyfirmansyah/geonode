@@ -30,7 +30,7 @@ def run_setup_hooks(*args, **kwargs):
 class AppConfig(BaseAppConfig):
 
     name = "geonode"
-    label = "geonode"
+    label = "SDI"
 
     def ready(self):
         super(AppConfig, self).ready()

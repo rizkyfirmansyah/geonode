@@ -578,7 +578,7 @@ DYNAMIC_REST = {
     'ENABLE_HOST_RELATIVE_LINKS': True
 }
 
-GRAPPELLI_ADMIN_TITLE = os.getenv('GRAPPELLI_ADMIN_TITLE', 'GeoNode')
+GRAPPELLI_ADMIN_TITLE = os.getenv('GRAPPELLI_ADMIN_TITLE', 'SDI')
 
 # Documents application
 try:
@@ -709,7 +709,7 @@ if 'geonode.geoserver' in INSTALLED_APPS:
 
 TEMPLATES = [
     {
-        'NAME': 'GeoNode Project Templates',
+        'NAME': 'SDI Project Templates',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(PROJECT_ROOT, "templates")],
         'APP_DIRS': True,
@@ -1097,12 +1097,12 @@ PYCSW = {
             # 'csw_harvest_pagesize': '10',
         },
         'metadata:main': {
-            'identification_title': 'GeoNode Catalogue',
-            'identification_abstract': 'GeoNode is an open source platform' \
+            'identification_title': 'SDI Catalogue',
+            'identification_abstract': 'SDI is an open source platform' \
             ' that facilitates the creation, sharing, and collaborative use' \
             ' of geospatial data',
             'identification_keywords': 'sdi, catalogue, discovery, metadata,' \
-            ' GeoNode',
+            ' SDI',
             'identification_keywords_type': 'theme',
             'identification_fees': 'None',
             'identification_accessconstraints': 'None',

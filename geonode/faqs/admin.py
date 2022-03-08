@@ -1,15 +1,15 @@
 from django.contrib import admin
 from django import forms
-from .models import GeonodeFaq
+from .models import Site
 
-class GeonodeFaqForm(forms.ModelForm):
+class SiteForm(forms.ModelForm):
     class Meta:
-        model = GeonodeFaq
+        model = Site
         fields = '__all__'
 
 
-@admin.register(GeonodeFaq)
-class GeonodeFaqFormAdmin(admin.ModelAdmin):
-    form = GeonodeFaqForm
+@admin.register(Site)
+class SiteFormAdmin(admin.ModelAdmin):
+    form = SiteForm
     list_display = ('id', 'header_title', 'contents', 'authenticated_users')
     list_display_links = ('header_title',)

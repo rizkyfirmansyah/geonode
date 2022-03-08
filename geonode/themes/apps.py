@@ -25,4 +25,4 @@ class AppConfig(BaseAppConfig):
 
     name = "geonode.themes"
     label = "geonode_themes"
-    verbose_name = _("GeoNode Themes Library")
+    verbose_name = _("SDI Themes Library")

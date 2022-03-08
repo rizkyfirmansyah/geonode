@@ -56,7 +56,7 @@ class GeoNodeRepository(Repository):
         self.context = context
         self.filter = repo_filter
         self.fts = False
-        self.label = 'GeoNode'
+        self.label = 'SDI'
         self.local_ingest = True
 
         self.dbtype = settings.DATABASES['default']['ENGINE'].split('.')[-1]

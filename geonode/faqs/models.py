@@ -4,7 +4,7 @@ from colorfield.fields import ColorField
 
 # Create your models here.
 
-class GeonodeFaq(models.Model):
+class Site(models.Model):
   
   BOOLEAN_CHOICES = [
     (False, _("False")),
