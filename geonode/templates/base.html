@@ -85,6 +85,36 @@
         }
         {% endif %}
 
+        {% if custom_theme.showcase_bg_color %}
+        #showcase {
+          background-color: {{ custom_theme.showcase_bg_color }} !important;
+        }
+        {% endif %}
+        
+        {% if custom_theme.showcase_text_color %}
+        #showcase .container div,
+        #showcase .container ul,
+        #showcase .container ol,
+        #showcase .container li,
+        #showcase .container h1,
+        #showcase .container h2,
+        #showcase .container h3,
+        #showcase .container h4,
+        #showcase .container h5,
+        #showcase .container h6,
+        #showcase .container pre,
+        #showcase .container a,
+        #showcase .container p {
+            color: {{ custom_theme.showcase_text_color }} !important;
+        }
+        {% endif %}
+
+        {% if custom_theme.showcase_text_link_color %}
+        #showcase .container a {
+          background-color: {{ custom_theme.showcase_text_link_color }} !important;
+        }
+        {% endif %}
+
         {% if custom_theme.navbar_text_color %}
         .navbar-inverse .navbar-nav > li > a {
           color: {{ custom_theme.navbar_text_color }};

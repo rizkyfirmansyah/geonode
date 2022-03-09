@@ -1786,7 +1786,7 @@ button.btn--primary,
 input[type="submit"].btn--primary,
 input[type="reset"].btn--primary,
 input[type="button"].btn--primary {
-    color: #1c4742;
+    color: #1c4742 !important;
     background-color: white;
     text-transform: uppercase;
     letter-spacing: .3rem;
@@ -3334,26 +3334,40 @@ html.no-csstransitions .home-content__main {
  *
  * ------------------------------------------------------------------- */
 
-.s-showcase {
+#showcase {
     background-color: #1C463F;
     position: relative;
     height: 100vh;
 }
 
-.s-showcase a {
-    color: #c4bab7;
+#showcase .section-header.has-bottom-sep::before {
+    background-color: #c4bab7;
 }
 
-.s-showcase a:hover {
+#showcase .container div,
+#showcase .container ul,
+#showcase .container ol,
+#showcase .container li,
+#showcase .container h1,
+#showcase .container h2,
+#showcase .container h3,
+#showcase .container h4,
+#showcase .container h5,
+#showcase .container h6,
+#showcase .container pre,
+#showcase .container p {
     color: white;
 }
 
-.s-showcase p a {
-    color: black;
+#showcase .container a {
+    color: #fdba12;
 }
 
-.s-showcase .section-header.has-bottom-sep::before {
-    background-color: #c4bab7;
+#showcase .container p {
+    word-spacing: 0.3rem;
+    line-height: 2.9rem;
+    font-size: 20px;
+    letter-spacing: 0.1rem;
 }
 
 .about-desc {
@@ -3464,7 +3478,7 @@ html.no-csstransitions .home-content__main {
 }
 
 @media only screen and (max-width: 600px) {
-    .s-showcase {
+    #showcase {
         padding-top: 12rem;
     }
     .about-desc {
@@ -4853,32 +4867,6 @@ html {
 /* ------------------------------------------------------------------- 
  * Typography resets on CMS content
  * ------------------------------------------------------------------- */
-
-#showcase .container div,
-#showcase .container dl,
-#showcase .container dt,
-#showcase .container dd,
-#showcase .container ul,
-#showcase .container ol,
-#showcase .container li,
-#showcase .container h1,
-#showcase .container h2,
-#showcase .container h3,
-#showcase .container h4,
-#showcase .container h5,
-#showcase .container h6,
-#showcase .container pre,
-#showcase .container form,
-#showcase .container p {
-    color: white !important;
-}
-
-#showcase .container p {
-    word-spacing: 0.3rem;
-    line-height: 2.9rem;
-    font-size: 20px;
-    letter-spacing: 0.1rem;
-}
 
 #SiginModal div button {
     padding: 4px 8px !important;
