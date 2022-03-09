@@ -2501,6 +2501,10 @@ input::-moz-focus-inner {
     transition: all 0.3s ease-in-out;
 }
 
+.header-logo img {
+    min-width: 140px;
+}
+
 
 /* ------------------------------------------------------------------- 
  * ## main navigation 
