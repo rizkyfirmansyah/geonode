@@ -6,7 +6,7 @@
 
   <div class="header-logo">
     <a class="site-logo" href="{{ SITEURL }}">
-      <img src="{% if custom_theme.logo %}uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}" alt="Homepage">
+      <img src="{% if custom_theme.logo %}{{SITEURL}}/uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}" alt="Homepage">
     </a>
   </div>
 
