@@ -103,7 +103,6 @@
         #showcase .container h5,
         #showcase .container h6,
         #showcase .container pre,
-        #showcase .container a,
         #showcase .container p {
             color: {{ custom_theme.showcase_text_color }} !important;
         }
@@ -111,7 +110,7 @@
 
         {% if custom_theme.showcase_text_link_color %}
         #showcase .container a {
-          background-color: {{ custom_theme.showcase_text_link_color }} !important;
+            color: {{ custom_theme.showcase_text_link_color }} !important;
         }
         {% endif %}
 

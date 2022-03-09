@@ -1225,10 +1225,6 @@ blockquote p {
     color: #111111;
 }
 
-.site-logo>img {
-    max-width: 200% !important;
-}
-
 blockquote cite {
     display: block;
     font-family: "Solanel-Regular", sans-serif;
@@ -2487,7 +2483,7 @@ input::-moz-focus-inner {
     position: absolute;
     margin: 0;
     padding: 0;
-    left: 40px;
+    left: 2%;
     top: 50%;
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
@@ -2497,11 +2493,10 @@ input::-moz-focus-inner {
 
 .header-logo a {
     display: block;
-    margin: 9px 0 0 0;
     padding: 0;
     outline: 0;
     border: none;
-    width: 80px;
+    width: 60px;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
