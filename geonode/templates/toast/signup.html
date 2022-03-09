@@ -7,7 +7,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     
-    const csrftoken = Cookies.get('csrftoken');
+    let csrftoken = Cookies.get('csrftoken');
     const secret_key = '{{ HCAPTCHA_SECRET }}';
 
     $('#signup_form').submit(function(e) {

@@ -49,9 +49,8 @@ def ajax_login(request):
             status=405,
             content_type="text/plain"
         )
-    data = request.POST.copy()
 
-    form = AjaxLoginForm(data)
+    form = AjaxLoginForm(request.POST)
     logger.info(f'FORM LOGIN: {form}')
     if form.is_valid():
         username = form.cleaned_data['username']

@@ -50,10 +50,8 @@ class SetUserLayerPermission(View):
 class CustomLoginView(LoginView):
 
     def get_context_data(self, **kwargs):
-        captcha = settings.HCAPTCHA_SITEKEY
 
         context = super(CustomLoginView, self).get_context_data(**kwargs)
-        context["captcha"] = captcha
         return context
     
 

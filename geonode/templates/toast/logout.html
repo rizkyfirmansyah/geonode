@@ -12,7 +12,7 @@
   $(document).ready(function() {
 
     const _user ='{{ user.is_authenticated }}';
-    const let csrftoken = Cookies.get('csrftoken');
+    let csrftoken = Cookies.get('csrftoken');
 
     if (_user != 'False') {
       $('#logged-out').hover(function() {

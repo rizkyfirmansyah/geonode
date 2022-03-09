@@ -31,7 +31,7 @@
               <div class="tab-content border-0">
                 <div class="tab-pane p-0 container active" id="signin">
                   <div class="text w-100" style="margin-top: 20px;">
-                      <form class="form-signin" role="form" method="post" id="form-signin">
+                      <form class="form-signin" role="form" method="POST" id="form-signin">
                       {% csrf_token %}
                       <div class="form-group mb-3">
                         <label class="" for="id_username">Username</label>
@@ -67,7 +67,7 @@
                 </div>
                 <div class="tab-pane p-0 container fade" id="signup">
                   <div class="text w-100" style="margin-top: 20px;">
-                    <form class="signup_form" role="form" method="post" id="signup_form" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+                    <form class="signup_form" role="form" method="POST" id="signup_form" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
                       {% csrf_token %}
                       <div class="form-group mb-3">
                         <label class="" for="name">Full/User Name</label>

@@ -50,7 +50,7 @@
       data: retentionChoices
     })
     
-    const let csrftoken = Cookies.get('csrftoken');
+    let csrftoken = Cookies.get('csrftoken');
     
     $('#request-download-layer').submit(function(e) {
       e.preventDefault();

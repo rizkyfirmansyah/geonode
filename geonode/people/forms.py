@@ -27,7 +27,6 @@ from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from geonode.base.models import ContactRole
 
-from hcaptcha.fields import hCaptchaField
 from django.http import HttpResponse
 import json
 
