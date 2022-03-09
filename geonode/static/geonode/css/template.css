@@ -4132,10 +4132,8 @@ footer li a:active {
 }
 
 footer .logo {
-    display: flex;
-    -webkit-box-pack: start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
+    bottom: 50%;
+    left: 2%;
 }
 
 footer figure {
@@ -4145,7 +4143,8 @@ footer figure {
 .logo-footer {
     height: auto;
     float: left;
-    min-width: 340px;
+    min-width: 240px;
+    max-width: 340px;
 }
 
 footer .copyright-notice {
