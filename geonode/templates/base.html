@@ -39,7 +39,7 @@
     <meta name="description" content="Spatial Data Infrastructure (SDI) is a platform for sharing (geo)spatial data."/>
 
 
-    <link rel="shortcut icon" href="{% static 'geonode/img/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% if custom_theme.favicon %}{{SITEURL}}/uploaded/{{ custom_theme.favicon }} {% else %} {% static 'geonode/img/favicon.ico' %} {% endif %}" />
     <link href="{% static "lib/css/ol.css" %}" rel="stylesheet" />
     <script src="{% static "lib/js/ol.js" %}"></script>
     <link rel="preload" as="style" href="{% static "geonode/css/font-awesome.min.css" %}" />

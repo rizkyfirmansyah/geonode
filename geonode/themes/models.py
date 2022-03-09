@@ -89,6 +89,7 @@ class GeoNodeThemeCustomization(models.Model):
     is_enabled = models.BooleanField(
         default=False,
         help_text="Enabling this theme will disable the current enabled theme (if any)")
+    favicon = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display favicon ico at browser tab"))
     logo = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at the navigation header"))
     logo_footer = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at the footer"))
     jumbotron_bg = models.ImageField(
