@@ -25,6 +25,7 @@
                   {% if redirect_field_value %}
                       <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                   {% endif %}
+                  <div class="form-group h-captcha" name="captcha" data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98" data-theme="dark" style="margin-top: 30px;"></div>
                   <div class="form-actions">
                       <button type="submit" class="btn btn-primary btn-full l-space" style="margin-bottom: 40px;">{% trans "Sign up" %}</button>
                   </div>
@@ -44,4 +45,9 @@
             $("#signup_container").css({"margin": "0 auto", "max-width": "740px"});
         });
     </script>
+    <script
+      src="https://js.hcaptcha.com/1/api.js"
+      async
+      defer
+    ></script>
 {% endblock %}

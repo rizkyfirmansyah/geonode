@@ -25,7 +25,7 @@
             <h3>{% blocktrans %}If you have not created an account yet, then please
             <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</h3>
           {% endif %}
-          <form id="login_form" role="form" method="POST" action="{% url 'account_login' %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+          <form id="login_form" style="margin-top: 30px;" role="form" method="POST" action="{% url 'account_login' %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
             {% csrf_token %}
             {{ form|as_bootstrap }}
             {% if redirect_field_value %}
@@ -34,6 +34,7 @@
             <div class="form-group">
                 <p><a href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a></p>
             </div>
+            <div class="form-group h-captcha" name="captcha" data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98" data-theme="dark" style="margin-top: 30px;"></div>
             <button class="btn btn-primary btn-full l-space" type="submit" style="margin-bottom: 50px;">{% trans "Sign In" %}</button>
           </form>
         </div>
@@ -48,4 +49,9 @@
             $("#login_container").css({"margin": "0 auto", "max-width": "740px"});
         });
     </script>
+    <script
+      src="https://js.hcaptcha.com/1/api.js"
+      async
+      defer
+    ></script>
 {% endblock %}

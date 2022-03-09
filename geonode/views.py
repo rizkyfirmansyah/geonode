@@ -38,17 +38,9 @@ from geonode.geoapps.models import GeoApp
 import logging
 logger = logging.getLogger(__name__)
 
-
-def validate_captcha(value):
-    data = {'secret': settings.HCAPTCHA_SECRET_KEY, 'response': value}
-    response = requests.post('https://hcaptcha.com/siteverify', data)
-    if not 'success' in response.json() or not response.json()['success']:
-        raise ValidationError('hcaptcha is not correct')
-
 class AjaxLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
     username = forms.CharField()
-    captcha = forms.CharField(max_length=10000, validators=[validate_captcha])
 
 def ajax_login(request):
     if request.method != 'POST':
@@ -58,15 +50,13 @@ def ajax_login(request):
             content_type="text/plain"
         )
     data = request.POST.copy()
-    if 'h-captcha-response' in data:
-        data['captcha'] = data['h-captcha-response']
+
     form = AjaxLoginForm(data)
     logger.info(f'FORM LOGIN: {form}')
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        captcha = form.cleaned_data['captcha']
-        user = authenticate(username=username, password=password, captcha=captcha)
+        user = authenticate(username=username, password=password)
         if user is None or not user.is_active:
             return HttpResponse(
                 content="bad credentials or disabled user",

@@ -46,6 +46,7 @@ def resource_urls(request):
         SITE_NAME=site.name,
         SITE_DOMAIN=site.domain,
         SITEURL=settings.SITEURL,
+        HCAPTCHA_SECRET=getattr(settings, 'HCAPTCHA_SECRET', ''),
         INSTALLED_APPS=settings.INSTALLED_APPS,
         THEME_ACCOUNT_CONTACT_EMAIL=settings.THEME_ACCOUNT_CONTACT_EMAIL,
         TINYMCE_DEFAULT_CONFIG=settings.TINYMCE_DEFAULT_CONFIG,

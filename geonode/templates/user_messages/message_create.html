@@ -6,7 +6,7 @@
 {% block title %}{% trans "Create Message" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-    <h3>{% trans "Create Message" %}</h3>
+    <h3 style="margin-top: 50px;">{% trans "Create Message" %}</h3>
     <form id="msg_form" method="post" action="{% url 'message_create' %}">
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -79,7 +79,7 @@
 
 
 {% block sidebar %}
-    <a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button">{% trans "Back to Inbox" %}</a>
+    <a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button" style="margin-top: 50px;">{% trans "Back to Inbox" %}</a>
 {% endblock %}
 
 

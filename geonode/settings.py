@@ -1339,17 +1339,12 @@ if CREATE_LAYER:
 FAVORITE_ENABLED = ast.literal_eval(os.getenv('FAVORITE_ENABLED', 'True'))
 
 # Settings for hCaptcha plugin
-HCAPTCHA_ENABLED = ast.literal_eval(os.environ.get('HCAPTCHA_ENABLED', 'False'))
+HCAPTCHA_ENABLED = ast.literal_eval(os.getenv('HCAPTCHA_ENABLED', 'True'))
 
 if HCAPTCHA_ENABLED:
     if 'hcaptcha' not in INSTALLED_APPS:
         INSTALLED_APPS += ('hcaptcha',)
-    # ACCOUNT_SIGNUP_FORM_CLASS = os.getenv("ACCOUNT_SIGNUP_FORM_CLASS",
-    #                                       'geonode.people.forms.AllauthHCaptchaSignupForm')
-    ACCOUNT_FORMS = {
-                    'login': 'geonode.people.forms.AllauthHCaptchaLoginForm',
-                    'signup': 'geonode.people.forms.AllauthHCaptchaSignupForm'
-    }
+
     """
      In order to generate reCaptcha keys, please see:
       - https://pypi.org/project/django-hCaptcha/
