@@ -135,6 +135,7 @@ class GeoNodeThemeCustomization(models.Model):
     partners = models.ManyToManyField(Partner, related_name="partners", blank=True)
     copyright = models.TextField(null=True, blank=True)
     copyright_color = ColorField(default="#F39F1E")
+    footer_copyright = models.CharField(max_length=255, null=True, blank=True)
     footer_bg_color = ColorField(default="#000000", help_text=_("Background color of the footer, default to black"))
     footer_text_color = ColorField(default="#ffffff")
     footer_href_color = ColorField(default="#ff8f31")
