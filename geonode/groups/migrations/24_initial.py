@@ -17,19 +17,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='GroupInvitation',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('token', models.CharField(max_length=40)),
-                ('email', models.EmailField(max_length=254)),
-                ('role', models.CharField(max_length=10, choices=[('manager', 'Manager'), ('member', 'Member')])),
-                ('state', models.CharField(default='sent', max_length=10, choices=[('sent', 'Sent'), ('accepted', 'Accepted'), ('declined', 'Declined')])),
-                ('created', models.DateTimeField(default=now)),
-                ('from_user', models.ForeignKey(related_name='pg_invitations_sent',
-                                                to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
-            ],
-        ),
-        migrations.CreateModel(
             name='GroupMember',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -61,20 +48,5 @@ class Migration(migrations.Migration):
             model_name='groupmember',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
-        ),
-        migrations.AddField(
-            model_name='groupinvitation',
-            name='group',
-            field=models.ForeignKey(related_name='invitations', to='groups.GroupProfile', on_delete=models.CASCADE),
-        ),
-        migrations.AddField(
-            model_name='groupinvitation',
-            name='user',
-            field=models.ForeignKey(related_name='pg_invitations_received',
-                                    to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True),
-        ),
-        migrations.AlterUniqueTogether(
-            name='groupinvitation',
-            unique_together=set([('group', 'email')]),
         ),
     ]

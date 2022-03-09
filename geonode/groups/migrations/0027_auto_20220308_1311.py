@@ -60,7 +60,4 @@ class Migration(migrations.Migration):
             name='title_en',
             field=models.CharField(max_length=1000, null=True, verbose_name='Title'),
         ),
-        migrations.DeleteModel(
-            name='GroupInvitation',
-        ),
     ]
