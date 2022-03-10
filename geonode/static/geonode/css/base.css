@@ -9585,9 +9585,17 @@ form-inline {
     display: block;
     text-align: center;
     text-decoration: none;
-    margin-top: -20px;
     font-size: 24px;
     color: black;
+}
+
+.error_page h1,
+.error_page p {
+    text-align: center;
+}
+
+.error_page p {
+    font-size: 2.8rem;
 }
 
 .error-link:hover {

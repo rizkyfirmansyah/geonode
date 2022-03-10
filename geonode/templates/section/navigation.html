@@ -38,9 +38,16 @@
           <ul class="header-nav__list no-gutters">
             <li><a class="navigation_link light" href="{% url "layer_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Spatial data">Add Spatial Data</a></li>
             <li><a class="navigation_link light" href="{% url "document_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Non Spatial Data">Add Non Spatial Data</a></li>
-            <li><a class="navigation_link light" href="{% url "group_create" %}" role="button" target="_self" title="Create Group">Create Group</a></li>
-            <li><a class="navigation_link light" href="{% url "group_category_create" %}" role="button" target="_self" title="Create Group Category">Create Group Category</a></li>
           </ul>
+          <li role="separator" class="divider"></li>
+          <div class="d-flex">
+            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "group_list" %}" role="button">{% trans "Groups" %} </a></div>
+            <div class="col-xs-6 no-gutters"><a href="{% url "group_create" %}" role="button" title="Create Group">{% trans "Create Group" %} </a></div>
+          </div>
+          <div class="d-flex">
+            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "group_category_list" %}" role="button">{% trans "Group Category" %} </a></div>
+            <div class="col-xs-6 no-gutters"><a href="{% url "group_category_create" %}" role="button" title="Create Group Category">{% trans "Create Group Category" %} </a></div>
+          </div>
           <li role="separator" class="divider"></li>
           <div class="d-flex">
             <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_detail" user.username %}" role="button">{% trans "Profile" %} </a></div>
