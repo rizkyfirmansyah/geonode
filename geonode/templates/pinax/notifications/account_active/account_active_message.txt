@@ -6,7 +6,7 @@ Congratulations!
 
 Your account has been approved and is now active.
 
-Go explore through https://{{current_site}} using your registered user: {{ username }}
+Go explore through https://{{current_site}}/account/login using your registered user: {{ username }}
 
 
 Cheers,
