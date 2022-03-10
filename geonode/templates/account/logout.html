@@ -1,23 +1,29 @@
 {% extends "account/base.html" %}
-
+{% load base_tags %}
 {% load i18n %}
 
 {% block title %}{% trans "Log out" %}{% endblock %}
 
 {% block middle %}
-  <div class="row" style="margin: 0px;">
-    <div class="col-md-12">
-      <div class="col-md-4">
-        <form method="POST" action="{% url "account_logout" %}" class="form-horizontal">
-          <fieldset>
-            {% csrf_token %}
-            <p id="logout-style">{% trans "Are you sure you want to log out?" %}</p>
-            <div class="form-actions" style="text-align: center">
-              <button type="submit" class="btn btn-primary" id="logout-button">{% trans "LOG OUT" %}</button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-    </div>
+  <div id="logout_container">
+      <form method="POST" action="{% url "account_logout" %}" class="form-horizontal" style="margin-top: 240px;">
+        <fieldset>
+          {% csrf_token %}
+          <p id="logout-style">{% trans "Are you sure you want to log out from this site?" %}</p>
+          <div class="form-actions" style="text-align: center">
+            <button type="submit" class="btn btn-primary" id="logout-button">{% trans "LOG OUT" %}</button>
+          </div>
+        </fieldset>
+      </form>
   </div>
+{% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    $("#wrap").css('background-color', 'black');
+  });
+
+</script>
 {% endblock %}
