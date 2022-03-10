@@ -46,10 +46,6 @@ template {
     display: none;
 }
 
-a {
-    background-color: transparent;
-}
-
 a:active,
 a:hover {
     outline: 0;
@@ -1399,7 +1395,7 @@ textarea {
 }
 
 a {
-    color: #fdba12;
+    color: #000;
     text-decoration: none;
 }
 
@@ -7894,14 +7890,6 @@ body {
     font-family: 'Solanel-Light', sans-serif;
     font-size: 16px;
     padding-top: 20px;
-}
-
-a {
-    color: #4e98af;
-}
-
-a:hover {
-    color: #fdba12;
 }
 
 h1,

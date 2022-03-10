@@ -1023,7 +1023,8 @@ body .apps {
  * ## links
  * ------------------------------------------------------------------- */
 
-a {
+
+/* a {
     color: #4e98af;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
@@ -1038,7 +1039,7 @@ a:active {
 a:hover,
 a:active {
     outline: 0;
-}
+} */
 
 
 /* ===================================================================
@@ -2496,13 +2497,13 @@ input::-moz-focus-inner {
     padding: 0;
     outline: 0;
     border: none;
-    width: 60px;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
 
 .header-logo img {
-    min-width: 140px;
+    width: 100%;
+    height: 48px;
 }
 
 
@@ -4938,4 +4939,17 @@ html {
 
 .btm_section {
     margin-bottom: 50px;
+}
+
+
+/* ------------------------------------------------------------------- 
+ * OVERRIDE BUTTON STYLING
+ * ------------------------------------------------------------------- */
+
+#button-toggle {
+    display: block ruby;
+}
+
+#max_features {
+    width: auto;
 }

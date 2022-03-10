@@ -25,7 +25,7 @@
             <h3>{% blocktrans %}If you have not created an account yet, then please
             <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</h3>
           {% endif %}
-          <form id="login_form" style="margin-top: 30px;" role="form" method="POST" action="{% url 'account_login' %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+          <form id="form-signin" style="margin-top: 30px;" role="form" method="POST" action="{% url 'account_login' %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
             {% csrf_token %}
             {{ form|as_bootstrap }}
             {% if redirect_field_value %}

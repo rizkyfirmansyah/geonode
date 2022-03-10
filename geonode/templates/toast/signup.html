@@ -61,16 +61,16 @@
             "X-CSRFToken": csrftoken
           },
           success: function(res) {
-            let msg = `Sign up Successful. Please check your email to verify your account.`;
-            let title = "Register";
+            let msg = `We'll notify the admin first to approve your request. Once granted, you can access this site.`;
+            let title = "Sign up Successful.";
             const $toast = toastr["success"](msg, title);
             toastr.options = {
               "newestOnTop": false,
               "progressBar": true,
               "positionClass": "toast-top-right",
               "preventDuplicates": true,
-              "showDuration": "800",
-              "hideDuration": "1000"
+              "showDuration": "1000",
+              "hideDuration": "1500"
             }
           },
           error: function(xhr, desc, err) {
@@ -95,7 +95,7 @@
             }
           }
         }).done(function() {
-          setInterval('location.reload()', 1000); 
+          setInterval('location.reload()', 2000); 
         });
         return false;
       }
