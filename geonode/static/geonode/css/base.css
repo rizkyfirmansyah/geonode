@@ -9627,7 +9627,6 @@ form-inline {
 }
 
 #wrap {
-    overflow: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     min-height: calc(100vh - 240px);
 }
