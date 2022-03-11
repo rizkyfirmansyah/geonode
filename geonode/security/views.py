@@ -39,7 +39,7 @@ from geonode.groups.models import GroupProfile
 
 from geonode.notifications_helper import send_notification
 
-from geonode.datasets.forms import RodaForm
+from geonode.datasets.models import Roda
 
 logger = logging.getLogger(__name__)
 
@@ -446,25 +446,29 @@ def request_permissions(request):
     uuid = request.POST['uuid']
     resource = get_object_or_404(ResourceBase, uuid=uuid)
     try:
+
+        resource_owner = resource.owner
+        requester_username = request.user
+        requester_name = request.POST['requester_name']
+        requester_email = request.POST['requester_email']
+        requester_institution = request.POST['requester_institution']
+        requester_position = request.POST['requester_position']
+        purposes = request.POST['purposes']
+        retention = request.POST['retention']
+        resource_title = request.POST['resource_title']
+        roda = Roda(
+          uuid=uuid, requester_username=requester_username, requester_name=requester_name,
+          requester_email=requester_email, requester_institution=requester_institution, 
+          requester_position=requester_position, purposes=purposes,
+          retention=retention, resource_title=resource_title, resource_owner=resource_owner)
+        roda.save()
+
+        logger.debug("Record request download resources...")
         send_notification([resource.owner],
                           'request_download_resourcebase',
                           {'resource': resource, 'from_user': request.user})
-        
-        roda_form = RodaForm(data=request.POST)
-
-        if roda_form.is_valid():
-            ropa = roda_form.save(commit=False)
-            ropa.resource_owner = resource.owner
-            ropa.requester_username = request.user
-            ropa.save()
-
-            return HttpResponse(json.dumps({'success': 'ok', }), status=200,
-            content_type='text/plain')
-
-        else:
-          return HttpResponse(json.dumps({'error': 'Please fill in the form completely.', }), status=403,
-          content_type='text/plain')
-
+        return HttpResponse(json.dumps({'success': 'ok', }), status=200,
+        content_type='text/plain')
 
     except Exception:
         # traceback.print_exc()

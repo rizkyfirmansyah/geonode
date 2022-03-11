@@ -6466,7 +6466,8 @@ button.list-group-item-danger.active:focus {
 }
 
 .panel-default {
-    border-color: #c4bab7;
+    border-color: black;
+    background-color: transparent;
 }
 
 .panel-default>.panel-heading {

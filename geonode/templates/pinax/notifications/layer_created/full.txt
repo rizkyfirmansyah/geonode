@@ -11,4 +11,4 @@
 <br/>
 {% blocktrans %}Cheers,{% endblocktrans %}
 <br/>
-{% blocktrans %}The {{site_name}} team.{% endblocktrans %}
+{% blocktrans with site_name=current_site.name %}The {{ site_name }} team.{% endblocktrans %}

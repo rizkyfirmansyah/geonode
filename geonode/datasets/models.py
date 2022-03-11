@@ -35,9 +35,6 @@ class Roda(models.Model):
     resource_title = models.CharField(max_length=255)
     resource_owner = models.CharField(max_length=255)
 
-    def __str__(self):
-        return self.resource_title
-
     class Meta:
         ordering = ["id"]
         verbose_name_plural = "Record of Datasets Activities"
