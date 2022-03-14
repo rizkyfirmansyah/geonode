@@ -388,6 +388,16 @@ class ResourceBaseSerializer(
             # users_geolimits, groups_geolimits
         )
 
+class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, BaseDynamicModelSerializer):
+
+  class Meta:
+      model = ResourceBase
+      name ='resource'
+      view_name = 'simple-resources-list'
+      fields = ('pk', 'resource_type', 'perms', 'title')
+      excludes = ['favorite', 'links']
+      ordering = ("-pk",)
+
 
 class FavoriteSerializer(DynamicModelSerializer):
     resource = serializers.SerializerMethodField()

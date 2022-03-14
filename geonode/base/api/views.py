@@ -63,6 +63,7 @@ from .serializers import (
     PermSpecSerialiazer,
     GroupProfileSerializer,
     ResourceBaseSerializer,
+    SimpleResourceBaseSerializer,
     ResourceBaseTypesSerializer,
     OwnerSerializer,
     HierarchicalKeywordSerializer,
@@ -236,6 +237,16 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
             get_resources_with_perms(self.request.user, filter_options).values('owner'))
         )
         return queryset.order_by("username")
+
+class ResourceBasePermsViewSet(DynamicModelViewSet):
+    """
+    Minimize API endpoint to check user's permissions.
+    """
+    authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    queryset = ResourceBase.objects.all().order_by('-pk')
+    serializer_class = SimpleResourceBaseSerializer
 
 
 class ResourceBaseViewSet(DynamicModelViewSet):

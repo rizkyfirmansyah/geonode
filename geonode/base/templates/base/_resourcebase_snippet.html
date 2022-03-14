@@ -34,8 +34,11 @@
                 <span class="item-category" ng-if="item.has_time">
                   {% endverbatim %}
                   <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 8px;"></i>{% trans "Temporal Serie" %}<br>
-                  {% verbatim %}
+                  {% verbatim %}╕
                 </span>
+                  <span class="item-category">
+                    <i id="download_icon" class="fa {{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color: {{ resources(item.id)[0].color }};"> {{ resources(item.id)[0].perms }} </i>
+                  </span>
               <h4>
                   <i ng-if="item.store_type == 'remoteStore'" title="Remote Service" class="fa fa-external-link fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
                   <i ng-if="item.store_type == 'dataStore'" title="Vector Data" class="fa fa-pencil-square-o fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
