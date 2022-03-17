@@ -393,7 +393,7 @@ class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, 
   class Meta:
       model = ResourceBase
       name ='resource'
-      view_name = 'simple-resources-list'
+      view_name = 'base-resources-list'
       fields = ('pk', 'resource_type', 'perms', 'title')
       excludes = ['favorite', 'links']
       ordering = ("-pk",)

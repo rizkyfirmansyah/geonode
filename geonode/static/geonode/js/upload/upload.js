@@ -6,11 +6,12 @@
 var layers = {};
 
 define(['underscore',
-        './LayerInfo',
-        './FileTypes',
-        './path',
-        './common',
-        'text!templates/upload.html'], function (_, LayerInfo, fileTypes, path, common, uploadTemplate) {
+    './LayerInfo',
+    './FileTypes',
+    './path',
+    './common',
+    'text!templates/upload.html'
+], function(_, LayerInfo, fileTypes, path, common, uploadTemplate) {
 
     var templates = {},
         findFileType,
@@ -40,7 +41,7 @@ define(['underscore',
      *  @params {options}
      *  @returns {string}
      */
-    log_error = function (options) {
+    log_error = function(options) {
         $('#global-errors').append(templates.errorTemplate(options));
     };
 
@@ -49,7 +50,7 @@ define(['underscore',
      *
      *  @returns {string}
      */
-    info = function (options) {
+    info = function(options) {
         return templates.infoTemplate(options);
     };
 
@@ -59,12 +60,12 @@ define(['underscore',
      * @params {File}
      * @returns {object}
      */
-    findFileType = function (file) {
+    findFileType = function(file) {
         var i, type;
         for (i = 0; i < types.length; i += 1) {
             type = types[i];
             if (type.isType(file)) {
-                return {type: type, file: file};
+                return { type: type, file: file };
             }
         }
     };
@@ -75,7 +76,7 @@ define(['underscore',
      *  @params
      *  @returns
      */
-    buildFileInfo = function (files) {
+    buildFileInfo = function(files) {
         var name, info;
 
         for (name in files) {
@@ -88,12 +89,12 @@ define(['underscore',
                     info.displayFiles();
                 } else {
                     // if (Object.keys(layers).length == 0) {
-                        info = new LayerInfo({
-                            name: name,
-                            files: files[name]
-                        });
-                        info.collectErrors();
-                        layers[name] = info;
+                    info = new LayerInfo({
+                        name: name,
+                        files: files[name]
+                    });
+                    info.collectErrors();
+                    layers[name] = info;
                     /* } else {
                         log_error({
                             title: 'Wrong selection',
@@ -110,7 +111,7 @@ define(['underscore',
      *  @params
      *  @returns
      */
-    displayFiles = function (file_queue) {
+    displayFiles = function(file_queue) {
         file_queue.empty();
 
         var permission_edit = $("#permission-edit")
@@ -118,22 +119,22 @@ define(['underscore',
         permission_edit.show();
         var hasFullPermissionsWidget = false;
 
-        $.each(layers, function (name, info) {
+        $.each(layers, function(name, info) {
             if (!info.type) {
                 log_error({
                     title: 'Unsupported type',
-                    message: interpolate(gettext('The file %s is an unsupported file type, please select another file.'),[info.files[0].name])
+                    message: interpolate(gettext('The file %s is an unsupported file type, please select another file.'), [info.files[0].name])
                 });
                 delete layers[name];
             } else {
                 info.display(file_queue);
-                if(info.type.format=='vector'){
+                if (info.type.format == 'vector') {
                     hasFullPermissionsWidget = true;
                 };
             }
         });
 
-        if(!hasFullPermissionsWidget){permission_edit.hide()};
+        if (!hasFullPermissionsWidget) { permission_edit.hide() };
     };
 
     /** Function to ...
@@ -141,13 +142,13 @@ define(['underscore',
      *  @params
      *  @returns
      */
-    checkFiles = function(){
+    checkFiles = function() {
         var files = layers[Object.keys(layers)[0]]['files'];
         var types = [];
-        for (var i = 0; i<files.length; i++){
+        for (var i = 0; i < files.length; i++) {
             var base_name = files[i].name.split('.')[0].replace(/\[|\]|\(|\)| /g, '_');
             var ext = files[i].name.split('.').pop().toLowerCase();
-            if ($.inArray(ext,types) == -1){
+            if ($.inArray(ext, types) == -1) {
                 types.push(ext);
             }
 
@@ -175,34 +176,32 @@ define(['underscore',
 
         }
         var matched = false;
-        for (var file_type in fileTypes){
+        for (var file_type in fileTypes) {
             var required = fileTypes[file_type]['requires'];
-            if ($(required).not(types).length == 0){
+            if ($(required).not(types).length == 0) {
                 matched = true;
                 break;
-            }
-            else{
+            } else {
                 matched = false;
             }
         }
         return matched;
     }
 
-    doSrs = function (event) {
+    doSrs = function(event) {
         var form = $("#srsForm")
         $.ajax({
-           type: "POST",
-           mode: "queue",
-           url: siteUrl + 'upload/srs',
-           data: form.serialize(), // serializes the form's elements.
-           success: function(data)
-           {
-               if('redirect_to' in data) {
+            type: "POST",
+            mode: "queue",
+            url: siteUrl + 'upload/srs',
+            data: form.serialize(), // serializes the form's elements.
+            success: function(data) {
+                if ('redirect_to' in data) {
                     common.make_request({
                         url: data.redirect_to,
                         async: false,
-                        failure: function (resp, status) {common.logError(resp); },
-                        success: function (resp, status) {
+                        failure: function(resp, status) { common.logError(resp); },
+                        success: function(resp, status) {
                             window.location = resp.url;
                         }
                     });
@@ -211,17 +210,17 @@ define(['underscore',
                 } else {
                     common.logError("unexpected response");
                 }
-           },
-           failure: function (resp, status) {
+            },
+            failure: function(resp, status) {
                 common.logError(resp);
-           }
+            }
         });
         return false;
     };
 
     /** Function to Upload the selected files to the server
      */
-    doUpload = function (layers) {
+    doUpload = function(layers) {
         if (layers.length > 0) {
             layers[0].uploadFiles(doUpload, layers.slice(1, layers.length));
         }
@@ -231,7 +230,7 @@ define(['underscore',
      *
      *  @returns false
      */
-    doUploads = function () {
+    doUploads = function() {
         if ($.isEmptyObject(layers)) {
             common.logError('Please provide some files');
             return false;
@@ -246,7 +245,7 @@ define(['underscore',
             }); */
 
             var layerInfos = [];
-            $.each(layers, function (name, layerinfo) {
+            $.each(layers, function(name, layerinfo) {
                 layerInfos.push(layerinfo);
             });
             doUpload(layerInfos);
@@ -282,39 +281,42 @@ define(['underscore',
         var lastUploadsIds = [];
         var uploads = [];
         var loading = false;
+        var total;
 
         function getUploadItems(options) {
             $.ajax({
-                url: options.url || siteUrl + 'api/v2/uploads?filter{-state}=PROCESSED&page=1&page_size=99999',
-                async: false,
-                mode: 'queue',
-                contentType: false,
-            })
-                .done(function (response) {
+                    url: options.url || siteUrl + 'api/v2/uploads?filter{-state}=PROCESSED&page=1&page_size=99999',
+                    async: false,
+                    mode: 'queue',
+                    contentType: false,
+                })
+                .done(function(response) {
                     if (options.resolve) {
                         options.resolve(response);
                     }
+                    total = response.total;
                 })
-                .fail(function (error) {
+                .fail(function(error) {
                     if (options.reject) {
                         options.reject(error);
                     }
                 });
+
         }
 
         function handleDelete(options) {
             $.ajax({
-                url: options.url,
-                async: false,
-                mode: 'queue',
-                contentType: false,
-            })
-                .done(function () {
+                    url: options.url,
+                    async: false,
+                    mode: 'queue',
+                    contentType: false,
+                })
+                .done(function() {
                     if (render) {
                         render(true);
                     }
                 })
-                .fail(function () {});
+                .fail(function() {});
         }
 
         function progressBar(properties) {
@@ -346,15 +348,15 @@ define(['underscore',
             tbody.appendChild(row);
 
             const name = document.createElement('td');
-            name.innerHTML = properties.state === 'PROCESSED' && properties.detail_url
-                ? '<a href="' + properties.detail_url + '" target="_blank" rel="noopener noreferrer">' + properties.name + '</a>'
-                : properties.name;
+            name.innerHTML = properties.state === 'PROCESSED' && properties.detail_url ?
+                '<a href="' + properties.detail_url + '" target="_blank" rel="noopener noreferrer">' + properties.name + '</a>' :
+                properties.name;
             row.appendChild(name);
 
             const date = document.createElement('td');
-            date.innerHTML = properties.create_date
-                ? new Date(properties.create_date).toLocaleString()
-                : 'none';
+            date.innerHTML = properties.create_date ?
+                new Date(properties.create_date).toLocaleString() :
+                'none';
             row.appendChild(date);
 
             const progressPercentage = Math.round(properties.progress) + '%';
@@ -363,7 +365,7 @@ define(['underscore',
             row.appendChild(progress);
             progressBar({ parent: progress, width: progressPercentage });
 
-            switch(properties.state) {
+            switch (properties.state) {
                 case 'PENDING':
                     progress.setAttribute('class', 'warning');
                     break;
@@ -391,7 +393,7 @@ define(['underscore',
                 resumeTool.setAttribute('data-toggle', 'tooltip');
                 resumeTool.setAttribute('data-placement', 'top');
                 resumeTool.innerHTML = '<i class="fa fa-play"></i>';
-                resumeTool.onclick = function () { window.location = properties.resume_url; };
+                resumeTool.onclick = function() { window.location = properties.resume_url; };
                 infoTools.appendChild(resumeTool);
                 $(resumeTool).tooltip();
             } else {
@@ -444,7 +446,6 @@ define(['underscore',
         }
 
         render = function(request) {
-
             loading = true;
 
             function updateRenderedNodes() {
@@ -455,11 +456,11 @@ define(['underscore',
                 var items = [].concat(uploads).concat(processed);
 
                 items.sort(function(a, b) {
-                    return (a.create_date < b.create_date)
-                        ? 1
-                        : ((a.create_date > b.create_date)
-                            ? -1
-                            : 0)
+                    return (a.create_date < b.create_date) ?
+                        1 :
+                        ((a.create_date > b.create_date) ?
+                            -1 :
+                            0)
                 });
 
                 maxPage = Math.ceil(items.length / pageSize);
@@ -490,7 +491,7 @@ define(['underscore',
                     resolve: function(response) {
 
                         uploads = response.uploads || [];
-                        
+
                         // in case the upload ID is already present in the processed list
                         // is removed from the processed in order to avoid row duplication
                         // row duplication usually occours with async flow activated
@@ -510,7 +511,7 @@ define(['underscore',
                         for (var i = 0; i < uploads.length; i++) {
                             currentUploadIds.push(uploads[i].id);
                         }
-    
+
                         var diffUploadIds = [];
                         for (var i = 0; i < lastUploadsIds.length; i++) {
                             if (currentUploadIds.indexOf(lastUploadsIds[i]) === -1) {
@@ -535,7 +536,7 @@ define(['underscore',
                                         if (diffUploadIds.indexOf(processedUploads[i].id) !== -1) {
                                             processed.push(processedUploads[i]);
                                         }
-                                    } 
+                                    }
                                     updateRenderedNodes();
                                 },
                                 reject: function() {
@@ -544,6 +545,7 @@ define(['underscore',
                             });
                         } else {
                             updateRenderedNodes();
+                            render(false);
                         }
                     },
                     reject: function(error) {
@@ -565,10 +567,10 @@ define(['underscore',
         }
 
         if (removeModal) {
-            $(removeModal).on('hide.bs.modal', function (e) {
+            $(removeModal).on('hide.bs.modal', function(e) {
                 selected = null;
             });
-            removeModalButton.onclick = function () {
+            removeModalButton.onclick = function() {
                 handleDelete(selected);
                 selected = null;
                 $(removeModal).modal('hide');
@@ -590,10 +592,9 @@ define(['underscore',
         });
 
         render(true);
-        // continuously request update for the current page to the api
-        // and re-render the table
+        // re-render the table if there are pending uploads
         setInterval(function() {
-            if (!loading) {
+            if (total > 0) {
                 render(true);
             }
         }, intervalTime);
@@ -604,11 +605,11 @@ define(['underscore',
      *  @params
      *  @returns
      */
-    initialize = function (options) {
+    initialize = function(options) {
         var file_input = document.getElementById('file-input'),
             dropZone = document.querySelector(options.dropZone),
             file_queue = $(options.file_queue),
-            doClearState = function () {
+            doClearState = function() {
                 // http://stackoverflow.com/questions/1043957/clearing-input-type-file-using-jquery/13351234#13351234
                 $("#file-input").wrap('<form>').closest('form').get(0).reset();
                 $("#file-input").unwrap();
@@ -617,11 +618,11 @@ define(['underscore',
                 // redraw the file display view
                 displayFiles(file_queue);
             },
-            runUpload = function (files) {
+            runUpload = function(files) {
                 buildFileInfo(_.groupBy(files, path.getName));
                 displayFiles(file_queue);
             },
-            handleDragOver = function (e) {
+            handleDragOver = function(e) {
                 // this seems to be required in order for dragging and dropping to work
                 e.stopPropagation();
                 e.preventDefault();
@@ -632,13 +633,13 @@ define(['underscore',
         // setup the drop zone target
         dropZone.addEventListener('dragover', handleDragOver, false);
 
-        dropZone.addEventListener('drop', function (e) {
+        dropZone.addEventListener('drop', function(e) {
             e.preventDefault();
             var files = e.dataTransfer.files;
             runUpload(files);
         });
 
-        $(options.form).change(function (event) {
+        $(options.form).change(function(event) {
             // this is a mess
             buildFileInfo(_.groupBy(file_input.files, path.getName));
             displayFiles(file_queue);
@@ -646,7 +647,7 @@ define(['underscore',
             $('#file-uploader').get(0).reset();
         });
         // Detect click on "Remove" link and update the file_queue
-        $(options.file_queue).on('click', '.remove-file', function () {
+        $(options.file_queue).on('click', '.remove-file', function() {
             displayFiles(file_queue);
         });
         $(options.clear_button).on('click', doClearState);
