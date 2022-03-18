@@ -1,22 +1,14 @@
 {% load i18n %}
 
 <div class="search col-md-9">
-  <form id="search" action="{% url "search" %}" >
-    <span class="fa fa-search"></span>
-    <div id="search-container" class="autocomplete-input">
-      {% if HAYSTACK_SEARCH %}
-      <input autocomplete="off" id="search_input" type="text" placeholder="{% trans 'Search' %}" name="q">
-      <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
-      <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
-      <input type="hidden" name="f_method" id="filtering_type" value="or" >
-      <span class="input-highlight"></span>
-      {% else %}
-      <input autocomplete="off" type="text" name="title__icontains" id="search_input" placeholder="{% trans 'Search' %}" >
-      <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
-      <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
-      <input type="hidden" name="f_method" id="filtering_type" value="or" >
-      <span class="input-highlight"></span>
-      {% endif %}
+  <form class="autocomplete-input input-group" id="text-search-autocomplete">
+    <span class="input-group-btn">
+      <button class="search_resources" type="submit" id="text_search_btn"><i class="fa fa-search"></i></button>
+    </span>
+    {% csrf_token %}
+    <div id="text-search-container">
+      <input autocomplete="off"  ng-model="text_query"  type="text" name="text_search_input" id="text_search_input" placeholder="{% trans 'Search' %}" >
+	  <span class="input-highlight"></span>
     </div>
   </form>
 </div>
@@ -24,8 +16,8 @@
 {% block extra_script %}
 <script text="text/javascript">
   $(function() {
-    $("#search_input").on("change keyup paste click", function(){
-        let _length = $("#search_input").val().length;
+    $("#text_search_input").on("change keyup paste click", function(){
+        let _length = $("#text_search_input").val().length;
         let _width = (_length * 1.06) + 'em';
         if (_length > 0) {
           $(".input-highlight").css("width", _width);
@@ -53,7 +45,7 @@
     var title = getUrlParameter('title__icontains');
     
     if (title) {
-      $("#search_input").val(title);
+      $("#text_search_input").val(title);
     }
   });
 </script>
