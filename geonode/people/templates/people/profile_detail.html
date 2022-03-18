@@ -31,7 +31,7 @@
   {% autoescape off %}{% avatar profile 240 %}{% endautoescape %}
 </div>
 
-<div class="col-xs-9 col-md-7 profile-details">
+<div class="col-xs-9 col-md-9 profile-details">
 
 {% if user.is_authenticated %}
 {% if user == profile %}
@@ -171,7 +171,7 @@
   {% endif %}
 </div>
 
-<div class="col-xs-12 col-md-9">
+<div class="col-xs-12 col-md-9 profile-resources">
   <h4>{% trans "Resources" %}</h4>
   <div class="col-md-12">
     {% include "people/_profile_filters.html" %}
