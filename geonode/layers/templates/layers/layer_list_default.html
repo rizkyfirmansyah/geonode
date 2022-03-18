@@ -8,11 +8,31 @@
 
 {% block body %}
   <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
-  <div class="page-header">
+  <div class="page-header col-md-12">
     {% if user.is_authenticated and not READ_ONLY_MODE %}
-      <a href="{% url "layer_upload" %}" class="btn btn-primary pull-right">{% trans "Upload Layers" %}</a>
+      <a href="{% url "layer_upload" %}" class="btn btn-primary pull-right col-md-3">{% trans "Upload Layers" %}</a>
     {% endif %}
-    <h2 class="page-title">{% trans "Explore Spatial Data" %}</h2>
+    <div class="search col-md-9">
+      <form id="search" action="{% url "search" %}" >
+        <span class="fa fa-search"></span>
+        <div id="search-container" class="autocomplete-input">
+          {% if HAYSTACK_SEARCH %}
+          <input autocomplete="off" id="search_input" type="text" placeholder="{% trans 'Search' %}" name="q">
+          <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
+          <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
+          <input type="hidden" name="f_method" id="filtering_type" value="or" >
+          <span class="input-highlight"></span>
+          {% else %}
+          <input autocomplete="off" type="text" name="title__icontains" id="search_input" placeholder="{% trans 'Search' %}" >
+          <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
+          <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
+          <input type="hidden" name="f_method" id="filtering_type" value="or" >
+          <span class="input-highlight"></span>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+    {% comment %} <h2 class="page-title">{% trans "Explore Spatial Data" %}</h2> {% endcomment %}
   </div>
   {% with include_type_filter='true' %}
     {% with header='Type' %}
@@ -47,6 +67,17 @@
         $("#jump_to_top").click(function() {
           $('html, body').animate({ scrollTop: 0 }, 'fast');
         });
+
+        $("#search_input").on("change keyup paste click", function(){
+            let _length = $("#search_input").val().length;
+            let _width = (_length * 1.06) + 'em';
+            if (_length > 0) {
+              $(".input-highlight").css("width", _width);
+            } else {
+              $(".input-highlight").css("width", '0em');
+            }
+        });
+
     });
   </script>
   {% with include_spatial='true' %}
