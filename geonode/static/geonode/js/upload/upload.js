@@ -379,6 +379,12 @@ define(['underscore',
                     break;
             }
 
+            const metadata = document.createElement('td');
+            metadata.innerHTML = properties.state === 'PROCESSED' && properties.detail_url ?
+                '<a href="' + properties.detail_url + '/metadata" target="_blank" rel="noopener noreferrer">' + 'Metadata ' + properties.name + '</a>' :
+                '<i class="fa fa-circle-o-notch fa-spin">';
+            row.appendChild(metadata);
+
             const infoTools = document.createElement('td');
             infoTools.setAttribute('class', 'text-center');
             infoTools.style.verticalAlign = 'middle';
@@ -594,7 +600,7 @@ define(['underscore',
         render(true);
         // re-render the table if there are pending uploads
         setInterval(function() {
-            if (total > 0) {
+            if (!loading) {
                 render(true);
             }
         }, intervalTime);

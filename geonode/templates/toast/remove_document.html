@@ -1,45 +1,43 @@
-{% load i18n %}
-{% load static from staticfiles %}
-{% load document_tags %}
-
-{% block extra_script %}
+{% load i18n %} {% load static from staticfiles %} {% load document_tags %} {% block extra_script %}
 
 <script type="text/javascript">
-  $(document).ready(function() {
+    $(document).ready(function() {
 
-    let csrftoken = Cookies.get('csrftoken');
+        let csrftoken = Cookies.get('csrftoken');
 
-    $('#remove_document').submit(function(e) {
-      const resource_id = '{{ resource.id }}';
-      const resource_title = '{{ resource.title }}';
-      e.preventDefault();
-      $.ajax({
-        data: {'docid': resource_id},
-        type: $(this).attr('method'),
-        method: 'POST',
-        url: `{% url "document_remove" %}`,
-        headers: {
-          "X-CSRFToken": csrftoken
-        },
-        success: function(res) {
-          let msg = "Your " + resource_title + " has been deleted.";
-          let title = "Download Resource";
-          const $toast = toastr["success"](msg, title);
-          toastr.options = {
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": true
-          }
-        }
-      }).done(function() {
-        setInterval(function(){
-          location.href = "{% url 'document_browse' %}";
-        }, 1000);
-      });
-      return false;
+        $('#remove_document').submit(function(e) {
+            const resource_id = '{{ resource.id }}';
+            const resource_title = '{{ resource.title }}';
+            e.preventDefault();
+            $.ajax({
+                data: {
+                    'docid': resource_id
+                },
+                type: $(this).attr('method'),
+                method: 'POST',
+                url: `{% url "document_remove" %}`,
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                success: function(res) {
+                    let msg = "Your " + resource_title + " has been deleted.";
+                    let title = "Delete Resource";
+                    const $toast = toastr["success"](msg, title);
+                    toastr.options = {
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": true
+                    }
+                }
+            }).done(function() {
+                setInterval(function() {
+                    location.href = "{% url 'document_browse' %}";
+                }, 1000);
+            });
+            return false;
+        });
+
     });
-
-  });
 </script>
 {% endblock extra_script %}

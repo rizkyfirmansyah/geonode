@@ -5456,7 +5456,8 @@ footer #footer-language {
  *
 */
 
-.row .list-group {
+.list-group,
+.list-group-item {
     border: 1px solid #c0c0c0;
 }
 
@@ -6864,6 +6865,7 @@ footer form {
     top: -10px;
     position: relative;
     min-height: 90px;
+    width: 75%;
 }
 
 .profile-details .group-logo {
@@ -6922,8 +6924,6 @@ nav.filter li a {
 #sort {
     cursor: pointer;
     margin-bottom: 20px;
-    left: -35px;
-    position: relative;
 }
 
 #sort a {
@@ -7379,4 +7379,21 @@ span.icon.node-icon:before {
 .node-treeview:not(.node-disabled):hover {
     color: #fdba12 !important;
     background-color: transparent !important;
+}
+
+#removeLayersModal,
+#removeDocumentsModal {
+    position: absolute;
+    overflow: hidden !important;
+    top: 30%;
+}
+
+#removeLayersModal h3,
+#removeDocumentsModal h3 {
+    padding: 2rem 0 2rem 0;
+    margin-bottom: .4rem;
+}
+
+.upload-progress-table {
+    width: 95% !important;
 }

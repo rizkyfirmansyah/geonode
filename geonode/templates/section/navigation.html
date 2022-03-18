@@ -20,7 +20,7 @@
 
     <ul class="col-lg-12 list-unstyled text-right">
       {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
-        <li class="d-inline" id="logged-in"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login" %} </a></li>
+        <li class="d-inline" id="logged-in"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login/Register" %} </a></li>
       {% elif user.is_authenticated %}
           <li>
             <a href="#" class="avatar" id="logged-out">

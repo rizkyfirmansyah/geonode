@@ -1396,27 +1396,41 @@ def layer_remove(request):
         logger.debug(f'Deleting Layer {layer}')
         with transaction.atomic():
             Layer.objects.filter(id=layer.id).delete()
-        out = {'success': True}
-        out['status_code'] = 200
 
         register_event(request, 'remove', layer)
 
+        response = {
+            'success': True,
+            'status_code': 200
+        }
+        return HttpResponse(json.dumps(
+                response,
+            ),
+            content_type='application/javascript')
+
     except PermissionDenied:
-        out = {'success': False}
-        out['status_code'] = 403
+        response = {
+            'success': False,
+            'status_code': 403
+        }
+        return HttpResponse(json.dumps(
+                response,
+            ),
+            content_type='application/javascript')
 
     except Exception:
         traceback.print_exc()
         message = f'{_("Unable to delete layer")}: {layer.alternate}.'
-        if getattr(e, 'message', None) and 'referenced by layer group' in getattr(e, 'message', ''):
-            message = _(
-                'This layer is a member of a layer group, you must remove the layer from the group '
-                'before deleting.')
 
-        messages.error(request, message)
-        out = {'success': False}
-        out['status_code'] = 500
-        out['message'] = message
+        response = {
+            'success': False,
+            'status_code': 500,
+            'message': message
+        }
+        return HttpResponse(json.dumps(
+                response,
+            ),
+            content_type='application/javascript')
 
     return render(request, 'layers/layer_list.html')
 

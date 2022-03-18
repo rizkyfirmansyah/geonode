@@ -103,7 +103,7 @@
                 response.data.resources.map(function(value) {
                     array.push({
                         "pk": value.pk,
-                        "perms": value.perms.includes("download_resourcebase") ? "Available to download" : "Not available to download",
+                        "perms": value.perms.includes("download_resourcebase") ? "Available for download" : "Not available for download",
                         "icon": value.perms.includes("download_resourcebase") ? "fa-download" : "fa-ban",
                         "color": value.perms.includes("download_resourcebase") ? "#0000FF" : "#D3D3D3"
                     });
