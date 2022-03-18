@@ -3768,10 +3768,6 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     width: 95%;
 }
 
-#text-search-autocomplete {
-    margin-bottom: 1rem !important;
-}
-
 #text-search-container>input,
 #region-search-container>input {
     width: 100%;
@@ -6200,6 +6196,24 @@ form-inline {
 
 /** Autocomplete styling **/
 
+.delete_search {
+    padding: 0 8px;
+    display: flex;
+    float: right;
+    position: relative;
+    top: -3rem;
+}
+
+.dlt_span {
+    width: 36px;
+}
+
+.dlt_span svg {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
 .autocomplete-input .ac-results {
     position: absolute;
     display: block;
@@ -6209,6 +6223,7 @@ form-inline {
     z-index: 999;
     background-color: white;
     left: 6rem;
+    width: 90% !important;
 }
 
 .input-highlight {
@@ -6222,6 +6237,7 @@ form-inline {
     color: transparent;
     overflow: hidden;
     margin-left: 6.9rem;
+    top: 8rem;
 }
 
 #btn_wrapper {
@@ -7518,7 +7534,6 @@ span.icon.node-icon:before {
     font-size: 4rem;
     float: left;
     position: relative;
-    top: .8rem;
 }
 
 #text_search_btn:hover {
@@ -7541,6 +7556,7 @@ span.icon.node-icon:before {
 
 #resources_list {
     margin-bottom: 1em;
+    padding-bottom: 0;
 }
 
 #resources_list a.btn:nth-of-type(1) {
