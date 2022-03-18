@@ -97,6 +97,12 @@
   };
 
   $(function() {
+
+    // set loading bar with pace whenever ajax start
+    $(document).ajaxStart(function() {
+      Pace.restart();
+    });
+
     $('#permissions-body').ready(function(){
       {% if resource %}
       $.ajax(

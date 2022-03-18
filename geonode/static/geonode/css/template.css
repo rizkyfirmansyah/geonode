@@ -7397,6 +7397,10 @@ span.icon.node-icon:before {
     margin-bottom: .4rem;
 }
 
+#download-layer li.active {
+    color: white !important;
+}
+
 .upload-progress-table {
     width: 95% !important;
 }
