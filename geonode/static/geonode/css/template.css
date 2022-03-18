@@ -7495,8 +7495,23 @@ span.icon.node-icon:before {
 }
 
 .search .fa.fa-search {
-    font-size: 3.5rem;
+    font-size: 4rem;
     float: left;
+    position: relative;
+    top: .8rem;
+}
+
+span .fa-search:hover {
+    cursor: pointer;
+}
+
+#resources_list {
+    margin-bottom: 1em;
+}
+
+#resources_list+a {
+    height: 3em;
+    line-height: 1 !important;
 }
 
 .input-highlight {

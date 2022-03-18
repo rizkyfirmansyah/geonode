@@ -8,31 +8,13 @@
 
 {% block body %}
   <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
-  <div class="page-header col-md-12">
+  <div class="page-header col-md-12" id="resources_list">
     {% if user.is_authenticated and not READ_ONLY_MODE %}
       <a href="{% url "layer_upload" %}" class="btn btn-primary pull-right col-md-3">{% trans "Upload Layers" %}</a>
     {% endif %}
-    <div class="search col-md-9">
-      <form id="search" action="{% url "search" %}" >
-        <span class="fa fa-search"></span>
-        <div id="search-container" class="autocomplete-input">
-          {% if HAYSTACK_SEARCH %}
-          <input autocomplete="off" id="search_input" type="text" placeholder="{% trans 'Search' %}" name="q">
-          <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
-          <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
-          <input type="hidden" name="f_method" id="filtering_type" value="or" >
-          <span class="input-highlight"></span>
-          {% else %}
-          <input autocomplete="off" type="text" name="title__icontains" id="search_input" placeholder="{% trans 'Search' %}" >
-          <input type="hidden" name="abstract__icontains" id="search_abstract_input" placeholder="{% trans 'Search' %}" >
-          <input type="hidden" name="purpose__icontains" id="search_purpose_input" placeholder="{% trans 'Search' %}" >
-          <input type="hidden" name="f_method" id="filtering_type" value="or" >
-          <span class="input-highlight"></span>
-          {% endif %}
-        </div>
-      </form>
-    </div>
-    {% comment %} <h2 class="page-title">{% trans "Explore Spatial Data" %}</h2> {% endcomment %}
+    {% if SEARCH_FILTERS.TEXT_ENABLED %}
+      {% include "search/_text_container.html" %}
+    {% endif %}
   </div>
   {% with include_type_filter='true' %}
     {% with header='Type' %}
