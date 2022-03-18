@@ -6,9 +6,9 @@
 
 {% block body %}
   <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
-  <div class="page-header">
+  <div class="page-header col-md-12" id="resources_list">
     {% if not READ_ONLY_MODE %}
-      <a href="{% url "new_map" %}" class="btn btn-primary pull-right">{% trans "Create a New Map" %}</a>
+      <a href="{% url "new_map" %}" class="btn btn-primary pull-right col-md-3">{% trans "Create a New Map" %}</a>
     {% endif %}
     {% if SEARCH_FILTERS.TEXT_ENABLED %}
       {% include "search/_text_container.html" %}
@@ -30,22 +30,6 @@
           SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='maps' %}';
       {% endif %}
       FILTER_TYPE = 'map';
-
-    $(function() {
-      $('#jump_to_top').hide();
-      $(window).scroll(function() {
-          if ($(document).scrollTop() > 700) {
-            $('#jump_to_top').show();
-            $('#jump_to_top').animate({ scrollTop: 0 }, 'fast');
-          }
-          else {
-            $('#jump_to_top').hide();
-          }
-      });
-      $("#jump_to_top").click(function() {
-        $('html, body').animate({ scrollTop: 0 }, 'fast');
-      });
-    });
   </script>
   {% with include_spatial='true' %}
   {% include 'search/search_scripts.html' %}
