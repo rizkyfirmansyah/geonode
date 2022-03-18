@@ -6247,6 +6247,10 @@ form-inline {
     margin-left: 0px;
 }
 
+#basicDescriptiveInfo #id_crop_entry {
+    max-width: 260px;
+}
+
 .inbox-checkbox label {
     cursor: pointer;
     position: relative;
@@ -7439,7 +7443,8 @@ span.icon.node-icon:before {
 }
 
 #basicDescriptiveInfo div input,
-#basicDescriptiveInfo div textarea {
+#basicDescriptiveInfo div textarea,
+#req_item {
     width: 95% !important;
 }
 
