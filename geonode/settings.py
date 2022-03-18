@@ -1607,7 +1607,7 @@ SEARCH_FILTERS = {
 # HTML WYSIWYG Editor (TINYMCE) Menu Bar Settings
 TINYMCE_DEFAULT_CONFIG = {
     "theme": "silver",
-    "height": 200,
+    "height": 340,
     "plugins": 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',  # noqa
     "imagetools_cors_hosts": ['picsum.photos'],
     "menubar": 'file edit view insert format tools table help',
