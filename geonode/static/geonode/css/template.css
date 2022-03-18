@@ -3802,17 +3802,17 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
 .btn-search {
     position: relative;
     left: 0;
-    height: 100%;
     background: transparent;
     border: 0;
     padding: 0;
     cursor: pointer;
+    top: 7rem;
 }
 
 .btn-search>svg {
     fill: #fff;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
 }
 
 .search-field form input {
