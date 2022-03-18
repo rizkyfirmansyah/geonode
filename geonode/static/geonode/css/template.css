@@ -7397,3 +7397,62 @@ span.icon.node-icon:before {
 .upload-progress-table {
     width: 95% !important;
 }
+
+#profileCompleteness {
+    position: relative;
+    float: right;
+    top: -5rem;
+    margin-bottom: 0px;
+}
+
+.container .container-fluid {
+    padding: 0px !important;
+    max-height: 180px;
+}
+
+.form-metadata {
+    text-align: left !important;
+}
+
+#preview_tab .fa {
+    margin-right: .8rem;
+}
+
+#mdinfo div,
+#cdinfo div {
+    padding: 0 .8rem 0 0 !important;
+}
+
+#layer-attributes-panel {
+    margin-top: 2rem;
+}
+
+#mandatory .panel-body {
+    padding: 0px !important;
+}
+
+#basicDescriptiveInfo div input,
+#basicDescriptiveInfo div textarea {
+    width: 95% !important;
+}
+
+#edit-metadata div.panel-default:nth-of-type(1) {
+    margin-right: 1rem !important;
+}
+
+#edit-metadata div.panel-default:nth-of-type(2) {
+    margin-left: 1rem !important;
+}
+
+#metadata_edit_tab a {
+    margin-bottom: .8rem;
+}
+
+.fstChoiceRemove {
+    position: relative !important;
+}
+
+#regions_multiselect_container .fstChoiceItem {
+    padding: 5px !important;
+    margin: 5px !important;
+}
