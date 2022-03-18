@@ -7463,3 +7463,7 @@ span.icon.node-icon:before {
     padding: 5px !important;
     margin: 5px !important;
 }
+
+#edit-metadata label[for^='id_resource'] {
+    padding: .8rem !important;
+}
