@@ -59,9 +59,9 @@
             </a>
         </div>
       {% elif resource.doc_file %}
-      <p><a href="{% url "document_link" resource.id %}" target="_blank">{% trans "Download the" %} {{ resource }} {% trans "BigTIFF/Non-Spatial Data" %}</a></p>
+      <p><a href="{% url "document_link" resource.id %}" target="_blank">{% trans "Download the" %} {{ resource }}</a></p>
       {% elif  resource.doc_url %}
-      <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }} {% trans "BigTIFF/Non-Spatial Data" %}.</a> <small>({% trans 'External Resource' %})</small></p>
+      <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }}.</a> <small>({% trans 'External Resource' %})</small></p>
       {%  endif %}
     {%  endif %}
 
@@ -119,13 +119,12 @@
 
   <div class="col-md-4">
 
-    <li class="list-group-item">
+    <ul class="list-group">
+      <li class="list-group-item">
         <a href="{% url "document_metadata_detail" resource.id %}">
             <button class="btn btn-primary btn-md btn-block">{% trans "Metadata Detail" %}</button>
         </a>
-    </li>
-
-    <ul class="list-group">
+      </li>
       <li class="list-group-item">
       {% if "download_resourcebase" in perms_list %}
         {% if resource.extension|lower in imgtypes and resource.doc_file %}
@@ -156,51 +155,6 @@
                 </a>
             </li>
         {% endif %}
-      <div class="modal fade" id="edit-document" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">{% trans "Edit BigTIFF/Non-Spatial Data" %}</h4>
-            </div>
-            <div class="modal-body">
-
-                <div class="row edit-modal">
-                  {% if "change_resourcebase_metadata" in perms_list %}
-                  <div class="col-sm-3">
-                    <i class="fa fa-list-alt fa-3x"></i>
-                    <h4>{% trans "Metadata" %}</h4>
-                    <a class="btn btn-default btn-block btn-xs" href="{% url "document_metadata" resource.id %}">{% trans "Wizard" %}</a>
-                    <a class="btn btn-default btn-block btn-xs" href="{% url "document_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
-                  </div>
-                  {% endif %}
-                  {% if "change_resourcebase" in perms_list %}
-                  <div class="col-sm-3">
-                    <i class="fa fa-photo fa-3x"></i>
-                    <h4>{% trans "Thumbnail" %}</h4>
-                    <a class="btn btn-default btn-block btn-xs" href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
-                  </div>
-                  {% endif %}
-                  {% if "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}
-                  <div class="col-sm-3">
-                    <i class="fa fa-file-text-o fa-3x"></i>
-                    <h4>{% trans "BigTIFF/Non-Spatial Data" %}</h4>
-                    {% if "change_resourcebase" in perms_list %}
-                    <a class="btn btn-default btn-block btn-xs" href="{% url "document_replace" resource.id %}">{% trans "Replace" %}</a>
-                    {% endif %}
-                    {% if "delete_resourcebase" in perms_list %}
-                    <a class="btn btn-danger btn-block btn-xs" href="{% url "document_remove" resource.id %}">{% trans "Remove" %}</a>
-                    {% endif %}
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
       <li class="list-group-item">
         <button class="btn btn-default btn-md btn-block" data-toggle="modal" data-target="#download-metadata">{% trans "Download Metadata" %}</button>
@@ -245,7 +199,7 @@
         {% endif %}
         <ul class="list-unstyled">
           {% for resource in related %}
-          <li><a href="{{ resource.get_absolute_url }}">{{ resource.title }}</a></li>
+          <li><a href="{{ resource }}">{{ resource.title }}</a></li>
           {% empty %}
           <p>{% trans "This BigTIFF/Non-Spatial Data is not related to any maps or layers" %}</p>
           {% endfor %}

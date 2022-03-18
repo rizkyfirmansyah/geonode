@@ -7,10 +7,10 @@
 {% block body_class %}search{% endblock %}
 
 {% block body_outer %}
+  <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   <div class="page-header">
     <h2>{% trans "Search" %} <span ng-if="text_query != ''">:</span> <span ng-bind="text_query"></span></h2>
   </div>
-  <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   {% with include_type_filter='true' %}
   {% with header='Type' %}
   {% with filter='type__in' %}

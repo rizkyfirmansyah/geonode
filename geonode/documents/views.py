@@ -35,6 +35,7 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.views.generic.edit import UpdateView, CreateView
 from django.db.models import F
 from django.forms.utils import ErrorList
+from django.views.decorators.http import require_POST
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.decorators import check_keyword_write_perms
@@ -85,18 +86,39 @@ def document_detail(request, docid):
     """
     The view that show details of each document
     """
-    try:
-        document = _resolve_document(
-            request,
-            docid,
-            'base.view_resourcebase',
-            _PERMISSION_MSG_VIEW)
-    except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
-    except Exception:
-        raise Http404(_("Not found"))
-    if not document:
-        raise Http404(_("Not found"))
+    if request.method == 'POST':
+        try:
+            document = _resolve_document(
+                request,
+                docid,
+                'base.delete_resourcebase',
+                _PERMISSION_MSG_DELETE)
+            document.delete()
+            out['success'] = True
+            status_code = 200
+            register_event(request, EventType.EVENT_REMOVE, document)
+        
+            return render(
+                request,
+                "documents/document_list.html")
+
+        except PermissionDenied:
+            return HttpResponse(_("Not allowed"), status=403)
+        except Exception:
+            raise Http404(_("Not found"))
+    else:
+        try:
+            document = _resolve_document(
+                request,
+                docid,
+                'base.view_resourcebase',
+                _PERMISSION_MSG_VIEW)
+        except PermissionDenied:
+            return HttpResponse(_("Not allowed"), status=403)
+        except Exception:
+            raise Http404(_("Not found"))
+        if not document:
+            raise Http404(_("Not found"))
 
     permission_manager = ManageResourceOwnerPermissions(document)
     permission_manager.set_owner_permissions_according_to_workflow()
@@ -595,31 +617,37 @@ def document_search_page(request):
 
 
 @login_required
-def document_remove(request, docid, template='documents/document_remove.html'):
+@require_POST
+def document_remove(request):
+  
+    docid = request.POST['docid']
     try:
         document = _resolve_document(
             request,
             docid,
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
-    except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
-    except Exception:
-        raise Http404(_("Not found"))
-    if not document:
-        raise Http404(_("Not found"))
-
-    if request.method == 'GET':
-        return render(request, template, context={
-            "document": document
-        })
-    if request.method == 'POST':
+        logger.debug(f'Deleting Document {document}')
         document.delete()
+        out = {'success': True}
+        out['status_code'] = 200
+        
         register_event(request, EventType.EVENT_REMOVE, document)
-        return HttpResponseRedirect(reverse("document_browse"))
-    else:
-        return HttpResponse(_("Not allowed"), status=403)
 
+    except PermissionDenied:
+        out = {'success': False}
+        out['status_code'] = 403
+    
+    except Exception:
+        traceback.print_exc()
+        message = f'{_("Unable to delete document")}: {document.title}.'
+
+        messages.error(request, message)
+        out = {'success': False}
+        out['status_code'] = 500
+        out['message'] = message
+ 
+    return render(request, 'documents/document_list.html')
 
 def document_metadata_detail(
         request,

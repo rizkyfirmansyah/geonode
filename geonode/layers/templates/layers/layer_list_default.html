@@ -7,13 +7,13 @@
 {% block body_class %}{% trans "layers explore" %}{% endblock %}
 
 {% block body %}
-<div class="page-header">
-  {% if user.is_authenticated and not READ_ONLY_MODE %}
-    <a href="{% url "layer_upload" %}" class="btn btn-primary pull-right">{% trans "Upload Layers" %}</a>
-  {% endif %}
-  <h2 class="page-title">{% trans "Explore Spatial Data" %}</h2>
-</div>
   <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
+  <div class="page-header">
+    {% if user.is_authenticated and not READ_ONLY_MODE %}
+      <a href="{% url "layer_upload" %}" class="btn btn-primary pull-right">{% trans "Upload Layers" %}</a>
+    {% endif %}
+    <h2 class="page-title">{% trans "Explore Spatial Data" %}</h2>
+  </div>
   {% with include_type_filter='true' %}
     {% with header='Type' %}
       {% with filter='type__in' %}

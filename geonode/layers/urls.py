@@ -48,7 +48,7 @@ urlpatterns = [
         views.layer_metadata, name="layer_metadata"),
     url(r'^(?P<layername>[^/]*)/metadata_advanced$',
         views.layer_metadata_advanced, name="layer_metadata_advanced"),
-    url(r'^(?P<layername>[^/]*)/remove$',
+    url(r'^remove$',
         views.layer_remove, name="layer_remove"),
     url(r'^(?P<granule_id>[^/]*)/(?P<layername>[^/]*)/granule_remove$', views.layer_granule_remove,
         name="layer_granule_remove"),

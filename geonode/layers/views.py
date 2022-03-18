@@ -52,6 +52,7 @@ from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.http import require_POST
 
 from guardian.shortcuts import get_objects_for_user
 
@@ -1382,47 +1383,42 @@ def layer_append(request, layername, template='layers/layer_append.html'):
 
 
 @login_required
-def layer_remove(request, layername, template='layers/layer_remove.html'):
+@require_POST
+def layer_remove(request):
+
+    layername = request.POST['layername']
     try:
         layer = _resolve_layer(
             request,
             layername,
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
-    except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
-    except Exception:
-        raise Http404(_("Not found"))
-    if not layer:
-        raise Http404(_("Not found"))
-
-    if (request.method == 'GET'):
-        return render(request, template, context={
-            "layer": layer
-        })
-    if (request.method == 'POST'):
-        try:
-            logger.debug(f'Deleting Layer {layer}')
-            with transaction.atomic():
-                Layer.objects.filter(id=layer.id).delete()
-        except IntegrityError:
-            raise
-        except Exception as e:
-            traceback.print_exc()
-            message = f'{_("Unable to delete layer")}: {layer.alternate}.'
-            if getattr(e, 'message', None) and 'referenced by layer group' in getattr(e, 'message', ''):
-                message = _(
-                    'This layer is a member of a layer group, you must remove the layer from the group '
-                    'before deleting.')
-
-            messages.error(request, message)
-            return render(
-                request, template, context={"layer": layer})
+        logger.debug(f'Deleting Layer {layer}')
+        with transaction.atomic():
+            Layer.objects.filter(id=layer.id).delete()
+        out = {'success': True}
+        out['status_code'] = 200
 
         register_event(request, 'remove', layer)
-        return HttpResponseRedirect(reverse("layer_browse"))
-    else:
-        return HttpResponse("Not allowed", status=403)
+
+    except PermissionDenied:
+        out = {'success': False}
+        out['status_code'] = 403
+
+    except Exception:
+        traceback.print_exc()
+        message = f'{_("Unable to delete layer")}: {layer.alternate}.'
+        if getattr(e, 'message', None) and 'referenced by layer group' in getattr(e, 'message', ''):
+            message = _(
+                'This layer is a member of a layer group, you must remove the layer from the group '
+                'before deleting.')
+
+        messages.error(request, message)
+        out = {'success': False}
+        out['status_code'] = 500
+        out['message'] = message
+
+    return render(request, 'layers/layer_list.html')
 
 
 @login_required

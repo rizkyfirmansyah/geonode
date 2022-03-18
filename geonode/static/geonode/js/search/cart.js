@@ -98,10 +98,9 @@
 
         $http.get(siteUrl + 'api/v2/perms')
             .then(function(response) {
-                let resp = response.data.resources.filter(el => el.resource_type === "layer");
                 var array = [];
 
-                resp.map(function(value) {
+                response.data.resources.map(function(value) {
                     array.push({
                         "pk": value.pk,
                         "perms": value.perms.includes("download_resourcebase") ? "Available to download" : "Not available to download",

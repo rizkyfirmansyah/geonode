@@ -137,7 +137,7 @@ class SecurityTest(GeoNodeBaseTestSupport):
             reverse('maps_browse'),
             reverse('layer_browse'),
             reverse('layer_detail', kwargs=dict(layername='geonode:Test')),
-            reverse('layer_remove', kwargs=dict(layername='geonode:Test')),
+            # reverse('layer_remove', kwargs=dict(layername='geonode:Test')),
             reverse('profile_browse'),
         ]
 

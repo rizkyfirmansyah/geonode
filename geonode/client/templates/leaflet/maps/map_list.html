@@ -5,13 +5,13 @@
 {% block body_class %}maps explore{% endblock %}
 
 {% block body %}
-<div class="page-header">
-  {% if not READ_ONLY_MODE %}
-    <a href="{% url "new_map" %}" class="btn btn-primary pull-right">{% trans "Create a New Map" %}</a>
-  {% endif %}
-  <h2>{% trans "Explore Maps" %}</h2>
-</div>
   <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
+  <div class="page-header">
+    {% if not READ_ONLY_MODE %}
+      <a href="{% url "new_map" %}" class="btn btn-primary pull-right">{% trans "Create a New Map" %}</a>
+    {% endif %}
+    <h2>{% trans "Explore Maps" %}</h2>
+  </div>
   {% include "search/_search_content.html" %}
   {% include "_bulk_permissions_form.html" %}
 {% endblock %}
