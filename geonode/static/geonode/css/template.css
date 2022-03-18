@@ -3778,7 +3778,7 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     font-size: 4rem;
     float: left;
     position: relative;
-    top: 1.4rem;
+    top: 1.8rem;
     padding-left: 2rem;
 }
 
@@ -5941,7 +5941,6 @@ html {
 }
 
 #wrap {
-    overflow: hidden;
     min-height: calc(100vh - 240px);
 }
 
@@ -7557,11 +7556,17 @@ span.icon.node-icon:before {
 #resources_list {
     margin-bottom: 1em;
     padding-bottom: 0;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 999;
+    width: 100%;
 }
 
 #resources_list a.btn:nth-of-type(1) {
     white-space: pre-line;
     height: auto;
     line-height: 1 !important;
-    margin-top: 1em;
+    margin-top: 1.5em;
 }
