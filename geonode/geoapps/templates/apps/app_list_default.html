@@ -5,9 +5,10 @@
 {% block body_class %}apps explore{% endblock %}
 
 {% block body %}
-  <div class="page-header">
+  <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
+  <div class="page-header col-md-12" id="resources_list">
     {% if user.is_authenticated and not READ_ONLY_MODE %}
-      <a href="{% url "new_geoapp" %}" class="btn btn-primary pull-right">{% trans "Create New" %} {% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %}</a>
+      <a href="{% url "new_geoapp" %}" class="btn btn-primary pull-right col-md-3">{% trans "Create New" %} {% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %}</a>
     {% endif %}
     {% if SEARCH_FILTERS.TEXT_ENABLED %}
       {% include "search/_text_container.html" %}

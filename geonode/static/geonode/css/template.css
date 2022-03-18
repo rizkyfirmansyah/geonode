@@ -7501,7 +7501,7 @@ span.icon.node-icon:before {
     top: .8rem;
 }
 
-span .fa-search:hover {
+span .fa-search {
     cursor: pointer;
 }
 
@@ -7509,8 +7509,9 @@ span .fa-search:hover {
     margin-bottom: 1em;
 }
 
-#resources_list+a {
-    height: 3em;
+#resources_list a.btn:nth-of-type(1) {
+    white-space: pre-line;
+    height: auto;
     line-height: 1 !important;
 }
 

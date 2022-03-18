@@ -26,9 +26,9 @@
             {% trans "Filters" %}
             <a href="." id="clear-search" class="pull-right">{% trans "Clear" %}</a>
         </div>
-            {% comment %} {% if SEARCH_FILTERS.TEXT_ENABLED %}
+            {% if SEARCH_FILTERS.TEXT_ENABLED %}
               {% include "search/_text_filter.html" %}
-            {% endif  %} {% endcomment %}
+            {% endif  %}
         <div id="slide-pane">
           {% block search_facet_lists %}
             {% if SEARCH_FILTERS.H_KEYWORDS_ENABLED %}

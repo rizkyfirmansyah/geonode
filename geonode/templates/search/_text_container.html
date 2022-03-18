@@ -20,3 +20,41 @@
     </div>
   </form>
 </div>
+
+{% block extra_script %}
+<script text="text/javascript">
+  $(function() {
+    $("#search_input").on("change keyup paste click", function(){
+        let _length = $("#search_input").val().length;
+        let _width = (_length * 1.06) + 'em';
+        if (_length > 0) {
+          $(".input-highlight").css("width", _width);
+        } else {
+          $(".input-highlight").css("width", '0em');
+        }
+    });
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+    
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    };
+
+    var title = getUrlParameter('title__icontains');
+    
+    if (title) {
+      $("#search_input").val(title);
+    }
+  });
+</script>
+{% endblock %}
