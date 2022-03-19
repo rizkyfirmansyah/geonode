@@ -18,7 +18,6 @@
 #
 #########################################################################
 import ast
-from geonode.base.models import DataType
 from geonode.thumbs.exceptions import ThumbnailError
 from geonode.thumbs.thumbnails import create_thumbnail
 import json
@@ -202,6 +201,7 @@ class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveMode
     serializer_class = TopicCategorySerializer
     pagination_class = GeoNodeApiPagination
 
+
 class DataTypeViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
     """
     API endpoint that lists data type.
@@ -237,6 +237,7 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
             get_resources_with_perms(self.request.user, filter_options).values('owner'))
         )
         return queryset.order_by("username")
+
 
 class ResourceBasePermsViewSet(DynamicModelViewSet):
     """

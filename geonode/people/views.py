@@ -53,7 +53,7 @@ class CustomLoginView(LoginView):
 
         context = super(CustomLoginView, self).get_context_data(**kwargs)
         return context
-    
+
 
 class CustomSignupView(SignupView):
 

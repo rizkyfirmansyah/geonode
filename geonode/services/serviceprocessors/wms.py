@@ -36,7 +36,6 @@ from urllib.parse import (
 
 from django.conf import settings
 from django.urls import reverse
-from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 
@@ -689,6 +688,8 @@ class GeoNodeServiceHandler(WmsServiceHandler):
                                 geonode_layer.regions.clear()
                                 geonode_layer.regions.add(*regions_resolved)
 
+                        # Remove temporary topic category here as the field converted into m2m field
+                        # any idea how to setup?
                         # Add Topic Category
                         # if "category" in _layer and _layer["category"]:
                         #     (categories_resolved, categories_unresolved) = resolve_categories(_layer["category"])

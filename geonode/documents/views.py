@@ -23,8 +23,7 @@ import traceback
 from itertools import chain
 import warnings
 
-from guardian.shortcuts import get_perms, get_objects_for_user
-
+from guardian.shortcuts import get_objects_for_user
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.utils.translation import ugettext as _
@@ -47,8 +46,7 @@ from geonode.base.auth import get_or_create_token
 from geonode.base.bbox_utils import BBOXHelper
 from geonode.base.forms import CategoryForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.models import (
-    Thesaurus,
-    TopicCategory)
+    Thesaurus)
 from geonode.documents.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.documents.models import Document, get_related_resources
 from geonode.documents.forms import DocumentForm, DocumentCreateForm, DocumentReplaceForm
@@ -86,39 +84,18 @@ def document_detail(request, docid):
     """
     The view that show details of each document
     """
-    if request.method == 'POST':
-        try:
-            document = _resolve_document(
-                request,
-                docid,
-                'base.delete_resourcebase',
-                _PERMISSION_MSG_DELETE)
-            document.delete()
-            out['success'] = True
-            status_code = 200
-            register_event(request, EventType.EVENT_REMOVE, document)
-        
-            return render(
-                request,
-                "documents/document_list.html")
-
-        except PermissionDenied:
-            return HttpResponse(_("Not allowed"), status=403)
-        except Exception:
-            raise Http404(_("Not found"))
-    else:
-        try:
-            document = _resolve_document(
-                request,
-                docid,
-                'base.view_resourcebase',
-                _PERMISSION_MSG_VIEW)
-        except PermissionDenied:
-            return HttpResponse(_("Not allowed"), status=403)
-        except Exception:
-            raise Http404(_("Not found"))
-        if not document:
-            raise Http404(_("Not found"))
+    try:
+        document = _resolve_document(
+            request,
+            docid,
+            'base.view_resourcebase',
+            _PERMISSION_MSG_VIEW)
+    except PermissionDenied:
+        return HttpResponse(_("Not allowed"), status=403)
+    except Exception:
+        raise Http404(_("Not found"))
+    if not document:
+        raise Http404(_("Not found"))
 
     permission_manager = ManageResourceOwnerPermissions(document)
     permission_manager.set_owner_permissions_according_to_workflow()
@@ -386,11 +363,12 @@ def document_metadata(
             request.POST,
             instance=document,
             prefix="resource")
-        category_form = CategoryForm(request.POST, prefix="category_choice_field",
-                    initial=(
-                        request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
-                        request.POST.getlist("category_choice_field") else []
-                        ))
+        category_form = CategoryForm(
+            request.POST,
+            prefix="category_choice_field",
+            initial=(
+                request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
+                request.POST.getlist("category_choice_field") else []))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -619,7 +597,6 @@ def document_search_page(request):
 @login_required
 @require_POST
 def document_remove(request):
-  
     docid = request.POST['docid']
     try:
         document = _resolve_document(
@@ -631,23 +608,23 @@ def document_remove(request):
         document.delete()
         out = {'success': True}
         out['status_code'] = 200
-        
+
         register_event(request, EventType.EVENT_REMOVE, document)
 
     except PermissionDenied:
         out = {'success': False}
         out['status_code'] = 403
-    
+
     except Exception:
         traceback.print_exc()
         message = f'{_("Unable to delete document")}: {document.title}.'
 
-        messages.error(request, message)
         out = {'success': False}
         out['status_code'] = 500
         out['message'] = message
- 
+
     return render(request, 'documents/document_list.html')
+
 
 def document_metadata_detail(
         request,

@@ -30,7 +30,7 @@ from django.contrib.auth.models import Group
 from django.core import validators
 from django.db.models import Prefetch, Q
 from django.forms import ModelForm, models
-from django.forms.fields import ChoiceField, MultipleChoiceField
+from django.forms.fields import MultipleChoiceField
 from django.forms.utils import flatatt
 from django.utils.encoding import force_text
 from django.utils.html import format_html
@@ -275,7 +275,7 @@ class RegionsSelect(forms.Select):
 
 class CategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(CategoryForm, self).__init__(*args, **kwargs) 
+        super(CategoryForm, self).__init__(*args, **kwargs)
 
     category_choice_field = CategoryChoiceField(
         required=False,

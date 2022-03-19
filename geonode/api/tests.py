@@ -613,6 +613,7 @@ class ThesaurusKeywordResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSuppor
         self.assertValidJSONResponse(resp)
         self.assertListEqual(expected_labels, actual_labels)
 
+
 class DataTypeResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
     fixtures = [
         'initial_data.json',
@@ -642,6 +643,7 @@ class DataTypeResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         resp = self.api_client.get(url, authentication=self.auth_header)
         self.assertValidJSONResponse(resp)
         self.assertEqual(1, resp.json()["meta"]["total_count"])
+
 
 class LayerResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
     fixtures = [

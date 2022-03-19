@@ -175,6 +175,7 @@ class TopicCategoryAdmin(TabbedTranslationAdmin):
         else:
             return False
 
+
 class DataTypeAdmin(TabbedTranslationAdmin):
     model = DataType
     list_display_links = ('identifier',)
@@ -185,6 +186,7 @@ class DataTypeAdmin(TabbedTranslationAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return True
+
 
 class RegionAdmin(TabbedTranslationAdmin):
     model = Region

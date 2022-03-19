@@ -927,7 +927,7 @@ def _update_layer_with_xml_info(saved_layer, xml_file, regions, keywords, vals):
         for key, value in vals.items():
             if key == 'spatial_representation_type':
                 value = SpatialRepresentationType(identifier=value)
-            
+
             # remove the category field as it's multiple category not a single one
             # elif key == 'topic_category':
             #     value, created = TopicCategory.objects.get_or_create(

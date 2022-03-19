@@ -45,7 +45,7 @@ from django.utils.html import escape
 from django.forms.utils import ErrorList
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
-from django.db import IntegrityError, transaction
+from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from django.forms.models import inlineformset_factory
 from django.template.response import TemplateResponse
@@ -931,11 +931,12 @@ def layer_metadata(
                 json.dumps(out),
                 content_type='application/json',
                 status=400)
-        category_form = CategoryForm(request.POST, prefix="category_choice_field",
-                    initial=(
-                        request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
-                        request.POST.getlist("category_choice_field") else []
-                        ))
+        category_form = CategoryForm(
+            request.POST,
+            prefix="category_choice_field",
+            initial=(
+                request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
+                request.POST.getlist("category_choice_field") else []))
 
         if not category_form.is_valid():
             logger.error(f"Layer Category form is not valid: {category_form.errors}")
@@ -1071,7 +1072,6 @@ def layer_metadata(
         new_categories = None
         if category_form and 'category_choice_field' in category_form.cleaned_data and category_form.cleaned_data['category_choice_field']:
             new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
-
 
         layer.keywords.clear()
         if new_keywords:

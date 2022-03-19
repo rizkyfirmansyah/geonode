@@ -239,11 +239,11 @@ def map_metadata(
 
     if request.method == "POST":
         map_form = MapForm(request.POST, instance=map_obj, prefix="resource")
-        category_form = CategoryForm(request.POST, prefix="category_choice_field",
-                    initial=(
-                        request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
-                        request.POST.getlist("category_choice_field") else []
-                        ))
+        category_form = CategoryForm(
+            request.POST, prefix="category_choice_field",
+            initial=(
+                request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
+                request.POST.getlist("category_choice_field") else []))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)

@@ -66,7 +66,6 @@ from .api import (
     GroupResource,
     FILTER_TYPES)
 from .paginator import CrossSiteXHRPaginator
-from django.utils.translation import gettext as _
 
 if settings.HAYSTACK_SEARCH:
     from haystack.query import SearchQuerySet  # noqa
@@ -295,7 +294,7 @@ class CommonModelApi(ModelResource):
         date_start = parameters.get("date__gte", None)
 
         # Data type filter
-        datatype = parameters.getlist("datatype__identifier__in")
+        data_type = parameters.getlist("datatype__identifier__in")
 
         # Topic category filter
         category = parameters.getlist("category__identifier__in")
@@ -380,7 +379,7 @@ class CommonModelApi(ModelResource):
                         )
 
         # filter by data_type
-        if datatype:
+        if data_type:
             sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
                 f"data_type:{','.join(map(str, data_type))}")
 
@@ -756,7 +755,7 @@ class LayerResource(CommonModelApi):
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
-                    for i,v in enumerate(c_fa):
+                    for i, v in enumerate(c_fa):
                         fa_dict[c_gn[i]] = v
                 else:
                     fa_dict = {}
@@ -923,7 +922,7 @@ class MapResource(CommonModelApi):
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
-                    for i,v in enumerate(c_fa):
+                    for i, v in enumerate(c_fa):
                         fa_dict[c_gn[i]] = v
                 else:
                     fa_dict = {}
@@ -1015,7 +1014,7 @@ class GeoAppResource(CommonModelApi):
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
-                    for i,v in enumerate(c_fa):
+                    for i, v in enumerate(c_fa):
                         fa_dict[c_gn[i]] = v
                 else:
                     fa_dict = {}
@@ -1093,7 +1092,7 @@ class DocumentResource(CommonModelApi):
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
-                    for i,v in enumerate(c_fa):
+                    for i, v in enumerate(c_fa):
                         fa_dict[c_gn[i]] = v
                 else:
                     fa_dict = {}

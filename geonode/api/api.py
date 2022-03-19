@@ -312,14 +312,17 @@ class TopicCategoryResource(TypeFilteredResource):
         serializer = CountJSONSerializer()
         authorization = ApiLockdownAuthorization()
 
+
 class DataTypeResource(TypeFilteredResource):
     """Datatype api"""
     layers_count = fields.IntegerField(default=0)
 
     def dehydrate_layers_count(self, bundle):
         request = bundle.request
-        obj_with_perms = get_objects_for_user(request.user,
-                                                'base.view_resourcebase').filter(polymorphic_ctype__model='layer')
+        obj_with_perms = get_objects_for_user(
+            request.user,
+            'base.view_resourcebase').filter(polymorphic_ctype__model='layer')
+
         filter_set = bundle.obj.resourcebase_set.filter(id__in=obj_with_perms.values('id')).filter(metadata_only=False)
 
         if not settings.SKIP_PERMS_FILTER:

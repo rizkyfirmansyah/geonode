@@ -167,6 +167,7 @@ class TopicCategory(models.Model):
         ordering = ("identifier",)
         verbose_name_plural = 'Metadata Topic Categories'
 
+
 class DataType(models.Model):
     """
 
@@ -175,13 +176,14 @@ class DataType(models.Model):
     description = models.TextField(default='')
     gn_description = models.TextField('SDI description', default='', null=True)
     is_choice = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.gn_description
 
     class Meta:
         ordering = ("identifier",)
         verbose_name_plural = "Metadata Type of Data"
+
 
 class SpatialRepresentationType(models.Model):
     """
@@ -511,6 +513,7 @@ class _HierarchicalTagManager(_TaggableManager):
             pk_set=new_ids,
         )
 
+
 class Thesaurus(models.Model):
     """
     Loadable thesaurus containing keywords in different languages
@@ -600,6 +603,7 @@ class ThesaurusKeyword(models.Model):
         verbose_name_plural = 'Thesaurus Keywords'
         unique_together = (("thesaurus", "alt_label"),)
 
+
 def generate_thesaurus_reference(instance, *args, **kwargs):
     if instance.about:
         return instance.about
@@ -611,7 +615,9 @@ def generate_thesaurus_reference(instance, *args, **kwargs):
     instance.save()
     return instance.about
 
+
 signals.post_save.connect(generate_thesaurus_reference, sender=ThesaurusKeyword)
+
 
 class ThesaurusLabel(models.Model):
     """
@@ -1080,7 +1086,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     @property
     def raw_data_quality_statement(self):
         return self._remove_html_tags(self.data_quality_statement)
-    
+
     def clean(self):
         if self.title:
             self.title = self.title.replace(",", "_")
@@ -1163,7 +1169,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     @property
     def perms(self):
-      return []
+        return []
 
     @property
     def organizationname(self):
@@ -2087,7 +2093,7 @@ def resourcebase_post_save(instance, *args, **kwargs):
             poly1.transform(4326)
 
             # queryset = Region.objects.all().order_by('name')
-            ## Get only specific region that is Indonesia
+            # Get only specific region that is Indonesia
             queryset = Region.objects.filter(code__iexact="IDN")
             global_regions = []
             regions_to_add = []
@@ -2121,6 +2127,7 @@ def resourcebase_post_save(instance, *args, **kwargs):
         # refresh catalogue metadata records
         from geonode.catalogue.models import catalogue_post_save
         catalogue_post_save(instance=instance, sender=instance.__class__)
+
 
 def rating_post_save(instance, *args, **kwargs):
     """

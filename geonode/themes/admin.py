@@ -23,6 +23,7 @@ from django.contrib import admin
 
 from .models import Partner, GeoNodeThemeCustomization, JumbotronThemeSlide
 
+
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'title', 'href',)

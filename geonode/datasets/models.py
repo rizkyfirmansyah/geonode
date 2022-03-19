@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 class Roda(models.Model):
     """
     Table for record of datasets activities
@@ -28,10 +29,10 @@ class Roda(models.Model):
     requester_institution = models.CharField(max_length=255)
     purposes = models.TextField(default='')
     retention = models.CharField(
-      _('Retention'),
-      max_length=255, 
-      choices=RETENTION_CHOICES,
-      help_text=retention_help_text)
+        _('Retention'),
+        max_length=255,
+        choices=RETENTION_CHOICES,
+        help_text=retention_help_text)
     resource_title = models.CharField(max_length=255)
     resource_owner = models.CharField(max_length=255)
 

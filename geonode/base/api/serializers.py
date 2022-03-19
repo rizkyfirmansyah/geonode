@@ -178,11 +178,12 @@ class SimpleTopicCategorySerializer(DynamicModelSerializer):
         name = 'TopicCategory'
         fields = ('identifier',)
 
+
 class SimpleDataTypeSerializer(DynamicModelSerializer):
 
     class Meta:
         model = DataType
-        name ='DataType'
+        name = 'DataType'
         fields = ('identifier',)
 
 
@@ -388,15 +389,16 @@ class ResourceBaseSerializer(
             # users_geolimits, groups_geolimits
         )
 
+
 class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, BaseDynamicModelSerializer):
 
-  class Meta:
-      model = ResourceBase
-      name ='resource'
-      view_name = 'base-resources-list'
-      fields = ('pk', 'resource_type', 'perms', 'title')
-      excludes = ['favorite', 'links']
-      ordering = ("-pk",)
+    class Meta:
+        model = ResourceBase
+        name = 'resource'
+        view_name = 'base-resources-list'
+        fields = ('pk', 'resource_type', 'perms', 'title')
+        excludes = ['favorite', 'links']
+        ordering = ("-pk",)
 
 
 class FavoriteSerializer(DynamicModelSerializer):
@@ -481,6 +483,7 @@ class DataTypeSerializer(BaseResourceCountSerializer):
         count_type = 'data_type'
         view_name = 'data-type-list'
         fields = '__all__'
+
 
 class OwnerSerializer(BaseResourceCountSerializer):
 

@@ -18,7 +18,6 @@
 #
 #########################################################################
 
-from operator import index
 from pinax.ratings.models import OverallRating
 from dialogos.models import Comment
 from django.contrib.contenttypes.models import ContentType

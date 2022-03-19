@@ -24,14 +24,12 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError
 from geonode.base.models import ContactRole
 
-from django.http import HttpResponse
-import json
 
 # Ported in from django-registration
 attrs_dict = {'class': 'required'}
+
 
 class ProfileCreationForm(UserCreationForm):
 

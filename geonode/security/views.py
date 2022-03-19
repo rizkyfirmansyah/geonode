@@ -458,7 +458,7 @@ def request_permissions(request):
         resource_title = request.POST['resource_title']
         roda = Roda(
           uuid=uuid, requester_username=requester_username, requester_name=requester_name,
-          requester_email=requester_email, requester_institution=requester_institution, 
+          requester_email=requester_email, requester_institution=requester_institution,
           requester_position=requester_position, purposes=purposes,
           retention=retention, resource_title=resource_title, resource_owner=resource_owner)
         roda.save()
@@ -467,8 +467,10 @@ def request_permissions(request):
         send_notification([resource.owner],
                           'request_download_resourcebase',
                           {'resource': resource, 'from_user': request.user})
-        return HttpResponse(json.dumps({'success': 'ok', }), status=200,
-        content_type='text/plain')
+        return HttpResponse(
+            json.dumps({'success': 'ok', }),
+            status=200,
+            content_type='text/plain')
 
     except Exception:
         # traceback.print_exc()

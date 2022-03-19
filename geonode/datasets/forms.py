@@ -1,6 +1,7 @@
 from django import forms
 from .models import Roda
 
+
 class RodaForm(forms.ModelForm):
     """
     Form for record all request resources activity
@@ -16,10 +17,10 @@ class RodaForm(forms.ModelForm):
         model = Roda
         fields = ["requester_name", "requester_email", "requester_institution",  "requester_position", "purposes", "retention", "uuid", "resource_title", "requester_username"]
         widgets = {
-          'requester_name': forms.TextInput(attrs={'name''class': 'form-control light-border m-input-space'}),
+          'requester_name': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
           'requester_email': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
           'requester_institution': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
           'requester_position': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
           'purposes': forms.TextInput(attrs={'class': 'form-control light-border m-input-space', 'placeholder': "Please briefly describe how you intend to use this data?"}),
-          'retention': forms.Select(attrs={'class': 'form-control light-border m-input-space'}, choices=Roda.RETENTION_CHOICES) 
+          'retention': forms.Select(attrs={'class': 'form-control light-border m-input-space'}, choices=Roda.RETENTION_CHOICES)
         }

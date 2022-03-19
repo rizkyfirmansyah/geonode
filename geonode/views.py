@@ -29,7 +29,6 @@ from django.template.response import TemplateResponse
 from geonode.base.templatetags.base_tags import facets
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, get_user_model
-from django.core.exceptions import ValidationError
 
 from geonode import get_version
 from geonode.groups.models import GroupProfile
@@ -38,9 +37,11 @@ from geonode.geoapps.models import GeoApp
 import logging
 logger = logging.getLogger(__name__)
 
+
 class AjaxLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
     username = forms.CharField()
+
 
 def ajax_login(request):
     if request.method != 'POST':
@@ -126,6 +127,7 @@ def permission_denied_view(request, exception):
             f"{reverse('account_login')}?next={request.get_full_path()}")
     else:
         return TemplateResponse(request, 'error/403.html', {}, status=403).render()
+
 
 def unauthorized_view(request, exception):
     if not request.user.is_authenticated:

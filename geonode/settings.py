@@ -756,7 +756,7 @@ if SESSION_EXPIRED_CONTROL_ENABLED:
         ('geonode.security.middleware.SessionControlMiddleware',)
 
 SESSION_COOKIE_SECURE = ast.literal_eval(os.environ.get('SESSION_COOKIE_SECURE', 'False'))
-SESSION_COOKIE_AGE = 3 * 24 * 60 *60 # 3 days
+SESSION_COOKIE_AGE = 3 * 24 * 60 * 60  # 3 days
 CSRF_COOKIE_SECURE = ast.literal_eval(os.environ.get('CSRF_COOKIE_SECURE', 'False'))
 CSRF_COOKIE_HTTPONLY = ast.literal_eval(os.environ.get('CSRF_COOKIE_HTTPONLY', 'False'))
 CORS_ORIGIN_ALLOW_ALL = ast.literal_eval(os.environ.get('CORS_ORIGIN_ALLOW_ALL', 'False'))

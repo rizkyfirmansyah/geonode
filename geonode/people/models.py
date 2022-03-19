@@ -52,7 +52,6 @@ from .signals import (
     update_user_email_addresses,
     notify_admins_new_signup)
 from .languages import LANGUAGES
-from .timezones import TIMEZONES
 
 logger = logging.getLogger(__name__)
 
