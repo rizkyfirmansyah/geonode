@@ -7611,7 +7611,7 @@ article.tab-pane {
     padding-right: 3px;
 }
 
-#metadata_edit_tab li a,
+#md_tabs li a,
 #nav_recent_activity li a,
 #nav_messages li a,
 .map-actions li a,
@@ -7626,7 +7626,7 @@ article.tab-pane {
     box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
 }
 
-#metadata_edit_tab li a:hover,
+#md_tabs li a:hover,
 #nav_recent_activity li a:hover,
 #nav_messages li a:hover,
 .map-actions li a:hover,
@@ -7817,6 +7817,7 @@ span.icon.node-icon:before {
 === Override styling for default list page
     layers
     documents
+    maps
 */
 
 #map .btn-default {
