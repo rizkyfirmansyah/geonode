@@ -611,7 +611,7 @@
           <h4>{% trans "Create a map using this layer" %}</h4>
           <p>{% trans "Click the button below to generate a new map based on this layer." %}</p>
           <a href="{% url "new_map" %}?layer={{resource.service_typename}}"
-            class="btn btn-primary btn-block">{% trans "Create a Map" %}</a>
+            class="btn btn-default btn-block">{% trans "Create a Map" %}</a>
         </li>
         {% endif %}
         {% if maps %}
@@ -691,14 +691,14 @@
           <p>
             {% trans "Click the button below to allow SDI refreshing the list of available Layer Attributes. If the option 'WPS_ENABLED' has been also set on the backend, it will recalculate their statistics too." %}
           </p>
-          <a href="#" class="btn btn-primary btn-block" data-dismiss="modal"
+          <a href="#" class="btn btn-info btn-block" data-dismiss="modal"
             id="attributes_sats_refresh">{% trans "Refresh Attributes and Statistics" %}</a>
         </li>
         {% endif %}
         <li class="list-group-item">
           <h4>{% trans "Clear the Server Cache of this layer" %}</h4>
           <p>{% trans "Click the button below to wipe the tile-cache of this layer." %}</p>
-          <a href="#" class="btn btn-primary btn-block" data-dismiss="modal"
+          <a href="#" class="btn btn-danger btn-block" data-dismiss="modal"
             id="tiledlayer_refresh">{% trans "Empty Tiled-Layer Cache" %}</a>
         </li>
         {% endif %}

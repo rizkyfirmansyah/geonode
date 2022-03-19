@@ -4049,14 +4049,14 @@ fieldset[disabled] .btn-warning.focus {
 .btn-danger:focus,
 .btn-danger.focus {
     color: #fff;
-    background-color: #f00004;
-    border-color: #f00004;
+    background-color: black;
+    border-color: black;
 }
 
 .btn-danger:hover {
     color: #fff;
-    background-color: #f00004;
-    border-color: #f00004;
+    background-color: black;
+    border-color: black;
 }
 
 .btn-danger:active,
