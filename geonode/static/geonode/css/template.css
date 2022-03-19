@@ -7607,6 +7607,7 @@ article.tab-pane {
     padding-right: 3px;
 }
 
+#metadata_edit_tab li a,
 #nav_recent_activity li a,
 #nav_messages li a,
 .map-actions li a,
@@ -7621,6 +7622,15 @@ article.tab-pane {
     box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
 }
 
+#metadata_edit_tab li a:hover,
+#nav_recent_activity li a:hover,
+#nav_messages li a:hover,
+.map-actions li a:hover,
+.layer-actions li a:hover,
+.documents-actions li a:hover {
+    background-color: #a23133 !important;
+}
+
 .tab-content {
     border: 1px solid #c0c0c0 !important;
     box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
@@ -7628,14 +7638,6 @@ article.tab-pane {
 
 .tab-content article {
     padding-left: 1.3em;
-}
-
-#nav_recent_activity li a:hover,
-#nav_messages li a:hover,
-.map-actions li a:hover,
-.layer-actions li a:hover,
-.documents-actions li a:hover {
-    background-color: #a23133 !important;
 }
 
 .edit-modal {
