@@ -7830,6 +7830,11 @@ span.icon.node-icon:before {
     color: inherit !important;
 }
 
+.msgapi #mapstore-drawermenu .navHeader>.glyphicon {
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
 .page-header {
     margin-top: 3rem !important;
 }
