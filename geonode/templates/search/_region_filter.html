@@ -1,20 +1,35 @@
 {% load i18n %}
 {% load base_tags %}
 <nav class="filter">
-
-    <h4><a href="#" class="toggle toggle-nav"><i class="fa fa-chevron-right"></i>{% trans "Regions" %}</a></h4>
+    <h4>
+        <a href="#" class="toggle toggle-nav"><i class="fa fa-chevron-right"></i>{% trans "Regions" %}</a>
+    </h4>
     <ul class="nav closed" id="regions">
         <li>
-            <form class="autocomplete-input input-group" id="region-search-autocomplete">
+            <form class="autocomplete-input input-group col-md-12 no-gutters"
+                  id="region-search-autocomplete">
                 {% csrf_token %}
-                <div id="region-search-container">
-                    <input autocomplete="off" type="text" name="region_search_input" id="region_search_input" placeholder="{% trans "Search by region" %}" >
-                </div>
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit" id="region_search_btn"><i class="fa fa-search"></i></button>
-                </span>
-            </form>
-        </li>
-    </ul>
-
-</nav>
+                <div id="region-search-container" class="col-md-12 no-gutters">
+                    <div class="col-md-10 no-gutters">
+                        <input autocomplete="off"
+                               type="text"
+                               name="region_search_input"
+                               id="region_search_input"
+                               placeholder="{% trans "Search by region" %}">
+                    </div>
+                    <div class="col-md-2 no-gutters">
+                        <button id="region_search_btn" aria-label="Filter data" type="submit">
+                            <span class="fltSpTree">
+                                <svg focusable="false"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 24 24">
+                                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+                                    </path>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </nav>

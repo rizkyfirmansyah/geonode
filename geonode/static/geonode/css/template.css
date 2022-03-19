@@ -1017,6 +1017,23 @@ body .apps {
     background-color: white !important;
 }
 
+.modal-content .btn:hover {
+    background-color: #4e98af !important;
+    color: white !important;
+}
+
+.modal-content .btn-danger:hover {
+    color: #fff !important;
+    background-color: black !important;
+    border-color: black !important;
+}
+
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+    background-color: transparent !important;
+    color: white !important;
+}
+
 
 /* ------------------------------------------------------------------- 
  * ## links
@@ -1573,7 +1590,7 @@ select {
     line-height: 3rem;
     max-width: 100%;
     background: transparent;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(0, 0, 0, 0.15);
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
@@ -1736,6 +1753,11 @@ select:-webkit-autofill:focus {
  * # buttons
  *
  * ------------------------------------------------------------------- */
+
+#SigninModal .tab-content {
+    border: none !important;
+    box-shadow: none !important;
+}
 
 #SigninModal .btn,
 #SigninModal button,
@@ -5495,6 +5517,15 @@ footer #footer-language {
  *
 */
 
+#slide-pane {
+    background-color: whitesmoke;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
+}
+
+#slide-pane label {
+    padding-left: 1em;
+}
+
 .list-group,
 .list-group-item {
     border: 1px solid #c0c0c0;
@@ -5504,27 +5535,6 @@ footer #footer-language {
     margin-left: 20px;
     position: relative;
     top: -30px;
-}
-
-.search-content {
-    padding-top: 1em;
-}
-
-.search-content ul {
-    margin-left: -5px;
-}
-
-.search-content ul input {
-    background-color: #c4bab7;
-    color: white !important;
-    border-bottom: 2px solid #1c4742;
-    padding: 10px !important;
-}
-
-.search-content ul input:focus,
-.search-content ul input:active {
-    color: #a23133 !important;
-    background-color: #fff !important;
 }
 
 .ng-scope .btn {
@@ -5540,6 +5550,10 @@ footer #footer-language {
     height: auto;
 }
 
+.ng-scope .alert {
+    margin-bottom: 5px;
+}
+
 .page-header+.row {
     padding-top: 1em;
 }
@@ -5552,7 +5566,7 @@ footer #footer-language {
 }
 
 
-/* OVERRIDE styelsheet */
+/* OVERRIDE base  */
 
 .badge {
     position: relative;
@@ -6247,6 +6261,104 @@ form-inline {
  * ## Autocomplete and search styles
  * ------------------------------------------------------------------- */
 
+#clear-search {
+    padding: 2px 6px 2px 6px;
+    border: 1px solid #a23133;
+    background-color: #a23133;
+    color: white;
+    border-radius: 5px;
+}
+
+#clear-search:hover {
+    text-decoration: none;
+    background-color: #fdba12;
+    border: 1px solid #fdba12;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
+}
+
+@media screen and (min-width: 1025px) {
+    #region-search-container .ac-results {
+        width: 120% !important;
+    }
+}
+
+#region-search-container {
+    width: 100%;
+    background-color: #c4bab7;
+    border: #c4bab7;
+    box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
+}
+
+#region_search_input .result-wrapper a:hover {
+    color: #a23133 !important;
+}
+
+#region_search_input {
+    width: 100%;
+}
+
+.search-content {
+    padding-top: 1em;
+}
+
+.search-content ul {
+    margin-left: -5px;
+}
+
+.search-content ul input {
+    background-color: #c4bab7;
+    color: white !important;
+    border-bottom: 2px solid #1c4742;
+    padding: 10px !important;
+    border: #c4bab7;
+    box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
+}
+
+.search-content ul input:not(:placeholder-shown) {
+    background-color: white !important;
+    color: #a23133 !important;
+}
+
+.search-content ul input:focus {
+    border: #c4bab7;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
+}
+
+.search-content ul input:focus,
+.search-content ul input:active {
+    color: #a23133 !important;
+    background-color: #fff !important;
+}
+
+#composerCart .list-group {
+    border: none !important;
+}
+
+.filter_treeview {
+    height: 28px;
+    width: 28px;
+    margin: auto;
+}
+
+#region_search_btn {
+    height: 48px;
+    width: 48px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#region_search_btn svg:hover {
+    fill: #fdba12;
+}
+
+.fltSpTree {
+    display: inline-block;
+    height: 28px;
+    width: 28px;
+}
+
 #search_input {
     width: 100%;
     font-size: 3rem;
@@ -6303,16 +6415,19 @@ form-inline {
     width: 100%;
 }
 
-.autocomplete-input .ac-results {
+form#text-search-autocomplete .ac-results {
     position: absolute;
     display: block;
+    width: 90% !important;
+}
+
+.autocomplete-input .ac-results {
     top: 10rem;
     font-size: 1.2em;
     overflow-y: auto;
     z-index: 999;
     background-color: white;
     left: 6rem;
-    width: 90% !important;
 }
 
 .input-highlight {
@@ -6340,13 +6455,19 @@ form-inline {
 
 #btn_wrapper:hover {
     background-color: #fdba12 !important;
+    color: black !important;
     text-decoration: none;
 }
 
 
-/** Autocomplete for thesaurus field in advanced metadata edit views
-  There should be a better way to do this!
-**/
+/* -------------------------------------------------------------------
+ * # Metadata wizard
+ * # Autocomplete for thesaurus field in advanced metadata edit views
+ * ------------------------------------------------------------------- */
+
+#comments_section .clearfix {
+    margin-right: 1em;
+}
 
 #metadata_update .select2-container {
     width: 100% !important;
@@ -6374,6 +6495,13 @@ form-inline {
 
 #basicDescriptiveInfo #id_crop_entry {
     max-width: 260px;
+    padding-left: 1em;
+}
+
+#basicDescriptiveInfo .btn:hover {
+    color: white !important;
+    background-color: #fdba12 !important;
+    border-color: #fdba12 !important;
 }
 
 .inbox-checkbox label {
@@ -6562,6 +6690,35 @@ form-inline {
     transition: box-shadow 0.3s, border 0.3s;
     padding: 10px !important;
     box-shadow: 0 0 1px 1px #c4bab7;
+}
+
+input[type="file"] {
+    background-color: #c4bab7;
+}
+
+label[for="id_doc_file"] {
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 50px;
+    border-radius: 25px;
+    background: linear-gradient(40deg, #a23133, #4e98af);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+    width: 100%;
+}
+
+#id_doc_file {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
 }
 
 #upload_form input[type="text"]:focus {
@@ -7099,10 +7256,17 @@ article.tab-pane {
     margin-top: 20px;
 }
 
-.dl-horizontal dt {
-    text-overflow: clip;
-    white-space: normal;
-    overflow: hidden;
+@media screen and (min-width: 1025px) {
+    .dl-horizontal dt {
+        text-overflow: clip;
+        white-space: normal !important;
+        overflow: hidden;
+    }
+}
+
+.dl-horizontal dd {
+    border-bottom: 1px solid #c0c0c0 !important;
+    padding: .5em;
 }
 
 .page-title {
@@ -7439,6 +7603,31 @@ article.tab-pane {
     padding-right: 3px;
 }
 
+.layer-actions li a,
+.documents-actions li a {
+    padding: 0.625rem .55rem;
+    background: #fff;
+    border: 1px solid #c0c0c0 !important;
+    border-radius: 5px;
+    background-color: #4e98af;
+    text-align: center;
+    box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
+}
+
+.tab-content {
+    border: 1px solid #c0c0c0 !important;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
+}
+
+.tab-content article {
+    padding-left: 1.3em;
+}
+
+.layer-actions li a:hover,
+.documents-actions li a:hover {
+    background-color: #a23133 !important;
+}
+
 .edit-modal {
     text-align: center;
 }
@@ -7472,6 +7661,15 @@ article.tab-pane {
 
 
 /* treeview component */
+
+#treeview ul {
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+#treeview ul li {
+    border: none !important;
+}
 
 .treeview .list-group {
     border: none !important;

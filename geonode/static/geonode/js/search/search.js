@@ -1,8 +1,8 @@
 'use strict';
 
-(function () {
+(function() {
 
-    var module = angular.module('geonode_main_search', [], function ($locationProvider) {
+    var module = angular.module('geonode_main_search', [], function($locationProvider) {
         if (window.navigator.userAgent.indexOf("MSIE") == -1) {
             $locationProvider.html5Mode({
                 enabled: true,
@@ -15,7 +15,7 @@
     });
 
     // Used to set the class of the filters based on the url parameters
-    module.set_initial_filters_from_query = function (data, url_query, filter_param) {
+    module.set_initial_filters_from_query = function(data, url_query, filter_param) {
         for (var i = 0; i < data.length; i++) {
             if (url_query == data[i][filter_param] || url_query.indexOf(data[i][filter_param]) != -1) {
                 data[i].active = 'active';
@@ -27,12 +27,12 @@
     }
 
     // Load categories, keywords, and regions
-    module.load_categories = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
+    module.load_categories = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        $http.get(CATEGORIES_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+        $http.get(CATEGORIES_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -52,9 +52,9 @@
     }
 
     // Load group categories
-    module.load_group_categories = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
-        $http.get(GROUP_CATEGORIES_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+    module.load_group_categories = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
+        $http.get(GROUP_CATEGORIES_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -69,12 +69,12 @@
         };
     }
 
-    module.load_keywords = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
+    module.load_keywords = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        $http.get(KEYWORDS_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+        $http.get(KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -94,9 +94,9 @@
     }
 
 
-    module.load_h_keywords = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
-        $http.get(H_KEYWORDS_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+    module.load_h_keywords = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
+        $http.get(H_KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -109,7 +109,7 @@
                 expandIcon: false,
                 showTags: true,
                 tagsClass: 'badge',
-                onNodeSelected: function ($event, node) {
+                onNodeSelected: function($event, node) {
                     $rootScope.$broadcast('select_h_keyword', node);
                     if (node.nodes) {
                         for (var i = 0; i < node.nodes.length; i++) {
@@ -117,7 +117,7 @@
                         }
                     }
                 },
-                onNodeUnselected: function ($event, node) {
+                onNodeUnselected: function($event, node) {
                     $rootScope.$broadcast('unselect_h_keyword', node);
                     if (node.nodes) {
                         for (var i = 0; i < node.nodes.length; i++) {
@@ -135,13 +135,13 @@
         };
     };
 
-    module.load_t_keywords = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
+    module.load_t_keywords = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
         if (enable_thesauri) {
-            $http.get(T_KEYWORDS_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+            $http.get(T_KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
         }
 
         function successCallback(data) {
@@ -162,12 +162,12 @@
         };
     }
 
-    module.load_regions = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
+    module.load_regions = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        $http.get(REGIONS_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+        $http.get(REGIONS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -186,9 +186,9 @@
         };
     }
 
-    module.load_groups = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
-        $http.get(GROUPS_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+    module.load_groups = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
+        $http.get(GROUPS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -204,9 +204,9 @@
     }
 
     // Load datatype
-    module.load_datatypes = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == "undefined" ? {} : {'type': FILTER_TYPE};
-        $http.get(DATATYPE_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+    module.load_datatypes = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == "undefined" ? {} : { 'type': FILTER_TYPE };
+        $http.get(DATATYPE_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             if ($location.search().hasOwnProperty('datatype__identifier__in')) {
@@ -224,12 +224,12 @@
         };
     }
 
-    module.load_owners = function ($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : {'type': FILTER_TYPE};
+    module.load_owners = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        $http.get(OWNERS_ENDPOINT, {params: params}).then(successCallback, errorCallback);
+        $http.get(OWNERS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
@@ -249,7 +249,7 @@
     }
 
     // Update facet counts for categories and keywords
-    module.haystack_facets = function ($http, $rootScope, $location) {
+    module.haystack_facets = function($http, $rootScope, $location) {
         var data = $rootScope.query_data;
         if ("categories" in $rootScope) {
             try {
@@ -333,13 +333,13 @@
     }
 
     /*
-    * Load categories and keywords
-    */
-    module.run(function ($http, $rootScope, $location) {
+     * Load categories and keywords
+     */
+    module.run(function($http, $rootScope, $location) {
         /*
-        * Load categories and keywords if the filter is available in the page
-        * and set active class if needed
-        */
+         * Load categories and keywords if the filter is available in the page
+         * and set active class if needed
+         */
         if ($('#categories').length > 0) {
             module.load_categories($http, $rootScope, $location);
         }
@@ -391,11 +391,11 @@
     });
 
     /*
-    * Main search controller
-    * Load data from api and defines the multiple and single choice handlers
-    * Syncs the browser url with the selections
-    */
-    module.controller('geonode_search_controller', function ($injector, $scope, $location, $http, Configs) {
+     * Main search controller
+     * Load data from api and defines the multiple and single choice handlers
+     * Syncs the browser url with the selections
+     */
+    module.controller('geonode_search_controller', function($injector, $scope, $location, $http, Configs) {
         $scope.query = $location.search();
         $scope.query.limit = $scope.query.limit || CLIENT_RESULTS_LIMIT;
         $scope.query.offset = $scope.query.offset || 0;
@@ -403,11 +403,11 @@
 
         //Get data from apis and make them available to the page
         function query_api(data) {
-            $http.get(Configs.url, {params: data || {}}).then(successCallback, errorCallback);
+            $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback);
 
             function successCallback(data) {
                 //success code
-                setTimeout(function () {
+                setTimeout(function() {
                     $('[ng-controller="CartList"] [data-toggle="tooltip"]').tooltip();
                 }, 0);
                 $scope.results = data.data.objects;
@@ -433,7 +433,7 @@
                 if (HAYSTACK_FACET_COUNTS) {
                     try {
                         module.haystack_facets($http, $scope.$root, $location);
-                        $("#types").find("a").each(function () {
+                        $("#types").find("a").each(function() {
                             if ($(this)[0].id in data.data.meta.facets.subtype) {
                                 $(this).find("span").text(data.data.meta.facets.subtype[$(this)[0].id]);
                             } else if ($(this)[0].id in data.data.meta.facets.type) {
@@ -455,10 +455,10 @@
         query_api($scope.query);
 
         /*
-        * Pagination
-        */
+         * Pagination
+         */
         // Control what happens when the total results change
-        $scope.$watch('total_counts', function () {
+        $scope.$watch('total_counts', function() {
             $scope.numpages = Math.round(
                 ($scope.total_counts / $scope.query.limit) + 0.49
             );
@@ -475,11 +475,10 @@
             // In case of no results, the number of pages is one.
             if ($scope.numpages == 0) {
                 $scope.numpages = 1
-            }
-            ;
+            };
         });
 
-        $scope.paginate_down = function () {
+        $scope.paginate_down = function() {
             if ($scope.page > 1) {
                 $scope.page -= 1;
                 $scope.query.offset = $scope.query.limit * ($scope.page - 1);
@@ -487,7 +486,7 @@
             }
         }
 
-        $scope.paginate_up = function () {
+        $scope.paginate_up = function() {
             if ($scope.numpages > $scope.page) {
                 $scope.page += 1;
                 $scope.query.offset = $scope.query.limit * ($scope.page - 1);
@@ -495,44 +494,44 @@
             }
         }
 
-        $scope.scroll_top = function () {
+        $scope.scroll_top = function() {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         }
 
-        $scope.sync_pagination_scroll = function (up) {
-            if (up) {
-                const paginate = new Promise(function (resolve, reject) {
-                    $scope.paginate_up()
-                    resolve(true);
-                });
-                paginate.then((v) => {
-                    $scope.scroll_top()
-                })
-            } else {
-                const paginate = new Promise(function (resolve, reject) {
-                    $scope.paginate_down()
-                    resolve(true);
-                });
-                paginate.then((v) => {
-                    $scope.scroll_top()
-                })
-            }
+        $scope.sync_pagination_scroll = function(up) {
+                if (up) {
+                    const paginate = new Promise(function(resolve, reject) {
+                        $scope.paginate_up()
+                        resolve(true);
+                    });
+                    paginate.then((v) => {
+                        $scope.scroll_top()
+                    })
+                } else {
+                    const paginate = new Promise(function(resolve, reject) {
+                        $scope.paginate_down()
+                        resolve(true);
+                    });
+                    paginate.then((v) => {
+                        $scope.scroll_top()
+                    })
+                }
 
-        }
-        /*
-        * End pagination
-        */
+            }
+            /*
+             * End pagination
+             */
 
         if (!Configs.hasOwnProperty("disableQuerySync")) {
             // Keep in sync the page location with the query object
-            $scope.$watch('query', function () {
+            $scope.$watch('query', function() {
                 $location.search($scope.query);
             }, true);
         }
 
         // Hierarchical keyword listeners
-        $scope.$on('select_h_keyword', function ($event, element) {
+        $scope.$on('select_h_keyword', function($event, element) {
             var data_filter = 'keywords__slug__in';
             var query_entry = [];
             var value = (element.href ? element.href : element.text);
@@ -559,7 +558,7 @@
             query_api($scope.query);
         });
 
-        $scope.$on('unselect_h_keyword', function ($event, element) {
+        $scope.$on('unselect_h_keyword', function($event, element) {
             var data_filter = 'keywords__slug__in';
             var query_entry = [];
             var value = (element.href ? element.href : element.text);
@@ -582,16 +581,16 @@
 
             //if the entry is empty then delete the property from the query
             if (query_entry.length == 0) {
-                delete ($scope.query[data_filter]);
+                delete($scope.query[data_filter]);
             }
             query_api($scope.query);
         });
 
         /*
-        * Add the selection behavior to the element, it adds/removes the 'active' class
-        * and pushes/removes the value of the element from the query object
-        */
-        $scope.multiple_choice_listener = function ($event) {
+         * Add the selection behavior to the element, it adds/removes the 'active' class
+         * and pushes/removes the value of the element from the query object
+         */
+        $scope.multiple_choice_listener = function($event) {
             var element = $($event.currentTarget);
             var query_entry = [];
             var data_filter = element.attr('data-filter');
@@ -632,12 +631,12 @@
 
             //if the entry is empty then delete the property from the query
             if (query_entry.length == 0) {
-                delete ($scope.query[data_filter]);
+                delete($scope.query[data_filter]);
             }
             query_api($scope.query);
         }
 
-        $scope.single_choice_listener = function ($event) {
+        $scope.single_choice_listener = function($event) {
             var element = $($event.currentTarget);
             var query_entry = [];
             var data_filter = element.attr('data-filter');
@@ -666,7 +665,7 @@
             }
         }
 
-        $('#text_search_btn').click(function () {
+        $('#text_search_btn').click(function() {
             if (HAYSTACK_SEARCH) {
                 $scope.query['q'] = $('#text_search_input').val();
             } else {
@@ -706,17 +705,16 @@
             query_api($scope.query);
         });
 
-        $('#region_search_btn').click(function () {
-            if ($('#region_search_input').val()){
+        $('#region_search_btn').click(function() {
+            if ($('#region_search_input').val()) {
                 $scope.query['regions__name__in'] = $('#region_search_input').val();
-            }
-            else {
+            } else {
                 delete $scope.query['regions__name__in']
             }
             query_api($scope.query);
         });
 
-        $scope.feature_select = function ($event) {
+        $scope.feature_select = function($event) {
             var element = $(event.currentTarget);
             var article = $(element.parents('article')[0]);
             if (article.hasClass('resource_selected')) {
@@ -729,15 +727,15 @@
         };
 
         /*
-        * Date management
-        */
+         * Date management
+         */
 
         $scope.date_query = {
             'date__gte': '',
             'date__lte': ''
         };
         var init_date = true;
-        $scope.$watch('date_query', function () {
+        $scope.$watch('date_query', function() {
             if ($scope.date_query.date__gte != '' && $scope.date_query.date__lte != '') {
                 var dateGte = new Date($scope.date_query.date__gte).toISOString();
                 var dateLte = new Date($scope.date_query.date__lte).toISOString();
@@ -772,15 +770,13 @@
          */
         if ($('.leaflet_map').length > 0) {
             angular.extend($scope, {
-                layers: [
-                    {
-                        name: 'OpenStreetMap',
-                        active: true,
-                        source: {
-                            type: 'OSM'
-                        }
+                layers: [{
+                    name: 'OpenStreetMap',
+                    active: true,
+                    source: {
+                        type: 'OSM'
                     }
-                ],
+                }],
                 center: {
                     lat: 0.0,
                     lon: 0.0,
@@ -801,8 +797,8 @@
             var olData = $injector.get('olData'),
                 map = olData.getMap('filter-map');
 
-            map.then(function (map) {
-                map.on('moveend', function () {
+            map.then(function(map) {
+                map.on('moveend', function() {
                     var glbox = map.getView().calculateExtent(map.getSize()); // doesn't look as expected.
                     var box = ol.proj.transformExtent(glbox, 'EPSG:3857', 'EPSG:4326');
                     $scope.query['extent'] = box.toString();
@@ -811,10 +807,10 @@
             });
 
             var showMap = false;
-            $('#_extent_filter').click(function (evt) {
+            $('#_extent_filter').click(function(evt) {
                 showMap = !showMap
                 if (showMap) {
-                    olData.getMap().then(function (map) {
+                    olData.getMap().then(function(map) {
                         map.updateSize();
                     });
                 }

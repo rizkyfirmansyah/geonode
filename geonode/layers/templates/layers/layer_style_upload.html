@@ -8,7 +8,7 @@
 {% load base_tags %}
 {% load guardian_tags %}
 
-{% block title %} {% trans "Upload Layer Metadata"  %} - {{ block.super }}  {% endblock %}
+{% block title %} {% trans "Upload Layer Metadata"  %} - {{ block.super }} {% endblock %}
 
 {% block body_class %}{% trans "layers upload" %}{% endblock %}
 
@@ -21,9 +21,12 @@
 {% block body_outer %}
 
 <div class="page-header">
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right" style="margin-left: 3px;">{% trans "Explore Spatial Data" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary pull-right" style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
-  <h2 class="page-title">{% trans "Upload Layer Style" %} <small>{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}<small></h2>
+  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right"
+    style="margin-left: 3px;">{% trans "Explore Spatial Data" %}</a>
+  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary pull-right"
+    style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
+  <h2 class="page-title">{% trans "Upload Layer Style" %}
+    <small>{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}<small></h2>
 </div>
 
 <div class="row">
@@ -41,7 +44,8 @@
     <div id="upload-status"></div>
 
     <section id="drop-zone" onclick="document.getElementById('file-input').click();">
-      <h3><i class="fa fa-cloud-upload" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "style file here" %}</span>{% trans " or click here to upload" %}</h3>
+      <h3><i class="fa fa-cloud-upload" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span
+          style="color:midnightblue">{% trans "style file here" %}</span>{% trans " or click here to upload" %}</h3>
       <form id="file-uploader" method="post" enctype="multipart/form-data">
         <!-- UI change to hide the list of previously uploaded files from the user -->
         <input type="file" id="file-input" style="display: none;" accept=".sld,.xml" multiple>
@@ -49,17 +53,22 @@
     </section>
 
     <div class="learn-more">
-        <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal" data-target=".learn-more-modal" style="background: none; border: none;"><i class="fa fa-info-circle" aria-hidden="true"></i></button> </p>
+      <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal"
+          data-target=".learn-more-modal" style="background: none; border: none;"><i class="fa fa-info-circle"
+            aria-hidden="true"></i></button> </p>
     </div>
-    <div class="modal fade learn-more-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal fade learn-more-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog modal-sm">
-          <div class="modal-content learn-more-modal-content">
-              <p>Currently only styles in <strong>SLD 1.0 and 1.1</strong> format can be uploaded</p><br/>
-              <p>For more info, check the documentation in link below</p>
-              <a target="_blank" href="https://docs.geonode.org/en/master/usage/managing_layers/layer_styling.html#uploading-styles">Geonode Uploading Styles Documentation</a>
-              <hr/>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
+        <div class="modal-content learn-more-modal-content">
+          <p>Currently only styles in <strong>SLD 1.0 and 1.1</strong> format can be uploaded</p><br />
+          <p>For more info, check the documentation in link below</p>
+          <a target="_blank"
+            href="https://docs.geonode.org/en/master/usage/managing_layers/layer_styling.html#uploading-styles">Geonode
+            Uploading Styles Documentation</a>
+          <hr />
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
       </div>
     </div>
 
@@ -68,31 +77,35 @@
       <h4>{% trans "Files to be uploaded" %}</h4>
       <div id="file-queue"></div>
       <div class="checkbox" style="display:none;" id="style_upload_form_check">
-          {% trans "Is Upload Metadata XML Form" %} <input type="checkbox" name="style_upload_form" id="id_style_upload_form" checked="true"/>
-          <input type="text" name="layer_title" id="id_layer_title" value="{{ resource.alternate }}"/>
+        {% trans "Is Upload Metadata XML Form" %} <input type="checkbox" name="style_upload_form"
+          id="id_style_upload_form" checked="true" />
+        <input type="text" name="layer_title" id="id_layer_title" value="{{ resource.alternate }}" />
       </div>
     </section>
 
     <section>
-      <div class="btn-danger"><strong>{% trans "WARNING" %}: </strong>{% trans "This will most probably overwrite the current default style!" %}</div>
-      <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button" class="btn btn-default">{% trans "Clear" %}</a>
+      <div class="btn-danger"><strong>{% trans "WARNING" %}:
+        </strong>{% trans "This will most probably overwrite the current default style!" %}</div>
+      <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button"
+        class="btn btn-default">{% trans "Clear" %}</a>
       <a href="#" id="upload-button" class="btn btn-update">{% trans "Upload files" %}</a>
     </section>
   </div>
 
   {% if GEOSERVER_BASE_URL %}
-    {% get_obj_perms request.user for resource.layer as "layer_perms" %}
+  {% get_obj_perms request.user for resource.layer as "layer_perms" %}
   {% endif %}
 
   {% if GEONODE_SECURITY_ENABLED %}
   {% if "change_resourcebase_permissions" in perms_list %}
-    {% if not READ_ONLY_MODE %}
-      <li class="list-group-item">
-        <h4>{% trans "Permissions" %}</h4>
-        <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
-        <p><a href="#modal_perms" data-toggle="modal" class="btn btn-primary btn-block" data-target="#_permissions">{% trans "Change Layer Permissions" %}</a></p>
-      </li>
-    {% endif %}
+  {% if not READ_ONLY_MODE %}
+  <li class="list-group-item">
+    <h4>{% trans "Permissions" %}</h4>
+    <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
+    <p><a href="#modal_perms" data-toggle="modal" class="btn btn-info btn-block"
+        data-target="#_permissions">{% trans "Change Layer Permissions" %}</a></p>
+  </li>
+  {% endif %}
   {% endif %}
   {% endif %}
 
@@ -101,20 +114,23 @@
 
 
 {% block extra_script %}
-    {{ block.super }}
-    <script data-main="{% static 'geonode/js/upload/main.js' %}"
-      src="{% static 'lib/js/require.js' %}">
-    </script>
-    <script type="text/javascript">
-    {% autoescape off %}
+{{ block.super }}
+<script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}">
+</script>
+<script type="text/javascript">
+  {
+    % autoescape off %
+  }
 
-      csrf_token =  "{{ csrf_token }}",
-      form_target = "{{ LAYER_ANCILLARY_FILES_UPLOAD_URL }}",
-      time_enabled = false,
-      mosaic_enabled = false,
-      userLookup = "{% url "account_ajax_lookup" %}"
+  csrf_token = "{{ csrf_token }}",
+    form_target = "{{ LAYER_ANCILLARY_FILES_UPLOAD_URL }}",
+    time_enabled = false,
+    mosaic_enabled = false,
+    userLookup = "{% url "
+  account_ajax_lookup " %}"
 
-    {% endautoescape %}
-
-    </script>
+  {
+    % endautoescape %
+  }
+</script>
 {% endblock extra_script %}
