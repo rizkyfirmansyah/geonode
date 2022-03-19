@@ -7820,6 +7820,15 @@ span.icon.node-icon:before {
     maps
 */
 
+.jss13 {
+    top: 40px !important;
+    position: relative !important;
+}
+
+.jss6 {
+    height: 96px !important;
+}
+
 .msgapi .btn {
     background-color: inherit !important;
     color: inherit !important;
