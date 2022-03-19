@@ -33,14 +33,10 @@
 {% block body_outer %}
 {% overall_rating resource "map" as map_rating %}
 
-<div class="page-header">
-  <style>
-    #paneltbar {
-      margin-top: 1px !important;
-    }
-  </style>
-
-  <h2 class="page-title">{{ resource.title }}</h2>
+<div class="page-header col-md-12">
+  <h2 class="page-title col-md-8 no-gutters">{{ resource.title }}</h2>
+  <a href="." class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+      Explore</button></a>
 </div>
 
 <div class="row">

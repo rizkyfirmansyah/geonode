@@ -1754,6 +1754,10 @@ select:-webkit-autofill:focus {
  *
  * ------------------------------------------------------------------- */
 
+#page-geostory .btn {
+    padding: .5em !important;
+}
+
 #SigninModal .tab-content {
     border: none !important;
     box-shadow: none !important;
@@ -2577,7 +2581,7 @@ input::-moz-focus-inner {
     position: fixed;
     right: 0;
     top: 0;
-    z-index: 700;
+    z-index: 99999;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-transition: all 0.5s ease;
@@ -7603,6 +7607,7 @@ article.tab-pane {
     padding-right: 3px;
 }
 
+.map-actions li a,
 .layer-actions li a,
 .documents-actions li a {
     padding: 0.625rem .55rem;
@@ -7623,6 +7628,7 @@ article.tab-pane {
     padding-left: 1.3em;
 }
 
+.map-actions li a:hover,
 .layer-actions li a:hover,
 .documents-actions li a:hover {
     background-color: #a23133 !important;

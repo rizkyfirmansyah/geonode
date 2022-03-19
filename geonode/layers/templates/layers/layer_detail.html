@@ -38,20 +38,17 @@
 {% block body_class %}{% trans "layers" %}{% endblock %}
 
 {% block body_outer %}
-<div class="page-header">
-  <style>
-    #paneltbar {
-      margin-top: 1px !important;
-    }
-  </style>
+<div class="page-header col-md-12">
 
-  <h2 class="page-title">{{ resource.title|default:resource.alternate }}</h2>
+  <h2 class="page-title col-md-8 no-gutters">{{ resource.title|default:resource.alternate }}</h2>
   {% if storeType == 'remoteStore' %}
   <em>
     <i class="fa fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
     {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
   </em>
   {% endif %}
+  <a href="." class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+      Explore</button></a>
 </div>
 
 <div class="row">
@@ -782,7 +779,8 @@
 
     }).appendTo('#legend_placeholder');
   }); {
-    % endif %
+    %
+    endif %
   }
 </script>
 
@@ -807,7 +805,8 @@
     createMapThumbnail();
     $('#edit-layer').modal('toggle');
   }); {
-    % endif %
+    %
+    endif %
   }
 </script>
 {% endblock thumbnail_script %}
@@ -851,12 +850,12 @@
 
   // add class selected when an element from the list is clicked.
   $("#operator_list li:not(.divider),#attribute_list li:not(.divider),#and-or_list li:not(.divider)").click(
-  function () {
-    // Ensure only the current one is selected
-    var id = $(this).closest('[data-modal-button-id]').data().modalButtonId;
-    $("#" + id + "_list li:not(.divider)").removeClass('selected');
-    $(this).addClass('selected');
-  });
+    function () {
+      // Ensure only the current one is selected
+      var id = $(this).closest('[data-modal-button-id]').data().modalButtonId;
+      $("#" + id + "_list li:not(.divider)").removeClass('selected');
+      $(this).addClass('selected');
+    });
 
   $(document.body).on("click", "#button_query", function (e) {
     $(".text_area").css("visibility", "visible");
@@ -998,7 +997,8 @@
               if request.user.is_authenticated and access_token %
             }
             xhr.setRequestHeader("Authorization", "Bearer {{access_token}}"); {
-              % endif %
+              %
+              endif %
             }
             $(".loading_msg").show();
           },
@@ -1054,7 +1054,8 @@
     if show_popup %
   }
   $('#download-layer').modal('toggle'); {
-    % endif %
+    %
+    endif %
   }
 </script>
 

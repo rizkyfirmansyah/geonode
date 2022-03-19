@@ -25,8 +25,10 @@
 
 {% block body_outer %}
 
-<div class="page-header">
-  <h2>{{ resource.title }}</h2>
+<div class="page-header col-md-12">
+  <h2 class="col-md-8 no-gutters">{{ resource.title }}</h2>
+  <a href="." class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+      Explore</button></a>
 </div>
 
 <div class="row">
