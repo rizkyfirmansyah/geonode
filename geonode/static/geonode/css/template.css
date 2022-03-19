@@ -7607,6 +7607,7 @@ article.tab-pane {
     padding-right: 3px;
 }
 
+#nav_messages li a,
 .map-actions li a,
 .layer-actions li a,
 .documents-actions li a {
@@ -7628,6 +7629,7 @@ article.tab-pane {
     padding-left: 1.3em;
 }
 
+#nav_messages li a:hover,
 .map-actions li a:hover,
 .layer-actions li a:hover,
 .documents-actions li a:hover {
