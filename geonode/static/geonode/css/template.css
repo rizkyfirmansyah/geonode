@@ -1750,9 +1750,13 @@ select:-webkit-autofill:focus {
 
 
 /* ===================================================================
- * # buttons
+ * #  override buttons style
  *
  * ------------------------------------------------------------------- */
+
+.msgapi .btn {
+    padding: 4px 8px !important;
+}
 
 #page-geostory .btn {
     padding: .5em !important;
@@ -7814,6 +7818,16 @@ span.icon.node-icon:before {
     layers
     documents
 */
+
+#map .btn-default {
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
+#map .btn-default:hover {
+    background-color: inherit !important;
+    color: inherit !important;
+}
 
 .page-header {
     margin-top: 3rem !important;
