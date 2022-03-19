@@ -1566,7 +1566,6 @@ textarea,
 select {
     display: block;
     height: 6rem;
-    border: 0;
     outline: none;
     color: black !important;
     font-family: "Solanel-Light", sans-serif;
@@ -1759,6 +1758,20 @@ select:-webkit-autofill:focus {
     transition: all 0.3s ease-in-out;
     background-color: #c5c5c5;
     border: .2rem solid #c5c5c5;
+}
+
+#SigninModal input[type="text"],
+#SigninModal input[type="password"],
+#SigninModal input[type="email"] {
+    border: 1px solid black;
+}
+
+#navSignIn a:hover,
+#navSignIn a[aria-expanded="true"],
+#navSignUp a[aria-expanded="true"],
+#navSignUp a:hover {
+    color: white !important;
+    text-decoration: none;
 }
 
 .btn:hover,
@@ -2574,7 +2587,7 @@ input::-moz-focus-inner {
     letter-spacing: .25rem;
     margin-bottom: 4.8rem;
     margin-top: .9rem;
-    color: #1C463F;
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .header-nav p {
@@ -3561,7 +3574,7 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     font-size: 1.3rem;
     text-transform: uppercase;
     letter-spacing: .3rem;
-    color: #1C463F;
+    color: #c4bab7;
     -webkit-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
 }
@@ -5289,8 +5302,20 @@ footer #footer-language {
 #SigninModal .close {
     width: 40px;
     position: absolute;
-    right: 15px;
-    top: 0px;
+    right: 1em;
+    top: .7em;
+    display: block;
+    border: none;
+    background-color: transparent;
+}
+
+.ClsSgnM {
+    padding: 0 8px;
+    display: flex;
+    float: right;
+    position: relative;
+    top: .8em;
+    right: -13em;
 }
 
 #SigninModal .close:hover {
@@ -5298,6 +5323,9 @@ footer #footer-language {
     color: black;
     opacity: 1;
     background-color: transparent !important;
+    border: none;
+    outline: none;
+    text-decoration: none;
 }
 
 
@@ -5945,8 +5973,9 @@ html {
 }
 
 
-/* Activity
-   ----------------------------- */
+/* -------------------------------------------------------------------
+ * # Activity
+ * ------------------------------------------------------------------- */
 
 .no-style-list {
     list-style-type: none;
@@ -6062,6 +6091,25 @@ html {
 
 #permission_form .select2-container {
     width: 250px;
+}
+
+
+/* ------------------------------------------------------------------- 
+ * ## people. groups.
+ * ------------------------------------------------------------------- */
+
+.well textarea {
+    min-width: 480px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+#group_container {
+    padding-left: 1em;
+}
+
+#group_container img {
+    max-width: 90% !important;
 }
 
 
@@ -6182,7 +6230,9 @@ form-inline {
 }
 
 
-/** Metadata select2 styles */
+/* -------------------------------------------------------------------
+ * ## Metadata select2 styles
+ * ------------------------------------------------------------------- */
 
 .has-error {
     color: #a23133 !important;
@@ -6193,7 +6243,47 @@ form-inline {
 }
 
 
-/** Autocomplete styling **/
+/* -------------------------------------------------------------------
+ * ## Autocomplete and search styles
+ * ------------------------------------------------------------------- */
+
+#search_input {
+    width: 100%;
+    font-size: 3rem;
+    border-bottom: none;
+}
+
+.search-container {
+    margin-left: 5rem;
+}
+
+#text_search_btn {
+    font-size: 4rem;
+    float: left;
+    position: relative;
+}
+
+#text_search_btn:hover {
+    cursor: pointer;
+    color: #fdba12 !important;
+    outline: transparent !important;
+    background-color: transparent !important;
+    text-decoration: none;
+    border: none !important;
+}
+
+#text_search_btn:active,
+#text_search_btn:focus {
+    color: #fdba12 !important;
+    outline: transparent !important;
+    background-color: transparent !important;
+    text-decoration: none;
+    border: none !important;
+}
+
+#text_search_input {
+    border: none !important;
+}
 
 .delete_search {
     padding: 0 8px;
@@ -7517,40 +7607,6 @@ span.icon.node-icon:before {
 
 .page-header {
     margin-top: 3rem !important;
-}
-
-#search_input {
-    width: 100%;
-    font-size: 3rem;
-    border-bottom: none;
-}
-
-.search-container {
-    margin-left: 5rem;
-}
-
-#text_search_btn {
-    font-size: 4rem;
-    float: left;
-    position: relative;
-}
-
-#text_search_btn:hover {
-    cursor: pointer;
-    color: #fdba12 !important;
-    outline: transparent !important;
-    background-color: transparent !important;
-    text-decoration: none;
-    border: none !important;
-}
-
-#text_search_btn:active,
-#text_search_btn:focus {
-    color: #fdba12 !important;
-    outline: transparent !important;
-    background-color: transparent !important;
-    text-decoration: none;
-    border: none !important;
 }
 
 #resources_list {

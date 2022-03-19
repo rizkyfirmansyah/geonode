@@ -20,7 +20,7 @@
 
     <ul class="col-lg-12 list-unstyled text-right">
       {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
-        <li class="d-inline" id="logged-in"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login/Register" %} </a></li>
+        <li class="d-inline" id="logged-in"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a></li>
       {% elif user.is_authenticated %}
           <li>
             <a href="#" class="avatar" id="logged-out">
@@ -57,9 +57,12 @@
             <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "recent-activity" %}" role="button">{% trans "Recent Activity" %} </a></div>
             <div class="col-xs-6 no-gutters"><a href="{% url "messages_inbox" %}" role="button">{% trans "Inbox" %} </a></div>
           </div>
+          <li role="separator" class="divider"></li>
+          <div class="d-flex">
           {% if user.is_superuser or user.is_staff %}
-            <li role="separator" class="divider"></li>
-            <li><a href="{% url "admin:index" %}">{% trans "Admin Panel" %}</a></li>
+            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_browse" %}" role="button">{% trans "People" %}</a></div>
+            <div class="col-xs-6 no-gutters"><a href="{% url "admin:index" %}" role="button">{% trans "Admin Panel" %}</a></div>
+          </div>
             {% if 'geonode.geoserver' in INSTALLED_APPS %}
             <li><a href="{{ OGC_SERVER.default.WEB_UI_LOCATION }}">GeoServer</a></li>
             {% endif %}
@@ -67,6 +70,8 @@
             <li role="separator" class="divider"></li>
             <li><a href="{% url "monitoring:index" %}">{% trans "Monitoring & Analytics" %}</a></li>
             {% endif %}
+          {% else %}
+            <div class="col-xs-12 no-gutters"><a class="pull-left" href="{% url "profile_browse" %}" role="button">{% trans "People" %}</a></div>
           {% endif %}
       {% else %}
         <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button" >{% trans "Sign in" %} </a></li>

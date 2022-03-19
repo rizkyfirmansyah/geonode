@@ -7,11 +7,13 @@
 {% block body_class %}{% trans "groups explore" %}{% endblock %}
 
 {% block body %}
-  <div class="page-header">
+  <div class="page-header col-md-12" id="resources_list">
     {% if user.is_authenticated and not READ_ONLY_MODE %}
-    <a href="{% url "group_category_create" %}" class="btn btn-primary pull-right">{% trans "Create a New Group Category" %}</a>
+    <a href="{% url "group_category_create" %}" class="btn btn-primary pull-right col-md-3">{% trans "Create a New Group Category" %}</a>
     {% endif %}
-    <h2>{% trans "Explore Group Categories" %}</h2>
+    {% if SEARCH_FILTERS.TEXT_ENABLED %}
+      {% include "search/_text_container.html" %}
+    {% endif %}
   </div>
 
   {% with include_type_filter='true' %}
