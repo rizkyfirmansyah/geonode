@@ -105,11 +105,11 @@
     {% block completeness  %}
         var updateCompleteness = function(completeness) {
             {% block extendcompleteness %}{% endblock extendcompleteness %}
-        $('#profileCompleteness .progress-bar').html(parseFloat(((completeness)*100).toFixed(0)) + ' %').width(parseFloat(((completeness)*100).toFixed(2)) + '%');
-        $('#profileCompleteness .completed').toggle(completeness === 1);
-        $('#profileCompleteness .not-completed').toggle(completeness !== 1);
-        
-        var mandatoryMissing = $('#mandatory').find('.input-empty:not([class^="select2"])').length > 0;
+            $('#profileCompleteness .progress-bar').html(parseFloat(((completeness)*100).toFixed(0)) + ' %').width(parseFloat(((completeness)*100).toFixed(2)) + '%');
+            $('#profileCompleteness .completed').toggle(completeness === 1);
+            $('#profileCompleteness .not-completed').toggle(completeness !== 1);
+            
+            var mandatoryMissing = $('#mandatory').find('.input-empty:not([class^="select2"])').length > 0;
             if (mandatoryMissing) {
                 var not_tinymce = true
                 var inputs = $('#mandatory').find('.input-empty:not([class^="select2"])');
@@ -123,15 +123,16 @@
                 }
                 }
                 mandatoryMissing = empty > 0;
-            }
+            };
             var imgMissing = $('img#image').attr('src');
             if (imgMissing && imgMissing.includes('missing_thumb')) {
                 mandatoryMissing = true
-            }
-        var advancedMissing = $('#advanced').find('.input-empty').length > 0;
-            if (advancedMissing) {
+            };
+
+            var licenseMissing = $('#licenses').find('.input-empty').length > 0;
+            if (licenseMissing) {
                 var not_tinymce = true
-                var inputs = $('#advanced').find('.input-empty');
+                var inputs = $('#licenses').find('.input-empty');
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
                 if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
@@ -141,55 +142,79 @@
                     empty--;
                 }
                 }
-                advancedMissing = empty > 0;
-            }
+                licenseMissing = empty > 0;
+            };
 
-            {% if UI_REQUIRED_FIELDS %}
-            var metadataMissing = $('#ownership').find('.input-empty').length > 0;
-            if (metadataMissing) {
-                var inputs = $('#ownership').find('.input-empty');
+            var contentMissing = $('#content').find('.input-empty').length > 0;
+            if (contentMissing) {
+                var not_tinymce = true
+                var inputs = $('#content').find('.input-empty');
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
-                if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
+                if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
+                    empty++;
+                    not_tinymce = false
+                } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
                     empty--;
                 }
                 }
-                metadataMissing = empty > 0;
-            }
-            $('#completeness-hints .metadata-hint')
-                .toggleClass('progress-bar-danger', metadataMissing)
-                .toggleClass('progress-bar-success', !metadataMissing)
-                .attr('title', metadataMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-                .tooltip('fixTitle');
+                contentMissing = empty > 0;
+            };
+
+            {% if UI_REQUIRED_FIELDS %}
+                var metadataMissing = $('#mandatory').find('.input-empty').length > 0;
+                if (metadataMissing) {
+                    var inputs = $('#mandatory').find('.input-empty');
+                    var empty = inputs.length;
+                    for (var i=0; i<inputs.length; i++) {
+                    if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
+                        empty--;
+                    }
+                    }
+                    metadataMissing = empty > 0;
+                }
+                $('#completeness-hints .metadata-hint')
+                    .toggleClass('progress-bar-danger', metadataMissing)
+                    .toggleClass('progress-bar-success', !metadataMissing)
+                    .attr('title', metadataMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                    .tooltip('fixTitle');
             {% endif %}
 
-        $('#completeness-hints .mandatory-hint')
-            .toggleClass('progress-bar-danger', mandatoryMissing)
-            .toggleClass('progress-bar-success', !mandatoryMissing)
-            .attr('title', mandatoryMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-            .tooltip('fixTitle');
-        $('#completeness-hints .advanced-hint')
-            .toggleClass('progress-bar-danger', advancedMissing)
-            .toggleClass('progress-bar-success', !advancedMissing)
-            .attr('title', advancedMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-            .tooltip('fixTitle');
+            $('#completeness-hints .mandatory-hint')
+                .toggleClass('progress-bar-danger', mandatoryMissing)
+                .toggleClass('progress-bar-success', !mandatoryMissing)
+                .attr('title', mandatoryMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                .tooltip('fixTitle');
+
+            $('#completeness-hints .content-hint')
+                .toggleClass('progress-bar-danger', contentMissing)
+                .toggleClass('progress-bar-success', !contentMissing)
+                .attr('title', contentMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                .tooltip('fixTitle');
+                
+            $('#completeness-hints .licenses-hint')
+                .toggleClass('progress-bar-danger', licenseMissing)
+                .toggleClass('progress-bar-success', !licenseMissing)
+                .attr('title', licenseMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                .tooltip('fixTitle');
+
             //done button tooltip
             if(completeness === 1 && $('.metadata-edit-done').css('opacity')+"" === "0" && !tooltipShown && !gotIt) {
-            tooltipShown = true;
-            setTimeout(function() {
-                $('.metadata-edit-done').popover('show');
-                $(document).on('click', '#close-popover-done', function() {
-                    $('.metadata-edit-done').popover('hide');
-                    gotIt = true;
-                });
-            },1500);
-            } else if (completeness < 1){
-            tooltipShown = false;
-            $('.metadata-edit-done').popover('hide');
-            }
-            // show/hide done button
+                tooltipShown = true;
+                setTimeout(function() {
+                    $('.metadata-edit-done').popover('show');
+                    $(document).on('click', '#close-popover-done', function() {
+                        $('.metadata-edit-done').popover('hide');
+                        gotIt = true;
+                    });
+                }, 1500);
+            } else if (completeness < 1) {
+                tooltipShown = false;
+                $('.metadata-edit-done').popover('hide');
+            };
+                // show/hide done button
             $('.metadata-edit-done').animate(completeness === 1 ? {width: '100px', opacity: 1} : {width: 0, opacity: 0});
-        }
+        };
     {% endblock completeness  %}
 
     var toggleRestrictionsConstraints = function(e){
@@ -316,7 +341,8 @@
 
     {% block hints %}
         $('#completeness-hints .mandatory-hint').click(getTab.bind(null, 1));
-        $('#completeness-hints .advanced-hint').click(getTab.bind(null, 2));
+        $('#completeness-hints .licenses-hint').click(getTab.bind(null, 2));
+        $('#completeness-hints .content-hint').click(getTab.bind(null, 3));
     {% endblock hints %}
     
     {% block trigger_onInputChange %}
