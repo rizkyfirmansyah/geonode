@@ -1034,6 +1034,18 @@ body .apps {
     color: white !important;
 }
 
+.toggle-off .btn,
+.toggle-on .btn {
+    padding: 5px 0px 5px 0px !important;
+    border-color: transparent !important;
+    background-color: transparent !important;
+}
+
+.toggle-handle {
+    border-color: transparent !important;
+    background-color: transparent !important;
+}
+
 
 /* ------------------------------------------------------------------- 
  * ## links
