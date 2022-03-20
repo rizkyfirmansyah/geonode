@@ -761,10 +761,7 @@
     return false;
   });
 
-  {
-    %
-    if resource.get_legend.link_type == 'json' %
-  }
+  {% if resource.get_legend.link_type == 'json' %}
   $.getJSON('{{ resource.get_legend_url }}', function (data) {
     var legend = data.layers[0].legend;
     var items = [];
@@ -775,38 +772,23 @@
     $('<ul/>', {
       'class': 'arcgis-legend',
       html: items.join('')
-
     }).appendTo('#legend_placeholder');
-  }); {
-    %
-    endif %
-  }
+  }); {% endif %}
 </script>
 
 {% block thumbnail_script %}
 <script type="text/javascript">
-  {
-    %
-    if preview == 'react' %
-  }
+  {% if preview == 'react' %}
   $('#set_thumbnail').click(function () {
     window.setThumbnail({
-      {
-        resource.id
-      }
+      { resource.id }
     })
     $('#edit-layer').modal('toggle');
-  }); {
-    %
-    else %
-  }
+  }); {% else %}
   $('#set_thumbnail').click(function () {
     createMapThumbnail();
     $('#edit-layer').modal('toggle');
-  }); {
-    %
-    endif %
-  }
+  }); {% endif %}
 </script>
 {% endblock thumbnail_script %}
 
@@ -864,8 +846,7 @@
     logical_operator_dropdown = $("#and-or_list li.selected a").attr('id');
     attribute_data_type = $("#attribute_list li.selected a").attr('data-type');
     attribute_data_schema = $("#attribute_list li.selected a").attr('data-schema');
-    if (attribute_list == null || operator_list == null || single_value_input == "" || logical_operator_dropdown ==
-      null) {
+    if (attribute_list == null || operator_list == null || single_value_input == "" || logical_operator_dropdown ==null) {
       if ($("#missing-values").length == 0) {
         $("#query-filter-tools").after("<p id='missing-values'> Select all values from menus.</p>");
       }
@@ -964,21 +945,9 @@
         "background-color": "#3276b1",
         "border-color": "#3276b1"
       });
-      layer_name = {
-        {
-          layer_name | safe
-        }
-      };
-      filtered_attributes = {
-        {
-          filtered_attributes | safe
-        }
-      }
-      attribute_description = {
-        {
-          attribute_description | safe
-        }
-      }
+      layer_name = {{ layer_name | safe }};
+      filtered_attributes = {{ filtered_attributes | safe }}
+      attribute_description = {{ attribute_description | safe }}
       whole_url = "{% url 'load_layer_data' %}";
       if (!ajax_loaded) {
         $.ajax({
@@ -991,14 +960,8 @@
             })
           },
           beforeSend: function (xhr) {
-            {
-              %
-              if request.user.is_authenticated and access_token %
-            }
-            xhr.setRequestHeader("Authorization", "Bearer {{access_token}}"); {
-              %
-              endif %
-            }
+            {% if request.user.is_authenticated and access_token %}
+            xhr.setRequestHeader("Authorization", "Bearer {{access_token}}"); {% endif %}
             $(".loading_msg").show();
           },
           success: function (data) {
@@ -1048,14 +1011,8 @@
       $('#tabContent, .query_builder_tab').hide();
     });
 
-  }); {
-    %
-    if show_popup %
-  }
-  $('#download-layer').modal('toggle'); {
-    %
-    endif %
-  }
+  }); {% if show_popup %}
+  $('#download-layer').modal('toggle'); {% endif %}
 </script>
 
 {% if GEONODE_SECURITY_ENABLED %}
