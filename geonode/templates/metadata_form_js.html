@@ -13,7 +13,7 @@
     var is_category_mandatory = {% if TOPICCATEGORY_MANDATORY %}true{% else %}false{% endif %};
     var is_group_mandatory = {% if GROUP_MANDATORY_RESOURCES %}true{% else %}false{% endif %};
     var ui_mandatory_fields = {{ UI_MANDATORY_FIELDS }};
-    
+
     var updateWizard = function() {
       var activeTab = $("#edit-metadata .wizard--progress li.is-active");
       var first = $("#edit-metadata .wizard--progress li:first-child");
@@ -137,6 +137,68 @@
             $('.metadata-edit-done').animate(completeness === 1 ? {width: '100px', opacity: 1} : {width: 0, opacity: 0});
         }
     {% endblock completeness  %}
+
+    var toggleRestrictionsConstraints = function(e){
+        try {
+            if(e && e.target && e.target.id == 'id_resource-constraints_other') {
+                var ee = $('#id_resource-constraints_other')[0];
+                if(otherRestrictionsSelected() && ee.value !== undefined && ee.value.trim() === '') {
+                    if(!$(ee).hasClass("input-empty")) {
+                        setInputEmpty(ee, true);
+                        $(ee).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"));
+                        empty++;
+                    } else {
+                        setInputEmpty(ee, false);
+                        $(ee).parent().find(".mandatory-warning").remove();
+                        empty--;
+                    }
+                }
+            }
+        } catch (err) {
+            // Log error
+            console.log(err);
+            return false;
+        }
+        return true;
+    };
+
+    //check if a field is mandatory
+    var otherRestrictionsSelected  = function(e){
+        var otherRestrictions = false
+        try {
+        idx = $('#id_resource-restriction_code_type')[0].selectedIndex;
+        value = $('#id_resource-restriction_code_type')[0].options[idx].text;
+        if(value === "otherRestrictions") {
+            otherRestrictions = true;
+        }
+        } catch (err) {
+            otherRestrictions = true;
+        }
+        return otherRestrictions;
+    };
+
+    var isMandatoryField = function (el) {
+        var is_mandatory = false;
+
+        is_mandatory = ui_mandatory_fields.some(function(field){
+            return el.id == field;
+        })
+
+        if (el.id == 'id_resource-group') {
+            if (is_group_mandatory) {
+                is_mandatory = true;
+            }
+        }
+
+        // Workaround for Thesauri
+        if (el.id.startsWith('id_tkeywords') && $(el).hasClass('treq')) {
+            is_mandatory = true;
+        } else if (el.id.startsWith('id_tkeywords') && !$(el).hasClass('treq')) {
+            is_mandatory = false;
+        }
+
+        return is_mandatory;
+    };
 
     {% block onInputChange %}
         var onInputChange = function(e){
@@ -837,68 +899,6 @@
           if( $( '.bootstrap-select' ).hasClass("input-empty") ) {
             $( '.bootstrap-select' ).toggleClass("input-empty");
           }
-    };
-
-    //check if a field is mandatory
-    var otherRestrictionsSelected  = function(e){
-        var otherRestrictions = false
-        try {
-        idx = $('#id_resource-restriction_code_type')[0].selectedIndex;
-        value = $('#id_resource-restriction_code_type')[0].options[idx].text;
-        if(value === "otherRestrictions") {
-            otherRestrictions = true;
-        }
-        } catch (err) {
-            otherRestrictions = true;
-        }
-        return otherRestrictions;
-    };
-
-    var toggleRestrictionsConstraints = function(e){
-        try {
-            if(e && e.target && e.target.id == 'id_resource-constraints_other') {
-                var ee = $('#id_resource-constraints_other')[0];
-                if(otherRestrictionsSelected() && ee.value !== undefined && ee.value.trim() === '') {
-                    if(!$(ee).hasClass("input-empty")) {
-                        setInputEmpty(ee, true);
-                        $(ee).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"));
-                        empty++;
-                    } else {
-                        setInputEmpty(ee, false);
-                        $(ee).parent().find(".mandatory-warning").remove();
-                        empty--;
-                    }
-                }
-            }
-        } catch (err) {
-            // Log error
-            console.log(err);
-            return false;
-        }
-        return true;
-    };
-
-    var isMandatoryField = function (el) {
-        var is_mandatory = false;
-
-        is_mandatory = ui_mandatory_fields.some(function(field){
-            return el.id == field;
-        })
-
-        if (el.id == 'id_resource-group') {
-            if (is_group_mandatory) {
-                is_mandatory = true;
-            }
-        }
-
-        // Workaround for Thesauri
-        if (el.id.startsWith('id_tkeywords') && $(el).hasClass('treq')) {
-            is_mandatory = true;
-        } else if (el.id.startsWith('id_tkeywords') && !$(el).hasClass('treq')) {
-            is_mandatory = false;
-        }
-
-        return is_mandatory;
     };
 
 {% endautoescape %}
