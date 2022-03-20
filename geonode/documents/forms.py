@@ -103,7 +103,8 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
                         'placeholder': help_text,
                         'data-placement': 'right',
                         'data-container': 'body',
-                        'data-html': 'true'
+                        'data-html': 'true',
+                        'data-field': self.fields[field].label
                     }
                 )
         self.fields['links'].choices = self.generate_link_choices()

@@ -96,6 +96,35 @@
           }
     };
 
+    function getTab(number) {
+        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+        var tabIndex = activeTab && $(activeTab[0]).data("step");
+        console.log(tabIndex);
+        var nextTab = $("#edit-metadata .wizard--progress li[data-step=" + number + "]");
+        if (nextTab) {
+          activeTab.toggleClass('is-active');
+          nextTab.tab('show');
+          nextTab.toggleClass('is-active');
+        }
+        updateWizard();
+    };
+  
+    function getPrevTab(){
+        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+        var tabIndex = activeTab && $(activeTab[0]).data("step");
+        if (tabIndex >= 0) {
+            getTab( tabIndex - 1 );
+        }
+    };
+  
+    function getNextTab(){
+        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+        var tabIndex = activeTab && $(activeTab[0]).data("step");
+        if (tabIndex >= 0) {
+            getTab( tabIndex + 1 );
+        }
+    };
+
     // done button tooltip variables
     var tooltipShown = false;
     var gotIt = false;
@@ -111,53 +140,53 @@
             
             var mandatoryMissing = $('#mandatory').find('.input-empty:not([class^="select2"])').length > 0;
             if (mandatoryMissing) {
-                var not_tinymce = true
+                var not_tinymce = true;
                 var inputs = $('#mandatory').find('.input-empty:not([class^="select2"])');
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
-                if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
-                    empty++;
-                    not_tinymce = false
-                } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
-                    empty--;
-                }
-                }
+                    if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
+                        empty++;
+                        not_tinymce = false
+                    } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
+                        empty--;
+                    };
+                };
                 mandatoryMissing = empty > 0;
             };
             var imgMissing = $('img#image').attr('src');
             if (imgMissing && imgMissing.includes('missing_thumb')) {
-                mandatoryMissing = true
+                mandatoryMissing = true;
             };
 
             var licenseMissing = $('#licenses').find('.input-empty').length > 0;
             if (licenseMissing) {
-                var not_tinymce = true
+                var not_tinymce = true;
                 var inputs = $('#licenses').find('.input-empty');
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
-                if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
-                    empty++;
-                    not_tinymce = false
-                } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
-                    empty--;
-                }
-                }
+                    if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
+                        empty++;
+                        not_tinymce = false;
+                    } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
+                        empty--;
+                    }
+                };
                 licenseMissing = empty > 0;
             };
 
-            var contentMissing = $('#content').find('.input-empty').length > 0;
+            var contentMissing = $('#content').find('.input-empty:not([class^="select2"])').length > 0;
             if (contentMissing) {
-                var not_tinymce = true
-                var inputs = $('#content').find('.input-empty');
+                var not_tinymce = true;
+                var inputs = $('#content').find('.input-empty:not([class^="select2"])');
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
-                if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
-                    empty++;
-                    not_tinymce = false
-                } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
-                    empty--;
-                }
-                }
+                    if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
+                        empty++;
+                        not_tinymce = false
+                    } else if (typeof inputs[i].value !== undefined && inputs[i].value !== '' && not_tinymce) {
+                        empty--;
+                    };
+                };
                 contentMissing = empty > 0;
             };
 
@@ -373,7 +402,7 @@
                 prevNum++;
             }
             $('#category_form').on('rendered.bs.select', function() {
-            $('.has-popover').popover({'trigger':'hover'});
+                $('.has-popover').popover({'trigger':'hover'});
             });
 
             $(this).change(onInputChange).change();
@@ -396,35 +425,6 @@
         });
 
     {% endblock trigger_onInputChange %}
-
-    function getTab(number) {
-      var activeTab = $("#edit-metadata .wizard--progress li.is-active");
-      var tabIndex = activeTab && $(activeTab[0]).data("step");
-      var nextTab = $("#edit-metadata .wizard--progress li[data-step=" + number + "]");
-      if (nextTab) {
-        activeTab.toggleClass('is-active');
-        nextTab.tab('show');
-        nextTab.toggleClass('is-active');
-      }
-      updateWizard();
-    };
-
-    function getPrevTab(){
-      var activeTab = $("#edit-metadata .wizard--progress li.is-active");
-      var tabIndex = activeTab && $(activeTab[0]).data("step");
-      if (tabIndex >= 0) {
-          getTab( tabIndex - 1 );
-      }
-
-    };
-
-    function getNextTab(){
-        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
-        var tabIndex = activeTab && $(activeTab[0]).data("step");
-        if (tabIndex >= 0) {
-            getTab( tabIndex + 1 );
-        }
-    };
 
     $(document).ready(function() {
         $('.metadata-edit-done').popover({
@@ -552,10 +552,7 @@
 
         $('#btn_upd_md_up').click(function(){
             if (is_category_mandatory &&
-                (
-                    (!is_advanced && $('#category_form').hasClass("input-empty")) ||
-                    (is_advanced && !$('#category_form input:checked').val())
-                )
+                (is_advanced && !$('#category_form option:selected').val())
             ) {
                 $('#category_mandatoryDialog').modal();
             } else if (is_group_mandatory &&
@@ -572,10 +569,7 @@
 
         $('#btn_upd_md_dwn').click(function(){
             if (is_category_mandatory &&
-                (
-                    (!is_advanced && $('#category_form').hasClass("input-empty")) ||
-                    (is_advanced && !$('#category_form input:checked').val())
-                )
+                (is_advanced && !$('#category_form option:selected').val())
             ) {
                 $('#category_mandatoryDialog').modal();
             } else if (is_group_mandatory &&
@@ -594,9 +588,11 @@
             var errors = ['{% trans "Following items are required:" %}']
             $( ':input[required]').each( function () {
                 if ( this.value.trim() == '' ) {
-                    errors.push(this.id)
+                    console.log(this.dataset.field);
+                    errors.push(this.dataset.field);
                 }
             });
+
             if (errors.length > 1) {
                 console.error("Following items are required: " + errors)
                 $(".general_errors").find("p").html(errors.join('<br>'));

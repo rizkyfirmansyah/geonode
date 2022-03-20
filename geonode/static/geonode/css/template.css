@@ -6486,6 +6486,11 @@ form#text-search-autocomplete .ac-results {
  * # Autocomplete for thesaurus field in advanced metadata edit views
  * ------------------------------------------------------------------- */
 
+.mandatory-warning {
+    color: #a23133;
+    font-size: 12px;
+}
+
 
 /* general panel styles */
 
