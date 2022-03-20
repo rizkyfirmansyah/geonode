@@ -8079,6 +8079,10 @@ span.icon.node-icon:before {
     color: inherit !important;
 }
 
+.msgapi #mapstore-mouseposition button span {
+    color: #2c689c;
+}
+
 .page-header {
     margin-top: 3rem !important;
 }
