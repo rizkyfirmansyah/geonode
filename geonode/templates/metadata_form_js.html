@@ -42,6 +42,60 @@
       }
     };
 
+    var prevNum = 0, totalNum = 0;
+    var empty = 0;
+    // set proper classes to count empty fields and display them
+    var setInputEmpty = function( target, empty ) {
+        if($(target).hasClass('value-select')) {
+        // tkeywords
+        // $(target).toggleClass("input-empty", empty);
+        // $(target).parent().find('input.autocomplete').toggleClass("input-empty", empty);
+        } else if( !$(target).hasClass('autocomplete') ){
+        // display error status for token fields if not completed
+        $(target).toggleClass("input-empty", empty);
+        if (target.id.startsWith('id_tkeywords')) {
+            $("#" + target.id).closest("p").toggleClass("has-error", empty);   
+            }
+        }
+        var imgMissing = $('img#image').attr('src');
+        if (imgMissing && !imgMissing.includes('missing_thumb')) {
+            $('input#id_crop_file').removeClass("input-empty");
+            $('input#id_crop_file').parent().find(".mandatory-warning").remove();
+        }
+
+        if(target.id === 'id_resource-keywords') {
+        $(target).siblings('span').toggleClass('has-error', empty);
+        $(target).toggleClass("input-empty", empty);
+        }
+
+        {% block target %}
+
+          if(target.id === 'category_form' ||
+             target.id === 'id_resource-regions' ||
+             target.id === 'id_resource-group' || 
+             target.id === 'id_resource-date' ||
+             target.id === 'id_resource-links' || {{UI_REQUIRED_FIELDS}}.includes(target.id)
+          ) {
+              // group selector
+              $(target).closest('#basicGroupInfo').toggleClass('has-error', empty);
+
+              // category selector
+              $(target).closest('#basicCategoryInfo').toggleClass('has-error', empty);
+              $(target).closest('#req_item').toggleClass('has-error', empty);
+
+              // regions container
+              $(target).closest('#regions_multiselect_container').toggleClass('has-error', empty);
+              $(target).toggleClass("input-empty", empty);
+          }
+
+        {% endblock target %}
+
+          // bootstrap-select copies the select's classes, so it have to be removed
+          if( $( '.bootstrap-select' ).hasClass("input-empty") ) {
+            $( '.bootstrap-select' ).toggleClass("input-empty");
+          }
+    };
+
     // done button tooltip variables
     var tooltipShown = false;
     var gotIt = false;
@@ -846,60 +900,6 @@
             return kws;
         };
     });
-
-    var prevNum = 0, totalNum = 0;
-    var empty = 0;
-    // set proper classes to count empty fields and display them
-    var setInputEmpty = function( target, empty ) {
-        if($(target).hasClass('value-select')) {
-        // tkeywords
-        // $(target).toggleClass("input-empty", empty);
-        // $(target).parent().find('input.autocomplete').toggleClass("input-empty", empty);
-        } else if( !$(target).hasClass('autocomplete') ){
-        // display error status for token fields if not completed
-        $(target).toggleClass("input-empty", empty);
-        if (target.id.startsWith('id_tkeywords')) {
-            $("#" + target.id).closest("p").toggleClass("has-error", empty);   
-            }
-        }
-        var imgMissing = $('img#image').attr('src');
-        if (imgMissing && !imgMissing.includes('missing_thumb')) {
-            $('input#id_crop_file').removeClass("input-empty");
-            $('input#id_crop_file').parent().find(".mandatory-warning").remove();
-        }
-
-        if(target.id === 'id_resource-keywords') {
-        $(target).siblings('span').toggleClass('has-error', empty);
-        $(target).toggleClass("input-empty", empty);
-        }
-
-        {% block target %}
-
-          if(target.id === 'category_form' ||
-             target.id === 'id_resource-regions' ||
-             target.id === 'id_resource-group' || 
-             target.id === 'id_resource-date' ||
-             target.id === 'id_resource-links' || {{UI_REQUIRED_FIELDS}}.includes(target.id)
-          ) {
-              // group selector
-              $(target).closest('#basicGroupInfo').toggleClass('has-error', empty);
-
-              // category selector
-              $(target).closest('#basicCategoryInfo').toggleClass('has-error', empty);
-              $(target).closest('#req_item').toggleClass('has-error', empty);
-
-              // regions container
-              $(target).closest('#regions_multiselect_container').toggleClass('has-error', empty);
-              $(target).toggleClass("input-empty", empty);
-          }
-
-        {% endblock target %}
-
-          // bootstrap-select copies the select's classes, so it have to be removed
-          if( $( '.bootstrap-select' ).hasClass("input-empty") ) {
-            $( '.bootstrap-select' ).toggleClass("input-empty");
-          }
-    };
 
 {% endautoescape %}
 
