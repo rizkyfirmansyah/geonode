@@ -23,7 +23,7 @@
     var is_advanced = (metadata_uri.match(/metadata_advanced/i) != null);
     var is_category_mandatory = {% if TOPICCATEGORY_MANDATORY %}true{% else %}false{% endif %};
     var is_group_mandatory = {% if GROUP_MANDATORY_RESOURCES %}true{% else %}false{% endif %};
-    var ui_mandatory_fields = '{{ UI_MANDATORY_FIELDS }}';
+    var ui_mandatory_fields = {{ UI_MANDATORY_FIELDS }};
 
     var updateWizard = function() {
       var activeTab = $("#edit-metadata .wizard--progress li.is-active");

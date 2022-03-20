@@ -5872,7 +5872,7 @@ a.thumbnail.active {
 }
 
 .progress-bar-danger {
-    background-color: #db0f12;
+    background-color: #a23133;
 }
 
 .progress-striped .progress-bar-danger {
@@ -5892,7 +5892,7 @@ a.thumbnail.active {
 .media,
 .media-body {
     overflow: hidden;
-    zoom: 1;
+    transform: scale(1);
 }
 
 .media-body {
@@ -7902,8 +7902,6 @@ h6 {
 
 select {
     background: white;
-    border: 1px solid #c4bab7;
-    height: 30px;
     line-height: 30px;
     padding-left: 10px;
 }

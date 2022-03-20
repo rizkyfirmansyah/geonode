@@ -17,206 +17,6 @@
 <script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
 <link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
 
-<style>
-/* general panel styles */
-#mdeditor_form .panel-group .panel{
-  overflow: visible;
-}
-/* date fields proper sizes */
-#mdeditor_form .input-group.date {
-  width: 100%;
-}
-
-/* resizable text-areas */
-#mdeditor_form textarea {
-  resize: vertical;
-  height: 120px;
-}
-
-/* question mark (info) distance fom label*/
-form #mdeditor_form label{
-  margin-right: 0.3em;
-}
-/* regions */
-#regions_multiselect_container .fstElement {
-  width: 100%;
-}
-#regions_multiselect_container .fstChoiceItem {
-  background-color: #F39F1E;
-  border: #F39F1E;
-}
-
-#mdeditor_form .mandatory-hint,#mdeditor_form .licenses-hint {
-  cursor: pointer;
-}
-
-#mdeditor_form .mandatory-hint,#mdeditor_form .content-hint {
-  cursor: pointer;
-}
-
-/* publishing checkboxes */
-#mdeditor_form #id_resource-metadata_uploaded_preserve,
-#mdeditor_form #id_resource-is_approved,
-#mdeditor_form #id_resource-is_published,
-#mdeditor_form #id_resource-featured  {
-  float: right;
-}
-
-/* mosaiking checkboxes */
-#mdeditor_form #id_resource-is_mosaic,
-#mdeditor_form #id_resource-has_time,
-#mdeditor_form #id_resource-has_elevation  {
-  float: right;
-}
-
-/* keywords */
-#mdeditor_form .tokenfield.form-control {
-  height: auto;
-}
-
-#mdeditor_form .thesauri_keywords label {
-  display: block;
-}
-#mdeditor_form span.autocomplete-light-widget {
-  width: 100%;
-}
-</style>
-<style>
-/* metadata edit workflow wizard */
-.wizard--progress {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: table;
-  table-layout: fixed;
-  width: 100%;
-  color: #F39F1E;
-}
-.wizard--progress > li {
-  position: relative;
-  display: table-cell;
-  text-align: center;
-  font-size: 0.8em;
-}
-.wizard--progress > li:hover {
-  cursor: pointer;
-}
-.wizard--progress > li:before {
-  transition: background 0.5s ease 0.1s;
-  box-shadow: 5px 5px 5px rgba(0,0,0,.5);
-  content: attr(data-step);
-  display: block;
-  margin: 0 auto;
-  background: #DFE3E4;
-  width: 3em;
-  height: 3em;
-  text-align: center;
-  margin-bottom: 0.25em;
-  line-height: 3em;
-  border-radius: 100%;
-  position: relative;
-  z-index: 1000;
-}
-.wizard--progress > li:after {
-  transition: background 1s ease, width 1s ease;
-  width: 0px;
-  box-shadow: 5px 5px 5px rgba(0,0,0,.5);
-  content: '';
-  position: absolute;
-  display: block;
-  background: #DFE3E4;
-  height: 0.5em;
-  top: 1.25em;
-  left: 50%;
-  margin-left: 1.5em\9;
-  z-index: -1;
-}
-
-.wizard--progress > li:last-child:after {
-  display: none;
-}
-.wizard--progress > li.is-complete {
-  color: #333333;
-}
-.wizard--progress > li.is-complete:before, .wizard--progress > li.is-complete:after {
-  color: #FFF;
-  background: #333333;
-}
-.wizard--progress > li.is-complete:before {
-  z-index: 1;
-}
-.wizard--progress > li.is-complete:after {
-  transition: background 1s ease, width 1s ease;
-  z-index: 0;
-  width: 100%;
-}
-.wizard--progress > li a {
-  color: #F39F1E;
-}
-.wizard--progress > li.is-active {
-  color: #F39F1E;
-}
-.wizard--progress > li.is-active:before {
-  color: #FFF;
-  background: #F39F1E;
-}
-
-.wizard--progress > li.is-complete a {
-  color: #000;
-}
-
-/**
- * Needed for IE8
- */
-.wizard--progress__last:after {
-  display: none !important;
-}
-
-/**
- * Size Extensions
- */
-.wizard--progress--medium {
-  font-size: 1.5em;
-}
-
-.wizard--progress--large {
-  font-size: 2em;
-}
-.wizard--progress > li:before {
-    text-decoration: none;
-}
-.wizard--progress li:hover a{
-  text-decoration: underline;
-}
-.wizard--progress a, .wizard--progress a:hover:before {
-  text-decoration: none;
-}
-
-</style>
-
-<style>
-/* draggable table */
-span.grippy {
-  content: '....';
-  width: 15px;
-  height: 26px;
-  display: inline-block;
-  overflow: hidden;
-  line-height: 5px;
-  padding: 3px 4px;
-  cursor: move;
-  vertical-align: middle;
-
-  font-size: 12px;
-  font-family: sans-serif;
-  letter-spacing: 2px;
-  color: #cccccc;
-  text-shadow: 1px 0 1px black;
-}
-span.grippy::after {
-  content: '.. .. .. ..';
-}
-</style>
 <!-- button class="btn btn-success metadata-edit-done" id="btn_upd_md_done" type="submit" style="float:right; opacity: 0;" >{% trans "Done!" %}</button -->
 {% block body_outer %}
 <ul id="md_tabs" class="nav nav-tabs no-gutters">
@@ -292,21 +92,21 @@ span.grippy::after {
                                     </script>
                                 </div>
                                 <div class="col-lg-4">
-                                    <div>
+                                    <div class="metadata_content">
                                       <span><label for="{{ document_form.title|id }}">{{ document_form.title.label }}</label></span>
                                       <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
                                       {{ document_form.title }}
                                     </div>
-                                    <div id="req_item">                                  
+                                    <div id="req_item" class="metadata_content">
                                       <span><label for="{{ document_form.title|id }}">{{ document_form.links.label }}</label></span>
                                       {{ document_form.links }}
                                     </div>
-                                    <div>
+                                    <div class="metadata_content">
                                         <span><label for="{{ document_form.abstract|id }}">{{ document_form.abstract.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Brief narrative summary of the content of the resource/s)</p>-->
                                         {{ document_form.abstract }}
                                     </div>
-                                    <div>
+                                    <div class="metadata_content">
                                         <span><label for="{{ document_form.edition|id }}">{{ document_form.edition.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Version of the cited resource)</p>-->
                                         {{ document_form.edition }}
@@ -396,12 +196,12 @@ span.grippy::after {
                         <div class="panel panel-default" style="margin-top: 20px">
                           <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
                           <div class="panel-body">
-                              <div>
+                              <div class="metadata_content">
                                   <span><label for="{{ document_form.owner|id }}">{{ document_form.owner.label }}</label></span>
                                   <!--<p class="xxs-font-size">(Responsible of the cited resource)</p>-->
                                   {{ document_form.owner }}
                               </div>
-                              <div>
+                              <div class="metadata_content">
                                   <span><label for="{{ document_form.metadata_author|id }}">{{ document_form.metadata_author.label }}</label></span>
                                   <!--<p class="xxs-font-size">(Author of the metadata)</p>-->
                                   {{ document_form.metadata_author }}

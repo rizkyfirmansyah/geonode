@@ -1593,6 +1593,7 @@ select {
     border: 2px solid rgba(0, 0, 0, 0.15);
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+    padding: .7em;
 }
 
 .cl-custom-select {
@@ -1664,8 +1665,8 @@ input[type="url"]:focus,
 input[type="password"]:focus,
 textarea:focus,
 select:focus {
-    color: #a23133;
-    border-bottom: 2px solid black;
+    color: #a23133 !important;
+    border: 2px solid black;
 }
 
 label,
@@ -6473,6 +6474,241 @@ form#text-search-autocomplete .ac-results {
  * # Autocomplete for thesaurus field in advanced metadata edit views
  * ------------------------------------------------------------------- */
 
+
+/* general panel styles */
+
+#mdeditor_form .panel-group .panel {
+    overflow: visible;
+}
+
+
+/* date fields proper sizes */
+
+#mdeditor_form .input-group.date {
+    width: 100%;
+}
+
+
+/* resizable text-areas */
+
+#mdeditor_form textarea {
+    resize: vertical;
+    height: 120px;
+}
+
+
+/* question mark (info) distance fom label*/
+
+form #mdeditor_form label {
+    margin-right: 0.3em;
+}
+
+
+/* regions */
+
+#regions_multiselect_container .fstElement {
+    width: 100%;
+}
+
+#regions_multiselect_container .fstChoiceItem {
+    background-color: #F39F1E;
+    border: #F39F1E;
+}
+
+#mdeditor_form .mandatory-hint,
+#mdeditor_form .licenses-hint {
+    cursor: pointer;
+}
+
+#mdeditor_form .mandatory-hint,
+#mdeditor_form .content-hint {
+    cursor: pointer;
+}
+
+
+/* publishing checkboxes */
+
+#mdeditor_form #id_resource-metadata_uploaded_preserve,
+#mdeditor_form #id_resource-is_approved,
+#mdeditor_form #id_resource-is_published,
+#mdeditor_form #id_resource-featured {
+    float: right;
+}
+
+
+/* mosaiking checkboxes */
+
+#mdeditor_form #id_resource-is_mosaic,
+#mdeditor_form #id_resource-has_time,
+#mdeditor_form #id_resource-has_elevation {
+    float: right;
+}
+
+
+/* keywords */
+
+#mdeditor_form .tokenfield.form-control {
+    height: auto;
+}
+
+#mdeditor_form .thesauri_keywords label {
+    display: block;
+}
+
+#mdeditor_form span.autocomplete-light-widget {
+    width: 100%;
+}
+
+
+/* metadata edit workflow wizard */
+
+.wizard--progress {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    color: #F39F1E;
+}
+
+.wizard--progress>li {
+    position: relative;
+    display: table-cell;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.wizard--progress>li:hover {
+    cursor: pointer;
+}
+
+.wizard--progress>li:before {
+    transition: background 0.5s ease 0.1s;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .5);
+    content: attr(data-step);
+    display: block;
+    margin: 0 auto;
+    background: #DFE3E4;
+    width: 3em;
+    height: 3em;
+    text-align: center;
+    margin-bottom: 0.25em;
+    line-height: 3em;
+    border-radius: 100%;
+    position: relative;
+    z-index: 1000;
+}
+
+.wizard--progress>li:after {
+    transition: background 1s ease, width 1s ease;
+    width: 0px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, .5);
+    content: '';
+    position: absolute;
+    display: block;
+    background: #DFE3E4;
+    height: 0.5em;
+    top: 1.25em;
+    left: 50%;
+    margin-left: 1.5em\9;
+    z-index: -1;
+}
+
+.wizard--progress>li:last-child:after {
+    display: none;
+}
+
+.wizard--progress>li.is-complete {
+    color: #333333;
+}
+
+.wizard--progress>li.is-complete:before,
+.wizard--progress>li.is-complete:after {
+    color: #FFF;
+    background: #333333;
+}
+
+.wizard--progress>li.is-complete:before {
+    z-index: 1;
+}
+
+.wizard--progress>li.is-complete:after {
+    transition: background 1s ease, width 1s ease;
+    z-index: 0;
+    width: 100%;
+}
+
+.wizard--progress>li a {
+    color: #F39F1E;
+}
+
+.wizard--progress>li.is-active {
+    color: #F39F1E;
+}
+
+.wizard--progress>li.is-active:before {
+    color: #FFF;
+    background: #F39F1E;
+}
+
+.wizard--progress>li.is-complete a {
+    color: #000;
+}
+
+
+/**
+   * Needed for IE8
+   */
+
+.wizard--progress__last:after {
+    display: none !important;
+}
+
+
+/**
+   * Size Extensions
+   */
+
+.wizard--progress--medium {
+    font-size: 1.5em;
+}
+
+.wizard--progress--large {
+    font-size: 2em;
+}
+
+.wizard--progress>li:before {
+    text-decoration: none;
+}
+
+.wizard--progress li:hover a {
+    text-decoration: underline;
+}
+
+.wizard--progress a,
+.wizard--progress a:hover:before {
+    text-decoration: none;
+}
+
+
+/* draggable table */
+
+span.grippy {
+    width: 15px;
+    height: 26px;
+    display: inline-block;
+    overflow: hidden;
+    line-height: 5px;
+    padding: 3px 4px;
+    cursor: move;
+    vertical-align: middle;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #cccccc;
+    text-shadow: 1px 0 1px black;
+}
+
 #comments_section .clearfix {
     margin-right: 1em;
 }
@@ -6499,11 +6735,6 @@ form#text-search-autocomplete .ac-results {
 #metadata_update .form-group {
     margin-right: 0px;
     margin-left: 0px;
-}
-
-#basicDescriptiveInfo #id_crop_entry {
-    max-width: 260px;
-    padding-left: 1em;
 }
 
 #basicDescriptiveInfo .btn:hover {
@@ -7784,11 +8015,15 @@ span.icon.node-icon:before {
 #basicDescriptiveInfo div input,
 #basicDescriptiveInfo div textarea,
 #req_item {
-    width: 95% !important;
+    padding: .5em;
+}
+
+.metadata_content {
+    padding: .5em;
 }
 
 #edit-metadata div.panel-default:nth-of-type(1) {
-    margin-right: 1rem !important;
+    margin: 1rem !important;
 }
 
 #edit-metadata div.panel-default:nth-of-type(2) {
