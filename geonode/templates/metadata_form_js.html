@@ -24,6 +24,7 @@
     var is_category_mandatory = {% if TOPICCATEGORY_MANDATORY %}true{% else %}false{% endif %};
     var is_group_mandatory = {% if GROUP_MANDATORY_RESOURCES %}true{% else %}false{% endif %};
     var ui_mandatory_fields = {{ UI_MANDATORY_FIELDS }};
+    console.log(ui_mandatory_fields);
 
     var updateWizard = function() {
       var activeTab = $("#edit-metadata .wizard--progress li.is-active");
@@ -404,7 +405,7 @@
                 }
             }
         };
-        {% endblock onInputChange %}
+    {% endblock onInputChange %}
 
     $(document).ready(function() {
         {% block hints %}
