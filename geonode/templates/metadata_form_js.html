@@ -190,66 +190,64 @@
                 $('#metadata_form').modal();
             }
         });
+ 
+        var onInputChange = function(e){
+            var e_target = null;
+            var e_target_value = null;
+            if (e.target.id == 'tinymce') {
+                e_target = $('#' + $(e.target).data().id)[0];
+                e_target_value = tinymce.get($(e.target).data().id).getContent();
+            }
+            else {
+                e_target = e.target;
+                e_target_value = e.target.value;
+            }
+            toggleRestrictionsConstraints(e);
+            if(e_target_value !== undefined && e_target_value.trim() === ''){
+                if(!$(e_target).hasClass("input-empty")){
+                    if(isMandatoryField(this)) {
+                        setInputEmpty(e_target, true);
+                        var mandatoryWarning = "<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"
+                        if (!!$(this).closest('.date').length) {
+                            $(e_target).parent().parent().append(gettext(mandatoryWarning));
+                        } else if (!!$(this).closest('.check-select').length ) {
+                            $(e_target).parent().parent().append(gettext(mandatoryWarning));
+                        } else if (!!$(this).closest('#mdinfo').length || !!$(this).closest('#basicDescriptiveInfo').length || !!$(this).closest('#tadv_req').length || !!$(this).closest('#adv_req').length ) {
+                            $(e_target).parent().append(gettext(mandatoryWarning));
+                        } else if (e.target.id == 'tinymce') {
+                            $(e_target).parent().append(gettext(mandatoryWarning));
 
-        {% block onInputChange %}
-            var onInputChange = function(e){
-                var e_target = null;
-                var e_target_value = null;
-                if (e.target.id == 'tinymce') {
-                    e_target = $('#' + $(e.target).data().id)[0];
-                    e_target_value = tinymce.get($(e.target).data().id).getContent();
-                }
-                else {
-                    e_target = e.target;
-                    e_target_value = e.target.value;
-                }
-                toggleRestrictionsConstraints(e);
-                if(e_target_value !== undefined && e_target_value.trim() === ''){
-                    if(!$(e_target).hasClass("input-empty")){
-                        if(isMandatoryField(this)) {
-                            setInputEmpty(e_target, true);
-                            var mandatoryWarning = "<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"
-                            if (!!$(this).closest('.date').length) {
-                                $(e_target).parent().parent().append(gettext(mandatoryWarning));
-                            } else if (!!$(this).closest('.check-select').length ) {
-                                $(e_target).parent().parent().append(gettext(mandatoryWarning));
-                            } else if (!!$(this).closest('#mdinfo').length || !!$(this).closest('#basicDescriptiveInfo').length || !!$(this).closest('#tadv_req').length || !!$(this).closest('#adv_req').length ) {
-                                $(e_target).parent().append(gettext(mandatoryWarning));
-                            } else if (e.target.id == 'tinymce') {
-                                $(e_target).parent().append(gettext(mandatoryWarning));
-
-                            }
-                            empty++;
                         }
+                        empty++;
                     }
                 }
-                else {
-                    if($(e_target).hasClass("input-empty")) {
-                        if(isMandatoryField(this)) {
-                            empty--;
-                        }
-                        setInputEmpty(e_target, false);
-                        if (!!$(e_target).closest('.date').length) { 
-                            $(e_target).parent().parent().find(".mandatory-warning").remove();
-                        } else {
-                            $(e_target).parent().find(".mandatory-warning").remove();
-                        }
-                        
+            }
+            else {
+                if($(e_target).hasClass("input-empty")) {
+                    if(isMandatoryField(this)) {
+                        empty--;
                     }
+                    setInputEmpty(e_target, false);
+                    if (!!$(e_target).closest('.date').length) { 
+                        $(e_target).parent().parent().find(".mandatory-warning").remove();
+                    } else {
+                        $(e_target).parent().find(".mandatory-warning").remove();
+                    }
+                    
                 }
+            }
 
-                if(totalNum == prevNum) {
-                    try {
-                        var perc = (totalNum <= 0 ? 0 : (totalNum-empty)/totalNum);
-                            perc = (perc <= 1 ? perc : 1);
-                        updateCompleteness(perc);
-                    } catch(err) {
-                        // Log error
-                        // console.log(err);
-                    }
+            if(totalNum == prevNum) {
+                try {
+                    var perc = (totalNum <= 0 ? 0 : (totalNum-empty)/totalNum);
+                        perc = (perc <= 1 ? perc : 1);
+                    updateCompleteness(perc);
+                } catch(err) {
+                    // Log error
+                    // console.log(err);
                 }
-            };
-        {% endblock onInputChange %}
+            }
+        };
 
         var pickerOptions = {
             //format: 'YYYY-MM-DD hh:mm:ss',
@@ -265,7 +263,6 @@
         var is_category_mandatory = {% if TOPICCATEGORY_MANDATORY %}true{% else %}false{% endif %};
         var is_group_mandatory = {% if GROUP_MANDATORY_RESOURCES %}true{% else %}false{% endif %};
         var ui_mandatory_fields = {{ UI_MANDATORY_FIELDS }};
-        console.log(ui_mandatory_fields);
 
         $('.has-external-popover').each(function(){
             var help_text = $(this).attr("data-content");
