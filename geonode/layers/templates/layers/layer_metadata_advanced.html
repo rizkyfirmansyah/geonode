@@ -93,7 +93,7 @@
         <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
              Unfortunately this needs to appear at the bottom of the form since tkeywords_form is a complete other django form. 
              There might be a better way to solve this. -->
-        <div class="form-controls">
+        <div class="col-md-12 form-controls">
           {% block layer_fields %}
           {% for field in layer_form %}
             {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' %}

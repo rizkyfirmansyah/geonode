@@ -5741,8 +5741,8 @@ footer #footer-language {
         position: sticky;
         position: -webkit-sticky;
         width: 100%;
-        top: 150px;
-        padding-top: 10px;
+        top: 0px;
+        padding: 10px 0 10px 0;
         z-index: 99;
         background-color: white;
     }

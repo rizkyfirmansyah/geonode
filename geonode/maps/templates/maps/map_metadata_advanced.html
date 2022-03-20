@@ -25,19 +25,25 @@
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
-<div class="page-header">
-  <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Maps" %}</a>
-  <h2 class="page-title">{% trans "Edit Metadata" %}</h2>
+<div class="page-header" id="fixed-header">
+  <h2 class="page-title">
+    {% blocktrans with map.title as map_title %}
+      Edit Metadata for {{ map_title }}
+    {% endblocktrans %}
+  </h2>
 </div>
 <div class="row">
-  <div class="col-md-8">
-    <p class="lead">
-      {% blocktrans with map.title as map_title %}
-        Editing details for {{ map_title }}
-      {% endblocktrans %}
-    </p>
+  <div class="col-md-12">
 
     <form id="metadata_update" class="form-horizontal" action="{{ map.get_absolute_url }}/metadata" method="POST">
+      <div class="fixed-button">
+        <p>
+          <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-default">{% trans "Return to Maps" %}</a>
+          <input type="submit" id="btn_upd_md_up" class="btn btn-primary" value="{% trans "Update" %}"/>
+          <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Maps" %}</a>
+        </p>
+      </div>
+
       {% if map.metadata_uploaded %}
       <div style="background-color: orange;">{% blocktrans %}Note: this map's orginal metadata was populated by importing a metadata XML file.
         GeoNode's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
@@ -59,14 +65,12 @@
         </ul>
       </div>
       {% endif %}
-      <div class="form-actions">
-        <input type="submit" id="btn_upd_md_up" class="btn btn-primary" value="{% trans "Update" %}"/>
-      </div>
+
       {% csrf_token %}
-      <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
+      <!-- Added in the thesaurus field here since saving the form without it causes the thesuarus keywords to be removed. 
            Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
            There might be a better way to solve this. -->
-        <div class="col-md-6 form-controls">
+        <div class="col-md-12 form-controls">
           {{ map_form|as_bootstrap }}
           {% if THESAURI_FILTERS %}
               {{ tkeywords_form }}
