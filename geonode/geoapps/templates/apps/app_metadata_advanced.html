@@ -26,45 +26,51 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <div class="page-header">
-  <h2 class="page-title">{% trans "Edit Metadata" %}</h2>
-</div>
-<div class="row">
-  <div class="col-md-8">
-    <p class="lead">
-      {% blocktrans with geoapp.title as map_title %}
+  <h2 class="page-title">
+    {% blocktrans with geoapp.title as map_title %}
         Editing details for {{ map_title }}
       {% endblocktrans %}
-    </p>
-
-    <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
-      {% if geoapp.metadata_uploaded %}
-      <div style="background-color: orange;">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing a metadata XML file.
-        SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-        Some of your original metadata may have been lost.{% endblocktrans %}</div>
-      {% endif %}
-
-      {% if geoapp_form.errors or category_form.errors %}
-      <div style="background-color: pink">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}
-        <ul>
-        {% for field in geoapp_form %}
-            {% if field.errors %}
-                <li>{{ field.label }}</li>
-            {% endif %}
-        {% endfor %}
-
-        {% if category_form.errors %}
-            <li>{{ category_form.errors.as_ul }}</li>
+  </h2>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    {% block advanced_edit_form %}
+      <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
+        <div class="fixed-button">
+          <p>
+            <a href="." class="btn btn-default">{% trans "Return to GeoApp" %}</a>
+            <input type="submit" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
+            <a href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
+            class="btn btn-primary pull-right">{% trans "Explore Apps" %}</a>
+          </p>
+        </div>
+        {% if geoapp.metadata_uploaded %}
+          <div style="background-color: orange;">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing a metadata XML file.
+            SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+            Some of your original metadata may have been lost.{% endblocktrans %}
+          </div>
         {% endif %}
-        </ul>
-      </div>
-      {% endif %}
-      <div class="form-actions">
-        <input type="submit" id="btn_upd_md_up" class="btn btn-primary" value="{% trans "Update" %}"/>
-      </div>
-      {% csrf_token %}
-      <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
-           Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
-           There might be a better way to solve this. -->
+
+        {% if geoapp_form.errors or category_form.errors %}
+          <div style="background-color: pink">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}
+            <ul>
+            {% for field in geoapp_form %}
+                {% if field.errors %}
+                    <li>{{ field.label }}</li>
+                {% endif %}
+            {% endfor %}
+
+            {% if category_form.errors %}
+                <li>{{ category_form.errors.as_ul }}</li>
+            {% endif %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% csrf_token %}
+        <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
+            Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
+            There might be a better way to solve this. -->
         <div class="col-md-12 form-controls">
           {% block geoapp_fields %}
           {% for field in geoapp_form %}
@@ -129,13 +135,10 @@
                 <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
               </fieldset>
 
-              <div class="form-actions">
-                <a href="{% url 'geoapp_detail' geoappid=resource.id %}" class="btn btn-primary">{% trans "Return to GeoApp" %}</a>                 
-                <input type="submit" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}"/>
-              </div>
           </div>
         </div>
       </form>
+    {% endblock advanced_edit_form %}
   </div>
 </div>
 {% endblock %}

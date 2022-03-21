@@ -4333,6 +4333,7 @@ tbody.collapse.in {
 
 .open>.dropdown-menu {
     display: block;
+    max-height: inherit !important;
 }
 
 .open>a {

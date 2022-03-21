@@ -74,6 +74,10 @@
     color: white !important;
 }
 
+.primary-text-warning {
+    color: #a23133 !important;
+}
+
 .primary-bg-green-color {
     background-color: #1c4742 !important;
 }
@@ -107,6 +111,48 @@ header,
 nav,
 section {
     display: block;
+}
+
+article div a:before,
+article li a:before,
+article span a:before,
+article h4 a:before,
+article dd a:before {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: 0.15s width ease-out, 0.15s height ease-out 0.2s, 0.15s top ease-out 0.2s;
+    -webkit-transition: 0.15s width ease-out, 0.15s height ease-out 0.2s, 0.15s top ease-out 0.2s;
+    /* transition: all 0.3s ease-in-out; */
+}
+
+article a:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 0%;
+    height: 3px;
+    z-index: -1;
+    background-color: #F19F0F;
+}
+
+article a:hover:before {
+    width: calc(100%);
+    height: calc(100%);
+}
+
+article a {
+    position: relative;
+    z-index: 1;
+    color: #7d6a1a !important;
+    text-decoration: none;
+    display: inline-block;
+}
+
+article a:hover,
+article a:focus {
+    outline: none;
+    text-decoration: none;
 }
 
 h1 {
@@ -1044,6 +1090,17 @@ body .apps {
 .toggle-handle {
     border-color: transparent !important;
     background-color: transparent !important;
+}
+
+#error_mandatoryDialog h3 {
+    font-weight: 800;
+}
+
+#general_errors {
+    font-size: 24px;
+    font-weight: 800;
+    min-height: 180px;
+    padding: 2em;
 }
 
 
@@ -6426,6 +6483,10 @@ form-inline {
     top: -3rem;
 }
 
+.delete_search svg:hover {
+    filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}
+
 .dlt_span {
     width: 36px;
 }
@@ -7811,7 +7872,7 @@ article.tab-pane {
 
 .item-details {
     background: white;
-    color: #c4bab7;
+    color: #1e1e1e;
 }
 
 .item-details .item-meta .item-category {

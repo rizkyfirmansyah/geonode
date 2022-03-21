@@ -26,88 +26,92 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <div class="page-header">
-  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
-    class="btn btn-primary pull-right">{% trans "Explore Non Spatial Data" %}</a>
-  <h2 class="page-title">{% trans "Edit Metadata" %}</h2>
+  <h2 class="page-title">
+    {% blocktrans with document.title as document_title %}
+      Edit Metadata for {{ document_title }}
+    {% endblocktrans %}
+  </h2>
 </div>
 <div class="row">
-  <div class="col-md-8">
-    <p class="lead">
-      {% trans "Editing details for" %} {{ document.title }}
-    </p>
+  <div class="col-md-12">
+    {% block advanced_edit_form %}
 
-    <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
-      {% if document_form.errors or category_form.errors or author_form.errors or poc.errors %}
-      <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields:
-        {% endblocktrans %}</p>
-      <ul class="bg-danger">
-        {% if author_form.errors %}
-        <li>{% trans "Metadata Author" %}</li>
-        {{ author_form.errors }}
-        {% endif %}
-        {% if poc_form.errors %}
-        <li>{% trans "Point of Contact" %}</li>
-        {{ poc_form.errors }}
-        {% endif %}
-        {% for field in document_form %}
-        {% if field.errors %}
-        <li>{{ field.label }}</li>
-        {% endif %}
-        {% endfor %}
-
-        {% if category_form.errors %}
-        <li>{{ category_form.errors.as_ul }}</li>
-        {% endif %}
-      </ul>
-      {% endif %}
-      <div class="form-actions">
-        <input type="submit" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}" />
-      </div>
-      {% csrf_token %}
-      <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
-           Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
-           There might be a better way to solve this.-->
-      <div class="col-md-12 form-controls">
-        {{ document_form|as_bootstrap }}
-        {% if THESAURI_FILTERS %}
-        {{ tkeywords_form }}
-        {% endif %}
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <label class="control-label required-field">{% trans "Category" %}</label>
-          <fieldset id="category_form">
-            {% autoescape off %}
-            {% for choice in category_form.category_choice_field.field.choices %}
-            <div class="col-md-6">
-              <label class="fancy-checkbox">
-                <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
-                  {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
-                {{ choice.1 }}
-              </label>
-            </div>
-            {% endfor %}
-            {% endautoescape %}
-          </fieldset>
+      <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
+        <div class="fixed-button">
+                <p>
+                  <a href="." class="btn btn-default">{% trans "Return to Non Spatial Data" %}</a>
+                  <input type="submit" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
+                  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
+                  class="btn btn-primary pull-right">{% trans "Explore Non Spatial Data" %}</a>
+                </p>
         </div>
 
-        <div class="col-md-12 grid-spacer">
-          <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
-            <h2>{% trans "Point of Contact" %}</h2>
-            {{ poc_form|as_bootstrap }}
-            <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-          </fieldset>
-          <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
-            <h2>{% trans "Metadata Provider" %}</h2>
-            {{ author_form|as_bootstrap }}
-            <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-          </fieldset>
-          <div class="form-actions">
-            <input type="submit" id="btn_upd_md_dwn" class="btn btn-primary" value="{% trans "Update" %}" />
+        {% if document_form.errors or category_form.errors or author_form.errors or poc.errors %}
+          <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields:
+            {% endblocktrans %}</p>
+          <ul class="bg-danger">
+            {% if author_form.errors %}
+            <li>{% trans "Metadata Author" %}</li>
+            {{ author_form.errors }}
+            {% endif %}
+            {% if poc_form.errors %}
+            <li>{% trans "Point of Contact" %}</li>
+            {{ poc_form.errors }}
+            {% endif %}
+            {% for field in document_form %}
+            {% if field.errors %}
+            <li>{{ field.label }}</li>
+            {% endif %}
+            {% endfor %}
+
+            {% if category_form.errors %}
+            <li>{{ category_form.errors.as_ul }}</li>
+            {% endif %}
+          </ul>
+          {% endif %}
+        {% csrf_token %}
+        <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
+            Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
+            There might be a better way to solve this.-->
+        <div class="col-md-12 form-controls">
+          {{ document_form|as_bootstrap }}
+          {% if THESAURI_FILTERS %}
+          {{ tkeywords_form }}
+          {% endif %}
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label class="control-label required-field">{% trans "Category" %}</label>
+            <fieldset id="category_form">
+              {% autoescape off %}
+              {% for choice in category_form.category_choice_field.field.choices %}
+              <div class="col-md-6">
+                <label class="fancy-checkbox">
+                  <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
+                    {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
+                  {{ choice.1 }}
+                </label>
+              </div>
+              {% endfor %}
+              {% endautoescape %}
+            </fieldset>
+          </div>
+
+          <div class="col-md-12 grid-spacer">
+            <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
+              <h2>{% trans "Point of Contact" %}</h2>
+              {{ poc_form|as_bootstrap }}
+              <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+            </fieldset>
+            <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
+              <h2>{% trans "Metadata Provider" %}</h2>
+              {{ author_form|as_bootstrap }}
+              <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+            </fieldset>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    {% endblock advanced_edit_form %}
   </div>
 </div>
 {% endblock %}

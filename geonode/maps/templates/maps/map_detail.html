@@ -34,7 +34,7 @@
 
 <div class="page-header col-md-12">
   <h2 class="page-title col-md-8 no-gutters">{{ resource.title }}</h2>
-  <a href="." class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+  <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
       Explore</button></a>
 </div>
 

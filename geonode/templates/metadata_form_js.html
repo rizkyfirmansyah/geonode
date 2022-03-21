@@ -44,6 +44,7 @@
 
     var prevNum = 0, totalNum = 0;
     var empty = 0;
+
     // set proper classes to count empty fields and display them
     var setInputEmpty = function( target, empty ) {
         if($(target).hasClass('value-select')) {
@@ -64,8 +65,8 @@
         }
 
         if(target.id === 'id_resource-keywords') {
-        $(target).siblings('span').toggleClass('has-error', empty);
-        $(target).toggleClass("input-empty", empty);
+            $(target).siblings('span').toggleClass('has-error', empty);
+            $(target).toggleClass("input-empty", empty);
         }
 
         {% block target %}
@@ -78,7 +79,7 @@
           ) {
               // group selector
               $(target).closest('#basicGroupInfo').toggleClass('has-error', empty);
-
+            
               // category selector
               $(target).closest('#basicCategoryInfo').toggleClass('has-error', empty);
               $(target).closest('#req_item').toggleClass('has-error', empty);
@@ -99,7 +100,6 @@
     function getTab(number) {
         var activeTab = $("#edit-metadata .wizard--progress li.is-active");
         var tabIndex = activeTab && $(activeTab[0]).data("step");
-        console.log(tabIndex);
         var nextTab = $("#edit-metadata .wizard--progress li[data-step=" + number + "]");
         if (nextTab) {
           activeTab.toggleClass('is-active');
@@ -139,9 +139,11 @@
             $('#profileCompleteness .not-completed').toggle(completeness !== 1);
             
             var mandatoryMissing = $('#mandatory').find('.input-empty:not([class^="select2"])').length > 0;
+            console.log(mandatoryMissing);
             if (mandatoryMissing) {
                 var not_tinymce = true;
                 var inputs = $('#mandatory').find('.input-empty:not([class^="select2"])');
+                console.log(inputs);
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
                     if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
@@ -155,7 +157,7 @@
             };
             var imgMissing = $('img#image').attr('src');
             if (imgMissing && imgMissing.includes('missing_thumb')) {
-                mandatoryMissing = true;
+                mandatoryMissing = false;
             };
 
             var licenseMissing = $('#licenses').find('.input-empty').length > 0;
@@ -190,43 +192,54 @@
                 contentMissing = empty > 0;
             };
 
+            var validateMissingMandatory = () => {
+                console.log(mandatoryMissing);
+                $('#completeness-hints .mandatory-hint')
+                .toggleClass('progress-bar-danger', mandatoryMissing)
+                .toggleClass('progress-bar-success', !mandatoryMissing)
+                .text(mandatoryMissing ? 'Mandatory' : 'Completed')
+                .attr('title', mandatoryMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                .tooltip('fixTitle');
+            };
+
+            var validateMissingContent = () => {
+                $('#completeness-hints .content-hint')
+                .toggleClass('progress-bar-danger', contentMissing)
+                .toggleClass('progress-bar-success', !contentMissing)
+                .text(contentMissing ? 'Mandatory' : 'Completed')
+                .attr('title', contentMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                .tooltip('fixTitle');
+            };
+
+            var validateMissingLicense = () => {
+                $('#completeness-hints .licenses-hint')
+                .toggleClass('progress-bar-danger', licenseMissing)
+                .toggleClass('progress-bar-success', !licenseMissing)
+                .text(licenseMissing ? 'Mandatory' : 'Completed')
+                .attr('title', licenseMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
+                .tooltip('fixTitle');
+            };
+
             {% if UI_REQUIRED_FIELDS %}
                 var metadataMissing = $('#mandatory').find('.input-empty').length > 0;
                 if (metadataMissing) {
                     var inputs = $('#mandatory').find('.input-empty');
                     var empty = inputs.length;
                     for (var i=0; i<inputs.length; i++) {
-                    if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
-                        empty--;
-                    }
+                        if (typeof inputs[i].value !== undefined && inputs[i].value !== '') {
+                            empty--;
+                        }
                     }
                     metadataMissing = empty > 0;
-                }
-                $('#completeness-hints .metadata-hint')
-                    .toggleClass('progress-bar-danger', metadataMissing)
-                    .toggleClass('progress-bar-success', !metadataMissing)
-                    .attr('title', metadataMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-                    .tooltip('fixTitle');
+                };
+
+                validateMissingMandatory();
             {% endif %}
-
-            $('#completeness-hints .mandatory-hint')
-                .toggleClass('progress-bar-danger', mandatoryMissing)
-                .toggleClass('progress-bar-success', !mandatoryMissing)
-                .attr('title', mandatoryMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-                .tooltip('fixTitle');
-
-            $('#completeness-hints .content-hint')
-                .toggleClass('progress-bar-danger', contentMissing)
-                .toggleClass('progress-bar-success', !contentMissing)
-                .attr('title', contentMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-                .tooltip('fixTitle');
+            
+            validateMissingMandatory();
+            validateMissingContent();
+            validateMissingLicense();
                 
-            $('#completeness-hints .licenses-hint')
-                .toggleClass('progress-bar-danger', licenseMissing)
-                .toggleClass('progress-bar-success', !licenseMissing)
-                .attr('title', licenseMissing ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-                .tooltip('fixTitle');
-
             //done button tooltip
             if(completeness === 1 && $('.metadata-edit-done').css('opacity')+"" === "0" && !tooltipShown && !gotIt) {
                 tooltipShown = true;
@@ -245,46 +258,7 @@
             $('.metadata-edit-done').animate(completeness === 1 ? {width: '100px', opacity: 1} : {width: 0, opacity: 0});
         };
     {% endblock completeness  %}
-
-    var toggleRestrictionsConstraints = function(e){
-        try {
-            if(e && e.target && e.target.id == 'id_resource-constraints_other') {
-                var ee = $('#id_resource-constraints_other')[0];
-                if(otherRestrictionsSelected() && ee.value !== undefined && ee.value.trim() === '') {
-                    if(!$(ee).hasClass("input-empty")) {
-                        setInputEmpty(ee, true);
-                        $(ee).parent().append(gettext("<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"));
-                        empty++;
-                    } else {
-                        setInputEmpty(ee, false);
-                        $(ee).parent().find(".mandatory-warning").remove();
-                        empty--;
-                    }
-                }
-            }
-        } catch (err) {
-            // Log error
-            console.log(err);
-            return false;
-        }
-        return true;
-    };
-
-    //check if a field is mandatory
-    var otherRestrictionsSelected  = function(e){
-        var otherRestrictions = false
-        try {
-        idx = $('#id_resource-restriction_code_type')[0].selectedIndex;
-        value = $('#id_resource-restriction_code_type')[0].options[idx].text;
-        if(value === "otherRestrictions") {
-            otherRestrictions = true;
-        }
-        } catch (err) {
-            otherRestrictions = true;
-        }
-        return otherRestrictions;
-    };
-
+    
     var isMandatoryField = function (el) {
         var is_mandatory = false;
 
@@ -314,13 +288,13 @@
             var e_target_value = null;
             if (e.target.id == 'tinymce') {
                 e_target = $('#' + $(e.target).data().id)[0];
-                e_target_value = tinymce.get($(e.target).data().id).getContent();
+                e_target_value = e.target.innerText;
             }
             else {
                 e_target = e.target;
                 e_target_value = e.target.value;
             }
-            toggleRestrictionsConstraints(e);
+
             if(e_target_value !== undefined && e_target_value.trim() === ''){
                 if(!$(e_target).hasClass("input-empty")){
                     if(isMandatoryField(this)) {
@@ -332,7 +306,7 @@
                             $(e_target).parent().parent().append(gettext(mandatoryWarning));
                         } else if (!!$(this).closest('#mdinfo').length || !!$(this).closest('#basicDescriptiveInfo').length || !!$(this).closest('#tadv_req').length || !!$(this).closest('#adv_req').length ) {
                             $(e_target).parent().append(gettext(mandatoryWarning));
-                        } else if (e.target.id == 'tinymce') {
+                        } else if (e.target.localName == 'textarea') {
                             $(e_target).parent().append(gettext(mandatoryWarning));
 
                         }
@@ -551,105 +525,39 @@
         $('#btn_next_dwn').click(function(){getNextTab()});
 
         $('#btn_upd_md_up').click(function(){
-            if (is_category_mandatory &&
-                (is_advanced && !$('#category_form option:selected').val())
-            ) {
-                $('#category_mandatoryDialog').modal();
-            } else if (is_group_mandatory &&
-                (
-                  (!is_advanced && $('#id_resource-group').hasClass("input-empty")) ||
-                  (is_advanced && !$('#id_resource-group').val())
-                )
-              ) {
-                $('#group_mandatoryDialog').modal();
-            } else {
-                validateRequiredInput()
-            }
+            validateRequiredInput();
         });
 
         $('#btn_upd_md_dwn').click(function(){
-            if (is_category_mandatory &&
-                (is_advanced && !$('#category_form option:selected').val())
-            ) {
-                $('#category_mandatoryDialog').modal();
-            } else if (is_group_mandatory &&
-                (
-                  (!is_advanced && $('#id_resource-group').hasClass("input-empty")) ||
-                  (is_advanced && !$('#id_resource-group').val())
-                )
-              ) {
-                $('#group_mandatoryDialog').modal();
-            } else {
-                validateRequiredInput()
-            }
+            validateRequiredInput();
         });
+
+        var validateFormInput = () => {
+            var validateMandatory = $('#completeness-hints .mandatoryl-hint').text();
+            var validateContent = $('#completeness-hints .content-hint').text();
+            var validateLicense = $('#completeness-hints .licenses-hint').text();
+            var validateAll = [validateMandatory, validateContent, validateLicense];
+            if (validateAll.includes('Mandatory') || validateAll.includes('')) {
+                return false;
+            } else {
+                return true;
+            };
+        };
         
         function validateRequiredInput() {
-            var errors = ['{% trans "Following items are required:" %}']
-            $( ':input[required]').each( function () {
-                if ( this.value.trim() == '' ) {
-                    console.log(this.dataset.field);
-                    errors.push(this.dataset.field);
-                }
-            });
-
-            if (errors.length > 1) {
-                console.error("Following items are required: " + errors)
-                $(".general_errors").find("p").html(errors.join('<br>'));
-                $('#error_mandatoryDialog').modal();
-            } else {
-                $('#preview_pleaseWaitDialog').modal();
-            }
+            validateFormInput() ? $('#error_mandatoryDialog').modal() :  $('#preview_pleaseWaitDialog').modal();
         };
 
         $('#btn_upd_md_done').click(function(){
-            if (is_category_mandatory &&
-                (
-                    (!is_advanced && $('#category_form').hasClass("input-empty")) ||
-                    (is_advanced && !$('#category_form input:checked').val())
-                )
-            ) {
-                $('#category_mandatoryDialog').modal();
-            } else if (is_group_mandatory &&
-                (
-                  (!is_advanced && $('#id_resource-group').hasClass("input-empty")) ||
-                  (is_advanced && !$('#id_resource-group').val())
-                )
-              ) {
-                $('#group_mandatoryDialog').modal();
-            } else {
-                $('#preview_pleaseWaitDialog').modal();
-                metadata_update_done = true;
-                metadata_preview = false;
-            }
+            $('#preview_pleaseWaitDialog').modal();
+            metadata_update_done = true;
+            metadata_preview = false;
         });
 
+        /*
         $('#preview_tab').on('show.bs.tab', function(e){
-            var errors = ['{% trans "Please, fill the following items before clicking on preview:" %}<br>']
-                $( ':input[required]').each( function () {
-                    if ( this.value.trim() == '' ) {
-                        errors.push(this.id)
-                    }
-                });
-            if (errors.length > 1) {
-	                e.preventDefault();
-                    console.error("Please, fill the following items before clicking on preview: " + errors)
-                    $(".general_errors").find("p").html(errors.join('<br>'));
-                    $('#error_mandatoryDialog').modal();
-                } else if (is_category_mandatory &&
-                (
-                    (!is_advanced && $('#category_form').hasClass("input-empty")) ||
-                    (is_advanced && !$('#category_form input:checked').val())
-                )
-            ) {
-                $('#category_mandatoryDialog').modal();
-            } else if (is_group_mandatory &&
-                (
-                  (!is_advanced && $('#id_resource-group').hasClass("input-empty")) ||
-                  (is_advanced && !$('#id_resource-group').val())
-                )
-              ) {
-                $('#group_mandatoryDialog').modal();
+            if (validateFormInput()) {
+                $('#error_mandatoryDialog').modal();
             } else {
                 $('#preview_pleaseWaitDialog').modal();
                 try {
@@ -667,6 +575,7 @@
                 }
             }
         });
+        */
 
         $('#settings_tab').on('show.bs.tab', function() {
             // buttons visibility
@@ -682,21 +591,8 @@
         });
 
         $('#metadata_update').submit(function(e) {
-            if (is_category_mandatory &&
-                (
-                    (!is_advanced && $('#category_form').hasClass("input-empty")) ||
-                    (is_advanced && !$('#category_form input:checked').val())
-                )
-            ) {
-                $('#category_mandatoryDialog').modal();
-            } else if (is_group_mandatory &&
-                (
-                  (!is_advanced && $('#id_resource-group').hasClass("input-empty")) ||
-                  (is_advanced && !$('#id_resource-group').val())
-                )
-              ) {
-                $('#group_mandatoryDialog').modal();
-            } else {
+            console.log(validateFormInput());
+            if (validateFormInput()) {
                 var formData = $(this).serializeArray();
                 formData.forEach(function(entry) {
                     try{
@@ -714,14 +610,16 @@
                 });
 
                 // $.post('metadata', /*$(this).serialize()*/ $.param(formData))
+
                 $.ajax({
                         url: "metadata",
                         type: "POST",
                         dataType: "JSON",
                         data: $.param(formData)
-                   }).done(function(data){
+                    }).done(function(data) {
                         // Do something more fancy with your respone
                         // $('.message').html(data.message);
+                        /*
                         if (!is_advanced) {
                             try {
                                 $('#preview_encoder_iframe')[0].style.width='100%';
@@ -732,6 +630,7 @@
                                 console.log(err);
                             }
                         }
+                        */
                         metadata_update_done = true;
                     }).fail(function(xhr, status, error) {
                         // error handling
@@ -761,17 +660,18 @@
                         $('#preview_errorDialog').modal();
                         metadata_update_done = false;
                     }).always(function (a, textStatus, b) {
-                          $('#preview_pleaseWaitDialog').modal('hide');
-                          if(textStatus === 'success' && metadata_update_done && !metadata_preview) {
-                              if(new RegExp(".*/metadata$").test(e.target.action)) {
-                                  window.location.replace(e.target.action.replace('/metadata',''));
-                              } else if(new RegExp(".*/"+metadata_uri+"$").test(e.target.action)) {
-                                  window.location.replace(e.target.action.replace('/'+metadata_uri,''));
-                              }
-                          }
-                    });
-            }
-            e.preventDefault();
+                            $('#preview_pleaseWaitDialog').modal('hide');
+                            if(textStatus === 'success' && metadata_update_done && !metadata_preview) {
+                                if(new RegExp(".*/metadata$").test(e.target.action)) {
+                                    window.location.replace(e.target.action.replace('/metadata',''));
+                                } else if(new RegExp(".*/"+metadata_uri+"$").test(e.target.action)) {
+                                    window.location.replace(e.target.action.replace('/'+metadata_uri,''));
+                                }
+                            }
+                });
+
+                e.preventDefault();
+            };
         });
 
         if(totalNum == prevNum) {
