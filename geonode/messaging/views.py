@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.views import View
 
 from user_messages.models import UserThread, GroupMemberThread
+from django.contrib.auth.decorators import login_required
 
 
 class MarkReadUnread(View):

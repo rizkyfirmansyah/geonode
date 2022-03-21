@@ -21,15 +21,15 @@
 
 {% block sidebar %}
 
-  {% display_change_perms_button resource request.user perms_list as display_perms_button %}
-  {% if display_perms_button %}
-  <div class="col-md-4">
-    <h3>{% trans "Permissions"  %}</h3>
-    <form id="permission_form">
-      {% include "_permissions.html" %}
-    </form>
-  </div>
-  {% endif %}
+{% display_change_perms_button resource request.user perms_list as display_perms_button %}
+{% if display_perms_button %}
+<div class="col-md-4">
+  <h3>{% trans "Permissions"  %}</h3>
+  <form id="permission_form">
+    {% include "_permissions.html" %}
+  </form>
+</div>
+{% endif %}
 
 {% endblock %}
 
@@ -37,22 +37,5 @@
 {{ block.super }}
 {% include "_permissions_form_js.html" %}
 
-<script type="text/javascript">
-    $('#id_doc_file').on('change', function(){
-        if($('#id_title').val() == ''){
-            $('#id_title').val($('#id_doc_file').val().replace("C:\\fakepath\\", ""));
-        }
-    });
-    $("#id_links").select2({
-        width: '100%'
-    });
-    $('#upload_form').submit(function(){
-      $('#permissions').val(JSON.stringify(permissionsString($('#permission_form'),'base')));
-    });
-
-    $('#upload-button').click(function(){
-      $('#_resource_uploading').modal('toggle');
-    });
-    
-</script>
+{% include "upload/documents.html" %}
 {% endblock extra_script %}

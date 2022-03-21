@@ -24,13 +24,7 @@
 {% endblock %}
 
 {% block extra_script %}
-{{ block.super }}
-<script type="text/javascript">
-    $('#id_avatar').change(function() {
-        $('#avatar-file').css('visibility', 'visible');
-    });
-    {% if avatars %}
-    $('#delete_avatar').css('visibility', 'visible');
-    {% endif %}
-</script>
+
+{% include "upload/avatar.html" %}
+
 {% endblock %}

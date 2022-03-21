@@ -2316,6 +2316,19 @@ input::-moz-focus-inner {
     color: white;
 }
 
+#nav_avatar {
+    top: -25%;
+}
+
+.header-nav a img {
+    max-width: 40px;
+    border-radius: 50%;
+}
+
+.header-nav a img:hover {
+    box-shadow: none;
+}
+
 .header-nav h3 {
     font-family: "Solanel-Bold", sans-serif;
     font-size: 11px;
@@ -4250,6 +4263,9 @@ footer #footer-language {
 #SigninModal li a {
     padding: 15px !important;
     font-size: 20px !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none;
 }
 
 .modal-body {
@@ -4264,7 +4280,7 @@ footer #footer-language {
 #signup {
     color: #1c4742;
     max-width: 1140px;
-    width: 100%;
+    width: 100% !important;
     margin-top: 1px !important;
     height: auto;
 }
@@ -4553,6 +4569,7 @@ footer #footer-language {
     right: 30px;
     z-index: 99;
     position: fixed;
+    font-size: 100px;
     cursor: pointer;
 }
 
@@ -5348,7 +5365,8 @@ form-inline {
     top: -3rem;
 }
 
-.delete_search svg:hover {
+.delete_search svg:hover,
+.ClsSgnM svg:hover {
     filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
 }
 
@@ -5869,7 +5887,8 @@ input[type="file"] {
     background-color: #c4bab7;
 }
 
-label[for="id_doc_file"] {
+label[for="id_doc_file"],
+label[for="id_avatar"] {
     display: block;
     position: relative;
     width: 200px;
@@ -5887,7 +5906,8 @@ label[for="id_doc_file"] {
     width: 100%;
 }
 
-#id_doc_file {
+#id_doc_file,
+input[id="id_avatar"] {
     opacity: 0;
     width: 0.1px;
     height: 0.1px;
@@ -5898,11 +5918,6 @@ label[for="id_doc_file"] {
     border: solid 1px #707070;
     box-shadow: 0 0 5px 1px #969696;
     outline: none;
-}
-
-#upload_form #id_doc_file {
-    padding: 0.5em;
-    width: 100%;
 }
 
 #upload_form #id_doc_url {
@@ -6435,12 +6450,33 @@ article.tab-pane {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-top: 40px;
 }
 
 
 /* ------ Nav
 ------------------------------ */
+
+.msUnrd {
+    border: 100px;
+    background-color: #e41e3f;
+    border-top-right-radius: 100px;
+    display: inline-flex;
+    border-radius: 15px;
+    padding: 1px;
+    height: 19px;
+    min-width: 19px;
+}
+
+.msgInbx {
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    justify-content: center;
+    display: inline-flex;
+    padding: 0 5px 0 5px;
+    width: 100%;
+    height: 100%;
+}
 
 .navbar-inverse {
     background-color: #c4bab7;
@@ -7519,6 +7555,9 @@ form textarea[name=content] {
     .mob-full {
         width: 100%;
     }
+    #jump_to_top {
+        font-size: 24px;
+    }
 }
 
 
@@ -7568,7 +7607,7 @@ form textarea[name=content] {
 
 @media (min-width: 1025px) {
     .container {
-        width: calc(100% - 15em) !important;
+        width: calc(100% - 18em) !important;
     }
     #resources_list {
         position: -webkit-sticky;
@@ -7577,6 +7616,10 @@ form textarea[name=content] {
         background-color: white;
         z-index: 999;
         width: 100%;
+    }
+    .search-content {
+        position: sticky !important;
+        top: 120px;
     }
 }
 

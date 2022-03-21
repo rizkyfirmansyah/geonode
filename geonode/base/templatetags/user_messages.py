@@ -23,6 +23,7 @@ from django.conf import settings
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
+from user_messages.models import UserThread
 
 register = template.Library()
 
@@ -32,6 +33,13 @@ def is_unread(thread, user):
     if thread.userthread_set.filter(user=user, unread=True).count() > 0 or \
             thread.groupmemberthread_set.filter(user=user, unread=True).count() > 0:
         return True
+    return False
+
+@register.simple_tag
+def unread_messages(user):
+    get_count = UserThread.objects.filter(user=user, unread=True).count()
+    if get_count > 0:
+        return get_count
     return False
 
 

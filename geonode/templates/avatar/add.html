@@ -14,3 +14,7 @@
         <p>{% csrf_token %}<input type="submit" value="{% trans "Upload New Image" %}" /></p>
     </form>
 {% endblock %}
+
+{% block extra_script %}
+    {% include "upload/avatar.html" %}
+{% endblock extra_script %}

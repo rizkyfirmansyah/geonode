@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<script type="text/javascript">
+  $('#id_avatar').on('change', function () {
+    $('#avatar-file').css('visibility', 'visible');
+    var _text = $('#id_avatar').val().replace("C:\\fakepath\\", "");
+    $(this).prev('label').text(_text);
+  });
+
+  {% if avatars %}
+    $('#delete_avatar').css('visibility', 'visible');
+  {% endif %}
+  
+</script>

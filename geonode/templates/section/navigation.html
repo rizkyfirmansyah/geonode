@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 {% load avatar_tags %}
+{% load user_messages %}
 
 <nav class="header-nav">
 
@@ -22,18 +23,21 @@
       {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
         <li class="d-inline" id="logged-in"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a></li>
       {% elif user.is_authenticated %}
-          <li>
-            <a href="#" class="avatar" id="logged-out">
-              Logged in as
-              {% with full_name=user.first_name|add:' '|add:user.last_name %}
-                {% if full_name.strip %}
-                  {{ full_name | truncatechars:20 }}
-                {% else %}
-                  {{ user.username | truncatechars:20 }}
-                {% endif %}
-              {% endwith %}
-            </a>
-          </li>
+          <div class="d-flex">
+            <div id="nav_avatar" class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_detail" user.username %}" role="button" alt="See Profile" title="See Profile">{% autoescape off %}{% avatar profile 240 %}{% endautoescape %}</a></li></div>
+            <div class="col-xs-6 no-gutters">
+              <a href="#" class="avatar" id="logged-out">
+                Logged in as
+                {% with full_name=user.first_name|add:' '|add:user.last_name %}
+                  {% if full_name.strip %}
+                    {{ full_name | truncatechars:20 }}
+                  {% else %}
+                    {{ user.username | truncatechars:20 }}
+                  {% endif %}
+                {% endwith %}
+              </a>
+            </div>
+          </div>
           <li role="separator" class="divider"></li>
           <ul class="header-nav__list no-gutters">
             <li><a class="navigation_link light" href="{% url "layer_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Spatial data">Add Spatial Data</a></li>
@@ -50,19 +54,24 @@
           </div>
           <li role="separator" class="divider"></li>
           <div class="d-flex">
-            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_detail" user.username %}" role="button">{% trans "Profile" %} </a></div>
+            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_browse" %}" role="button">{% trans "People" %}</a></div>
             <div class="col-xs-6 no-gutters"><a href="{% url "favorite_list" %}" role="button">{% trans "Favorites" %} </a></div>
           </div>
           <div class="d-flex">
             <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "recent-activity" %}" role="button">{% trans "Recent Activity" %} </a></div>
-            <div class="col-xs-6 no-gutters"><a href="{% url "messages_inbox" %}" role="button">{% trans "Inbox" %} </a></div>
+            <div class="col-xs-6 no-gutters">
+              {% if request.user.is_authenticated %}
+                {% unread_messages request.user as messages %}
+                {% if messages %}
+                  <span onclick="location='{% url "messages_inbox" %}'" class="msUnrd"><span class="msgInbx">{{ messages }}+</span></span>
+                {% endif %}
+              {% endif %}
+                <a href="{% url "messages_inbox" %}" role="button">{% trans "Inbox" %} </a>
+            </div>
           </div>
           <li role="separator" class="divider"></li>
-          <div class="d-flex">
           {% if user.is_superuser or user.is_staff %}
-            <div class="col-xs-6 no-gutters"><a class="pull-left" href="{% url "profile_browse" %}" role="button">{% trans "People" %}</a></div>
-            <div class="col-xs-6 no-gutters"><a href="{% url "admin:index" %}" role="button">{% trans "Admin Panel" %}</a></div>
-          </div>
+            <li><a href="{% url "admin:index" %}" role="button">{% trans "Admin Panel" %}</a></li>
             {% if 'geonode.geoserver' in INSTALLED_APPS %}
             <li><a href="{{ OGC_SERVER.default.WEB_UI_LOCATION }}">GeoServer</a></li>
             {% endif %}
@@ -70,8 +79,6 @@
             <li role="separator" class="divider"></li>
             <li><a href="{% url "monitoring:index" %}">{% trans "Monitoring & Analytics" %}</a></li>
             {% endif %}
-          {% else %}
-            <div class="col-xs-12 no-gutters"><a class="pull-left" href="{% url "profile_browse" %}" role="button">{% trans "People" %}</a></div>
           {% endif %}
       {% else %}
         <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button" >{% trans "Sign in" %} </a></li>
