@@ -1088,15 +1088,6 @@ def layer_metadata(
             up_sessions.update(user=layer.owner)
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, layer)
-        if not ajax:
-            return HttpResponseRedirect(
-                reverse(
-                    'layer_detail',
-                    args=(
-                        layer.service_typename,
-                    )))
-
-        message = layer.alternate
 
         try:
             if not tkeywords_form.is_valid():
@@ -1118,7 +1109,13 @@ def layer_metadata(
             logger.error(tb)
 
         layer.save(notify=True)
-        return HttpResponse(json.dumps({'message': message}))
+
+        return HttpResponseRedirect(
+            reverse(
+                'layer_detail',
+                args=(
+                    layer.service_typename,
+                )))
 
     if settings.ADMIN_MODERATE_UPLOADS:
         if not request.user.is_superuser:
