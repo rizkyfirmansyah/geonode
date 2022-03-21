@@ -35,6 +35,7 @@ class Roda(models.Model):
         help_text=retention_help_text)
     resource_title = models.CharField(max_length=255)
     resource_owner = models.CharField(max_length=255)
+    absolute_url = models.CharField(max_length=255)
 
     class Meta:
         ordering = ["id"]

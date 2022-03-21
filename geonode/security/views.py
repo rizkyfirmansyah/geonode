@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+import os
 import json
 import logging
 import traceback
@@ -29,6 +30,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _
+from geonode.people.models import Profile
 from geonode.utils import resolve_object
 from geonode.base.models import (
     ResourceBase,
@@ -40,6 +42,7 @@ from geonode.groups.models import GroupProfile
 from geonode.notifications_helper import send_notification
 
 from geonode.datasets.models import Roda
+from user_messages.models import Message
 
 logger = logging.getLogger(__name__)
 
@@ -438,7 +441,6 @@ def set_bulk_permissions(request):
             status=400,
             content_type='text/plain')
 
-
 @require_POST
 def request_permissions(request):
     """ Request permission to download a resource.
@@ -456,12 +458,25 @@ def request_permissions(request):
         purposes = request.POST['purposes']
         retention = request.POST['retention']
         resource_title = request.POST['resource_title']
+        absolute_url = request.POST['absolute_url']
+        # Save the request download resources to the model
         roda = Roda(
           uuid=uuid, requester_username=requester_username, requester_name=requester_name,
           requester_email=requester_email, requester_institution=requester_institution,
           requester_position=requester_position, purposes=purposes,
-          retention=retention, resource_title=resource_title, resource_owner=resource_owner)
+          retention=retention, resource_title=resource_title, resource_owner=resource_owner, absolute_url=absolute_url)
         roda.save()
+        # Add notification to inbox user as well
+        # set default to group registered members
+        subject_email = "Request Download Resource."
+        msg = f"{requester_name} is asking your permission to download {resource_title}. Change the permission by grant its permission {absolute_url} to {requester_username}."
+        Message.objects.new_message(
+            from_user = request.user,
+            to_users = Profile.objects.get(username=resource_owner).id,
+            to_groups = 2,
+            subject = subject_email,
+            content = msg
+        )
 
         logger.debug("Record request download resources...")
         send_notification([resource.owner],
@@ -488,7 +503,7 @@ def send_email_consumer(layer_uuid, user_id):
                       {'resource': resource, 'from_user': user})
 
 
-def send_email_owner_on_view(owner, viewer, layer_id, geonode_email="email@geo.node"):
+def send_email_owner_on_view(owner, viewer, layer_id, geonode_email=os.getenv('DJANGO_EMAIL_HOST_USER')):
     # get owner and viewer emails
     owner_email = get_user_model().objects.get(username=owner).email
     layer = Layer.objects.get(id=layer_id)

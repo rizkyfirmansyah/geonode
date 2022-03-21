@@ -2228,6 +2228,10 @@ input::-moz-focus-inner {
     z-index: 500;
 }
 
+.s-header a img:hover {
+    box-shadow: none !important;
+}
+
 
 /* -------------------------------------------------------------------
  * ## header logo
@@ -3626,6 +3630,10 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     transition: all 0.15s ease-in-out;
 }
 
+.home-content__scroll a:hover {
+    color: #fdba12;
+}
+
 .home-content__line {
     display: block;
     width: 2px;
@@ -4614,7 +4622,7 @@ footer #footer-language {
 .text-categories>i:hover,
 .category>i:hover,
 .category>h4:hover {
-    color: orangered;
+    color: #fdba12;
     cursor: pointer;
 }
 
@@ -4810,9 +4818,8 @@ html {
 
 #datasets .row-datasets {
     padding-top: 60px;
-    display: flex;
-    display: -webkit-flex;
-    height: 60vh;
+    display: inline-block;
+    height: 70vh;
 }
 
 
@@ -5827,6 +5834,10 @@ span.grippy {
     bottom: 0;
 }
 
+.iso-categories {
+    padding-top: 2em;
+}
+
 .iso-categories .row {
     justify-content: center;
 }
@@ -5847,13 +5858,13 @@ span.grippy {
 .iso-categories .row span {
     font-size: 1em !important;
     position: absolute;
-    margin-top: 55%;
-    margin-left: 55%;
+    margin-top: 65%;
+    margin-left: 65%;
     background-color: #2d689c;
 }
 
 .iso-categories .row a:hover span {
-    background-color: black;
+    background-color: #fdba12;
 }
 
 .jumbotron .gn-container {
@@ -6940,8 +6951,10 @@ span.icon.node-icon:before {
     max-height: 180px;
 }
 
-#main_search_input {
+#main_search_input:focus {
+    color: white !important;
     border: none !important;
+    border-bottom: 2px solid white !important;
 }
 
 .form-metadata {

@@ -55,8 +55,10 @@
     $('#request-download-layer').submit(function(e) {
       e.preventDefault();
       let formData = $(this).serialize();
+      const uri = $(location).attr('href');
       formData += '&uuid={{ resource.uuid }}';
       formData += '&resource_title={{ resource.title }}';
+      formData += '&absolute_url='+uri;
       $.ajax({
         data: formData,
         type: $(this).attr('method'),
