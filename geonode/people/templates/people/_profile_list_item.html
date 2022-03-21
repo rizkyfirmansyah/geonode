@@ -27,21 +27,21 @@
             <li style="width: 25%">
               <a href="{{ profile.profile_detail_url }}" ><img ng-src="{{ profile.avatar_100 }}"/></a>
             </li>
-            <li>
+            <li class="pull-right profile-container">
               <a href="{{ profile.profile_detail_url }}?content=layers">
                 <i class="fa fa-square-o rotate-45"></i>
                 {{ profile.layers_count }}
                 <!-- <ng-pluralize count="profile.layers_count" when="{'1': 'Layer', 'other': 'Layers'}"></ng-pluralize> -->
               </a>
             </li>
-            <li>
+            <li class="pull-right profile-container">
               <a href="{{ profile.profile_detail_url }}?content=maps">
                 <i class="fa fa-map-marker"></i>
                 {{ profile.maps_count }}
                 <!-- <ng-pluralize count="profile.maps_count" when="{'1': 'Map', 'other': 'Maps'}"></ng-pluralize> -->
               </a>
             </li>
-            <li>
+            <li class="pull-right profile-container">
               <a href="{{ profile.profile_detail_url }}?content=documents">
                 <i class="fa fa-file-text-o"></i>
                 {{ profile.documents_count }}

@@ -336,44 +336,41 @@
       <p>{% trans "Please use a <strong>modern browser</strong> like Mozilla Firefox, Google Chrome or Safari." %}</p>
     </div>
 
-  <div id="wrap">
-    {% block middle %}
-    <div class="container">
-      {% include "_status_message.html" %}
-      {% include "_announcements.html" %}
-      {% include "_messages.html" %}
-      {% block body_outer %}
-      <div class="row">
-        <div class="col-md-8">
-        {% block body %}{% endblock %}
+    <div id="wrap" class="col-md-12">
+      {% block middle %}
+        <div class="container">
+          <div id="main">
+            {% include "_status_message.html" %}
+            {% include "_announcements.html" %}
+            {% include "_messages.html" %}
+            {% block body_outer %}
+              <div class="sdi-cms">
+                {% block body %}
+                  <div class="row col-md-10"></div>
+                {% endblock body %}
+                {% block sidebar %}
+                  <div class="col-md-2"></div>
+                {% endblock sidebar %}
+              </div>
+            {% endblock %}
+          </div>
         </div>
-        <div class="col-md-4">
-        {% block sidebar %}{% endblock %}
-        </div>
-      </div>
-      {% endblock %}
+      {% endblock middle %}
+
+      {% block extra_mainbody %}
+      {% endblock extra_mainbody %}
+      {% block footer %}
+        {% include 'section/footer.html' %}
+      {% endblock footer %}
     </div>
-    {% endblock middle %}
 
-    {% block extra_mainbody %}
-    {% endblock extra_mainbody %}
-
-  </div>
-
-  {% block monitoring %}
-  {% endblock %}
-
-  {% block footer %}
-    {% include 'section/footer.html' %}
-  {% endblock footer %}
+    {% block monitoring %}{% endblock %}
 
     <!-- Modal must stay outside the navbar -->
-  {% include "modal/login.html" %}
-  {% include "modal/forgot_password.html" %}
-  {% include "modal/remove_layers.html" %}
-  {% include "modal/remove_documents.html" %}
-
-
+    {% include "modal/login.html" %}
+    {% include "modal/forgot_password.html" %}
+    {% include "modal/remove_layers.html" %}
+    {% include "modal/remove_documents.html" %}
     <!-- End of Modal -->
 
     {% if DEBUG_STATIC %}
