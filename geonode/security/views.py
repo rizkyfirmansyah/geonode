@@ -476,14 +476,7 @@ def request_permissions(request):
             Message.objects.create(
                 sender=request.user,
                 thread=thread,
-                content=_('The resource owner has requested to modify the resource') + '.\n'
-                ' ' +
-                _('Resource title') + ': ' + resource_title + '.\n'
-                ' ' +
-                _('Reason for the request') + ': "' + purposes + '".\n' +
-                ' ' +
-                _('To allow the change, set the resource to not "Approved" under the metadata settings' +
-                  'and write message to the owner to notify him') + '.'
+                content=message
             )
         except Exception:
             return HttpResponse(

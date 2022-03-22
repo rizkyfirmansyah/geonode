@@ -109,6 +109,7 @@ nav.filter li a:before,
 article div a:before,
 article li a:before,
 article span a:before,
+article dt a:before,
 article h4 a:before,
 article dd a:before {
     top: 50%;
@@ -121,6 +122,7 @@ article dd a:before {
 }
 
 nav.filter li a:before,
+article dt a:before,
 article a:before {
     content: "";
     display: block;
@@ -485,10 +487,6 @@ ul {
     list-style: none;
 }
 
-li {
-    display: block;
-}
-
 .restyle-text {
     word-spacing: 0.3rem;
     line-height: 2.9rem;
@@ -507,7 +505,6 @@ a {
 
 a img {
     border: none;
-    max-width: 240px;
 }
 
 a img:hover {
@@ -1461,7 +1458,6 @@ legend {
     font-family: "Solanel-Regular", sans-serif;
     font-size: 1.4rem;
     font-weight: bold;
-    margin-bottom: .9rem;
     line-height: 1.714;
     color: #000000;
     display: block;
@@ -4620,7 +4616,6 @@ footer #footer-language {
     font-size: 70%;
     font-style: italic;
     font-weight: bold;
-    padding-right: 4rem;
     float: right !important;
     width: 100%;
 }
@@ -5439,6 +5434,216 @@ form#text-search-autocomplete .ac-results {
  * # Autocomplete for thesaurus field in advanced metadata edit views
  * ------------------------------------------------------------------- */
 
+#edit-metadata div input,
+#edit-metadata div textarea,
+#req_item {
+    padding: .5em;
+    width: 100%;
+}
+
+#edit-metadata .thumbnail-title {
+    text-align: center;
+}
+
+#edit-metadata .btn:hover {
+    color: white !important;
+    background-color: #fdba12 !important;
+    border-color: #fdba12 !important;
+}
+
+#edit-metadata input[type="text"],
+#edit-metadata select {
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+
+#edit-metadata input[placeholder] {
+    text-overflow: ellipsis;
+}
+
+#edit-metadata .select2-selection__choice {
+    font-size: 1.3em;
+    padding: 0.4em;
+}
+
+.text-success {
+    font-size: 1.4em !important;
+}
+
+#edit-metadata .select2-selection__clear {
+    font-size: 2em;
+    padding: 0.4em;
+}
+
+#id_resource-regions {
+    display: none;
+}
+
+.metadata_content {
+    padding: .5em;
+}
+
+#edit-metadata div.panel-default:nth-of-type(1) {
+    margin: 1rem !important;
+}
+
+#edit-metadata div.panel-default:nth-of-type(2) {
+    margin-left: 1rem !important;
+}
+
+#metadata_edit_tab a {
+    margin-bottom: .8rem;
+}
+
+#btn_upd_md_done {
+    margin-bottom: 0.5em;
+    font-size: 1.2em;
+    display: inline-block;
+}
+
+.fstChoiceRemove {
+    position: relative !important;
+}
+
+#regions_multiselect_container .fstChoiceItem {
+    padding: 5px !important;
+    margin: 5px !important;
+}
+
+#edit-metadata label[for^='id'] {
+    padding: .8rem !important;
+}
+
+#metadata_update .select2-container {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+#metadata_update .select2-selection {
+    min-height: 42px !important;
+    height: auto !important;
+}
+
+#metadata_update .select2-container--default .select2-selection--single .select2-selection__arrow {
+    top: 8px !important;
+}
+
+#metadata_update .form-controls {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+}
+
+#metadata_update .form-group {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.xxs-font-size {
+    font-size: 10px;
+}
+
+.test-class {
+    background-color: red;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+td>input {
+    width: 100%;
+}
+
+.input-empty {
+    border-color: red;
+    border-style: double;
+}
+
+.fancy-checkbox input[type="radio"],
+.fancy-checkbox input[type="checkbox"],
+.fancy-checkbox .checked {
+    display: none;
+}
+
+.fancy-checkbox input[type="radio"]:checked~.checked,
+.fancy-checkbox input[type="checkbox"]:checked~.checked {
+    display: inline-block;
+    color: red;
+}
+
+.fancy-checkbox input[type="radio"]:checked~.unchecked,
+.fancy-checkbox input[type="checkbox"]:checked~.unchecked {
+    display: none;
+}
+
+.fancy-checkbox .fa:hover {
+    cursor: pointer;
+}
+
+.tokenfield,
+#id_resource-title {
+    width: 100% !important;
+}
+
+#edit-metadata .tab-pane>.panel-group>.panel.panel-default,
+#settings .panel-group>.panel.panel-default {
+    border: none;
+}
+
+#mdeditor_form>div.tab-content>.tab-pane {
+    min-height: 450px;
+}
+
+#metadata_update {
+    min-height: 550px;
+}
+
+.leaflet-container {
+    /* all maps */
+    height: 250px !important;
+}
+
+.map-overlay {
+    display: none !important;
+}
+
+#regions_multiselect_container.content {
+    position: absolute;
+}
+
+.fstControls {
+    width: 100% !important;
+}
+
+.fstElement {
+    font-size: 0.8em !important;
+}
+
+.fstResultItem {
+    font-size: 1.2em !important;
+}
+
+.has-error .fstElement {
+    border-color: red;
+}
+
+.treeview {
+    max-height: 200px;
+    overflow: auto;
+    display: block;
+    width: 350px;
+}
+
+.form-actions {
+    text-align: right;
+}
+
+.form_item_spacing {
+    margin-bottom: 25px
+}
+
 .mandatory-warning {
     color: #a23133;
     font-size: 12px;
@@ -5681,36 +5886,6 @@ span.grippy {
 
 #comments_section .clearfix {
     margin-right: 1em;
-}
-
-#metadata_update .select2-container {
-    width: 100% !important;
-    min-width: 0 !important;
-}
-
-#metadata_update .select2-selection {
-    min-height: 42px !important;
-    height: auto !important;
-}
-
-#metadata_update .select2-container--default .select2-selection--single .select2-selection__arrow {
-    top: 8px !important;
-}
-
-#metadata_update .form-controls {
-    padding-right: 0px !important;
-    padding-left: 0px !important;
-}
-
-#metadata_update .form-group {
-    margin-right: 0px;
-    margin-left: 0px;
-}
-
-#basicDescriptiveInfo .btn:hover {
-    color: white !important;
-    background-color: #fdba12 !important;
-    border-color: #fdba12 !important;
 }
 
 .inbox-checkbox label {
@@ -6343,6 +6518,7 @@ footer form {
 
 .profile-image img {
     width: 100%;
+    border-radius: 10em;
 }
 
 .profile-details {
@@ -6599,7 +6775,7 @@ article.tab-pane {
 }
 
 .page-title {
-    display: block;
+    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -7117,52 +7293,12 @@ form textarea[name=content] {
     margin-right: .8rem;
 }
 
-#mdinfo div,
-#cdinfo div {
-    padding: 0 .8rem 0 0 !important;
-}
-
 #layer-attributes-panel {
     margin-top: 2rem;
 }
 
 #mandatory .panel-body {
     padding: 0px !important;
-}
-
-#basicDescriptiveInfo div input,
-#basicDescriptiveInfo div textarea,
-#req_item {
-    padding: .5em;
-}
-
-.metadata_content {
-    padding: .5em;
-}
-
-#edit-metadata div.panel-default:nth-of-type(1) {
-    margin: 1rem !important;
-}
-
-#edit-metadata div.panel-default:nth-of-type(2) {
-    margin-left: 1rem !important;
-}
-
-#metadata_edit_tab a {
-    margin-bottom: .8rem;
-}
-
-.fstChoiceRemove {
-    position: relative !important;
-}
-
-#regions_multiselect_container .fstChoiceItem {
-    padding: 5px !important;
-    margin: 5px !important;
-}
-
-#edit-metadata label[for^='id_resource'] {
-    padding: .8rem !important;
 }
 
 

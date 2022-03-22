@@ -15,8 +15,6 @@
 {% block body_class %}{% trans "data" %}{% endblock body_class %}
 
 {% block body_outer %}
-<form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}"
-  method="POST">
 
   <div class="container-fluid page-header" style="position: relative;">
     <h2 class="page-title">{% trans "Metadata" %}&nbsp;{% blocktrans with layer.title as layer_title %}for
@@ -27,7 +25,7 @@
         class="btn btn-default">{% trans "Return to Layer" %}</a>
       <input type="button" id="btn_back_dwn" class="btn btn-primary" style="display: none"
         value="{% trans "<< Back" %}" />
-      <input type="submit" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
+      <input id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
       <input type="button" id="btn_next_dwn" class="btn btn-primary" value="{% trans "Next >>" %}" />
     </div>
     {% endif %}
@@ -47,72 +45,74 @@
     </div>
   </div>
 
-  {% if layer.metadata_uploaded_preserve %}
-  <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a
-    metadata XML file.
-    This metadata cannot be edited.{% endblocktrans %}</p>
-  {% elif layer.metadata_uploaded %}
-  <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML
-    file.
-    SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-    Some of your original metadata may have been lost.{% endblocktrans %}</p>
-  {% endif %}
+  <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}"
+  method="POST">
+    {% if layer.metadata_uploaded_preserve %}
+    <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a
+      metadata XML file.
+      This metadata cannot be edited.{% endblocktrans %}</p>
+    {% elif layer.metadata_uploaded %}
+    <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML
+      file.
+      SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+      Some of your original metadata may have been lost.{% endblocktrans %}</p>
+    {% endif %}
 
-  {% if layer_form.errors or attribute_form.errors or category_form.errors or author_form.errors or poc.errors or tkeywords_form.errors %}
-  <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields: {% endblocktrans %}
-  </p>
-  <ul class="bg-danger">
-    {% if author_form.errors %}
-    <li>{% trans "Metadata Author" %}</li>
-    {{ author_form.errors }}
+    {% if layer_form.errors or attribute_form.errors or category_form.errors or author_form.errors or poc.errors or tkeywords_form.errors %}
+    <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields: {% endblocktrans %}
+    </p>
+    <ul class="bg-danger">
+      {% if author_form.errors %}
+      <li>{% trans "Metadata Author" %}</li>
+      {{ author_form.errors }}
+      {% endif %}
+      {% if poc_form.errors %}
+      <li>{% trans "Point of Contact" %}</li>
+      {{ poc_form.errors }}
+      {% endif %}
+      {% for field in layer_form %}
+      {% if field.errors %}
+      <li>{{ field.label }}</li>
+      {% endif %}
+      {% endfor %}
+      {% if not attribute_form.is_valid %}
+      <li>{% trans "Attributes" %}</li>
+      {% for field in attribute_form %}
+      {% if field.errors %}
+      <li>{{ field.errors }}</li>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+      {% if category_form.errors %}
+      <li>{{ category_form.errors.as_ul }}</li>
+      {% endif %}
+      {% if tkeywords_form.errors %}
+      <li>{{ tkeywords_form.errors.as_ul }}</li>
+      {% endif %}
+    </ul>
     {% endif %}
-    {% if poc_form.errors %}
-    <li>{% trans "Point of Contact" %}</li>
-    {{ poc_form.errors }}
-    {% endif %}
-    {% for field in layer_form %}
-    {% if field.errors %}
-    <li>{{ field.label }}</li>
-    {% endif %}
-    {% endfor %}
-    {% if not attribute_form.is_valid %}
-    <li>{% trans "Attributes" %}</li>
-    {% for field in attribute_form %}
-    {% if field.errors %}
-    <li>{{ field.errors }}</li>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    {% if category_form.errors %}
-    <li>{{ category_form.errors.as_ul }}</li>
-    {% endif %}
-    {% if tkeywords_form.errors %}
-    <li>{{ tkeywords_form.errors.as_ul }}</li>
-    {% endif %}
-  </ul>
-  {% endif %}
 
-  {% csrf_token %}
-  <div id="mdeditor_form" class="col-md-12 form-controls">
-    {% form layer_form using "layouts/panels.html" %}
-    {# layer_form|as_bootstrap #}
-  </div>
-
-  <div class="row">
-    <div class="col-md-12 grid-spacer">
-      <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
-        <h2>{% trans "Point of Contact" %}</h2>
-        {{ poc_form|as_bootstrap }}
-        <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-      </fieldset>
-      <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
-        <h2>{% trans "Metadata Provider" %}</h2>
-        {{ author_form|as_bootstrap }}
-        <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-      </fieldset>
+    {% csrf_token %}
+    <div id="mdeditor_form" class="col-md-12 form-controls">
+      {% form layer_form using "layouts/panels.html" %}
+      {# layer_form|as_bootstrap #}
     </div>
-  </div>
-</form>
+
+    <div class="row">
+      <div class="col-md-12 grid-spacer">
+        <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
+          <h2>{% trans "Point of Contact" %}</h2>
+          {{ poc_form|as_bootstrap }}
+          <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+        </fieldset>
+        <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
+          <h2>{% trans "Metadata Provider" %}</h2>
+          {{ author_form|as_bootstrap }}
+          <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+        </fieldset>
+      </div>
+    </div>
+  </form>
 
 {{ block.super }}
 {% endblock body_outer %}

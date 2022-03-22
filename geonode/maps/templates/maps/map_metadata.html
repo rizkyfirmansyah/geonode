@@ -15,8 +15,6 @@
 {% block body_class %}{% trans "data" %}{% endblock body_class %}
 
 {% block body_outer %}
-<form id="metadata_update" class="form-horizontal" action="{{ map.get_absolute_url }}/metadata" method="POST">
-
   <div class="container-fluid page-header" style="position: relative;">
     <h2 class="page-title">{% trans "Metadata" %}&nbsp;{% blocktrans with map.title as map_title %}for
       {{ map_title }}{% endblocktrans %}</h2>
@@ -24,7 +22,7 @@
       <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-default">{% trans "Return to Map" %}</a>
       <input type="button" id="btn_back_dwn" class="btn btn-primary" style="display: none"
         value="{% trans "<< Back" %}" />
-      <input type="submit" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
+      <input id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
       <input type="button" id="btn_next_dwn" class="btn btn-primary" value="{% trans "Next >>" %}" />
     </div>
     <div id="profileCompleteness" class="alert alert-info col-md-4">
@@ -43,53 +41,53 @@
     </div>
   </div>
 
-  {% if map.metadata_uploaded %}
-  <div style="background-color: orange;">{% blocktrans %}Note: this map's orginal metadata was populated by importing a
-    metadata XML file.
-    GeoNode's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-    Some of your original metadata may have been lost.{% endblocktrans %}</div>
-  {% endif %}
+  <form id="metadata_update" class="form-horizontal" action="{{ map.get_absolute_url }}/metadata" method="POST">
+    {% if map.metadata_uploaded %}
+      <div style="background-color: orange;">{% blocktrans %}Note: this map's orginal metadata was populated by importing a
+        metadata XML file.
+        GeoNode's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+        Some of your original metadata may have been lost.{% endblocktrans %}
+      </div>
+    {% endif %}
 
-  {% if map_form.errors or category_form.errors %}
-  <div style="background-color: pink">{% blocktrans %}Error updating metadata. Please check the following fields:
-    {% endblocktrans %}
-    <ul>
-      {% for field in map_form %}
-      {% if field.errors %}
-      <li>{{ field.label }}</li>
-      {% endif %}
-      {% endfor %}
+    {% if map_form.errors or category_form.errors %}
+      <div style="background-color: pink">{% blocktrans %}Error updating metadata. Please check the following fields:
+        {% endblocktrans %}
+        <ul>
+          {% for field in map_form %}
+          {% if field.errors %}
+          <li>{{ field.label }}</li>
+          {% endif %}
+          {% endfor %}
 
-      {% if category_form.errors %}
-      <li>{{ category_form.errors.as_ul }}</li>
-      {% endif %}
-    </ul>
-  </div>
-  {% endif %}
+          {% if category_form.errors %}
+          <li>{{ category_form.errors.as_ul }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
 
-  {% csrf_token %}
-  <div id="mdeditor_form" class="col-md-12 form-controls">
-    {% form map_form using "layouts/map_panels.html" %}
-    {# map_form|as_bootstrap #}
-  </div>
-
-  <div class="row">
-    <div class="col-md-12 grid-spacer">
-      <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
-        <h2>{% trans "Point of Contact" %}</h2>
-        {{ poc_form|as_bootstrap }}
-        <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-      </fieldset>
-      <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
-        <h2>{% trans "Metadata Provider" %}</h2>
-        {{ author_form|as_bootstrap }}
-        <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-      </fieldset>
+    {% csrf_token %}
+    <div id="mdeditor_form" class="col-md-12 form-controls">
+      {% form map_form using "layouts/map_panels.html" %}
+      {# map_form|as_bootstrap #}
     </div>
-  </div>
-</form>
-</div>
-</div>
+
+    <div class="row">
+      <div class="col-md-12 grid-spacer">
+        <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
+          <h2>{% trans "Point of Contact" %}</h2>
+          {{ poc_form|as_bootstrap }}
+          <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+        </fieldset>
+        <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
+          <h2>{% trans "Metadata Provider" %}</h2>
+          {{ author_form|as_bootstrap }}
+          <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+        </fieldset>
+      </div>
+    </div>
+  </form>
 
 {{ block.super }}
 {% endblock body_outer %}

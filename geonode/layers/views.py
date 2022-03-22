@@ -1089,6 +1089,16 @@ def layer_metadata(
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, layer)
 
+        if not ajax:
+            return HttpResponseRedirect(
+                reverse(
+                    'layer_detail',
+                    args=(
+                        layer.service_typename,
+                    )))
+
+        message = layer.alternate
+
         try:
             if not tkeywords_form.is_valid():
                 return HttpResponse(json.dumps({'message': "Invalid thesaurus keywords"}, status_code=400))
@@ -1110,12 +1120,7 @@ def layer_metadata(
 
         layer.save(notify=True)
 
-        return HttpResponseRedirect(
-            reverse(
-                'layer_detail',
-                args=(
-                    layer.service_typename,
-                )))
+        return HttpResponse(json.dumps({'message': message}))
 
     if settings.ADMIN_MODERATE_UPLOADS:
         if not request.user.is_superuser:

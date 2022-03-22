@@ -12,7 +12,6 @@
 {% block body_outer %}
 
 {{ block.super }}
-<form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
 
   <div class="container-fluid page-header" style="position: relative;">
     <h2 class="page-title">{% trans "Metadata" %}&nbsp;{% blocktrans with document.title as document_title %}for
@@ -22,7 +21,7 @@
         class="btn btn-default">{% trans "Return to BigTIFF/Non-Spatial Data" %}</a>
       <input type="button" id="btn_back_dwn" class="btn btn-primary" style="display: none"
         value="{% trans "<< Back" %}" />
-      <input type="submit" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
+      <input id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
       <input type="button" id="btn_next_dwn" class="btn btn-primary" value="{% trans "Next >>" %}" />
     </div>
     <div id="profileCompleteness" class="alert alert-info col-md-4">
@@ -41,6 +40,7 @@
     </div>
   </div>
 
+<form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
   {% if document_form.errors or category_form.errors or author_form.errors or poc.errors %}
   <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields: {% endblocktrans %}
   </p>
@@ -68,7 +68,6 @@
   {% csrf_token %}
   <div id="mdeditor_form" class="col-md-12 form-controls">
     {% form document_form using "layouts/doc_panels.html" %}
-    {# document_form|as_bootstrap #}
   </div>
 
   <div class="row">

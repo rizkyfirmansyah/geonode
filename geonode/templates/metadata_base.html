@@ -15,112 +15,6 @@
   <script type="text/javascript" src={% static "django_tinymce/init_tinymce.js" %}></script>
   <link rel="stylesheet" type="text/css" id="mce-u0" href= {% static "tinymce/skins/ui/oxide/skin.min.css" %}>
 
-    <style>
-        .xxs-font-size{
-            font-size: 10px;
-        }
-        textarea{
-            width:100%;
-        }
-        select{
-            width:100%;
-        }
-        .test-class{
-            background-color: red;
-        }
-        table{
-            table-layout:fixed;
-            width: 100%;
-        }
-        td > input{
-            width: 100%;
-        }
-        h2.page-title {
-          max-width: calc(100% - 300px);
-        }
-        .input-empty{
-            border-color: red;
-            border-style: double;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            left: 0;
-            right: 0;
-        }
-        input[placeholder] {
-          text-overflow: ellipsis;
-        }
-        .fancy-checkbox input[type="radio"],
-        .fancy-checkbox input[type="checkbox"],
-        .fancy-checkbox .checked {
-            display: none;
-        }
-
-        .fancy-checkbox input[type="radio"]:checked ~ .checked,
-        .fancy-checkbox input[type="checkbox"]:checked ~ .checked {
-            display: inline-block;
-            color:red;
-        }
-
-        .fancy-checkbox input[type="radio"]:checked ~ .unchecked,
-        .fancy-checkbox input[type="checkbox"]:checked ~ .unchecked {
-            display: none;
-        }
-
-        .tokenfield,
-        #id_resource-title {
-            width: 100% !important;
-        }
-        #edit-metadata .tab-pane > .panel-group >.panel.panel-default, #settings .panel-group > .panel.panel-default {
-          border: none;
-        }
-        #mdeditor_form > div.tab-content > .tab-pane {
-          min-height: 450px;
-        }
-        #metadata_update {
-          min-height: 550px;
-        }
-
-        .leaflet-container { /* all maps */
-            height: 250px !important;
-        }
-
-        .map-overlay {
-            display: none !important;
-        }
-
-        #regions_multiselect_container.content {
-            position: absolute;
-        }
-        .fstControls {
-            width: 100% !important;
-        }
-
-        .fstElement {
-            font-size: 0.8em !important;
-        }
-
-        .fstResultItem {
-            font-size: 1.2em !important;
-        }
-
-        .has-error .fstElement {
-          border-color: red;
-        }
-        .treeview {
-          max-height: 200px;
-          overflow: auto;
-          display: block;
-          width: 350px;
-        }
-        .form-actions {
-          text-align: right;
-        }
-        .form_item_spacing {
-          margin-bottom: 25px
-        }
-    </style>
 {{ block.super }}
 {% endblock head %}
 
@@ -151,10 +45,10 @@
       <div class="modal-content">
           <div class="modal-header alert alert-danger">
               <div aria-label="Delete" role="button" class="delete_search" style="top: 0;"><span class="dlt_span" role="button" tabindex="0" aria-label="Delete" title="Delete"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-              <h3 class="modal-title">{% trans "Error Updating Metadata" %}</h3>
+              <h3 class="modal-title text-center">{% trans "Error Updating Metadata" %}</h3>
           </div>
           <div class="modal-body">
-              <p>{% trans "Error" %}...</p>
+              <p id="general_errors" class="text-center">{% trans "Error" %}...</p>
           </div>
           <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Ok, I get it.</button>
       </div>
@@ -168,12 +62,28 @@
         <div aria-label="Delete" role="button" class="delete_search" style="top: 0;"><span class="dlt_span" role="button" tabindex="0" aria-label="Delete" title="Delete"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
         <h3 class="modal-title text-center">{% trans "Error Updating Metadata" %}</h3>
       </div>
-      <div class="modal-body general_errors">
+      <div class="modal-body text-center" id="general_errors">
         <p id="general_errors" class="text-center">
           Please fill all the <span class="primary-text-warning">mandatory fields</span> declared by the Metadata Schema
         </p>
       </div>
       <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Ok, I get it.</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" style="width: 100%; height: 100%;" id="thxDialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content panel-warning">
+      <div class="modal-header panel-heading">
+        <div aria-label="Delete" role="button" class="delete_search" style="top: 0;"><span class="dlt_span" role="button" tabindex="0" aria-label="Delete" title="Delete"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
+        <h3 class="modal-title text-center">{% trans "Thank You for completing the form!" %}</h3>
+      </div>
+      <div class="modal-body text-center" id="general_errors">
+        <p id="general_errors" class="text-center">
+          Now you can click the <span class="primary-text-warning">Done</span> button to save your work.
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -195,25 +105,6 @@
         createMapThumbnail();
       });
     </script>
-
-    <!-- <script type="text/javascript">
-        $(document).ready(function() {
-            $('#id_resource-regions').multiselect({
-                enableClickableOptGroups: true,
-                enableCollapsibleOptGroups: true,
-                enableFiltering: true,
-                includeSelectAllOption: true
-            });
-        });
-    </script> -->
-
-    <!-- <script type="text/javascript">
-        $(document).ready(function() {
-            $('#id_resource-regions').treeMultiselect({
-                startCollapsed: true
-            });
-        });
-    </script> -->
 
     <!-- Doc & Examples: http://dbrekalo.github.io/fastselect/ -->
     <script type="text/javascript">
