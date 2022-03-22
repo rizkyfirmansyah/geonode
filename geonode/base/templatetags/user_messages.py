@@ -35,6 +35,7 @@ def is_unread(thread, user):
         return True
     return False
 
+
 @register.simple_tag
 def unread_messages(user):
     get_count = UserThread.objects.filter(user=user, unread=True).count()

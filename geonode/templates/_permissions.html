@@ -19,19 +19,19 @@
     <div id="collapse1" class="panel-collapse collapse in">
       <div class="controls">
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             <input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %}>
             {% trans "Anyone" %}
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following users:" %}
             <select class="user-select" name="view_resourcebase_users" id="view_resourcebase_users" required></select>
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following groups:" %}
             <select class="group-select" name="view_resourcebase_groups" id="view_resourcebase_groups"></select>
           </label>
@@ -51,19 +51,19 @@
     <div id="collapse2" class="panel-collapse collapse">
       <div class="controls">
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             <input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION %}checked{% endif %}>
             {% trans "Anyone" %}
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following users:" %}
             <select class="user-select" name="download_resourcebase_users" id="download_resourcebase_users" required></select>
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following groups:" %}
             <select class="group-select" name="download_resourcebase_groups" id="download_resourcebase_groups"></select>
           </label>
@@ -83,13 +83,13 @@
     <div id="collapse3" class="panel-collapse collapse">
       <div class="controls">
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following users:" %}
             <select class="user-select" name="change_resourcebase_metadata_users" id="change_resourcebase_metadata_users" required></select>
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following groups:" %}
             <select class="group-select" name="change_resourcebase_metadata_groups" id="change_resourcebase_metadata_groups"></select>
           </label>
@@ -110,13 +110,13 @@
     <div id="collapse4" class="panel-collapse collapse">
       <div class="controls">
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following users:" %}
             <select class="user-select" name="change_layer_data_users" id="change_layer_data_users" required></select>
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following groups:" %}
             <select class="group-select" name="change_layer_data_groups" id="change_layer_data_groups"></select>
           </label>
@@ -136,13 +136,13 @@
     <div id="collapse5" class="panel-collapse collapse">
       <div class="controls">
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following users:" %}
             <select class="user-select" name="change_layer_style_users" id="change_layer_style_users" required></select>
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following groups:" %}
             <select class="group-select" name="change_layer_style_groups" id="change_layer_style_groups"></select>
           </label>
@@ -163,13 +163,13 @@
     <div id="collapse6" class="panel-collapse collapse">
       <div class="controls">
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following users:" %}
             <select class="user-select" name="manage_resourcebase_users" id="manage_resourcebase_users" required></select>
           </label>
         </div>
         <div class="radio">
-          <label>
+          <label class="autofit_label">
             {% trans "The following groups:" %}
             <select class="group-select" name="manage_resourcebase_groups" id="manage_resourcebase_groups"></select>
           </label>

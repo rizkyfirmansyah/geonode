@@ -1482,9 +1482,15 @@ label>.label-text {
 
 label>input[type="checkbox"],
 label>input[type="radio"] {
-    margin: 0;
+    margin-right: 10px;
     position: relative;
     top: .15rem;
+    transform: scale(1.3);
+}
+
+label>input[type="checkbox"]:hover,
+label>input[type="radio"]:hover {
+    cursor: pointer;
 }
 
 #upload_form {
@@ -5076,10 +5082,6 @@ html {
     margin-top: -10px;
 }
 
-#permission_form .select2-container {
-    width: 250px;
-}
-
 
 /* ------------------------------------------------------------------- 
  * ## people. groups.
@@ -6855,15 +6857,23 @@ article.tab-pane {
 /* Control items
 ----------------------- */
 
-.controls {
-    width: 320px;
+.collapse.in {
+    display: inline-table;
+    min-width: 140px;
+    width: 100%;
 }
 
-.controls>div,
-.controls>input,
-.controls>select,
-.controls>textarea {
-    width: 320px;
+#permission_form .select2-container {
+    width: 100%;
+}
+
+.autofit_label {
+    width: 100%;
+    padding: 0 20px;
+}
+
+#permissions_tab1 label {
+    display: inline-flex;
 }
 
 

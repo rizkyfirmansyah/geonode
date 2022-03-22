@@ -30,7 +30,6 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _
-from geonode.people.models import Profile
 from geonode.utils import resolve_object
 from geonode.base.models import (
     ResourceBase,
@@ -42,7 +41,7 @@ from geonode.groups.models import GroupProfile
 from geonode.notifications_helper import send_notification
 
 from geonode.datasets.models import Roda
-from user_messages.models import Message
+from user_messages.models import Message, Thread
 
 logger = logging.getLogger(__name__)
 
@@ -441,6 +440,7 @@ def set_bulk_permissions(request):
             status=400,
             content_type='text/plain')
 
+
 @require_POST
 def request_permissions(request):
     """ Request permission to download a resource.
@@ -459,24 +459,37 @@ def request_permissions(request):
         retention = request.POST['retention']
         resource_title = request.POST['resource_title']
         absolute_url = request.POST['absolute_url']
-        # Save the request download resources to the model
-        roda = Roda(
-          uuid=uuid, requester_username=requester_username, requester_name=requester_name,
-          requester_email=requester_email, requester_institution=requester_institution,
-          requester_position=requester_position, purposes=purposes,
-          retention=retention, resource_title=resource_title, resource_owner=resource_owner, absolute_url=absolute_url)
-        roda.save()
-        # Add notification to inbox user as well
-        # set default to group registered members
-        subject_email = "Request Download Resource."
-        msg = f"{requester_name} is asking your permission to download {resource_title}. Change the permission by grant its permission {absolute_url} to {requester_username}."
-        Message.objects.new_message(
-            from_user = request.user,
-            to_users = Profile.objects.get(username=resource_owner).id,
-            to_groups = 2,
-            subject = subject_email,
-            content = msg
-        )
+
+        try:
+            # Save the request download resources to the model
+            roda = Roda(
+            uuid=uuid, requester_username=requester_username, requester_name=requester_name,
+            requester_email=requester_email, requester_institution=requester_institution,
+            requester_position=requester_position, purposes=purposes,
+            retention=retention, resource_title=resource_title, resource_owner=resource_owner, absolute_url=absolute_url)
+            roda.save()
+            # Add notification to inbox user as well
+            subject = 'System message: A request to download resource'
+            message = f'{requester_name} has requested to download the resource {resource_title}. Reason for the request: {purposes}. To allow his/her download the resource, please go to {absolute_url}. Under the permissions setting, change data and assign download to {requester_username}.'
+            thread = Thread.objects.create(subject=subject)
+            thread.userthread_set.create(user=resource_owner, unread=True)
+            Message.objects.create(
+                sender=request.user,
+                thread=thread,
+                content=_('The resource owner has requested to modify the resource') + '.\n'
+                ' ' +
+                _('Resource title') + ': ' + resource_title + '.\n'
+                ' ' +
+                _('Reason for the request') + ': "' + purposes + '".\n' +
+                ' ' +
+                _('To allow the change, set the resource to not "Approved" under the metadata settings' +
+                  'and write message to the owner to notify him') + '.'
+            )
+        except Exception:
+            return HttpResponse(
+                json.dumps({'error': _('Permission to download the resource could not be requested to resource owner because of an error.')}),
+                status=500,
+                content_type='text/plain')
 
         logger.debug("Record request download resources...")
         send_notification([resource.owner],
@@ -491,7 +504,7 @@ def request_permissions(request):
         # traceback.print_exc()
         return HttpResponse(
             json.dumps({'error': _('error delivering notification')}),
-            status=400,
+            status=403,
             content_type='text/plain')
 
 

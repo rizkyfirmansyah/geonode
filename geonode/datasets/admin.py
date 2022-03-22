@@ -5,7 +5,9 @@ from geonode.datasets.models import Roda
 class RodaAdmin(admin.ModelAdmin):
     model = Roda
     list_display_links = ('requester_username',)
-    list_display = ('requester_username', 'requester_name', 'requester_email', 'requester_position', 'requester_institution', 'purposes', 'retention', 'resource_title', 'resource_owner', 'absolute_url')
+    list_display = ('requester_username', 'requester_name', 'requester_email',
+                    'requester_position', 'requester_institution', 'purposes', 'retention',
+                    'resource_title', 'resource_owner', 'absolute_url')
 
     # set permission to view only, not be able to modify the content
     def has_add_permission(self, request):
