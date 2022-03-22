@@ -6775,10 +6775,13 @@ article.tab-pane {
 }
 
 .page-title {
-    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.d-inline-block {
+    display: inline-block !important;
 }
 
 

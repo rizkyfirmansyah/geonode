@@ -26,8 +26,8 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
-  <div class="page-header">
-    <h2 class="page-title">
+  <div class="page-header" id="fixed-header">
+    <h2 class="page-title d-inline-block">
       {% blocktrans with document.title as document_title %}
         Edit Metadata for {{ document_title }}
       {% endblocktrans %}

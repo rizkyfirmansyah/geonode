@@ -139,13 +139,11 @@
             $('#profileCompleteness .not-completed').toggle(completeness !== 1);
             
             var mandatoryMissing = $('#mandatory').find('.input-empty').length > 0;
-            console.log(mandatoryMissing);
             if (mandatoryMissing) {
                 var not_tinymce = true;
                 var inputs = $('#mandatory').find('.input-empty:not([class^="select2"])');
                 var empty = inputs.length;
                 for (var i=0; i<inputs.length; i++) {
-                    console.log(inputs[i].id);
                     if (tinymce.get(inputs[i].id) !== null && tinymce.get(inputs[i].id).getContent().length == 0) {
                         empty++;
                         not_tinymce = false
@@ -525,13 +523,11 @@
         $('#btn_next_dwn').click(function(){getNextTab()});
 
         $('#btn_upd_md_up').click(function() {
-            console.log(validateMetadataAdvanced());
             validateMetadataAdvanced() ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : $('#error_mandatoryDialog').modal()
         });
 
         $('#btn_upd_md_dwn').click(function() {
-            console.log(validateFormInput());
-            validateFormInput() ? $('thxDialog').modal() : validateRequiredInput()
+            validateFormInput() ? $('#thxDialog').modal() : validateRequiredInput()
         });
 
         var validateMetadataAdvanced = () => {
