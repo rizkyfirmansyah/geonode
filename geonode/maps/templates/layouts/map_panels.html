@@ -168,7 +168,7 @@
             </div>
             <div class="row">
               <div class="col-lg-6">
-                <div class="panel panel-default" style="margin-top: 20px">
+                <div class="panel panel-default">
                   <div class="panel-heading">{% trans "Responsible Parties" %}</div>
                   <div class="panel-body">
                     <span><label for="{{ map_form.poc|id }}">{{ map_form.poc.label }}</label></span>
@@ -177,7 +177,7 @@
                 </div>
               </div>
               <div class="col-lg-6">
-                <div class="panel panel-default" style="margin-top: 20px">
+                <div class="panel panel-default">
                   <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
                   <div class="panel-body">
                     <div class="metadata_content">
@@ -205,13 +205,13 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="" id="cdinfo">
-              <div class="col-lg-6" style="padding-left: 0px;">
+              <div class="col-lg-6">
                 <div class="metadata_content">
                   <span><label for="{{ map_form.data_type|id }}">{{ map_form.data_type.label }}</label></span>
                   {{ map_form.data_type }}
                 </div>
               </div>
-              <div class="col-lg-6" style="padding-right: 0px;">
+              <div class="col-lg-6">
                 <div class="metadata_content">
                   <span><label
                       for="{{ map_form.maintenance_frequency|id }}">{{ map_form.maintenance_frequency.label }}</label></span>
@@ -221,30 +221,30 @@
               </div>
               <div class="row">
                 <div class="col-lg-12">
-                  <div style="margin-top: 10px">
+                  <div class="x-space">
                     <span><label
                         for="{{ map_form.data_description|id }}">{{ map_form.data_description.label }}</label></span>
                     <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
                     {{ map_form.data_description }}
                   </div>
-                  <div style="margin-top: 10px">
+                  <div class="x-space">
                     <span><label
                         for="{{ map_form.data_quality_statement|id }}">{{ map_form.data_quality_statement.label }}</label></span>
                     <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
                     {{ map_form.data_quality_statement|safe }}
                   </div>
-                  <div style="margin-top: 10px">
+                  <div class="x-space">
                     <span><label for="{{ map_form.purpose|id }}">{{ map_form.purpose.label }}</label></span>
                     <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
                     {{ map_form.purpose }}
                   </div>
-                  <div style="margin-top: 10px">
+                  <div class="x-space">
                     <span><label
                         for="{{ map_form.constraints_other|id }}">{{ map_form.constraints_other.label }}</label></span>
                     <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
                     {{ map_form.constraints_other }}
                   </div>
-                  <div style="margin-top: 10px">
+                  <div class="x-space">
                     <span><label
                         for="{{ map_form.supplemental_information|id }}">{{ map_form.supplemental_information.label }}</label></span>
                     <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
@@ -263,7 +263,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="" id="mdinfo">
-              <div class="col-lg-4" style="padding: 0px;">
+              <div class="col-lg-4">
                 <div class="metadata_content">
                   <span><label for="{{ map_form.license|id }}">{{ map_form.license.label }}</label></span>
                   <!--<p class="xxs-font-size">(License of the dataset)</p>-->
@@ -287,7 +287,7 @@
                   {{ map_form.regions }}
                 </div>
               </div>
-              <div class="col-lg-4" style="padding: 0px;">
+              <div class="col-lg-4">
                 <div class="metadata_content">
                   <span><label for="{{ map_form.author|id }}">{{ map_form.author.label }}</label></span>
                   {{ map_form.author }}
@@ -308,7 +308,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="">
-              <div class="col-lg-6" style="padding-right: 10px;">
+              <div class="col-lg-6" class="padding-right-md">
                 <div class="input-group date">
                   <span><label
                       for="{{ map_form.temporal_extent_start|id }}">{{ map_form.temporal_extent_start.label }}</label></span>
@@ -324,14 +324,14 @@
               </div>
             </div>
             <div class="">
-              <div class="col-lg-6" style="padding-right: 0px; padding-left: 10px;">
-                <div style="margin-top: 5px">
+              <div class="col-lg-6" class="padding-left-md">
+                <div class="x-space">
                   <span><label
                       for="{{ map_form.spatial_representation_type|id }}">{{ map_form.spatial_representation_type.label }}</label></span>
                   <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
                   {{ map_form.spatial_representation_type }}
                 </div>
-                <div style="margin-top: 5px">
+                <div class="x-space">
                   <span><label
                       for="{{ map_form.spatial_resolution|id }}">{{ map_form.spatial_resolution.label }}</label></span>
                   <!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
