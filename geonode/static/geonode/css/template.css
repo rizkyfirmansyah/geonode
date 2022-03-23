@@ -5462,8 +5462,12 @@ form#text-search-autocomplete .ac-results {
     padding: 0.4em;
 }
 
-.text-success {
-    font-size: 1.4em !important;
+#profileCompleteness small {
+    font-size: 1.2em !important;
+}
+
+#profileCompleteness small i {
+    margin-right: 10px;
 }
 
 #metadata_update .select2-selection__clear {
@@ -5627,9 +5631,7 @@ td>input {
 
 .treeview {
     max-height: 200px;
-    overflow: auto;
-    display: block;
-    width: 350px;
+    display: contents;
 }
 
 .form_item_spacing {

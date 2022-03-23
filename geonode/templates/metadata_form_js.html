@@ -49,8 +49,8 @@
     var setInputEmpty = function( target, empty ) {
         if($(target).hasClass('value-select')) {
         // tkeywords
-        // $(target).toggleClass("input-empty", empty);
-        // $(target).parent().find('input.autocomplete').toggleClass("input-empty", empty);
+            $(target).toggleClass("input-empty", empty);
+            $(target).parent().find('input.autocomplete').toggleClass("input-empty", empty);
         } else if( !$(target).hasClass('autocomplete') ){
         // display error status for token fields if not completed
         $(target).toggleClass("input-empty", empty);
@@ -90,11 +90,7 @@
           }
 
         {% endblock target %}
-
-          // bootstrap-select copies the select's classes, so it have to be removed
-          if( $( '.bootstrap-select' ).hasClass("input-empty") ) {
-            $( '.bootstrap-select' ).toggleClass("input-empty");
-          }
+          
     };
 
     function getTab(number) {
@@ -137,7 +133,7 @@
             $('#profileCompleteness .progress-bar').html(parseFloat(((completeness)*100).toFixed(0)) + ' %').width(parseFloat(((completeness)*100).toFixed(2)) + '%');
             $('#profileCompleteness .completed').toggle(completeness === 1);
             $('#profileCompleteness .not-completed').toggle(completeness !== 1);
-            
+
             var mandatoryMissing = $('#mandatory').find('.input-empty').length > 0;
             if (mandatoryMissing) {
                 var not_tinymce = true;
@@ -237,7 +233,8 @@
             validateMissingMandatory();
             validateMissingContent();
             validateMissingLicense();
-                
+            
+            console.log(completeness);
             //done button tooltip
             if(completeness === 1 && $('.metadata-edit-done').css('opacity')+"" === "0" && !tooltipShown && !gotIt) {
                 tooltipShown = true;
@@ -279,55 +276,77 @@
 
         return is_mandatory;
     };
-
+    
     {% block onInputChange %}
         var onInputChange = function(e){
+            e.preventDefault();
             var e_target = null;
             var e_target_value = null;
             if (e.target.id == 'tinymce') {
                 e_target = $('#' + $(e.target).data().id)[0];
                 e_target_value = e.target.innerText;
-            }
-            else {
+            } else {
                 e_target = e.target;
                 e_target_value = e.target.value;
-            }
+            };
 
-            if(e_target_value !== undefined && e_target_value.trim() === ''){
-                if(!$(e_target).hasClass("input-empty")){
-                    if(isMandatoryField(this)) {
-                        setInputEmpty(e_target, true);
-                        var mandatoryWarning = "<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"
-                        if (!!$(this).closest('.date').length) {
-                            $(e_target).parent().parent().append(gettext(mandatoryWarning));
-                        } else if (!!$(this).closest('.check-select').length ) {
-                            $(e_target).parent().parent().append(gettext(mandatoryWarning));
-                        } else if (!!$(this).closest('#mdinfo').length || !!$(this).closest('#basicDescriptiveInfo').length || !!$(this).closest('#tadv_req').length || !!$(this).closest('#adv_req').length ) {
-                            $(e_target).parent().append(gettext(mandatoryWarning));
-                        } else if (e.target.localName == 'textarea') {
-                            $(e_target).parent().append(gettext(mandatoryWarning));
+            var warningMessage = function(el) {
+                var mandatoryWarning = "<p class='xxs-font-size mandatory-warning'>&nbsp;&nbsp;&nbsp;<strong>{% trans "* Field declared Mandatory by the Metadata Schema" %}</strong></p>"
 
-                        }
-                        empty++;
-                    }
+                function setWarning(set) {
+                    set === true ? setInputEmpty(el, true) : setInputEmpty(el, false)
+                };
+
+                function add_multiple() {
+                    $(el).parent().parent().append(mandatoryWarning);
+                    setWarning(true)
+                };
+                
+                function add_others() {
+                    $(el).parent().append(mandatoryWarning);
+                    setWarning(true)
+                };
+
+                function remove_multiple() {
+                    $(el).parent().parent().find(".mandatory-warning").remove();
+                    setWarning(false)
+                };
+
+                function remove_others() { 
+                    $(el).parent().find(".mandatory-warning").remove();
+                    setWarning(false)
+                };
+                
+                return { 
+                    addMultiple: function() {
+                        add_multiple()
+                    }, 
+                    addOthers: function() {
+                        add_others()
+                    }, 
+                    removeMultiple: function() {
+                        remove_multiple()
+                    },
+                    removeOthers: function() {
+                        remove_others()
+                    } 
                 }
-            }
-            else {
-                if($(e_target).hasClass("input-empty")) {
-                    if(isMandatoryField(this)) {
-                        empty--;
-                    }
-                    setInputEmpty(e_target, false);
-                    if (!!$(e_target).closest('.date').length) { 
-                        $(e_target).parent().parent().find(".mandatory-warning").remove();
-                    } else {
-                        $(e_target).parent().find(".mandatory-warning").remove();
-                    }
-                    
+            };
+
+            if (!e_target_value) {
+                // validation check for empty or undefined value
+                if (isMandatoryField(this)) {
+                    e_target.type === "select-multiple" ? warningMessage(this).addMultiple() : warningMessage(this).addOthers()
+                    empty++;
                 }
-            }
+            } else {
+                e_target.type === "select-multiple" ? warningMessage(this).removeMultiple() : warningMessage(this).removeOthers()
+                empty--;
+            };
 
             if(totalNum == prevNum) {
+                console.log(totalNum);
+                console.log(prevNum);
                 try {
                     var perc = (totalNum <= 0 ? 0 : (totalNum-empty)/totalNum);
                         perc = (perc <= 1 ? perc : 1);
@@ -336,7 +355,7 @@
                     // Log error
                     // console.log(err);
                 }
-            }
+            };
         };
     {% endblock onInputChange %}
 
@@ -347,11 +366,7 @@
     {% endblock hints %}
     
     {% block trigger_onInputChange %}
-        {{UI_REQUIRED_FIELDS}}.forEach(element => $('#' + element).change(onInputChange).change());
-
-        ui_mandatory_fields.forEach(function(field){
-            $('#'+field).change(onInputChange).change();
-        })
+        // {{UI_REQUIRED_FIELDS}}.forEach(element => $('#' + element).change(onInputChange).change());
 
         var selection = document.querySelector('select[name="resource-keywords"]');
         if (selection  !== null) {
@@ -366,9 +381,6 @@
             $("#id_" + {{REQ_THESAURI}}[item]).trigger("change");
         }
 
-        $('#id_resource-regions').change(onInputChange).change();
-        $('#id_resource-temporal_extent_end').on('blur', function() {$(this).change(onInputChange).change();})
-        $('#id_resource-temporal_extent_start').on('blur', function() {$(this).change(onInputChange).change();})
         $('#mandatory').find(":input:not(.value-select):not(.autocomplete)").each(function(){
             if(isMandatoryField(this)) {
                 prevNum++;
@@ -384,10 +396,10 @@
             }
         });
 
-        $('#mdinfo').find(":input:not(.value-select):not(.autocomplete)").each(function(){
+        $('#mdinfo').find(":input:not(.value-select):not(.autocomplete)").each(function() {
             if(isMandatoryField(this)) {
                 prevNum++;
-            }
+            };
 
             $(this).change(onInputChange).change();
 
@@ -395,6 +407,7 @@
                 totalNum++;
             }
         });
+
 
     {% endblock trigger_onInputChange %}
 
@@ -618,18 +631,17 @@
                     }).done(function(data) {
                         // Do something more fancy with your respone
                         // $('.message').html(data.message);
-                        /*
+
                         if (!is_advanced) {
                             try {
                                 $('#preview_encoder_iframe')[0].style.width='100%';
                                 $('#preview_encoder_iframe')[0].style.height='100%';
-                                $('#preview_encoder_iframe')[0].contentWindow.location.reload(true);
+                                // $('#preview_encoder_iframe')[0].contentWindow.location.reload(true);
                             } catch(err) {
                                 // Log error
                                 console.log(err);
                             }
                         }
-                        */
                         metadata_update_done = true;
                     }).fail(function(xhr, status, error) {
                         // error handling

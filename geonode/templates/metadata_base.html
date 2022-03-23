@@ -99,17 +99,15 @@
     {% if GEONODE_SECURITY_ENABLED %}
      {% include "_permissions_form_js.html" %}
     {% endif %}
-
-    <script type="text/javascript">
-      $('#set_thumbnail').click(function(){
-        createMapThumbnail();
-      });
-    </script>
-
+    
     <!-- Doc & Examples: http://dbrekalo.github.io/fastselect/ -->
     <script type="text/javascript">
         $(document).ready(function() {
             $('#id_resource-regions').fastselect({});
+        });
+
+        $('#set_thumbnail').click(function(){
+          createMapThumbnail();
         });
     </script>
 
