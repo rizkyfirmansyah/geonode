@@ -31,10 +31,6 @@ from django.core import validators
 from django.db.models import Prefetch, Q
 from django.forms import ModelForm, models
 from django.forms.fields import MultipleChoiceField
-from django.forms.utils import flatatt
-from django.utils.encoding import force_text
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from modeltranslation.forms import TranslationModelForm
 from taggit.forms import TagField
@@ -94,6 +90,42 @@ class AdvancedModelChoiceIterator(models.ModelChoiceIterator):
             obj)
 
 
+
+class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def _get_choices(self):
+        if hasattr(self, '_choices'):
+            return self._choices
+
+        return AdvancedModelChoiceIterator(self)
+
+    choices = property(_get_choices, MultipleChoiceField._set_choices)
+
+    def label_from_instance(self, obj):
+        return '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
+                         'data-content="' + obj.name + '" trigger="hover">' + obj.name + '</span>'
+
+
+
+class RegionsForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(RegionsForm, self).__init__(*args, **kwargs)
+
+    region_choice_field = RegionsMultipleChoiceField(
+        required=True,
+        label='Regions',
+        queryset=Region.objects.order_by('lft', 'name')
+    )
+
+    def clean(self):
+        cleaned_data = self.data
+        return cleaned_data
+
+    @staticmethod
+    def label_from_instance(obj):
+        return obj.id
+
+
+
 class CategoryChoiceField(forms.ModelMultipleChoiceField):
     def _get_choices(self):
         if hasattr(self, '_choices'):
@@ -111,174 +143,13 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
                                                               '<br/><strong>' + obj.gn_description + '</strong></span>'
 
 
-# NOTE: This is commented as it needs updating to work with select2 and autocomlete light.
-#
-# class TreeWidget(autocomplete.TaggitSelect2):
-#     input_type = 'text'
-
-#     def render(self, name, value, attrs=None):
-#         if isinstance(value, basestring):
-#             vals = value
-#         elif value:
-#             vals = ','.join([i.tag.name for i in value])
-#         else:
-#             vals = ""
-#         output = ["""<div class="keywords-container"><span class="input-group">
-#                 <input class="form-control"
-#                        id="id_resource-keywords"
-#                        name="resource-keywords"
-#                        value="%s"><br/>""" % (vals)]
-#         output.append(
-#             '<div id="treeview" class="" style="display: none"></div>')
-#         output.append(
-#             '<span class="input-group-addon" id="treeview-toggle"><i class="fa fa-folder"></i></span>')
-#         output.append('</span></div>')
-
-#         return mark_safe(u'\n'.join(output))
-
-
-class RegionsMultipleChoiceField(forms.MultipleChoiceField):
-
-    def validate(self, value):
-        """
-        Validates that the input is a list or tuple.
-        """
-        if self.required and not value:
-            raise forms.ValidationError(
-                self.error_messages['required'], code='required')
-
-
-class RegionsSelect(forms.Select):
-    allow_multiple_selected = True
-
-    def render(self, name, value, attrs=None, renderer=None):
-        if value is None:
-            value = []
-        final_attrs = self.build_attrs(attrs)
-        final_attrs["name"] = name
-        output = [
-            format_html(
-                '<select multiple="multiple"{}>',
-                flatatt(final_attrs))]
-        options = self.render_options(value)
-        if options:
-            output.append(options)
-        output.append('</select>')
-        return mark_safe('\n'.join(output))
-
-    def value_from_datadict(self, data, files, name):
-        try:
-            getter = data.getlist
-        except AttributeError:
-            getter = data.get
-        return getter(name)
-
-    def render_option_value(
-            self,
-            selected_choices,
-            option_value,
-            option_label,
-            data_section=None):
-        if option_value is None:
-            option_value = ''
-        option_value = force_text(option_value)
-        if option_value in selected_choices:
-            selected_html = mark_safe(' selected')
-            if not self.allow_multiple_selected:
-                # Only allow for a single selection.
-                selected_choices.remove(option_value)
-        else:
-            selected_html = ''
-
-        label = force_text(option_label)
-
-        if data_section is None:
-            data_section = ''
-        else:
-            data_section = force_text(data_section)
-            if '/' in data_section:
-                label = format_html(
-                    '{} [{}]', label, data_section.rsplit(
-                        '/', 1)[1])
-
-        return format_html(
-            '<option data-section="{}" value="{}"{}>{}</option>',
-            data_section,
-            option_value,
-            selected_html,
-            label)
-
-    def render_options(self, selected_choices):
-
-        # Normalize to strings.
-        def _region_id_from_choice(choice):
-            if isinstance(choice, int) or \
-                    (isinstance(choice, str) and choice.isdigit()):
-                return int(choice)
-            else:
-                return choice.id
-
-        selected_choices = set(force_text(_region_id_from_choice(v)) for v in selected_choices)
-        output = []
-
-        output.append(format_html('<optgroup label="{}">', 'Global'))
-        for option_value, option_label in self.choices:
-            if not isinstance(
-                    option_label, (list, tuple)) and isinstance(
-                        option_label, str):
-                output.append(
-                    self.render_option_value(
-                        selected_choices,
-                        option_value,
-                        option_label))
-        output.append('</optgroup>')
-
-        for option_value, option_label in self.choices:
-            if isinstance(
-                    option_label, (list, tuple)) and not isinstance(
-                        option_label, str):
-                output.append(
-                    format_html(
-                        '<optgroup label="{}">',
-                        force_text(option_value)))
-                for option in option_label:
-                    if isinstance(
-                            option, (list, tuple)) and not isinstance(
-                                option, str):
-                        if isinstance(
-                                option[1][0], (list, tuple)) and not isinstance(
-                                    option[1][0], str):
-                            for option_child in option[1][0]:
-                                output.append(
-                                    self.render_option_value(
-                                        selected_choices,
-                                        *option_child,
-                                        data_section=force_text(
-                                            option[1][0][0])))
-                        else:
-                            output.append(
-                                self.render_option_value(
-                                    selected_choices,
-                                    *option[1],
-                                    data_section=force_text(
-                                        option[0])))
-                    else:
-                        output.append(
-                            self.render_option_value(
-                                selected_choices,
-                                *option,
-                                data_section=force_text(option_value)))
-                output.append('</optgroup>')
-
-        return '\n'.join(output)
-
 
 class CategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
 
     category_choice_field = CategoryChoiceField(
-        required=False,
+        required=True,
         label='*' + _('Category'),
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
@@ -300,6 +171,7 @@ class CategoryForm(forms.Form):
         return obj.id
 
 
+
 class TKeywordForm(forms.ModelForm):
     prefix = 'tkeywords'
 
@@ -318,6 +190,7 @@ class TKeywordForm(forms.ModelForm):
         required=False,
         help_text=_("List of keywords from Thesaurus", ),
     )
+
 
 
 class ThesaurusAvailableForm(forms.Form):
@@ -477,13 +350,6 @@ class ResourceBaseForm(TranslationModelForm):
         queryset=Region.objects.all(),
         level_indicator=u'___')
     """
-    regions = RegionsMultipleChoiceField(
-        label=_("Regions"),
-        required=False,
-        choices=get_tree_data(),
-        widget=RegionsSelect)
-
-    regions.widget.attrs = {"size": 20}
 
     def __init__(self, *args, **kwargs):
         super(ResourceBaseForm, self).__init__(*args, **kwargs)

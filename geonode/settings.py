@@ -2085,11 +2085,10 @@ UI_DEFAULT_MANDATORY_FIELDS = [
     'id_resource-abstract',
     'id_resource-language',
     'id_resource-license',
-    'id_resource-regions',
+    'region_form',
     'id_resource-date_type',
     'id_resource-date',
     'category_form',
-    'id_resource-attribution',
     'id_resource-keywords',
     'id_resource-data_description',
     'id_resource-restriction_code_type'

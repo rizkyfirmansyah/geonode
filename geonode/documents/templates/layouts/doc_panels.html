@@ -86,7 +86,7 @@
                                   </div>
                                   <div class="col-lg-4">
                                       <div class="metadata_content">
-                                        <span><label for="{{ document_form.title|id }}">{{ document_form.title.label }}</label></span>
+                                        <span><label for="{{ document_form.title|id }}" class="control-label required-field">{{ document_form.title.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
                                         {{ document_form.title }}
                                       </div>
@@ -279,8 +279,18 @@
                                   {{ document_form.language }}
                               </div>
                               <div id="regions_multiselect_container" class="padding-right-sm">
-                                  <span><label for="{{ document_form.regions|id }}">{{ document_form.regions.label }}</label></span>
-                                  {{ document_form.regions }}
+                                  <span><label for="{{ document_form.regions|id }}" class="control-label required-field">Regions</label></span>
+                                  <select data-live-search="true" data-size="5" name="region_choice_field" id="region_form" class="selectpicker form-control" multiple>
+                                    <option {% if not region.initial %} selected="selected" {% endif %} value="">---</option>
+                                    {% for choice in region_form.region_choice_field.field.choices %}
+                                      <option
+                                        {% ifequal region_form.initial choice.0 %} selected="selected" {% endifequal %}
+                                        value="{{ choice.0 }}"
+                                        data-content="<span class='has-popover' data-container='body' data-toggle='popover' data-placement='top' data-content=' {{ choice.2.name }}' rigger='hover'> {{ choice.2.name }}<span>"
+                                        >{{ choice.2.name }}
+                                      </option>
+                                    {% endfor %}
+                                  </select>
                               </div>
                           </div>
                           <div class="col-lg-4">
@@ -356,27 +366,4 @@
     </div>
   </div>
 
-  {% autoescape off %}
-  <script type="text/javascript">
-
-    $(function() {
-      function containsEmpty(a) {
-        return [].concat(a).sort().reverse().pop() === "";
-      };
-      $("#category_form").change(function() {
-        var list_picking = $(this).val();
-        if (containsEmpty(list_picking)) {
-          $("#category_form option:selected").prop("selected", false);
-        }
-        $("#category_form").selectpicker('refresh');
-      });
-
-      var selected_category = {{ category_form.initial }};
-      $.each(selected_category, function(i,e) {
-          $("#category_form option[value=" + e + "]").prop("selected", true);
-      });
-    })
-
-  </script>
-  {% endautoescape %}
 {% endblock %}

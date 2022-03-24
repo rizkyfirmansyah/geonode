@@ -35,6 +35,7 @@ from django.views.generic.edit import UpdateView, CreateView
 from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
+from psutil import POSIX
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.decorators import check_keyword_write_perms
@@ -44,7 +45,7 @@ from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
 from geonode.base.auth import get_or_create_token
 from geonode.base.bbox_utils import BBOXHelper
-from geonode.base.forms import CategoryForm, TKeywordForm, ThesaurusAvailableForm
+from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.models import (
     Thesaurus)
 from geonode.documents.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
@@ -356,79 +357,70 @@ def document_metadata(
     poc = document.poc
     metadata_author = document.metadata_author
     topic_category = document.category.all()
+    regions = document.regions.all()
     current_keywords = [keyword.name for keyword in document.keywords.all()]
+    
 
-    if request.method == "POST":
-        document_form = DocumentForm(
-            request.POST,
-            instance=document,
-            prefix="resource")
-        category_form = CategoryForm(
-            request.POST,
-            prefix="category_choice_field",
-            initial=(
-                request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
-                request.POST.getlist("category_choice_field") else []))
+    document_form = DocumentForm(instance=document, prefix="resource")
+    document_form.disable_keywords_widget_for_non_superuser(request.user)
+    #  set initial values for category form
+    ids = list(c.id for c in topic_category)
+    category_form = CategoryForm(
+                prefix="category_choice_field",
+                initial=ids)
+    region_ids = list(c.id for c in regions)
+    region_form = RegionsForm(
+                prefix="region_choice_field",
+                initial=region_ids)
 
-        if hasattr(settings, 'THESAURUS'):
-            tkeywords_form = TKeywordForm(request.POST)
-        else:
-            tkeywords_form = ThesaurusAvailableForm(request.POST, prefix='tkeywords')
+    # Keywords from THESAURUS management
+    doc_tkeywords = document.tkeywords.all()
+    if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
+        warnings.warn('The settings for Thesaurus has been moved to Model, \
+        this feature will be removed in next releases', DeprecationWarning)
+        tkeywords_list = ''
+        lang = 'en'  # TODO: use user's language
+        if doc_tkeywords and len(doc_tkeywords) > 0:
+            tkeywords_ids = doc_tkeywords.values_list('id', flat=True)
+            if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
+                el = settings.THESAURUS
+                thesaurus_name = el['name']
+                try:
+                    t = Thesaurus.objects.get(identifier=thesaurus_name)
+                    for tk in t.thesaurus.filter(pk__in=tkeywords_ids):
+                        tkl = tk.keyword.filter(lang=lang)
+                        if len(tkl) > 0:
+                            tkl_ids = ",".join(
+                                map(str, tkl.values_list('id', flat=True)))
+                            tkeywords_list += "," + \
+                            tkl_ids if len(
+                                tkeywords_list) > 0 else tkl_ids
+                except Exception:
+                    tb = traceback.format_exc()
+                    logger.error(tb)
 
+        tkeywords_form = TKeywordForm(instance=document)
     else:
-        document_form = DocumentForm(instance=document, prefix="resource")
-        document_form.disable_keywords_widget_for_non_superuser(request.user)
-        #  set initial values for category form
-        ids = list(c.id for c in topic_category)
-        category_form = CategoryForm(
-                    prefix="category_choice_field",
-                    initial=ids)
-
-        # Keywords from THESAURUS management
-        doc_tkeywords = document.tkeywords.all()
-        if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
-            warnings.warn('The settings for Thesaurus has been moved to Model, \
-            this feature will be removed in next releases', DeprecationWarning)
-            tkeywords_list = ''
-            lang = 'en'  # TODO: use user's language
-            if doc_tkeywords and len(doc_tkeywords) > 0:
-                tkeywords_ids = doc_tkeywords.values_list('id', flat=True)
-                if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
-                    el = settings.THESAURUS
-                    thesaurus_name = el['name']
-                    try:
-                        t = Thesaurus.objects.get(identifier=thesaurus_name)
-                        for tk in t.thesaurus.filter(pk__in=tkeywords_ids):
-                            tkl = tk.keyword.filter(lang=lang)
-                            if len(tkl) > 0:
-                                tkl_ids = ",".join(
-                                    map(str, tkl.values_list('id', flat=True)))
-                                tkeywords_list += "," + \
-                                tkl_ids if len(
-                                    tkeywords_list) > 0 else tkl_ids
-                    except Exception:
-                        tb = traceback.format_exc()
-                        logger.error(tb)
-
-            tkeywords_form = TKeywordForm(instance=document)
-        else:
-            tkeywords_form = ThesaurusAvailableForm(prefix='tkeywords')
-            #  set initial values for thesaurus form
-            for tid in tkeywords_form.fields:
-                values = []
-                values = [keyword.id for keyword in doc_tkeywords if int(tid) == keyword.thesaurus.id]
-                tkeywords_form.fields[tid].initial = values
+        tkeywords_form = ThesaurusAvailableForm(prefix='tkeywords')
+        #  set initial values for thesaurus form
+        for tid in tkeywords_form.fields:
+            values = []
+            values = [keyword.id for keyword in doc_tkeywords if int(tid) == keyword.thesaurus.id]
+            tkeywords_form.fields[tid].initial = values
 
     if request.method == "POST" and document_form.is_valid(
     ) and category_form.is_valid() and tkeywords_form.is_valid():
         new_poc = document_form.cleaned_data['poc']
+        print("valid?")
         new_author = document_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else document_form.cleaned_data['keywords']
-        new_regions = document_form.cleaned_data['regions']
+        new_regions = (
+            request.POST.getlist("region_choice_field") if "region_choice_field" in request.POST or
+            request.POST.getlist("region_choice_field") else [])
         new_categories = (
             request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
             request.POST.getlist("category_choice_field") else [])
-
+        print(category_form)
         if new_poc is None:
             if poc is None:
                 poc_form = ProfileForm(
@@ -467,6 +459,8 @@ def document_metadata(
         if new_poc is not None and new_author is not None:
             document.poc = new_poc
             document.metadata_author = new_author
+        print(new_regions)
+        print(new_categories)
         document.keywords.clear()
         document.keywords.add(*new_keywords)
         document.regions.clear()
@@ -477,13 +471,13 @@ def document_metadata(
         document_form.save_many2many()
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, document)
-        if not ajax:
-            return HttpResponseRedirect(
-                reverse(
-                    'document_detail',
-                    args=(
-                        document.id,
-                    )))
+        # if not ajax:
+        #     return HttpResponseRedirect(
+        #         reverse(
+        #             'document_detail',
+        #             args=(
+        #                 document.id,
+        #             )))
         message = document.id
 
         try:
@@ -553,6 +547,7 @@ def document_metadata(
                     {'disabled': 'true'})
 
     register_event(request, EventType.EVENT_VIEW_METADATA, document)
+    
     return render(request, template, context={
         "resource": document,
         "document": document,
@@ -560,6 +555,7 @@ def document_metadata(
         "poc_form": poc_form,
         "author_form": author_form,
         "category_form": category_form,
+        "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
