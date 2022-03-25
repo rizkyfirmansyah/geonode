@@ -189,6 +189,8 @@
     function containsEmpty(a) {
         return [].concat(a).sort().reverse().pop() === "";
     };
+    var removeTotal = 0;
+    var addedTotal = 0;
 
     var warningMessage = function(el) {
         var mandatoryWarning = "<p class='xxs-font-size mandatory-warning'><strong>* Field declared Mandatory by the Metadata Schema</strong></p>"
@@ -197,17 +199,47 @@
             $(el).toggleClass("input-empty", empty); 
         };
 
+        const toggleTinyMCE = () => {
+            let id = $(el)[0].id;
+            let _this = "#"+id;
+            var content = tinymce.get(id).save().replace(/(<p>)*/g, "").replace(/<(\/)?p[^>]*>/g, "");
+
+            if (content.trim()) {
+                $(_this).parent().find(".mandatory-warning").remove();
+                if (removeTotal === 0) {
+                    totalNum--, empty--, removeTotal++
+                    console.log("berapa sih ", removeTotal)
+                }
+            } else {
+                $(_this).parent().append(mandatoryWarning);
+                if (addedTotal === 0) {
+                    totalNum++, empty++, addedTotal++
+                    console.log("berapa sih ", removeTotal)
+                }
+            }
+        }
+
         const toggleWarningOthers = (fire=true) => {
             $(el).parent().find(".mandatory-warning").remove();
             if (fire) {
                 if ($(el).hasClass("input-empty")) {
                     totalNum--, empty--
                 };
+                // handle toggle for tinymce textarea
+                if (typeof $(el).attr("class") === 'undefined') {
+                    toggleTinyMCE();
+                }
             };
         };
+
         const appendWarning = (fire=true) => {
             $(el).parent().append(mandatoryWarning);
-            if (fire) empty++, totalNum++
+            // handler for tinymce
+            if (typeof $(el).attr("class") === 'undefined') {
+                toggleTinyMCE()
+            } else {
+                if (fire) empty++, totalNum++
+            }
         };
         const toggleWarningBootstrap = () => {
             $(el).parent().parent().find(".mandatory-warning").remove();
@@ -624,7 +656,6 @@
                 $.ajax({
                     url: "metadata",
                     type: "POST",
-                    dataType: "JSON",
                     data: $.param(formData)
                 }).done(function(data){
                     // Do something more fancy with your response
