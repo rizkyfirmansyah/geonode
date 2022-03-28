@@ -203,18 +203,15 @@
             let id = $(el)[0].id;
             let _this = "#"+id;
             var content = tinymce.get(id).save().replace(/(<p>)*/g, "").replace(/<(\/)?p[^>]*>/g, "");
-
-            if (content.trim()) {
+            if (content.trim() !== "") {
                 $(_this).parent().find(".mandatory-warning").remove();
-                if (removeTotal === 0) {
+                if (removeTotal === 0 && content.trim().length == 1) {
                     totalNum--, empty--, removeTotal++
-                    console.log("berapa sih ", removeTotal)
                 }
             } else {
                 $(_this).parent().append(mandatoryWarning);
                 if (addedTotal === 0) {
                     totalNum++, empty++, addedTotal++
-                    console.log("berapa sih ", removeTotal)
                 }
             }
         }
@@ -360,7 +357,7 @@
 
         var selected_region = {{ region_form.initial }}
         $.each(selected_region, function(i,e) {
-            $("#selected_region option[value=" + e + "]").prop("selected", true);
+            $("#region_form option[value=" + e + "]").prop("selected", true);
         });
 
         $('#edit-metadata :input').each(function(){
@@ -445,6 +442,11 @@
             html: true,
             animation: true,
             content: tooltipContent
+        });
+
+        $("#id_resource-links").select2({
+            placeholder: "Select an option",
+            allowClear: true
         });
 
         $('.modal-forms').css('max-height', '500px').css('overflow-y', 'scroll');
@@ -651,8 +653,7 @@
                         console.log(err);
                     }
                 });
-                console.log($.param(formData));
-                console.log(formData);
+
                 $.ajax({
                     url: "metadata",
                     type: "POST",
@@ -672,8 +673,6 @@
                     }
                     metadata_update_done = true;
                 }).fail(function(xhr, status, error) {
-                    console.log(xhr);
-                    console.log(error);
                     // error handling
                     try {
                         if(xhr.responseJSON && xhr.responseJSON['errors']) {

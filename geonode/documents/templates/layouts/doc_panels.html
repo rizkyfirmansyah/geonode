@@ -281,7 +281,7 @@
                               <div id="regions_multiselect_container" class="padding-right-sm">
                                   <span><label for="{{ document_form.regions|id }}" class="control-label required-field">Regions</label></span>
                                   <select data-live-search="true" data-size="5" name="region_choice_field" id="region_form" class="selectpicker form-control" multiple>
-                                    <option {% if not region.initial %} selected="selected" {% endif %} value="">---</option>
+                                    <option {% if not region_form.initial %} selected="selected" {% endif %} value="">---</option>
                                     {% for choice in region_form.region_choice_field.field.choices %}
                                       <option
                                         {% ifequal region_form.initial choice.0 %} selected="selected" {% endifequal %}

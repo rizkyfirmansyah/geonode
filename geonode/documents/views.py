@@ -21,6 +21,7 @@ import json
 import logging
 import traceback
 from itertools import chain
+from unicodedata import category
 import warnings
 
 from guardian.shortcuts import get_objects_for_user
@@ -355,7 +356,6 @@ def document_metadata(
     poc = document.poc
     metadata_author = document.metadata_author
     topic_category = document.category.all()
-    current_keywords = [keyword.name for keyword in document.keywords.all()]
 
     if request.method == "POST":
         document_form = DocumentForm(
@@ -378,6 +378,92 @@ def document_metadata(
         else:
             tkeywords_form = ThesaurusAvailableForm(request.POST, prefix='tkeywords')
 
+        if document_form.is_valid() and tkeywords_form.is_valid():
+            new_poc = document_form.cleaned_data['poc']
+            new_author = document_form.cleaned_data['metadata_author']
+            new_keywords = document_form.cleaned_data['keywords']
+            new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
+            new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
+
+            if new_poc is None:
+                if poc is None:
+                    poc_form = ProfileForm(
+                        request.POST,
+                        prefix="poc",
+                        instance=poc)
+                else:
+                    poc_form = ProfileForm(request.POST, prefix="poc")
+                if poc_form.is_valid():
+                    if len(request.POST['profile']) == 0:
+                        # FIXME use form.add_error in django > 1.7
+                        errors = poc_form._errors.setdefault(
+                            'profile', ErrorList())
+                        errors.append(
+                            _('You must set a point of contact for this resource'))
+                if poc_form.has_changed and poc_form.is_valid():
+                    new_poc = poc_form.save()
+
+            if new_author is None:
+                if metadata_author is None:
+                    author_form = ProfileForm(request.POST, prefix="author",
+                                            instance=metadata_author)
+                else:
+                    author_form = ProfileForm(request.POST, prefix="author")
+                if author_form.is_valid():
+                    if len(request.POST['profile']) == 0:
+                        # FIXME use form.add_error in django > 1.7
+                        errors = author_form._errors.setdefault(
+                            'profile', ErrorList())
+                        errors.append(
+                            _('You must set an author for this resource'))
+                if author_form.has_changed and author_form.is_valid():
+                    new_author = author_form.save()
+
+            document = document_form.instance
+            if new_poc is not None and new_author is not None:
+                document.poc = new_poc
+                document.metadata_author = new_author
+            document.keywords.clear()
+            document.keywords.add(*new_keywords)
+            document.regions.clear()
+            document.regions.add(*new_regions)
+            document.category.clear()
+            document.category.add(*new_categories)
+            document.save(notify=True)
+            document_form.save_many2many()
+
+            register_event(request, EventType.EVENT_CHANGE_METADATA, document)
+            if not ajax:
+                return HttpResponseRedirect(
+                    reverse(
+                        'document_detail',
+                        args=(
+                            document.id,
+                        )))
+
+            try:
+                # Keywords from THESAURUS management
+                # Rewritten to work with updated autocomplete
+                if not tkeywords_form.is_valid():
+                    return HttpResponse(json.dumps({'message': "Invalid thesaurus keywords"}, status_code=400))
+
+                thesaurus_setting = getattr(settings, 'THESAURUS', None)
+                if thesaurus_setting:
+                    tkeywords_data = tkeywords_form.cleaned_data['tkeywords']
+                    tkeywords_data = tkeywords_data.filter(
+                        thesaurus__identifier=thesaurus_setting['name']
+                    )
+                    document.tkeywords.set(tkeywords_data)
+                elif Thesaurus.objects.all().exists():
+                    fields = tkeywords_form.cleaned_data
+                    document.tkeywords.set(tkeywords_form.cleanx(fields))
+
+            except Exception:
+                tb = traceback.format_exc()
+                logger.error(tb)
+
+            return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
+
     else:
         document_form = DocumentForm(instance=document, prefix="resource")
         document_form.disable_keywords_widget_for_non_superuser(request.user)
@@ -389,8 +475,7 @@ def document_metadata(
                     initial=ids)
         region_form = RegionsForm(
                     prefix="region_choice_field",
-                    initial=region_list
-        )
+                    initial=region_list)
 
         # Keywords from THESAURUS management
         doc_tkeywords = document.tkeywords.all()
@@ -426,96 +511,6 @@ def document_metadata(
                 values = []
                 values = [keyword.id for keyword in doc_tkeywords if int(tid) == keyword.thesaurus.id]
                 tkeywords_form.fields[tid].initial = values
-
-    if request.method == "POST" and document_form.is_valid(
-    ) and category_form.is_valid() and tkeywords_form.is_valid() and region_form.is_valid():
-        new_poc = document_form.cleaned_data['poc']
-        new_author = document_form.cleaned_data['metadata_author']
-        new_keywords = current_keywords if request.keyword_readonly else document_form.cleaned_data['keywords']
-        new_regions = document_form.cleaned_data['regions']
-        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
-
-        if new_poc is None:
-            if poc is None:
-                poc_form = ProfileForm(
-                    request.POST,
-                    prefix="poc",
-                    instance=poc)
-            else:
-                poc_form = ProfileForm(request.POST, prefix="poc")
-            if poc_form.is_valid():
-                if len(poc_form.cleaned_data['profile']) == 0:
-                    # FIXME use form.add_error in django > 1.7
-                    errors = poc_form._errors.setdefault(
-                        'profile', ErrorList())
-                    errors.append(
-                        _('You must set a point of contact for this resource'))
-            if poc_form.has_changed and poc_form.is_valid():
-                new_poc = poc_form.save()
-
-        if new_author is None:
-            if metadata_author is None:
-                author_form = ProfileForm(request.POST, prefix="author",
-                                          instance=metadata_author)
-            else:
-                author_form = ProfileForm(request.POST, prefix="author")
-            if author_form.is_valid():
-                if len(author_form.cleaned_data['profile']) == 0:
-                    # FIXME use form.add_error in django > 1.7
-                    errors = author_form._errors.setdefault(
-                        'profile', ErrorList())
-                    errors.append(
-                        _('You must set an author for this resource'))
-            if author_form.has_changed and author_form.is_valid():
-                new_author = author_form.save()
-
-        document = document_form.instance
-        if new_poc is not None and new_author is not None:
-            document.poc = new_poc
-            document.metadata_author = new_author
-        document.keywords.clear()
-        document.keywords.add(*new_keywords)
-        document.regions.clear()
-        document.regions.add(*new_regions)
-        document.category.clear()
-        document.category.add(*new_categories)
-        document.save(notify=True)
-        document_form.save_many2many()
-
-        register_event(request, EventType.EVENT_CHANGE_METADATA, document)
-        if not ajax:
-            return HttpResponseRedirect(
-                reverse(
-                    'document_detail',
-                    args=(
-                        document.id,
-                    )))
-        message = document.id
-
-        try:
-            # Keywords from THESAURUS management
-            # Rewritten to work with updated autocomplete
-            if not tkeywords_form.is_valid():
-                return HttpResponse(json.dumps({'message': "Invalid thesaurus keywords"}, status_code=400))
-
-            thesaurus_setting = getattr(settings, 'THESAURUS', None)
-            if thesaurus_setting:
-                tkeywords_data = tkeywords_form.cleaned_data['tkeywords']
-                tkeywords_data = tkeywords_data.filter(
-                    thesaurus__identifier=thesaurus_setting['name']
-                )
-                document.tkeywords.set(tkeywords_data)
-            elif Thesaurus.objects.all().exists():
-                fields = tkeywords_form.cleaned_data
-                document.tkeywords.set(tkeywords_form.cleanx(fields))
-
-        except Exception:
-            tb = traceback.format_exc()
-            logger.error(tb)
-
-        return HttpResponse(json.dumps({'message': message}))
-
-    # - POST Request Ends here -
 
     # Request.GET
     if poc is not None:
