@@ -123,9 +123,7 @@
 
     <ul class="list-group">
       <li class="list-group-item">
-        <a href="{% url "document_metadata_detail" resource.id %}">
-          <button class="btn btn-primary btn-md btn-block">{% trans "Metadata Detail" %}</button>
-        </a>
+        <a class="btn btn-primary btn-md btn-block" href="{% url "document_metadata_detail" resource.id %}">{% trans "Metadata Detail" %}</a>
       </li>
       <li class="list-group-item">
         {% if "download_resourcebase" in perms_list %}
