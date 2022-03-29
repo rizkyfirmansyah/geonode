@@ -312,10 +312,10 @@
               <div class="tabbable">
                 <ul class="nav nav-tabs">
                   {% if links %}
-                  <li class="active"><a href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
+                  <li class="active"><a class="btn btn-light btn-block" href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
                   {% endif %}
                   {% if links_download %}
-                  <li><a href="#download_tab2" data-toggle="tab">{% trans "Data" %}</a></li>
+                  <li><a class="btn btn-light btn-block" href="#download_tab2" data-toggle="tab">{% trans "Data" %}</a></li>
                   {% endif %}
                 </ul>
                 <div class="tab-content">
@@ -324,7 +324,7 @@
                     <li class="active">
                       <ul>
                         {% for link in links %}
-                        <li><a href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
+                        <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
                         {% endfor %}
                       </ul>
                     </li>
@@ -342,7 +342,7 @@
                       <!-- DOWNLOAD FILTER - START -->
 
                       {% if layer_type == "vector" %}
-                      <button type="button" id="button-toggle" class="btn btn-primary btn-circle" data-toggle="button"
+                      <button type="button" id="button-toggle" class="btn-light btn-circle" data-toggle="button"
                         data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
                         {% trans "Do you want to filter it?" %}
                       </button>
@@ -440,7 +440,7 @@
                           </div>
                           <label style="font-weight: normal;">{% trans "Feature limit" %}: </label>
                           <input type="text" id="max_features" name="filter" />
-                          <a href='#' id="clear_filter" style="float:right;">{% trans "Clear" %}</a> </br>
+                          <a href='#' id="clear_filter" class="btn btn-light btn-block">{% trans "Clear" %}</a> </br>
                         </div>
                         <hr id="hr_filter_layer" />
                       </div>
@@ -525,10 +525,10 @@
                     {% trans "Full metadata" %}
                   </h5>
                   <ul>
-                    <li><a target="_blank"
+                    <li><a class="btn btn-light btn-block" target="_blank"
                         href="{% url 'csw_render_extra_format_txt'  resource.uuid resource.title|slugify %}">
                         {% trans "Text format" %} </a></li>
-                    <li><a target="_blank"
+                    <li><a class="btn btn-light btn-block" target="_blank"
                         href="{% url 'csw_render_extra_format_html' resource.uuid resource.title|slugify %}">
                         {% trans "HTML format" %} </a></li>
                   </ul>
@@ -539,14 +539,14 @@
                   </h5>
                   <ul>
                     {% for link in metadata %}
-                    <li><a href="{{ link.url }}" target="_blank">{{ link.name }}</a></li>
+                    <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank">{{ link.name }}</a></li>
                     {% endfor %}
                     <ul>
                 </div>
                 {% if resource.storeType == 'dataStore' %}
                 <h5 class="modal-title text-center" id="myModalLabel">{% trans "Attribute Information" %}</h5>
                 <ul>
-                  <li><a href="{{ resource.get_absolute_url }}/feature_catalogue"
+                  <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
                       target="_blank">{% trans "ISO Feature Catalogue" %}</a></li>
                   <ul>
                     {% endif %}
@@ -803,8 +803,8 @@
 
   // on first click create an array & save initial URLs
   enable_filter_style = {
-    "background-color": "#a7a3a3",
-    "border-color": "#a7a3a3"
+    "background-color": "#1c4742",
+    "border-color": "#1c4742"
   };
   $("#button-toggle").one("click", function () {
     query = [];

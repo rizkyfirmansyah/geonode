@@ -4849,7 +4849,7 @@ html {
 }
 
 #max_features {
-    width: auto;
+    width: 100%;
 }
 
 .fa-remove {
