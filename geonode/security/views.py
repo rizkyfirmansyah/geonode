@@ -473,6 +473,7 @@ def request_permissions(request):
             message = f'{requester_name} has requested to download the resource {resource_title}. Reason for the request: {purposes}. To allow his/her download the resource, please go to {absolute_url}. Under the permissions setting, change data and assign download to {requester_username}.'
             thread = Thread.objects.create(subject=subject)
             thread.userthread_set.create(user=resource_owner, unread=True)
+            thread.userthread_set.create(user=request.user, unread=False)
             Message.objects.create(
                 sender=request.user,
                 thread=thread,
