@@ -1649,7 +1649,7 @@ mark,
 }
 
 .text-nowrap {
-    white-space: nowrap;
+    white-space: nowrap !important;
 }
 
 .text-lowercase {
@@ -4080,7 +4080,7 @@ fieldset[disabled] .btn-warning.focus {
 .btn-light {
     color: #212529;
     background-color: #f8f9fa;
-    border-color: #f8f9fa;
+    border-color: #e3e3e3;
 }
 
 .btn-light:focus,

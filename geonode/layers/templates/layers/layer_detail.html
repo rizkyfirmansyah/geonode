@@ -342,7 +342,7 @@
                       <!-- DOWNLOAD FILTER - START -->
 
                       {% if layer_type == "vector" %}
-                      <button type="button" id="button-toggle" class="btn-light btn-circle" data-toggle="button"
+                      <button type="button" id="button-toggle" class="btn btn-light btn-circle text-nowrap" data-toggle="button"
                         data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
                         {% trans "Do you want to filter it?" %}
                       </button>
@@ -424,8 +424,8 @@
                                 </div>
                               </div>
                             </div>
-                            <select class="form-control js-data-array" style="position:static;" id="single_value"
-                              placeholder="" data-toggle="tooltip" title=""></select>
+                            <select class="form-control js-data-array" id="single_value"
+                              placeholder="Input your query here" data-toggle="tooltip" title="Query"></select>
                             <div class="input-group-btn" id="button_query">
                               <a href="#" id="query_part" class="btn btn-primary btn-mg" data-toggle="modal"
                                 data-target="#myModal" title=""><span class="glyphicon glyphicon-plus"></span></a>
@@ -440,7 +440,7 @@
                           </div>
                           <label style="font-weight: normal;">{% trans "Feature limit" %}: </label>
                           <input type="text" id="max_features" name="filter" />
-                          <a href='#' id="clear_filter" class="btn btn-light btn-block">{% trans "Clear" %}</a> </br>
+                          <a href='#' id="clear_filter" class="btn btn-light btn-block m-space">{% trans "Clear" %}</a> </br>
                         </div>
                         <hr id="hr_filter_layer" />
                       </div>
@@ -453,14 +453,14 @@
                         {% if link.name == 'Original Dataset' %}
                         {% original_link_available resource.id link.url as original_dwn_link_available %}
                         {% if original_dwn_link_available %}
-                        <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
+                        <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
                             class="urls">{% trans link.name %}</a></li>
                         {% else %}
                         <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
                         <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
                         {% endif %}
                         {% else %}
-                        <li><a href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
+                        <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
                             class="urls">{% trans link.name %}</a></li>
                         {% endif %}
                         {% endfor %}
