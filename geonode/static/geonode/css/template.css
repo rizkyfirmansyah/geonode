@@ -7293,6 +7293,12 @@ form textarea[name=content] {
     margin-right: .8rem;
 }
 
+#preview,
+#preview_encoder_iframe {
+    height: 4500px;
+    width: 100%;
+}
+
 #layer-attributes-panel {
     margin-top: 2rem;
 }
