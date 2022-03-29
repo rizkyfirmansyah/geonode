@@ -938,18 +938,6 @@ def layer_metadata(
                 request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
                 request.POST.getlist("category_choice_field") else []))
 
-        if not category_form.is_valid():
-            logger.error(f"Layer Category form is not valid: {category_form.errors}")
-            out = {
-                'success': False,
-                'errors': [
-                    re.sub(re.compile('<.*?>'), '', str(err)) for err in category_form.errors]
-            }
-            return HttpResponse(
-                json.dumps(out),
-                content_type='application/json',
-                status=400)
-
         region_form = RegionsForm(request.POST, prefix="region_choice_field",
             initial=(
                 request.POST.getlist("region_choice_field") if "region_choice_field" in request.POST or

@@ -225,11 +225,11 @@
                 if ($(el).hasClass("input-empty")) {
                     totalNum--, empty--
                 };
+                let attr = $(el).attr("class");
                 // handle toggle for tinymce textarea
-                if (typeof $(el).attr("class") === 'undefined') {
+                if (typeof attr === 'undefined') {
                     toggleTinyMCE();
-                }
-                if ($(el).attr("class").includes("select2")) {
+                } else if (attr.includes("select2")) {
                     $(el).next().removeClass("input-empty");
                 }
             };
@@ -237,14 +237,15 @@
 
         const appendWarning = (fire=true) => {
             $(el).parent().append(mandatoryWarning);
+            let attr = $(el).attr("class");
             // handler for tinymce
-            if (typeof $(el).attr("class") === 'undefined') {
+            if (typeof attr === 'undefined') {
                 toggleTinyMCE()
             } else {
+                if (attr.includes("select2")) {
+                    $(el).next().addClass("input-empty");
+                }
                 if (fire) empty++, totalNum++
-            }
-            if ($(el).attr("class").includes("select2")) {
-                $(el).next().addClass("input-empty");
             }
         };
         const toggleWarningBootstrap = () => {
