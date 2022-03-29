@@ -1136,6 +1136,7 @@ ul {
 
 ul li {
     padding-left: .4rem;
+    list-style-type: none;
 }
 
 ul ul,
