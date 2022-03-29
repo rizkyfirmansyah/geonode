@@ -95,7 +95,6 @@ class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def _get_choices(self):
         if hasattr(self, '_choices'):
             return self._choices
-
         return AdvancedModelChoiceIterator(self)
 
     choices = property(_get_choices, MultipleChoiceField._set_choices)
@@ -174,7 +173,6 @@ class CategoryForm(forms.Form):
 
 class TKeywordForm(forms.ModelForm):
     prefix = 'tkeywords'
-
     class Meta:
         model = Document
         fields = ['tkeywords']

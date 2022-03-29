@@ -60,7 +60,7 @@ from geonode import geoserver
 from geonode.base.auth import get_or_create_token
 from geonode.layers.metadata import parse_metadata
 from geonode.upload.upload import _update_layer_with_xml_info
-from geonode.base.forms import CategoryForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
+from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
 from geonode.base.views import batch_modify, get_url_for_model
 from geonode.base.models import (
     Thesaurus,
@@ -949,6 +949,12 @@ def layer_metadata(
                 json.dumps(out),
                 content_type='application/json',
                 status=400)
+
+        region_form = RegionsForm(request.POST, prefix="region_choice_field",
+            initial=(
+                request.POST.getlist("region_choice_field") if "region_choice_field" in request.POST or
+                request.POST.getlist("region_choice_field") else []))
+
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
         else:
@@ -977,6 +983,10 @@ def layer_metadata(
         category_form = CategoryForm(
                     prefix="category_choice_field",
                     initial=ids)
+        region_list = list(r.id for r in layer.regions.all())
+        region_form = RegionsForm(
+            prefix="region_choice_field",
+            initial=region_list)
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
@@ -1068,7 +1078,7 @@ def layer_metadata(
                 layer.metadata_author = new_author
 
         new_keywords = current_keywords if request.keyword_readonly else layer_form.cleaned_data['keywords']
-        new_regions = [x.strip() for x in layer_form.cleaned_data['regions']]
+        new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
         new_categories = None
         if category_form and 'category_choice_field' in category_form.cleaned_data and category_form.cleaned_data['category_choice_field']:
             new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
@@ -1181,6 +1191,7 @@ def layer_metadata(
         "author_form": author_form,
         "attribute_form": attribute_form,
         "category_form": category_form,
+        "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "viewer": viewer,
         "preview": getattr(settings, 'GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore'),

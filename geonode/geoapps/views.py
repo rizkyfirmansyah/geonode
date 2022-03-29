@@ -43,7 +43,7 @@ from geonode.base import register_event
 from geonode.monitoring.models import EventType
 
 from geonode.people.forms import ProfileForm
-from geonode.base.forms import CategoryForm, TKeywordForm, ThesaurusAvailableForm
+from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 
 from geonode.base.models import (
     Thesaurus,
@@ -338,6 +338,11 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
             request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
             request.POST["category_choice_field"] else None)
+        region_form = RegionsForm(request.POST, prefix="region_choice_field",
+            initial=(
+                request.POST.getlist("region_choice_field") if "region_choice_field" in request.POST or
+                request.POST.getlist("region_choice_field") else []
+                ))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -352,6 +357,10 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         category_form = CategoryForm(
             prefix="category_choice_field",
             initial=ids)
+        region_list = list(r.id for r in geoapp_obj.regions.all())
+        region_form = RegionsForm(
+            prefix="region_choice_field",
+            initial=region_list)
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
@@ -392,7 +401,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         new_poc = geoapp_form.cleaned_data['poc']
         new_author = geoapp_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else geoapp_form.cleaned_data['keywords']
-        new_regions = geoapp_form.cleaned_data['regions']
+        new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
         new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:
@@ -533,6 +542,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         "poc_form": poc_form,
         "author_form": author_form,
         "category_form": category_form,
+        "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "metadata_author_groups": metadata_author_groups,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
