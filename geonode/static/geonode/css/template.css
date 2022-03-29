@@ -7142,11 +7142,6 @@ article.tab-pane {
     background-color: #a23133 !important;
 }
 
-.tab-content {
-    border: 1px solid #c0c0c0 !important;
-    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
-}
-
 .tab-content article {
     padding-left: 1.3em;
 }
