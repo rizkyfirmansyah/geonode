@@ -593,7 +593,7 @@
         var stateUpdateDwn = 0;
         $('#btn_upd_md_dwn').click(function() {
             stateUpdateDwn++;
-            validateFormInput() ? $('#thxDialog').modal() : (stateUpdateDwn >=3 ? : (stateUpdate >= 3 ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : validateRequiredInput())
+            validateFormInput() ? $('#thxDialog').modal() : (stateUpdateDwn >=3 ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : validateRequiredInput())
         });
 
         var validateMetadataAdvanced = () => {
