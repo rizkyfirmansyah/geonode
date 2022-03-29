@@ -74,6 +74,17 @@
               "preventDuplicates": true
             }
           }
+        }).fail(function(xhr, status, error) {
+          // error handling
+          let msg = "Username or password is incorrect";
+          let title = "Login Error";
+          const $toast = toastr["error"](msg, title);
+          toastr.options = {
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true
+          }
         }).done(function() {
             setInterval('location.reload()', 1000); 
         });
