@@ -632,7 +632,7 @@
                 $('#preview_encoder_iframe')[0].style.width='100%';
                 $('#preview_encoder_iframe')[0].style.height='4500px';
                 metadata_preview = true;
-                $('#metadata_update').submit();
+                validateFormInput() ? $('#metadata_update').submit() : $('#error_mandatoryDialog').modal()
 
                 // buttons visibility
                 $('#btn_back_dwn').hide();
