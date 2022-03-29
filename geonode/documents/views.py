@@ -465,10 +465,10 @@ def document_metadata(
         document_form.disable_keywords_widget_for_non_superuser(request.user)
         #  set initial values for category form
         ids = list(c.id for c in topic_category)
-        region_list = list(r.id for r in document.regions.all())
         category_form = CategoryForm(
                     prefix="category_choice_field",
                     initial=ids)
+        region_list = list(r.id for r in document.regions.all())
         region_form = RegionsForm(
                     prefix="region_choice_field",
                     initial=region_list)

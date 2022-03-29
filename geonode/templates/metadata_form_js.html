@@ -691,6 +691,15 @@
                         }
                     }
                     metadata_update_done = true;
+                    let msg = "Metadata has been updated.";
+                    let title = "Success";
+                    const $toast = toastr["success"](msg, title);
+                    toastr.options = {
+                        "newestOnTop": false,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": true
+                    }
                 }).fail(function(xhr, status, error) {
                     // error handling
                     try {
