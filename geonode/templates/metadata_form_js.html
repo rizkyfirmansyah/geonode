@@ -625,21 +625,19 @@
             metadata_preview = false;
         });
        
-        
-        $('#preview_tab').on('show.bs.tab', function(e) {
+        const showPreview = () => {
             $('#preview_encoder_iframe')[0].style.width='100%';
             $('#preview_encoder_iframe')[0].style.height='4500px';
-            validateFormInput() ? $('#metadata_update').submit() : $('#error_mandatoryDialog').modal()
-            try {
-                metadata_preview = true;
-                // buttons visibility
-                $('#btn_back_dwn').hide();
-                $('#btn_next_dwn').hide();
-                $('#btn_upd_md_dwn').hide();
-            } catch(err) {
-                // Log error
-                console.log(err);
-            }
+            metadata_preview = true;
+            $('#metadata_update').submit();
+            // buttons visibility
+            $('#btn_back_dwn').hide();
+            $('#btn_next_dwn').hide();
+            $('#btn_upd_md_dwn').hide();
+        };
+
+        $('#preview_tab').on('show.bs.tab', function(e) {
+            validateFormInput() ? showPreview() : $('#error_mandatoryDialog').modal()
         });
         
         $('#settings_tab').on('show.bs.tab', function() {
@@ -674,6 +672,7 @@
                         console.log(err);
                     }
                 });
+
                 $.ajax({
                     url: "metadata",
                     type: "POST",
