@@ -1093,6 +1093,8 @@ def layer_metadata(
                         layer.service_typename,
                     )))
 
+        message = layer.alternate
+
         try:
             if not tkeywords_form.is_valid():
                 return HttpResponse(json.dumps({'message': "Invalid thesaurus keywords"}, status_code=400))
@@ -1114,7 +1116,7 @@ def layer_metadata(
 
         layer.save(notify=True)
 
-        return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
+        return HttpResponse(json.dumps({'message': message}))
 
     if settings.ADMIN_MODERATE_UPLOADS:
         if not request.user.is_superuser:
