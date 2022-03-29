@@ -4553,6 +4553,8 @@ footer #footer-language {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+    z-index: 100;
+    background-color: white;
 }
 
 
@@ -5499,6 +5501,7 @@ form#text-search-autocomplete .ac-results {
     margin-bottom: 0.5em;
     font-size: 1.2em;
     display: inline-block;
+    margin-top: 18px;
 }
 
 .fstChoiceRemove {
@@ -5556,8 +5559,8 @@ td>input {
 }
 
 .input-empty {
-    border-color: red;
-    border-style: double;
+    border-color: red !important;
+    border-style: double !important;
 }
 
 .fancy-checkbox input[type="radio"],

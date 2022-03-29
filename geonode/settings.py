@@ -2091,7 +2091,10 @@ UI_DEFAULT_MANDATORY_FIELDS = [
     'category_form',
     'id_resource-keywords',
     'id_resource-data_description',
-    'id_resource-restriction_code_type'
+    'id_resource-restriction_code_type',
+    'id_resource-metadata_author',
+    'id_resource-owner',
+    'id_resource-poc',
 ]
 UI_REQUIRED_FIELDS = ast.literal_eval(os.getenv('UI_REQUIRED_FIELDS ', '[]'))
 

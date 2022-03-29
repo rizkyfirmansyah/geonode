@@ -323,7 +323,7 @@ class ResourceBaseForm(TranslationModelForm):
     poc = forms.ModelChoiceField(
         empty_label=_("Person outside SDI (fill form)"),
         label=_("Point of Contact"),
-        required=False,
+        required=True,
         queryset=get_user_model().objects.exclude(
             username='AnonymousUser'),
         widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
@@ -331,7 +331,7 @@ class ResourceBaseForm(TranslationModelForm):
     metadata_author = forms.ModelChoiceField(
         empty_label=_("Person outside SDI (fill form)"),
         label=_("Metadata author"),
-        required=False,
+        required=True,
         queryset=get_user_model().objects.exclude(
             username='AnonymousUser'),
         widget=autocomplete.ModelSelect2(url='autocomplete_profile'))

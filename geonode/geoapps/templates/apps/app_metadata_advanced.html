@@ -40,7 +40,7 @@
           <div class="fixed-button">
             <p>
               <a href="." class="btn btn-default">{% trans "Return to GeoApp" %}</a>
-              <input id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
+              <input type="button" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
               <a href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
               class="btn btn-primary pull-right">{% trans "Explore Apps" %}</a>
             </p>

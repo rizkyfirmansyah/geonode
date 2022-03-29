@@ -209,10 +209,13 @@
                     totalNum--, empty--, removeTotal++
                 }
             } else {
-                $(_this).parent().append(mandatoryWarning);
+                $(_this).parent().append(mandatoryWarning)
                 if (addedTotal === 0) {
                     totalNum++, empty++, addedTotal++
                 }
+            }
+            if ($(_this).parent().find(".mandatory-warning").length > 1) {
+                $(_this).parent().find(".mandatory-warning").remove()
             }
         }
 
@@ -226,6 +229,9 @@
                 if (typeof $(el).attr("class") === 'undefined') {
                     toggleTinyMCE();
                 }
+                if ($(el).attr("class").includes("select2")) {
+                    $(el).next().removeClass("input-empty");
+                }
             };
         };
 
@@ -237,9 +243,16 @@
             } else {
                 if (fire) empty++, totalNum++
             }
+            if ($(el).attr("class").includes("select2")) {
+                $(el).next().addClass("input-empty");
+            }
         };
         const toggleWarningBootstrap = () => {
             $(el).parent().parent().find(".mandatory-warning").remove();
+            // bootstrap-select copies the select's classes, so it have to be removed
+            if ($(el).parent().hasClass("input-empty")) {
+                $(el).parent().removeClass("input-empty");
+            };
             empty--, totalNum--
         };
         const appendWarningBootstrap = () => {
@@ -384,6 +397,7 @@
                 e_target = e.target;
                 e_target_value = e.target.value;
             };
+
             if (!e_target_value) {
                 // validation check for empty or undefined value
                 if (isMandatoryField(this)) {
@@ -406,33 +420,27 @@
     {% endblock hints %}
     
     {% block trigger_onInputChange %}
-        // {{UI_REQUIRED_FIELDS}}.forEach(element => $('#' + element).change(onInputChange).change());
-
+        {{UI_MANDATORY_FIELDS}}.forEach(element => $('#' + element).change(onInputChange));
+    
         var selection = document.querySelector('select[name="resource-keywords"]');
         if (selection  !== null) {
             selection.onchange=onInputChange
-        }
-        
-        {{REQ_THESAURI}}.forEach(element => document.querySelector('select[name="'+ element + '"]').onchange=onInputChange);
-        
-        // workaround to trigger the change in advanced metadata editing
-        // otherwise will remain not-required untill a change on the item
-        for (item in {{REQ_THESAURI}}) {
-            $("#id_" + {{REQ_THESAURI}}[item]).trigger("change");
-        }
+        };
 
-        $('#mandatory').find(":input").each(function(){
-            $(this).change(onInputChange);
-        });
+        var ownerSelection = document.querySelector('select[name="resource-owner"]');
+        if (ownerSelection  !== null) {
+            ownerSelection.onchange=onInputChange
+        };
 
-        $('#mdinfo').find(":input:not(.value-select):not(.autocomplete)").each(function() {
-            $(this).change(onInputChange);
-        });
+        var pocSelection = document.querySelector('select[name="resource-poc"]');
+        if (pocSelection  !== null) {
+            pocSelection.onchange=onInputChange
+        };
 
-        $('#cdinfo').find(":input:not(.value-select):not(.autocomplete)").each(function() {
-            $(this).change(onInputChange);
-        });
-
+        var authorSelection = document.querySelector('select[name="resource-metadata_author"]');
+        if (authorSelection  !== null) {
+            authorSelection.onchange=onInputChange
+        };
 
     {% endblock trigger_onInputChange %}
 
@@ -564,10 +572,21 @@
         $('#btn_back_dwn').click(function(){getPrevTab()});
 
         $('#btn_next_up').click(function(){getNextTab()});
+
+        $('#metadata_update input[type="text"]').blur(function() {
+            if(!$(this).val()){
+                $(this).addClass("error");
+            } else{
+                $(this).removeClass("error");
+            }
+        });
+
         $('#btn_next_dwn').click(function(){getNextTab()});
 
+        var stateUpdate = 0;
         $('#btn_upd_md_up').click(function() {
-            validateMetadataAdvanced() ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : $('#error_mandatoryDialog').modal()
+            stateUpdate++;
+            validateMetadataAdvanced() ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : (stateUpdate >= 3 ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : $('#error_mandatoryDialog').modal())
         });
 
         $('#btn_upd_md_dwn').click(function() {
@@ -575,7 +594,7 @@
         });
 
         var validateMetadataAdvanced = () => {
-            var validateForm = $('#metadata_update').find('.input-empty').length > 0;
+            var validateForm = $('#metadata_update').find('.error').length > 0;
 
             return validateForm ? false : true
         };
@@ -653,7 +672,6 @@
                         console.log(err);
                     }
                 });
-
                 $.ajax({
                     url: "metadata",
                     type: "POST",

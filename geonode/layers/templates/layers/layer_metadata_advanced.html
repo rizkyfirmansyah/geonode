@@ -41,7 +41,7 @@
             <p>
               {% if not layer.metadata_uploaded_preserve %}
                 <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-default">{% trans "Return to Layer" %}</a>
-                <input id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
+                <input type="button" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
               {% endif %}
               <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Spatial Data" %}</a>
             </p>

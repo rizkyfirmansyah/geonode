@@ -1323,6 +1323,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             'date_type',
             'language',
             'license',
+            'owner',
             'regions',
             'title']
         if self.restriction_code_type == 'otherRestrictions':
