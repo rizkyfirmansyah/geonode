@@ -326,7 +326,6 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
     poc = geoapp_obj.poc
     metadata_author = geoapp_obj.metadata_author
     topic_category = geoapp_obj.category.all()
-    current_keywords = [keyword.name for keyword in geoapp_obj.keywords.all()]
 
     topic_thesaurus = geoapp_obj.tkeywords.all()
 
@@ -337,12 +336,11 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             prefix="resource")
         category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
             request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
-            request.POST["category_choice_field"] else None)
+            request.POST["category_choice_field"] else [])
         region_form = RegionsForm(request.POST, prefix="region_choice_field",
             initial=(
                 request.POST.getlist("region_choice_field") if "region_choice_field" in request.POST or
-                request.POST.getlist("region_choice_field") else []
-                ))
+                request.POST.getlist("region_choice_field") else []))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -396,11 +394,10 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
                 tkeywords_form.fields[tid].initial = values
 
     initial_thumb_url = geoapp_obj.thumbnail_url
-    if request.method == "POST" and geoapp_form.is_valid(
-    ) and category_form.is_valid() and tkeywords_form.is_valid():
+    if request.method == "POST" and geoapp_form.is_valid() and tkeywords_form.is_valid():
         new_poc = geoapp_form.cleaned_data['poc']
         new_author = geoapp_form.cleaned_data['metadata_author']
-        new_keywords = current_keywords if request.keyword_readonly else geoapp_form.cleaned_data['keywords']
+        new_keywords = geoapp_form.cleaned_data['keywords']
         new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
         new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
@@ -465,8 +462,6 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
                         geoapp_obj.id,
                     )))
 
-        message = geoapp_obj.id
-
         try:
             # Keywords from THESAURUS management
             # Rewritten to work with updated autocomplete
@@ -488,7 +483,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             tb = traceback.format_exc()
             logger.error(tb)
 
-        return HttpResponse(json.dumps({'message': message}))
+        return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
 
     # - POST Request Ends here -
 

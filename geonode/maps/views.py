@@ -60,7 +60,7 @@ from geonode.utils import (
     check_ogc_backend)
 from geonode.maps.forms import MapForm
 from geonode.security.views import _perms_info_json
-from geonode.base.forms import CategoryForm, TKeywordForm, ThesaurusAvailableForm
+from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.models import (
     Thesaurus,
     TopicCategory)
@@ -257,6 +257,10 @@ def map_metadata(
         category_form = CategoryForm(
                     prefix="category_choice_field",
                     initial=ids)
+        region_list = list(r.id for r in map_obj.regions.all())
+        region_form = RegionsForm(
+                    prefix="region_choice_field",
+                    initial=region_list)
 
         # Keywords from THESAURUS management
         map_tkeywords = map_obj.tkeywords.all()
@@ -301,14 +305,10 @@ def map_metadata(
         new_poc = map_form.cleaned_data['poc']
         new_author = map_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else map_form.cleaned_data['keywords']
-        new_regions = map_form.cleaned_data['regions']
+        new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
         new_title = map_form.cleaned_data['title']
         new_abstract = map_form.cleaned_data['abstract']
-
-        new_category = None
-        new_categories = None
-        if category_form and 'category_choice_field' in category_form.cleaned_data and category_form.cleaned_data['category_choice_field']:
-            new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
+        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:
             if poc is None:
@@ -339,8 +339,8 @@ def map_metadata(
         map_obj.keywords.add(*new_keywords)
         map_obj.regions.clear()
         map_obj.regions.add(*new_regions)
-        map_obj.category = new_category
         map_obj.category.clear()
+        map_obj.category.add(*new_categories)
         if new_categories:
             map_obj.category.add(*new_categories)
 
@@ -352,8 +352,6 @@ def map_metadata(
                     args=(
                         map_obj.id,
                     )))
-
-        message = map_obj.id
 
         try:
             # Keywords from THESAURUS management
@@ -378,7 +376,7 @@ def map_metadata(
 
         map_obj.save(notify=True)
 
-        return HttpResponse(json.dumps({'message': message}))
+        return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
 
     # - POST Request Ends here -
 
@@ -439,6 +437,7 @@ def map_metadata(
         "poc_form": poc_form,
         "author_form": author_form,
         "category_form": category_form,
+        "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "layers": layers,
         "preview": getattr(settings, 'GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore'),

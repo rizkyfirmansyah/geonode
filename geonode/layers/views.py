@@ -1010,7 +1010,7 @@ def layer_metadata(
                 tkeywords_form.fields[tid].initial = values
 
     if request.method == "POST" and layer_form.is_valid() and attribute_form.is_valid(
-    ) and category_form.is_valid() and tkeywords_form.is_valid():
+    ) and tkeywords_form.is_valid():
         new_poc = layer_form.cleaned_data['poc']
         new_author = layer_form.cleaned_data['metadata_author']
 
@@ -1065,11 +1065,9 @@ def layer_metadata(
             if new_author is not None:
                 layer.metadata_author = new_author
 
-        new_keywords = current_keywords if request.keyword_readonly else layer_form.cleaned_data['keywords']
+        new_keywords = layer_form.cleaned_data['keywords']
         new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
-        new_categories = None
-        if category_form and 'category_choice_field' in category_form.cleaned_data and category_form.cleaned_data['category_choice_field']:
-            new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
+        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         layer.keywords.clear()
         if new_keywords:
@@ -1095,8 +1093,6 @@ def layer_metadata(
                         layer.service_typename,
                     )))
 
-        message = layer.alternate
-
         try:
             if not tkeywords_form.is_valid():
                 return HttpResponse(json.dumps({'message': "Invalid thesaurus keywords"}, status_code=400))
@@ -1118,7 +1114,7 @@ def layer_metadata(
 
         layer.save(notify=True)
 
-        return HttpResponse(json.dumps({'message': message}))
+        return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
 
     if settings.ADMIN_MODERATE_UPLOADS:
         if not request.user.is_superuser:

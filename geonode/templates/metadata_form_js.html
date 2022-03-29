@@ -590,8 +590,10 @@
             validateMetadataAdvanced() ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : (stateUpdate >= 3 ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : $('#error_mandatoryDialog').modal())
         });
 
+        var stateUpdateDwn = 0;
         $('#btn_upd_md_dwn').click(function() {
-            validateFormInput() ? $('#thxDialog').modal() : validateRequiredInput()
+            stateUpdateDwn++;
+            validateFormInput() ? $('#thxDialog').modal() : (stateUpdateDwn >=3 ? : (stateUpdate >= 3 ? $('#btn_upd_md_done').css({'opacity': 100, 'width': '100px'}) : validateRequiredInput())
         });
 
         var validateMetadataAdvanced = () => {

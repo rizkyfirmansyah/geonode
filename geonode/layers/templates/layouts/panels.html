@@ -280,7 +280,7 @@
 									</div>
 								</div>
 								<div class="col-lg-6">
-									<div class="col-lg-6 padding-left-sm">
+									<div class="padding-left-sm">
 										<span><label
 												for="{{ layer_form.maintenance_frequency|id }}">{{ layer_form.maintenance_frequency.label }}</label></span>
 										<!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
@@ -330,36 +330,32 @@
 				<div class="panel-group">
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<div class="">
-								<div class="col-lg-6" class="padding-right-sm">
-									<div class="input-group date">
-										<span><label
-												for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
-										<!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
-										{{ layer_form.temporal_extent_start }}
-									</div>
-									<div class="input-group date">
-										<span><label
-												for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
-										<!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-										{{ layer_form.temporal_extent_end }}
-									</div>
+							<div class="col-lg-6" class="padding-right-sm">
+								<div class="input-group date">
+									<span><label
+											for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
+									<!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
+									{{ layer_form.temporal_extent_start }}
+								</div>
+								<div class="input-group date">
+									<span><label
+											for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
+									<!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
+									{{ layer_form.temporal_extent_end }}
 								</div>
 							</div>
-							<div class="">
-								<div class="col-lg-6" class="padding-left-sm">
-									<div>
-										<span><label
-												for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
-										<!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
-										{{ layer_form.spatial_representation_type }}
-									</div>
-									<div>
-										<span><label
-												for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
-										<!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
-										{{ layer_form.spatial_resolution }}
-									</div>
+							<div class="col-lg-6" class="padding-left-sm">
+								<div>
+									<span><label
+											for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
+									<!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
+									{{ layer_form.spatial_representation_type }}
+								</div>
+								<div>
+									<span><label
+											for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
+									<!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
+									{{ layer_form.spatial_resolution }}
 								</div>
 							</div>
 						</div>
@@ -379,8 +375,8 @@
 											data-content="specifies wether or not use a custom GetFeatureInfo template." data-placement="right"
 											data-container="body" data-html="true" data-toggle="toggle"
 											placeholder="specifies wether or not use a custom GetFeatureInfo template."
-											id="id_resource-use_featureinfo_custom_template"
-											{% if resource.use_featureinfo_custom_template %}checked{% endif %}>
+											id="id_resource-use_featureinfo_custom_template" />
+											{% if resource.use_featureinfo_custom_template %}checked{% endif %}
 										<div id="layer-attributes-panel">
 											{% if resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
 											{{ attribute_form.management_form }}
@@ -507,7 +503,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function (event) {
 			$('#id_resource-use_featureinfo_custom_template').on('change', function (event) {
