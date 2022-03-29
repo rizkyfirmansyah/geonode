@@ -627,19 +627,18 @@
        
         
         $('#preview_tab').on('show.bs.tab', function(e) {
-            $('#preview_pleaseWaitDialog').modal();
+            $('#preview_encoder_iframe')[0].style.width='100%';
+            $('#preview_encoder_iframe')[0].style.height='4500px';
+            validateFormInput() ? $('#metadata_update').submit() : $('#error_mandatoryDialog').modal()
             try {
-                $('#preview_encoder_iframe')[0].style.width='100%';
-                $('#preview_encoder_iframe')[0].style.height='4500px';
                 metadata_preview = true;
-                validateFormInput() ? $('#metadata_update').submit() : $('#error_mandatoryDialog').modal()
-
                 // buttons visibility
                 $('#btn_back_dwn').hide();
                 $('#btn_next_dwn').hide();
                 $('#btn_upd_md_dwn').hide();
             } catch(err) {
                 // Log error
+                console.log(err);
             }
         });
         
