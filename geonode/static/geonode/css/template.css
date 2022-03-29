@@ -7226,6 +7226,10 @@ span.icon.node-icon:before {
     color: white !important;
 }
 
+.query_builder .form-inline {
+    min-height: 90px;
+}
+
 .upload-progress-table {
     width: 95% !important;
 }

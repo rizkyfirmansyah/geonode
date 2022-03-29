@@ -480,9 +480,7 @@
         {% endif %}
 
         <li class="list-group-item">
-          <a href="{% url "layer_metadata_detail" resource.alternate %}">
-            <button class="btn btn-primary btn-md btn-block">{% trans "Metadata Detail" %}</button>
-          </a>
+          <a class="btn btn-primary btn-md btn-block" href="{% url "layer_metadata_detail" resource.alternate %}">{% trans "Metadata Detail" %}</a>
         </li>
         {% display_edit_request_button resource request.user perms_list as display_request_button %}
         {% if display_request_button %}
@@ -801,11 +799,6 @@
       $('#modal-button-' + id + ':first-child').text($(this).text());
     });
 
-  // on first click create an array & save initial URLs
-  enable_filter_style = {
-    "background-color": "#1c4742",
-    "border-color": "#1c4742"
-  };
   $("#button-toggle").one("click", function () {
     query = [];
     ajax_loaded = false;
@@ -932,7 +925,6 @@
     }
   });
 
-  $("#button-toggle").css(enable_filter_style);
   // change color of toggle button on click
   $("#button-toggle").click(function () {
     $(this).toggleClass("clicked");
@@ -994,7 +986,6 @@
         $('#tabContent, .query_builder_tab').show();
       }
     } else {
-      $("#button-toggle").css(enable_filter_style);
       $('#tabContent, .query_builder_tab').hide();
     }
     // clear filters
@@ -1003,7 +994,6 @@
       $('#max_features').val("");
       query = [];
       $("#button-toggle").removeClass("clicked");
-      $("#button-toggle").css(enable_filter_style);
       $('#tabContent, .query_builder_tab').hide();
     });
 
