@@ -3805,8 +3805,6 @@ html.no-csstransitions .home-content__main {
 
 #showcase {
     background-color: #1C463F;
-    position: relative;
-    height: 100vh;
 }
 
 #showcase .section-header.has-bottom-sep::before {
@@ -4792,10 +4790,27 @@ html {
     height: 100vh !important;
 }
 
-#datasets .row-datasets {
-    padding-top: 60px;
-    display: inline-block;
-    height: 70vh;
+@media (min-width: 1025px) {
+    #datasets .row-datasets {
+        padding-top: 60px;
+        display: inline-block;
+        height: 70vh;
+        min-width: 1200px;
+    }
+    #category_dataset {
+        height: 50%;
+        min-height: 50%;
+    }
+}
+
+@media (max-width: 600) {
+    #datasets .row-datasets {
+        display: inline-block;
+    }
+    #category_dataset {
+        clear: both;
+        left: 40%;
+    }
 }
 
 
