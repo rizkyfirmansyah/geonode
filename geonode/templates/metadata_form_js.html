@@ -40,7 +40,7 @@
       }
     };
 
-    var prevNum = 0, totalNum = 0;
+    var totalNum = 0;
     var empty = 0;
 
     function getTab(number) {
@@ -329,20 +329,17 @@
     };
 
     var updatePercentage = () => {
-
-        var perc = (1 / (totalNum + 1)) * 100;
+        const _mandatory = ui_mandatory_fields.length;
+        var perc = ( (_mandatory - totalNum) / _mandatory) * 100
             perc = isFinite(totalNum) ? perc : 100
         updateCompleteness(perc);
-
     };
 
     var isMandatoryField = function (el) {
         var is_mandatory = false;
-
         is_mandatory = ui_mandatory_fields.some(function(field) {
             return el.id == field;
-        })
-        
+        });
         return is_mandatory;
     };
 

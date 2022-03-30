@@ -5258,6 +5258,12 @@ form-inline {
     box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
 }
 
+#mdeditor_form,
+.content_block {
+    border: #c4bab7;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
+}
+
 .search-content ul input:focus,
 .search-content ul input:active {
     color: #a23133 !important;
@@ -7151,6 +7157,7 @@ article.tab-pane {
 .autofit_label {
     width: 100%;
     padding: 0 20px;
+    text-align: left;
 }
 
 #permissions_tab1 label {
