@@ -3528,20 +3528,21 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     margin-top: 30px;
 }
 
-.btn-search {
-    position: relative;
-    left: 0;
-    background: transparent;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    top: 7rem;
-}
-
-.btn-search>svg {
-    fill: #fff;
-    width: 48px;
-    height: 48px;
+@media (min-width: 1025px) {
+    .btn-search {
+        position: relative;
+        left: 0;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        top: 5rem;
+    }
+    .btn-search>svg {
+        fill: #fff;
+        width: 48px;
+        height: 48px;
+    }
 }
 
 .search-field form input {
@@ -3805,6 +3806,7 @@ html.no-csstransitions .home-content__main {
 
 #showcase {
     background-color: #1C463F;
+    min-height: 100vh;
 }
 
 #showcase .section-header.has-bottom-sep::before {
