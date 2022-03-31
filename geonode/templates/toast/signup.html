@@ -75,8 +75,8 @@
           },
           error: function(xhr, desc, err) {
             const res = JSON.parse(xhr.responseText);
-            const _pass = $('#id_password1').val();
-            const _pass2 = $('#id_password2').val();
+            const _pass = $('#id_password1_login').val();
+            const _pass2 = $('#id_password2_login').val();
             const _err = res.form.fields.email.errors[0];
   
             let title = "Register Error";
