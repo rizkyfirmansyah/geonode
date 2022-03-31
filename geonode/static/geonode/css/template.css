@@ -2438,6 +2438,11 @@ input::-moz-focus-inner {
     padding-top: .4rem;
 }
 
+.filter .nav {
+    max-height: 340px;
+    overflow-y: auto;
+}
+
 .nav {
     padding-left: 0;
     margin-bottom: 0;
@@ -5251,6 +5256,16 @@ form-inline {
 
 .search-content {
     padding-top: 1em;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: 0 0.5rem 1.25rem #ccc;
+    border: 1px solid #1c4742;
+}
+
+.faqHeader {
+    width: fit-content;
+    margin-top: 1.5em;
+    font-size: 2em;
 }
 
 .search-content ul {
@@ -5266,7 +5281,8 @@ form-inline {
     box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
 }
 
-.search-content ul input:not(:placeholder-shown) {
+.search-content ul input:not(:placeholder-shown),
+#region_search_input:focus {
     background-color: white !important;
     color: #a23133 !important;
 }
@@ -6253,6 +6269,8 @@ footer form {
 
 .selections {
     margin-top: 1em;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .comment {
@@ -6541,10 +6559,11 @@ nav.filter h4 {
     background: #1c4742;
     font-size: 14px;
     font-weight: 300;
-    padding: 10px 0;
+    padding: 10px;
     text-transform: uppercase;
     border-radius: 3px;
     margin-bottom: .4rem;
+    color: white !important;
 }
 
 nav.filter h4 a {
@@ -6555,12 +6574,13 @@ nav.filter h4 a.toggle {
     text-decoration: none;
 }
 
-nav.filter h4 i {
-    margin-left: 8px;
+nav.filter .fa-stack {
+    min-width: 40px !important;
 }
 
 nav.filter .active {
-    color: #fdba12;
+    background-color: #fdba12 !important;
+    color: white !important;
 }
 
 nav.filter .closed {
@@ -6571,6 +6591,15 @@ nav.filter li a {
     border-bottom: 1px solid #1c4742;
     cursor: pointer;
     padding-left: 1rem;
+}
+
+nav.filter .bootstrap-datetimepicker-widget {
+    z-index: 9999;
+}
+
+#date_start>div,
+#date_end>div {
+    padding-left: 5px;
 }
 
 .selections h5 {
@@ -7919,6 +7948,9 @@ form textarea[name=content] {
     .search-content {
         position: sticky !important;
         top: 120px;
+    }
+    .delete_date {
+        top: -5rem !important;
     }
 }
 
