@@ -4762,6 +4762,15 @@ html {
     width: 100%;
 }
 
+.container_faqs code {
+    color: inherit !important;
+    background-color: inherit !important;
+}
+
+.container_faqs a {
+    color: blue !important;
+}
+
 .search-content div .btn {
     font-size: 14px;
     letter-spacing: .12rem;
