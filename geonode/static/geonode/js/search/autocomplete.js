@@ -6,7 +6,7 @@
  */
 var Autocomplete = function(options) {
 
-    // Multiple selelectors to make this reusable 
+    // Multiple selectors to make this reusable 
     this.form_btn = options.form_btn
     this.form_submit = options.form_submit
     this.form_selector = options.form_selector
@@ -43,7 +43,7 @@ Autocomplete.prototype.setup = function() {
             return false
         }
 
-        self.fetch(query)
+        self.fetch(query, page = 1, remove = true, appendNew = false);
     })
 
     // On selecting a result, populate the search field.
@@ -60,33 +60,37 @@ Autocomplete.prototype.setup = function() {
     })
 }
 
-Autocomplete.prototype.fetch = function(query) {
+Autocomplete.prototype.fetch = function(query, page, remove, appendNew) {
     var self = this
-
-    // Fetching the autocomplete data from the autocomplete light urls set up on backend
-    // Filtered based on the current input
+        // Fetching the autocomplete data from the autocomplete light urls set up on backend
+        // Filtered based on the current input
     $.ajax({
         url: this.url,
         data: {
-            'q': query
+            'q': query,
+            'page': page
         },
         success: function(data) {
-            self.show_results(data)
+            var paginated = data.pagination.more;
+            self.show_results(data, remove, paginated, appendNew);
         }
     })
 }
 
-Autocomplete.prototype.show_results = function(data) {
+Autocomplete.prototype.show_results = function(data, remove, paginated, appendNew) {
+    var self = this;
     // Remove any existing results.
-    $('.ac-results').remove()
+    if (remove) $('.ac-results').remove()
 
     // Mapping to the item text and limiting results shown to 10 only rather
     // than scrolling. Set removes any duplicates.
-    var results = [...new Set(data.results.map(item => item.text).slice(0, 10))] || []
-    var results_wrapper = $('<div class="ac-results"></div>')
-    var base_elem = $('<div class="result-wrapper"><a href="#" id="btn_wrapper" class="ac-result button"></a></div>')
+    var results = [...new Set(data.results.map(item => item.text))] || []
+    var results_wrapper = $('<div class="ac-results"></div>');
+    var base_elem = $('<div class="result-wrapper"><a href="#" id="btn_wrapper" class="ac-result button"></a></div>');
+    var container = this.query_container;
 
-    if (results.length > 0) {
+    function appendElement() {
+        if (!results.length > 0) return
         for (var res_offset in results) {
             var elem = base_elem.clone()
                 // Adding each query result to the autocomplete element
@@ -96,7 +100,22 @@ Autocomplete.prototype.show_results = function(data) {
         }
     }
 
-    this.query_box.after(results_wrapper)
+    function appendNewElement() {
+        var newResult = [...new Set(data.results.map(item => item.text))] || []
+        if (!newResult.length > 0) return
+        for (var res_offset in newResult) {
+            var elem = base_elem.clone();
+            elem.find('.ac-result').text(newResult[res_offset]);
+            container.find('.result-wrapper').last().after(elem);
+        }
+    }
+
+    self.scrollEvent(results_wrapper, paginated);
+    appendNewElement();
+    if (!appendNew) {
+        appendElement();
+        this.query_box.after(results_wrapper);
+    }
 }
 
 Autocomplete.prototype.fixPosition = function(html) {
@@ -104,11 +123,30 @@ Autocomplete.prototype.fixPosition = function(html) {
         return $(this).css('overflow') === 'hidden';
     }).first().css('overflow', 'visible');
     if (this.input.attr('name') !== 'resource-keywords') {
-        this.box.insertAfter(this.input).css({ top: 0, left: 0 });
+        this.box.insertAfter(this.input).css({
+            top: 0,
+            left: 0
+        });
     } else {
         var pos = $.extend({}, this.input.position(), {
             height: this.input.outerHeight()
         });
-        this.box.insertAfter(this.input).css({ top: pos.top + pos.height, left: pos.left });
+        this.box.insertAfter(this.input).css({
+            top: pos.top + pos.height,
+            left: pos.left
+        });
     }
+}
+
+Autocomplete.prototype.scrollEvent = function(results_wrapper, paginated) {
+    var self = this;
+    var query = this.query_box.val();
+    var page = 1;
+
+    results_wrapper.on('scroll', function() {
+        if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight && paginated) {
+            page++;
+            self.fetch(query, page = page, remove = false, appendNew = true);
+        }
+    })
 }

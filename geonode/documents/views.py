@@ -57,6 +57,7 @@ from geonode.base.views import batch_modify
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_visible_resources
+from django.db.models import Q
 
 from dal import autocomplete
 

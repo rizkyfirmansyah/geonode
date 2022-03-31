@@ -1,4 +1,8 @@
 {% load i18n %}
 {% autoescape off %}
+{% blocktrans %}
+
 🌏 {{ inviter_name }} is inviting you to join {{ site_name }}
+
+{% endblocktrans %}
 {% endautoescape %}

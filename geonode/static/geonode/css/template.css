@@ -4541,6 +4541,7 @@ footer #footer-language {
 
 .ac-results {
     width: 100% !important;
+    max-height: 340px;
 }
 
 .remaining-text {

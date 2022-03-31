@@ -11,5 +11,5 @@ To allow the change, set the resource to not "Approved" under the metadata setti
 <br/>
 Cheers,
 <br/>
-The {{site_name}} team.
+{% blocktrans with site_name=current_site.name %}The {{ site_name }} team.{% endblocktrans %}
 {% endautoescape %}

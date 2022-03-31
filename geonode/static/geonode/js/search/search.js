@@ -71,17 +71,10 @@
 
     module.load_keywords = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
-        if ($location.search().hasOwnProperty('title__icontains')) {
-            params['title__icontains'] = $location.search()['title__icontains'];
-        }
         $http.get(KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
-            if ($location.search().hasOwnProperty('keywords__slug__in')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
-                    $location.search()['keywords__slug__in'], 'slug');
-            }
             $rootScope.keywords = data.data.objects;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
@@ -348,9 +341,10 @@
             module.load_group_categories($http, $rootScope, $location);
         }
 
-        //if ($('#keywords').length > 0){
-        //   module.load_keywords($http, $rootScope, $location);
-        //}
+        if ($('#keywords').length > 0) {
+            module.load_keywords($http, $rootScope, $location);
+        }
+
         module.load_h_keywords($http, $rootScope, $location);
 
         if ($('#regions').length > 0) {
@@ -699,7 +693,7 @@
             }
             if ($('#text_search_input').val() || $('#text_search_input').val()) {
                 $scope.query['abstract__icontains'] = $('#text_search_input').val();
-                $scope.query['purpose__icontains'] = $('#text_search_input').val();
+                $scope.query['title__icontains'] = $('#text_search_input').val();
                 $scope.query['f_method'] = 'or';
             }
             query_api($scope.query);
