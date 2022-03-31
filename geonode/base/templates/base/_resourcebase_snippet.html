@@ -85,7 +85,7 @@
                 <li><a href="{{ item.detail_url }}#info"><i class="fa fa-calendar-o"></i>{{ item.date|date:'d MMM y' }}</a></li>
                 <li class="pull-right"><a href="{{ item.detail_url }}"><i class="fa fa-eye"></i>{{ item.popular_count }}</a></li>
                 <li class="pull-right"><a href="{{ item.detail_url }}#share"><i class="fa fa-share"></i>{{ item.share_count }}</a></li>
-                <li class="pull-right"><a href="{{ item.detail_url }}#rate"><i class="fa fa-star"></i>{{ item.rating }}</a></li>
+                <li class="pull-right"><a href="{{ item.detail_url }}#rate"><i class="fa fa-star-o"></i>{{ item.rating }}</a></li>
                 <span class="item-category pull-right">
                   <i id="download_icon" class="fa {{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color: {{ resources(item.id)[0].color }};"> {{ resources(item.id)[0].perms }} </i>
                 </span>
