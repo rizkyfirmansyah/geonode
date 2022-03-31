@@ -4765,6 +4765,7 @@ html {
 .container_faqs code {
     color: inherit !important;
     background-color: inherit !important;
+    font-weight: 600;
 }
 
 .container_faqs a {
