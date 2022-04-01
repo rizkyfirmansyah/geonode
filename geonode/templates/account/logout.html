@@ -4,14 +4,14 @@
 
 {% block title %}{% trans "Log out" %}{% endblock %}
 
-{% block middle %}
+{% block body_outer %}
   <div id="logout_container">
       <form method="POST" action="{% url "account_logout" %}" class="form-horizontal" style="margin-top: 240px;">
         <fieldset>
           {% csrf_token %}
           <p id="logout-style">{% trans "Are you sure you want to log out from this site?" %}</p>
           <div class="form-actions" style="text-align: center">
-            <button type="submit" class="btn btn-primary" id="logout-button">{% trans "LOG OUT" %}</button>
+            <button type="submit" class="btn btn-primary" id="logout-button" style="width: 100%">{% trans "LOG OUT" %}</button>
           </div>
         </fieldset>
       </form>

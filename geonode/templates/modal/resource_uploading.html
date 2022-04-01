@@ -13,7 +13,7 @@
                   {% if user.is_authenticated %}
                   {% with full_name=user.first_name|add:' '|add:user.last_name %}
                       Hi, {{ full_name }}! Grab your favourite snack, coffee, or tea while waiting :)
-                  {% {% endwith %} %}
+                  {% endwith %}
                   {% endif %}
                 </div>
                 <br><div class="remaining-text" id="remaining" style="text-align:center;width: 100%;"></div>
