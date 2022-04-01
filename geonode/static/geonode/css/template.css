@@ -4333,7 +4333,6 @@ html {
 @media (min-width: 1025px) {
     #datasets .row-datasets {
         padding-top: 60px;
-        display: inline-block;
         height: 70vh;
         min-width: 1200px;
     }
