@@ -4294,7 +4294,6 @@ html {
     background-color: inherit !important;
     font-weight: 600;
 }
-.remove-file {}
 .container_faqs a {
     color: blue !important;
 }
@@ -4340,10 +4339,15 @@ html {
         min-height: 50%;
     }
 }
-@media (max-width: 600) {
+@media (max-width: 600px) {
     #category_dataset {
         clear: both;
         left: 40%;
+    }
+}
+@media (max-width: 400px) {
+    #datasets .row-datasets {
+        display: inline-block;
     }
 }
 
