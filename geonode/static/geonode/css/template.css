@@ -4768,6 +4768,8 @@ html {
     font-weight: 600;
 }
 
+.remove-file {}
+
 .container_faqs a {
     color: blue !important;
 }
@@ -4859,21 +4861,6 @@ html {
 
 .fa-remove {
     color: #c4bab7;
-}
-
-#logout_container {
-    width: 360px;
-    height: auto;
-    background-color: white;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    max-width: 100%;
-    max-height: 100%;
-    overflow: auto;
 }
 
 #logout-style {
@@ -5242,7 +5229,19 @@ form-inline {
     border-radius: 5px;
 }
 
-#clear-search:hover {
+.remove-file {
+    padding: 2px 6px 2px 6px;
+    border: 1px solid #a23133;
+    background-color: #a23133;
+    color: white;
+    border-radius: 5px;
+    margin-left: 2em;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#clear-search:hover,
+.remove-file:hover {
     text-decoration: none;
     background-color: #fdba12;
     border: 1px solid #fdba12;
@@ -7961,6 +7960,11 @@ form textarea[name=content] {
     }
     .delete_date {
         top: -5rem !important;
+    }
+    #logout_container {
+        background-color: white;
+        min-height: calc(100vh - 240px);
+        padding: 2em;
     }
 }
 
