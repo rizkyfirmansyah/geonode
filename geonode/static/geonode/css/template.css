@@ -3904,14 +3904,18 @@ html.no-csstransitions .home-content__main {
     }
     
     #right-footer {
-        top: 20px;
-        transform: translateX(calc(0% - 130px));
+        transform: translateX(calc(0% - 30%));
     }
 }
-@media (min-width: 824px) and (max-width: 992px) {
-    #right-footer {
-        top: 20px;
-        transform: translateX(calc(0% - 230px));
+@media (min-width: 992px) and (max-width: 1199px) {
+    footer .col-md-6 {
+        padding-top: 60px !important;
+        max-height: 240px;
+        background-color: black;
+    }
+    
+    footer figure {
+        padding-bottom: 7.5%;
     }
 }
 @media (max-width: 600px) {
@@ -4217,7 +4221,6 @@ html {
     #datasets .row-datasets {
         padding-top: 60px;
         height: 70vh;
-        min-width: 1200px;
     }
     
     #category_dataset {
@@ -4263,6 +4266,7 @@ html {
         font-size: inherit;
         position: unset;
         margin-top: 0;
+        background-color: #2d689c;
         margin-left: 0;
     }
     
