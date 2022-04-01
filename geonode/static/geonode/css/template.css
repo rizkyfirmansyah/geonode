@@ -4339,15 +4339,11 @@ html {
         min-height: 50%;
     }
 }
-@media (max-width: 600px) {
-    #category_dataset {
-        clear: both;
-        left: 40%;
-    }
-}
 @media (max-width: 400px) {
     #datasets .row-datasets {
-        display: inline-block;
+        display: table;
+        margin-right: 2em;
+        margin-left: 2em;
     }
 }
 
