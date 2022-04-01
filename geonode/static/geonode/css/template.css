@@ -4346,6 +4346,15 @@ html {
         margin-left: 2em;
     }
 }
+@media (min-width: 400px) and (max-width: 676px) {
+    #datasets .row-datasets {
+        display: grid
+    }
+    
+    #category_dataset {
+        width: 100% !important;
+    }
+}
 
 /* ------------------------------------------------------------------- 
  * CMS CONTENT
