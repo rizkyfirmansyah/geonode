@@ -3197,22 +3197,20 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     position: relative;
     margin-top: 30px;
 }
-@media (min-width: 1025px) {
-    .btn-search {
-        position: relative;
-        left: 0;
-        background: transparent;
-        border: 0;
-        padding: 0;
-        cursor: pointer;
-        top: 5rem;
-    }
-    
-    .btn-search>svg {
-        fill: #fff;
-        width: 48px;
-        height: 48px;
-    }
+.btn-search {
+    position: relative;
+    left: 0;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    top: 7rem;
+    display: block;
+}
+.btn-search>svg {
+    fill: #fff;
+    width: 48px;
+    height: 48px;
 }
 .search-field form input {
     height: 100%;
@@ -4343,10 +4341,6 @@ html {
     }
 }
 @media (max-width: 600) {
-    #datasets .row-datasets {
-        display: inline-block;
-    }
-    
     #category_dataset {
         clear: both;
         left: 40%;
