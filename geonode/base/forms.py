@@ -144,12 +144,9 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
 
 
 class CategoryForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(CategoryForm, self).__init__(*args, **kwargs)
-
     category_choice_field = CategoryChoiceField(
         required=True,
-        label='*' + _('Category'),
+        label=f"*{_('Category')}",
         empty_label=None,
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
