@@ -65,7 +65,7 @@ from django.core.files.storage import default_storage as storage
 from django.db import models, connection, transaction
 from django.utils.translation import ugettext_lazy as _
 
-from geonode import geoserver, GeoNodeException  # noqa
+from geonode import geoserver_old, GeoNodeException  # noqa
 from geonode.compat import ensure_string
 from geonode.base.auth import (
     extend_token,
@@ -1379,7 +1379,7 @@ class HttpClient:
         self.status_forcelist = (500, 502, 503, 504)
         self.username = 'admin'
         self.password = 'admin'
-        if check_ogc_backend(geoserver.BACKEND_PACKAGE):
+        if check_ogc_backend(geoserver_old.BACKEND_PACKAGE):
             ogc_server_settings = settings.OGC_SERVER['default']
             self.timeout = ogc_server_settings.get('TIMEOUT', 5)
             self.retries = ogc_server_settings.get('MAX_RETRIES', 1)
@@ -1392,7 +1392,7 @@ class HttpClient:
     def request(self, url, method='GET', data=None, headers={}, stream=False,
                 timeout=None, retries=None, user=None, verify=False):
         if (user or self.username != 'admin') and \
-                check_ogc_backend(geoserver.BACKEND_PACKAGE) and 'Authorization' not in headers:
+                check_ogc_backend(geoserver_old.BACKEND_PACKAGE) and 'Authorization' not in headers:
             if connection.cursor().db.vendor not in ('sqlite', 'sqlite3', 'spatialite'):
                 try:
                     if user and isinstance(user, str):
@@ -1595,7 +1595,7 @@ def get_legend_url(
         width=20,
         height=20,
         params=None):
-    from geonode.geoserver.helpers import ogc_server_settings
+    from geonode.geoserver_old.helpers import ogc_server_settings
 
     _service_url = service_url or f"{ogc_server_settings.PUBLIC_LOCATION}ows"
     _layer_name = layer_name or instance.alternate
@@ -1620,9 +1620,9 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
         Link.objects.filter(resource=instance.resourcebase_ptr, link_type__in=_def_link_types).delete()
         logger.debug(" -- Resource Links[Prune old links]...done!")
 
-    if check_ogc_backend(geoserver.BACKEND_PACKAGE):
-        from geonode.geoserver.ows import wcs_links, wfs_links, wms_links
-        from geonode.geoserver.helpers import ogc_server_settings, gs_catalog
+    if check_ogc_backend(geoserver_old.BACKEND_PACKAGE):
+        from geonode.geoserver_old.ows import wcs_links, wfs_links, wms_links
+        from geonode.geoserver_old.helpers import ogc_server_settings, gs_catalog
 
         # Compute parameters for the new links
         logger.debug(" -- Resource Links[Compute parameters for the new links]...")
@@ -2006,6 +2006,7 @@ def json_serializer_producer(dictionary):
         'is_active',
         'is_superuser',
         'permissions',
+        'category',
         'user_permissions',
     ]
 

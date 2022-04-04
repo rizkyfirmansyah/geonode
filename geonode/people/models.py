@@ -193,7 +193,7 @@ class Profile(AbstractUser):
         return perms
 
     def save(self, *args, **kwargs):
-        super(Profile, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         self._notify_account_activated()
         self._previous_active_state = self.is_active
 

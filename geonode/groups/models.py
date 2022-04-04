@@ -109,14 +109,14 @@ class GroupProfile(models.Model):
     def save(self, *args, **kwargs):
         group, created = Group.objects.get_or_create(name=self.slug)
         self.group = group
-        super(GroupProfile, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         try:
             Group.objects.filter(name=str(self.slug)).delete()
         except Exception as e:
             logger.exception(e)
-        super(GroupProfile, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
 
     @classmethod
     def groups_for_user(cls, user):
