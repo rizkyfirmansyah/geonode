@@ -932,6 +932,8 @@ def _update_layer_with_xml_info(saved_layer, xml_file, regions, keywords, vals):
                 value = SpatialRepresentationType(identifier=value)
             elif key == 'topic_category':
                 value = TopicCategory(identifier=value)
+            else:
+                defaults[key] = value
 
         # Save all the modified information in the instance without triggering signals.
         try:
