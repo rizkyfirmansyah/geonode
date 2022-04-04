@@ -123,7 +123,9 @@ article dd a:before {
 
 nav.filter li a:before,
 article dt a:before,
-article a:before {
+article li a:before,
+article h4 a:before,
+article dd a:before {
     content: "";
     display: block;
     position: absolute;
@@ -5839,10 +5841,10 @@ nav.filter .bootstrap-datetimepicker-widget {
 }
 #sort a:hover,
 #sort a:focus {
-    color: #1b4060;
-    text-decoration: underline;
-    background-color: transparent;
-    font-weight: 500;
+    color: #1b4060 !important;
+    text-decoration: none;
+    background-color: gold;
+    font-weight: 600;
 }
 #sort .selected {
     color: #fdba12;
