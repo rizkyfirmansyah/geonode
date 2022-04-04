@@ -116,7 +116,7 @@ class JSONResponse(HttpResponse):
         if json_opts is None:
             json_opts = {}
         content = json.dumps(obj, **json_opts)
-        super().__init__(
+        super(JSONResponse, self).__init__(
             content, content_type, *args, **kwargs)
 
 
