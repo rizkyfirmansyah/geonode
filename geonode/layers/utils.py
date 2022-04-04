@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -473,11 +472,11 @@ def file_upload(filename,
     # Create a new upload session
     if layer:
         latest_uploads = UploadSession.objects.filter(resource=layer).order_by('-date')
-        if latest_uploads.count() > 1:
+        if len(latest_uploads) >= 1:
             upload_session = latest_uploads.first()
+            upload_session.user = theuser
         else:
-            upload_session, _created = UploadSession.objects.get_or_create(resource=layer)
-        upload_session.user = theuser
+            upload_session = UploadSession.objects.create(resource=layer, user=theuser)
         upload_session.layerfile_set.all().delete()
     else:
         upload_session = UploadSession.objects.create(user=theuser)
@@ -542,21 +541,15 @@ def file_upload(filename,
                 the_file = upload_session.layerfile_set.all()[0].file.name
                 assigned_name = os.path.splitext(os.path.basename(the_file))[0]
 
-    # Get a bounding box
-    *bbox, srid = get_bbox(filename)
-    bbox_polygon = BBOXHelper.from_xy(bbox).as_polygon()
-
-    if srid:
-        srid_url = f"http://www.spatialreference.org/ref/{srid.replace(':', '/').lower()}/"  # noqa
-        bbox_polygon.srid = int(srid.split(':')[1])
-
-    # by default, if RESOURCE_PUBLISHING=True then layer.is_published
-    # must be set to False
-    if not overwrite:
-        if settings.RESOURCE_PUBLISHING:
-            is_published = False
-        if settings.ADMIN_MODERATE_UPLOADS:
-            is_approved = False
+    # Getting a bounding box
+    if layer and layer.bbox_polygon:
+        bbox_polygon = layer.bbox_polygon
+    else:
+        *bbox, srid = get_bbox(filename)
+        bbox_polygon = BBOXHelper.from_xy(bbox).as_polygon()
+        if srid:
+            srid_url = f"http://www.spatialreference.org/ref/{srid.replace(':', '/').lower()}/"  # noqa
+            bbox_polygon.srid = int(srid.split(':')[1])
 
     defaults = {
         'upload_session': upload_session,
@@ -571,6 +564,16 @@ def file_upload(filename,
         'license': license
     }
 
+    # by default, if RESOURCE_PUBLISHING=True then layer.is_published
+    # must be set to False
+    if not overwrite:
+        if settings.ADMIN_MODERATE_UPLOADS:
+            is_approved = False
+            defaults['is_approved'] = defaults['was_approved'] = is_approved
+        if settings.RESOURCE_PUBLISHING:
+            is_published = False
+            defaults['is_published'] = defaults['was_published'] = is_published
+
     # set metadata
     if 'xml' in files:
         with open(files['xml']) as f:
@@ -580,7 +583,7 @@ def file_upload(filename,
         defaults['metadata_uploaded_preserve'] = metadata_uploaded_preserve
 
         # get model properties from XML
-        identifier, vals, regions, keywords, custom = parse_metadata(xml_file)
+        identifier, vals, regions, keywords, category, custom = parse_metadata(xml_file)
 
         if defaults['metadata_uploaded_preserve']:
             defaults['metadata_xml'] = xml_file
@@ -596,12 +599,6 @@ def file_upload(filename,
         for key, value in vals.items():
             if key == 'spatial_representation_type':
                 value = SpatialRepresentationType(identifier=value)
-
-            # elif key == 'topic_category':
-            #     value, created = TopicCategory.objects.get_or_create(
-            #         identifier=value,
-            #         defaults={'description': '', 'gn_description': value})
-            #     key = 'category'
             defaults[key] = value
 
     regions_resolved, regions_unresolved = resolve_regions(regions)
@@ -609,6 +606,9 @@ def file_upload(filename,
 
     if keywords and regions_unresolved:
         keywords.extend(convert_keyword(regions_unresolved))
+
+    if keywords and categories_unresolved:
+        keywords.extend(convert_keyword(categories_unresolved))
 
     # If it is a vector file, create the layer in postgis.
     if is_vector(filename):
@@ -662,7 +662,6 @@ def file_upload(filename,
         defaults['is_published'] = defaults.get(
             'is_published', is_published) or layer.is_published
         defaults['license'] = defaults.get('license', None) or layer.license
-        # defaults['category'] = defaults.get('category', None) or layer.category
 
         if upload_session:
             if layer.upload_session:
@@ -693,14 +692,14 @@ def file_upload(filename,
                 layer.regions.add(*regions_resolved)
 
     # Assign the categories (needs to be done after saving)
-    # categories_resolved = list(set(categories_resolved))
-    # if categories_resolved:
-    #     if len(categories_resolved) > 0:
-    #         if not layer.category:
-    #             layer.category = categories_resolved
-    #         else:
-    #             layer.category.clear()
-    #             layer.category.add(*categories_resolved)
+    categories_resolved = list(set(categories_resolved))
+    if categories_resolved:
+        if len(categories_resolved) > 0:
+            if not layer.category:
+                layer.category = categories_resolved
+            else:
+                layer.category.clear()
+                layer.category.add(*categories_resolved)
 
     # Assign and save the charset using the Layer class' object (layer)
     if charset != 'UTF-8':
