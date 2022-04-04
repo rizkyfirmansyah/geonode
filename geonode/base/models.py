@@ -28,7 +28,6 @@ import logging
 import traceback
 
 from django.db import models, transaction
-from django.db import models
 from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.html import escape
@@ -696,7 +695,6 @@ class ResourceBaseManager(PolymorphicManager):
                             upload.delete()
             except Exception as e:
                 logger.exception(e)
-
 
 
 class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
