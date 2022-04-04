@@ -291,7 +291,6 @@ class ResourceBaseForm(TranslationModelForm):
         required=False,
         widget=TinyMCE())
     owner = forms.ModelChoiceField(
-        empty_label=_("Owner"),
         label=_("Owner"),
         required=True,
         queryset=get_user_model().objects.exclude(username='AnonymousUser'),
