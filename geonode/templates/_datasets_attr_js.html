@@ -15,6 +15,7 @@
 
   let describeFeatureUri = wfsService + describeFeature;
   $(function() {
+    console.log(describeFeatureUri);
     $("#datasets").click(function() {
       $.ajax({
         type: 'GET',
