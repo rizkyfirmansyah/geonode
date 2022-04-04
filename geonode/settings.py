@@ -37,6 +37,7 @@ from django.conf.global_settings import DATETIME_INPUT_FORMATS
 from geonode import get_version
 from kombu import Queue, Exchange
 from kombu.serialization import register
+from schema import Optional
 
 from . import serializer
 
@@ -403,6 +404,7 @@ GEONODE_INTERNAL_APPS = (
     'geonode.social',
     'geonode.groups',
     'geonode.services',
+    'geonode.management_commands_http',
     'geonode.datasets',
     'geonode.faqs',
 
@@ -1733,6 +1735,7 @@ CELERY_TASK_QUEUES = (
     Queue('cleanup', GEONODE_EXCHANGE, routing_key='cleanup', priority=0),
     Queue('email', GEONODE_EXCHANGE, routing_key='email', priority=0),
     Queue('security', GEONODE_EXCHANGE, routing_key='security', priority=0),
+    Queue('management_commands_http', GEONODE_EXCHANGE, routing_key='management_commands_http', priority=0),
 )
 
 if USE_GEOSERVER:
@@ -2099,3 +2102,51 @@ UI_DEFAULT_MANDATORY_FIELDS = [
 UI_REQUIRED_FIELDS = ast.literal_eval(os.getenv('UI_REQUIRED_FIELDS ', '[]'))
 
 UPLOAD_SESSION_EXPIRY_HOURS = os.getenv('UPLOAD_SESSION_EXPIRY_HOURS ', 24)
+
+# If a command name is listed here, the command will be available to admins over http
+# This list is used by the management_commands_http app
+MANAGEMENT_COMMANDS_EXPOSED_OVER_HTTP = set([
+    "ping_mngmt_commands_http",
+    "updatelayers",
+    "sync_geonode_layers",
+    "sync_geonode_maps",
+    "importlayers",
+    "set_all_layers_metadata",
+] + ast.literal_eval(os.getenv('MANAGEMENT_COMMANDS_EXPOSED_OVER_HTTP ', '[]')))
+
+FILE_UPLOAD_HANDLERS = [
+    'geonode.upload.uploadhandler.SizeRestrictedFileUploadHandler',
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
+
+'''
+Default schema used to store extra and dynamic metadata for the resource
+'''
+
+DEFAULT_EXTRA_METADATA_SCHEMA = {
+    Optional("id"): int,
+    "filter_header": object,
+    "field_name": object,
+    "field_label": object,
+    "field_value": object,
+}
+
+'''
+If present, will extend the available metadata schema used for store
+new value for each resource. By default overrided the existing one.
+The expected schema is the same as the default
+'''
+CUSTOM_METADATA_SCHEMA = os.getenv('CUSTOM_METADATA_SCHEMA ', {})
+
+'''
+Variable used to actually get the expected metadata schema for each resource_type.
+In this way, each resource type can have a different metadata schema
+'''
+
+EXTRA_METADATA_SCHEMA = {**{
+    "map": os.getenv('MAP_EXTRA_METADATA_SCHEMA', DEFAULT_EXTRA_METADATA_SCHEMA),
+    "layer": os.getenv('DATASET_EXTRA_METADATA_SCHEMA', DEFAULT_EXTRA_METADATA_SCHEMA),
+    "document": os.getenv('DOCUMENT_EXTRA_METADATA_SCHEMA', DEFAULT_EXTRA_METADATA_SCHEMA),
+    "geoapp": os.getenv('GEOAPP_EXTRA_METADATA_SCHEMA', DEFAULT_EXTRA_METADATA_SCHEMA)
+}, **CUSTOM_METADATA_SCHEMA}

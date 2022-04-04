@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
-# Copyright (C) 2016 OSGeo
+# Copyright (C) 2021 OSGeo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,27 +16,3 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
-import os
-
-__version__ = (3, 3, 1, 'final', 0)
-
-
-default_app_config = "geonode.apps.AppConfig"
-
-
-def get_version():
-    import geonode.version
-    return geonode.version.get_version(__version__)
-
-
-def main(global_settings, **settings):
-    from django.core.wsgi import get_wsgi_application
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings.get('django_settings'))
-    app = get_wsgi_application()
-    return app
-
-
-class GeoNodeException(Exception):
-    """Base class for exceptions in this module."""
-    pass
