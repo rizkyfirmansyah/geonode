@@ -118,7 +118,6 @@ article dd a:before {
     transition: 0.15s width ease-out, 0.15s height ease-out 0.2s, 0.15s top ease-out 0.2s;
     -webkit-transition: 0.15s width ease-out, 0.15s height ease-out 0.2s, 0.15s top ease-out 0.2s;
     box-shadow: 0 .5rem 1.25rem #ccc;
-    /* transition: all 0.3s ease-in-out; */
 }
 
 nav.filter li a:before,
