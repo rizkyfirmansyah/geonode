@@ -21,6 +21,7 @@
 import os
 import re
 import html
+import shutil
 import math
 import uuid
 import logging
@@ -657,12 +658,37 @@ class ResourceBaseManager(PolymorphicManager):
         return superusers[0]
 
     def get_queryset(self):
-        return super(
-            ResourceBaseManager,
-            self).get_queryset().non_polymorphic()
+        return super().get_queryset().non_polymorphic()
 
     def polymorphic_queryset(self):
-        return super(ResourceBaseManager, self).get_queryset()
+        return super().get_queryset()
+
+    @staticmethod
+    def cleanup_uploaded_files(resource_id):
+        """Remove uploaded files, if any"""
+        if ResourceBase.objects.filter(id=resource_id).exists():
+            _resource = ResourceBase.objects.filter(id=resource_id).get()
+
+            # Remove generated thumbnails, if any
+            filename = f"{_resource.get_real_instance().resource_type}-{_resource.get_real_instance().uuid}"
+            remove_thumbs(filename)
+
+            # Remove the uploaded sessions, if any
+            try:
+                if 'geonode.upload' in settings.INSTALLED_APPS:
+                    from geonode.upload.models import Upload
+                    # Need to call delete one by one in order to invoke the
+                    #  'delete' overridden method
+                    for upload in Upload.objects.filter(layer_id=_resource.get_real_instance().id):
+                        try:
+                            if upload.upload_dir:
+                                if os.path.exists(upload.upload_dir):
+                                    shutil.rmtree(upload.upload_dir, ignore_errors=True)
+                        finally:
+                            upload.delete()
+            except Exception as e:
+                logger.exception(e)
+
 
 
 class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
