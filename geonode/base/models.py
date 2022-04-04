@@ -1407,20 +1407,38 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             [xmin, ymin, xmax, ymax]
         :param srid: srid as string (e.g. 'EPSG:4326' or '4326')
         """
-        bbox_polygon = Polygon.from_bbox(bbox)
-        self.bbox_polygon = bbox_polygon.clone()
-        self.srid = srid
-        if srid == 4326 or srid == "EPSG:4326":
-            self.ll_bbox_polygon = bbox_polygon
-        else:
-            match = re.match(r'^(EPSG:)?(?P<srid>\d{4,6})$', str(srid))
-            bbox_polygon.srid = int(match.group('srid')) if match else 4326
-            try:
+        try:
+            bbox_polygon = Polygon.from_bbox(bbox)
+            self.bbox_polygon = bbox_polygon.clone()
+            self.srid = srid
+            # This is a trick in order to avoid PostGIS reprojecting the bbox at save time
+            # by assuming the default geometries have 'EPSG:4326' as srid.
+            ResourceBase.objects.filter(id=self.id).update(
+                bbox_polygon=self.bbox_polygon, srid=srid)
+        finally:
+            self.set_ll_bbox_polygon(bbox, srid=srid)
+
+    def set_ll_bbox_polygon(self, bbox, srid="EPSG:4326"):
+        """
+        Set `ll_bbox_polygon` from bbox values.
+
+        :param bbox: list or tuple formatted as
+            [xmin, ymin, xmax, ymax]
+        :param srid: srid as string (e.g. 'EPSG:4326' or '4326')
+        """
+        try:
+            bbox_polygon = Polygon.from_bbox(bbox)
+            if srid == 4326 or srid.upper() == "EPSG:4326":
+                self.ll_bbox_polygon = bbox_polygon
+            else:
+                match = re.match(r'^(EPSG:)?(?P<srid>\d{4,6})$', str(srid))
+                bbox_polygon.srid = int(match.group('srid')) if match else 4326
                 self.ll_bbox_polygon = Polygon.from_bbox(
                     bbox_to_projection(list(bbox_polygon.extent) + [srid])[:-1])
-            except Exception as e:
-                logger.error(e)
-                self.ll_bbox_polygon = bbox_polygon
+            ResourceBase.objects.filter(id=self.id).update(
+                ll_bbox_polygon=self.ll_bbox_polygon)
+        except Exception as e:
+            raise GeoNodeException(e)
 
     def set_bounds_from_center_and_zoom(self, center_x, center_y, zoom):
         """
