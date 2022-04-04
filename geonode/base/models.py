@@ -21,12 +21,13 @@
 import os
 import re
 import html
-import shutil
 import math
 import uuid
+import shutil
 import logging
 import traceback
 
+from django.db import models, transaction
 from django.db import models
 from django.conf import settings
 from django.utils.functional import cached_property
@@ -482,15 +483,22 @@ class _HierarchicalTagManager(_TaggableManager):
             if not isinstance(t, self.through.tag_model())
         ])
         tag_objs = set(tags) - str_tags
+        new_ids = set()
         # If str_tags has 0 elements Django actually optimizes that to not do a
         # query.  Malcolm is very smart.
-        existing = self.through.tag_model().objects.filter(
-            name__in=str_tags, **tag_kwargs
-        )
-        tag_objs.update(existing)
-        new_ids = set()
-        for new_tag in str_tags - set(t.name for t in existing):
-            if new_tag:
+        '''
+        To avoid concurrency with the keyword in case of a massive upload.
+        With the transaction block and the select_for_update,
+        we can easily handle the concurrency.
+        DOC: https://docs.djangoproject.com/en/3.2/ref/models/querysets/#select-for-update
+        '''
+        with transaction.atomic():
+            existing = self.through.tag_model().objects.select_for_update().filter(
+                name__in=str_tags, **tag_kwargs
+            )
+            tag_objs.update(existing)
+            _new_keyword = str_tags - set(t.name for t in existing)
+            for new_tag in list(_new_keyword):
                 new_tag = escape(new_tag)
                 new_tag_obj = HierarchicalKeyword.add_root(name=new_tag)
                 tag_objs.add(new_tag_obj)
