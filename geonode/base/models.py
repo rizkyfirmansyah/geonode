@@ -733,6 +733,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         ' dataset')
     doi_help_text = _(
         'a DOI will be added by Admin before publication.')
+    extra_metadata_help_text = _(
+        'Additional metadata, must be in format [ {"metadata_key": "metadata_value"}, {"metadata_key": "metadata_value"} ]')
     doi = models.CharField(
         _('DOI'),
         max_length=255,
@@ -1017,8 +1019,12 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         default=False,
         help_text=_('if true, will be excluded from search'))
 
-    __is_approved = False
-    __is_published = False
+    metadata = models.ManyToManyField(
+        "ExtraMetadata",
+        verbose_name=_('Extra Metadata'),
+        null=True,
+        blank=True,
+        help_text=extra_metadata_help_text)
 
     objects = ResourceBaseManager()
 
