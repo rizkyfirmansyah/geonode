@@ -482,11 +482,6 @@ small {
     line-height: inherit;
 }
 
-ol,
-ul {
-    list-style: none;
-}
-
 .restyle-text {
     word-spacing: 0.3rem;
     line-height: 2.9rem;
@@ -4152,9 +4147,7 @@ html.no-csstransitions .home-content__main {
 .section-nav a:focus {
     color: rgb(34, 31, 31);
 }
-.section-nav>ul,
-ol {
-    list-style: none;
+.section-nav>ul {
     margin: 0;
     padding: 0;
 }
