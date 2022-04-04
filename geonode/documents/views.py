@@ -21,7 +21,6 @@ import json
 import logging
 import traceback
 from itertools import chain
-from unicodedata import category
 import warnings
 
 from guardian.shortcuts import get_objects_for_user
@@ -36,7 +35,6 @@ from django.views.generic.edit import UpdateView, CreateView
 from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
-from psutil import POSIX
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
@@ -57,7 +55,6 @@ from geonode.base.views import batch_modify
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_visible_resources
-from django.db.models import Q
 
 from dal import autocomplete
 

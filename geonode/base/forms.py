@@ -90,7 +90,6 @@ class AdvancedModelChoiceIterator(models.ModelChoiceIterator):
             obj)
 
 
-
 class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def _get_choices(self):
         if hasattr(self, '_choices'):
@@ -102,7 +101,6 @@ class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         return '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
                          'data-content="' + obj.name + '" trigger="hover">' + obj.name + '</span>'
-
 
 
 class RegionsForm(forms.Form):
@@ -124,7 +122,6 @@ class RegionsForm(forms.Form):
         return obj.id
 
 
-
 class CategoryChoiceField(forms.ModelMultipleChoiceField):
     def _get_choices(self):
         if hasattr(self, '_choices'):
@@ -140,7 +137,6 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
                          '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
                          'data-content="' + obj.description + '" trigger="hover">' \
                                                               '<br/><strong>' + obj.gn_description + '</strong></span>'
-
 
 
 class CategoryForm(forms.Form):
@@ -167,9 +163,9 @@ class CategoryForm(forms.Form):
         return obj.id
 
 
-
 class TKeywordForm(forms.ModelForm):
     prefix = 'tkeywords'
+
     class Meta:
         model = Document
         fields = ['tkeywords']
@@ -185,7 +181,6 @@ class TKeywordForm(forms.ModelForm):
         required=False,
         help_text=_("List of keywords from Thesaurus", ),
     )
-
 
 
 class ThesaurusAvailableForm(forms.Form):

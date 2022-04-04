@@ -827,7 +827,6 @@ def layer_metadata(
         extra=0,
         form=LayerAttributeForm,
     )
-    current_keywords = [keyword.name for keyword in layer.keywords.all()]
     topic_category = layer.category.all()
 
     topic_thesaurus = layer.tkeywords.all()
