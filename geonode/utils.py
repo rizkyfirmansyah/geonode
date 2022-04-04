@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -56,7 +55,7 @@ from django.db.models import signals
 from django.utils.http import is_safe_url
 from django.apps import apps as django_apps
 from django.middleware.csrf import get_token
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.forms.models import model_to_dict
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -127,15 +126,31 @@ id_none = id(None)
 logger = logging.getLogger("geonode.utils")
 
 
+def mkdtemp(dir=settings.MEDIA_ROOT):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    tempdir = None
+    while not tempdir:
+        try:
+            tempdir = tempfile.mkdtemp(dir=dir)
+            if os.path.exists(tempdir) and os.path.isdir(tempdir):
+                if os.listdir(tempdir):
+                    raise Exception("Directory is not empty")
+            else:
+                raise Exception("Directory does not exist or is not accessible")
+        except Exception as e:
+            logger.exception(e)
+            tempdir = None
+    return tempdir
+
+
 def unzip_file(upload_file, extension='.shp', tempdir=None):
     """
     Unzips a zipfile into a temporary directory and returns the full path of the .shp file inside (if any)
     """
     absolute_base_file = None
     if tempdir is None:
-        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
-    if not os.path.isdir(tempdir):
-        os.makedirs(tempdir)
+        tempdir = mkdtemp()
 
     the_zip = ZipFile(upload_file, allowZip64=True)
     the_zip.extractall(tempdir)
@@ -152,7 +167,7 @@ def extract_tarfile(upload_file, extension='.shp', tempdir=None):
     """
     absolute_base_file = None
     if tempdir is None:
-        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
+        tempdir = mkdtemp()
 
     the_tar = tarfile.open(upload_file)
     the_tar.extractall(tempdir)
@@ -202,7 +217,7 @@ def get_layer_workspace(layer):
                     settings, "CASCADE_WORKSPACE", default_workspace)
             else:
                 raise RuntimeError("Layer is not cascaded")
-        except AttributeError:  # layer does not have a service
+        except Exception:  # layer does not have a service
             workspace = default_workspace
     return workspace
 
@@ -235,7 +250,7 @@ def get_headers(request, url, raw_url, allowed_hosts=[]):
         cook = f"csrftoken={csrftoken}"
         cookies = cook if not cookies else (f"{cookies}; {cook}")
 
-    if cookies:
+    if cookies and request and hasattr(request, 'session'):
         if 'JSESSIONID' in request.session and request.session['JSESSIONID']:
             cookies = f"{cookies}; JSESSIONID={request.session['JSESSIONID']}"
         headers['Cookie'] = cookies
@@ -378,34 +393,32 @@ def bbox_to_projection(native_bbox, target_srid=4326):
         source_srid = target_srid
 
     if source_srid != target_srid:
-        try:
-            wkt = bbox_to_wkt(_v(minx, x=True, source_srid=source_srid, target_srid=target_srid),
-                              _v(maxx, x=True, source_srid=source_srid, target_srid=target_srid),
-                              _v(miny, x=False, source_srid=source_srid, target_srid=target_srid),
-                              _v(maxy, x=False, source_srid=source_srid, target_srid=target_srid),
-                              srid=source_srid, include_srid=False)
-            # AF: This causses error with GDAL 3.0.4 due to a breaking change on GDAL
-            #     https://code.djangoproject.com/ticket/30645
-            import osgeo.gdal
-            _gdal_ver = osgeo.gdal.__version__.split(".", 2)
-            from osgeo import ogr
-            from osgeo.osr import SpatialReference, CoordinateTransformation
-            g = ogr.Geometry(wkt=wkt)
-            source = SpatialReference()
-            source.ImportFromEPSG(source_srid)
-            dest = SpatialReference()
-            dest.ImportFromEPSG(target_srid)
-            if int(_gdal_ver[0]) >= 3 and \
-                    ((int(_gdal_ver[1]) == 0 and int(_gdal_ver[2]) >= 4) or int(_gdal_ver[1]) > 0):
-                source.SetAxisMappingStrategy(0)
-                dest.SetAxisMappingStrategy(0)
-            g.Transform(CoordinateTransformation(source, dest))
-            projected_bbox = [str(x) for x in g.GetEnvelope()]
-            # Must be in the form : [x0, x1, y0, y1, EPSG:<target_srid>)
-            return tuple([projected_bbox[0], projected_bbox[1], projected_bbox[2], projected_bbox[3]]) + \
-                (f"EPSG:{target_srid}",)
-        except Exception as e:
-            logger.exception(e)
+        wkt = bbox_to_wkt(_v(minx, x=True, source_srid=source_srid, target_srid=target_srid),
+                          _v(maxx, x=True, source_srid=source_srid, target_srid=target_srid),
+                          _v(miny, x=False, source_srid=source_srid, target_srid=target_srid),
+                          _v(maxy, x=False, source_srid=source_srid, target_srid=target_srid),
+                          srid=source_srid, include_srid=False)
+        # AF: This causses error with GDAL 3.0.4 due to a breaking change on GDAL
+        #     https://code.djangoproject.com/ticket/30645
+        import osgeo.gdal
+        _gdal_ver = osgeo.gdal.__version__.split(".", 2)
+        from osgeo import ogr
+        from osgeo.osr import SpatialReference, CoordinateTransformation
+        g = ogr.Geometry(wkt=wkt)
+        source = SpatialReference()
+        source.ImportFromEPSG(source_srid)
+        dest = SpatialReference()
+        dest.ImportFromEPSG(target_srid)
+        if int(_gdal_ver[0]) >= 3 and \
+                ((int(_gdal_ver[1]) == 0 and int(_gdal_ver[2]) >= 4) or int(_gdal_ver[1]) > 0):
+            source.SetAxisMappingStrategy(0)
+            dest.SetAxisMappingStrategy(0)
+        g.Transform(CoordinateTransformation(source, dest))
+        projected_bbox = [str(x) for x in g.GetEnvelope()]
+        # Must be in the form : [x0, x1, y0, y1, EPSG:<target_srid>)
+        return tuple(
+            [float(projected_bbox[0]), float(projected_bbox[1]), float(projected_bbox[2]), float(projected_bbox[3])]) + \
+            (f"EPSG:{target_srid}",)
 
     return native_bbox
 
@@ -555,7 +568,7 @@ def layer_from_viewer_config(map_id, model, layer, source, ordering, save_map=Tr
     return _model
 
 
-class GXPMapBase(object):
+class GXPMapBase:
 
     def viewer_json(self, request, *added_layers):
         """
@@ -721,7 +734,7 @@ class GXPMap(GXPMapBase):
         self.layers = []
 
 
-class GXPLayerBase(object):
+class GXPLayerBase:
 
     def source_config(self, access_token):
         """
@@ -873,7 +886,7 @@ _viewer_projection_lookup = {
         "maxExtent": max_extent,
     },
     "EPSG:4326": {
-        "maxResolution": FULL_ROTATION_DEG / 256,
+        "max_resolution": FULL_ROTATION_DEG / 256,
         "units": "degrees",
         "maxExtent": [-180, -90, 180, 90]
     }
@@ -899,7 +912,7 @@ def resolve_object(request, model, query, permission='base.view_resourcebase',
     obj = get_object_or_404(model, **query)
     obj_to_check = obj.get_self_resource()
 
-    from guardian.shortcuts import assign_perm, get_groups_with_perms
+    from guardian.shortcuts import get_groups_with_perms
     from geonode.groups.models import GroupProfile
 
     groups = get_groups_with_perms(obj_to_check,
@@ -924,48 +937,6 @@ def resolve_object(request, model, query, permission='base.view_resourcebase',
                     obj_group_members.append(user)
             except GroupProfile.DoesNotExist:
                 pass
-
-    if settings.RESOURCE_PUBLISHING or settings.ADMIN_MODERATE_UPLOADS:
-        is_admin = False
-        is_manager = False
-        is_owner = user == obj_to_check.owner
-        if user and user.is_authenticated:
-            is_admin = user.is_superuser if user else False
-            try:
-                is_manager = user.groupmember_set.all().filter(role='manager').exists()
-            except Exception:
-                is_manager = False
-        if (not obj_to_check.is_approved):
-            if not user or user.is_anonymous:
-                raise Http404
-            elif not is_admin:
-                if is_manager and user in obj_group_managers:
-                    if (not user.has_perm('publish_resourcebase', obj_to_check)) and (
-                        not user.has_perm('view_resourcebase', obj_to_check)) and (
-                            not user.has_perm('change_resourcebase_metadata', obj_to_check)) and (
-                                not is_owner and not settings.ADMIN_MODERATE_UPLOADS):
-                        pass
-                    else:
-                        assign_perm(
-                            'view_resourcebase', user, obj_to_check)
-                        assign_perm(
-                            'publish_resourcebase',
-                            user,
-                            obj_to_check)
-                        assign_perm(
-                            'change_resourcebase_metadata',
-                            user,
-                            obj_to_check)
-                        assign_perm(
-                            'download_resourcebase',
-                            user,
-                            obj_to_check)
-
-                        if is_owner:
-                            assign_perm(
-                                'change_resourcebase', user, obj_to_check)
-                            assign_perm(
-                                'delete_resourcebase', user, obj_to_check)
 
     allowed = True
     if permission.split('.')[-1] in ['change_layer_data',
@@ -1162,10 +1133,11 @@ def fixup_shp_columnnames(inShapefile, charset, tempdir=None):
     """ Try to fix column names and warn the user
     """
     charset = charset if charset and 'undefined' not in charset else 'UTF-8'
-
+    tempdir_was_created = False
     try:
         if not tempdir:
-            tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
+            tempdir = mkdtemp()
+            tempdir_was_created = True
 
         if is_zipfile(inShapefile):
             inShapefile = unzip_file(inShapefile, '.shp', tempdir=tempdir)
@@ -1242,7 +1214,9 @@ def fixup_shp_columnnames(inShapefile, charset, tempdir=None):
                     f"Could not decode SHAPEFILE attributes by using the specified charset '{charset}'.")
         return True, None, list_col
     finally:
-        if tempdir is not None:
+        if tempdir_was_created and tempdir:
+            # Get rid if temporary files that have been uploaded via Upload form
+            logger.debug(f"... Cleaning up the temporary folders {tempdir}")
             shutil.rmtree(tempdir, ignore_errors=True)
 
 
@@ -1413,7 +1387,7 @@ def check_ogc_backend(backend_package):
     return False
 
 
-class HttpClient(object):
+class HttpClient:
 
     def __init__(self):
         self.timeout = 5
@@ -1491,7 +1465,6 @@ class HttpClient(object):
                 content = str(e)
         else:
             response = session.get(url, headers=headers, timeout=self.timeout)
-
         if response:
             try:
                 content = ensure_string(response.content) if not stream else response.raw
@@ -1633,7 +1606,7 @@ def slugify_zh(text, separator='_'):
 
 
 def get_legend_url(
-        instance, style_name,
+        instance, style_name, /,
         service_url=None,
         layer_name=None,
         version='1.3.0',
@@ -1696,7 +1669,16 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                 if gs_resource:
                     srid = gs_resource.projection
                     bbox = gs_resource.native_bbox
-                    instance.set_bbox_polygon([bbox[0], bbox[2], bbox[1], bbox[3]], srid)
+                    ll_bbox = gs_resource.latlon_bbox
+                    try:
+                        instance.set_bbox_polygon([bbox[0], bbox[2], bbox[1], bbox[3]], srid)
+                    except GeoNodeException as e:
+                        if not ll_bbox:
+                            raise
+                        else:
+                            logger.exception(e)
+                            instance.srid = 'EPSG:4326'
+                    instance.set_ll_bbox_polygon([ll_bbox[0], ll_bbox[2], ll_bbox[1], ll_bbox[3]])
                     if instance.srid:
                         instance.srid_url = f"http://www.spatialreference.org/ref/{instance.srid.replace(':', '/').lower()}/"
                     elif instance.bbox_polygon is not None:
@@ -1704,41 +1686,6 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                         instance.srid = 'EPSG:4326'
                     else:
                         raise GeoNodeException(_("Invalid Projection. Layer is missing CRS!"))
-
-                    from geonode.layers.models import Layer
-                    try:
-                        with transaction.atomic():
-                            # Dealing with the BBOX: this is a trick to let GeoDjango storing original coordinates
-                            instance.set_bbox_polygon([bbox[0], bbox[2], bbox[1], bbox[3]], 'EPSG:4326')
-                            Layer.objects.filter(id=instance.id).update(
-                                bbox_polygon=instance.bbox_polygon, srid=srid)
-
-                            # Refresh from DB
-                            instance.refresh_from_db()
-                    except Exception as e:
-                        logger.exception(e)
-
-                    try:
-                        with transaction.atomic():
-                            match = re.match(r'^(EPSG:)?(?P<srid>\d{4,6})$', str(srid))
-                            instance.bbox_polygon.srid = int(match.group('srid')) if match else 4326
-                            Layer.objects.filter(id=instance.id).update(
-                                ll_bbox_polygon=instance.bbox_polygon, srid=srid)
-
-                            # Refresh from DB
-                            instance.refresh_from_db()
-                    except Exception as e:
-                        logger.warning(e)
-                        try:
-                            with transaction.atomic():
-                                instance.bbox_polygon.srid = 4326
-                                Layer.objects.filter(id=instance.id).update(
-                                    ll_bbox_polygon=instance.bbox_polygon, srid=srid)
-
-                                # Refresh from DB
-                                instance.refresh_from_db()
-                        except Exception as e:
-                            logger.warning(e)
                     dx = float(bbox[1]) - float(bbox[0])
                     dy = float(bbox[3]) - float(bbox[2])
                     dataAspect = 1 if dy == 0 else dx / dy
@@ -1868,7 +1815,7 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
             Link.objects.update_or_create(
                 resource=instance.resourcebase_ptr,
                 url=html_link_url,
-                name=instance.alternate,
+                name=instance.alternate or instance.name,
                 link_type='html',
                 defaults=dict(
                     extension='html',
@@ -2078,7 +2025,6 @@ def json_serializer_producer(dictionary):
         'is_active',
         'is_superuser',
         'permissions',
-        'category',
         'user_permissions',
     ]
 
@@ -2145,6 +2091,30 @@ def is_monochromatic_image(image_url, image_data=None):
     except Exception as e:
         logger.debug(e)
         return False
+
+
+def get_subclasses_by_model(model: str):
+    if not settings.GEONODE_APPS_ENABLE:
+        return []
+    from django.apps import apps
+    _app_subclasses = []
+    for _model in apps.get_models():
+        if _model.__name__ == model:
+            models = [(y.name, y.default_model) for x, y in apps.app_configs.items() if hasattr(y, 'default_model')]
+            for m in models:
+                if m[0] in settings.INSTALLED_APPS:
+                    _app_subclasses.append(m[1])
+    return _app_subclasses
+
+
+def get_geoapps_models():
+    # Get models which are of subclass 'GeoApp'
+    models = []
+    for x, y in django_apps.app_configs.items():
+        if hasattr(y, 'type') and y.type == 'GEONODE_APP' and hasattr(y, 'default_model'):
+            if y.name in settings.INSTALLED_APPS:
+                models.append(y)
+    return models
 
 
 def find_by_attr(lst, val, attr="id"):

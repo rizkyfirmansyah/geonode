@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2021 OSGeo
@@ -22,8 +21,9 @@ from rest_framework import serializers
 from dynamic_rest.serializers import DynamicModelSerializer
 from dynamic_rest.fields.fields import DynamicRelationField, DynamicComputedField
 
-from geonode.upload.models import Upload, UploadFile
+from geonode.upload.models import Upload, UploadFile, UploadSizeLimit
 from geonode.layers.api.serializers import LayerSerializer
+
 from geonode.base.api.serializers import BaseDynamicModelSerializer
 
 import logging
@@ -177,7 +177,7 @@ class ProgressUrlField(DynamicComputedField):
 
     def __init__(self, type, **kwargs):
         self.type = type
-        super(ProgressUrlField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def get_attribute(self, instance):
         try:
@@ -192,7 +192,7 @@ class UploadSerializer(BaseDynamicModelSerializer):
 
     def __init__(self, *args, **kwargs):
         # Instantiate the superclass normally
-        super(UploadSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         if 'request' in self.context and \
                 self.context['request'].query_params.get('full'):
@@ -221,3 +221,16 @@ class UploadSerializer(BaseDynamicModelSerializer):
     import_url = ProgressUrlField('import', read_only=True)
     detail_url = ProgressUrlField('detail', read_only=True)
     uploadfile_set = DynamicRelationField(UploadFileSerializer, embed=True, many=True, read_only=True)
+
+
+class UploadSizeLimitSerializer(BaseDynamicModelSerializer):
+    class Meta:
+        model = UploadSizeLimit
+        name = 'upload-size-limit'
+        view_name = 'upload-size-limits-list'
+        fields = (
+            'slug',
+            'description',
+            'max_size',
+            'max_size_label',
+        )

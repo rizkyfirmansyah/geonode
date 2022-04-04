@@ -99,6 +99,7 @@ from geonode.utils import (
     bbox_to_projection,
     build_social_links,
     GXPLayer,
+    mkdtemp,
     GXPMap)
 from geonode.geoserver.helpers import (
     ogc_server_settings,
@@ -219,9 +220,7 @@ def layer_upload_metadata(request):
     form = NewLayerUploadForm(request.POST, request.FILES)
 
     if form.is_valid():
-
-        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
-
+        tempdir = mkdtemp()
         relevant_files = _select_relevant_files(
             ['xml'],
             iter(request.FILES.values())
