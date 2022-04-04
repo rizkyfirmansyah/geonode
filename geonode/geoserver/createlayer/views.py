@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -46,7 +45,7 @@ def layer_create(request, template='createlayer/layer_create.html'):
                 attributes = form.cleaned_data['attributes']
                 permissions = form.cleaned_data["permissions"]
                 layer = create_layer(name, title, request.user.username, geometry_type, attributes)
-                layer.set_permissions(json.loads(permissions), created=True)
+                layer.set_permissions(json.loads(permissions))
                 return redirect(layer)
             except Exception as e:
                 error = f'{e} ({type(e)})'

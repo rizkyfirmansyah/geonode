@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2019 OSGeo
@@ -25,16 +24,21 @@ import base64
 import shutil
 import tempfile
 
-from urllib.parse import urljoin, urlencode
-from django.core.management import call_command
 from os.path import basename, splitext
+from urllib.parse import urljoin, urlencode, urlsplit
 
 from django.conf import settings
 from django.urls import reverse
+from django.test.client import RequestFactory
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.test.utils import override_settings
+from django.contrib.auth.models import AnonymousUser
 
 from guardian.shortcuts import assign_perm
+
+from geonode.geoserver.helpers import ogc_server_settings
+from geonode.geoserver.views import check_geoserver_access, style_change_check
 
 from geonode import geoserver
 from geonode.base.models import Configuration
@@ -548,7 +552,7 @@ class LayerTests(GeoNodeBaseTestSupport):
     type = 'layer'
 
     def setUp(self):
-        super(LayerTests, self).setUp()
+        super().setUp()
         self.user = 'admin'
         self.passwd = 'admin'
         create_layer_data()
@@ -564,8 +568,7 @@ class LayerTests(GeoNodeBaseTestSupport):
         bob = get_user_model().objects.get(username='bobby')
         assign_perm('change_layer_style', bob, layer)
 
-        logged_in = self.client.login(username='bobby', password='bob')
-        self.assertEqual(logged_in, True)
+        self.assertTrue(self.client.login(username='bobby', password='bob'))
         response = self.client.get(
             reverse(
                 'layer_style_manage', args=(
@@ -649,6 +652,132 @@ class LayerTests(GeoNodeBaseTestSupport):
                 shutil.rmtree(d, ignore_errors=True)
 
     @on_ogc_backend(geoserver.BACKEND_PACKAGE)
+    def test_style_change_on_basic_auth(self):
+        """
+        Ensures we are able to update the style through a BASIC auth call only.
+        """
+        layer = Layer.objects.filter(default_style__isnull=False).first()
+
+        bob = get_user_model().objects.get(username='bobby')
+        assign_perm('change_layer_style', bob, layer)
+
+        self.assertTrue(bob.has_perm('change_layer_style', obj=layer))
+
+        # Test that HTTP_AUTHORIZATION in request.META is working properly
+        valid_uname_pw = b"bobby:bob"
+        invalid_uname_pw = b"n0t:v@l1d"
+
+        valid_auth_headers = {
+            'HTTP_AUTHORIZATION': f"BASIC {base64.b64encode(valid_uname_pw).decode()}",
+        }
+
+        invalid_auth_headers = {
+            'HTTP_AUTHORIZATION': f"BASIC {base64.b64encode(invalid_uname_pw).decode()}",
+        }
+
+        change_style_url = urljoin(
+            settings.SITEURL,
+            f"/gs/rest/workspaces/{settings.DEFAULT_WORKSPACE}/styles/{layer.name}?raw=true")
+        logger.debug(f"{change_style_url}")
+
+        rf = RequestFactory()
+
+        # Check is 'authorized'
+        post_request = rf.post(
+            change_style_url,
+            data=san_andres_y_providencia_sld,
+            content_type='application/vnd.ogc.sld+xml',
+            **valid_auth_headers
+        )
+        post_request.user = AnonymousUser()
+        raw_url, headers, access_token, downstream_path = check_geoserver_access(
+            post_request,
+            '/gs/rest/workspaces',
+            'rest/workspaces',
+            workspace='geonode',
+            layername=layer.name,
+            allowed_hosts=[urlsplit(ogc_server_settings.public_url).hostname, ])
+        self.assertIsNotNone(raw_url)
+        self.assertIsNotNone(headers)
+        self.assertIsNotNone(access_token)
+
+        authorized = style_change_check(post_request, downstream_path, style_name='styles', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(post_request, 'rest/styles', style_name=f'{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(post_request, f'rest/workspaces/{layer.workspace}/styles/{layer.name}', style_name=f'{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(post_request, f'rest/layers/{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(post_request, f'rest/workspaces/{layer.workspace}/layers/{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        put_request = rf.put(
+            change_style_url,
+            data=san_andres_y_providencia_sld,
+            content_type='application/vnd.ogc.sld+xml',
+            **valid_auth_headers
+        )
+        put_request.user = AnonymousUser()
+        raw_url, headers, access_token, downstream_path = check_geoserver_access(
+            put_request,
+            '/gs/rest/workspaces',
+            'rest/workspaces',
+            workspace='geonode',
+            layername=layer.name,
+            allowed_hosts=[urlsplit(ogc_server_settings.public_url).hostname, ])
+        self.assertIsNotNone(raw_url)
+        self.assertIsNotNone(headers)
+        self.assertIsNotNone(access_token)
+
+        # Check that, if we have been authorized through the "access_token",
+        # we can still update a style no more present on GeoNode
+        # ref: 05b000cdb06b0b6e9b72bd9eb8a8e03abeb204a8
+        #  [Regression] "style_change_check" always fails in the case the style does not exist on GeoNode too, preventing a user editing temporary generated styles
+        Style.objects.filter(name=layer.name).delete()
+
+        authorized = style_change_check(put_request, downstream_path, style_name='styles', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(put_request, 'rest/styles', style_name=f'{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(put_request, f'rest/workspaces/{layer.workspace}/styles/{layer.name}', style_name=f'{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(put_request, f'rest/layers/{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        authorized = style_change_check(put_request, f'rest/workspaces/{layer.workspace}/layers/{layer.name}', access_token=access_token)
+        self.assertTrue(authorized)
+
+        # Check is NOT 'authorized'
+        post_request = rf.post(
+            change_style_url,
+            data=san_andres_y_providencia_sld,
+            content_type='application/vnd.ogc.sld+xml',
+            **invalid_auth_headers
+        )
+        post_request.user = AnonymousUser()
+        raw_url, headers, access_token, downstream_path = check_geoserver_access(
+            post_request,
+            '/gs/rest/workspaces',
+            'rest/workspaces',
+            workspace='geonode',
+            layername=layer.name,
+            allowed_hosts=[urlsplit(ogc_server_settings.public_url).hostname, ])
+        self.assertIsNotNone(raw_url)
+        self.assertIsNotNone(headers)
+        self.assertIsNone(access_token)
+
+        authorized = style_change_check(post_request, downstream_path, access_token=access_token)
+        self.assertFalse(authorized)
+
+    @on_ogc_backend(geoserver.BACKEND_PACKAGE)
     def test_layer_acls(self):
         """ Verify that the layer_acls view is behaving as expected
         """
@@ -678,13 +807,15 @@ class LayerTests(GeoNodeBaseTestSupport):
             'is_anonymous': False,
             'is_superuser': False,
             'name': 'bobby',
-            'ro': ['geonode:layer2',
-                     'geonode:mylayer',
-                     'geonode:foo',
-                     'geonode:whatever',
-                     'geonode:fooey',
-                     'geonode:quux',
-                     'geonode:fleem'],
+            'ro': [
+                'geonode:layer2',
+                'geonode:mylayer',
+                'geonode:foo',
+                'geonode:whatever',
+                'geonode:fooey',
+                'geonode:quux',
+                'geonode:fleem'
+            ],
             'rw': ['geonode:CA']
         }
         response = self.client.get(reverse('layer_acls'), **valid_auth_headers)
@@ -771,7 +902,7 @@ class UtilsTests(GeoNodeBaseTestSupport):
     type = 'layer'
 
     def setUp(self):
-        super(UtilsTests, self).setUp()
+        super().setUp()
         self.OGC_DEFAULT_SETTINGS = {
             'default': {
                 'BACKEND': 'geonode.geoserver',
@@ -785,7 +916,7 @@ class UtilsTests(GeoNodeBaseTestSupport):
                 'WMST_ENABLED': False,
                 'BACKEND_WRITE_ENABLED': True,
                 'WPS_ENABLED': False,
-                'DATASTORE': str(),
+                'DATASTORE': '',
             }
         }
 
@@ -822,7 +953,7 @@ class UtilsTests(GeoNodeBaseTestSupport):
                 default.get('PUBLIC_LOCATION'))
             self.assertEqual(ogc_settings.USER, default.get('USER'))
             self.assertEqual(ogc_settings.PASSWORD, default.get('PASSWORD'))
-            self.assertEqual(ogc_settings.DATASTORE, str())
+            self.assertEqual(ogc_settings.DATASTORE, '')
             self.assertEqual(ogc_settings.credentials, ('admin', 'geoserver'))
             self.assertTrue(ogc_settings.MAPFISH_PRINT_ENABLED)
             self.assertTrue(ogc_settings.PRINT_NG_ENABLED)

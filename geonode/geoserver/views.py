@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -17,6 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+
 import os
 import re
 import json
@@ -49,7 +49,7 @@ from guardian.shortcuts import get_objects_for_user
 
 from geonode.base.models import ResourceBase
 from geonode.compat import ensure_string
-from geonode.base.auth import get_or_create_token
+from geonode.base.auth import get_auth_user, get_or_create_token
 from geonode.decorators import logged_in_or_basicauth
 from geonode.layers.forms import LayerStyleUploadForm
 from geonode.layers.models import Layer, Style
@@ -63,6 +63,7 @@ from geonode.utils import (
     json_response,
     _get_basic_auth_info,
     http_client,
+    get_headers,
     get_layer_workspace)
 from geoserver.catalog import FailedRequestError
 from geonode.geoserver.signals import (
@@ -177,7 +178,7 @@ def layer_style_upload(request, layername):
         try:
             if sld:
                 if isfile(sld):
-                    with open(sld, "r") as sld_file:
+                    with open(sld) as sld_file:
                         sld = sld_file.read()
                 etree.XML(sld)
         except Exception:
@@ -263,7 +264,7 @@ def layer_style_manage(request, layername):
                     "default_style": default_style
                 }
             )
-        except (FailedRequestError, EnvironmentError):
+        except (FailedRequestError, OSError):
             tb = traceback.format_exc()
             logger.debug(tb)
             msg = (f'Could not connect to geoserver at "{ogc_server_settings.LOCATION}"'
@@ -329,7 +330,7 @@ def layer_style_manage(request, layername):
                     args=(
                         layer.service_typename,
                     )))
-        except (FailedRequestError, EnvironmentError, MultiValueDictKeyError):
+        except (FailedRequestError, OSError, MultiValueDictKeyError):
             tb = traceback.format_exc()
             logger.debug(tb)
             msg = (f'Error Saving Styles for Layer "{layer.name}"')
@@ -344,7 +345,7 @@ def layer_style_manage(request, layername):
             )
 
 
-def style_change_check(request, path):
+def style_change_check(request, path, style_name=None, access_token=None):
     """
     If the layer has not change_layer_style permission, return a status of
     401 (unauthorized)
@@ -360,70 +361,49 @@ def style_change_check(request, path):
     # authenticated (we need to discuss about it)
     authorized = True
     if request.method in ('PUT', 'POST'):
-        if not request.user.is_authenticated:
+        if not request.user.is_authenticated and not access_token:
             authorized = False
-        elif path == 'rest/layers' and request.method == 'PUT':
-            # layer update, should be safe to always authorize it
-            authorized = True
-        else:
+        elif re.match(r'^.*(?<!/rest/)/rest/.*/?styles.*', path):
             # style new/update
             # we will iterate all layers (should be just one if not using GS)
             # to which the posted style is associated
             # and check if the user has change_style_layer permissions on each
             # of them
-            style_name = os.path.splitext(request.path)[0].split('/')[-1]
             if style_name == 'styles' and 'raw' in request.GET:
                 authorized = True
             elif re.match(temp_style_name_regex, style_name):
                 authorized = True
             else:
                 try:
-                    style = Style.objects.get(name=style_name)
-                    for layer in style.layer_styles.all():
-                        if not request.user.has_perm(
-                                'change_layer_style', obj=layer):
-                            authorized = False
-                except Exception:
+                    user = request.user
+                    if user.is_anonymous and access_token:
+                        user = get_auth_user(access_token)
+                    if not user or user.is_anonymous:
+                        authorized = False
+                    else:
+                        style = Style.objects.get(name=style_name)
+                        for layer in style.layer_styles.all():
+                            if not user.has_perm('change_layer_style', obj=layer):
+                                authorized = False
+                                break
+                            else:
+                                authorized = True
+                                break
+                except Style.DoesNotExist:
+                    if request.method != 'POST':
+                        logger.warn(f'There is not a style with such a name: {style_name}.')
+                except Exception as e:
+                    logger.exception(e)
                     authorized = (request.method == 'POST')  # The user is probably trying to create a new style
-                    logger.warn(
-                        f'There is not a style with such a name: {style_name}.')
     return authorized
 
 
-@csrf_exempt
-@logged_in_or_basicauth(realm="GeoNode")
-def geoserver_protected_proxy(request,
-                              proxy_path,
-                              downstream_path,
-                              workspace=None,
-                              layername=None):
-    return geoserver_proxy(request,
+def check_geoserver_access(request,
                            proxy_path,
                            downstream_path,
-                           workspace=workspace,
-                           layername=layername)
-
-
-@csrf_exempt
-@cache_control(public=True, must_revalidate=True, max_age=30)
-def geoserver_proxy(request,
-                    proxy_path,
-                    downstream_path,
-                    workspace=None,
-                    layername=None):
-    """
-    WARNING: Decorators are applied in the order they appear in the source.
-    """
-    # AF: No need to authenticate first. We will check if "access_token" is present
-    # or not on session
-
-    # @dismissed
-    # if not request.user.is_authenticated:
-    #     return HttpResponse(
-    #         "You must be logged in to access GeoServer",
-    #         content_type="text/plain",
-    #         status=401)
-
+                           workspace=None,
+                           layername=None,
+                           allowed_hosts=[]):
     def strip_prefix(path, prefix):
         if prefix not in path:
             _s_prefix = prefix.split('/', 3)
@@ -477,51 +457,74 @@ def geoserver_proxy(request,
         _url = str("".join([ogc_server_settings.LOCATION, '', path[1:]]))
         raw_url = _url
     url = urlsplit(raw_url)
-    affected_layers = None
 
     if f'{ws}/layers' in path:
         downstream_path = 'rest/layers'
     elif f'{ws}/styles' in path:
         downstream_path = 'rest/styles'
 
-    if request.method in ("POST", "PUT", "DELETE"):
-        if downstream_path in ('rest/styles', 'rest/layers',
-                               'rest/workspaces'):
-            if not style_change_check(request, downstream_path):
+    # Collecting headers and cookies
+    headers, access_token = get_headers(request, url, unquote(raw_url), allowed_hosts=allowed_hosts)
+    return (raw_url, headers, access_token, downstream_path)
+
+
+@csrf_exempt
+@cache_control(public=True, must_revalidate=True, max_age=30)
+def geoserver_proxy(request,
+                    proxy_path,
+                    downstream_path,
+                    workspace=None,
+                    layername=None):
+    """
+    WARNING: Decorators are applied in the order they appear in the source.
+    """
+    affected_layers = None
+    allowed_hosts = [urlsplit(ogc_server_settings.public_url).hostname, ]
+
+    raw_url, headers, access_token, downstream_path = check_geoserver_access(
+        request,
+        proxy_path,
+        downstream_path,
+        workspace=workspace,
+        layername=layername,
+        allowed_hosts=allowed_hosts)
+    url = urlsplit(raw_url)
+
+    if re.match(r'^.*/rest/', url.path) and request.method in ("POST", "PUT", "DELETE"):
+        if re.match(r'^.*(?<!/rest/)/rest/.*/?styles.*', url.path):
+            logger.debug(
+                f"[geoserver_proxy] Updating Style ---> url {url.geturl()}")
+            _style_name, _style_ext = os.path.splitext(os.path.basename(urlsplit(url.geturl()).path))
+            _parsed_get_args = dict(parse_qsl(urlsplit(url.geturl()).query))
+            if _style_name == 'styles.json' and request.method == "PUT":
+                if _parsed_get_args.get('name'):
+                    _style_name, _style_ext = os.path.splitext(_parsed_get_args.get('name'))
+            else:
+                _style_name, _style_ext = os.path.splitext(_style_name)
+
+            if not style_change_check(request, url.path, style_name=_style_name, access_token=access_token):
                 return HttpResponse(
-                    _(
-                        "You don't have permissions to change style for this layer"),
+                    _("You don't have permissions to change style for this layer"),
                     content_type="text/plain",
                     status=401)
-            elif downstream_path == 'rest/styles':
-                logger.debug(
-                    f"[geoserver_proxy] Updating Style ---> url {url.geturl()}")
-                _style_name, _style_ext = os.path.splitext(os.path.basename(urlsplit(url.geturl()).path))
-                _parsed_get_args = dict(parse_qsl(urlsplit(url.geturl()).query))
-                if _style_name == 'styles.json' and request.method == "PUT":
-                    if _parsed_get_args.get('name'):
-                        _style_name, _style_ext = os.path.splitext(_parsed_get_args.get('name'))
-                else:
-                    _style_name, _style_ext = os.path.splitext(_style_name)
-                if _style_name != 'style-check' and (_style_ext == '.json' or _parsed_get_args.get('raw')) and \
-                        not re.match(temp_style_name_regex, _style_name):
-                    affected_layers = style_update(request, raw_url, workspace)
-            elif downstream_path == 'rest/layers':
-                logger.debug(
-                    f"[geoserver_proxy] Updating Layer ---> url {url.geturl()}")
-                try:
-                    _layer_name = os.path.splitext(os.path.basename(request.path))[0]
-                    _layer = Layer.objects.get(name=_layer_name)
-                    affected_layers = [_layer]
-                except Exception:
-                    logger.warn(f"Could not find any Layer {os.path.basename(request.path)} on DB")
+            if _style_name != 'style-check' and (_style_ext == '.json' or _parsed_get_args.get('raw')) and \
+                    not re.match(temp_style_name_regex, _style_name):
+                affected_layers = style_update(request, raw_url, workspace)
+        elif re.match(r'^.*(?<!/rest/)/rest/.*/?layers.*', url.path):
+            logger.debug(f"[geoserver_proxy] Updating Dataset ---> url {url.geturl()}")
+            try:
+                _layer_name = os.path.splitext(os.path.basename(request.path))[0]
+                _layer = Layer.objects.get(name=_layer_name)
+                affected_layers = [_layer]
+            except Exception:
+                logger.warn(f"Could not find any Layer {os.path.basename(request.path)} on DB")
 
     kwargs = {'affected_layers': affected_layers}
     raw_url = unquote(raw_url)
     timeout = getattr(ogc_server_settings, 'TIMEOUT') or 60
-    allowed_hosts = [urlsplit(ogc_server_settings.public_url).hostname, ]
     response = proxy(request, url=raw_url, response_callback=_response_callback,
-                     timeout=timeout, allowed_hosts=allowed_hosts, **kwargs)
+                     timeout=timeout, allowed_hosts=allowed_hosts,
+                     headers=headers, access_token=access_token, **kwargs)
     return response
 
 
