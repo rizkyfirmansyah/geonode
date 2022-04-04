@@ -44,6 +44,7 @@ from django.contrib.staticfiles.templatetags import staticfiles
 from django.core.files.storage import default_storage as storage
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
+from django_jsonfield_backport.models import JSONField
 
 from PIL import Image, ImageOps
 
@@ -1098,40 +1099,39 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 self.polymorphic_ctype.model:
             self.resource_type = self.polymorphic_ctype.model.lower()
 
+        # Resource Updated
+        _notification_sent = False
+        _approval_status_changed = False
         if hasattr(self, 'class_name') and (self.pk is None or notify):
-            if self.pk is None and self.title:
+            if self.pk is None and (self.title or getattr(self, 'name', None)):
                 # Resource Created
-
+                if not self.title and getattr(self, 'name', None):
+                    self.title = getattr(self, 'name', None)
                 notice_type_label = f'{self.class_name.lower()}_created'
                 recipients = get_notification_recipients(notice_type_label, resource=self)
                 send_notification(recipients, notice_type_label, {'resource': self})
             elif self.pk:
-                # Resource Updated
-                _notification_sent = False
-
                 # Approval Notifications Here
-                if not _notification_sent and settings.ADMIN_MODERATE_UPLOADS and \
-                   not self.__is_approved and self.is_approved:
-                    # Set "approved" workflow permissions
-                    self.set_workflow_perms(approved=True)
-
-                    # Send "approved" notification
-                    notice_type_label = f'{self.class_name.lower()}_approved'
-                    recipients = get_notification_recipients(notice_type_label, resource=self)
-                    send_notification(recipients, notice_type_label, {'resource': self})
-                    _notification_sent = True
+                if self.was_approved != self.is_approved:
+                    if not _notification_sent and not self.was_approved and self.is_approved:
+                        # Send "approved" notification
+                        notice_type_label = f'{self.class_name.lower()}_approved'
+                        recipients = get_notification_recipients(notice_type_label, resource=self)
+                        send_notification(recipients, notice_type_label, {'resource': self})
+                        _notification_sent = True
+                    self.was_approved = self.is_approved
+                    _approval_status_changed = True
 
                 # Publishing Notifications Here
-                if not _notification_sent and settings.RESOURCE_PUBLISHING and \
-                   not self.__is_published and self.is_published:
-                    # Set "published" workflow permissions
-                    self.set_workflow_perms(published=True)
-
-                    # Send "published" notification
-                    notice_type_label = f'{self.class_name.lower()}_published'
-                    recipients = get_notification_recipients(notice_type_label, resource=self)
-                    send_notification(recipients, notice_type_label, {'resource': self})
-                    _notification_sent = True
+                if self.was_published != self.is_published:
+                    if not _notification_sent and not self.was_published and self.is_published:
+                        # Send "published" notification
+                        notice_type_label = f'{self.class_name.lower()}_published'
+                        recipients = get_notification_recipients(notice_type_label, resource=self)
+                        send_notification(recipients, notice_type_label, {'resource': self})
+                        _notification_sent = True
+                    self.was_published = self.is_published
+                    _approval_status_changed = True
 
                 # Updated Notifications Here
                 if not _notification_sent:
@@ -1139,9 +1139,11 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     recipients = get_notification_recipients(notice_type_label, resource=self)
                     send_notification(recipients, notice_type_label, {'resource': self})
 
-        super(ResourceBase, self).save(*args, **kwargs)
-        self.__is_approved = self.is_approved
-        self.__is_published = self.is_published
+        super().save(*args, **kwargs)
+
+        # Update workflow permissions
+        if _approval_status_changed:
+            self.set_permissions()
 
     def delete(self, notify=True, *args, **kwargs):
         """
@@ -1152,7 +1154,16 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             recipients = get_notification_recipients(notice_type_label, resource=self)
             send_notification(recipients, notice_type_label, {'resource': self})
 
-        super(ResourceBase, self).delete(*args, **kwargs)
+        # Remove uploaded files, if any
+        ResourceBase.objects.cleanup_uploaded_files(resource_id=self.id)
+
+        try:
+            self.get_real_instance().styles.delete()
+            self.get_real_instance().default_style.delete()
+        except Exception as e:
+            logger.debug(f"Error occurred while trying to delete the Dataset Styles: {e}")
+
+        super().delete(*args, **kwargs)
 
     def get_upload_session(self):
         raise NotImplementedError()
@@ -1829,10 +1840,12 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         return the_ma
 
     def handle_moderated_uploads(self):
-        if settings.RESOURCE_PUBLISHING:
-            self.is_published = False
         if settings.ADMIN_MODERATE_UPLOADS:
             self.is_approved = False
+            self.was_approved = False
+        if settings.RESOURCE_PUBLISHING:
+            self.is_published = False
+            self.was_published = False
 
     def add_missing_metadata_author_or_poc(self):
         """
@@ -2088,11 +2101,15 @@ def resourcebase_post_save(instance, *args, **kwargs):
             if license and len(license) > 0:
                 instance.license = license[0]
 
+        if instance.uuid is None or instance.uuid == '':
+            instance.uuid = str(uuid.uuid1())
+
         ResourceBase.objects.filter(id=instance.id).update(
             thumbnail_url=instance.get_thumbnail_url(),
             detail_url=instance.get_absolute_url(),
             csw_insert_date=now(),
-            license=instance.license)
+            license=instance.license,
+            uuid=instance.uuid)
         instance.refresh_from_db()
     except Exception:
         tb = traceback.format_exc()
@@ -2156,3 +2173,12 @@ def rating_post_save(instance, *args, **kwargs):
 
 
 signals.post_save.connect(rating_post_save, sender=OverallRating)
+
+
+class ExtraMetadata(models.Model):
+    resource = models.ForeignKey(
+        ResourceBase,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE)
+    metadata = JSONField(null=True, default=dict, blank=True)
