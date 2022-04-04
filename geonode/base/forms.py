@@ -147,7 +147,6 @@ class CategoryForm(forms.Form):
     category_choice_field = CategoryChoiceField(
         required=True,
         label=f"*{_('Category')}",
-        empty_label=None,
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
             order_by=['gn_description']))

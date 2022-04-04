@@ -4363,8 +4363,7 @@ html {
     font-size: 24px;
 }
 .learn-more-modal-content {
-    padding: 25px;
-    text-align: left;
+    text-align: center;
     width: 140% !important;
     font-size: 18px;
 }

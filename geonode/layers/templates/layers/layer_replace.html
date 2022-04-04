@@ -64,7 +64,16 @@
       aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content learn-more-modal-content">
-          <p><strong>List of supported file formats:</strong></p><br />
+          <div class="modal-header">
+            <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal"
+                class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+                  </path>
+                </svg></span></div>
+            <h4 class="modal-title text-center">List of supported file formats</h4>
+          </div>
           <p>Shapefile data: .shp, .shx, .dbf .prj and .xml</p>
           <p>Raster data: .tif</p><br />
           <p>If you find yourself cannot uploaded the data and found some problem like</p><br />
@@ -74,8 +83,7 @@
               accepting connections.</italic>
           </p><br />
           <p><strong>Please contact system administrator</strong></p>
-          <hr />
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -145,29 +153,15 @@
 <script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}">
 </script>
 <script type="text/javascript">
-  {
-    % autoescape off %
-  }
+  {% autoescape off %}
 
-  csrf_token = "{{ csrf_token }}",
-    form_target = "{% url "
-  layer_replace " resource.service_typename %}",
-    time_enabled = {
-      {
-        TIME_ENABLED | lower
-      }
-    },
-    mosaic_enabled = {
-      {
-        MOSAIC_ENABLED | lower
-      }
-    },
-    userLookup = "{% url "
-  account_ajax_lookup " %}"
+    csrf_token =  "{{ csrf_token }}",
+    form_target = "{% url "layer_replace" resource.service_typename %}",
+    time_enabled = {{ TIME_ENABLED|lower  }},
+    mosaic_enabled = {{ MOSAIC_ENABLED|lower  }},
+    userLookup = "{% url "account_ajax_lookup" %}"
 
-  {
-    % endautoescape %
-  }
+  {% endautoescape %}
 </script>
 {% if GEONODE_SECURITY_ENABLED %}
 {% with resource=layer %}
