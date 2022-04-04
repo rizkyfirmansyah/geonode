@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -32,6 +31,9 @@ from django.conf import settings
 from django.core.files import File
 from django.utils.timezone import now
 from django.core.files.storage import FileSystemStorage
+from django.core.validators import MinLengthValidator, MinValueValidator
+from django.template.defaultfilters import filesizeformat
+from django.utils.translation import ugettext_lazy as _
 
 from geonode.layers.models import Layer
 from geonode.geoserver.helpers import gs_uploader, ogc_server_settings
@@ -69,6 +71,25 @@ class UploadManager(models.Manager):
             state=Upload.STATE_PROCESSED)
 
 
+class UploadSizeLimitManager(models.Manager):
+
+    def create_default_limit(self):
+        max_size_db_obj = self.create(
+            slug="total_upload_size_sum",
+            description="The sum of sizes for the files of a dataset upload.",
+            max_size=settings.DEFAULT_MAX_UPLOAD_SIZE,
+        )
+        return max_size_db_obj
+
+    def create_default_limit_with_slug(self, slug):
+        max_size_db_obj = self.create(
+            slug=slug,
+            description="Size limit.",
+            max_size=settings.DEFAULT_MAX_UPLOAD_SIZE,
+        )
+        return max_size_db_obj
+
+
 class Upload(models.Model):
 
     objects = UploadManager()
@@ -80,6 +101,7 @@ class Upload(models.Model):
     date = models.DateTimeField('date', default=now)
     layer = models.ForeignKey(Layer, null=True, on_delete=models.CASCADE)
     upload_dir = models.TextField(null=True)
+    store_spatial_files = models.BooleanField(default=True)
     name = models.CharField(max_length=64, null=True)
     complete = models.BooleanField(default=False)
     # hold our serialized session object
@@ -136,7 +158,7 @@ class Upload(models.Model):
                 sld_files = uploaded_files.sld_files
                 xml_files = uploaded_files.xml_files
 
-                if not UploadFile.objects.filter(upload=self, file=base_file).count():
+                if self.store_spatial_files and not UploadFile.objects.filter(upload=self, file=base_file).count():
                     uploaded_file = UploadFile.objects.create_from_upload(
                         self,
                         base_file,
@@ -166,7 +188,7 @@ class Upload(models.Model):
         if "COMPLETE" == self.state:
             self.complete = True
         if self.layer and self.layer.processed:
-            self.state = Upload.STATE_PROCESSED
+            self.state = Upload.STATE_RUNNING
         elif self.state in (Upload.STATE_READY, Upload.STATE_PENDING):
             self.state = upload_session.import_session.state
         self.save()
@@ -183,6 +205,10 @@ class Upload(models.Model):
         elif self.state == Upload.STATE_PROCESSED:
             return 100.0
         elif self.state in (Upload.STATE_COMPLETE, Upload.STATE_RUNNING):
+            if self.layer and self.layer.processed and self.layer.instance_is_processed:
+                self.state = Upload.STATE_PROCESSED
+                self.save()
+                return 90.0
             return 80.0
 
     def set_resume_url(self, resume_url):
@@ -225,7 +251,7 @@ class Upload(models.Model):
     def delete(self, *args, **kwargs):
         importer_locations = []
         upload_files = [_file.file for _file in UploadFile.objects.filter(upload=self)]
-        super(Upload, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
         try:
             session = gs_uploader.get_session(self.import_id)
         except (NotFound, Exception):
@@ -266,9 +292,8 @@ class Upload(models.Model):
             self.state = state
             Upload.objects.filter(id=self.id).update(state=state)
         if self.layer:
-            if self.state == Upload.STATE_PROCESSED:
-                self.layer.clear_dirty_state()
-            else:
+            self.layer.set_processing_state(state)
+            if self.state != Upload.STATE_PROCESSED:
                 self.layer.set_dirty_state()
 
     def __str__(self):
@@ -329,8 +354,43 @@ class UploadFile(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = self.file.name
-        super(UploadFile, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         self.file.delete(False)
-        super(UploadFile, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
+
+
+class UploadSizeLimit(models.Model):
+
+    objects = UploadSizeLimitManager()
+
+    slug = models.SlugField(
+        primary_key=True,
+        max_length=255,
+        unique=True,
+        null=False,
+        blank=False,
+        validators=[MinLengthValidator(limit_value=3)],
+    )
+    description = models.TextField(
+        max_length=255,
+        default=None,
+        null=True,
+        blank=True,
+    )
+    max_size = models.BigIntegerField(
+        help_text=_("The maximum file size allowed for upload (bytes)."),
+        default=settings.DEFAULT_MAX_UPLOAD_SIZE,
+        validators=[MinValueValidator(limit_value=0)],
+    )
+
+    @property
+    def max_size_label(self):
+        return filesizeformat(self.max_size)
+
+    def __str__(self):
+        return f'UploadSizeLimit for "{self.slug}" (max_size: {self.max_size_label})'
+
+    class Meta:
+        ordering = ("slug",)

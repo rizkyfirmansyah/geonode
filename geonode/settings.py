@@ -2120,6 +2120,9 @@ FILE_UPLOAD_HANDLERS = [
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 ]
 
+DEFAULT_MAX_UPLOAD_SIZE = int(os.getenv('DEFAULT_MAX_UPLOAD_SIZE', 1848576000))  # 1800 MB
+DEFAULT_BUFFER_CHUNK_SIZE = int(os.getenv('DEFAULT_BUFFER_CHUNK_SIZE', 64 * 1024))
+
 '''
 Default schema used to store extra and dynamic metadata for the resource
 '''
