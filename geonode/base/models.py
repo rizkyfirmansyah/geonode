@@ -1000,10 +1000,18 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     share_count = models.IntegerField(default=0)
     featured = models.BooleanField(_("Featured"), default=False, help_text=_(
         'should this resource be advertised in home page?'))
+    was_published = models.BooleanField(
+        _("was published"),
+        default=True,
+        help_text=_('previous published state.'))
     is_published = models.BooleanField(
         _("Is Published"),
         default=True,
         help_text=_('should this resource be published and searchable?'))
+    was_approved = models.BooleanField(
+        _("was approved"),
+        default=True,
+        help_text=_('previous approved state.'))
     is_approved = models.BooleanField(
         _("Approved"),
         default=True,
