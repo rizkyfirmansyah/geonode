@@ -70,6 +70,11 @@ from geonode.base.enumerations import (
     UPDATE_FREQUENCIES,
     DEFAULT_SUPPLEMENTAL_INFORMATION)
 from geonode.base.bbox_utils import BBOXHelper, polygon_from_bbox
+from geonode.thumbs.utils import (
+    get_unique_upload_path,
+    thumb_path,
+    thumb_size,
+    remove_thumbs)
 from geonode.utils import (
     bbox_to_wkt,
     find_by_attr,
@@ -1669,11 +1674,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     # Note - you should probably broadcast layer#post_save() events to ensure
     # that indexing (or other listeners) are notified
     def save_thumbnail(self, filename, image):
-        from geonode.thumbs.utils import (
-            get_unique_upload_path,
-            thumb_path,
-            thumb_size,
-            remove_thumbs)
         upload_path = get_unique_upload_path(self, filename)
 
         try:
