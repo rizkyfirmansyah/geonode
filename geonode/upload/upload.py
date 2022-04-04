@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -81,7 +80,7 @@ def _log(msg, *args):
     logger.debug(msg, *args)
 
 
-class UploaderSession(object):
+class UploaderSession:
 
     """All objects held must be able to survive a good pickling"""
 
@@ -130,6 +129,9 @@ class UploaderSession(object):
 
     # the upload type - see the _pages dict in views
     upload_type = None
+
+    # whether the files have been uploaded or provided locally
+    spatial_files_uploaded = True
 
     # time related info - need to store here until geoserver layer exists
     time_info = None
@@ -276,8 +278,8 @@ def _get_layer_type(spatial_files):
     return the_layer_type
 
 
-def save_step(user, layer, spatial_files, overwrite=True, mosaic=False,
-              append_to_mosaic_opts=None, append_to_mosaic_name=None,
+def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=True,
+              mosaic=False, append_to_mosaic_opts=None, append_to_mosaic_name=None,
               mosaic_time_regex=None, mosaic_time_value=None,
               time_presentation=None, time_presentation_res=None,
               time_presentation_default_value=None,
@@ -319,6 +321,7 @@ def save_step(user, layer, spatial_files, overwrite=True, mosaic=False,
             state=Upload.STATE_READY,
             upload_dir=spatial_files.dirname
         )
+        upload.store_spatial_files = store_spatial_files
 
         # @todo settings for use_url or auto detection if geoserver is
         # on same host
@@ -927,16 +930,8 @@ def _update_layer_with_xml_info(saved_layer, xml_file, regions, keywords, vals):
         for key, value in vals.items():
             if key == 'spatial_representation_type':
                 value = SpatialRepresentationType(identifier=value)
-
-            # remove the category field as it's multiple category not a single one
-            # elif key == 'topic_category':
-            #     value, created = TopicCategory.objects.get_or_create(
-            #         identifier=value,
-            #         defaults={'description': '', 'gn_description': value})
-            #     key = 'category'
-            #     defaults[key] = value
-            else:
-                defaults[key] = value
+            elif key == 'topic_category':
+                value = TopicCategory(identifier=value)
 
         # Save all the modified information in the instance without triggering signals.
         try:
