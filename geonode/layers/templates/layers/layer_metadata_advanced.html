@@ -146,7 +146,7 @@
                   placeholder="specifies wether or not use a custom GetFeatureInfo template."
                   id="id_resource-use_featureinfo_custom_template"
                   {% if resource.use_featureinfo_custom_template %}checked{% endif %}>
-              <div id="layer-attributes-panel"
+              <div id="layer-attributes-panel">
                   {% if resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
                   {{ attribute_form.management_form }}
                   <table class="table table-striped table-bordered table-condensed">
@@ -175,7 +175,7 @@
               {% endblock attributes %}
 
               {% block layer_custom_template %}
-              <div id="layer-attributes-custom_template"
+              <div id="layer-attributes-custom_template">
                     {% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
                   {{layer_form.featureinfo_custom_template}}
               </div>
