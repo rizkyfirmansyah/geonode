@@ -20,6 +20,7 @@
 from django.conf import settings
 from django.urls import reverse
 from geonode.geoserver.helpers import ogc_server_settings
+from geonode.settings import DEFAULT_WORKSPACE
 
 
 def geoserver_urls(request):
@@ -27,7 +28,9 @@ def geoserver_urls(request):
     defaults = dict(
         GEOSERVER_LOCAL_URL=ogc_server_settings.LOCATION,
         GEOSERVER_PUBLIC_LOCATION=ogc_server_settings.public_url,
+        GEOSERVER_OWS=ogc_server_settings.internal_ows,
         GEOSERVER_BASE_URL=ogc_server_settings.public_url,
+        DEFAULT_WORKSPACE=DEFAULT_WORKSPACE,
         UPLOADER_URL=reverse('data_upload') if getattr(
             settings,
             'UPLOADER',
