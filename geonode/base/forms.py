@@ -150,6 +150,7 @@ class CategoryForm(forms.Form):
     category_choice_field = CategoryChoiceField(
         required=True,
         label='*' + _('Category'),
+        empty_label=None,
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
             order_by=['gn_description']))
@@ -291,6 +292,7 @@ class ResourceBaseForm(TranslationModelForm):
         required=False,
         widget=TinyMCE())
     owner = forms.ModelChoiceField(
+        empty_label=_("Owner"),
         label=_("Owner"),
         required=True,
         queryset=get_user_model().objects.exclude(username='AnonymousUser'),
