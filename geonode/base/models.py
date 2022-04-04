@@ -60,6 +60,7 @@ from taggit.managers import TaggableManager, _TaggableManager
 
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from treebeard.mp_tree import MP_Node, MP_NodeQuerySet, MP_NodeManager
+from geonode import GeoNodeException
 
 from geonode.singleton import SingletonModel
 from geonode.base.enumerations import (
@@ -1390,6 +1391,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             self.dirty_state = True
             ResourceBase.objects.filter(id=self.id).update(dirty_state=True)
 
+    def set_processing_state(self, state):
+        if state == "PROCESSED":
+            self.clear_dirty_state()
+
     def clear_dirty_state(self):
         if self.dirty_state:
             self.dirty_state = False
@@ -1451,7 +1456,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         except Exception as e:
             raise GeoNodeException(e)
 
-    def set_bounds_from_center_and_zoom(self, center_x, center_y, zoom):
+    def set_bounds_from_center_and_zoom(self, center_x, center_y, center_srid, zoom):
         """
         Calculate zoom level and center coordinates in mercator.
         """
@@ -1463,10 +1468,13 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
         # covert center in lat lon
         def get_lon_lat():
-            wgs84 = Proj(init='epsg:4326')
-            mercator = Proj(init='epsg:3857')
-            lon, lat = transform(mercator, wgs84, center_x, center_y)
-            return lon, lat
+            if not center_srid or center_srid.lower() != 'epsg:4326':
+                wgs84 = Proj(init='epsg:4326')
+                mercator = Proj(init='epsg:3857')
+                lon, lat = transform(mercator, wgs84, center_x, center_y)
+                return lon, lat
+            else:
+                return center_x, center_y
 
         # calculate the degree length at this latitude
         def deg_len():
