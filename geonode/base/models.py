@@ -1009,6 +1009,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     was_published = models.BooleanField(
         _("was published"),
         default=True,
+        null=True,
         help_text=_('previous published state.'))
     is_published = models.BooleanField(
         _("Is Published"),
@@ -1017,6 +1018,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     was_approved = models.BooleanField(
         _("was approved"),
         default=True,
+        null=True,
         help_text=_('previous approved state.'))
     is_approved = models.BooleanField(
         _("Approved"),
