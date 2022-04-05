@@ -103,10 +103,10 @@ def get_wms(version='1.1.1', type_name=None, username=None, password=None):
             version=version,
             username=username,
             password=password,
-            timeout=ogc_server_settings.get('TIMEOUT', 60)
+            timeout=ogc_server_settings.get('TIMEOUT', 120)
         )
     else:
-        return WebMapService(url, timeout=ogc_server_settings.get('TIMEOUT', 60))
+        return WebMapService(url, timeout=ogc_server_settings.get('TIMEOUT', 120))
 
 
 class UploaderBase(GeoNodeBaseTestSupport):
@@ -755,7 +755,7 @@ class TestUpload(UploaderBase):
         self.assertFalse(data['uploads'][0]['complete'])
 
         # - Next step - final
-        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=60)
+        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=300)
         data = resp.json()
         #    - Assertions
         self.assertEqual(resp.status_code, 200)
