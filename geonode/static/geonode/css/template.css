@@ -6280,6 +6280,10 @@ article.tab-pane {
     background-color: #4e98af;
     text-align: center;
     box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
+    min-width: 124px;
+}
+.nav-tabs li a svg {
+    margin-right: 1rem;
 }
 .nav-tabs li a:hover {
     background-color: #a23133 !important;
