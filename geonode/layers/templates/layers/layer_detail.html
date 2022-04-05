@@ -1025,12 +1025,12 @@
       $("#security_refresh").trigger('click');
     }
     
-    const _datasets = {{ attributes }};
+    const _datasets = {{ attributes|default:" " }};
     const column_names = {{ column_names }};
     let columns = column_names.map((obj) => Object.assign({'data': obj}));
 
     $("#datasetsTable").DataTable({
-      data: _datasets[0].data,
+      data: _datasets.data,
       columns: columns,
       scrollX: true,
       responsive: true

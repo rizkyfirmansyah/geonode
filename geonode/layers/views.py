@@ -384,7 +384,7 @@ def get_data_tables(table):
         cur.execute(_query_set(table))
         row = dictfetchall(cur)
 
-        return row
+        return json.dumps(row[0])
 
 
 @login_required
