@@ -2,7 +2,7 @@
 <ul class="nav nav-tabs no-gutters">
   <li class="active"><a href="#info" data-toggle="tab"><i class="fa fa-info-circle"></i>{% trans "Info" %}</a></li>
   {% if resource.polymorphic_ctype.name == 'layer' %}
-  <li><a href="#attributes" data-toggle="tab"><i class="fa fa-bars"></i>{% trans "Atribute Properties" %}</a></li>
+  <li><a href="#attributes" data-toggle="tab"><i class="fa fa-bars"></i>{% trans "Fields" %}</a></li>
   {% endif %}
   {% if resource.polymorphic_ctype.name == 'layer' %}
   <li><a href="#datasets" data-toggle="tab"><i class="fa fa-bars"></i>{% trans "Attributes" %}</a></li>
@@ -26,5 +26,3 @@
   <li><a href="#favorite" data-toggle="tab"><i class="fa fa-star"></i>{% trans "Favorite" %}</a></li>
   {% endif %}
 </ul>
-
-{% include "_datasets_attr_js.html" %}

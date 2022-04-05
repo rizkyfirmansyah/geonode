@@ -242,6 +242,20 @@
         {% endif %}
       </article>
 
+      <article id="datasets" class="tab-pane">
+        {% if attributes %}
+        <table id="datasetsTable" data-page-length='10' class="display" style="width: 100%">
+          <thead>
+            <tr>
+              {% for column in column_names %}
+                <th>{{ column }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+        </table>
+        {% endif %}
+      </article>
+
       {% block social_links %}
       {% if DISPLAY_SOCIAL %}
       {% include "social_links.html" %}
@@ -1003,16 +1017,29 @@
 
 {% if GEONODE_SECURITY_ENABLED %}
 {% include "_permissions_form_js.html" %}
+{% autoescape off %}
 <script type='text/javascript'>
   $(function () {
     if (sessionStorage.getItem("security_refresh_trigger")) {
       sessionStorage.clear();
       $("#security_refresh").trigger('click');
     }
+    
+    const _datasets = {{ attributes }};
+    const column_names = {{ column_names }};
+    let columns = column_names.map((obj) => Object.assign({'data': obj}));
+
+    $("#datasetsTable").DataTable({
+      data: _datasets[0].data,
+      columns: columns,
+      scrollX: true,
+      responsive: true
+    });
+    
   });
 </script>
+{% endautoescape %}
 {% endif %}
-
 {% if FAVORITE_ENABLED %}
 {% include "favorite/_favorite_js.html" %}
 {% endif %}

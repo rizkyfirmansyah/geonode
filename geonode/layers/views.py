@@ -29,6 +29,7 @@ import traceback
 
 from itertools import chain
 from dal import autocomplete
+from urllib.parse import urlparse
 from requests import Request
 from urllib.parse import quote
 from owslib.wfs import WebFeatureService
@@ -46,6 +47,7 @@ from django.forms.utils import ErrorList
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 from django.db import transaction
+import psycopg2
 from django.core.exceptions import PermissionDenied
 from django.forms.models import inlineformset_factory
 from django.template.response import TemplateResponse
@@ -333,6 +335,58 @@ def layer_style_upload(request):
         status=status_code)
 
 
+def get_data_tables(table):
+    """
+    perform query to each layers in order to display on layer detail page as datatables
+    connect to geodatabase defined in the .env using psycopg2
+    return: json attributes omitted the_geom column and fid
+    """
+
+    def _query_set(table):
+        query = """
+            select json_agg(data) data, count(*) as total_rows
+            from (
+                select to_jsonb(sq) - 'the_geom' - 'fid'::text data
+                from (
+                select * from
+                """ + table + """
+                ) sq
+            ) as data;
+        """
+        return query
+
+    def _connect():
+        result = urlparse(settings.GEODATABASE_URL)
+        username = result.username
+        password = result.password
+        database = result.path[1:]
+        hostname = result.hostname
+        port = result.port
+        connection = psycopg2.connect(
+            database=database,
+            user=username,
+            password=password,
+            host=hostname,
+            port=port
+        )
+        return connection
+
+    def dictfetchall(cursor):
+        "Return all rows from a cursor as a dict"
+        columns = [col[0] for col in cursor.description]
+        return [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+    with _connect() as conn:
+        cur = conn.cursor()
+        cur.execute(_query_set(table))
+        row = dictfetchall(cur)
+
+        return row
+
+
 @login_required
 def layer_upload(request, template='upload/layer_upload.html'):
     if request.method == 'GET':
@@ -608,6 +662,10 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         else:
             access_token = None
 
+    _table = layer.alternate.split(":")[1] if ":" in layer.alternate else ""
+    data_tables = get_data_tables(_table)
+    _keys = data_tables[0].get('data')[0]
+
     context_dict = {
         'access_token': access_token,
         'resource': layer,
@@ -616,6 +674,8 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "permissions_json": permissions_json,
         "documents": get_related_documents(layer),
         "metadata": metadata,
+        "attributes": data_tables,
+        "column_names": [k for k in _keys.keys()],
         "is_layer": True,
         "wps_enabled": settings.OGC_SERVER['default']['WPS_ENABLED'],
         "granules": granules,
