@@ -37,7 +37,7 @@ from django.utils import timezone
 LOGGER = logging.getLogger(__name__)
 
 
-def set_metadata(xml, identifier="", vals={}, regions=[], keywords=[], category=[], custom={}):
+def set_metadata(xml, identifier="", vals={}, regions=[], keywords=[], custom={}):
     """Generate dict of model properties based on XML metadata"""
 
     # check if document is XML
@@ -56,18 +56,18 @@ def set_metadata(xml, identifier="", vals={}, regions=[], keywords=[], category=
         tagname = get_tagname(exml)
 
     if tagname == 'MD_Metadata':  # ISO
-        identifier, vals, regions, keywords, category = iso2dict(exml)
+        identifier, vals, regions, keywords = iso2dict(exml)
     elif tagname == 'metadata':  # FGDC
-        identifier, vals, regions, keywords, category = fgdc2dict(exml)
+        identifier, vals, regions, keywords = fgdc2dict(exml)
     elif tagname == 'Record':  # Dublin Core
-        identifier, vals, regions, keywords, category = dc2dict(exml)
+        identifier, vals, regions, keywords = dc2dict(exml)
     else:
         raise RuntimeError('Unsupported metadata format')
 
     if not vals.get("date"):
         vals["date"] = datetime.datetime.now(timezone.get_current_timezone()).strftime("%Y-%m-%dT%H:%M:%S")
 
-    return [identifier, vals, regions, keywords, category, custom]
+    return [identifier, vals, regions, keywords, custom]
 
 
 def iso2dict(exml):
@@ -243,7 +243,7 @@ def get_tagname(element):
     return tagname
 
 
-def parse_metadata(exml, uuid="", vals={}, regions=[], keywords=[], category=[], custom={}):
+def parse_metadata(exml, uuid="", vals={}, regions=[], keywords=[], custom={}):
     from django.utils.module_loading import import_string
     available_parsers = (
         settings.METADATA_PARSERS
@@ -255,8 +255,8 @@ def parse_metadata(exml, uuid="", vals={}, regions=[], keywords=[], category=[],
         if parser_path == '__DEFAULT__':
             parser_path = "geonode.layers.metadata.set_metadata"
         parser = import_string(parser_path)
-        uuid, vals, regions, keywords, category, custom = parser(exml, uuid, vals, regions, keywords, category, custom)
-    return uuid, vals, regions, keywords, category, custom
+        uuid, vals, regions, keywords, custom = parser(exml, uuid, vals, regions, keywords, custom)
+    return uuid, vals, regions, keywords, custom
 
 
 def convert_keyword(keyword, iso2dict=False, theme='theme'):

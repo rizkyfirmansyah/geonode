@@ -583,7 +583,7 @@ def file_upload(filename,
         defaults['metadata_uploaded_preserve'] = metadata_uploaded_preserve
 
         # get model properties from XML
-        identifier, vals, regions, keywords, category, custom = parse_metadata(xml_file)
+        identifier, vals, regions, keywords, custom = parse_metadata(xml_file)
 
         if defaults['metadata_uploaded_preserve']:
             defaults['metadata_xml'] = xml_file
@@ -606,9 +606,6 @@ def file_upload(filename,
 
     if keywords and regions_unresolved:
         keywords.extend(convert_keyword(regions_unresolved))
-
-    if keywords and categories_unresolved:
-        keywords.extend(convert_keyword(categories_unresolved))
 
     # If it is a vector file, create the layer in postgis.
     if is_vector(filename):
