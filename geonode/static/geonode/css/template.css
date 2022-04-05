@@ -6287,6 +6287,19 @@ article.tab-pane {
 .grid-spacer {
     margin-top: 10px;
 }
+#datasetsTable_filter label {
+    padding-right: 2rem;
+}
+#datasetsTable_length label,
+#datasetsTable_filter label {
+    display: inline-flex;
+}
+#datasetsTable_length select,
+#datasetsTable_filter input {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    height: 3em;
+}
 
 /* Control items
 ----------------------- */
@@ -7335,6 +7348,10 @@ form textarea[name=content] {
         background-color: white;
         min-height: calc(100vh - 240px);
         padding: 2em;
+    }
+    
+    #datasetsTable_filter input {
+        min-width: 340px;
     }
 }
 @media (min-width: 1200px) {
