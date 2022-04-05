@@ -384,7 +384,7 @@ def get_data_tables(table):
         cur.execute(_query_set(table))
         row = dictfetchall(cur)
 
-        return json.dumps(row[0])
+        return row
 
 
 @login_required
@@ -674,7 +674,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "permissions_json": permissions_json,
         "documents": get_related_documents(layer),
         "metadata": metadata,
-        "attributes": data_tables,
+        "attributes": json.dumps(data_tables[0]),
         "column_names": [k for k in _keys.keys()],
         "is_layer": True,
         "wps_enabled": settings.OGC_SERVER['default']['WPS_ENABLED'],

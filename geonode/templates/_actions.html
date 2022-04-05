@@ -5,7 +5,7 @@
   <li><a href="#attributes" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Fields" %}</a></li>
   {% endif %}
   {% if resource.polymorphic_ctype.name == 'layer' %}
-  <li><a href="#datasets" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Attributes" %}</a></li>
+  <li><a href="#datasets" data-toggle="tab"><i class="fa-solid fa-database"></i>{% trans "Attributes" %}</a></li>
   {% endif %}
   {% if resource.is_mosaic %}
   <li><a href="#granules" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Granules" %}</a></li>
