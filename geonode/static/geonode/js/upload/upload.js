@@ -382,7 +382,7 @@ define(['underscore',
             const metadata = document.createElement('td');
             metadata.innerHTML = properties.state === 'PROCESSED' && properties.detail_url ?
                 '<a href="' + properties.detail_url + '/metadata" target="_blank" rel="noopener noreferrer">' + 'Metadata ' + properties.name + '</a>' :
-                '<i class="fa fa-circle-o-notch fa-spin">';
+                '<i class="fa-solid fa-circle-notch fa-spin">';
             row.appendChild(metadata);
 
             const infoTools = document.createElement('td');
@@ -398,26 +398,26 @@ define(['underscore',
                 resumeTool.setAttribute('title', resumeTooltip);
                 resumeTool.setAttribute('data-toggle', 'tooltip');
                 resumeTool.setAttribute('data-placement', 'top');
-                resumeTool.innerHTML = '<i class="fa fa-play"></i>';
+                resumeTool.innerHTML = '<i class="fa-solid fa-play"></i>';
                 resumeTool.onclick = function() { window.location = properties.resume_url; };
                 infoTools.appendChild(resumeTool);
                 $(resumeTool).tooltip();
             } else {
                 const infoIcon = document.createElement('i');
                 if (properties.state === 'COMPLETE') {
-                    infoIcon.setAttribute('class', 'fa fa-spinner fa-spin');
+                    infoIcon.setAttribute('class', 'fa-solid fa-spinner fa-spin');
                 }
                 if (properties.state === 'PROCESSED') {
                     infoIcon.setAttribute('data-toggle', 'tooltip');
                     infoIcon.setAttribute('data-placement', 'top');
                     infoIcon.setAttribute('title', successTooltip);
-                    infoIcon.setAttribute('class', 'fa fa-check-circle text-success');
+                    infoIcon.setAttribute('class', 'fa-solid fa-check-circle text-success');
                 }
                 if (properties.state === 'INVALID') {
                     infoIcon.setAttribute('data-toggle', 'tooltip');
                     infoIcon.setAttribute('data-placement', 'top');
                     infoIcon.setAttribute('title', invalidTooltip);
-                    infoIcon.setAttribute('class', 'fa fa-exclamation-circle text-danger');
+                    infoIcon.setAttribute('class', 'fa-solid fa-exclamation-circle text-danger');
                 }
                 infoTools.appendChild(infoIcon);
                 $(infoIcon).tooltip();
@@ -431,7 +431,7 @@ define(['underscore',
             row.appendChild(removeTools);
 
             const removeTool = document.createElement('button');
-            removeTool.innerHTML = '<i class="fa fa-remove"></i>';
+            removeTool.innerHTML = '<i class="fa-solid fa-remove"></i>';
             removeTool.setAttribute('class', 'btn btn-danger btn-sm incomplete-remove');
             removeTool.setAttribute('title', removeTooltip);
             removeTool.setAttribute('data-toggle', 'tooltip');
