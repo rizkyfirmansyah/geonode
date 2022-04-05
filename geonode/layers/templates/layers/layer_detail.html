@@ -1034,7 +1034,7 @@
     }
     
     $('#jump_to_top').hide();
-    
+
     $(window).scroll(function () {
       if ($(document).scrollTop() > 700) {
         $('#jump_to_top').show();
@@ -1070,8 +1070,15 @@
       ],
       data: _datasets.data,
       columns: columns,
-      scrollX: true,
-      responsive: true
+      scrollX: true
+    });
+
+    // recalculate column widths of all visible tables once a tab becomes active
+    // ref https://www.gyrocode.com/articles/jquery-datatables-column-width-issues-with-bootstrap-tabs/#example2
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+      $($.fn.dataTable.tables(true)).DataTable()
+         .columns.adjust()
+         .fixedColumns().relayout();
     });
     
   });
