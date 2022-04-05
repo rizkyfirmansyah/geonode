@@ -3200,7 +3200,7 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     border: 0;
     padding: 0;
     cursor: pointer;
-    top: 7rem;
+    top: 5rem;
     display: block;
 }
 .btn-search>svg {
@@ -5630,7 +5630,7 @@ footer #footer-language {
 #upload-button {
     margin-top: 20px;
 }
-
+.fa-stack-2x
 /* Groups
 ----------------------- */
 .group-container {
