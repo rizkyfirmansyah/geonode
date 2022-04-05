@@ -200,3 +200,4 @@ xmltodict==0.12.0
 zipstream-new==1.1.8
 pip==21.3.1
 schema==0.7.5
+smart_open==5.2.1
