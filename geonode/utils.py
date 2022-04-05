@@ -1976,7 +1976,6 @@ json_serializer_k_map = {
     'owner': settings.AUTH_USER_MODEL,
     'restriction_code_type': 'base.RestrictionCodeType',
     'license': 'base.License',
-    'category': 'base.TopicCategory',
     'spatial_representation_type': 'base.SpatialRepresentationType',
     'group': 'auth.Group',
     'default_style': 'layers.Style',
@@ -2024,6 +2023,7 @@ def json_serializer_producer(dictionary):
         'is_staff',
         'is_active',
         'is_superuser',
+        'category',
         'permissions',
         'user_permissions',
     ]
