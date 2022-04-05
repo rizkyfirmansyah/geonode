@@ -3208,6 +3208,9 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     width: 48px;
     height: 48px;
 }
+#datasets .buttons-html5 {
+    all: inherit;
+}
 .search-field form input {
     height: 100%;
     width: 100%;
