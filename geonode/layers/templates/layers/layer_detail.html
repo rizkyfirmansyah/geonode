@@ -37,6 +37,7 @@
 {% block body_class %}{% trans "layers" %}{% endblock %}
 
 {% block body_outer %}
+<i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
 <div class="page-header col-md-12">
 
   <h2 class="page-title col-md-8 no-gutters">{{ resource.title|default:resource.alternate }}</h2>
@@ -1032,6 +1033,24 @@
       $("#security_refresh").trigger('click');
     }
     
+    $('#jump_to_top').hide();
+    
+    $(window).scroll(function () {
+      if ($(document).scrollTop() > 700) {
+        $('#jump_to_top').show();
+        $('#jump_to_top').animate({
+          scrollTop: 0
+        }, 'fast');
+      } else {
+        $('#jump_to_top').hide();
+      }
+    });
+    $("#jump_to_top").click(function () {
+      $('html, body').animate({
+        scrollTop: 0
+      }, 'fast');
+    });
+
     const _datasets = {{ attributes|default:" " }};
     const column_names = {{ column_names }};
     let columns = column_names.map((obj) => Object.assign({'data': obj}));
