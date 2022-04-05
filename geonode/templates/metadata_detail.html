@@ -67,7 +67,7 @@
 
         {% if LICENSES_ENABLED and LICENSES_DETAIL == 'above' and resource.license %}
         <dt>{% trans "License" %}</dt>
-        <dd>{{ resource.license.name_long }} <a href="#license-more-above" data-toggle="collapse" data-target=".license-more-above"><i class="fa fa-info-circle"></i></a></dd>
+        <dd>{{ resource.license.name_long }} <a href="#license-more-above" data-toggle="collapse" data-target=".license-more-above"><i class="fa-solid fa-circle-info"></i></a></dd>
         {% endif %}
         <dd class="license-more-above collapse">
             {% for bullet in resource.license.description_bullets %}
@@ -96,7 +96,7 @@
 
         {% if resource.data_type %}
         <dt>{% trans "Data Type" %}</dt>
-        <dd><a href="/search/?datatype__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+        <dd><a href="/search/?datatype__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
         {% if resource.data_type.description %}
         <dd class="data_type-more collapse">
             {{ resource.data_type.description }}
@@ -114,7 +114,7 @@
         {% if resource.category.count > 0 %}
         <dt>{% trans "Category" %}</dt>
         {% for category in resource.category.all %}
-            <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa fa-info-circle"></i></a>{% endif %}</dd>
+            <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
             <dd class="category-more-{{ category.id }} collapse">
             {% trans category.description %}
             </dd>
@@ -225,7 +225,7 @@
 
         {% if LICENSES_ENABLED and LICENSES_DETAIL == 'below' and resource.license %}
         <dt>{% trans "License" %}</dt>
-        <dd>{{ resource.license.name_long }} <a href="#license-more-below" data-toggle="collapse" data-target=".license-more-below"><i class="fa fa-info-circle"></i></a></dd>
+        <dd>{{ resource.license.name_long }} <a href="#license-more-below" data-toggle="collapse" data-target=".license-more-below"><i class="fa-solid fa-circle-info"></i></a></dd>
         <dd class="license-more-below collapse">
             {% for bullet in resource.license.description_bullets %}
             {{ bullet }}<br/><br/>

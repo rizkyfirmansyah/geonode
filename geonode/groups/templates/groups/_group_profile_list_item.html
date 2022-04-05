@@ -9,7 +9,7 @@
             </div>
             <div class="col-xs-8 group-details">
                 <h5><a href="{{ group.group_profile.detail_url }}"></a></h5>
-                <!-- <a href="mailto:{{ group.group_profile.email }}" ng-if="group.group_profile.email != ''"><i class="fa fa-envelope-o"></i></a> -->
+                <!-- <a href="mailto:{{ group.group_profile.email }}" ng-if="group.group_profile.email != ''"><i class="fa-regular fa-envelope"></i></a> -->
                 <p><small>{{ group.group_profile.description | limitTo: 100 }}{{ group.group_profile.description.length
                     > 100 ? '...' : ''}}</small></p>
             </div>

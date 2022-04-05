@@ -19,7 +19,7 @@
               {% verbatim %}
               <a ng-if="item.detail_url.indexOf('/layers/') > -1" class="create_map col-md-6" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
               {% endverbatim %}
-              <i class="fa fa-map-marker"></i>{% trans " Create a Map" %}</a>
+              <i class="fa-solid fa-map-location-dot"></i>{% trans " Create a Map" %}</a>
             {% endif %}
           <div class="text-categories col-md-6">
               {% verbatim %}
@@ -30,19 +30,19 @@
         <div class="col-lg-9 item-details">
           <div class="row no-gutters">
             <div class="col-xs-10">
-                <span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/"><i class="fa fa-group" aria-hidden="true" style="margin-right: 8px;"></i>{{ item.group_name }}</a><br></span>
+                <span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/"><i class="fa-solid fa-user-group" aria-hidden="true" style="margin-right: 8px;"></i>{{ item.group_name }}</a><br></span>
                 <span class="item-category" ng-if="item.has_time">
                   {% endverbatim %}
-                  <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 8px;"></i>{% trans "Temporal Serie" %}<br>
+                  <i class="fa-solid fa-clock" aria-hidden="true" style="margin-right: 8px;"></i>{% trans "Temporal Serie" %}<br>
                   {% verbatim %}╕
                 </span>
               <h4>
-                  <i ng-if="item.store_type == 'remoteStore'" title="Remote Service" class="fa fa-external-link fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
-                  <i ng-if="item.store_type == 'dataStore'" title="Vector Data" class="fa fa-pencil-square-o fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
-                  <i ng-if="item.store_type == 'coverageStore'" title="Raster Data" class="fa fa-picture-o fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
-                  <i ng-if="item.store_type == 'dataset'" title="File/Dataset" class="fa fa-newspaper-o fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
-                  <i ng-if="item.store_type == 'map'" title="Map" class="fa fa-map-o fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
-                  <i ng-if="item.store_type == 'geoapp'" title="App" class="fa fa-gears fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
+                  <i ng-if="item.store_type == 'remoteStore'" title="Remote Service" class="fa-solid fa-arrow-up-right-from-square fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
+                  <i ng-if="item.store_type == 'dataStore'" title="Vector Data" class="fa-solid fa-square-pen fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
+                  <i ng-if="item.store_type == 'coverageStore'" title="Raster Data" class="fa-solid fa-image fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
+                  <i ng-if="item.store_type == 'dataset'" title="File/Dataset" class="fa-solid fa-newspaper fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
+                  <i ng-if="item.store_type == 'map'" title="Map" class="fa-solid fa-map fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
+                  <i ng-if="item.store_type == 'geoapp'" title="App" class="fa-solid fa-gears fa-1" style="vertical-align:  middle;padding-right: 10px;"></i>
                   <a href="{{ item.detail_url }}">{{ item.title }}</a>
               </h4>
             </div>
@@ -57,17 +57,17 @@
                   ng-click="cart.toggleItem(item)"
                   data-toggle="tooltip"
                   data-placement="bottom"
-                  title="{% trans "Select" %}"><i ng-class="cart.getFaClass(item.id)" class="fa fa-lg"></i></button>
+                  title="{% trans "Select" %}"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
               </h4>
             </div>
             {% endif %}
           </div>
           <em ng-if="item.store_type == 'remoteStore'">
-            <span ng-if="item.online == true"><i class="fa fa-power-off text-success"></i> {% trans "Service is" %} {% trans "online" %}</span>
-            <span ng-if="item.online == false"><i class="fa fa-power-off text-danger"></i> {% trans "Service is" %} {% trans "offline" %}</span>
+            <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i> {% trans "Service is" %} {% trans "online" %}</span>
+            <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i> {% trans "Service is" %} {% trans "offline" %}</span>
           </em>
           <em ng-if="item.processed == false">
-            <i class="fa fa-cog fa-spin fa-fw"></i>{% trans "Layer not ready yet. Still finalizing layer ingestion..." %}
+            <i class="fa-solid fa-gear fa-spin fa-fw"></i>{% trans "Layer not ready yet. Still finalizing layer ingestion..." %}
           </em>
           <div class="alert alert-danger" ng-if="item.dirty_state == true">{% trans "SECURITY NOT YET SYNCHRONIZED" %}
               {% verbatim %}<a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">{% endverbatim %}{% trans "Sync permissions immediately" %}</a>
@@ -81,11 +81,11 @@
           <div class="row">
             <div class="col-lg-12 item-items">
               <ul class="list-inline">
-                <li><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}"><i class="fa fa-user"></i>{{ item.owner_name }}</a></li>
-                <li><a href="{{ item.detail_url }}#info"><i class="fa fa-calendar-o"></i>{{ item.date|date:'d MMM y' }}</a></li>
-                <li class="pull-right"><a href="{{ item.detail_url }}"><i class="fa fa-eye"></i>{{ item.popular_count }}</a></li>
-                <li class="pull-right"><a href="{{ item.detail_url }}#share"><i class="fa fa-share"></i>{{ item.share_count }}</a></li>
-                <li class="pull-right"><a href="{{ item.detail_url }}#rate"><i class="fa fa-star-o"></i>{{ item.rating }}</a></li>
+                <li><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}"><i class="fa-solid fa-user"></i>{{ item.owner_name }}</a></li>
+                <li><a href="{{ item.detail_url }}#info"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></li>
+                <li class="pull-right"><a href="{{ item.detail_url }}"><i class="fa-solid fa-eye"></i>{{ item.popular_count }}</a></li>
+                <li class="pull-right"><a href="{{ item.detail_url }}#share"><i class="fa-solid fa-share"></i>{{ item.share_count }}</a></li>
+                <li class="pull-right"><a href="{{ item.detail_url }}#rate"><i class="fa-regular fa-star"></i>{{ item.rating }}</a></li>
                 <span class="item-category pull-right">
                   <i id="download_icon" class="fa {{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color: {{ resources(item.id)[0].color }};"> {{ resources(item.id)[0].perms }} </i>
                 </span>
@@ -93,7 +93,7 @@
                 {% verbatim %}
                 <li><a ng-if="item.detail_url.indexOf('/maps/') > -1" href="{{ item.site_url }}maps/{{item.id}}/view">
                   {% endverbatim %}
-                  <i class="fa fa-map-marker"></i>{% trans "View Map" %}</a>
+                  <i class="fa-solid fa-map-location-dot"></i>{% trans "View Map" %}</a>
                   {% verbatim %}
                 </li>
               </ul>

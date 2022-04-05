@@ -24,7 +24,7 @@
       <div class="form-group">
         <label for="id_account_{{ base_account.id }}"></label>
         <input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>
-        <i class="fa fa-{{ account.get_brand.name|lower }}-square fa-2x" aria-hidden="true"></i> {{ account.get_brand.name }} account: {{ account }}
+        <i class="fa-solid fa-{{ account.get_brand.name|lower }}-square fa-2x" aria-hidden="true"></i> {{ account.get_brand.name }} account: {{ account }}
       </div>
     {% endwith %}
   {% endfor %}

@@ -118,7 +118,7 @@
 
             <a href="{% url "layer_upload" %}" class="btn btn-primary pull-left">{% trans "Cancel" %}</a> &nbsp;
             <button id='next' class="btn btn-default button-tip" type="submit" value="{% trans 'Next' %}"> Next
-                <i id="next-spinner" class="fa fa-spinner fa-spin hide"></i>
+                <i id="next-spinner" class="fa-solid fa-spinner fa-spin hide"></i>
                 <p id="next-tooltip" style="height: 150px;">{% trans "Start Importer" %}</p>
             </button>
             <div id="upload-status"></div>
@@ -332,7 +332,7 @@
             var time_checked_value = String(value);
             if(data_validation && !time_checked_value.match(ISO_time_regex)) {
                 time_checked_value = '<font color="red" title="' + value +'{% trans " does NOT match any valid ISO-8601 Date-Time string!" %}">' +
-                    '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;' + value +'</font>';
+                    '<i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;' + value +'</font>';
                 try {
                     if(!data_is_valid.hasOwnProperty($(this)[0].field)){
                         data_is_valid[$(this)[0].field] = false;
@@ -348,7 +348,7 @@
             var time_checked_value = String(value);
             if(data_validation && !time_checked_value.match(ISO_time_regex)) {
                 time_checked_value = '<font color="red" title="' + value +'{% trans " does NOT match any valid ISO-8601 Date-Time string!" %}">' +
-                    '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;' + value +'</font>';
+                    '<i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>&nbsp;' + value +'</font>';
                 try {
                     if(!data_is_valid.hasOwnProperty($(this)[0].field)){
                         data_is_valid[$(this)[0].field] = false;

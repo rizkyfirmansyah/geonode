@@ -478,10 +478,10 @@
             //format: 'YYYY-MM-DD hh:mm:ss',
             format: 'YYYY-MM-DD HH:mm',
             icons: {
-                time: 'fa fa-clock-o',
-                date: 'fa fa-calendar',
-                up: 'fa fa-chevron-up',
-                down: 'fa fa-chevron-down'
+                time: 'fa-solid fa-clock',
+                date: 'fa-solid fa-calendar',
+                up: 'fa-solid fa-chevron-up',
+                down: 'fa-solid fa-chevron-down'
             }
         };
 
@@ -490,7 +490,7 @@
             
             // Removes the second help icon from select2 fields
             if (help_text) {
-                var spanPopoverText = $('<span>', { class: 'external-popover', 'data-content': help_text  }).append("<strong><i class='fa fa fa-question-circle fa-1x'></i></strong>");
+                var spanPopoverText = $('<span>', { class: 'external-popover', 'data-content': help_text  }).append("<strong><i class='fa fa-solid fa-question-circle fa-1x'></i></strong>");
                 $(this)
                     .closest("div")
                     .children("span:not(.input-group):not(.select2)")  // Removes the second help icon for select2
@@ -830,9 +830,9 @@
                 }
                 $('#treeview').treeview({
                     color: "#428bca",
-                    expandIcon: "fa fa-folder",
-                    collapseIcon: "fa fa-folder-open",
-                    nodeIcon: "fa fa-tag",
+                    expandIcon: "fa-solid fa-folder",
+                    collapseIcon: "fa-solid fa-folder-open",
+                    nodeIcon: "fa-solid fa-tag",
                     showTags: true,
                     showIcon: true,
                     showCheckbox: false,

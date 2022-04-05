@@ -60,7 +60,7 @@
             {% else %}
             <a href="{% url 'capabilities_map' resource.id %}">
               {% endif %}
-              <i class="fa fa-map"></i> {% trans 'Map layers WMS GetCapabilities document' %}</a></p>
+              <i class="fa-solid fa-map"></i> {% trans 'Map layers WMS GetCapabilities document' %}</a></p>
         {% endif %}
       </article>
       {% block social_links %}
@@ -153,7 +153,7 @@
               <div class="row edit-modal">
                 {% if "change_resourcebase_metadata" in perms_list %}
                 <div class="col-sm-3">
-                  <i class="fa fa-list-alt fa-3x"></i>
+                  <i class="fa-solid fa-rectangle-list fa-3x"></i>
                   <h4>{% trans "Metadata" %}</h4>
                   <a class="btn btn-default btn-block btn-xs"
                     href="{% url "map_metadata" resource.id %}">{% trans "Wizard" %}</a>
@@ -163,7 +163,7 @@
                 {% endif %}
                 {% if "change_resourcebase" in perms_list %}
                 <div class="col-sm-3">
-                  <i class="fa fa-photo fa-3x"></i>
+                  <i class="fa-solid fa-photo fa-3x"></i>
                   <h4>{% trans "Thumbnail" %}</h4>
                   <a class="btn btn-default btn-block btn-xs" href="#" id="set_thumbnail">{% trans "Set" %}</a>
                   <a class="btn btn-default btn-block btn-xs"
@@ -172,7 +172,7 @@
                 {% endif %}
                 {% if "change_resourcebase" in perms_list %}
                 <div class="col-sm-3">
-                  <i class="fa fa-map-marker fa-3x"></i>
+                  <i class="fa-solid fa-map-location-dot fa-3x"></i>
                   <h4>{% trans "Map" %}</h4>
                   <a class="btn btn-default btn-block btn-xs"
                     href="{% url "map_edit" resource.id %}">{% trans "Edit" %}</a>

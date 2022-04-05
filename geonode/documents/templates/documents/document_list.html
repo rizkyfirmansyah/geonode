@@ -7,7 +7,7 @@
 {% block body_class %}documents documents-list explore{% endblock %}
 
 {% block body %}
-  <i class="fa fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
+  <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   <div class="page-header col-md-12" id="resources_list">
     {% if not READ_ONLY_MODE %}
       <a href="{% url "document_upload" %}" class="btn btn-primary pull-right col-md-3">{% trans "Upload Non Spatial Data" %}</a>

@@ -42,7 +42,7 @@
   <h2 class="page-title col-md-8 no-gutters">{{ resource.title|default:resource.alternate }}</h2>
   {% if storeType == 'remoteStore' %}
   <em>
-    <i class="fa fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
+    <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
     {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
   </em>
   {% endif %}
@@ -72,7 +72,7 @@
             {% else %}
             <a href="{% url 'capabilities_layer' resource.id %}">
               {% endif %}
-              <i class="fa fa-map"></i> {% trans 'Layer WMS GetCapabilities document' %}</a></p>
+              <i class="fa-solid fa-map"></i> {% trans 'Layer WMS GetCapabilities document' %}</a></p>
         {% endif %}
       </article>
 
@@ -750,6 +750,13 @@
 {% overall_rating resource 'layer' as the_layer_rating %}
 {% endif %}
 {% include 'rating.html' %}
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
 
 <script type="text/javascript">
   $("#comment_submit_btn").click(function (event) {
@@ -1030,6 +1037,18 @@
     let columns = column_names.map((obj) => Object.assign({'data': obj}));
 
     $("#datasetsTable").DataTable({
+      dom: 'Bfrtip',
+      lengthMenu: [
+                  [10, 25, 50, -1],
+                  ['10 Filas', '25 Filas', '50 Filas', 'Mostrar todo']
+              ],
+      buttons: [
+        { extend: 'copy', text: '<i class="fa-solid fa-copy fa-1x" aria-hidden="true"> Copy</i>' },
+        { extend: 'pdf', text: '<i class="fa-solid fa-file-pdf fa-1x" aria-hidden="true"> Export to PDF</i>' },
+        { extend: 'csv', text: '<i class="fa-solid fa-file-csv fa-1x"> Export to CSV</i>'},
+        { extend: 'excel', text: '<i class="fa-solid fa-file-excel" aria-hidden="true"> Export to Excel</i>' },
+        'pageLength'
+      ],
       data: _datasets.data,
       columns: columns,
       scrollX: true,
