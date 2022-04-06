@@ -1,121 +1,31 @@
 "use strict";
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _toConsumableArray(t) { return _arrayWithoutHoles(t) || _iterableToArray(t) || _unsupportedIterableToArray(t) || _nonIterableSpread() }
 
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.") }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _unsupportedIterableToArray(t, e) { if (t) { if ("string" == typeof t) return _arrayLikeToArray(t, e); var r = Object.prototype.toString.call(t).slice(8, -1); return "Object" === r && t.constructor && (r = t.constructor.name), "Map" === r || "Set" === r ? Array.from(t) : "Arguments" === r || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r) ? _arrayLikeToArray(t, e) : void 0 } }
 
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+function _iterableToArray(t) { if ("undefined" != typeof Symbol && Symbol.iterator in Object(t)) return Array.from(t) }
 
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayWithoutHoles(t) { if (Array.isArray(t)) return _arrayLikeToArray(t) }
 
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(t, e) {
+    (null == e || e > t.length) && (e = t.length); for (var r = 0, n = new Array(e); r < e; r++) n[r] = t[r]; return n }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(t, e) { if (!(t instanceof e)) throw new TypeError("Cannot call a class as a function") }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor); } }
+function _defineProperties(t, e) { for (var r = 0; r < e.length; r++) { var n = e[r];
+        n.enumerable = n.enumerable || !1, n.configurable = !0, "value" in n && (n.writable = !0), Object.defineProperty(t, n.key, n) } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(t, e, r) { return e && _defineProperties(t.prototype, e), r && _defineProperties(t, r), t }
 
-function get_users_data(data) {
-    return data.objects.map(function(elem) {
-        return {
-            value: elem.username,
-            id: elem.id
-        };
-    });
-}
+function get_users_data(t) { return t.objects.map(function(t) { return { value: t.username, id: t.id } }) }
 
-function get_groups_data(data) {
-    return data.objects.map(function(elem) {
-        return {
-            value: elem.title,
-            id: elem.id
-        };
-    });
-}
-
-var MessageRecipientsTags = /*#__PURE__*/ function() {
-    function MessageRecipientsTags(input, data_extract_func, url) {
-        var blacklist = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-
-        _classCallCheck(this, MessageRecipientsTags);
-
-        if (input.tagName !== 'INPUT' || input.type !== 'text') {
-            throw Error('Base element should be <input type="text">');
-        }
-
-        this.input = input;
-        this.tagify = null;
-        this.data_extract_func = data_extract_func;
-        this.url = url;
-        this.blacklist = blacklist;
-        this.request_controller = null;
-    }
-
-    _createClass(MessageRecipientsTags, [{
-        key: "init",
-        value: function init() {
-            this.tagify = new Tagify(this.input, {
-                whitelist: [],
-                blacklist: this.blacklist
-            });
-            this.tagify.on('input', this._onInputHandler.bind(this));
-            this.request_controller = new AbortController();
-        }
-    }, {
-        key: "_onInputHandler",
-        value: function _onInputHandler(event) {
-            var _this = this;
-
-            var value = event.detail.value;
-            this.tagify.settings.whitelist.length = 0;
-            this.tagify.loading(true).dropdown.hide.call(this.tagify);
-            this.request_controller.abort();
-            this.request_controller = new AbortController();
-            fetch(this.url + value, {
-                signal: this.request_controller.signal
-            }).then(function(response) {
-                return response.json().then(_this.data_extract_func).then(function(res) {
-                    var _this$tagify$settings;
-
-                    res = res.filter(function(elem) {
-                        if (!_this.blacklist.includes(elem.value)) {
-                            return elem;
-                        }
-                    });
-
-                    (_this$tagify$settings = _this.tagify.settings.whitelist).splice.apply(_this$tagify$settings, [0, res.length].concat(_toConsumableArray(res)));
-
-                    _this.tagify.loading(false).dropdown.show.call(_this.tagify, value);
-                });
-            });
-        }
-    }, {
-        key: "fixOutputValue",
-        value: function fixOutputValue() {
-            var _this2 = this;
-
-            if (this.input.value !== '') {
-                JSON.parse(this.input.value).filter(function(elem) {
-                    return 'id' in elem;
-                }).forEach(function(elem) {
-                    $('<input>').attr({
-                        type: 'hidden',
-                        id: 'foo',
-                        name: _this2.input.name,
-                        value: elem.id
-                    }).appendTo('form');
-                });
-            }
-
-            this.input.disabled = true;
-        }
-    }]);
-
-    return MessageRecipientsTags;
-}();
+function get_groups_data(t) { return t.objects.map(function(t) { return { value: t.title, id: t.id } }) }
+var MessageRecipientsTags = function() {
+    function t(e, r, n) { var i = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : []; if (_classCallCheck(this, t), "INPUT" !== e.tagName || "text" !== e.type) throw Error('Base element should be <input type="text">');
+        this.input = e, this.tagify = null, this.data_extract_func = r, this.url = n, this.blacklist = i, this.request_controller = null } return _createClass(t, [{ key: "init", value: function() { this.tagify = new Tagify(this.input, { whitelist: [], blacklist: this.blacklist }), this.tagify.on("input", this._onInputHandler.bind(this)), this.request_controller = new AbortController } }, { key: "_onInputHandler", value: function(t) { var e = this,
+                r = t.detail.value;
+            this.tagify.settings.whitelist.length = 0, this.tagify.loading(!0).dropdown.hide.call(this.tagify), this.request_controller.abort(), this.request_controller = new AbortController, fetch(this.url + r, { signal: this.request_controller.signal }).then(function(t) { return t.json().then(e.data_extract_func).then(function(t) { var n;
+                    t = t.filter(function(t) { if (!e.blacklist.includes(t.value)) return t }), (n = e.tagify.settings.whitelist).splice.apply(n, [0, t.length].concat(_toConsumableArray(t))), e.tagify.loading(!1).dropdown.show.call(e.tagify, r) }) }) } }, { key: "fixOutputValue", value: function() { var t = this; "" !== this.input.value && JSON.parse(this.input.value).filter(function(t) { return "id" in t }).forEach(function(e) { $("<input>").attr({ type: "hidden", id: "foo", name: t.input.name, value: e.id }).appendTo("form") }), this.input.disabled = !0 } }]), t }();

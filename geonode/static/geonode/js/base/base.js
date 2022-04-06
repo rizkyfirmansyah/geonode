@@ -1,10 +1,1 @@
-$(function() {
-$(".announcement").find(".close").on("click", function (e) {
-    url = $(e.target).data('dismiss-url');
-
-    $.ajax({
-          type: "POST",
-          url: url
-        })
-    });
-});
+$(function(){$(".announcement").find(".close").on("click",function(n){url=$(n.target).data("dismiss-url"),$.ajax({type:"POST",url:url})})});
