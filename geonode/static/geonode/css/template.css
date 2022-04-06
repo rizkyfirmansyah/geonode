@@ -151,7 +151,6 @@ article a {
 
 article a:hover,
 article a:focus {
-    outline: none;
     text-decoration: none;
 }
 
@@ -179,16 +178,6 @@ hr {
 pre {
     font-family: monospace, monospace;
     font-size: 1em;
-}
-
-a {
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects;
-}
-
-a:active,
-a:hover {
-    outline-width: 0;
 }
 
 abbr[title] {
@@ -493,11 +482,6 @@ small {
 /* ------------------------------------------------------------------- 
 * ## links 
 * ------------------------------------------------------------------- */
-
-a {
-    text-decoration: none;
-    line-height: inherit;
-}
 
 a img {
     border: none;
@@ -2456,11 +2440,6 @@ input::-moz-focus-inner {
     display: block;
 }
 
-.nav>li>a:focus,
-.nav>li>a:hover {
-    text-decoration: none;
-}
-
 .nav>li.disabled>a {
     color: #777
 }
@@ -2494,19 +2473,28 @@ input::-moz-focus-inner {
 .nav-tabs>li {
     float: left;
     margin-bottom: -1px;
-    width: 12.5rem;
+    min-width: 12.5rem;
 }
 
 .nav-tabs>li>a {
     margin-right: 2px;
     line-height: 1.42857143;
-    border-radius: 4px 4px 0 0
+    padding: 0.625rem .55rem;
+    background: #fff;
+    border: 1px solid #c0c0c0 !important;
+    border-radius: 5px;
+    background-color: #4e98af;
+    text-align: center;
+    box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
+    min-width: 130px;
 }
 
 .nav-tabs>li>a:hover {
     border-color: #1c4742;
     color: #fdba12 !important;
     text-decoration: none !important;
+    background-color: #a23133 !important;
+    box-shadow: 0 .5rem 1.25rem #ccc;
 }
 
 .nav-tabs>li.active>a,
@@ -5392,13 +5380,7 @@ span.grippy {
     box-shadow: 0 0 1px 1px #c4bab7;
 }
 input[type="file"] {
-    background-color: #c4bab7;
-}
-label[for="id_doc_file"],
-label[for="id_avatar"] {
-    display: block;
     position: relative;
-    width: 200px;
     height: 50px;
     border-radius: 25px;
     background: linear-gradient(40deg, #a23133, #4e98af);
@@ -5407,7 +5389,23 @@ label[for="id_avatar"] {
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-weight: bold;
+    cursor: pointer;
+    transition: transform .2s ease-out;
+    width: 100%;
+    padding-left: 2em;
+    padding-top: 10px;
+}
+label[for="id_doc_file"],
+label[for="id_avatar"] {
+    position: relative;
+    height: 50px;
+    border-radius: 25px;
+    background: linear-gradient(40deg, #a23133, #4e98af);
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
     cursor: pointer;
     transition: transform .2s ease-out;
     width: 100%;
@@ -5810,6 +5808,9 @@ nav.filter h4 {
 }
 nav.filter h4 a {
     color: white;
+}
+nav.filter h4 a svg {
+    margin-right: 5px;
 }
 nav.filter h4 a.toggle {
     text-decoration: none;
@@ -6272,21 +6273,8 @@ article.tab-pane {
 .layer-actions i {
     padding-right: 3px;
 }
-.nav-tabs li a {
-    padding: 0.625rem .55rem;
-    background: #fff;
-    border: 1px solid #c0c0c0 !important;
-    border-radius: 5px;
-    background-color: #4e98af;
-    text-align: center;
-    box-shadow: 0 5px 10px -8px rgba(0, 0, 0, .7);
-    min-width: 124px;
-}
 .nav-tabs li a svg {
     margin-right: 1rem;
-}
-.nav-tabs li a:hover {
-    background-color: #a23133 !important;
 }
 .tab-content article {
     padding-left: 1.3em;
@@ -7349,11 +7337,6 @@ form textarea[name=content] {
         background-color: white;
         z-index: 999;
         width: 100%;
-    }
-    
-    .search-content {
-        position: sticky !important;
-        top: 120px;
     }
     
     .delete_date {
