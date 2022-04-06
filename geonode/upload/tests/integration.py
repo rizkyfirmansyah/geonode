@@ -755,7 +755,7 @@ class TestUpload(UploaderBase):
         self.assertFalse(data['uploads'][0]['complete'])
 
         # - Next step - final
-        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=900)
+        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=1800) # set to 30 minutes
         data = resp.json()
         #    - Assertions
         self.assertEqual(resp.status_code, 200)
