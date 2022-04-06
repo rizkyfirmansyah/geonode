@@ -1,4 +1,4 @@
-FROM python:3.8.7-buster
+FROM python:3.8.9-buster
 LABEL GeoNode development team
 
 RUN mkdir -p /usr/src/geonode
@@ -57,14 +57,7 @@ RUN cd /usr/src; git clone https://github.com/GeoNode/geonode-contribs.git -b ma
 RUN cd /usr/src/geonode-contribs/geonode-logstash; pip install --upgrade  -e . \
     cd /usr/src/geonode-contribs/ldap; pip install --upgrade  -e .
 
-## ENABLE Haystack
-RUN pip install pyelasticsearch
-RUN pip install elasticsearch==2.4.1
-
 COPY package/geotools /mnt/volumes/statics/geoip
-
-## Enable email service
-RUN apt install msmtp
 
 # Export ports
 EXPOSE 8000

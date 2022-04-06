@@ -34,14 +34,6 @@ services:
       - "127.0.0.1:5672:5672"
       - "127.0.0.1:15672:15672"
 
-  elasticsearch:
-    image: elasticsearch:2.4.1
-    restart: unless-stopped
-    container_name: elasticsearch4${COMPOSE_PROJECT_NAME}
-    stdin_open: true
-    ports:
-      - "127.0.0.1:9200:9200"
-
   # Our custom django application. It includes Geonode.
   django:
     << : *default-common-django
@@ -58,8 +50,6 @@ services:
     command: "uwsgi --ini /usr/src/geonode/uwsgi.ini"
     ports:
       - "127.0.0.1:8000:8000"
-    links:
-      - elasticsearch
 
   # Celery worker that executes celery tasks created by Django.
   celery:
