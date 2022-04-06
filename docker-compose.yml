@@ -6,9 +6,6 @@ x-common-django:
   &default-common-django
   image: geonode/geonode:latest
   restart: on-failure
-  build:
-    context: ./
-    dockerfile: Dockerfile
   env_file:
     - .env
   volumes:
@@ -23,20 +20,22 @@ services:
 
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
-    image: rabbitmq:management-alpine
+    image: rabbitmq:3.7-alpine
     container_name: rabbitmq4${COMPOSE_PROJECT_NAME}
     volumes:
       - rabbitmq:/var/lib/rabbitmq
       - ./rabbitmq.sh:/docker-entrypoint-initdb.d/init.sh
     restart: on-failure
-    entrypoint: []
-    ports:
-      - "127.0.0.1:5672:5672"
-      - "127.0.0.1:15672:15672"
+    # ports:
+    #   - "127.0.0.1:5672:5672"
+    #   - "127.0.0.1:15672:15672"
 
   # Our custom django application. It includes Geonode.
   django:
     << : *default-common-django
+    build:
+      context: ./
+      dockerfile: Dockerfile
     container_name: ${COMPOSE_PROJECT_NAME}
     healthcheck:
       test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8001/"
@@ -48,8 +47,8 @@ services:
       - IS_CELERY=False
     entrypoint: ["/usr/src/geonode/entrypoint.sh"]
     command: "uwsgi --ini /usr/src/geonode/uwsgi.ini"
-    ports:
-      - "127.0.0.1:8000:8000"
+    # ports:
+    #   - "127.0.0.1:8000:8000"
 
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -61,15 +60,15 @@ services:
     environment:
       - IS_CELERY=True
     entrypoint: ["/usr/src/geonode/entrypoint.sh"]
-    command: "celery -A geonode.celery_app:app worker --without-gossip --without-mingle -Ofair -B -E --statedb=/mnt/volumes/statics/worker.state -s /mnt/volumes/statics/celerybeat-schedule --loglevel=INFO --concurrency=10 -n worker1@%h -f /var/log/celery.log"
+    command: "celery-cmd"
     links:
       - rabbitmq
 
   geoserver:
-    image: geonode/geoserver:2.18.2
+    image: geonode/geoserver:2.19.x
     container_name: geoserver4${COMPOSE_PROJECT_NAME}
     healthcheck:
-      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspace/sdi.html"
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspaces/sdi.html"
       interval: 60s
       timeout: 10s
       retries: 1
@@ -87,7 +86,7 @@ services:
       - "127.0.0.1:8080:8080"
 
   data-dir-conf:
-    image: geonode/geoserver_data:2.18.2
+    image: geonode/geoserver_data:2.19.x
     container_name: gsconf4${COMPOSE_PROJECT_NAME}
     command: /bin/true
     volumes:
@@ -103,8 +102,9 @@ services:
       - dbspatial:/var/lib/postgresql/data
       - dbbackups:/pg_backups
     restart: on-failure
-    ports:
-      - "35432:5432"
+    # uncomment to enable remote connections to postgres
+    # ports:
+    #   - "35432:5432"
 
 volumes:
   statics:

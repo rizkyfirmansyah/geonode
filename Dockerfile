@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y \
     python3-pip python3-pil python3-lxml python3-pylibmc \
     python3-dev libgdal-dev \
     uwsgi uwsgi-plugin-python3 \
-    --no-install-recommends && rm -rf /var/lib/apt/lists/*
+    firefox-esr \
+    --no-install-recommends
 
 # add bower and grunt command
 COPY . /usr/src/geonode/
@@ -41,13 +42,12 @@ RUN chmod +x /usr/bin/celery-commands
 
 # Preparing dependencies
 RUN apt-get update && apt-get install -y devscripts build-essential debhelper pkg-kde-tools sharutils
-# RUN git clone https://salsa.debian.org/debian-gis-team/proj.git /tmp/proj
-# RUN cd /tmp/proj && debuild -i -us -uc -b && dpkg -i ../*.deb
 
 # Install pip packages
 RUN pip install pip --upgrade
 RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements.txt \
-    && pip install pygdal==$(gdal-config --version).*
+    && pip install pygdal==$(gdal-config --version).* \
+    flower==0.9.4
 
 RUN pip install --upgrade  -e .
 
@@ -61,6 +61,9 @@ RUN cd /usr/src; git clone https://github.com/GeoNode/geonode-contribs.git -b ma
 # Install logstash and centralized dashboard dependencies
 RUN cd /usr/src/geonode-contribs/geonode-logstash; pip install --upgrade  -e . \
     cd /usr/src/geonode-contribs/ldap; pip install --upgrade  -e .
+
+# Cleanup apt update lists
+RUN rm -rf /var/lib/apt/lists/*
 
 COPY package/geotools /mnt/volumes/statics/geoip
 
