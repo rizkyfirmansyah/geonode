@@ -752,7 +752,7 @@
 {% endif %}
 {% include 'rating.html' %}
 <script type="text/javascript" src="{% static "lib/js/datatables-plugins.js" %}"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
+<link href="{% static "lib/css/datatables-plugins.css" %}" rel="stylesheet"/>
 
 <script type="text/javascript">
   $("#comment_submit_btn").click(function (event) {
