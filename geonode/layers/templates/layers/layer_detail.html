@@ -1028,44 +1028,17 @@
       $("#security_refresh").trigger('click');
     }
     
-    $('#jump_to_top').hide();
-
-    $(window).scroll(function () {
-      if ($(document).scrollTop() > 700) {
-        $('#jump_to_top').show();
-        $('#jump_to_top').animate({
-          scrollTop: 0
-        }, 'fast');
-      } else {
-        $('#jump_to_top').hide();
-      }
-    });
-    $("#jump_to_top").click(function () {
-      $('html, body').animate({
-        scrollTop: 0
-      }, 'fast');
-    });
+    $("#jump_to_top").hide(),$(window).scroll(function(){$(document).scrollTop()>700?($("#jump_to_top").show(),$("#jump_to_top").animate({scrollTop:0},"fast")):$("#jump_to_top").hide()}),$("#jump_to_top").click(function(){$("html, body").animate({scrollTop:0},"fast")});
 
     const _datasets = {{ attributes|default:" " }};
     const column_names = {{ column_names }};
     let columns = column_names.map((obj) => Object.assign({'data': obj}));
 
-    $("#datasetsTable").DataTable({
-      dom: 'Bfrtip',
-      lengthMenu: [
-                  [10, 25, 50, -1],
-                  ['10 rows', '25 rows', '50 rows', 'All rows']
-              ],
-      buttons: [
-        { extend: 'copy', text: '<i class="fa-solid fa-copy fa-2x" aria-hidden="true" title="Copy All Rows to Clipboard"></i>' },
-        { extend: 'pdf', text: '<i class="fa-solid fa-file-pdf fa-2x" aria-hidden="true" title="Export to PDF"></i>' },
-        { extend: 'excel', text: '<i class="fa-solid fa-file-excel fa-2x" aria-hidden="true" title="Export to Excel"></i>' },
-        'pageLength'
-      ],
-      data: _datasets.data,
-      columns: columns,
-      scrollX: true
-    });
+    {% if links_download %}
+      $("#datasetsTable").DataTable({dom:"Bfrtip",lengthMenu:[[10,25,50,-1],["10 rows","25 rows","50 rows","All rows"]],buttons:[{extend:"copy",text:'<i class="fa-solid fa-copy fa-2x" aria-hidden="true" title="Copy All Rows to Clipboard"></i>'},{extend:"pdf",text:'<i class="fa-solid fa-file-pdf fa-2x" aria-hidden="true" title="Export to PDF"></i>'},{extend:"excel",text:'<i class="fa-solid fa-file-excel fa-2x" aria-hidden="true" title="Export to Excel"></i>'},"pageLength"],data:_datasets.data,columns:columns,scrollX:!0});
+    {% else %}
+      $("#datasetsTable").DataTable({data:_datasets.data,columns:columns,scrollX:!0});
+    {% endif %}
 
     // recalculate column widths of all visible tables once a tab becomes active
     // ref https://www.gyrocode.com/articles/jquery-datatables-column-width-issues-with-bootstrap-tabs/#example2
