@@ -341,6 +341,7 @@ input {
     line-height: 1!important;
     margin-top: 1.5em;
     border-radius: 50px;
+    width: calc(100% - 20px);
 }
 
 img,
@@ -4486,6 +4487,8 @@ form-inline {
 }
 
 .search-content {
+    padding-top: 1em;
+    border-radius: 0;
     background: #fff;
     box-shadow: 0 .5rem 1.25rem var(--shadow-1);
     border: 1px solid va(--main-bg-color);
@@ -7155,11 +7158,11 @@ form textarea[name=content] {
         width: 100%;
         z-index: 99999;
         background-color: #fff;
-        border-radius: max(0px, min(8px, calc((100vw - 4px - 100%) * 9999))) / 8px;
+        padding: 1rem;
     }
     #resources_list a.btn-primary {
         position: fixed;
-        display: none;
+        display: none
     }
 }
 
@@ -7167,13 +7170,13 @@ form textarea[name=content] {
     #logout_container {
         background-color: #fff;
         min-height: calc(100vh - 240px);
-        padding: 2em;
+        padding: 2em
     }
 }
 
 @media (min-width:1025px) {
     .container {
-        width: calc(100% - 18em)!important;
+        width: calc(100% - 18em)!important
     }
     #resources_list {
         position: -webkit-sticky;
@@ -7182,18 +7185,18 @@ form textarea[name=content] {
         background-color: #fff;
         z-index: 999;
         width: 100%;
-        border-radius: max(0px, min(8px, calc((100vw - 4px - 100%) * 9999))) / 8px;
+        padding: 1rem;
     }
     .delete_date {
-        top: -5rem!important;
+        top: -5rem!important
     }
     #logout_container {
         background-color: #fff;
         min-height: calc(100vh - 240px);
-        padding: 2em;
+        padding: 2em
     }
     #datasetsTable_filter input {
-        min-width: 340px;
+        min-width: 340px
     }
 }
 
@@ -7206,17 +7209,17 @@ form textarea[name=content] {
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         max-height: 220px;
-        height: calc(100vh - 1rem);
+        height: calc(100vh - 1rem)
     }
     footer h4 {
         color: #fff;
         font-size: 1.6rem;
         line-height: 1.313;
         margin-top: 0;
-        margin-bottom: 3.6rem;
+        margin-bottom: 3.6rem
     }
     footer li a {
-        color: #fff!important;
+        color: #fff!important
     }
     footer li a:active,
     footer li a:focus,
@@ -7224,20 +7227,20 @@ form textarea[name=content] {
         color: #fff!important;
         text-decoration: underline!important;
         background-color: transparent!important;
-        padding: 0 5px!important;
+        padding: 0 5px!important
     }
     footer .logo {
         bottom: 50%;
-        left: 2%;
+        left: 2%
     }
     footer figure {
-        max-width: 40%!important;
+        max-width: 40%!important
     }
     .logo-footer {
         height: auto;
         float: left;
         min-width: 240px;
-        max-width: 340px;
+        max-width: 340px
     }
     footer .copyright-notice {
         font-size: 1.375rem;
@@ -7252,20 +7255,20 @@ form textarea[name=content] {
         justify-content: flex-end;
         -webkit-box-align: center;
         -ms-flex-align: center;
-        align-items: center;
+        align-items: center
     }
     footer .nav {
         list-style: none;
-        padding-left: 0;
+        padding-left: 0
     }
     footer form {
-        margin-left: 15px;
+        margin-left: 15px
     }
     footer .copyright-notice ul li {
         float: left;
         margin: 0;
         line-height: 1;
-        padding-right: 5px;
+        padding-right: 5px
     }
     footer .menu-footer-nav-copyright,
     footer .menu-footer-nav-copyright li span,

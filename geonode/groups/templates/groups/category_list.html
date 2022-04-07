@@ -9,7 +9,7 @@
 {% block body %}
   <div class="page-header col-md-12" id="resources_list">
     {% if user.is_authenticated and not READ_ONLY_MODE %}
-    <a href="{% url "group_category_create" %}" class="btn btn-primary pull-right col-md-3">{% trans "Create a New Group Category" %}</a>
+      <div class="col-md-3 pull-right"><a href="{% url "group_category_create" %}" class="btn btn-primary" style="width: calc(100% - 20px);">{% trans "Create a New Group Category" %}</a></div>
     {% endif %}
     {% if SEARCH_FILTERS.TEXT_ENABLED %}
       {% include "search/_text_container.html" %}
