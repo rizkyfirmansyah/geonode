@@ -40,6 +40,9 @@ RUN chmod +x /usr/src/geonode/tasks.py \
 COPY celery.sh /usr/bin/celery-commands
 RUN chmod +x /usr/bin/celery-commands
 
+COPY celery-cmd /usr/bin/celery-cmd
+RUN chmod +x /usr/bin/celery-cmd
+
 # Preparing dependencies
 RUN apt-get update && apt-get install -y devscripts build-essential debhelper pkg-kde-tools sharutils
 
