@@ -1168,7 +1168,6 @@ textarea {
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
     padding: .7em;
-    background-color: var(--web-surface);
 }
 
 .cl-custom-select {
