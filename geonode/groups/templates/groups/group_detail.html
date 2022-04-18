@@ -62,9 +62,9 @@
   <div class="col-md-4">
     <ul class="list-group">
       {% if is_manager %}
-      <li class="list-group-item"><a href="{% url "group_update" object.slug %}">{% trans "Edit Group Details" %}</a></li>
-      <li class="list-group-item"><a href="{% url "group_members" object.slug %}">{% trans "Manage Group Members" %}</a></li>
-      <li class="list-group-item"><a href="{% url "group_remove" object.slug %}">{% trans "Delete this Group" %}</a></li>
+      <li class="list-group-item"><a href="{% url "group_update" object.slug %}" id="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
+      <li class="list-group-item"><a href="{% url "group_members" object.slug %}" id="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
+      <li class="list-group-item"><a href="{% url "group_remove" object.slug %}" id="btn_wrapper">{% trans "Delete this Group" %}</a></li>
       {% endif %}
       {% if can_view %}
       <li class="list-group-item"><a href="{% url "group_activity" object.slug %}">{% trans "Group Activities" %}</a></li>
