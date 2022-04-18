@@ -4522,6 +4522,7 @@ form-inline {
     border: #c4bab7;
     box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
     background-color: var(--web-container);
+    border-radius: var(--border-radius-md);
 }
 
 .search-content ul input:active,

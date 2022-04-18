@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('slug', models.SlugField(max_length=255, primary_key=True, serialize=False, unique=True, validators=[django.core.validators.MinLengthValidator(limit_value=3)])),
                 ('description', models.TextField(blank=True, default=None, max_length=255, null=True)),
-                ('max_size', models.BigIntegerField(default=1848576000, help_text='The maximum file size allowed for upload (bytes).', validators=[django.core.validators.MinValueValidator(limit_value=0)])),
+                ('max_size', models.BigIntegerField(default=2848576000, help_text='The maximum file size allowed for upload (bytes).', validators=[django.core.validators.MinValueValidator(limit_value=0)])),
             ],
             options={
                 'ordering': ('slug',),
