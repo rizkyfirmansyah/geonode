@@ -269,6 +269,18 @@ LOCAL_MEDIA_URL = os.getenv('LOCAL_MEDIA_URL', f'{FORCE_SCRIPT_NAME}/{MEDIAFILES
 STATIC_ROOT = os.getenv('STATIC_ROOT',
                         os.path.join(PROJECT_ROOT, 'static_root')
                         )
+# Cache Bustin Settings: enable WhiteNoise compression and caching support
+# ref: http://whitenoise.evans.io/en/stable/django.html#add-compression-and-caching-support
+CACHE_BUSTING_STATIC_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_STATIC_ENABLED', 'False'))
+
+if not DEBUG and CACHE_BUSTING_STATIC_ENABLED:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# Optionally Use a Content-Delivery Network
+# ref: http://whitenoise.evans.io/en/stable/django.html#use-a-content-delivery-network
+STATIC_HOST = os.environ.get('STATIC_URL', '')
 
 # URL that handles the static files like app media.
 # Example: "http://media.lawrence.com"
@@ -387,7 +399,8 @@ GEONODE_CORE_APPS = (
     'geonode.documents',
     'geonode.security',
     'geonode.catalogue',
-    'geonode.catalogue.metadataxsl'
+    'geonode.catalogue.metadataxsl',
+    'geonode.harvesting',
 )
 
 # GeoNode Apps
@@ -408,10 +421,15 @@ GEONODE_INTERNAL_APPS = (
     'geonode.datasets',
     'geonode.faqs',
 
+    'geonode.resource',
+    'geonode.resource.processing',
+    'geonode.storage',
+
     # GeoServer Apps
     # Geoserver needs to come last because
     # it's signals may rely on other apps' signals.
     'geonode.geoserver',
+    'geonode.geoserver.processing',
     'geonode.upload',
     'geonode.tasks',
     'geonode.messaging',
@@ -447,12 +465,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.humanize',
     'django.contrib.gis',
+    'sequences.apps.SequencesConfig',
 
     # Utility
     'dj_pagination',
     'taggit',
     'treebeard',
-    'leaflet',
     'bootstrap3_datetime',
     'django_filters',
     'mptt',
@@ -460,10 +478,9 @@ INSTALLED_APPS = (
     'floppyforms',
     'tinymce',
     'widget_tweaks',
-    'django_celery_beat',
     'django_celery_results',
     'markdownify',
-    'colorfield',
+    'django_user_agents',
 
     # REST APIs
     'rest_framework',
@@ -741,7 +758,9 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # ref to: http://whitenoise.evans.io/en/stable/django.html#enable-whitenoise
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
     'geonode.base.middleware.MaintenanceMiddleware',
     'geonode.base.middleware.ReadOnlyMiddleware',   # a Middleware enabling Read Only mode of Geonode
 )
@@ -1476,9 +1495,6 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
 
     if 'geonode_mapstore_client' not in INSTALLED_APPS:
         INSTALLED_APPS += (
-            'mapstore2_adapter',
-            'mapstore2_adapter.geoapps',
-            'mapstore2_adapter.geoapps.geostories',
             'geonode_mapstore_client',)
 
     def get_geonode_catalogue_service():
@@ -1501,22 +1517,9 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
 
     GEONODE_CATALOGUE_SERVICE = get_geonode_catalogue_service()
 
-    MAPSTORE_CATALOGUE_SERVICES = {
-        "Demo WMS Service": {
-            "url": "https://demo.geo-solutions.it/geoserver/wms",
-            "type": "wms",
-            "title": "Demo WMS Service",
-            "autoload": False
-        },
-        "Demo WMTS Service": {
-            "url": "https://demo.geo-solutions.it/geoserver/gwc/service/wmts",
-            "type": "wmts",
-            "title": "Demo WMTS Service",
-            "autoload": False
-        }
-    }
+    MAPSTORE_CATALOGUE_SERVICES = {}
 
-    MAPSTORE_CATALOGUE_SELECTED_SERVICE = "Demo WMS Service"
+    MAPSTORE_CATALOGUE_SELECTED_SERVICE = ""
 
     if GEONODE_CATALOGUE_SERVICE:
         MAPSTORE_CATALOGUE_SERVICES[list(list(GEONODE_CATALOGUE_SERVICE.keys()))[0]] = GEONODE_CATALOGUE_SERVICE[list(list(GEONODE_CATALOGUE_SERVICE.keys()))[0]]  # noqa
@@ -1587,6 +1590,69 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
     MAPSTORE_BASELAYERS = DEFAULT_MS2_BACKGROUNDS
+
+    MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
+
+    MAPSTORE_DEFAULT_LANGUAGES = """(
+        ('de-de', 'Deutsch'),
+        ('en-us', 'English'),
+    )"""
+
+    LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', MAPSTORE_DEFAULT_LANGUAGES))
+    # The default mapstore client compiles the translations json files in the /static/mapstore directory
+    # gn-translations are the custom translations for the client and ms-translations are the translations from the core framework
+    MAPSTORE_TRANSLATIONS_PATH = os.environ.get('MAPSTORE_TRANSLATIONS_PATH', ['/static/mapstore/ms-translations', '/static/mapstore/gn-translations'])
+
+    # list of projections available in the mapstore client
+    # properties:
+    # - code: epsg code of the projection
+    # - def: definition of projection in Proj4js string
+    # - extent: max extent in projected coordinates [minx, miny, maxx, maxy]
+    # - worldExtent: max extent in WGS84 coordinates [minx, miny, maxx, maxy]
+    # example:
+    # MAPSTORE_PROJECTION_DEFS = [
+    #   {
+    #        "code": "EPSG:3395",
+    #        "def": "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs",
+    #        "extent": [-20026376.39, -15496570.74, 20026376.39, 18764656.23 ],
+    #        "worldExtent": [ -180.0, -80.0, 180.0, 84.0 ]
+    #    }
+    # ]
+    MAPSTORE_PROJECTION_DEFS = []
+
+    # list of rules to change the plugins configuration
+    # allowed operation: add, remove and replace
+    # example: remove Measure plugin from map_viewer page
+    # MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = [
+    #     {
+    #         "op": "remove",
+    #         "jsonpath": "$.map_viewer..[?(@.name == 'Measure')]"
+    #     }
+    # ]
+    # example: add SearchServicesConfig plugin to map_viewer page
+    # MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = [
+    #     {
+    #         "op": "add",
+    #         "jsonpath": "/map_viewer/-",
+    #         "value": {
+    #             "name": "SearchServicesConfig"
+    #         }
+    #     }
+    # ]
+    # example: replace default configuration of Print plugin in map_viewer page
+    # MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = [
+    #     {
+    #         "op": "replace",
+    #         "jsonpath": "$.map_viewer..[?(@.name == 'Print')].cfg",
+    #         "value": {
+    #             "useFixedScales": False
+    #         }
+    #     }
+    # ]
+    MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = []
+
+    # Extensions path to use in importing custom extensions into geonode
+    MAPSTORE_EXTENSIONS_FOLDER_PATH = '/static/mapstore/extensions/'
 
 # -- END Client Hooksets Setup
 
@@ -2124,6 +2190,7 @@ FILE_UPLOAD_HANDLERS = [
 
 DEFAULT_MAX_UPLOAD_SIZE = int(os.getenv('DEFAULT_MAX_UPLOAD_SIZE', 2848576000))  # 3 GB
 DEFAULT_BUFFER_CHUNK_SIZE = int(os.getenv('DEFAULT_BUFFER_CHUNK_SIZE', 64 * 1024))
+DEFAULT_MAX_PARALLEL_UPLOADS_PER_USER = int(os.getenv('DEFAULT_MAX_PARALLEL_UPLOADS_PER_USER', 10))
 
 '''
 Default schema used to store extra and dynamic metadata for the resource

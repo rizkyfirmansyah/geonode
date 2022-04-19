@@ -17,32 +17,26 @@
 #
 #########################################################################
 
+import ast
 import logging
 
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext_lazy as _
+from geonode.upload.api.exceptions import FileUploadLimitException, UploadParallelismLimitException
 
-from geonode.upload.models import UploadSizeLimit
+from geonode.upload.models import Upload, UploadSizeLimit, UploadParallelismLimit
 from geonode.upload.data_retriever import DataRetriever
 
 from .. import geoserver
 from ..utils import check_ogc_backend
 from ..layers.forms import JSONField
 
-from .models import UploadFile
 from .upload_validators import validate_uploaded_files
 
 
 logger = logging.getLogger(__name__)
-
-
-class UploadFileForm(forms.ModelForm):
-
-    class Meta:
-        model = UploadFile
-        fields = '__all__'
 
 
 class LayerUploadForm(forms.Form):
@@ -75,7 +69,7 @@ class LayerUploadForm(forms.Form):
     time_presentation_reference_value = forms.CharField(required=False)
 
     abstract = forms.CharField(required=False)
-    layer_title = forms.CharField(required=False)
+    dataset_title = forms.CharField(required=False)
     permissions = JSONField(required=False)
 
     metadata_uploaded_preserve = forms.BooleanField(required=False)
@@ -97,8 +91,23 @@ class LayerUploadForm(forms.Form):
 
     spatial_files = tuple(spatial_files)
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super(LayerUploadForm, self).__init__(*args, **kwargs)
+
+    def clean_store_spatial_files(self):
+        store_spatial_files = self.data.get('store_spatial_files')
+        if store_spatial_files is None:
+            store_spatial_files = True
+            self.cleaned_data['store_spatial_files'] = True
+        elif isinstance(store_spatial_files, str):
+            store_spatial_files = ast.literal_eval(store_spatial_files.lower().capitalize())
+        return store_spatial_files if isinstance(store_spatial_files, bool) else True
+
     def clean(self):
         cleaned = super().clean()
+        if cleaned.get('store_spatial_files') is None:
+            cleaned['store_spatial_files'] = True
         uploaded, files = self._get_files_paths_or_objects(cleaned)
         cleaned["uploaded"] = uploaded
         base_file = files.get('base_file')
@@ -110,6 +119,8 @@ class LayerUploadForm(forms.Form):
         if self.errors:
             # Something already went wrong
             return cleaned
+
+        self.validate_parallelism_limit_per_user()
 
         # Validate form file sizes
         self.validate_files_sum_of_sizes(self.files)
@@ -152,6 +163,7 @@ class LayerUploadForm(forms.Form):
                 raise ValidationError(_(
                     f"`{field_name}` field cannot have both a file and a path. Please choose one and try again."
                 ))
+
             if path_field_value:
                 uploaded = False
                 files[field_name] = path_field_value
@@ -161,17 +173,25 @@ class LayerUploadForm(forms.Form):
 
         return uploaded, files
 
+    def validate_parallelism_limit_per_user(self):
+        max_parallel_uploads = self._get_max_parallel_uploads()
+        parallel_uploads_count = self._get_parallel_uploads_count()
+        if parallel_uploads_count >= max_parallel_uploads:
+            raise UploadParallelismLimitException(_(
+                f"The number of active parallel uploads exceeds {max_parallel_uploads}. Wait for the pending ones to finish."
+            ))
+
     def validate_files_sum_of_sizes(self, file_dict):
         max_size = self._get_uploads_max_size()
         total_size = self._get_uploaded_files_total_size(file_dict)
         if total_size > max_size:
-            raise ValidationError(_(
+            raise FileUploadLimitException(_(
                 f'Total upload size exceeds {filesizeformat(max_size)}. Please try again with smaller files.'
             ))
 
     def _get_uploads_max_size(self):
         try:
-            max_size_db_obj = UploadSizeLimit.objects.get(slug="total_upload_size_sum")
+            max_size_db_obj = UploadSizeLimit.objects.get(slug="layer_upload_size")
         except UploadSizeLimit.DoesNotExist:
             max_size_db_obj = UploadSizeLimit.objects.create_default_limit()
         return max_size_db_obj.max_size
@@ -190,6 +210,16 @@ class LayerUploadForm(forms.Form):
         ]
         total_size = sum(uploaded_files_sizes)
         return total_size
+
+    def _get_max_parallel_uploads(self):
+        try:
+            parallelism_limit = UploadParallelismLimit.objects.get(slug="default_max_parallel_uploads")
+        except UploadParallelismLimit.DoesNotExist:
+            parallelism_limit = UploadParallelismLimit.objects.create_default_limit()
+        return parallelism_limit.max_number
+
+    def _get_parallel_uploads_count(self):
+        return Upload.objects.get_incomplete_uploads(self.user).count()
 
 
 class TimeForm(forms.Form):

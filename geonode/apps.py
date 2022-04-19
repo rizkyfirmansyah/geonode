@@ -33,5 +33,5 @@ class AppConfig(BaseAppConfig):
     label = "SDI"
 
     def ready(self):
-        super(AppConfig, self).ready()
+        super().ready()
         run_setup_hooks()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -27,20 +26,22 @@ from taggit.models import Tag
 from taggit.models import TaggedItem
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
+from django.db.utils import IntegrityError
 from django.contrib.gis.geos import Polygon
-from django.contrib.auth.models import Permission, Group
 from django.core.serializers import serialize
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from geonode import geoserver  # noqa
 from geonode.maps.models import Map
+from geonode.base import enumerations
 from geonode.layers.models import Layer
 from geonode.compat import ensure_string
-from geonode.base.models import ResourceBase, TopicCategory
 from geonode.documents.models import Document
+from geonode.base.models import ResourceBase, TopicCategory
 
 # This is used to populate the database with the search fixture data. This is
 # primarily used as a first step to generate the json data for the fixture using
@@ -53,6 +54,7 @@ imgfile = BytesIO(
     b'\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
 )
 f = SimpleUploadedFile('test_img_file.gif', imgfile.read(), 'image/gif')
+dfile = [f"{settings.MEDIA_ROOT}/img.gif"]
 
 
 def all_public():
@@ -60,12 +62,15 @@ def all_public():
     for lyr in Layer.objects.all():
         lyr.set_default_permissions()
         lyr.clear_dirty_state()
+        lyr.set_processing_state(enumerations.STATE_PROCESSED)
     for mp in Map.objects.all():
         mp.set_default_permissions()
         mp.clear_dirty_state()
+        mp.set_processing_state(enumerations.STATE_PROCESSED)
     for doc in Document.objects.all():
         doc.set_default_permissions()
         doc.clear_dirty_state()
+        doc.set_processing_state(enumerations.STATE_PROCESSED)
     ResourceBase.objects.all().update(dirty_state=False)
 
 
@@ -77,7 +82,7 @@ def create_fixtures():
     world_extent = [-180, 180, -90, 90]
 
     map_data = [
-        ('SDI Default Map', 'SDI default map abstract', ('populartag',), world_extent, biota),
+        ('GeoNode Default Map', 'GeoNode default map abstract', ('populartag',), world_extent, biota),
         ('ipsum lorem', 'common ipsum lorem', ('populartag', 'maptagunique'), world_extent, biota),
         ('lorem1 ipsum1', 'common abstract1', ('populartag',), world_extent, biota),
         ('ipsum foo', 'common bar lorem', ('populartag',), world_extent, location),
@@ -120,7 +125,7 @@ def create_fixtures():
 
     next_date = get_test_date()
 
-    layer_data = [
+    dataset_data = [
         ('CA', 'abstract1', 'CA', 'geonode:CA', world_extent, next_date(), ('populartag', 'here'), elevation),
         ('layer2', 'abstract2', 'layer2', 'geonode:layer2', world_extent, next_date(), ('populartag',), elevation),
         ('uniquetitle', 'something here', 'mylayer', 'geonode:mylayer', world_extent, next_date(), ('populartag',), elevation),
@@ -145,20 +150,21 @@ def create_fixtures():
         ('doc metadata true', 'doc metadata true', ('populartag',), [0, 22, 0, 22], farming)
     ]
 
-    return map_data, user_data, people_data, layer_data, document_data
+    return map_data, user_data, people_data, dataset_data, document_data
 
 
 def create_models(type=None, integration=False):
     users = []
     obj_ids = []
     with transaction.atomic():
-        map_data, user_data, people_data, layer_data, document_data = create_fixtures()
-        anonymous_group, created = Group.objects.get_or_create(name='anonymous')
-        cont_group, created = Group.objects.get_or_create(name='contributors')
+        map_data, user_data, people_data, dataset_data, document_data = create_fixtures()
+        registeredmembers_group, _ = Group.objects.get_or_create(name='registered-members')
+        anonymous_group, _ = Group.objects.get_or_create(name='anonymous')
+        cont_group, _ = Group.objects.get_or_create(name='contributors')
         perm = Permission.objects.get(codename='add_resourcebase')
         cont_group.permissions.add(perm)
         logger.debug("[SetUp] Get or create user admin")
-        u, created = get_user_model().objects.get_or_create(username='admin')
+        u, _ = get_user_model().objects.get_or_create(username='admin')
         u.set_password('admin')
         u.is_superuser = True
         u.first_name = 'admin'
@@ -169,7 +175,7 @@ def create_models(type=None, integration=False):
         for ud, pd in zip(user_data, cycle(people_data)):
             user_name, password, first_name, last_name = ud
             logger.debug(f"[SetUp] Get or create user {user_name}")
-            u, created = get_user_model().objects.get_or_create(username=user_name)
+            u, _ = get_user_model().objects.get_or_create(username=user_name)
             u.set_password(password)
             u.first_name = first_name
             u.last_name = last_name
@@ -189,23 +195,22 @@ def create_models(type=None, integration=False):
                 for md, user in zip(map_data, cycle(users)):
                     title, abstract, kws, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), category = md
                     logger.debug(f"[SetUp] Add map {title}")
-                    m = Map(
+                    m, _ = Map.objects.get_or_create(
                         title=title,
-                        abstract=abstract,
-                        zoom=4,
-                        projection='EPSG:4326',
-                        center_x=42,
-                        center_y=-73,
-                        owner=user,
-                        bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-                        ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-                        srid='EPSG:4326',
-                        category=category,
-                        metadata_only=title == 'map metadata true'
+                        defaults=dict(
+                            uuid=str(uuid4()),
+                            abstract=abstract,
+                            owner=user,
+                            bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                            ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                            srid='EPSG:4326',
+                            category=category,
+                            metadata_only=title == 'map metadata true'
+                        )
                     )
-                    m.save()
-                    m.set_default_permissions()
+                    m.set_default_permissions(owner=user)
                     m.clear_dirty_state()
+                    m.set_processing_state(enumerations.STATE_PROCESSED)
                     obj_ids.append(m.id)
                     for kw in kws:
                         m.keywords.add(kw)
@@ -215,54 +220,62 @@ def create_models(type=None, integration=False):
                 for dd, user in zip(document_data, cycle(users)):
                     title, abstract, kws, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), category = dd
                     logger.debug(f"[SetUp] Add document {title}")
-                    m = Document(
+                    m, _ = Document.objects.get_or_create(
                         title=title,
-                        abstract=abstract,
-                        owner=user,
-                        bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-                        ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-                        srid='EPSG:4326',
-                        category=category,
-                        doc_file=f,
-                        metadata_only=title == 'doc metadata true'
+                        defaults=dict(
+                            uuid=str(uuid4()),
+                            abstract=abstract,
+                            owner=user,
+                            bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                            ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                            srid='EPSG:4326',
+                            files=dfile,
+                            extension="gif",
+                            metadata_only=title == 'doc metadata true'
+                        )
                     )
-                    m.save()
-                    m.set_default_permissions()
+                    m.set_default_permissions(owner=user)
                     m.clear_dirty_state()
+                    m.set_processing_state(enumerations.STATE_PROCESSED)
                     obj_ids.append(m.id)
                     for kw in kws:
                         m.keywords.add(kw)
                         m.save()
 
             if not type or ensure_string(type) == 'layer':
-                for ld, owner, storeType in zip(layer_data, cycle(users), cycle(('coverageStore', 'dataStore'))):
+                for ld, user, subtype in zip(dataset_data, cycle(users), cycle(('raster', 'vector'))):
                     title, abstract, name, alternate, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), start, kws, category = ld
                     end = start + timedelta(days=365)
                     logger.debug(f"[SetUp] Add layer {title}")
-                    layer = Layer(
-                        title=title,
-                        abstract=abstract,
-                        name=name,
-                        alternate=alternate,
-                        bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-                        ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-                        srid='EPSG:4326',
-                        uuid=str(uuid4()),
-                        owner=owner,
-                        temporal_extent_start=start,
-                        temporal_extent_end=end,
-                        date=start,
-                        storeType=storeType,
-                        category=category,
-                        metadata_only=title == 'layer metadata true'
-                    )
-                    layer.save()
-                    layer.set_default_permissions()
-                    layer.clear_dirty_state()
-                    obj_ids.append(layer.id)
-                    for kw in kws:
-                        layer.keywords.add(kw)
-                        layer.save()
+                    try:
+                        layer, _ = Layer.objects.get_or_create(
+                            alternate=alternate,
+                            defaults=dict(
+                                title=title,
+                                abstract=abstract,
+                                name=name,
+                                bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                                ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                                srid='EPSG:4326',
+                                uuid=str(uuid4()),
+                                owner=user,
+                                temporal_extent_start=start,
+                                temporal_extent_end=end,
+                                date=start,
+                                subtype=subtype,
+                                category=category,
+                                metadata_only=title == 'layer metadata true'
+                            )
+                        )
+                        layer.set_default_permissions(owner=user)
+                        layer.clear_dirty_state()
+                        layer.set_processing_state(enumerations.STATE_PROCESSED)
+                        obj_ids.append(layer.id)
+                        for kw in kws:
+                            layer.keywords.add(kw)
+                            layer.save()
+                    except IntegrityError:
+                        pass
     return obj_ids
 
 
@@ -315,7 +328,7 @@ def dump_models(path=None):
         f.write(result)
 
 
-def create_single_layer(name, keywords=None):
+def create_single_layer(name, keywords=None, owner=None, group=None, **kwargs):
     admin, created = get_user_model().objects.get_or_create(username='admin')
     if created:
         admin.is_superuser = True
@@ -323,39 +336,44 @@ def create_single_layer(name, keywords=None):
         admin.set_password('admin')
         admin.save()
     test_datetime = datetime.strptime('2020-01-01', '%Y-%m-%d')
-    user = get_user_model().objects.get(username='AnonymousUser')
     ll = (name, 'lorem ipsum', name, f'geonode:{name}', [
         0, 22, 0, 22], test_datetime, ('populartag',), "farming")
     title, abstract, name, alternate, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), start, kws, category = ll
-    layer = Layer(
-        title=title,
-        abstract=abstract,
-        name=name,
-        alternate=alternate,
-        bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-        ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-        srid='EPSG:4326',
-        uuid=str(uuid4()),
-        owner=user,
-        temporal_extent_start=test_datetime,
-        temporal_extent_end=test_datetime,
-        date=start,
-        storeType="dataStore",
-        resource_type="layer",
-        typename=f"geonode:{title}"
-    )
+    try:
+        layer, _ = Layer.objects.get_or_create(
+            alternate=alternate,
+            defaults=dict(
+                title=title,
+                abstract=abstract,
+                name=name,
+                bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+                srid='EPSG:4326',
+                uuid=str(uuid4()),
+                owner=owner or admin,
+                temporal_extent_start=test_datetime,
+                temporal_extent_end=test_datetime,
+                date=start,
+                subtype="vector",
+                resource_type="layer",
+                typename=f"geonode:{title}",
+                group=group,
+                **kwargs
+            )
+        )
 
-    layer.save()
+        if isinstance(keywords, list):
+            layer = add_keywords_to_resource(layer, keywords)
 
-    if isinstance(keywords, list):
-        layer = add_keywords_to_resource(layer, keywords)
+        layer.set_default_permissions(owner=owner or admin)
+        layer.clear_dirty_state()
+        layer.set_processing_state(enumerations.STATE_PROCESSED)
+        return layer
+    except IntegrityError:
+        return Layer.objects.get(alternate=alternate)
 
-    layer.set_default_permissions()
-    layer.clear_dirty_state()
-    return layer
 
-
-def create_single_map(name, keywords=None):
+def create_single_map(name, owner=None, **kwargs):
     admin, created = get_user_model().objects.get_or_create(username='admin')
     if created:
         admin.is_superuser = True
@@ -363,34 +381,29 @@ def create_single_map(name, keywords=None):
         admin.set_password('admin')
         admin.save()
     test_datetime = datetime.strptime('2020-01-01', '%Y-%m-%d')
-    user = get_user_model().objects.get(username='AnonymousUser')
     ll = (name, 'lorem ipsum', name, f'{name}', [
         0, 22, 0, 22], test_datetime, ('populartag',))
     title, abstract, name, alternate, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), start, kws = ll
-    m = Map(
+    m, _ = Map.objects.get_or_create(
         title=title,
-        abstract=abstract,
-        zoom=4,
-        projection='EPSG:4326',
-        center_x=42,
-        center_y=-73,
-        owner=user,
-        bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-        ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-        srid='EPSG:4326',
-        resource_type="map"
+        defaults=dict(
+            uuid=str(uuid4()),
+            abstract=abstract,
+            owner=owner or admin,
+            bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+            ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+            srid='EPSG:4326',
+            resource_type="map",
+            **kwargs
+        )
     )
-    m.save()
-
-    if isinstance(keywords, list):
-        m = add_keywords_to_resource(m, keywords)
-
-    m.set_default_permissions()
+    m.set_default_permissions(owner=owner or admin)
     m.clear_dirty_state()
+    m.set_processing_state(enumerations.STATE_PROCESSED)
     return m
 
 
-def create_single_doc(name, keywords=None):
+def create_single_doc(name, owner=None, **kwargs):
     admin, created = get_user_model().objects.get_or_create(username='admin')
     if created:
         admin.is_superuser = True
@@ -398,35 +411,33 @@ def create_single_doc(name, keywords=None):
         admin.set_password('admin')
         admin.save()
     test_datetime = datetime.strptime('2020-01-01', '%Y-%m-%d')
-    user = get_user_model().objects.get(username='AnonymousUser')
     dd = (name, 'lorem ipsum', name, f'{name}', [
         0, 22, 0, 22], test_datetime, ('populartag',))
     title, abstract, name, alternate, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), start, kws = dd
     logger.debug(f"[SetUp] Add document {title}")
-    m = Document(
+    m, _ = Document.objects.get_or_create(
         title=title,
-        abstract=abstract,
-        owner=user,
-        bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-        ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
-        srid='EPSG:4326',
-        doc_file=f,
-        resource_type="document"
+        defaults=dict(
+            uuid=str(uuid4()),
+            abstract=abstract,
+            owner=owner or admin,
+            bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+            ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
+            srid='EPSG:4326',
+            files=dfile,
+            resource_type="document",
+            **kwargs
+        )
     )
-    m.save()
-
-    if isinstance(keywords, list):
-        m = add_keywords_to_resource(m, keywords)
-
-    m.set_default_permissions()
+    m.set_default_permissions(owner=owner or admin)
     m.clear_dirty_state()
+    m.set_processing_state(enumerations.STATE_PROCESSED)
     return m
 
 
 def add_keywords_to_resource(resource, keywords):
     for keyword in keywords:
         resource.keywords.add(keyword)
-
     resource.save()
     return resource
 

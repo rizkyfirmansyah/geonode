@@ -35,7 +35,7 @@ from django.http import Http404
 from django.utils.translation import ugettext_noop as _
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django_jsonfield_backport.models import JSONField
+from django.db.models.fields.json import JSONField
 
 try:
     from django.contrib.gis.geoip2 import GeoIP2 as GeoIP

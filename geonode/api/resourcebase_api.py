@@ -23,7 +23,7 @@ import logging
 from django.db.models import Q
 from django.http import HttpResponse
 from django.conf import settings
-from django.contrib.staticfiles.templatetags import staticfiles
+from django.templatetags.static import static
 from tastypie.authentication import MultiAuthentication, SessionAuthentication
 from tastypie.bundle import Bundle
 
@@ -54,6 +54,7 @@ from geonode.groups.models import GroupProfile
 from geonode.utils import check_ogc_backend
 from geonode.security.utils import get_visible_resources
 from .authentication import OAuthAuthentication
+from geonode.thumbs.utils import MISSING_THUMB
 from .authorization import GeoNodeAuthorization, GeonodeApiKeyAuthentication
 
 from .api import (
@@ -594,7 +595,7 @@ class CommonModelApi(ModelResource):
                 formatted_obj['site_url'] = settings.SITEURL
 
             if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
-                formatted_obj['thumbnail_url'] = staticfiles.static(settings.MISSING_THUMBNAIL)
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_obj['owner__username'] = obj.owner.username
             formatted_obj['owner_name'] = obj.owner.get_full_name() or obj.owner.username

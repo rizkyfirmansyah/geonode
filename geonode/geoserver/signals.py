@@ -19,17 +19,15 @@
 import errno
 import logging
 
+from deprecated import deprecated
 from geoserver.layer import Layer as GsLayer
 
-from django.conf import settings
-from django.dispatch import receiver, Signal
-from django.forms.models import model_to_dict
-from django.contrib.staticfiles.templatetags import staticfiles
+from django.db.models import Q
+from django.templatetags.static import static
+from django.dispatch import Signal
 
 # use different name to avoid module clash
-from geonode.utils import (
-    is_monochromatic_image,
-    json_serializer_producer)
+from geonode.utils import is_monochromatic_image
 from geonode.decorators import on_ogc_backend
 from geonode.geoserver.helpers import (
     gs_catalog,
@@ -37,13 +35,14 @@ from geonode.geoserver.helpers import (
 from geonode.geoserver.tasks import geoserver_create_thumbnail
 from geonode.layers.models import Layer
 from geonode.services.enumerations import CASCADED
+from geonode.thumbs.utils import MISSING_THUMB
 
 from . import BACKEND_PACKAGE
 from .tasks import geoserver_cascading_delete, geoserver_post_save_layers
 
 logger = logging.getLogger("geonode.geoserver.signals")
 
-geoserver_post_save_complete = Signal(providing_args=['instance'])
+geoserver_automatic_default_style_set = Signal(providing_args=['instance'])
 
 
 def geoserver_delete(typename):
@@ -60,31 +59,9 @@ def geoserver_pre_delete(instance, sender, **kwargs):
     # cascading_delete should only be called if
     # ogc_server_settings.BACKEND_WRITE_ENABLED == True
     if getattr(ogc_server_settings, "BACKEND_WRITE_ENABLED", True):
-        if instance.remote_service is None or instance.remote_service.method == CASCADED:
+        if not hasattr(instance, 'remote_service') or instance.remote_service is None or instance.remote_service.method == CASCADED:
             if instance.alternate:
                 geoserver_cascading_delete.apply_async((instance.alternate,))
-
-
-@on_ogc_backend(BACKEND_PACKAGE)
-def geoserver_pre_save(*args, **kwargs):
-    # nothing to do here, processing is pushed to post-save
-    pass
-
-
-@on_ogc_backend(BACKEND_PACKAGE)
-def geoserver_post_save(instance, sender, created, **kwargs):
-    from geonode.messaging import producer
-    # this is attached to various models, (ResourceBase, Document)
-    # so we should select what will be handled here
-    if isinstance(instance, Layer):
-        instance_dict = model_to_dict(instance)
-        payload = json_serializer_producer(instance_dict)
-        try:
-            producer.geoserver_upload_layer(payload)
-        except Exception as e:
-            logger.error(e)
-        if getattr(settings, 'DELAYED_SECURITY_SIGNALS', False):
-            instance.set_dirty_state()
 
 
 @on_ogc_backend(BACKEND_PACKAGE)
@@ -123,32 +100,42 @@ def geoserver_pre_save_maplayer(instance, sender, **kwargs):
         else:
             raise e
 
+    # Set layer
+    if instance.layer is None:
+        layer_queryset = Layer.objects.filter(Q(alternate=instance.name) | Q(name=instance.name))
+        if instance.local and instance.store:
+            layer_queryset = layer_queryset.filter(store=instance.store)
+        elif instance.ows_url:
+            layer_queryset = layer_queryset.filter(remote_service__base_url=instance.ows_url)
+        try:
+            instance.layer = layer_queryset.get()
+        except (Layer.DoesNotExist, Layer.MultipleObjectsReturned):
+            pass
 
-@on_ogc_backend(BACKEND_PACKAGE)
+
+@deprecated(version='3.2.1', reason="Use direct calls to the ReourceManager.")
 def geoserver_post_save_map(instance, sender, created, **kwargs):
     instance.set_missing_info()
     if not created:
         if not instance.thumbnail_url or \
-                instance.thumbnail_url == staticfiles.static(settings.MISSING_THUMBNAIL):
+                instance.thumbnail_url == static(MISSING_THUMB):
             logger.debug(f"... Creating Thumbnail for Map [{instance.title}]")
-            # create_gs_thumbnail(instance, overwrite=False, check_bbox=True)
             geoserver_create_thumbnail.apply_async((instance.id, False, True, ))
 
 
-@receiver(geoserver_post_save_complete)
-def geoserver_post_save_thumbnail(sender, instance, **kwargs):
+@deprecated(version='3.2.1', reason="Use direct calls to the ReourceManager.")
+def geoserver_set_thumbnail(instance, **kwargs):
     # Creating Layer Thumbnail
     # some thumbnail generators will update thumbnail_url.  If so, don't
     # immediately re-generate the thumbnail here.  use layer#save(update_fields=['thumbnail_url'])
     try:
-        instance.refresh_from_db()
         logger.debug(f"... Creating Thumbnail for Layer {instance.title}")
         _recreate_thumbnail = False
         if 'update_fields' in kwargs and kwargs['update_fields'] is not None and \
                 'thumbnail_url' in kwargs['update_fields']:
             _recreate_thumbnail = True
         if not instance.thumbnail_url or \
-                instance.thumbnail_url == staticfiles.static(settings.MISSING_THUMBNAIL) or \
+                instance.thumbnail_url == static(MISSING_THUMB) or \
                 is_monochromatic_image(instance.thumbnail_url):
             _recreate_thumbnail = True
         if _recreate_thumbnail:

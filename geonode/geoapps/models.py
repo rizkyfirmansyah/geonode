@@ -23,7 +23,7 @@ from django.db import models
 from django.urls import reverse
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
-from django_jsonfield_backport.models import JSONField
+from django.db.models.fields.json import JSONField
 
 from guardian.shortcuts import get_anonymous_user
 

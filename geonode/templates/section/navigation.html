@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load static from staticfiles %}
+{% load static %}
 {% load base_tags %}
 {% load avatar_tags %}
 {% load user_messages %}
@@ -13,6 +13,7 @@
     <ul class="header-nav__list" style="margin-bottom: 0px;">
       <li class="current"><a class="navigation_link" href="{{ SITEURL }}" title="home">Home</a></li>
       <li><a class="navigation_link" href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Spatial data">Spatial Data</a></li>
+      <li><a class="navigation_link" href="{% url "services" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Remote Services">{% trans "Remote Services" %}</a></li>
       <li><a class="navigation_link" href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Documents/Non Spatial Data">Non Spatial Data</a></li>
       <li><a class="navigation_link" href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Maps created by users">Maps</a></li>
       <li><a class="navigation_link" href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Explore Apps created by users">Apps</a></li>
@@ -41,6 +42,7 @@
           <li role="separator" class="divider"></li>
           <ul class="header-nav__list no-gutters">
             <li><a class="navigation_link light" href="{% url "layer_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Spatial data">Add Spatial Data</a></li>
+            <li><a class="navigation_link light" href="{% url "register_service" %}" role="button" target="_self" title="Remote Services">Add Remote Services</a></li>
             <li><a class="navigation_link light" href="{% url "document_upload" %}?limit={{ CLIENT_RESULTS_LIMIT }}" role="button" target="_self" title="Add Non Spatial Data">Add Non Spatial Data</a></li>
           </ul>
           <li role="separator" class="divider"></li>

@@ -22,9 +22,9 @@ import json
 from django import forms
 from django.apps import apps
 from django.db.models import Q
+from django.shortcuts import render
 from django.urls import reverse
 from django.conf import settings
-from django.shortcuts import render_to_response
 from django.template.response import TemplateResponse
 from geonode.base.templatetags.base_tags import facets
 from django.http import HttpResponse, HttpResponseRedirect
@@ -138,13 +138,13 @@ def unauthorized_view(request, exception):
 
 
 def page_not_found_view(request, exception, template_name="error/404.html"):
-    response = render_to_response(template_name)
+    response = render(request, template_name)
     response.status_code = 404
     return response
 
 
 def server_error_view(request, template_name="error/500.html"):
-    response = render_to_response(template_name)
+    response = render(request, template_name)
     response.status_code = 500
     return response
 

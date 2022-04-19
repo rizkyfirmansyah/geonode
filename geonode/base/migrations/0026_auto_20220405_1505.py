@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import django_jsonfield_backport.models
 
 
 class Migration(migrations.Migration):
@@ -32,7 +31,7 @@ class Migration(migrations.Migration):
             name='ExtraMetadata',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('metadata', django_jsonfield_backport.models.JSONField(blank=True, default=dict, null=True)),
+                ('metadata', models.JSONField(blank=True, default=dict, null=True)),
                 ('resource', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.ResourceBase')),
             ],
         ),

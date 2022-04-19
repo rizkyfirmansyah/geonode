@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -18,8 +17,11 @@
 #
 #########################################################################
 
-from geonode.upload.models import Upload, UploadFile
-
+from geonode.upload.models import (
+    Upload,
+    UploadParallelismLimit,
+    UploadSizeLimit,
+)
 from django.contrib import admin
 
 
@@ -32,23 +34,46 @@ import_link.allow_tags = True
 
 
 class UploadAdmin(admin.ModelAdmin):
-    list_display = ('id', 'import_id', 'name', 'layer', 'user', 'date', 'state', import_link)
+    list_display = ('id', 'import_id', 'name', 'resource', 'user', 'date', 'state', import_link)
     list_display_links = ('id',)
     date_hierarchy = 'date'
-    list_filter = ('name', 'layer', 'user', 'date', 'state')
-    search_fields = ('name', 'layer', 'user', 'date', 'state')
+    list_filter = ('name', 'resource', 'user', 'date', 'state')
+    search_fields = ('name', 'resource', 'user', 'date', 'state')
 
     def delete_queryset(self, request, queryset):
+        """
+        We need to invoke the 'Upload.delete' method even when deleting
+        through the admin batch action
+        """
         for obj in queryset:
             obj.delete()
 
 
-class UploadFileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'upload', 'slug', 'base')
-    list_display_links = ('id',)
-    list_filter = ('slug', )
-    search_fields = ('slug', )
+class UploadSizeLimitAdmin(admin.ModelAdmin):
+    list_display = ('slug', 'description', 'max_size', 'max_size_label')
+
+    def has_delete_permission(self, request, obj=None):
+        protected_objects = [
+            'layer_upload_size',
+            'document_upload_size'
+        ]
+        if obj and obj.slug in protected_objects:
+            return False
+        return super(UploadSizeLimitAdmin, self).has_delete_permission(request, obj)
+
+
+class UploadParallelismLimitAdmin(admin.ModelAdmin):
+    list_display = ('slug', 'description', 'max_number',)
+
+    def has_delete_permission(self, request, obj=None):
+        if obj and obj.slug == "default_max_parallel_uploads":
+            return False
+        return super(UploadParallelismLimitAdmin, self).has_delete_permission(request, obj)
+
+    def has_add_permission(self, request):
+        return False
 
 
 admin.site.register(Upload, UploadAdmin)
-admin.site.register(UploadFile, UploadFileAdmin)
+admin.site.register(UploadSizeLimit, UploadSizeLimitAdmin)
+admin.site.register(UploadParallelismLimit, UploadParallelismLimitAdmin)

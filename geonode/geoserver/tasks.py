@@ -17,26 +17,26 @@
 #
 #########################################################################
 import os
-import shutil
 
 from django.conf import settings
 from django.core.management import call_command
 
+from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from geonode.celery_app import app
 from geonode.tasks.tasks import (
     AcquireLock,
     FaultTolerantTask)
-from geonode.upload import signals
-from geonode.layers.models import (
-    Layer, UploadSession)
-from geonode.base.models import (
-    ResourceBase)
+from geonode.base.models import Link
+from geonode.base import enumerations
+from geonode.layers.models import Layer
+from geonode.base.models import ResourceBase
 
+from .security import sync_resources_with_guardian
 from .helpers import (
-    gs_catalog,
     gs_slurp,
+    gs_catalog,
     set_styles,
     get_sld_for,
     set_layer_style,
@@ -53,12 +53,13 @@ logger = get_task_logger(__name__)
     name='geonode.geoserver.tasks.geoserver_update_layers',
     queue='geoserver.catalog',
     expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def geoserver_update_layers(self, *args, **kwargs):
     """
     Runs update layers.
@@ -66,7 +67,10 @@ def geoserver_update_layers(self, *args, **kwargs):
     lock_id = f'{self.request.id}'
     with AcquireLock(lock_id) as lock:
         if lock.acquire() is True:
-            return gs_slurp(*args, **kwargs)
+            try:
+                return gs_slurp(*args, **kwargs)
+            finally:
+                lock.release()
 
 
 @app.task(
@@ -74,13 +78,14 @@ def geoserver_update_layers(self, *args, **kwargs):
     base=FaultTolerantTask,
     name='geonode.geoserver.tasks.geoserver_set_style',
     queue='geoserver.catalog',
-    expires=30,
+    expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def geoserver_set_style(
         self,
         instance_id,
@@ -107,6 +112,8 @@ def geoserver_set_style(
                     base_file=base_file)
             except Exception as e:
                 logger.exception(e)
+            finally:
+                lock.release()
 
 
 @app.task(
@@ -114,13 +121,14 @@ def geoserver_set_style(
     base=FaultTolerantTask,
     name='geonode.geoserver.tasks.geoserver_create_style',
     queue='geoserver.catalog',
-    expires=30,
+    expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def geoserver_create_style(
         self,
         instance_id,
@@ -130,6 +138,7 @@ def geoserver_create_style(
     """
     Sets or create styles from Upload Session.
     """
+    from geonode.geoserver.signals import geoserver_automatic_default_style_set
     instance = None
     try:
         instance = Layer.objects.get(id=instance_id)
@@ -140,171 +149,51 @@ def geoserver_create_style(
     lock_id = f'{self.request.id}'
     with AcquireLock(lock_id) as lock:
         if lock.acquire() is True and instance:
-            if sld_file and os.path.exists(sld_file) and os.access(sld_file, os.R_OK):
+            try:
                 f = None
-                if os.path.isfile(sld_file):
-                    try:
-                        f = open(sld_file)
-                    except Exception:
-                        pass
-                elif tempdir and os.path.exists(tempdir):
-                    if os.path.isfile(os.path.join(tempdir, sld_file)):
+                if sld_file and os.path.exists(sld_file) and os.access(sld_file, os.R_OK):
+                    if os.path.isfile(sld_file):
                         try:
-                            f = open(os.path.join(tempdir, sld_file))
+                            f = open(sld_file)
                         except Exception:
                             pass
-                if f:
-                    sld = f.read()
-                    f.close()
-                    if not gs_catalog.get_style(name=name, workspace=settings.DEFAULT_WORKSPACE):
-                        style = gs_catalog.create_style(
-                            name,
-                            sld,
-                            raw=True,
-                            workspace=settings.DEFAULT_WORKSPACE)
-                        gs_layer = gs_catalog.get_layer(name)
-                        _default_style = gs_layer.default_style
-                        gs_layer.default_style = style
-                        gs_catalog.save(gs_layer)
-                        set_styles(instance, gs_catalog)
-                        try:
-                            gs_catalog.delete(_default_style)
-                        except Exception as e:
-                            logger.exception(e)
+                    elif tempdir and os.path.exists(tempdir):
+                        if os.path.isfile(os.path.join(tempdir, sld_file)):
+                            try:
+                                f = open(os.path.join(tempdir, sld_file))
+                            except Exception:
+                                pass
+                    if f:
+                        sld = f.read()
+                        f.close()
+                        if not gs_catalog.get_style(name=name, workspace=settings.DEFAULT_WORKSPACE):
+                            style = gs_catalog.create_style(
+                                name,
+                                sld,
+                                raw=True,
+                                workspace=settings.DEFAULT_WORKSPACE)
+                            gs_layer = gs_catalog.get_layer(name)
+                            _default_style = gs_layer.default_style
+                            gs_layer.default_style = style
+                            gs_catalog.save(gs_layer)
+                            set_styles(instance, gs_catalog)
+                            try:
+                                gs_catalog.delete(_default_style)
+                                Link.objects.filter(
+                                    resource=instance.resourcebase_ptr,
+                                    name='Legend',
+                                    url__contains=f'STYLE={_default_style.name}').delete()
+                            except Exception as e:
+                                logger.exception(e)
+                    else:
+                        get_sld_for(gs_catalog, instance)
                 else:
                     get_sld_for(gs_catalog, instance)
-            else:
-                get_sld_for(gs_catalog, instance)
-
-
-@app.task(
-    bind=True,
-    base=FaultTolerantTask,
-    name='geonode.geoserver.tasks.geoserver_finalize_upload',
-    queue='geoserver.events',
-    expires=600,
-    acks_late=False,
-    autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
-def geoserver_finalize_upload(
-        self,
-        import_id,
-        instance_id,
-        permissions,
-        created,
-        xml_file,
-        sld_file,
-        sld_uploaded,
-        tempdir):
-    """
-    Finalize Layer and GeoServer configuration:
-     - Sets Layer Metadata from XML and updates GeoServer Layer accordingly.
-     - Sets Default Permissions
-    """
-    instance = None
-    try:
-        instance = Layer.objects.get(id=instance_id)
-    except Layer.DoesNotExist:
-        logger.debug(f"Layer id {instance_id} does not exist yet!")
-        raise
-
-    lock_id = f'{self.request.id}'
-    with AcquireLock(lock_id) as lock:
-        if lock.acquire() is True:
-            # Hide the resource until finished
-            instance.set_dirty_state()
-
-            from geonode.upload.models import Upload
-            upload = Upload.objects.get(import_id=import_id)
-            upload.layer = instance
-            upload.save()
-
-            try:
-                # Update the upload sessions
-                geonode_upload_sessions = UploadSession.objects.filter(resource=instance)
-                geonode_upload_sessions.update(processed=False)
-                instance.upload_session = geonode_upload_sessions.first()
-            except Exception as e:
-                logger.exception(e)
-
-            # Sanity checks
-            if isinstance(xml_file, list):
-                if len(xml_file) > 0:
-                    xml_file = xml_file[0]
-                else:
-                    xml_file = None
-            elif not isinstance(xml_file, str):
-                xml_file = None
-
-            if xml_file and os.path.exists(xml_file) and os.access(xml_file, os.R_OK):
-                instance.metadata_uploaded = True
-
-            try:
-                gs_resource = gs_catalog.get_resource(
-                    name=instance.name,
-                    store=instance.store,
-                    workspace=instance.workspace)
-            except Exception:
-                try:
-                    gs_resource = gs_catalog.get_resource(
-                        name=instance.alternate,
-                        store=instance.store,
-                        workspace=instance.workspace)
-                except Exception:
-                    try:
-                        gs_resource = gs_catalog.get_resource(
-                            name=instance.alternate or instance.typename)
-                    except Exception:
-                        gs_resource = None
-
-            if gs_resource:
-                # Updating GeoServer resource
-                gs_resource.title = instance.title
-                gs_resource.abstract = instance.abstract
-                gs_catalog.save(gs_resource)
-                if gs_resource.store:
-                    instance.storeType = gs_resource.store.resource_type
-                    if not instance.alternate:
-                        instance.alternate = f"{gs_resource.store.workspace.name}:{gs_resource.name}"
-
-            if sld_uploaded:
-                geoserver_set_style(instance.id, sld_file)
-            else:
-                geoserver_create_style(instance.id, instance.name, sld_file, tempdir)
-
-            logger.debug(f'Finalizing (permissions and notifications) Layer {instance}')
-            instance.handle_moderated_uploads()
-
-            if permissions is not None:
-                logger.debug(f'Setting permissions {permissions} for {instance.name}')
-                instance.set_permissions(permissions)
-
-            instance.save(notify=not created)
-
-            try:
-                logger.debug(f"... Cleaning up the temporary folders {tempdir}")
-                if tempdir and os.path.exists(tempdir):
-                    shutil.rmtree(tempdir)
-            except Exception as e:
-                logger.warning(e)
-
-            try:
-                # Update the upload sessions
-                geonode_upload_sessions = UploadSession.objects.filter(resource=instance)
-                geonode_upload_sessions.update(processed=True)
-                instance.upload_session = geonode_upload_sessions.first()
-            except Exception as e:
-                logger.exception(e)
+                if not f:
+                    # this signal is used by the mapstore client to set the style in visual mode
+                    geoserver_automatic_default_style_set.send_robust(sender=instance, instance=instance)
             finally:
-                upload.complete = True
-                upload.save()
-                # Show the resource finally finished
-                upload.set_processing_state(Upload.STATE_PROCESSED)
-
-            signals.upload_complete.send(sender=geoserver_finalize_upload, layer=instance)
+                lock.release()
 
 
 @app.task(
@@ -312,13 +201,14 @@ def geoserver_finalize_upload(
     base=FaultTolerantTask,
     name='geonode.geoserver.tasks.geoserver_post_save_layers',
     queue='geoserver.catalog',
-    expires=3600,
+    expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 0, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def geoserver_post_save_layers(
         self,
         instance_id,
@@ -329,11 +219,14 @@ def geoserver_post_save_layers(
     lock_id = f'{self.request.id}'
     with AcquireLock(lock_id) as lock:
         if lock.acquire() is True:
-            sync_instance_with_geoserver(instance_id, *args, **kwargs)
+            try:
+                sync_instance_with_geoserver(instance_id, *args, **kwargs)
 
-            # Updating HAYSTACK Indexes if needed
-            if settings.HAYSTACK_SEARCH:
-                call_command('update_index')
+                # Updating HAYSTACK Indexes if needed
+                if settings.HAYSTACK_SEARCH:
+                    call_command('update_index')
+            finally:
+                lock.release()
 
 
 @app.task(
@@ -341,13 +234,14 @@ def geoserver_post_save_layers(
     base=FaultTolerantTask,
     name='geonode.geoserver.tasks.geoserver_create_thumbnail',
     queue='geoserver.events',
-    expires=30,
+    expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 0, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def geoserver_create_thumbnail(self, instance_id, overwrite=True, check_bbox=True):
     """
     Runs create_gs_thumbnail.
@@ -363,10 +257,17 @@ def geoserver_create_thumbnail(self, instance_id, overwrite=True, check_bbox=Tru
     with AcquireLock(lock_id) as lock:
         if lock.acquire() is True:
             try:
-                create_gs_thumbnail(instance, overwrite=overwrite, check_bbox=check_bbox)
-                logger.debug(f"... Created Thumbnail for Layer {instance.title}")
-            except Exception as e:
-                geoserver_create_thumbnail.retry(exc=e)
+                instance.set_processing_state(enumerations.STATE_RUNNING)
+                try:
+                    instance.set_dirty_state()
+                    create_gs_thumbnail(instance, overwrite=overwrite, check_bbox=check_bbox)
+                    logger.debug(f"... Created Thumbnail for Layer {instance.title}")
+                except Exception as e:
+                    geoserver_create_thumbnail.retry(exc=e)
+                finally:
+                    instance.set_processing_state(enumerations.STATE_PROCESSED)
+            finally:
+                lock.release()
 
 
 @app.task(
@@ -375,12 +276,13 @@ def geoserver_create_thumbnail(self, instance_id, overwrite=True, check_bbox=Tru
     name='geonode.geoserver.tasks.geoserver_cascading_delete',
     queue='cleanup',
     expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def geoserver_cascading_delete(self, *args, **kwargs):
     """
     Runs cascading_delete.
@@ -388,4 +290,59 @@ def geoserver_cascading_delete(self, *args, **kwargs):
     lock_id = f'{self.request.id}'
     with AcquireLock(lock_id) as lock:
         if lock.acquire() is True:
-            return cascading_delete(*args, **kwargs)
+            try:
+                return cascading_delete(*args, **kwargs)
+            finally:
+                lock.release()
+
+
+@app.task(
+    bind=True,
+    name='geonode.geoserver.tasks.geoserver_delete_map',
+    queue='cleanup',
+    expires=600,
+    time_limit=600,
+    acks_late=False,
+    autoretry_for=(Exception, ),
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
+def geoserver_delete_map(self, object_id):
+    """
+    Deletes a map and the associated map layers.
+    """
+    from geonode.maps.models import Map
+    lock_id = f'{self.request.id}'
+    with AcquireLock(lock_id) as lock:
+        if lock.acquire() is True:
+            try:
+                try:
+                    map_obj = Map.objects.get(id=object_id)
+                except Map.DoesNotExist:
+                    return
+
+                map_obj.maplayers.all().delete()
+                map_obj.delete()
+            finally:
+                lock.release()
+
+
+@shared_task(
+    bind=True,
+    name='geonode.security.tasks.synch_guardian',
+    queue='security',
+    expires=600,
+    time_limit=600,
+    acks_late=False,
+    autoretry_for=(Exception, ),
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
+def synch_guardian():
+    """
+    Sync resources with Guardian and clear their dirty state
+    """
+    if getattr(settings, 'DELAYED_SECURITY_SIGNALS', False):
+        sync_resources_with_guardian()

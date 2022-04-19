@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -76,6 +75,7 @@ from geonode.settings import (
     OGC_SERVER,
     ASYNC_SIGNALS,
     MONITORING_ENABLED,
+    CELERY_BEAT_SCHEDULER
 )
 
 try:
@@ -90,7 +90,7 @@ assert sys.version_info >= (2, 6), \
     SystemError("GeoNode Build requires python 2.6 or better")
 
 dev_config = None
-with open("dev_config.yml", 'r') as f:
+with open("dev_config.yml") as f:
     dev_config = yaml.load(f, Loader=yaml.Loader)
 
 
@@ -148,8 +148,7 @@ def grab(src, dest, name):
                 f.write(data)
         logger.info(f" total_size [{total_size}] / wrote [{wrote}] ")
         if total_size != 0 and wrote != total_size:
-            logger.error("ERROR, something went wrong. Data could not be written. Expected to write " + wrote +
-                         " but wrote " + total_size + " instead")
+            logger.error(f"ERROR, something went wrong. Data could not be written. Expected to write {wrote} but wrote {total_size} instead")
         else:
             shutil.move("output.bin", dest)
         try:
@@ -221,27 +220,6 @@ def setup_geoserver(options):
         _configure_data_dir()
 
 
-def _robust_rmtree(path, logger=None, max_retries=5):
-    """Try to delete paths robustly .
-    Retries several times (with increasing delays) if an OSError
-    occurs.  If the final attempt fails, the Exception is propagated
-    to the caller. Taken from https://github.com/hashdist/hashdist/pull/116
-    """
-
-    for i in range(max_retries):
-        try:
-            shutil.rmtree(path)
-            return
-        except OSError:
-            if logger:
-                info(f'Unable to remove path: {path}')
-                info('Retrying after %d seconds' % i)
-            time.sleep(i)
-
-    # Final attempt, pass any Exceptions up to caller.
-    shutil.rmtree(path)
-
-
 def _configure_data_dir():
     try:
         config = path(
@@ -249,8 +227,7 @@ def _configure_data_dir():
         with open(config) as f:
             xml = f.read()
             m = re.search('proxyBaseUrl>([^<]+)', xml)
-            xml = xml[:m.start(1)] + \
-                "http://localhost:8080/geoserver" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8080/geoserver{xml[m.end(1):]}"
             with open(config, 'w') as f:
                 f.write(xml)
     except Exception as e:
@@ -262,20 +239,15 @@ def _configure_data_dir():
         with open(config) as f:
             xml = f.read()
             m = re.search('accessTokenUri>([^<]+)', xml)
-            xml = xml[:m.start(1)] + \
-                "http://localhost:8000/o/token/" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8000/o/token/{xml[m.end(1):]}"
             m = re.search('userAuthorizationUri>([^<]+)', xml)
-            xml = xml[:m.start(
-                1)] + "http://localhost:8000/o/authorize/" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8000/o/authorize/{xml[m.end(1):]}"
             m = re.search('redirectUri>([^<]+)', xml)
-            xml = xml[:m.start(
-                1)] + "http://localhost:8080/geoserver/index.html" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8080/geoserver/index.html{xml[m.end(1):]}"
             m = re.search('checkTokenEndpointUrl>([^<]+)', xml)
-            xml = xml[:m.start(
-                1)] + "http://localhost:8000/api/o/v4/tokeninfo/" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8000/api/o/v4/tokeninfo/{xml[m.end(1):]}"
             m = re.search('logoutUri>([^<]+)', xml)
-            xml = xml[:m.start(
-                1)] + "http://localhost:8000/account/logout/" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8000/account/logout/{xml[m.end(1):]}"
             with open(config, 'w') as f:
                 f.write(xml)
     except Exception as e:
@@ -287,7 +259,7 @@ def _configure_data_dir():
         with open(config) as f:
             xml = f.read()
             m = re.search('baseUrl>([^<]+)', xml)
-            xml = xml[:m.start(1)] + "http://localhost:8000" + xml[m.end(1):]
+            xml = f"{xml[:m.start(1)]}http://localhost:8000{xml[m.end(1):]}"
             with open(config, 'w') as f:
                 f.write(xml)
     except Exception as e:
@@ -307,10 +279,12 @@ def static(options):
 def setup(options):
     """Get dependencies and prepare a GeoNode development environment."""
 
-    updategeoip(options)
-    info(('GeoNode development environment successfully set up.'
-          'If you have not set up an administrative account,'
-          ' please do so now. Use "paver start" to start up the server.'))
+    if MONITORING_ENABLED:
+        updategeoip(options)
+
+    info('GeoNode development environment successfully set up.'
+         'If you have not set up an administrative account,'
+         ' please do so now. Use "paver start" to start up the server.')
 
 
 def grab_winfiles(url, dest, packagename):
@@ -342,7 +316,7 @@ def win_install_deps(options):
     failed = False
     for package, url in win_packages.items():
         tempfile = download_dir / os.path.basename(url)
-        logger.info("Installing file ... " + tempfile)
+        logger.info(f"Installing file ... {tempfile}")
         grab_winfiles(url, tempfile, package)
         try:
             easy_install.main([tempfile])
@@ -385,11 +359,12 @@ def updategeoip(options):
     """
     Update geoip db
     """
-    settings = options.get('settings', '')
-    if settings and 'DJANGO_SETTINGS_MODULE' not in settings:
-        settings = f'DJANGO_SETTINGS_MODULE={settings}'
+    if MONITORING_ENABLED:
+        settings = options.get('settings', '')
+        if settings and 'DJANGO_SETTINGS_MODULE' not in settings:
+            settings = f'DJANGO_SETTINGS_MODULE={settings}'
 
-    sh(f"{settings} python -W ignore manage.py updategeoip -o")
+        sh(f"{settings} python -W ignore manage.py updategeoip -o")
 
 
 @task
@@ -409,9 +384,6 @@ def sync(options):
     sh(f"{settings} python -W ignore manage.py loaddata sample_admin.json")
     sh(f"{settings} python -W ignore manage.py loaddata geonode/base/fixtures/default_oauth_apps.json")
     sh(f"{settings} python -W ignore manage.py loaddata geonode/base/fixtures/initial_data.json")
-    if 'django_celery_beat' in INSTALLED_APPS:
-        sh(f"{settings} python -W ignore manage.py loaddata geonode/base/fixtures/django_celery_beat.json")
-    sh(f"{settings} python -W ignore manage.py set_all_layers_alternate")
     sh(f"{settings} python -W ignore manage.py collectstatic --noinput")
 
 
@@ -501,6 +473,7 @@ def stop_django(options):
     """
     if ASYNC_SIGNALS:
         kill('python', 'celery')
+        kill('celery', 'worker')
     kill('python', 'runserver')
     kill('python', 'runmessaging')
 
@@ -573,17 +546,13 @@ def start_django(options):
     sh(f'{settings} python -W ignore manage.py runserver {bind} {foreground}')
 
     if ASYNC_SIGNALS:
-        if 'django_celery_beat' not in INSTALLED_APPS:
-            sh(f"{settings} celery -A geonode.celery_app:app worker --without-gossip --without-mingle -Ofair -B -E \
-    --statedb=worker.state -s celerybeat-schedule --loglevel=DEBUG \
-    --concurrency=10 -n worker1@%h -f celery.log {foreground}")
-        else:
-            sh(f"{settings} celery -A geonode.celery_app:app worker -l DEBUG -s \
-                django_celery_beat.schedulers:DatabaseScheduler {foreground}")
+        sh(f"{settings} celery -A geonode.celery_app:app worker --without-gossip --without-mingle -Ofair -B -E \
+            --statedb=worker.state --scheduler={CELERY_BEAT_SCHEDULER} --loglevel=DEBUG \
+            --concurrency=2 -n worker1@%h -f celery.log {foreground}")
         sh(f'{settings} python -W ignore manage.py runmessaging {foreground}')
 
     # wait for Django to start
-    started = waitfor("http://localhost:" + port)
+    started = waitfor(f"http://localhost:{port}")
     if not started:
         info('Django never started properly or timed out.')
         sys.exit(1)
@@ -643,14 +612,13 @@ def start_geoserver(options):
     socket_free = True
     try:
         s.bind(("127.0.0.1", jetty_port))
-    except socket.error as e:
+    except OSError as e:
         socket_free = False
         if e.errno == 98:
             info(f'Port {jetty_port} is already in use')
         else:
             info(
-                'Something else raised the socket.error exception while checking port %s' %
-                jetty_port)
+                f'Something else raised the socket.error exception while checking port {jetty_port}')
             print(e)
     finally:
         s.close()
@@ -661,12 +629,12 @@ def start_geoserver(options):
         with pushd(data_dir):
             javapath = "java"
             if on_travis:
-                sh((
+                sh(
                     'sudo apt install -y openjdk-8-jre openjdk-8-jdk;'
                     ' sudo update-java-alternatives --set java-1.8.0-openjdk-amd64;'
                     ' export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::");'
                     ' export PATH=$JAVA_HOME\'bin/java\':$PATH;'
-                ))
+                )
                 # import subprocess
                 # result = subprocess.run(['update-alternatives', '--list', 'java'], stdout=subprocess.PIPE)
                 # javapath = result.stdout
@@ -678,7 +646,7 @@ def start_geoserver(options):
             if loggernullpath == "nul":
                 try:
                     open("../../downloaded/null.txt", 'w+').close()
-                except IOError:
+                except OSError:
                     print("Chances are that you have Geoserver currently running. You "
                           "can either stop all servers with paver stop or start only "
                           "the django application with paver start_django.")
@@ -702,9 +670,9 @@ def start_geoserver(options):
                                     "java.exe e.g. --java_path=C:/path/to/java/bin/java.exe")
                     sys.exit(1)
                 # if there are spaces
-                javapath = 'START /B "" "' + javapath_opt + '"'
+                javapath = f"START /B \"\" \"{javapath_opt}\""
 
-            sh((
+            sh(
                 '%(javapath)s -Xms512m -Xmx2048m -server -XX:+UseConcMarkSweepGC -XX:MaxPermSize=512m'
                 ' -DGEOSERVER_DATA_DIR=%(data_dir)s'
                 ' -DGEOSERVER_CSRF_DISABLED=true'
@@ -718,7 +686,7 @@ def start_geoserver(options):
                 ' --log %(log_file)s'
                 ' %(config)s'
                 ' > %(loggernullpath)s &' % locals()
-            ))
+            )
 
         info(f'Starting GeoServer on {url}')
 
@@ -729,8 +697,8 @@ def start_geoserver(options):
     if not started:
         # If applications did not start in time we will give the user a chance
         # to inspect them and stop them manually.
-        info(('GeoServer never started properly or timed out.'
-              'It may still be running in the background.'))
+        info('GeoServer never started properly or timed out.'
+             'It may still be running in the background.')
         sys.exit(1)
 
 
@@ -977,7 +945,8 @@ def setup_data(options):
     if settings and 'DJANGO_SETTINGS_MODULE' not in settings:
         settings = f'DJANGO_SETTINGS_MODULE={settings}'
 
-    sh(f"{settings} python -W ignore manage.py importlayers {data_dir} -v2")
+    from geonode import settings as geonode_settings
+    sh(f"{settings} python -W ignore manage.py importlayers -v2 -hh {geonode_settings.SITEURL} {data_dir}")
 
 
 @needs(['package'])
@@ -1158,7 +1127,7 @@ def waitfor(url, timeout=300):
     for a in range(timeout):
         try:
             resp = urlopen(url)
-        except IOError:
+        except OSError:
             pass
         else:
             if resp.getcode() == 200:
@@ -1170,7 +1139,7 @@ def waitfor(url, timeout=300):
 
 def _copytree(src, dst, symlinks=False, ignore=None):
     if not os.path.exists(dst):
-        os.makedirs(dst)
+        os.makedirs(dst, exist_ok=True)
     for item in os.listdir(src):
         s = os.path.join(src, item)
         d = os.path.join(dst, item)
@@ -1189,7 +1158,7 @@ def justcopy(origin, target):
         _copytree(origin, target)
     elif os.path.isfile(origin):
         if not os.path.exists(target):
-            os.makedirs(target)
+            os.makedirs(target, exist_ok=True)
         shutil.copy(origin, target)
 
 

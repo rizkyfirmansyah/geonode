@@ -52,6 +52,7 @@ from django.core.exceptions import PermissionDenied
 from django.forms.models import inlineformset_factory
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
+from geonode.resource.manager import resource_manager
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
@@ -61,7 +62,6 @@ from guardian.shortcuts import get_objects_for_user
 from geonode import geoserver
 from geonode.base.auth import get_or_create_token
 from geonode.layers.metadata import parse_metadata
-from geonode.upload.upload import _update_layer_with_xml_info
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
 from geonode.base.views import batch_modify, get_url_for_model
 from geonode.base.models import (
@@ -79,11 +79,8 @@ from geonode.layers.models import (
     Attribute,
     UploadSession)
 from geonode.layers.utils import (
-    file_upload, get_files, gs_append_data_to_layer,
-    is_raster, is_sld_upload_only,
-    is_vector, is_xml_upload_only,
+    get_files, is_sld_upload_only, is_xml_upload_only,
     validate_input_source)
-from geonode.upload.views import _select_relevant_files, _write_uploaded_files_to_disk
 from geonode.maps.models import Map
 from geonode.services.models import Service
 from geonode.base import register_event
@@ -91,6 +88,11 @@ from geonode.monitoring.models import EventType
 from geonode.groups.models import GroupProfile
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
+from geonode.utils import HttpClient, check_ogc_backend, llbbox_to_mercator, resolve_object, mkdtemp
+from geonode.geoserver.helpers import (
+    ogc_server_settings,
+    select_relevant_files,
+    write_uploaded_files_to_disk)
 from geonode.documents.models import get_related_documents
 from geonode.security.utils import get_visible_resources, set_geowebcache_invalidate_cache
 from geonode.utils import (
@@ -105,6 +107,7 @@ from geonode.utils import (
 from geonode.geoserver.helpers import (
     ogc_server_settings,
     set_layer_style)
+from geonode.resource.utils import update_resource
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.tasks.tasks import set_permissions
 
@@ -221,34 +224,30 @@ def layer_upload_metadata(request):
     form = NewLayerUploadForm(request.POST, request.FILES)
 
     if form.is_valid():
-
-        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
-
-        relevant_files = _select_relevant_files(
+        tempdir = mkdtemp()
+        relevant_files = select_relevant_files(
             ['xml'],
             iter(request.FILES.values())
         )
-
         logger.debug(f"relevant_files: {relevant_files}")
-
-        _write_uploaded_files_to_disk(tempdir, relevant_files)
-
+        write_uploaded_files_to_disk(tempdir, relevant_files)
         base_file = os.path.join(tempdir, form.cleaned_data["base_file"].name)
-
-        name = form.cleaned_data['layer_title']
-        layer = Layer.objects.filter(typename=name)
-        if layer.exists():
+        layer = _resolve_layer(
+                request,
+                form.cleaned_data.get('layer_title'),
+                'base.change_resourcebase',
+                _PERMISSION_MSG_MODIFY)
+        if layer:
             layer_uuid, vals, regions, keywords, _ = parse_metadata(
                 open(base_file).read())
-            if layer_uuid and layer.first().uuid != layer_uuid:
+            if layer_uuid and layer.uuid != layer_uuid:
                 out['success'] = False
                 out['errors'] = "The UUID identifier from the XML Metadata, is different from the one saved"
                 return HttpResponse(
                     json.dumps(out),
                     content_type='application/json',
                     status=404)
-
-            updated_layer = _update_layer_with_xml_info(layer.first(), base_file, regions, keywords, vals)
+            updated_layer = update_resource(layer, base_file, regions, keywords, vals)
             updated_layer.save()
             out['status'] = ['finished']
             out['url'] = updated_layer.get_absolute_url()
@@ -258,7 +257,7 @@ def layer_upload_metadata(request):
                 'properties': updated_layer.srid
             }
             out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
-            if hasattr(updated_layer, 'upload_session') and updated_layer.upload_session:
+            if hasattr(updated_layer, 'upload_session'):
                 upload_session = updated_layer.upload_session
                 upload_session.processed = True
                 upload_session.save()
@@ -270,7 +269,7 @@ def layer_upload_metadata(request):
                 status=status_code)
         else:
             out['success'] = False
-            out['errors'] = "Layer selected does not exists"
+            out['errors'] = "layer selected does not exists"
             status_code = 404
         return HttpResponse(
             json.dumps(out),
@@ -1263,99 +1262,16 @@ def layer_metadata_advanced(request, layername):
 
 @login_required
 def layer_replace(request, layername, template='layers/layer_replace.html'):
-    try:
-        layer = _resolve_layer(
-            request,
-            layername,
-            'base.change_resourcebase',
-            _PERMISSION_MSG_MODIFY)
-    except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
-    except Exception:
-        raise Http404(_("Not found"))
-    if not layer:
-        raise Http404(_("Not found"))
-
-    if request.method == 'GET':
-        ctx = {
-            'charsets': CHARSETS,
-            'resource': layer,
-            'is_featuretype': layer.is_vector(),
-            'is_layer': True,
-        }
-        return render(request, template, context=ctx)
-    elif request.method == 'POST':
-        form = LayerUploadForm(request.POST, request.FILES)
-        tempdir = None
-        out = {}
-
-        if form.is_valid():
-            try:
-                tempdir, base_file = form.write_files()
-                if layer.is_vector() and is_raster(base_file):
-                    out['success'] = False
-                    out['errors'] = _(
-                        "You are attempting to replace a vector layer with a raster.")
-                elif (not layer.is_vector()) and is_vector(base_file):
-                    out['success'] = False
-                    out['errors'] = _(
-                        "You are attempting to replace a raster layer with a vector.")
-                else:
-                    if check_ogc_backend(geoserver.BACKEND_PACKAGE):
-                        out['ogc_backend'] = geoserver.BACKEND_PACKAGE
-
-                    saved_layer = file_upload(
-                        base_file,
-                        layer=layer,
-                        title=layer.title,
-                        abstract=layer.abstract,
-                        is_approved=layer.is_approved,
-                        is_published=layer.is_published,
-                        name=layer.name,
-                        user=layer.owner,
-                        license=layer.license.name if layer.license else None,
-                        category=list(layer.category.values_list('gn_description', flat=True)),
-                        keywords=list(layer.keywords.all()),
-                        regions=list(layer.regions.values_list('name', flat=True)),
-                        overwrite=True,
-                        charset=form.cleaned_data["charset"],
-                    )
-
-                    upload_session = saved_layer.upload_session
-                    if upload_session:
-                        upload_session.processed = True
-                        upload_session.save()
-                    out['success'] = True
-                    out['url'] = reverse(
-                        'layer_detail', args=[
-                            saved_layer.service_typename])
-            except Exception as e:
-                logger.exception(e)
-                out['success'] = False
-                out['errors'] = str(e)
-            finally:
-                if tempdir is not None:
-                    shutil.rmtree(tempdir, ignore_errors=True)
-        else:
-            errormsgs = []
-            for e in form.errors.values():
-                errormsgs.append([escape(v) for v in e])
-            out['errors'] = form.errors
-            out['errormsgs'] = errormsgs
-
-        if out['success']:
-            status_code = 200
-            register_event(request, 'change', layer)
-        else:
-            status_code = 400
-        return HttpResponse(
-            json.dumps(out),
-            content_type='application/json',
-            status=status_code)
+    return layer_append_replace_view(request, layername, template, action_type='replace')
 
 
 @login_required
 def layer_append(request, layername, template='layers/layer_append.html'):
+    return layer_append_replace_view(request, layername, template, action_type='append')
+
+
+@login_required
+def layer_append_replace_view(request, layername, template, action_type):
     try:
         layer = _resolve_layer(
             request,
@@ -1363,11 +1279,11 @@ def layer_append(request, layername, template='layers/layer_append.html'):
             'base.change_resourcebase',
             _PERMISSION_MSG_MODIFY)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        return HttpResponse("Not allowed", status=403)
     except Exception:
-        raise Http404(_("Not found"))
+        raise Http404("Not found")
     if not layer:
-        raise Http404(_("Not found"))
+        raise Http404("Not found")
 
     if request.method == 'GET':
         ctx = {
@@ -1386,28 +1302,19 @@ def layer_append(request, layername, template='layers/layer_append.html'):
                 files, _tmpdir = get_files(base_file)
                 #  validate input source
                 resource_is_valid = validate_input_source(
-                    layer=layer, filename=base_file, files=files, action_type="append"
+                    layer=layer, filename=base_file, files=files, action_type=action_type
                 )
                 out = {}
-                if (
-                    os.getenv("DEFAULT_BACKEND_DATASTORE", None) == "datastore"
-                    and os.getenv("DEFAULT_BACKEND_UPLOADER", None) == "geonode.importer"
-                    and resource_is_valid
-                ):
-                    upload_session = gs_append_data_to_layer(layer, list(files.values()), request.user)
-                    upload_session.processed = True
-                    upload_session.save()
+                if resource_is_valid:
+                    getattr(resource_manager, action_type)(
+                        layer,
+                        vals={
+                            'files': list(files.values()),
+                            'user': request.user})
                     out['success'] = True
-                    out['url'] = reverse(
-                        'layer_detail', args=[
-                            layer.service_typename])
+                    out['url'] = layer.get_absolute_url()
                     #  invalidating resource chache
                     set_geowebcache_invalidate_cache(layer.typename)
-                    #  updating layer
-                    layer.save()
-                else:
-                    out['success'] = False
-                    out['errors'] = str("Please select a valid Geoserver backend")
             except Exception as e:
                 logger.exception(e)
                 out['success'] = False

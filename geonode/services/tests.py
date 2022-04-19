@@ -942,11 +942,11 @@ class TestServiceViews(GeoNodeBaseTestSupport):
         self.passwd = 'admin'
         self.admin = get_user_model().objects.get(username='admin')
         self.sut, _ = Service.objects.get_or_create(
-            type=WMS,
+            type=enumerations.WMS,
             name='Bogus',
             title='Pocus',
             owner=self.admin,
-            method=INDEXED,
+            method=enumerations.INDEXED,
             metadata_only=True,
             base_url='http://bogus.pocus.com/ows')
         self.sut.clear_dirty_state()
@@ -959,3 +959,48 @@ class TestServiceViews(GeoNodeBaseTestSupport):
     def test_anonymous_user_can_see_the_services(self):
         response = self.client.get(reverse('services'))
         self.assertEqual(response.status_code, 200)
+
+    @override_settings(SERVICES_TYPE_MODULES=SERVICES_TYPE_MODULES)
+    def test_will_use_multiple_service_types_defined(self):
+        elems = parse_services_types()
+        expected = {
+            "test": {"OWS": True, "handler": "TestHandler", "label": "Test Number 1", "management_view": "path.to.view1"},
+            "test2": {"OWS": False, "handler": "TestHandler2", "label": "Test Number 2", "management_view": "path.to.view2"},
+            "test3": {"OWS": True, "handler": "TestHandler3", "label": "Test Number 3", "management_view": "path.to.view3"},
+            "test4": {"OWS": False, "handler": "TestHandler4", "label": "Test Number 4", "management_view": "path.to.view4"},
+        }
+        self.assertDictEqual(expected, elems)
+
+    @override_settings(SERVICES_TYPE_MODULES=SERVICES_TYPE_MODULES)
+    def test_will_use_multiple_service_types_defined_for_choices(self):
+        elems = get_available_service_types()
+        expected = {
+            'WMS': {'OWS': True, 'handler': wms.WmsServiceHandler, 'label': 'Web Map Service'},
+            'GN_WMS': {'OWS': True, 'handler': wms.GeoNodeServiceHandler, 'label': 'GeoNode (Web Map Service)'},
+            'REST_MAP': {'OWS': False, 'handler': ArcMapServiceHandler, 'label': 'ArcGIS REST MapServer'},
+            'REST_IMG': {'OWS': False, 'handler': ArcImageServiceHandler, 'label': 'ArcGIS REST ImageServer'},
+            'test': {'OWS': True, 'handler': 'TestHandler', 'label': 'Test Number 1', 'management_view': 'path.to.view1'},
+            'test2': {'OWS': False, 'handler': 'TestHandler2', 'label': 'Test Number 2', 'management_view': 'path.to.view2'},
+            'test3': {'OWS': True, 'handler': 'TestHandler3', 'label': 'Test Number 3', 'management_view': 'path.to.view3'},
+            'test4': {'OWS': False, 'handler': 'TestHandler4', 'label': 'Test Number 4', 'management_view': 'path.to.view4'}
+        }
+        self.assertDictEqual(expected, elems)
+
+
+'''
+Just a dummy function required for the smoke test above
+'''
+
+
+class dummy_services_type:
+    services_type = {
+        "test": {"OWS": True, "handler": "TestHandler", "label": "Test Number 1", "management_view": "path.to.view1"},
+        "test2": {"OWS": False, "handler": "TestHandler2", "label": "Test Number 2", "management_view": "path.to.view2"},
+    }
+
+
+class dummy_services_type2:
+    services_type = {
+        "test3": {"OWS": True, "handler": "TestHandler3", "label": "Test Number 3", "management_view": "path.to.view3"},
+        "test4": {"OWS": False, "handler": "TestHandler4", "label": "Test Number 4", "management_view": "path.to.view4"},
+    }

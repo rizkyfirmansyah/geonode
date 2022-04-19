@@ -29,7 +29,7 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.staticfiles.templatetags import staticfiles
+from django.templatetags.static import static
 from django.core.files.storage import default_storage as storage
 
 from geonode.utils import bbox_to_projection
@@ -37,6 +37,8 @@ from geonode.base.auth import get_or_create_token
 from geonode.thumbs.exceptions import ThumbnailError
 
 logger = logging.getLogger(__name__)
+
+MISSING_THUMB = settings.MISSING_THUMBNAIL
 BASE64_PATTERN = 'data:image/(jpeg|png|jpg);base64'
 
 
@@ -380,7 +382,7 @@ def remove_thumbs(name):
 def get_unique_upload_path(resource, filename):
     """ Generates a unique name from the given filename and
     creates a unique file upload path"""
-    mising_thumb = staticfiles.static(settings.MISSING_THUMBNAIL)
+    mising_thumb = static(MISSING_THUMB)
     if resource.thumbnail_url and not resource.thumbnail_url == mising_thumb:
         # remove thumbnail from storage
         thumb_name = os.path.basename(resource.thumbnail_url)
