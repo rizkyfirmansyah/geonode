@@ -24,6 +24,9 @@ migrations/*
 
 docs/i18n/pot/
 
+# src
+src/*
+
 # Static media handling
 *.jshintrc
 geonode/static/.components/
