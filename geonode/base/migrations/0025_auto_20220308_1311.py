@@ -18,17 +18,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Configuration',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('read_only', models.BooleanField(default=False)),
-                ('maintenance', models.BooleanField(default=False)),
-            ],
-            options={
-                'verbose_name_plural': 'Configuration',
-            },
-        ),
-        migrations.CreateModel(
             name='DataType',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
