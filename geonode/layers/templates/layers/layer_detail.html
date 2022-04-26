@@ -40,7 +40,7 @@
 <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
 <div class="page-header col-md-12">
 
-  <h2 class="page-title col-md-8 no-gutters">{{ resource.title|default:resource.alternate }}</h2>
+  <h2 class="page-title col-md-8">{{ resource.title|default:resource.alternate }}</h2>
   {% if storeType == 'remoteStore' %}
   <em>
     <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
@@ -606,7 +606,7 @@
           {% if map_layers %}
           <p>{% trans "List of maps using this layer:" %}</p>
           {% endif %}
-          <ul class="list-unstyled no-gutters">
+          <ul class="list-unstyled">
             {% for maplayer in map_layers %}
             <li><a href="{{ maplayer.map.get_absolute_url }}">{{ maplayer.map.title }}</a></li>
             {% empty %}

@@ -1,12 +1,12 @@
 {% load i18n %}
 
 <nav class="filter" ng-cloak ng-if="datatype.layers_count > 0">
-    <h4>{% trans "Data Type" %}</h4>
-    <ul class="nav" id="datatypes">
+    <a href="#datatypes" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Data Type</a>
+    <ul class="collapse list-unstyled" id="datatypes">
     {% verbatim %}
     <li ng-repeat="datatype in datatypes">
       <a data-value="{{ datatype.identifier }}" data-filter="datatype__identifier__in" title="{{ datatype.gn_description }}"ng-click="multiple_choice_listener($event)" class="{{datatype.active}}">{{ datatype.gn_description }}
-        <span class="badge pull-right">{{ datatype.layers_count }}</span>
+        <span class="badge float-right">{{ datatype.layers_count }}</span>
       </a>
     </li>
     {% endverbatim %}

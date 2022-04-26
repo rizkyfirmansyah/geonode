@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<div class="col-md-8">
+<div class="col-8">
   <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
     {{ form.as_p }}
@@ -23,7 +23,7 @@
 
 {% display_change_perms_button resource request.user perms_list as display_perms_button %}
 {% if display_perms_button %}
-<div class="col-md-4">
+<div class="col-4">
   <h3>{% trans "Permissions"  %}</h3>
   <form id="permission_form">
     {% include "_permissions.html" %}

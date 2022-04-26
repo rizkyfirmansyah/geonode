@@ -1,8 +1,8 @@
 {% load i18n %}
 
 <nav class="filter" ng-cloak>
-  <h4>{% trans "Date" %}</h4>
-  <ul class="nav" id="date_start">
+  <a href="#date_start" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Date</a>
+  <ul class="collapse list-unstyled" id="date_start">
       <label>{% trans "Date begins after:" %}</label>
       <div>
           <input value="yyyy-mm-dd" data-date-format="YYYY-MM-DD" type="text" class="datepicker"
@@ -16,7 +16,7 @@
                   </svg></span></div>
       </div>
   </ul>
-  <ul class="nav" id="date_end">
+  <ul class="collapse list-unstyled" id="date_end">
       <label>{% trans "Date ends before:" %}</label>
       <div>
           <input value="yyyy-mm-dd" data-date-format="YYYY-MM-DD" type="text" class="datepicker"

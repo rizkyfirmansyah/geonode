@@ -81,7 +81,7 @@
           <td>
               {% if profile.keyword_list %}
                   {% for keyword in profile.keyword_list %}
-                      <span class="label label-default">{{ keyword }}</span>
+                      <span class="badge badge-pill badge-primary">{{ keyword }}</span>
                   {% endfor %}
               {% else %}
                   {% trans 'Not provided' %}

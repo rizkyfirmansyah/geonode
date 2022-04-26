@@ -1,8 +1,8 @@
 {% load i18n %}
 {% if SEARCH_FILTERS.CATEGORIES_ENABLED %}
 <nav class="filter" ng-cloak>
-    <h4>{% trans "Categories" %}</h4>
-    <ul class="nav" id="categories">
+    <a href="#categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Categories</a>
+    <ul class="collapse list-unstyled" id="categories">
         {% if facet_type == 'layers' %}
         {% verbatim %}
         <li ng-repeat="category in categories" ng-if="category.layers_count > 0">
@@ -13,7 +13,7 @@
                     <i class="fa {{category.fa_class}} fa-stack-1x"></i>
                 </div>
                 {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
-                <span class="badge pull-right">{{ category.layers_count }}</span>
+                <span class="badge float-right">{{ category.layers_count }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -27,7 +27,7 @@
                     <i class="fa {{category.fa_class}} fa-stack-1x"></i>
                 </div>
                 {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
-                <span class="badge pull-right">{{ category.count }}</span>
+                <span class="badge float-right">{{ category.count }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -37,14 +37,14 @@
 {% endif %}
 {% if SEARCH_FILTERS.OWNERS_ENABLED %}
 <nav class="filter" ng-cloak>
-    <h4>{% trans "Responsibles" %}</h4>
-    <ul class="nav" id="owners">
+    <a href="#owners" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Responsibles</a>
+    <ul class="collapse list-unstyled" id="owners">
         {% verbatim %}
         <li ng-repeat="owner in owners" ng-if="owner.count > 0">
             <a data-value="{{ owner.username }}" data-filter="owner__username__in"
                 ng-click="multiple_choice_listener($event)"
                 class="{{ owner.active }}">{{ owner.full_name ? owner.full_name : owner.username }}
-                <span class="badge pull-right">{{ owner.count }}</span>
+                <span class="badge float-right">{{ owner.count }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -53,14 +53,14 @@
 {% endif %}
 {% if SEARCH_FILTERS.GROUPS_ENABLED %}
 <nav class="filter" ng-cloak>
-    <h4>{% trans "Groups" %}</h4>
-    <ul class="nav" id="groups">
+    <a href="#groups" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Groups</a>
+    <ul class="collapse list-unstyled" id="groups">
         {% if facet_type == 'layers' %}
         {% verbatim %}
         <li ng-repeat="group in groups" ng-if="group.resource_counts.layer.total > 0">
             <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge pull-right">{{ group.resource_counts.layer.total }}</span>
+                <span class="badge float-right">{{ group.resource_counts.layer.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -69,7 +69,7 @@
         <li ng-repeat="group in groups" ng-if="group.resource_counts.document.total > 0">
             <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge pull-right">{{ group.resource_counts.document.total }}</span>
+                <span class="badge float-right">{{ group.resource_counts.document.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -78,7 +78,7 @@
         <li ng-repeat="group in groups" ng-if="group.resource_counts.map.total > 0">
             <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge pull-right">{{ group.resource_counts.map.total }}</span>
+                <span class="badge float-right">{{ group.resource_counts.map.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -87,7 +87,7 @@
         <li ng-repeat="group in groups" ng-if="group.resource_counts.geoapp.total > 0">
             <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge pull-right">{{ group.resource_counts.geoapp.total }}</span>
+                <span class="badge float-right">{{ group.resource_counts.geoapp.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -97,14 +97,14 @@
 {% endif %}
 {% if SEARCH_FILTERS.GROUP_CATEGORIES_ENABLED %}
 <nav class="filter" ng-cloak>
-    <h4>{% trans "Group Categories" %}</h4>
-    <ul class="nav" id="group-categories">
+    <a href="#group-categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Group Categories</a>
+    <ul class="collapse list-unstyled" id="group-categories">
         {% if facet_type == 'layers' %}
         {% verbatim %}
         <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.layer.total > 0">
             <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge pull-right">{{ groupCategory.resource_counts.layer.total }}</span>
+                <span class="badge float-right">{{ groupCategory.resource_counts.layer.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -113,7 +113,7 @@
         <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.document.total > 0">
             <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge pull-right">{{ groupCategory.resource_counts.document.total }}</span>
+                <span class="badge float-right">{{ groupCategory.resource_counts.document.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -122,7 +122,7 @@
         <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.map.total > 0">
             <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge pull-right">{{ groupCategory.resource_counts.map.total }}</span>
+                <span class="badge float-right">{{ groupCategory.resource_counts.map.total }}</span>
             </a>
         </li>
         {% endverbatim %}
@@ -131,7 +131,7 @@
         <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.geoapp.total > 0">
             <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge pull-right">{{ groupCategory.resource_counts.geoapp.total }}</span>
+                <span class="badge float-right">{{ groupCategory.resource_counts.geoapp.total }}</span>
             </a>
         </li>
         {% endverbatim %}

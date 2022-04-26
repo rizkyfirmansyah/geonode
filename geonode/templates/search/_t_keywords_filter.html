@@ -13,7 +13,7 @@
            data-filter="tkeywords__id__in"
            ng-click="multiple_choice_listener($event)"
            class="{{tk.active}}">{{ tk.label | limitTo: 25 }}{{ tk.label.length > 25 ? '...' : ''}}
-            <span class="badge pull-right">{{ tk.count }}</span>
+            <span class="badge float-right">{{ tk.count }}</span>
         </a>
       </li>
     {% endverbatim %}

@@ -35,7 +35,7 @@
     <input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done" style="float: right; opacity: 100; width: 100px;" data-original-title="" title="Completed Metadata" value="Done">
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-12">
       {% block advanced_edit_form %}
           <div class="fixed-button">
                   <p>
@@ -49,19 +49,19 @@
           <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
               Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
               There might be a better way to solve this.-->
-          <div class="col-md-12 form-controls" id="doc_metadata_advanced">
+          <div class="col-12 form-controls" id="doc_metadata_advanced">
             {{ document_form|as_bootstrap }}
             {% if THESAURI_FILTERS %}
             {{ tkeywords_form }}
             {% endif %}
           </div>
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
               <label class="control-label required-field">{% trans "Category" %}</label>
               <fieldset id="category_form">
                 {% autoescape off %}
                 {% for choice in category_form.category_choice_field.field.choices %}
-                <div class="col-md-6">
+                <div class="col-6">
                   <label class="fancy-checkbox">
                     <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
                       {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
@@ -73,7 +73,7 @@
               </fieldset>
             </div>
 
-            <div class="col-md-12 grid-spacer">
+            <div class="col-12 grid-spacer">
               <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
                 <h2>{% trans "Point of Contact" %}</h2>
                 {{ poc_form|as_bootstrap }}

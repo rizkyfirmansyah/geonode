@@ -24,14 +24,14 @@
 {% block body_class %}{% trans "documents" %}{% endblock %}
 
 {% block body_outer %}
-<div class="page-header col-md-12">
-  <h2 class="col-md-8 no-gutters">{{ resource.title }}</h2>
-  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-md-4" target="_self"><button
+<div class="page-header col-12">
+  <h2 class="col-8">{{ resource.title }}</h2>
+  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-4" target="_self"><button
       class="pull-right btn btn-primary">Return to
       Explore</button></a>
 </div>
 <div class="row">
-  <div class="col-md-8 content_block">
+  <div class="col-8 content_block">
     {% if "download_resourcebase" in perms_list %}
     {% if resource.extension|lower in audiotypes and resource.doc_file %}
     {% get_mime_type mimetypemap resource.extension as mimetype %}
@@ -119,7 +119,7 @@
     </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-4">
 
     <ul class="list-group">
       <li class="list-group-item">
@@ -196,7 +196,7 @@
                 {% endfor %}
               </ul>
             </div>
-            <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default col-12" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

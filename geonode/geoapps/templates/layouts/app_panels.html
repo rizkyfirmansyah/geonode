@@ -20,7 +20,7 @@
     style="float:right; opacity: 0;">{% trans "Done!" %}</button>
 {% block body_outer %}
 
-    <ul id="md_tabs" class="nav nav-tabs no-gutters">
+    <ul id="md_tabs" class="nav nav-tabs">
         <li id="metadata_edit_tab" class="active">
             <a data-toggle="tab" href="#edit-metadata"><i class="fa-solid fa-pencil"></i>{% trans "Edit" %}</a>
         </li>
@@ -71,7 +71,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div id="basicDescriptiveInfo" class="container-fluid">
-                                        <div class="col-lg-3">
+                                        <div class="col-3">
                                             <img id="image"
                                                 style="max-height: 100%; max-width: 100%; min-height: 100%; min-width: 100%">
                                             <script>
@@ -89,7 +89,7 @@
                                                 c_widget.init();
                                             </script>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-4">
                                             <span><label
                                                     for="{{ geoapp_form.title|id }}">{{ geoapp_form.title.label }}</label></span>
                                             <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
@@ -107,30 +107,30 @@
                                                 {{ geoapp_form.edition }}
                                             </div>
                                         </div>
-                                        <div class="col-lg-5">
-                                            <div class="col-lg-12">
+                                        <div class="col-5">
+                                            <div class="col-12">
                                                 <span><label
                                                         for="{{ geoapp_form.date_type|id }}">{{ geoapp_form.keywords.label }}</label></span>
                                                 {{ geoapp_form.keywords }}
                                             </div>
                                             {% if THESAURI_FILTERS %}
-                                            <div class="col-lg-12 thesauri_keywords">
+                                            <div class="col-12 thesauri_keywords">
                                                 {{ tkeywords_form }}
                                             </div>
                                             {% endif %}
-                                            <div class="col-lg-6 col-xs-12">
+                                            <div class="col-6 col-xs-12">
                                                 <span><label
                                                         for="{{ geoapp_form.date_type|id }}">{{ geoapp_form.date_type.label }}</label></span>
                                                 <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                                                 {{ geoapp_form.date_type }}
                                             </div>
-                                            <div class="col-lg-6 col-xs-12">
+                                            <div class="col-6 col-xs-12">
                                                 <span><label
                                                         for="{{ geoapp_form.date|id }}">{{ geoapp_form.date.label }}</label></span>
                                                 <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
                                                 {{ geoapp_form.date }}
                                             </div>
-                                            <div id="basicCategoryInfo" class="col-lg-12">
+                                            <div id="basicCategoryInfo" class="col-12">
                                                 <span><label for="{{ category_form.category_choice_field|id }}"
                                                         class="control-label required-field">{% trans "Category" %}</label></span>
                                                 <select title="{% trans "Choose one of the following..." %}"
@@ -146,7 +146,7 @@
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <div id="basicGroupInfo" class="col-lg-12">
+                                            <div id="basicGroupInfo" class="col-12">
                                                 <span><label for="id_resource-group"
                                                         class="control-label required-field">{% trans "Group" %}</label></span>
                                                 <select title="{% trans "Choose one of the following..." %}"
@@ -177,14 +177,14 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="" id="cdinfo">
-                                <div class="col-lg-6">
+                                <div class="col-6">
                                     <div class="metadata_content">
                                         <span><label
                                                 for="{{ geoapp_form.data_type|id }}">{{ geoapp_form.data_type.label }}</label></span>
                                         {{ geoapp_form.data_type }}
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-6">
                                     <div class="metadata_content">
                                         <span><label
                                                 for="{{ geoapp_form.maintenance_frequency|id }}">{{ geoapp_form.maintenance_frequency.label }}</label></span>
@@ -193,7 +193,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-12">
                                         <div class="x-space">
                                             <span><label
                                                     for="{{ geoapp_form.data_description|id }}">{{ geoapp_form.data_description.label }}</label></span>
@@ -237,7 +237,7 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="" id="mdinfo">
-                                <div class="col-lg-4">
+                                <div class="col-4">
                                     <div class="metadata_content">
                                         <span><label
                                                 for="{{ geoapp_form.license|id }}">{{ geoapp_form.license.label }}</label></span>
@@ -251,7 +251,7 @@
                                         {{ geoapp_form.restriction_code_type }}
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-4">
                                     <div class="metadata_content">
                                         <span><label
                                                 for="{{ geoapp_form.language|id }}">{{ geoapp_form.language.label }}</label></span>
@@ -276,7 +276,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-4">
                                     <div class="metadata_content">
                                         <span><label
                                                 for="{{ geoapp_form.author|id }}">{{ geoapp_form.author.label }}</label></span>
@@ -299,7 +299,7 @@
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="">
-                                <div class="col-lg-6" class="padding-right-md">
+                                <div class="col-6" class="padding-right-md">
                                     <div class="input-group date">
                                         <span><label
                                                 for="{{ geoapp_form.temporal_extent_start|id }}">{{ geoapp_form.temporal_extent_start.label }}</label></span>
@@ -315,7 +315,7 @@
                                 </div>
                             </div>
                             <div class="">
-                                <div class="col-lg-6" class="padding-left-md">
+                                <div class="col-6" class="padding-left-md">
                                     <div class="x-space">
                                         <span><label
                                                 for="{{ geoapp_form.spatial_representation_type|id }}">{{ geoapp_form.spatial_representation_type.label }}</label></span>
@@ -331,7 +331,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12 col-lg-6">
+                                <div class="col-xs-12 col-6">
                                     <div class="panel panel-default">
                                         <div class="panel-heading">{% trans "Responsible Parties" %}</div>
                                         <div class="panel-body">
@@ -341,7 +341,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-6">
+                                <div class="col-xs-12 col-6">
                                     <div class="panel panel-default">
                                         <div class="panel-heading">{% trans "Responsible and Permissions" %}</div>
                                         <div class="panel-body">
@@ -370,7 +370,7 @@
 
         <div id="settings" class="tab-pane fade" style="overflow: hidden;">
             <!--<br />-->
-            <div class="col-xs-12 col-lg-4">
+            <div class="col-xs-12 col-4">
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -403,7 +403,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-lg-4">
+            <div class="col-xs-12 col-4">
                 <div class="panel-group">
                     <div class="panel panel-default">
                         <div class="panel-body">

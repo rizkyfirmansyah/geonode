@@ -2,14 +2,14 @@
 {% load base_tags %}
 <nav class="filter">
     <h4>{% trans "Regions" %}</h4>
-    <form class="autocomplete-input input-group col-md-12 no-gutters" id="region-search-autocomplete">
+    <form class="autocomplete-input input-group col-md-12" id="region-search-autocomplete">
         {% csrf_token %}
-        <div id="region-search-container" class="col-md-12 no-gutters">
-            <div class="col-md-10 no-gutters">
+        <div id="region-search-container" class="col-md-12">
+            <div class="col-md-10">
                 <input autocomplete="off" type="text" name="region_search_input" id="region_search_input"
                     placeholder="{% trans "Search by region" %}">
             </div>
-            <div class="col-md-2 no-gutters">
+            <div class="col-md-2">
                 <button id="region_search_btn" aria-label="Filter data" type="submit">
                     <span class="fltSpTree">
                         <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

@@ -1,10 +1,10 @@
 {% load i18n %}
 {% load base_tags %}
 {% block showcase %}
-<section id="showcase" class="row s-showcase col-lg-12 no-gutters">
-  <div class="showcase-container">
+<section id="showcase">
+  <div class="row">
     <div class="container text-center">
-      <div class="auto-margin home-facets">
+      <div class="auto-margin home-facets col-lg-12">
         {% with facet_type='home' %}
         {% facets as facets %}
         <div class="col-md-6">
@@ -81,16 +81,15 @@
 </section>
 {% endblock showcase %}
 
-{% block extra_script %}
-<script src="text/javascript">
+{% comment %} {% block extra_script %} {% endcomment %}
+{% comment %} <script src="text/javascript"> {% endcomment %}
 
-  $(function() {
+  {% comment %} $(function() {
     if (!$(".row[ng-cloack]")) {
-      console.log("Fire!")
       $('#showcase__scroll').css("display", "inline-block");
     }
-  });
+  }); {% endcomment %}
 
-</script>
+{% comment %} </script> {% endcomment %}
 
-{% endblock extra_script %}
+{% comment %} {% endblock extra_script %} {% endcomment %}

@@ -1,6 +1,7 @@
 {% load i18n %}
 
-<div class="btn-group pull-right" role="group" aria-label="tools">
+<div class="btn-group float-right" role="group" aria-label="tools">
+  <button type="button" class="btn btn-default sidebar-toggle" id="sidebarFilter" aria-haspopup="true" aria-expanded="false">Filter</button>
   <div class="btn-group" role="group">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <div ng-if="dataValue == 'title' || dataValue == 'username' || dataValue == 'name'" ng-cloak>
@@ -55,3 +56,13 @@
     </ul>
   </div>
 </div>
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('#sidebarFilter').on('click', function () {
+          $('#sidebar').toggleClass('active');
+      });
+  });
+</script>
+{% endblock extra_script %}
