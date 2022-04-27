@@ -27,9 +27,9 @@
 {% block body_outer %}
 {% overall_rating resource "geoapp" as map_rating %}
 
-<div class="page-header col-md-12">
-  <h2 class="page-title col-md-8">{{ resource.title }}</h2>
-  <a href="../." class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+<div class="page-header row w-100">
+  <h2 class="col-8">{{ resource.title }}</h2>
+  <a href="../." class="col-4" target="_self"><button class="float-right btn btn-primary">Return to
       Explore</button></a>
 </div>
 
@@ -99,7 +99,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-              <h4 class="modal-title text-center" id="myModalLabel">{% trans "Editing Tools" %}</h4>
+              <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Editing Tools" %}</h4>
             </div>
             <div class="modal-body text-center l-space">
               <div class="row edit-modal">
@@ -107,7 +107,7 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-rectangle-list fa-3x"></i>
                   <h4>{% trans "Metadata" %}</h4>
-                  <a class="btn btn-default btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-xs"
                     href="{% url "geoapp_metadata" resource.id %}">{% trans "Wizard" %}</a>
                   <a class="btn btn-info btn-block btn-xs"
                     href="{% url "geoapp_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
@@ -117,7 +117,7 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-image fa-3x"></i>
                   <h4>{% trans "Thumbnail" %}</h4>
-                  <a class="btn btn-default btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-xs"
                     href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Set" %}</a>
                 </div>
                 {% endif %}
@@ -133,7 +133,7 @@
                 {% endif %}
               </div>
             </div>
-            <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -149,10 +149,10 @@
       {% endif %}
       <li class="list-group-item">
         {% if "change_resourcebase" not in perms_list and "change_resourcebase_metadata" not in perms_list %}
-        <a href="{% url "geoapp_view" resource.id %}" class="btn btn-default btn-md btn-block">{% trans "View" %}
+        <a href="{% url "geoapp_view" resource.id %}" class="btn btn-primary btn-md btn-block">{% trans "View" %}
           {{ resource.type }}</a>
         {% else %}
-        <a href="{% url "geoapp_edit" resource.id %}" class="btn btn-default btn-md btn-block">{% trans "View" %}
+        <a href="{% url "geoapp_edit" resource.id %}" class="btn btn-primary btn-md btn-block">{% trans "View" %}
           {{ resource.type }}</a>
         {% endif %}
       </li>
@@ -184,7 +184,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-        <h4 class="modal-title text-center" id="myModalLabel">{% trans "Embed Iframe" %}</h4>
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Embed Iframe" %}</h4>
       </div>
       <div class="modal-body text-center l-space">
         <p>
@@ -195,7 +195,7 @@
           width="480px" height="360px"&gt;&lt;/iframe&gt;
         </p>
       </div>
-      <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
     </div>
   </div>
 </div>

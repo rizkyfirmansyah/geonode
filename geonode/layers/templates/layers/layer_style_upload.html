@@ -20,10 +20,10 @@
 
 {% block body_outer %}
 
-<div class="page-header">
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right"
+<div class="page-header row w-100">
+  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right"
     style="margin-left: 3px;">{% trans "Explore Spatial Data" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary pull-right"
+  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary float-right"
     style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
   <h2 class="page-title">{% trans "Upload Layer Style" %}
     <small>{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}<small></h2>
@@ -66,7 +66,7 @@
           <a target="_blank"
             href="https://docs.geonode.org/en/master/usage/managing_layers/layer_styling.html#uploading-styles">Geonode
             Uploading Styles Documentation</a>
-          <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -86,8 +86,8 @@
       <div class="btn-danger"><strong>{% trans "WARNING" %}:
         </strong>{% trans "This will most probably overwrite the current default style!" %}</div>
       <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button"
-        class="btn btn-default">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-update">{% trans "Upload files" %}</a>
+        class="btn btn-primary">{% trans "Clear" %}</a>
+      <a href="#" id="upload-button" class="btn btn-info">{% trans "Upload files" %}</a>
     </section>
   </div>
 

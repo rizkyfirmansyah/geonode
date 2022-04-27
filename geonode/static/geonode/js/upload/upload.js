@@ -394,7 +394,7 @@ define(['underscore',
 
             if (properties.resume_url) {
                 const resumeTool = document.createElement('button');
-                resumeTool.setAttribute('class', 'btn btn-default btn-sm incomplete-resume');
+                resumeTool.setAttribute('class', 'btn btn-primary btn-sm incomplete-resume');
                 resumeTool.setAttribute('title', resumeTooltip);
                 resumeTool.setAttribute('data-toggle', 'tooltip');
                 resumeTool.setAttribute('data-placement', 'top');
@@ -444,7 +444,7 @@ define(['underscore',
                 };
             } else {
                 removeTool.setAttribute('disabled', true);
-                removeTool.setAttribute('class', 'btn btn-default btn-sm incomplete-remove');
+                removeTool.setAttribute('class', 'btn btn-primary btn-sm incomplete-remove');
             }
             removeTools.appendChild(removeTool);
             $(removeTool).tooltip();

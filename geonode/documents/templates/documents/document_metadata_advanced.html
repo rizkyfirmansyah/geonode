@@ -26,23 +26,23 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
-  <div class="page-header" id="fixed-header">
-    <h2 class="page-title d-inline-block">
+  <div class="page-header row w-100 ml-0" id="fixed-header">
+    <h2 class="col-md-8 pl-0">
       {% blocktrans with document.title as document_title %}
         Edit Metadata for {{ document_title }}
       {% endblocktrans %}
     </h2>
-    <input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done" style="float: right; opacity: 100; width: 100px;" data-original-title="" title="Completed Metadata" value="Done">
+    <div class="col-4 text-right p-0"><input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done" style="float: right; opacity: 100; width: 100px;" data-original-title="" title="Completed Metadata" value="Done"></div>
   </div>
   <div class="row">
     <div class="col-12">
       {% block advanced_edit_form %}
           <div class="fixed-button">
                   <p>
-                    <a href="." class="btn btn-default">{% trans "Return to Non Spatial Data" %}</a>
-                    <input type="button" id="btn_upd_md_up" class="btn btn-update" value="{% trans "Update" %}"/>
+                    <a href="." class="btn btn-primary">{% trans "Return to Non Spatial Data" %}</a>
+                    <input type="button" id="btn_upd_md_up" class="btn btn-info" value="{% trans "Update" %}"/>
                     <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
-                    class="btn btn-primary pull-right">{% trans "Explore Non Spatial Data" %}</a>
+                    class="btn btn-primary float-right">{% trans "Explore Non Spatial Data" %}</a>
                   </p>
           </div>
           {% csrf_token %}
@@ -55,8 +55,8 @@
             {{ tkeywords_form }}
             {% endif %}
           </div>
-          <div class="row">
-            <div class="col-12">
+          <div class="card rounded">
+            <div class="p-3">
               <label class="control-label required-field">{% trans "Category" %}</label>
               <fieldset id="category_form">
                 {% autoescape off %}

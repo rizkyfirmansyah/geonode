@@ -8,8 +8,8 @@
 {% block body_class %}data documents upload{% endblock body_class %}
 
 {% block body_outer %}
-  <div class="page-header">
-    <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Non Spatial Data" %}</a>
+  <div class="page-header row w-100">
+    <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Non Spatial Data" %}</a>
     <h2 class="page-title">{% trans "Upload Document's Thumbnail" %}</h2>
   </div>
 
@@ -38,7 +38,7 @@
             <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
             <!-- UI change to hide the list of previously uploaded files from the user -->
             <input type="file" id="file-input" style="display: none;" multiple>
-            <input class="btn btn-default" type="button" value="{% trans "Choose Files" %}" onclick="document.getElementById('file-input').click();">
+            <input class="btn btn-primary" type="button" value="{% trans "Choose Files" %}" onclick="document.getElementById('file-input').click();">
         </form>
 
         <section class="widget">
@@ -52,8 +52,8 @@
         </section>
 
         <section>
-          <a href="{% url "document_thumb_upload" resource.id %}" id="clear-button" class="btn btn-default">{% trans "Clear" %}</a>
-          <a href="#" id="upload-button" class="btn btn-update">{% trans "Upload files" %}</a>
+          <a href="{% url "document_thumb_upload" resource.id %}" id="clear-button" class="btn btn-primary">{% trans "Clear" %}</a>
+          <a href="#" id="upload-button" class="btn btn-info">{% trans "Upload files" %}</a>
         </section>
         </div>
 

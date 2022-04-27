@@ -241,7 +241,7 @@
           padding-bottom: 3em;
           padding-top: 1em;
         }
-        .home .big-search .btn-default {
+        .home .big-search .btn-primary {
           background: transparent;
           border: none;
           color: {{ custom_theme.search_link_color }};
@@ -291,7 +291,7 @@
     <script type="text/javascript">
       function thumbnailFeedbacks(data, status) {
         try {
-          $("#_thumbnail_feedbacks").find('.modal-title').text(status);
+          $("#_thumbnail_feedbacks").find('.modal-title w-100').text(status);
           $("#_thumbnail_feedbacks").find('.modal-body').text(data);
           $("#_thumbnail_feedbacks").modal("show");
         } catch (err) {
@@ -334,7 +334,7 @@
     <div id="wrap">
       {% block middle %}
         <div class="container">
-          <div id="row">
+          <div class="row">
             {% include "_status_message.html" %}
             {% include "_announcements.html" %}
             {% include "_messages.html" %}

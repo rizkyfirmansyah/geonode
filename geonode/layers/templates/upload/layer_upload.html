@@ -16,10 +16,10 @@
 {% endblock %}
 
 {% block body_outer %}
-<div class="page-header">
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Spatial Data" %}</a>
-  <h2 class="page-title">{% trans "Upload Layers" %}</h2>
-
+<div class="page-header row w-100">
+  <h2 class="col-8">{% trans "Upload Layers" %}</h2>
+  <div class="col-4"><a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Spatial Data" %}</a></div>
+  
   <script language="javascript">
     var json_mosaics = [
           {% for mosaic in mosaics %}
@@ -93,7 +93,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-              <h4 class="modal-title text-center" id="remove-incomplete-upload-modal-label">{% trans "Delete incomplete upload" %}</h4>
+              <h4 class="modal-title w-100 text-center" id="remove-incomplete-upload-modal-label">{% trans "Delete incomplete upload" %}</h4>
             </div>
             <div class="modal-body">
               {% trans "Are you sure you want to remove this incomplete upload?" %}
@@ -101,7 +101,7 @@
               {% trans "Name" %}: <span class="remove-incomplete-upload-modal-name"></span>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No, don't remove it" %}</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">{% trans "No, don't remove it" %}</button>
               <button type="button" class="btn btn-danger remove-incomplete-upload-modal-button">{% trans "Yes, I am sure" %}</button>
             </div>
           </div>
@@ -143,7 +143,7 @@
                         d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
                       </path>
                     </svg></span></div>
-                <h4 class="modal-title text-center">List of supported file formats</h4>
+                <h4 class="modal-title w-100 text-center">List of supported file formats</h4>
               </div>
               <p>Shapefile data: .shp, .shx, .dbf, .xml and .prj</p>
               <p>Raster data: .tif</p><br/>
@@ -151,7 +151,7 @@
               <p><strong>Server Error: timeout</strong></p>
               <p><italic>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.</italic></p><br/>
               <p><strong>Please contact your system administrator or developer.</strong></p>
-              <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
           </div>
       </div>
     </div>
@@ -179,8 +179,8 @@
     </section>
 
     <section class="btm_section">
-      <a href="{% url "layer_upload" %}" id="clear-button" class="btn btn-default">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-update">{% trans "Upload files" %}</a>
+      <a href="{% url "layer_upload" %}" id="clear-button" class="btn btn-primary">{% trans "Clear" %}</a>
+      <a href="#" id="upload-button" class="btn btn-info">{% trans "Upload files" %}</a>
     </section>
   </div>
 

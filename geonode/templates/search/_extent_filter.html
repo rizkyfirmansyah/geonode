@@ -1,10 +1,16 @@
 {% load i18n %}
 
 <nav class="filter">
-  <h4><a href="#" id="_extent_filter" class="toggle toggle-nav"><i class="fa-solid fa-chevron-right"></i>{% trans "Extent" %}</a></h4>
-  <fieldset class="nav closed">
-    <div class="control-group leaflet_map">
-      <openlayers id="filter-map" class="filter-map-container" ol-center="center" ol-defaults="defaults" ol-layers="layers"></openlayers>
-    </div>
-  </fieldset>
+  <a href="#_extent_filter" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Extent</a>
+  {% comment %} <h4><a href="#" id="_extent_filter" class="toggle toggle-nav"><i
+        class="fa-solid fa-chevron-right"></i>{% trans "Extent" %}</a></h4> {% endcomment %}
+  <ul class="collapse list-unstyled" id="_extent_filter">
+
+    <fieldset class="nav">
+      <div class="control-group leaflet_map">
+        <openlayers id="filter-map" class="filter-map-container" ol-center="center" ol-defaults="defaults"
+          ol-layers="layers"></openlayers>
+      </div>
+    </fieldset>
+  </ul>
 </nav>

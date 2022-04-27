@@ -4,7 +4,7 @@
 {% block title %}{% trans "Deleting" %} {{ resource.title }} — {{ block.super }}{% endblock %}
 
 {% block body %}
-<div class="page-header">
+<div class="page-header row w-100">
   <h2 class="page-title">{% trans "Remove" %} {{ resource.type }}</h2>
 </div>
 <div class="row">
@@ -18,7 +18,7 @@
       {% csrf_token %}
       <div class="form-actions">
         <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
-        <a href="{{ resource.get_absolute_url }}" class="btn btn-default">{% trans "No, don't remove it" %}</a>
+        <a href="{{ resource.get_absolute_url }}" class="btn btn-primary">{% trans "No, don't remove it" %}</a>
       </div>
     </form>
   </div>

@@ -1,8 +1,8 @@
 {% load i18n %}
 {% load base_tags %}
 <nav class="filter">
-  <h4>{% trans header %}</h4>
-  <ul class="nav" id="types">
+  <a href="#types" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">{% trans header %}</a>
+  <ul class="collapse list-unstyled" id="types">
         {% facets as facets %}
 
         {% for facet, count in facets.items %}

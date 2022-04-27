@@ -40,14 +40,14 @@
 <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
 <div class="page-header col-md-12">
 
-  <h2 class="page-title col-md-8">{{ resource.title|default:resource.alternate }}</h2>
+  <h2 class="col-md-8">{{ resource.title|default:resource.alternate }}</h2>
   {% if storeType == 'remoteStore' %}
   <em>
     <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
     {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
   </em>
   {% endif %}
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-md-4" target="_self"><button class="float-right btn btn-primary">Return to
       Explore</button></a>
 </div>
 
@@ -321,7 +321,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-              <h4 class="modal-title text-center" id="myModalLabel">{% trans "Download Layer" %}</h4>
+              <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Download Layer" %}</h4>
             </div>
             <div class="modal-body text-center l-space">
               <div class="tabbable">
@@ -361,9 +361,9 @@
                         data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
                         {% trans "Do you want to filter it?" %}
                       </button>
-                      <img src="{% static 'geonode/img/geonode_icon.png' %}" class="gear pull-right loading_msg"
+                      <img src="{% static 'geonode/img/geonode_icon.png' %}" class="gear float-right loading_msg"
                         witdth="30" height="30" style="margin-right:10px; display:none" />
-                      <div class="pull-right loading_msg" style="margin-right:10px;margin-top:5px;display:none">
+                      <div class="float-right loading_msg" style="margin-right:10px;margin-top:5px;display:none">
                         {% trans "Loading..." %}</div>
                       </br></br>
                       {% endif %}
@@ -485,7 +485,7 @@
                   </div>
                 </div>
               </div>
-              <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -516,11 +516,11 @@
 
         <li class="list-group-item">
           <a href="{% url "new_map" %}?layer={{resource.service_typename}}&view=True"
-            class="btn btn-default btn-md btn-block">{% trans "View Layer" %}</a>
+            class="btn btn-primary btn-md btn-block">{% trans "View Layer" %}</a>
         </li>
 
         <li class="list-group-item">
-          <button class="btn btn-default btn-md btn-block" data-toggle="modal"
+          <button class="btn btn-primary btn-md btn-block" data-toggle="modal"
             data-target="#download-metadata">{% trans "Download Metadata" %}</button>
         </li>
 
@@ -530,11 +530,11 @@
             <div class="modal-content">
               <div class="modal-header">
                 <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-                <h4 class="modal-title text-center" id="myModalLabel">{% trans "Download Metadata" %}</h4>
+                <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Download Metadata" %}</h4>
               </div>
               <div class="modal-body text-center l-space">
                 <div style="margin-bottom:20px">
-                  <h5 class="modal-title text-center" id="myModalLabel">
+                  <h5 class="modal-title w-100 text-center" id="myModalLabel">
                     {% trans "Full metadata" %}
                   </h5>
                   <ul>
@@ -547,7 +547,7 @@
                   </ul>
                 </div>
                 <div style="margin-bottom:20px">
-                  <h5 class="modal-title text-center" id="myModalLabel">
+                  <h5 class="modal-title w-100 text-center" id="myModalLabel">
                     {% trans "Standard Metadata - XML format" %}
                   </h5>
                   <ul>
@@ -557,14 +557,14 @@
                     <ul>
                 </div>
                 {% if resource.storeType == 'dataStore' %}
-                <h5 class="modal-title text-center" id="myModalLabel">{% trans "Attribute Information" %}</h5>
+                <h5 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Attribute Information" %}</h5>
                 <ul>
                   <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
                       target="_blank">{% trans "ISO Feature Catalogue" %}</a></li>
                   <ul>
                     {% endif %}
               </div>
-              <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -619,7 +619,7 @@
           <h4>{% trans "Create a map using this layer" %}</h4>
           <p>{% trans "Click the button below to generate a new map based on this layer." %}</p>
           <a href="{% url "new_map" %}?layer={{resource.service_typename}}"
-            class="btn btn-default btn-block">{% trans "Create a Map" %}</a>
+            class="btn btn-primary btn-block">{% trans "Create a Map" %}</a>
         </li>
         {% endif %}
         {% if maps %}

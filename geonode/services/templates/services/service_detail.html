@@ -31,7 +31,7 @@
                                     <div class="col-md-9">
                                         {{job.status}} - {{ job.details }}
                                     </div>
-                                    <div class="btn-group pull-right">
+                                    <div class="btn-group float-right">
                                        {% if job.status == 'FAILED' %}
                                         <button title="{% trans "Retry job" %}" class="btn" name="retry-{{ job.resource_id }}"><i
                                                 class="fa-solid fa-refresh fa-fw" aria-hidden="true"></i></button>
@@ -61,7 +61,7 @@
     {% if resources.paginator.num_pages > 1 %}
         <div class="row">
             <nav aria-label="importable resources pages">
-                <ul class="pagination hidden-xs pull-right">
+                <ul class="pagination hidden-xs float-right">
                     {% if resources.has_previous %}
                         <li><a id="previous" aria-label="Previous" href="?page={{ resources.previous_page_number }}">{% trans "previous" %}</a></li>
                     {% else %}
@@ -104,13 +104,13 @@
     <ul class="list-group">
         <li class="list-group-item"><h3>{% trans "Manage" %}</h3></li>
         {% if "change_resourcebase_metadata" in resource_perms %}
-            <li class="list-group-item"><a class="btn btn-default btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></li>
+            <li class="list-group-item"><a class="btn btn-primary btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></li>
         {% endif %}
         {% if can_add_resorces %}
-            <li class="list-group-item"><a id="harvestResources" class="btn btn-default btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></li>
+            <li class="list-group-item"><a id="harvestResources" class="btn btn-primary btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></li>
         {% endif %}
         {% if "remove_service" in permissions_list or "delete_service" in permissions_list or 'delete_resourcebase' in permissions_list %}
-            <li class="list-group-item"><a class="btn btn-default btn-md btn-block" href="{% url "remove_service" service.id %}">{% trans "Remove Service" %}</a></li>
+            <li class="list-group-item"><a class="btn btn-primary btn-md btn-block" href="{% url "remove_service" service.id %}">{% trans "Remove Service" %}</a></li>
         {% endif %}
       </ul>
     {% endif %}

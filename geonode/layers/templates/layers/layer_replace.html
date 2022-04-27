@@ -21,10 +21,10 @@
 {% endblock %}
 
 {% block body_outer %}
-<div class="page-header">
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right"
+<div class="page-header row w-100">
+  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right"
     style="margin-left: 3px;">{% trans "Explore Spatial Data" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.service_typename %}" class="btn btn-primary pull-right"
+  <a href="{% url 'layer_detail' layername=resource.service_typename %}" class="btn btn-primary float-right"
     style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
   <h2 class="page-title">{% trans "Replace Layer" %} <small><a
         href="{{ resource.get_absolute_url }}">{{ resource.title }}</a><small></h2>
@@ -72,7 +72,7 @@
                     d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
                   </path>
                 </svg></span></div>
-            <h4 class="modal-title text-center">List of supported file formats</h4>
+            <h4 class="modal-title w-100 text-center">List of supported file formats</h4>
           </div>
           <p>Shapefile data: .shp, .shx, .dbf .prj and .xml</p>
           <p>Raster data: .tif</p><br />
@@ -83,7 +83,7 @@
               accepting connections.</italic>
           </p><br />
           <p><strong>Please contact system administrator</strong></p>
-          <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -112,7 +112,7 @@
     </section>
 
     <section>
-      <a href="#" id="clear-button" class="btn btn-default">{% trans "Clear" %}</a>
+      <a href="#" id="clear-button" class="btn btn-primary">{% trans "Clear" %}</a>
       <a href="#" id="upload-button" class="btn btn-danger">{% trans "Replace Layer" %}</a>
     </section>
   </div>

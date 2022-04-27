@@ -2,16 +2,16 @@
 
 {% include "search/_search_sidebar.html" %}
 
-<div class="row" ng-controller="CartList">
+<div class="w-100" ng-controller="CartList">
   <div class="col-12">
     <div class="row">
-      <div class="col-10 primary-text-green" id="title-ng-search">
+      <div class="col-8 primary-text-green" id="title-ng-search">
         {% if facet_type == 'layers' %}
-        <span ng-bind="total_counts + ' ' + '{% trans "Geospatial datasets found" %}'"></span>
+        <span ng-bind="total_counts + ' ' + '{% trans "Spatial data found" %}'"></span>
         {% elif facet_type == 'maps' %}
         <span ng-bind="total_counts + ' ' + '{% trans "Maps found" %}'"></span>
         {% elif facet_type == 'documents' %}
-        <span ng-bind="total_counts + ' ' + '{% trans "Non Spatial Data found" %}'"></span>
+        <span ng-bind="total_counts + ' ' + '{% trans "Datasets found" %}'"></span>
         {% elif facet_type == 'geoapps' %}
         <span
           ng-bind="total_counts + ' ' + '{% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %} {% trans "found" %}'"></span>
@@ -19,6 +19,7 @@
         <span ng-bind="total_counts + ' {{ facet_type | title }} {% trans "found" %}'"></span>
         {% endif %}
       </div>
+      <button class="btn btn-primary sidebar-toggle col-2" id="sidebarFilter" aria-haspopup="true" aria-expanded="false">Filter</button>
       <div class="col-2">{% include "search/_sort_filters.html" %}</div>
     </div>
     <div class="row">

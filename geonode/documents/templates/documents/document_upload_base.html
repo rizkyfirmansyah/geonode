@@ -9,9 +9,9 @@
 {% block body_class %}documents{% endblock %}
 
 {% block body_outer %}
-<div class="page-header">
-  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary pull-right">{% trans "Explore Non Spatial Data" %}</a>
-  <h2 class="page-title">{% trans "Upload Non Spatial Data" %}</h2>
+<div class="page-header row w-100">
+  <h2 class="col-8">{% trans "Upload Datasets" %}</h2>
+  <div class="col-4"><a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Datasets" %}</a></div>
 	<p>{% trans "Allowed raw data types" %}:</p>
 	<p class="allowed_doctype">
 	{% for doc in ALLOWED_DOC_TYPES %}

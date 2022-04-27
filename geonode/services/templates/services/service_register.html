@@ -9,8 +9,8 @@
 {% block title %} {% trans "Register Service" %} - {{ block.super }} {% endblock %}
 
 {% block body_outer %}
-<div class="page-header">
-  <h2>{% trans "Register New Service" %}</h2>
+<div class="page-header row w-100">
+  <h2 class="col-8">{% trans "Register New Service" %}</h2>
 </div>
     <form method="POST" id="service_register_form">
     {% csrf_token %}

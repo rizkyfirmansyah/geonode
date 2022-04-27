@@ -10,6 +10,25 @@
     </a>
   </div>
 
+  <div class="container" id="header-main-menu">
+    <ul class="nav col-2">
+      <li class="list-inline-item">
+        {% if csrf_token != "NOTPROVIDED" %}
+        {% get_current_language as LANGUAGE %}
+        <form class="form-inline" action="/i18n/setlang/" method="post">
+        {% csrf_token %}
+          <select id="footer-language" class="primary-text-white" name="language" onchange="javascript:form.submit()">
+            {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
+              {{ lang.1 }}
+            </option>
+            {% endfor %}
+          </select>
+        </form>
+        {% endif %}
+      </li>
+    </ul>
+  </div>
   <a class="header-menu-toggle" href="#0">
     <span class="header-menu-text" style="display: none;">Menu</span>
     <span class="header-menu-icon"></span>

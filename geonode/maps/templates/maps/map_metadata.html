@@ -19,10 +19,10 @@
     <h2 class="page-title">{% trans "Metadata" %}&nbsp;{% blocktrans with map.title as map_title %}for
       {{ map_title }}{% endblocktrans %}</h2>
     <div class="form-actions col-md-8 form-metadata">
-      <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-default">{% trans "Return to Map" %}</a>
+      <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-primary">{% trans "Return to Map" %}</a>
       <input type="button" id="btn_back_dwn" class="btn btn-primary" style="display: none"
         value="{% trans "<< Back" %}" />
-      <input type="button" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
+      <input type="button" id="btn_upd_md_dwn" class="btn btn-info" value="{% trans "Update" %}" />
       <input type="button" id="btn_next_dwn" class="btn btn-primary" value="{% trans "Next >>" %}" />
     </div>
     <div id="profileCompleteness" class="alert alert-info col-md-4">

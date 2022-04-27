@@ -9,8 +9,8 @@
 <div class="alert alert-error">{{ error }}</div>
 {% endif %}
 
-<div class="page-header">
-  <h2>{% trans "Upload a Thumbnail" %}</h2>
+<div class="page-header row w-100">
+  <h2 class="col-8">{% trans "Upload a Thumbnail" %}</h2>
 </div>
 
 <div class="row">
@@ -28,7 +28,7 @@
       <img src='{{ resource.curatedthumbnail.thumbnail_url }}'></img>
       <form method="POST" class="post-form">
         {% csrf_token %}
-          <button type="submit" class="save btn btn-default" name="remove-thumb">
+          <button type="submit" class="save btn btn-primary" name="remove-thumb">
             {% trans "Remove (and use auto generated thumbnail)" %}</button>
       </form>
     {% endif %}

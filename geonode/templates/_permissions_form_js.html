@@ -439,7 +439,7 @@
             } else {
                 title = "Warning";
             }
-            $("#_permissions_feedbacks").find('.modal-title').text(title);
+            $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
             $("#_permissions_feedbacks").find('.modal-body').text(body);
             $("#_permissions_feedbacks").modal("show");
             $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -452,7 +452,7 @@
             message = JSON.parse(jqXHR.responseText);
             body = message.message;
             title = "Error";
-            $("#_permissions_feedbacks").find('.modal-title').text(title);
+            $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
             $("#_permissions_feedbacks").find('.modal-body').text(body);
             $("#_permissions_feedbacks").modal("show");
             $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -511,7 +511,7 @@
               } else {
                   title = "Warning";
               }
-              $("#_permissions_feedbacks").find('.modal-title').text(title);
+              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
               $("#_permissions_feedbacks").find('.modal-body').text(body);
               $("#_permissions_feedbacks").modal("show");
               $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -520,11 +520,11 @@
                 try {
                     if(textStatus === 'timeout')
                     {
-                        $("#_permissions_feedbacks").find('.modal-title').text('Timeout');
+                        $("#_permissions_feedbacks").find('.modal-title w-100').text('Timeout');
                         $("#_permissions_feedbacks").find('.modal-body').text('Failed from timeout: Could not create Thumbnail');
                         $("#_permissions_feedbacks").modal("show");
                     } else {
-                        $("#_permissions_feedbacks").find('.modal-title').text('Error: ' + textStatus);
+                        $("#_permissions_feedbacks").find('.modal-title w-100').text('Error: ' + textStatus);
                         $("#_permissions_feedbacks").find('.modal-body').text('Could not set Layer Permissions');
                         $("#_permissions_feedbacks").modal("show");
                     }
@@ -543,7 +543,7 @@
               message = JSON.parse(jqXHR.responseText);
               body = message.message;
               title = "Error";
-              $("#_permissions_feedbacks").find('.modal-title').text(title);
+              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
               $("#_permissions_feedbacks").find('.modal-body').text(body);
               $("#_permissions_feedbacks").modal("show");
               $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -584,7 +584,7 @@
               } else {
                   title = "Warning";
               }
-              $("#_permissions_feedbacks").find('.modal-title').text(title);
+              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
               $("#_permissions_feedbacks").find('.modal-body').text(body);
               $("#_permissions_feedbacks").modal("show");
               $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -597,7 +597,7 @@
               message = JSON.parse(jqXHR.responseText);
               body = message.message;
               title = "Error";
-              $("#_permissions_feedbacks").find('.modal-title').text(title);
+              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
               $("#_permissions_feedbacks").find('.modal-body').text(body);
               $("#_permissions_feedbacks").modal("show");
               $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -638,7 +638,7 @@
               } else {
                   title = "Warning";
               }
-              $("#_permissions_feedbacks").find('.modal-title').text(title);
+              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
               $("#_permissions_feedbacks").find('.modal-body').text(body);
               $("#_permissions_feedbacks").modal("show");
               $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
@@ -651,7 +651,7 @@
               message = JSON.parse(jqXHR.responseText);
               body = message.message;
               title = "Error";
-              $("#_permissions_feedbacks").find('.modal-title').text(title);
+              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
               $("#_permissions_feedbacks").find('.modal-body').text(body);
               $("#_permissions_feedbacks").modal("show");
               $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });

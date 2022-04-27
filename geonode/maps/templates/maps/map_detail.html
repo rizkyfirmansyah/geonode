@@ -32,9 +32,9 @@
 {% block body_outer %}
 {% overall_rating resource "map" as map_rating %}
 
-<div class="page-header col-md-12">
-  <h2 class="page-title col-md-8">{{ resource.title }}</h2>
-  <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-md-4" target="_self"><button class="pull-right btn btn-primary">Return to
+<div class="page-header row w-100">
+  <h2 class="col-8">{{ resource.title }}</h2>
+  <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-4" target="_self"><button class="float-right btn btn-primary">Return to
       Explore</button></a>
 </div>
 
@@ -119,7 +119,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-              <h4 class="modal-title text-center" id="myModalLabel">{% trans "Download Map" %}</h4>
+              <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Download Map" %}</h4>
             </div>
             <div class="modal-body text-center l-space">
               <ul>
@@ -130,7 +130,7 @@
                 {% endif %}
                 <ul>
             </div>
-            <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Ok, I get it.</button>
+            <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Ok, I get it.</button>
           </div>
         </div>
       </div>
@@ -147,7 +147,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-              <h4 class="modal-title text-center" id="myModalLabel">{% trans "Editing Tools" %}</h4>
+              <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Editing Tools" %}</h4>
             </div>
             <div class="modal-body text-center l-space">
               <div class="row edit-modal">
@@ -155,9 +155,9 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-rectangle-list fa-3x"></i>
                   <h4>{% trans "Metadata" %}</h4>
-                  <a class="btn btn-default btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-xs"
                     href="{% url "map_metadata" resource.id %}">{% trans "Wizard" %}</a>
-                  <a class="btn btn-default btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-xs"
                     href="{% url "map_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
                 </div>
                 {% endif %}
@@ -165,8 +165,8 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-image fa-3x"></i>
                   <h4>{% trans "Thumbnail" %}</h4>
-                  <a class="btn btn-default btn-block btn-xs" href="#" id="set_thumbnail">{% trans "Set" %}</a>
-                  <a class="btn btn-default btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-xs" href="#" id="set_thumbnail">{% trans "Set" %}</a>
+                  <a class="btn btn-primary btn-block btn-xs"
                     href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
                 </div>
                 {% endif %}
@@ -174,7 +174,7 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-map-location-dot fa-3x"></i>
                   <h4>{% trans "Map" %}</h4>
-                  <a class="btn btn-default btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-xs"
                     href="{% url "map_edit" resource.id %}">{% trans "Edit" %}</a>
                   <a class="btn btn-danger btn-block btn-xs"
                     href="{% url "map_remove" resource.id %}">{% trans "Remove" %}</a>
@@ -182,7 +182,7 @@
                 {% endif %}
               </div>
             </div>
-            <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -198,14 +198,14 @@
       {% endif %}
       <li class="list-group-item">
         {% if "change_resourcebase" not in perms_list and "change_resourcebase_metadata" not in perms_list %}
-        <a href="{% url "map_view" resource.id %}" class="btn btn-default btn-md btn-block">{% trans "View Map" %}</a>
+        <a href="{% url "map_view" resource.id %}" class="btn btn-primary btn-md btn-block">{% trans "View Map" %}</a>
         {% else %}
-        <a href="{% url "map_edit" resource.id %}" class="btn btn-default btn-md btn-block">{% trans "View Map" %}</a>
+        <a href="{% url "map_edit" resource.id %}" class="btn btn-primary btn-md btn-block">{% trans "View Map" %}</a>
         {% endif %}
       </li>
       {% comment %}
       <li class="list-group-item">
-        <a href="#" class="btn btn-default btn-md btn-block">{% trans "Print Map" %}</a>
+        <a href="#" class="btn btn-primary btn-md btn-block">{% trans "Print Map" %}</a>
       </li>
       {% endcomment %}
 
@@ -258,7 +258,7 @@
         <h4>{% trans "Copy this map" %}</h4>
         <p>{% trans "Duplicate this map and modify it for your own purposes" %}</p>
         <a href="{% url "new_map" %}?copy={{ resource.id }}"
-          class="btn btn-default btn-md btn-block">{% trans "Create a New Map" %}</a>
+          class="btn btn-primary btn-md btn-block">{% trans "Create a New Map" %}</a>
       </li>
       {% endif %}
 
@@ -275,7 +275,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-        <h4 class="modal-title text-center" id="myModalLabel">{% trans "Embed Iframe" %}</h4>
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Embed Iframe" %}</h4>
       </div>
       <div class="modal-body text-center l-space">
         <p>
@@ -286,7 +286,7 @@
           width="480px" height="360px"&gt;&lt;/iframe&gt;
         </p>
       </div>
-      <button type="button" class="btn btn-default col-md-12" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
     </div>
   </div>
 </div>

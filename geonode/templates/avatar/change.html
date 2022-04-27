@@ -3,7 +3,7 @@
 {% load bootstrap_tags %}
 
 {% block body %}
-    <h4 class="page-header"><a href="{% url "profile_edit" user.username %}">{% trans "Back to edit your profile information" %}</a></h4>
+    <h4 class="page-header row w-100"><a href="{% url "profile_edit" user.username %}">{% trans "Back to edit your profile information" %}</a></h4>
     <h5>{% trans "Your current avatar: " %}</h5>
     {% autoescape off %}{% avatar user %}{% endautoescape %}
     {% if not avatars %}
