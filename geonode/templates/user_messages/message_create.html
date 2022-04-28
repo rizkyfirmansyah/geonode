@@ -30,7 +30,7 @@
 {% endblock extrahead %}
 
 
-{% block body %}
+{% block body_inner %}
 <h3 style="margin-top: 50px;">{% trans "Create Message" %}</h3>
 <form id="msg_form" method="post" action="{% url 'message_create' %}">
     {% csrf_token %}
@@ -100,7 +100,7 @@
 </script>
 {% endblock %}
 
-{% block sidebar %}
+{% block body_sidebar %}
 <a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button"
     style="margin-top: 50px;">{% trans "Back to Inbox" %}</a>
 {% endblock %}

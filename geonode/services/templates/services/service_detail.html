@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load guardian_tags %}
 
-{% block body %}
+{% block body_inner %}
 <div class="twocol">
   <h3>{{service.title|default:service.name}}</h3>
       <p><strong>{% trans "Type" %}:</strong> {{service.service_type}}</p>
@@ -96,7 +96,7 @@
 
 </div>
 {% endblock %}
-{% block sidebar %}
+{% block body_sidebar %}
 
     {% get_obj_perms request.user for service as "resource_perms" %}
 

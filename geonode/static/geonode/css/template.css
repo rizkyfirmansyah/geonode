@@ -12,8 +12,15 @@
     --border-radius-sm: 0.5em;
     --border-radius-md: 0.75em;
     --border-radius-fix-lg: 50px;
-    --card-content: 72px;
+    --card-content: 96px;
     --spacing-1: 4rem;
+    --primary: #1D4842 !important;
+    --secondary: #fff !important;
+    --success: #4E98AF !important;
+    --info: #c4bab7 !important;
+    --warning: #fdba12 !important;
+    --danger: #a23133 !important;
+    --disabled: #c4c4c4;
 }
 
 .font-small {
@@ -58,6 +65,127 @@
 
 .secondary-bg-gold-color {
     background-color: #fdba12!important
+}
+
+
+/* ---------------------------------------------------
+    OVERRIDE BOOTSTRAP STYLE
+----------------------------------------------------- */
+
+.btn-primary {
+    color: var(--secondary) !important;
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important
+}
+
+.btn-primary:hover {
+    color: var(--primary) !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important
+}
+
+.btn-primary.focus,
+.btn-primary:focus {
+    color: var(--primary) !important;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    box-shadow: 0 0 0 .2rem var(--secondary) !important
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+    color: var(--primary) !important;
+    background-color: var(--disabled) !important;
+    border-color: var(--disabled) !important
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important
+}
+
+.btn-secondary:hover {
+    color: #fff;
+    background-color: #5a6268;
+    border-color: #545b62
+}
+
+.btn-secondary.focus,
+.btn-secondary:focus {
+    color: #fff;
+    background-color: #5a6268;
+    border-color: #545b62;
+    box-shadow: 0 0 0 .2rem rgba(130, 138, 145, .5)
+}
+
+.btn-secondary.disabled,
+.btn-secondary:disabled {
+    color: #fff;
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important
+}
+
+.btn-success {
+    color: #fff;
+    background-color: var(--success) !important;
+    border-color: var(--success) !important
+}
+
+.btn-success:hover {
+    color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34
+}
+
+.btn-success.focus,
+.btn-success:focus {
+    color: #fff;
+    background-color: #218838;
+    border-color: #1e7e34;
+    box-shadow: 0 0 0 .2rem rgba(72, 180, 97, .5)
+}
+
+.btn-success.disabled,
+.btn-success:disabled {
+    color: #fff;
+    background-color: var(--success) !important;
+    border-color: var(--success) !important
+}
+
+.btn-success:not(:disabled):not(.disabled).active,
+.btn-success:not(:disabled):not(.disabled):active,
+.show>.btn-success.dropdown-toggle {
+    color: #fff;
+    background-color: #1e7e34;
+    border-color: #1c7430
+}
+
+.btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107
+}
+
+.btn-warning:hover {
+    color: #212529;
+    background-color: var(--warning) !important;
+    border-color: #d39e00
+}
+
+.btn-warning.focus,
+.btn-warning:focus {
+    color: #212529;
+    background-color: var(--warning) !important;
+    border-color: #d39e00;
+    box-shadow: 0 0 0 .2rem rgba(222, 170, 12, .5)
+}
+
+.btn-warning.disabled,
+.btn-warning:disabled {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107
 }
 
 article,
@@ -229,12 +357,6 @@ button:-moz-focusring {
     outline: 1px dotted ButtonText
 }
 
-fieldset {
-    border: 1px solid silver;
-    margin: 0 2px;
-    padding: .35em .625em .75em
-}
-
 legend {
     box-sizing: border-box;
     color: inherit;
@@ -372,11 +494,6 @@ small {
     word-spacing: 0.3rem;
     line-height: 2.9rem;
     letter-spacing: .1rem
-}
-
-fieldset {
-    margin: 0;
-    padding: 0
 }
 
 input[type=email],
@@ -610,6 +727,15 @@ body .maps {
     padding: 5px 0 5px 0!important;
     border-color: transparent!important;
     background-color: transparent!important
+}
+
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+    cursor: not-allowed;
+    opacity: .65;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 .toggle-handle {
@@ -4103,6 +4229,10 @@ form#text-search-autocomplete .ac-results {
     left: var(--spacing-1);
 }
 
+.font-lg-1 {
+    font-size: var(--font-larger-1);
+}
+
 .input-highlight {
     user-select: none;
     border-top: 3px solid #fbc91b;
@@ -5132,28 +5262,6 @@ footer #footer-language {
     width: 60px
 }
 
-nav.filter h4 {
-    background: #1D4842;
-    font-size: 1em;
-    font-weight: 400;
-    padding: 10px;
-    line-height: 24px;
-    margin-bottom: .4rem;
-    color: #fff!important
-}
-
-nav.filter h4 a {
-    color: #fff
-}
-
-nav.filter h4 a svg {
-    margin-right: 5px
-}
-
-nav.filter h4 a.toggle {
-    text-decoration: none
-}
-
 nav.filter .fa-stack {
     min-width: 40px!important
 }
@@ -5171,10 +5279,6 @@ nav.filter li a {
     border-bottom: 1px solid #1D4842;
     cursor: pointer;
     padding-left: 1rem
-}
-
-nav.filter .bootstrap-datetimepicker-widget {
-    z-index: 9999
 }
 
 #date_end>div,
@@ -6643,11 +6747,8 @@ form textarea[name=content] {
         position: sticky;
         top: 0;
         z-index: 999;
-        width: 100%
-    }
-    .delete_date {
-        top: -4rem!important;
-        width: 36px
+        width: 100%;
+        padding-top: 0.5em !important;
     }
     #logout_container {
         background-color: #fff;
@@ -6659,6 +6760,16 @@ form textarea[name=content] {
     }
 }
 
+footer li a {
+    color: #fff!important
+}
+
+footer li a:active,
+footer li a:focus,
+footer li a:hover {
+    color: var(--yellow)!important;
+}
+
 @media (min-width:1200px) {
     footer h4 {
         color: #fff;
@@ -6666,17 +6777,6 @@ form textarea[name=content] {
         line-height: 1.313;
         margin-top: 0;
         margin-bottom: 3.6rem
-    }
-    footer li a {
-        color: #fff!important
-    }
-    footer li a:active,
-    footer li a:focus,
-    footer li a:hover {
-        color: #fff!important;
-        text-decoration: underline!important;
-        background-color: transparent!important;
-        padding: 0 5px!important
     }
     footer .logo {
         bottom: 50%;
@@ -6770,11 +6870,12 @@ form textarea[name=content] {
 .wrapper nav.filter {
     max-height: 495px;
     overflow-y: auto;
+    max-width: 340px;
 }
 
 #sidebar {
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 340px;
+    max-width: 340px;
     transition: all 0.3s;
 }
 
@@ -6797,7 +6898,7 @@ form textarea[name=content] {
 }
 
 #sidebar.active {
-    margin-left: -300px;
+    margin-left: -340px;
 }
 
 #sidebar .sidebar-header {

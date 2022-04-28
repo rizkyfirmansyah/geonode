@@ -139,11 +139,14 @@
     </ul>
 </nav>
 {% endif %}
-{% if SEARCH_FILTERS.DATE_ENABLED and facet_type != 'documents' %}
-{% include "search/_date_filter.html" %}
+{% if SEARCH_FILTERS.REGION_ENABLED and facet_type != 'documents' %}
+{% include "search/_region_filter.html" %}
 {% endif %}
 {% if SEARCH_FILTERS.EXTENT_ENABLED and facet_type != 'documents' %}
 {% include "search/_extent_filter.html" %}
+{% endif %}
+{% if SEARCH_FILTERS.DATE_ENABLED and facet_type != 'documents' %}
+{% include "search/_date_filter.html" %}
 {% endif %}
 {% block extrascript %}
 <script text="text/javascript">

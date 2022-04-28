@@ -5,7 +5,7 @@
 
 {% block title %}{{ thread.subject }} — {{ block.super }}{% endblock %}
 
-{% block body %}
+{% block body_inner %}
 <h3>{{ thread.subject }}</h3>
 <div>
     <b>{% trans "Sent to" %}:</b>
@@ -44,6 +44,6 @@
 </div>
 {% endblock %}
 
-{% block sidebar %}
+{% block body_sidebar %}
 <a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button" style="margin-top: 40px;">{% trans "Back to Inbox" %}</a>
 {% endblock %}

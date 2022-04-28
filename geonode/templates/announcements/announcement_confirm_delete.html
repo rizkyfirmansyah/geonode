@@ -5,7 +5,7 @@
 
 {% block body_class %}announcements{% endblock %}
 
-{% block body %}
+{% block body_inner %}
     <h1>{% trans "Delete Announcement?" %}</h1>
     {% url "announcements_delete" pk=announcement.pk as post_url %}
     <p class="lead">

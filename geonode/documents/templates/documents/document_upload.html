@@ -7,7 +7,7 @@
 
 {% block body_class %}documents upload{% endblock body_class %}
 
-{% block body %}
+{% block body_inner %}
 
 <div class="col-8">
   <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}">
@@ -19,7 +19,7 @@
 
 {% endblock %}
 
-{% block sidebar %}
+{% block body_sidebar %}
 
 {% display_change_perms_button resource request.user perms_list as display_perms_button %}
 {% if display_perms_button %}

@@ -2,7 +2,7 @@
 {% load i18n avatar_tags %}
 {% load bootstrap_tags %}
 
-{% block body %}
+{% block body_inner %}
 	<a href="{% url "profile_edit" user.username %}">{% trans "Back to edit your profile information" %}</a>
 	<p>{% trans "Your current avatar: " %}</p>
     {% autoescape off %}{% avatar user %}{% endautoescape %}

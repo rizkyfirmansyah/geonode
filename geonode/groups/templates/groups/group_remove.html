@@ -4,7 +4,7 @@
 {% block title %}{{ group.title }} — {{ block.super }}{% endblock %}
 {% block body_class %}{% trans "groups remove" %}{% endblock %}
 
-{% block body %}
+{% block body_inner %}
 <div class="row">
   <div class="col-md-8">
     <form action="{% url "group_remove" group.slug %}" method="POST">

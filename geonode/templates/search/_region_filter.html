@@ -1,14 +1,14 @@
 {% load i18n %}
-{% load base_tags %}
-<nav class="filter">
-    <a href="#region" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Regions</a>
-    <ul class="collapse list-unstyled" id="region">
+
+<nav class="filter" ng-cloak>
+    <a href="#region_filter" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Regions</a>
+    <ul class="collapse list-unstyled" id="region_filter">
         <form class="autocomplete-input input-group p-2" id="region-search-autocomplete">
             {% csrf_token %}
             <div id="region-search-container" class="row w-100">
                 <div class="col-10 pr-0">
-                    <input autocomplete="off" type="text" name="region_search_input" class="w-100 p-2" id="region_search_input"
-                        placeholder="{% trans "Search by region" %}">
+                    <input autocomplete="off" type="text" name="region_search_input" class="w-100 p-2"
+                        id="region_search_input" placeholder="{% trans "Search by region" %}">
                 </div>
                 <div class="col-2">
                     <button id="region_search_btn" aria-label="Filter data" type="submit">

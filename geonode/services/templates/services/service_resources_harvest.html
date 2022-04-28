@@ -5,7 +5,7 @@
 {% load guardian_tags %}
 
 {% block title %}{% trans "Import resources" %}{% endblock %}
-{% block body %}
+{% block body_inner %}
     <div class="twocol">
         <div class="page-header row w-100">
             <h3>{% trans "Import resources" %}
@@ -147,7 +147,7 @@
     </div>
 {% endblock %}
 
-{% block sidebar %}
+{% block body_sidebar %}
     {% get_obj_perms request.user for service as "resource_perms" %}
 
     {% if "change_service" in resource_perms or "remove_service" in resource_perms or "change_service_permissions" in resource_perms %}
@@ -165,7 +165,7 @@
             </form>
         </ul>
     {% endif %}
-{% endblock sidebar %}
+{% endblock body_sidebar %}
 
 {% block extra_script %}
     {{ block.super }}

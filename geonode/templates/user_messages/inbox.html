@@ -6,7 +6,7 @@
 
 {% block title %}{% trans "Message Inbox" %} — {{ block.super }}{% endblock %}
 
-{% block body %}
+{% block body_inner %}
 <div class="row">
   <div class="col-md-12">
     <h2 class="page-title">{%  trans "Messages" %}</h2>
@@ -62,7 +62,7 @@
 
 {% endblock %}
 
-{% block sidebar %}
+{% block body_sidebar %}
   {% if not READ_ONLY_MODE %}
     <a href="{% url 'message_create' %}" class="btn btn-primary" type="button" style="margin-top: 40px;">{% trans "Create Message" %}</a>
   {% endif %}

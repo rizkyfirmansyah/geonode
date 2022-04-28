@@ -21,4 +21,4 @@ done
 (( do_update )) && printf " - Executing npm update...\n" && npm update
 (( do_npm_install )) && printf " - Executing npm install...\n" && npm install
 (( do_yarn_install )) && printf " - Executing yarn update...\n" && yarn install
-printf " - Executing grunt...\n" && grunt development && grunt production
+printf " - Executing grunt...\n" && grunt development --force && grunt production --force

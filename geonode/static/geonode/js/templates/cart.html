@@ -1,11 +1,11 @@
 <div id="composerCart" class="card p-2">
   <div
-    class="card-title"
+    class="card-title text-center font-lg-1"
     ng-bind="(selectedString)"></div>
   <div
     ng-show="!cart.getCart().items.length"
     class="card-body">
-    <p>{{ emptyString }}</p>    
+    <h5>{{ emptyString }}</h5>
   </div>
   <ul class="list-group">
     <li class="list-group-item clearfix" ng-if="resource && resource.title" ng-repeat="resource in cart.getCart().items">{{ resource.title | limitTo: 25}}{{ resource.title.length > 25 ? '...' : '' }}<button class="btn btn-primary btn-xs float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-lg"></i></button></li>

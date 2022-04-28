@@ -5,7 +5,7 @@
 
 {% block body_class %}monitoring{% endblock %}
 
-{% block body %}
+{% block body_inner %}
     {{ block.super }}
     <h2>{% trans "Only superusers can monitor performance" %}</h2>
 {% endblock %}
