@@ -5,7 +5,7 @@
 {% block title %}{% trans "Remote service unavailable" %}{% endblock %}
 
 {% block body_inner %}
-    <div class="page-header row w-100">
+    <div class="row w-100">
         <h3>{% trans "Service unavailable" %}<small> {{ service.name }}</small></h3>
     </div>
     <p>{% trans "Could not contact" %} <a href="{{ service.base_url }}" target="_blank">{{ service.base_url }}</a></p>

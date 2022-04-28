@@ -143,7 +143,7 @@
                 .toggleClass('progress-bar-success', !miss)
                 .text(miss ? 'Mandatory' : 'Completed')
                 .attr('title', miss ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
-                .tooltip('fixTitle');
+                .tooltip('dispose');
             };
 
             {% if UI_REQUIRED_FIELDS %}
@@ -599,7 +599,7 @@
         };
 
         var validateFormInput = () => {
-            var validateMandatory = $('#completeness-hints .mandatoryl-hint').text();
+            var validateMandatory = $('#completeness-hints .mandatory-hint').text();
             var validateContent = $('#completeness-hints .content-hint').text();
             var validateLicense = $('#completeness-hints .licenses-hint').text();
             var validateAll = [validateMandatory, validateContent, validateLicense];

@@ -48,10 +48,10 @@
           </p>
           {% if user.is_authenticated %}
           <p class="text-center l-space"><a class="btn btn--primary" href="{% url "document_browse" %}"
-              role="button">{% trans "Add Non Spatial Data" %} &raquo;</a></p>
+              role="button">{% trans "Add Datasets" %} &raquo;</a></p>
           {% else %}
           <p class="text-center l-space"><a class="btn btn--primary" href="{% url "document_browse" %}"
-              role="button">{% trans "Explore Non Spatial Data" %} &raquo;</a></p>
+              role="button">{% trans "Explore Datasets" %} &raquo;</a></p>
           {% endif %}
         </div>
         <div class="col-md-6">

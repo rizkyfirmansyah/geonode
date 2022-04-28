@@ -24,10 +24,10 @@
 {% block body_class %}{% trans "documents" %}{% endblock %}
 
 {% block body_outer %}
-<div class="page-header row w-100">
+<div class="row w-100">
   <h2 class="col-8">{{ resource.title }}</h2>
   <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" target="_self" class="col-4"><button
-      class="float-right btn btn-primary">Return to
+      class="float-right btn btn-info">Return to
       Explore</button></a>
 </div>
 <div class="row">
@@ -92,7 +92,7 @@
       <article id="rate" class="tab-pane">
         <!-- TODO: Move this to a reusable template snippet -->
         {% if request.user.is_authenticated %}
-        <h4>{% trans "Rate this BigTIFF/Non-Spatial Data" %}</h4>
+        <h4>{% trans "Rate this Datasets" %}</h4>
         {% user_rating request.user resource "document" as user_document_rating %}
         <div id="user_rating" class="category-layer" data-score="{{user_document_rating}}"></div>
         {% endif %}
@@ -129,13 +129,13 @@
         {% if "download_resourcebase" in perms_list %}
         {% if resource.extension|lower in imgtypes and resource.doc_file %}
         <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
-            class="btn btn-primary btn-md btn-block">{% trans "Download BigTIFF/Non-Spatial Data" %}</button></a>
+            class="btn btn-primary btn-md btn-block">{% trans "Download Datasets" %}</button></a>
         {% elif resource.doc_file %}
         <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
-            class="btn btn-primary btn-md btn-block">{% trans "Download BigTIFF/Non-Spatial Data" %}</button></a>
+            class="btn btn-primary btn-md btn-block">{% trans "Download Datasets" %}</button></a>
         {% elif  resource.doc_url %}
         <a style="text-decoration:none;" target="_blank" href="{{ resource.doc_url }}"><button
-            class="btn btn-primary btn-md btn-block">{% trans "Download BigTIFF/Non-Spatial Data" %}</button></a>
+            class="btn btn-primary btn-md btn-block">{% trans "Download Datasets" %}</button></a>
         {%  endif %}
         {% else %}
         {% if request.user.is_authenticated %}
@@ -147,7 +147,7 @@
       {% if not READ_ONLY_MODE %}
       {% if "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}
       <li class="list-group-item">
-        <button class="btn btn-info btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-edit btn-md btn-block" data-toggle="modal"
           data-target="#edit-document">{% trans "Edit Datasets" %}</button>
       </li>
       {% endif %}
@@ -202,15 +202,15 @@
       </div>
 
       <li class="list-group-item">
-        <h4>{% trans "Resources using this BigTIFF/Non-Spatial Data" %}</h4>
+        <h4>{% trans "Resources using this Datasets" %}</h4>
         {% if layer.maps %}
-        <p>{% trans "List of resources using this BigTIFF/Non-Spatial Data:" %}</p>
+        <p>{% trans "List of resources using this Datasets:" %}</p>
         {% endif %}
         <ul class="list-unstyled">
           {% for resource in related %}
           <li><a href="{{ resource }}">{{ resource.title }}</a></li>
           {% empty %}
-          <p>{% trans "This BigTIFF/Non-Spatial Data is not related to any maps or layers" %}</p>
+          <p>{% trans "This Datasets is not related to any maps or layers" %}</p>
           {% endfor %}
         </ul>
       </li>
@@ -220,8 +220,8 @@
       {% if not READ_ONLY_MODE %}
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
-        <p>{% trans "Click the button below to change the permissions of this BigTIFF/Non-Spatial Data." %}</p>
-        <p><a href="#modal_perms" data-toggle="modal" class="btn btn-info btn-block"
+        <p>{% trans "Click the button below to change the permissions of this Datasets." %}</p>
+        <p><a href="#modal_perms" data-toggle="modal" class="btn btn-update btn-block"
             data-target="#_permissions">{% trans "Change Data Permissions" %}</a></p>
       </li>
       {% include "_permissions_form.html" %}

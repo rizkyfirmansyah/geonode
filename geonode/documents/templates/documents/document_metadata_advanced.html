@@ -26,25 +26,25 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
-  <div class="page-header row w-100 ml-0" id="fixed-header">
-    <h2 class="col-md-8 pl-0">
+  <div class="card" id="fixed-header">
+    <h2 class="card-title text-center">
       {% blocktrans with document.title as document_title %}
         Edit Metadata for {{ document_title }}
       {% endblocktrans %}
     </h2>
-    <div class="col-4 text-right p-0"><input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done" style="float: right; opacity: 100; width: 100px;" data-original-title="" title="Completed Metadata" value="Done"></div>
+    <div class="row w-100 m-0 mb-2">
+        <div class="col-3 text-center p-3"><input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done w-100" style="opacity: 100;" data-original-title="" title="Completed Metadata" value="Done"></div>
+        <div class="col-3 text-center p-3"><input type="button" id="btn_upd_md_up" class="btn btn-update w-100" value="{% trans "Update" %}"/></div>
+        <div class="col-3 text-center p-3"><a href="." class="btn btn-info w-100">{% trans "Return to Datasets" %}</a></div>
+        <div class="col-3 text-center p-3">
+          <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
+          class="btn btn-primary w-100">{% trans "Explore Datasets" %}</a>
+        </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-12">
       {% block advanced_edit_form %}
-          <div class="fixed-button">
-                  <p>
-                    <a href="." class="btn btn-primary">{% trans "Return to Non Spatial Data" %}</a>
-                    <input type="button" id="btn_upd_md_up" class="btn btn-info" value="{% trans "Update" %}"/>
-                    <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
-                    class="btn btn-primary float-right">{% trans "Explore Non Spatial Data" %}</a>
-                  </p>
-          </div>
           {% csrf_token %}
           <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 
               Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
@@ -55,20 +55,22 @@
             {{ tkeywords_form }}
             {% endif %}
           </div>
-          <div class="card rounded">
+          <div class="card rounded web-surface">
             <div class="p-3">
               <label class="control-label required-field">{% trans "Category" %}</label>
               <fieldset id="category_form">
                 {% autoescape off %}
-                {% for choice in category_form.category_choice_field.field.choices %}
-                <div class="col-6">
-                  <label class="fancy-checkbox">
-                    <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
-                      {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
-                    {{ choice.1 }}
-                  </label>
-                </div>
-                {% endfor %}
+                  <div class="row mt-2">
+                    {% for choice in category_form.category_choice_field.field.choices %}
+                      <div class="col-4 text-center p-3">
+                        <label class="fancy-checkbox">
+                          <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
+                            {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
+                          {{ choice.1 }}
+                        </label>
+                      </div>
+                    {% endfor %}
+                  </div>
                 {% endautoescape %}
               </fieldset>
             </div>

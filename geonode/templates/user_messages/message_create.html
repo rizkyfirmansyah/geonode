@@ -30,9 +30,20 @@
 {% endblock extrahead %}
 
 
-{% block body_inner %}
-<h3 style="margin-top: 50px;">{% trans "Create Message" %}</h3>
+{% block body %}
 <form id="msg_form" method="post" action="{% url 'message_create' %}">
+
+    <div class="row w-100">
+        <h3 class="col-8">{% trans "Create Message" %}</h3>
+        <div class="form-actions col-2 text-right pr-0">
+            <input id="id_form_submit" type="submit" value="{% trans "Send message" %}" class="btn btn-primary"
+                type="button"/>
+        </div>
+        <div class="col-2 pr-0 text-right">
+            <a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button">{% trans "Back to Inbox" %}</a>
+        </div>
+    </div>
+
     {% csrf_token %}
     {% if form.non_field_errors %}
     <div class="alert alert-danger">
@@ -72,10 +83,7 @@
 
         </div>
     </table>
-    <div class="form-actions">
-        <input id="id_form_submit" type="submit" value="{% trans "Send message" %}" class="btn btn-primary"
-            type="button" style="margin-bottom: 3em" />
-    </div>
+
 </form>
 
 <script src="{% static "geonode/js/messages/message_recipients_autocomplete_es5.js" %}"></script>
@@ -98,9 +106,4 @@
         })
     });
 </script>
-{% endblock %}
-
-{% block body_sidebar %}
-<a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button"
-    style="margin-top: 50px;">{% trans "Back to Inbox" %}</a>
 {% endblock %}

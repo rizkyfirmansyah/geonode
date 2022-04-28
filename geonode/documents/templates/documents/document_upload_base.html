@@ -9,7 +9,7 @@
 {% block body_class %}documents{% endblock %}
 
 {% block body_outer %}
-<div class="page-header row w-100">
+<div class="row w-100">
   <h2 class="col-8">{% trans "Upload Datasets" %}</h2>
   <div class="col-4"><a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Datasets" %}</a></div>
 	<p>{% trans "Allowed raw data types" %}:</p>

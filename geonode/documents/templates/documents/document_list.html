@@ -8,7 +8,7 @@
 
 {% block body %}
   <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
-  <div class="page-header row justify-content-between m-0 pb-2" id="resources_list">
+  <div class="row justify-content-between m-0 pb-2" id="resources_list">
     {% with include_type_filter='true' %}
       {% with header='Document Type' %}
         {% with filter='doc_type__in' %}
@@ -17,7 +17,7 @@
       {% endwith %}
     {% endwith %}
     {% if user.is_authenticated and not READ_ONLY_MODE %}
-      <div class="col-3"><a href="{% url "document_upload" %}" class="btn btn-primary ExPlrBtn">{% trans "Upload Datasets" %}</a></div>
+      <div class="col-3"><a href="{% url "document_upload" %}" class="btn btn-secondary ExPlrBtn">{% trans "Upload Datasets" %}</a></div>
     {% endif %}
     {% if SEARCH_FILTERS.TEXT_ENABLED %}
       {% include "search/_text_container.html" %}

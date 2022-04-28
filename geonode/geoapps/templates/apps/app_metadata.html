@@ -15,10 +15,12 @@
       {{ map_title }}{% endblocktrans %}
     </h2>
     <div class="form-actions col-md-8 form-metadata">
-      <input type="button" id="btn_back_dwn" class="btn btn-primary" style="display: none"
+      <a href="{% url 'geoapp_detail' geoappid=resource.id %}"
+        class="btn btn-info">{% trans "Return to Apps" %}</a>
+      <input type="button" id="btn_back_dwn" class="btn btn-info" style="display: none"
         value="{% trans "<< Back" %}" />
-      <input type="button" id="btn_upd_md_dwn" class="btn btn-info" value="{% trans "Update" %}" />
-      <input type="button" id="btn_next_dwn" class="btn btn-primary" value="{% trans "Next >>" %}" />
+      <input type="button" id="btn_upd_md_dwn" class="btn btn-update" value="{% trans "Update" %}" />
+      <input type="button" id="btn_next_dwn" class="btn btn-info" value="{% trans "Next >>" %}" />
     </div>
     <div id="profileCompleteness" class="alert alert-info col-md-4">
       <strong>{% trans "Completeness" %}</strong>

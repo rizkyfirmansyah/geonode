@@ -5,9 +5,9 @@
 {% block head_title %}{% trans "Create Group" %}{% endblock %}
 {% block body_class %}{% trans "groups create" %}{% endblock %}
 
-{% block body_inner %}
-    <div class="block">
-      <div class="col-md-10">
+{% block body %}
+    <div class="row w-100">
+      <div class="col-12">
         <h2 class="page-title">{% block body_page_title %}{% trans "Create a Group" %}{% endblock %}</h2>
         {% if errors %}
           <div id="errors">

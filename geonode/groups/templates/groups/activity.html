@@ -14,13 +14,13 @@
 {% endblock %}
 {% endcomment %}
 
-{% block body_outer %}
-<div class="page-header row w-100">
+{% block body %}
+<div class="row w-100">
   <h2 class="page-title">{%  trans "Activity Feed for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h2>
 </div>
 
-<div class="row">
-  <div class="col-md-8">
+<div class="row w-100">
+  <div class="col-12">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#all" data-toggle="tab"><i class=""></i>{% trans "All" %}</a></li>
       <li><a href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a></li>

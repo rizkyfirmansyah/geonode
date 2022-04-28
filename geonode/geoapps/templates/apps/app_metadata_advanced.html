@@ -26,47 +26,47 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
-  <div class="page-header row w-100 ml-0" id="fixed-header">
-    <h2 class="col-md-8 pl-0">
+  <div class="card" id="fixed-header">
+    <h2 class="card-title text-center">
       {% blocktrans with geoapp.title as map_title %}
           Editing details for {{ map_title }}
         {% endblocktrans %}
     </h2>
-    <div class="col-4 text-right p-0"><input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done" style="float: right; opacity: 100; width: 100px;" data-original-title="" title="Completed Metadata" value="Done"></div>
+    <div class="row w-100 m-0 mb-2">
+      <div class="col-3 text-center p-3"><input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done w-100" style="opacity: 100;" data-original-title="" title="Completed Metadata" value="Done"></div>
+      <div class="col-3 text-center p-3"><input type="button" id="btn_upd_md_up" class="btn btn-update w-100" value="{% trans "Update" %}"/></div>
+      <div class="col-3 text-center p-3"><a href="." class="btn btn-info w-100">{% trans "Return to GeoApp" %}</a></div>
+      <div class="col-3 text-center p-3">
+        <a href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
+        class="btn btn-primary w-100">{% trans "Explore Apps" %}</a>
+      </div>
+    </div>
+    {% if geoapp.metadata_uploaded %}
+      <div class="card-footer" style="background-color: orange;">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing a metadata XML file.
+        SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+        Some of your original metadata may have been lost.{% endblocktrans %}
+      </div>
+    {% endif %}
+
+    {% if geoapp_form.errors or category_form.errors %}
+      <div class="card-footer" style="background-color: pink">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}
+        <ul>
+        {% for field in geoapp_form %}
+            {% if field.errors %}
+                <li>{{ field.label }}</li>
+            {% endif %}
+        {% endfor %}
+
+        {% if category_form.errors %}
+            <li>{{ category_form.errors.as_ul }}</li>
+        {% endif %}
+        </ul>
+      </div>
+    {% endif %}
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-12">
       {% block advanced_edit_form %}
-          <div class="fixed-button">
-            <p>
-              <a href="." class="btn btn-primary">{% trans "Return to GeoApp" %}</a>
-              <input type="button" id="btn_upd_md_up" class="btn btn-info" value="{% trans "Update" %}"/>
-              <a href="{% url "apps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}"
-              class="btn btn-primary float-right">{% trans "Explore Apps" %}</a>
-            </p>
-          </div>
-          {% if geoapp.metadata_uploaded %}
-            <div style="background-color: orange;">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing a metadata XML file.
-              SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-              Some of your original metadata may have been lost.{% endblocktrans %}
-            </div>
-          {% endif %}
-
-          {% if geoapp_form.errors or category_form.errors %}
-            <div style="background-color: pink">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}
-              <ul>
-              {% for field in geoapp_form %}
-                  {% if field.errors %}
-                      <li>{{ field.label }}</li>
-                  {% endif %}
-              {% endfor %}
-
-              {% if category_form.errors %}
-                  <li>{{ category_form.errors.as_ul }}</li>
-              {% endif %}
-              </ul>
-            </div>
-          {% endif %}
 
           {% csrf_token %}
           <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 

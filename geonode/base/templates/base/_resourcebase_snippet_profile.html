@@ -1,0 +1,98 @@
+{% load i18n %}
+{% load static from staticfiles %}
+{% load avatar_tags %}
+{% verbatim %}
+
+  <div class="row row-cols-1 row-cols-md-2">
+    <div ng-repeat="item in results" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
+          <div class="card rounded">
+            <div class="card-header pb-0">
+              <div class="row">
+                <span class="item-category" ng-if="item.has_time"><i class="fa-solid fa-clock" aria-hidden="true" title="Temporal Serie"></i>Temporal Serie<br></span>
+                <i ng-if="item.store_type == 'remoteStore'" title="Remote Service" class="fa-solid fa-arrow-up-right-from-square p-1"></i>
+                <i ng-if="item.store_type == 'dataStore'" title="Vector Data" class="fa-solid fa-square-pen p-1"></i>
+                <i ng-if="item.store_type == 'coverageStore'" title="Raster Data" class="fa-solid fa-image p-1"></i>
+                <i ng-if="item.store_type == 'dataset'" title="File/Dataset" class="fa-solid fa-newspaper p-1"></i>
+                <i ng-if="item.store_type == 'map'" title="Map" class="fa-solid fa-map p-1"></i>
+                <i ng-if="item.store_type == 'geoapp'" title="App" class="fa-solid fa-gears p-1"></i>
+                <div class="col-md-9 p-0">
+                  <a href="{{ item.detail_url }}" class="stretched-link" title="See details"></a>
+                  <p>{{ item.title | limitTo: 35 }} <span>{{ item.title.length > 35 ? '...' : '' }}</span></p>
+                </div>
+                <span class="col-md-1 text-center">
+                  <i id="download_icon" class="fa {{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color: {{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
+                </span>
+            </div>
+            </div>
+            <div class="card-body pt-2">
+              <div class="row">
+                <div class="avatar ml-2">
+                  <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar profile 40 %}</a>
+                  {% verbatim %}
+                </div>
+                <div class="col-10 pr-0">
+                  <div class="">
+                    <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a>
+                    <i ng-repeat="(key, value) in item.category__fa_dict" class="fa {{ value }} fa-1x" style="margin-left: 3px; float: right; margin-top: 1vh;" title="{{ key }}" id="category_icon" ng-click="cart.category(key)" ng-if="cart"></i>
+                  </div>
+                  <div class="row pt-1 w-100">
+                    <div class="ml-3 card-subtitle font-small"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
+                    <div class="col-7 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body pt-0">
+              <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
+            </div>
+            <a href="{{ item.detail_url }}"><img card="card-img-top" ng-src="{{ item.thumbnail_url }}" style="width:100%;"></a>
+            {% endverbatim %}
+                    {% verbatim %}
+                    <a ng-if="item.detail_url.indexOf('/layers/') > -1" class="create_map col-6" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+                    <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
+                  <div class="card-footer">
+                    <div class="row">
+                      {% endverbatim %}
+                      {% if facet_type == 'layers' %}
+                      <div class="col-3">
+                        <button
+                          class="btn btn-default btn-xs"
+                          ng-if="cart"
+                          ng-click="cart.toggleItem(item)"
+                          data-toggle="tooltip"
+                          data-placement="bottom"
+                          title="{% trans "Select" %}"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
+                      </div>
+                        {% verbatim %}
+                        <div class="col-3 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
+                        <div class="col-3 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
+                        <div class="col-3 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
+                        {% endverbatim %}
+                      {% else %}
+                        {% verbatim %}
+                          <div class="col-4 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
+                          <div class="col-4 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
+                          <div class="col-4 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
+                        {% endverbatim %}
+                      {% endif %}
+                    </div>
+                  </div>
+                    <em ng-if="item.store_type == 'remoteStore'">
+                      <div class="card-footer text-center">
+                        <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i> {% trans "Service is" %} {% trans "online" %}</span>
+                        <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i> {% trans "Service is" %} {% trans "offline" %}</span>
+                      </div>
+                    </em>
+                    <em ng-if="item.processed == false">
+                      <div class="card-footer text-center">
+                        <i class="fa-solid fa-gear fa-spin fa-fw"></i>{% trans "Layer not ready yet. Still finalizing layer ingestion..." %}
+                      </div>
+                    </em>
+                    <div class="alert alert-danger" ng-if="item.dirty_state == true">{% trans "SECURITY NOT YET SYNCHRONIZED" %}
+                        <div class="card-footer text-center">{% verbatim %}<a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">{% endverbatim %}{% trans "Sync permissions immediately" %}</a></div>
+                    </div>
+                    <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">{% trans "PENDING APPROVAL" %}</div>
+                    <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">{% trans "UNPUBLISHED" %}</div>
+          </div>
+    </div>
+  </div>

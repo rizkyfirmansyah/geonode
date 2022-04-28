@@ -16,7 +16,7 @@
 {% block body_class %}{% trans "groups" %}{% endblock %}
 
 {% block body_outer %}
-<div class="page-header row w-100">
+<div class="row w-100">
   <h2 class="page-title">{{ object.title|default:object.slug }}</h2>
   <p>
     {% trans "Last Modified" %}: {{ object.last_modified }}

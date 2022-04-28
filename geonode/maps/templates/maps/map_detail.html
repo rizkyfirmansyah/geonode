@@ -32,9 +32,9 @@
 {% block body_outer %}
 {% overall_rating resource "map" as map_rating %}
 
-<div class="page-header row w-100">
+<div class="row w-100">
   <h2 class="col-8">{{ resource.title }}</h2>
-  <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-4" target="_self"><button class="float-right btn btn-primary">Return to
+  <a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-4" target="_self"><button class="float-right btn btn-info">Return to
       Explore</button></a>
 </div>
 
@@ -138,7 +138,7 @@
       {% if not READ_ONLY_MODE %}
       {% if "change_resourcebase" in perms_list  or "change_resourcebase_metadata" in perms_list %}
       <li class="list-group-item">
-        <button class="btn btn-info btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-edit btn-md btn-block" data-toggle="modal"
           data-target="#edit-map">{% trans "Editing Tools" %}</button>
       </li>
       <div class="modal fade" id="edit-map" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -155,9 +155,9 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-rectangle-list fa-3x"></i>
                   <h4>{% trans "Metadata" %}</h4>
-                  <a class="btn btn-primary btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-md"
                     href="{% url "map_metadata" resource.id %}">{% trans "Wizard" %}</a>
-                  <a class="btn btn-primary btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-md"
                     href="{% url "map_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
                 </div>
                 {% endif %}
@@ -165,8 +165,8 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-image fa-3x"></i>
                   <h4>{% trans "Thumbnail" %}</h4>
-                  <a class="btn btn-primary btn-block btn-xs" href="#" id="set_thumbnail">{% trans "Set" %}</a>
-                  <a class="btn btn-primary btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-md" href="#" id="set_thumbnail">{% trans "Set" %}</a>
+                  <a class="btn btn-primary btn-block btn-md"
                     href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
                 </div>
                 {% endif %}
@@ -174,9 +174,9 @@
                 <div class="col-sm-3">
                   <i class="fa-solid fa-map-location-dot fa-3x"></i>
                   <h4>{% trans "Map" %}</h4>
-                  <a class="btn btn-primary btn-block btn-xs"
+                  <a class="btn btn-primary btn-block btn-md"
                     href="{% url "map_edit" resource.id %}">{% trans "Edit" %}</a>
-                  <a class="btn btn-danger btn-block btn-xs"
+                  <a class="btn btn-danger btn-block btn-md"
                     href="{% url "map_remove" resource.id %}">{% trans "Remove" %}</a>
                 </div>
                 {% endif %}
@@ -245,7 +245,7 @@
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
         <p>{% trans "Specify which users can view or modify this map" %}</p>
-        <button class="btn btn-info btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-edit btn-md btn-block" data-toggle="modal"
           data-target="#_permissions">{% trans "Change Permissions of this Map" %}</button>
       </li>
       {% endif %}
