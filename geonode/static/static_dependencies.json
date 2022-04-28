@@ -54,7 +54,6 @@
 
         "@popperjs/core/dist/umd/popper.min.js",
         "pace-js/pace.min.js",
-        "toastr/build/toastr.min.js",
 
         "bootstrap/dist/js/bootstrap.min.js",
         "patternfly-bootstrap-treeview/dist/bootstrap-treeview.js",
@@ -69,7 +68,7 @@
         "bootstrap-tokenfield/dist/bootstrap-tokenfield.js",
         "bootstrap-select/dist/js/bootstrap-select.js",
         "bootstrap-multiselect/dist/js/bootstrap-multiselect.js",
-        "bootstrap-table/dist/bootstrap-table.js",
+        "bootstrap-table/dist/bootstrap-table.min.js",
         "bootstrap4-toggle/js/bootstrap4-toggle.min.js",
         "bootstrap-typeahead/bootstrap-typeahead.js",
         "tree-multiselect/dist/jquery.tree-multiselect.min.js",
@@ -91,6 +90,7 @@
         "zeroclipboard/dist/ZeroClipboard.js",
         "cropperjs/dist/cropper.js",
         "@yaireo/tagify/dist/tagify.min.js",
+        "toastr/build/toastr.min.js",
 
         "tinymce/tinymce.min.js"
     ],
@@ -119,7 +119,8 @@
         "bootstrap/js/popover.js",
         "bootstrap/js/tab.js",
         "bootstrap/js/tooltip.js",
-        "bootstrap/js/transition.js"
+        "bootstrap/js/transition.js",
+        "bootstrap4-toggle/js/bootstrap4-toggle.min.js"
     ],
     "images": [
         "raty-js/lib/images/*.png",

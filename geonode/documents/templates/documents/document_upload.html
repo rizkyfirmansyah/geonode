@@ -23,7 +23,7 @@
 
 {% display_change_perms_button resource request.user perms_list as display_perms_button %}
 {% if display_perms_button %}
-<div class="col-4">
+<div class="card col-4">
   <h3>{% trans "Permissions"  %}</h3>
   <form id="permission_form">
     {% include "_permissions.html" %}

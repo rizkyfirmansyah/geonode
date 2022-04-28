@@ -74,10 +74,6 @@
     OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
 
-a {
-    color: var(--success) !important;
-}
-
 .btn.btn--primary,
 button.btn--primary,
 input[type=button].btn--primary,
@@ -856,6 +852,7 @@ html {
 body {
     font-family: Solanel-Light, serif !important;
     font-style: normal;
+    word-wrap: break-word;
     text-rendering: optimizeLegibility;
     -webkit-overflow-scrolling: touch;
     -webkit-text-size-adjust: none;
@@ -865,6 +862,10 @@ body .apps,
 body .layers,
 body .maps {
     background-color: #fff!important
+}
+
+.chk_btn_toggle .toggle {
+    width: 100% !important;
 }
 
 .select2-container--default .select2-selection--multiple,
@@ -971,7 +972,6 @@ h6 {
 h1 {
     font-size: 3.6rem;
     line-height: 1.25;
-    letter-spacing: -.1rem
 }
 
 @media only screen and (max-width:600px) {
@@ -5964,7 +5964,6 @@ article.tab-pane {
 
 .autofit_label {
     width: 100%;
-    padding: 0 20px;
     text-align: left
 }
 

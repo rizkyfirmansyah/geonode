@@ -72,7 +72,7 @@
         <h3>{% trans 'Average Rating' %}</h3>
         {% overall_rating resource "geoapp" as geoapp_rating %}
         {% num_ratings resource as num_votes %}
-        <div class="overall_rating" style="float:left" data-score="{{ geoapp_rating }}"></div> ({{num_votes}})
+        <div class="overall_rating row w-100 pl-3" style="float:left" data-score="{{ geoapp_rating }}"></div> ({{num_votes}})
       </article>
       {% endif %}
 

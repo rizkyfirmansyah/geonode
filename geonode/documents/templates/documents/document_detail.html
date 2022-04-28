@@ -99,7 +99,7 @@
         <h4>{% trans 'Average Rating' %}</h4>
         {% overall_rating resource "document" as document_rating %}
         {% num_ratings resource as num_votes %}
-        <div class="overall_rating" style="float:left" data-score="{{ document_rating }}"></div> ({{num_votes}})
+        <div class="overall_rating row w-100 pl-3" style="float:left" data-score="{{ document_rating }}"></div> ({{num_votes}})
         <!-- TODO: Add display of who gave what rating based -->
       </article>
       {% endif %}

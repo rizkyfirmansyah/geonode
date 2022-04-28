@@ -282,7 +282,7 @@
         <h4>{% trans 'Average Rating' %}</h4>
         {% overall_rating resource "layer" as layer_rating %}
         {% num_ratings resource as num_votes %}
-        <div class="overall_rating" data-score="{{ layer_rating }}"></div> ({{num_votes}})
+        <div class="overall_rating row w-100 pl-3" data-score="{{ layer_rating }}"></div> ({{num_votes}})
       </article>
       {% endif %}
 

@@ -207,21 +207,23 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div id="cdinfo">
-              <div class="col-6">
-                <div class="padding-right-sm">
-                  <span><label for="{{ document_form.data_type|id }}">{{ document_form.data_type.label }}</label></span>
-                  {{ document_form.data_type }}
+              <div class="row">
+                <div class="col-6">
+                  <div class="padding-right-sm">
+                    <span><label for="{{ document_form.data_type|id }}">{{ document_form.data_type.label }}</label></span>
+                    {{ document_form.data_type }}
+                  </div>
+                </div>
+                <div class="col-6 padding-left-sm">
+                  <div class="padding-left-sm">
+                    <span><label
+                        for="{{ document_form.maintenance_frequency|id }}">{{ document_form.maintenance_frequency.label }}</label></span>
+                    <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
+                    {{ document_form.maintenance_frequency }}
+                  </div>
                 </div>
               </div>
-              <div class="col-6 padding-left-sm">
-                <div class="padding-left-sm">
-                  <span><label
-                      for="{{ document_form.maintenance_frequency|id }}">{{ document_form.maintenance_frequency.label }}</label></span>
-                  <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-                  {{ document_form.maintenance_frequency }}
-                </div>
-              </div>
-              <div class="col-12">
+              <div class="mb-4">
                 <div class="x-space">
                   <span><label
                       for="{{ document_form.data_description|id }}">{{ document_form.data_description.label }}</label></span>
@@ -256,7 +258,7 @@
       <div class="panel-group">
         <div class="panel panel-default">
           <div class="panel-body">
-            <div class="" id="mdinfo">
+            <div class="row" id="mdinfo">
               <div class="col-4">
                 <div class="padding-right-sm">
                   <span><label for="{{ document_form.license|id }}"
@@ -303,8 +305,8 @@
                   {{ document_form.doi }}
                 </div>
               </div>
-              <div class="row">
-                <div class="col-12">
+              <div class="col-12">
+                <div class="mb-4">
                   <div>
                     <span><label for="{{ document_form.source|id }}">{{ document_form.source.label }}</label></span>
                     {{ document_form.source }}
