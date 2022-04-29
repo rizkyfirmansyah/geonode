@@ -6,16 +6,16 @@
 
 {% block header %}
   
-    <div class="row">
-      <div class="col header-logo">
+    <div class="row w-100">
+      <div class="col-8 header-logo">
         <a href="{{ SITEURL }}">
           <img
             src="{% if custom_theme.logo %}{{SITEURL}}/uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}"
             alt="Homepage">
         </a>
       </div>
-      <div class="col-4 float-right" id="header-main-menu" ng-controller="CartList">
-        <ul class="list-inline">
+      <div class="col-4 float-right" ng-controller="CartList">
+        <ul class="list-inline pt-3">
           <li class="list-inline-item" id="information_categories">
             <a class="btn btn-light btn--pill">Information Categories</a>
             <ul class="collapse list-unstyled" id="information_categories_card">
