@@ -4,7 +4,7 @@
 
 {% block section_home %}
   
-  <section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% if custom_theme.jumbotron_bg %}uploaded/{{ custom_theme.jumbotron_bg }} {% else %} {% static "geonode/img/hero-bg.jpg" %}{% endif %}"
+  <section id="home" class="s-home target-section" data-parallax="scroll" data-image-src="{% if custom_theme.jumbotron_bg %}uploaded/{{ custom_theme.jumbotron_bg }} {% else %} {% static "geonode/img/background.png" %}{% endif %}"
   data-natural-width=3000 data-natural-height=2000 data-position-y=center>
   
   <div class="overlay"></div>
@@ -13,25 +13,29 @@
   <div class="home-content">
   
     <div class="auto-margin home-content__main">
+      <div class="row m-1">
+        <div class="col home-title__line">
+        </div>
+        <div class="col">
+          <h3 class="text-light">
+            {% if custom_theme.jumbotron_welcome_title %}
+              {{ custom_theme.jumbotron_welcome_title }}
+            {% else %}
+            Information Sharing Platform
+            {% endif %}
+          </h3>
+        </div>
+      </div>
       
-      <h3>
-        {% if custom_theme.jumbotron_welcome_title %}
-          {{ custom_theme.jumbotron_welcome_title }}
-        {% else %}
-        Welcome to SDI
-        {% endif %}
-      </h3>
-      
-      <h1 style="max-width: 680px;">
+      <h1 class="pb-3">
         {% if custom_theme.jumbotron_welcome_content %}
           {{ custom_theme.jumbotron_welcome_content}}
         {% else %}
-          SDI
-          is a platform for sharing (geospatial) data
+        The Accountability Framework Southeast Asia Coalition
         {% endif %}
       </h1>
   
-      <div class="search-field">
+      <div class="search-field mt-5 pt-5">
         <form id="main_search" action="{% url "search" %}" style="display: flex;">
             <div style="display: flex;">
               <div style="">
@@ -44,14 +48,14 @@
                 </button>
               </div>
             </div>
-            <div style="display: flex; flex: 1;flex-wrap: wrap;">
+            <div style="flex: 1;flex-wrap: wrap;">
               {% if HAYSTACK_SEARCH %}
-              <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
+              <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control pb-4" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
                     <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
                     <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
                     <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
               {% else %}
-              <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control" autocomplete="off" name="title__icontains" data-com.bitwarden.browser.user-edited="yes">
+              <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control pb-4" autocomplete="off" name="title__icontains" data-com.bitwarden.browser.user-edited="yes">
                     <input type="hidden" name="abstract__icontains" id="main_search_abstract_input">
                     <input type="hidden" name="purpose__icontains" id="main_search_purpose_input">
                     <input type="hidden" name="f_method" id="main_filtering_type" value="or" >

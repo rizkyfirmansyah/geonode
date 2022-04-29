@@ -4,24 +4,6 @@
 {% load static from staticfiles %}
 {% load base_tags %}
 
-{% block middle %}
-
-  {% block home %}
-    {% include 'section/home.html' %}
-  {% endblock home %}
-  {% block showcase %}
-    {% include 'section/showcase.html' %}
-  {% endblock showcase %}
-  {% block datasets %}
-    {% include 'section/datasets.html' %}
-  {% endblock datasets %}
-
-  {% block cookielawinfo %}
-    {% include 'section/cookie_law_info.html' %}
-  {% endblock cookielawinfo %}
-
-{% endblock middle %}
-
 {% block extra_script %}
   <script type="text/javascript" src="{% static "geonode/js/cookie-law-info/cookie-law-info-public.js" %}"></script>
   <script type="text/javascript">

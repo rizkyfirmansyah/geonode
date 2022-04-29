@@ -1,18 +1,18 @@
 {% load i18n %}
 {% if iso_formats %}
       <div class="col-12">
-          <div class="row">
+          <div class="row pb-4 mb-4 mt-4">
             <div class="container text-center iso-categories">
                 <h1 class="restyle-text">{% trans "Discover the available datasets." %}</h1>
-                <div class="row row-datasets">
+                <div class="row">
                   {% for iso_format in iso_formats %}
-                  <div class="col-xs-4 col-sm-3 col-md-3 col-2 m-space" id="category_dataset">
+                  <div class="col-xs-4 col-sm-3 col-md-3 col-2 p-4" id="category_dataset">
                       <a
                       href="{% url "search" %}?limit=100&offset=0&category__identifier__in={{ iso_format.category__identifier }}">
                       <div class="category" data-toggle="tooltip" data-placement="auto"
                         title="{% trans iso_format.category__description %}">
-                        <span class="badge badge-secondary">{{ iso_format.count }}</span>
-                        <i class="fa {{ iso_format.category__fa_class }} fa-5x" style="font-size: 8em"></i>
+                        <span class="text-white badge badge-secondary">{{ iso_format.count }}</span>
+                        <i class="text-dark fa {{ iso_format.category__fa_class }} fa-5x" style="font-size: 8em"></i>
                         <h4>{% trans iso_format.category__gn_description %}</h4>
                       </div>
                       </a>

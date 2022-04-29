@@ -7,11 +7,15 @@
 {% block body_class %}announcements{% endblock %}
 
 {% block body_outer %}
-<div class="row w-100">
-  {% if not READ_ONLY_MODE %}
-    <a href="{% url "announcements_create" %}" class="btn btn-primary float-right">{% trans "New Announcement" %}</a>
-  {% endif %}
-  <h2>{% trans "Announcements" %}</h2>
+<div class="card w-100">
+  <div class="card-body">
+      <div class="row">
+        <h2 class="col-8">{% trans "Announcements" %}</h2>
+        {% if not READ_ONLY_MODE %}
+          <a href="{% url "announcements_create" %}" class="btn btn-primary col-4 float-right">{% trans "New Announcement" %}</a>
+        {% endif %}
+      </div>
+  </div>
 </div>
 
 <div class="row" id="contain-slider">

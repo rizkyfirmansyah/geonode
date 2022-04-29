@@ -1,39 +1,199 @@
 {% load i18n %}
 {% load static from staticfiles %}
 {% load base_tags %}
+{% load avatar_tags %}
+{% load user_messages %}
 
-<header class="s-header">
-
-  <div class="header-logo">
-    <a class="site-logo" href="{{ SITEURL }}">
-      <img src="{% if custom_theme.logo %}{{SITEURL}}/uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}" alt="Homepage">
-    </a>
-  </div>
-
-  <div class="container" id="header-main-menu">
-    <ul class="nav col-2">
-      <li class="list-inline-item">
-        {% if csrf_token != "NOTPROVIDED" %}
-        {% get_current_language as LANGUAGE %}
-        <form class="form-inline" action="/i18n/setlang/" method="post">
-        {% csrf_token %}
-          <select id="footer-language" class="primary-text-white" name="language" onchange="javascript:form.submit()">
-            {% for lang in LANGUAGES %}
-            <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected"{% endifequal %}>
-              {{ lang.1 }}
-            </option>
-            {% endfor %}
-          </select>
-        </form>
+{% block header %}
+  
+    <div class="header-logo">
+      <a class="site-logo" href="{{ SITEURL }}">
+        <img
+          src="{% if custom_theme.logo %}{{SITEURL}}/uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}"
+          alt="Homepage">
+      </a>
+    </div>
+  
+    <div class="col-4 float-right" id="header-main-menu" ng-controller="CartList">
+      <ul class="list-inline">
+        <li class="list-inline-item" id="information_categories">
+          <a class="btn btn-light btn--pill">Information Categories</a>
+          <ul class="collapse list-unstyled" id="information_categories_card">
+            {% verbatim %}
+            <li ng-repeat="category in categories" ng-if="category.count > 0">
+              <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
+                title="{{ category.gn_description }}" ng-click="multiple_choice_listener($event)"
+                class="{{category.active}}">
+                {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
+              </a>
+            </li>
+            {% endverbatim %}
+          </ul>
+        </li>
+        <li class="list-inline-item" id="user_menu">
+          {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
+          <a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
+          {% elif user.is_authenticated %}
+          <div id="nav_avatar" class="">
+            <a class="btn btn-light border-pill">{% autoescape off %}{% avatar profile 34 %}{% endautoescape %}
+              {% with full_name=user.first_name|add:' '|add:user.last_name %}
+              {% if full_name.strip %}
+              {{ full_name | truncatechars:20 }}
+              {% else %}
+              {{ user.username | truncatechars:20 }}
+              {% endif %}
+              {% endwith %}
+            </a>
+          </div>
+  
+          <ul id="user_menu_card" style="display: none;">
+            <div class="card position-absolute" style="top: 80px;">
+              <div class="card-body p-3">
+                <div class="">
+                  <ul class="list-group m-0">
+                    <li class="list-group-item p-0 border-0">
+                      <a id="btn_wrapper" href="{% url "profile_detail" user.username %}"
+                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="24" height="24" fill="url(#patternProfile)"/>
+                            <defs>
+                            <pattern id="patternProfile" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_13_533" transform="scale(0.0104167)"/>
+                            </pattern>
+                            <image id="image0_13_533" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADjElEQVR4nO3cy2sdVRgA8J+KJta06EJIEYyvVLG09bHS+sAsdSu60H+giBb3vtqFQunGjaLYrbgRV7rSioIVRLDixgeYWBW1q2pvqkmxdXFuMA0YMzN35pzJ/X7wrcLkO+f7cm/uzDnnEkIIIYQQQgghhBDGxUW5B1DBNjyEOezBdbhy+LNTWMBxHMW7OJ1hjJvSDhzBIs5vMBbxBmYzjHfTuByHcdbGC782lnEIkx2Pvfdm8ZX6hV8bn2J7pzPosdtx0uiKvxI/YneH8+ilWe0Uf3UTpjubTc9MSp9i2ir+Snwu/X8JaxzWfvFX4kBHc+qNHZp92qkap8Vb0QWO6K74K/FKJzPrgW2q3WSNKgbY2sH81nVx7gFIjxe2ZMh7BR7MkPcCJTRgbkxzo4wG7MmYO/uNWQkNuD5j7hsy5kYZj6OXcFnG3Fkf1JXwChhrJTTgj4y5f8+YG2U0YD5j7u8z5kYZDTieMfeXGXOjjAYczZj7g4y5izElPRbI8ShiqoP5rauEV8AAb2XI++Ywd5BWwpZ199e/pICbsNIc0l0DXupoTr0yKe1eaLv4xzDR0Zx6ZxontFf8n3FNZ7Ppqd3S7oVRF/8EdnU4j167Gh8Z7dtOrAFXNCHtXmhyj7CEF8V7fiPT0gJ6lUYM8JoefNQsYT1go6ak9eMHcJu0kLN6e/o8vsCHeE/cZIUQQgghhBBCCCGEEFa7JPcAhiawVzoydLLlXLtwM37D3y3nKtqdeFbanXZGeo7/C65tMecMfh3mOoP38QzuaDFnUXbiBXzjvxdT5nFjC7ln8N06eRfwMu7Rr3WS/3UVnsa3Nr6i9RPuHuEY9g5/50bzf439/l3w6aVbpO/sqXsEdVlaE27ytQJbcFD9Q+ADvC4dJO+N7dJ67KhOvi/gSdU20m7FU/hhRGM4i1cVvrPiUjyvvZ3OA7yNfbhLKsbkMKalt6x9eEd7B78HeG4416LM4BPtTLrE+Aw3jaRyI/CodNYqd1G6jlN4eAT1a2Q/zslfjFxxDk80rmJNjxjv4q9uwuMNa1nZTvzVcOCbKf7ErY0qWtGxFibR9/i4UUUrmOtoQn2M+6sWs84hvcdqXDMuKtemTgPurXHNuLiv6gV1nvotyvMNV32wqOLZ4zoNOF/jmnFSqaYlHNQea9GAzKIBmUUDMosGZBYNyCwakFk0ILNoQAghhBBCCCGEEEIIHfkHy+tVDYIG0t4AAAAASUVORK5CYII="/>
+                            </defs>
+                            </svg> {% trans " Profile" %} </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="">
+                  <ul class="list-group m-0">
+                    <li class="list-group-item p-0 border-0">
+                      <a id="btn_wrapper" href="{% url "recent-activity" %}"
+                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.7 13.5L15 4.5H13.5L10.737 14.46L8.985 7.035H7.53L5.775 13.5H1.5V14.985H6.345L7.08 14.43L8.19 10.38L9.885 18H11.43L14.235 7.44L16.425 14.46L17.145 15H22.5V13.5H17.7Z" fill="black"/>
+                            </svg> {% trans " Recent Activity" %} </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="">
+                  <ul class="list-group m-0">
+                    <li class="list-group-item p-0 border-0">
+                      <a id="btn_wrapper" href="{% url "favorite_list" %}"
+                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="24" height="24" fill="url(#pattern0)"/>
+                            <defs>
+                            <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_13_535" transform="scale(0.0104167)"/>
+                            </pattern>
+                            <image id="image0_13_535" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAAEfklEQVR4nO2dW4hVVRzGf7txMpkLjU75IEpoTuA0EJEQoYOieSMEUyHBB6OHCAKFniKKHoKIIOghe5AeSsQblheEENQ0UlAfRPChIs0oImrKy+AMMWoPax8ahjmutfe67X3W/wffy2HNOd//W3uf2WuvtdcBQRAEQRAEQRAEQRAEIRUyz+/fCQzm6gfmA4/mr2fALWAIuAJcBs4CJ4G/PPl5BFgKPJv7mQvMALqAe8Aw8AfwY+7nNPBt/nptyIDVwD5gFFVYEY0B3wCbgHYHftrz9zqVv3dRPyPAXmAV/g9YazYClyheZDP9CrwJdJTw0gG8Bfzm0M9F4MUSXrzTBxzHXaETdQ1YX8DPBuAXj36OAY8X8OOVzajvcl/FjtdBoOc+XqYDhwJ5uYn6aotGBrxPmGLH6yrw9CR+ngF+juDnPSL8b8iATy2N2x59y8b5eZ5wZ+Fk2k7gTohx5E/UCLAEdVlZ5mrLx5kQhM2BCjLR9VyxfTT0kkWuRvQR91Svum4A80qna4DPS81W0bHS6WrYWIHi6qJ1JTNuSobbEW6r6yKOr4rWVKCoummlSbAPmDQCXjZsJ/zPFpNGJqdJF/AnMNXKTnqMAL3A7fs1MjkDFiPhl2EasEjXyKQDBu29JMsSXQOTDuh3YCRVFugamHRAnwMjqfKEroFJB/Q6MJIq2uxMOqDTgZFU6dI1MOmAOw6MpIo2O5MO+NuBkVQZ0jWQDvCLNjuTDrjmwEiqaLMz6YALDoykynldA+kAv2izM7kZ14NaL+limWBK/AvMRM1ZN8XkDPgHtWBWKMZxNOGD+XzAATsvSWKUmem0WS9qreW00nbS4jYwG0eXoaDW6++ycZQYO/EwfuoH7hJ/rrUOGiiZsZajFSiu6jpcOl0DBlA3mGIXWVWNAU+WTteQnRUotKr6zCJXY+Yg60Mn0w1gVtEw24r+Qf5BoxguPEqIN1CDryC0oe5zxD7qqqJzlDuYrViAGnDELj62RvB42anjdQODra5XrVO0IAOOTGIqFX1lH6E9PahH+2OHEVo/AA87yM8JA6j9FGKHEkrDBBhwFWUDaYyS7+S1VpLXiB+Qb21zlpYnPiR+SL70gcOcvJEBnxM/LNfajfn8SXTaUY9rxg7NlU5Qw4dUuoEzxA/PVt9hsMi2qnSgdqqKHaJN+N3OUwlMXTvhDC0QfoO6dUJLhd+gG7UZX+xwdTpJjb/zdUwF9hM/5GY6TAJrn9qAHcQPe6K+AKZ4rLtSZKhRZezQG/qYGuwJ6oOtxF3sdRd413uVFecVyu1oa6ux/LMFYC1h55dHURtQCeMYJMwGfLeA5YFqqh39qP2ifYX/O/BUsGpqymPA97gP/ycqtN9z1ZmB+i0BV+FfQP1ugVCATuBr7MM/QQve1wnFg8Aeyof/JfBQcNctRgZ8RPHwP6FGU4h14B3Mw387kseWZwvqAehmwY8Rea1mCqxA/X7AxPCHgRci+kqKhajtExrhDwHPRXWUIHNRC2SvYLA5nuCHmbkEQRAEQRAEQRAEQagF/wGocKkH6fhM+gAAAABJRU5ErkJggg=="/>
+                            </defs>
+                            </svg> {% trans " Favorites" %} </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="">
+                  <ul class="list-group m-0">
+                    {% if request.user.is_authenticated %}
+                      {% unread_messages request.user as messages %}
+                      {% if messages %}
+                      <span onclick="location='{% url "messages_inbox" %}'" class="msUnrd"><span
+                          class="msgInbx">{{ messages }}+</span></span>
+                      {% endif %}
+                    {% endif %}
+                      <a id="btn_wrapper" href="{% url "messages_inbox" %}"
+                      role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <rect width="24" height="24" fill="url(#patternInbox)"/>
+                        <defs>
+                        <pattern id="patternInbox" patternContentUnits="objectBoundingBox" width="1" height="1">
+                        <use xlink:href="#image0_13_542" transform="scale(0.0104167)"/>
+                        </pattern>
+                        <image id="image0_13_542" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADEElEQVR4nO2dvW7UQBRGT0iyEhKhBlFAQ8O+BihUFEh5A3gCkCgRJQUEJQ0UPARltG8BCPHTBfECbDoimcIuCErWs54Zf2P7O9KVosQa37lnd3ZmvLHBGGOMMcYYY9qZA/vAZ+AEqCYeJ00t9pvaZGMGHAKnBXS61DgFDppaJWUGLAro4FBiQWIJhwV0amhx0KnS5zDHw06XOAXutBX3UtsBwGNgM+A4c5ZN4FHbQSEC7sXnMllaa7cR0MgSuBKfyyRZAldXHRAioGr5e0gbYyaqPiFDkMmIBYixADEWIMYCxFiAGAsQs6VOIIC2eXYbRa9T/A4QYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYixADEWIMYCxCgEPGO971jGss65nic4X3JyFGhdCX1E1+LnfgFlO0FJEmJe+YMVAGVIiB12Bi0AtBJSjPmDFwAaCak+cEchAPqVkHK2MxoB0I+E1FPNUQmAvBJyzPNHJwDySMi1yBqlAEgrIecKd7QCII2E3NsLoxYAcRL62NsZvQDoJqGvjbVJCID1JPS5qzkZARAmoe8t5UkJgNUSFPv5kxMA50tQXUyZpAA4K0F5JSuqPkP4F6WLeAlcbn5+oUwkBt8rIp6o+vhbEWIsQIwFiEnxIZx6JrRDfS/OHOwAvzO13YkS3wHXMrZ9PWPbnShRwK2Mbd/M2HYnShSwm7Ht+xnbzkboDmSq+EaetcUG8F3Qn2j6TrgCHqZI/D/2RH2JRpH0F2A7RfINM+CrqC/RKJKugPcpkm94K+xHNKrEK+BJgvyfivsQjTL5CnhHt1vBb1HfwVydfzTqDlTU4/ce4bOju8DHAvJuFZBiO7pPfgAfgCPgGPjV/P4G9SJrF3gA3JZkdz4razw0AUPE1wNKxgLEWICYEAHL7FmMl9ZrDyECfiZIZKoctx0QIuAoQSJTJUnt/BirbhH0GKtQSljSDy3edKr0BWzjRxmuEwvSbqcD9YbYAR6OVsUf6ld+8uL/yxx4DXyinqKqO62OZVOLVyQc840xxhhjjDHj5S+3x01jKGtNPgAAAABJRU5ErkJggg=="/>
+                        </defs>
+                        </svg> {% trans " Inbox" %} </a>
+                    </ul>
+                </div>
+                <div class="">
+                  <ul class="list-group m-0">
+                    <li class="list-group-item p-0 border-0">
+                      <a id="btn_wrapper" href="{% url "group_list" %}"
+                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12.75C13.63 12.75 15.07 13.14 16.24 13.65C17.32 14.13 18 15.21 18 16.38V18H6V16.39C6 15.21 6.68 14.13 7.76 13.66C8.93 13.14 10.37 12.75 12 12.75ZM4 13C5.1 13 6 12.1 6 11C6 9.9 5.1 9 4 9C2.9 9 2 9.9 2 11C2 12.1 2.9 13 4 13ZM5.13 14.1C4.76 14.04 4.39 14 4 14C3.01 14 2.07 14.21 1.22 14.58C0.48 14.9 0 15.62 0 16.43V18H4.5V16.39C4.5 15.56 4.73 14.78 5.13 14.1ZM20 13C21.1 13 22 12.1 22 11C22 9.9 21.1 9 20 9C18.9 9 18 9.9 18 11C18 12.1 18.9 13 20 13ZM24 16.43C24 15.62 23.52 14.9 22.78 14.58C21.93 14.21 20.99 14 20 14C19.61 14 19.24 14.04 18.87 14.1C19.27 14.78 19.5 15.56 19.5 16.39V18H24V16.43ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6Z" fill="black"/>
+                            </svg> {% trans " Groups" %} </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="">
+                  <ul class="list-group m-0">
+                    <li class="list-group-item p-0 border-0">
+                      <a id="btn_wrapper" href="{% url "group_category_list" %}"
+                          role="tab" class="p-2"><i class="fa-solid fa-user"></i> {% trans " Group Category" %} </a>
+                    </li>
+                  </ul>
+                </div>
+                <li role="separator" class="divider"></li>
+                <div class="">
+                  <ul class="list-group m-0">
+                    <li class="list-group-item p-0 border-0">
+                      <a id="btn_wrapper" href="{% url "account_logout" %}"
+                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="24" height="24" fill="url(#patternLogOut)"/>
+                            <defs>
+                            <pattern id="patternLogOut" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_13_554" transform="scale(0.0104167)"/>
+                            </pattern>
+                            <image id="image0_13_554" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAACkklEQVR4nO2dS24TURBFDwQsRQHWgfLZBWwDBgh2A7KIMmAUKbvgtwk+Yg47wIEJiZpB21J4ErbaXe77PvdINYpcea9O+sZyt7vBGGOMMcYYY8ZzDMyBL8Al0BVel8u9zJd7y5YZcAZcox/aruoKOF3uNStmwEf0A5qqPpCZhDP0Q5m6XodMLoBj+kNTPZCp6wo4Gju822MbAM+BvYA+pbEHPBvbJELAo4AepfJ4bINbAYtYAPcC+pTIAngwpkGEgG6C36Fkp/uLiCAzAgsQYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBWzmKfBLvYh1bDpzVAMPgU9kur8WBADsA2/IcH+tCFjxhH+vd5JTuoAL4GDga25GkpzSBXTAV+Bw4OsOgPP45QynBgEd8Bt4IV7LVtQiYFXbRJKU2gR0wDfgRLmoIdQooKhIqlVAMZFUu4DsI6kFAVlHUisCso2k1gRkF0lTC9hmYLuobCKpVQHZRFLrAjrEkWQBfW0VST4lWQE+AhxB0vI/YVE1+zY0muIiJ6U1AfLISWlFQDaRk9KCgKwiJ6V2AdlFTkqtArKNnJQaBWQdOSm1Ccg+clJqEVBM5KTUIGCbyFldLS2ndAHnDI+cQ/rrSbPYX+kChuLL00X4CxpC/BUlIWnkhO7PtyzbzDXrT936lmUlYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYi5E9BjAdxf8/MaPhH9Hz/HNog4An4E9CiV72MbRAh4F9CjVN6qFwD9o5xafYzV0Js87YxT9AOZuuYhkwtiRv94P/VQpqr3wN2QyQUyo3+8X81x9If+Lz+74d/kCHgFfKZ/i6oe2thaLPfykowy3xhjjDHGGFMufwEixkJAg5MdigAAAABJRU5ErkJggg=="/>
+                            </defs>
+                            </svg> {% trans " Log Out" %} </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </ul>
+          {% else %}
+        <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal"
+            role="button">{% trans "Sign in" %} </a></li>
         {% endif %}
-      </li>
-    </ul>
-  </div>
-  <a class="header-menu-toggle" href="#0">
-    <span class="header-menu-text" style="display: none;">Menu</span>
-    <span class="header-menu-icon"></span>
-  </a>
-
-</header>
+        </li>
+        <li class="list-inline-item">
+          {% if csrf_token != "NOTPROVIDED" %}
+          {% get_current_language as LANGUAGE %}
+          <form class="form-inline" action="/i18n/setlang/" method="post">
+            {% csrf_token %}
+            <select id="footer-language" class="text-light" name="language" onchange="javascript:form.submit()">
+              {% for lang in LANGUAGES %}
+              <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected" {% endifequal %}>
+                {{ lang.0|upper }}
+              </option>
+              {% endfor %}
+            </select>
+          </form>
+          {% endif %}
+        </li>
+        <li class="list-inline-item">
+          <a class="header-menu-toggle" href="#0">
+            <span class="header-menu-text" style="display: none;">Menu</span>
+            <span class="header-menu-icon"></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  
+{% endblock %}
 
 {% include 'toast/logout.html' %}
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(function() {
+    $('#user_menu').click(function() {
+      $('#user_menu_card').fadeToggle();
+    });
+
+    $('#information_categories').click(function() {
+      $('#information_categories_card').fadeToggle();
+    });
+  });
+
+</script>
+{% endblock extra_script %}

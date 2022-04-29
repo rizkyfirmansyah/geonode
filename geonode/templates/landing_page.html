@@ -48,7 +48,7 @@
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_bold.ttf" %}" crossorigin="" />
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
 
-    <link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
+    <link rel="stylesheet" href="{% static "geonode/css/home.css" %}" />
     <link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
 
     {% block head %}
@@ -280,16 +280,7 @@
       {% block extra_head %}
       {% endblock %}
     {% endblock %}
-    <!--[if IE]>
-      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-      <style>
-        #ieflag{
-            display: block !important;
-            height: 150px;
-            text-align: center;
-        }
-      </style>
-    <![endif]-->
+
     <link rel="search" type="application/opensearchdescription+xml" href="{% if SITEURL|default:""|slice:"-1:" == "/" %}{{SITEURL}}{% else %}{{SITEURL}}/{% endif %}catalogue/opensearch" title="{% trans "GeoNode Search" %}"/>
 
     <script>
@@ -330,7 +321,7 @@
     <div class='lmask'></div>
     
     {% block header %}
-      <header class="s-header">
+      <header class="s-header" style="background-color: unset;">
         {% include 'section/header.html' %}
       </header>
     {% endblock header %}
@@ -338,6 +329,20 @@
     {% block navigation %}
       {% include 'section/navigation.html' %}
     {% endblock navigation %}
+
+    {% block home %}
+      {% include 'section/home.html' %}
+    {% endblock home %}
+    {% block showcase %}
+      {% include 'section/showcase.html' %}
+    {% endblock showcase %}
+    {% block datasets %}
+      {% include 'section/datasets.html' %}
+    {% endblock datasets %}
+
+    {% block cookielawinfo %}
+      {% include 'section/cookie_law_info.html' %}
+    {% endblock cookielawinfo %}
       
     <div class="alert alert-danger alert-dismissible" role="alert" id="ieflag" style="display:none">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -345,34 +350,11 @@
       <p>{% trans "Please use a <strong>modern browser</strong> like Mozilla Firefox, Google Chrome or Safari." %}</p>
     </div>
 
-    <div id="wrap">
-      {% block middle %}
-        <div class="container">
-          <div class="row mb-4 pt-3">
-            {% include "_status_message.html" %}
-            {% include "_announcements.html" %}
-            {% include "_messages.html" %}
-            {% block body %}{% endblock body %}
-            {% block body_outer %}
-              <div class="sdi-cms">
-                {% block body_inner %}
-                  <div class="row col-md-10"></div>
-                {% endblock body_inner %}
-                {% block body_sidebar %}
-                  <div class="col-md-2"></div>
-                {% endblock body_sidebar %}
-              </div>
-            {% endblock %}
-          </div>
-        </div>
-      {% endblock middle %}
-      
-      {% block footer %}
-        {% include 'section/footer.html' %}
-      {% endblock footer %}
-    </div>
 
-    {% block monitoring %}{% endblock %}
+    {% block footer %}
+      {% include 'section/footer.html' %}
+    {% endblock footer %}
+
 
     <!-- Modal must stay outside the navbar -->
     {% include "modal/login.html" %}
