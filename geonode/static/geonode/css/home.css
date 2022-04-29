@@ -829,6 +829,7 @@ body {
     margin: 0;
     padding: 0;
     line-height: 1.34;
+    overflow-x: hidden;
 }
 
 body .apps,
@@ -1813,19 +1814,6 @@ input::-moz-focus-inner {
     box-shadow: none!important
 }
 
-.header-logo {
-    display: inline-block;
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    left: 2%;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-    z-index: 501
-}
-
 .header-logo a {
     display: block;
     padding: 0;
@@ -1836,8 +1824,8 @@ input::-moz-focus-inner {
 }
 
 .header-logo img {
-    width: 100%;
-    height: 48px
+    max-height: 96px;
+    padding: 20px;
 }
 
 .navigation_link {
@@ -2867,11 +2855,11 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
 .home-content__line {
     display: block;
     width: 2px;
-    height: 10.2rem;
+    height: 9.2rem;
     background-color: var(--secondary);
     position: absolute;
     right: 11.2rem;
-    bottom: -1em;
+    bottom: 0;
 }
 
 html.cl-preload .home-content__main {
