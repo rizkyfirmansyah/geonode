@@ -1852,13 +1852,14 @@ input::-moz-focus-inner {
 }
 
 .navigation_link {
-    background: linear-gradient(to right, #fdba12, #ffdf8e 50%, #fff 50%);
+    background: linear-gradient(to right, var(--link), #ffdf8e 50%, #fff 50%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-size: 200% 100%;
     background-position: 100%;
-    transition: background-position 275ms ease
+    transition: background-position 800ms ease;
+    text-decoration: none;
 }
 
 .navigation_link:hover {
@@ -1867,14 +1868,14 @@ input::-moz-focus-inner {
 }
 
 .header-nav {
-    background: #0c0c0c;
-    color: #c4bab7;
+    background: #000000;
+    color: var(--secondary);
     font-family: Solanel-Light, sans-serif;
-    font-size: 1.3rem;
+    font-size: 1rem;
     line-height: 1.846;
-    padding: 3.6rem 3rem 3.6rem 3.6rem;
+    padding: 2.6rem 2rem 2.6rem 2.6rem;
     height: 100%;
-    width: 290px;
+    width: 300px;
     position: fixed;
     right: 0;
     top: 0;
@@ -1891,6 +1892,14 @@ input::-moz-focus-inner {
     visibility: hidden
 }
 
+.divider {
+    margin-top: 20px;
+    background-color: var(--secondary);
+    display: block;
+    height: 2px;
+    margin-bottom: 12px;
+}
+
 .header-nav a,
 .header-nav a:visited {
     color: rgba(255, 255, 255, .5)
@@ -1902,8 +1911,51 @@ input::-moz-focus-inner {
     color: #fff
 }
 
+
+/* remove default arrow icon
+ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arrow-icon-from-a-dropdown-list-select-element
+*/
+
+
+/* 
+.form-languange>.btn-light:not(:disabled):not(.disabled).active,
+.btn-light:not(:disabled):not(.disabled):active,
+.show>.btn-light.dropdown-toggle {
+    width: max-content !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    overflow: hidden;
+}
+
+.form-languange .bootstrap-select>.dropdown-toggle {
+    width: fit-content !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    overflow: hidden;
+}
+
+.form-languange>.dropdown-toggle::after {
+    content: unset !important;
+} */
+
+#select-language {
+    height: fit-content;
+    border-radius: 1000px;
+    padding: 0.5em;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    overflow: hidden;
+}
+
 #nav_avatar {
     top: -25%
+}
+
+#nav_avatar img {
+    border-radius: 1000px!important;
 }
 
 .header-nav a img {
@@ -1930,15 +1982,12 @@ input::-moz-focus-inner {
 
 .header-nav__content {
     position: relative;
-    left: 50px;
-    opacity: 0;
-    visibility: hidden
+    top: 1em;
 }
 
 .header-nav__list {
     font-family: Solanel-Regular, sans-serif;
-    margin: 1rem 0 3rem 0;
-    padding: 0 0 1.8rem 0;
+    margin: 1rem 0 1rem 0;
     list-style: none
 }
 
@@ -4716,11 +4765,6 @@ footer form {
 .footer-copyright .copyright small {
     text-transform: uppercase;
     font-size: 14px
-}
-
-footer #footer-language {
-    cursor: pointer;
-    background-color: #000
 }
 
 .copyright-text {

@@ -1829,13 +1829,14 @@ input::-moz-focus-inner {
 }
 
 .navigation_link {
-    background: linear-gradient(to right, #fdba12, #ffdf8e 50%, #fff 50%);
+    background: linear-gradient(to right, var(--link), #ffdf8e 50%, #fff 50%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-size: 200% 100%;
     background-position: 100%;
-    transition: background-position 275ms ease
+    transition: background-position 800ms ease;
+    text-decoration: none;
 }
 
 .navigation_link:hover {
@@ -1844,14 +1845,14 @@ input::-moz-focus-inner {
 }
 
 .header-nav {
-    background: #0c0c0c;
-    color: #c4bab7;
+    background: #000000;
+    color: var(--secondary);
     font-family: Solanel-Light, sans-serif;
-    font-size: 1.3rem;
+    font-size: 1rem;
     line-height: 1.846;
-    padding: 3.6rem 3rem 3.6rem 3.6rem;
+    padding: 2.6rem 2rem 2.6rem 2.6rem;
     height: 100%;
-    width: 290px;
+    width: 300px;
     position: fixed;
     right: 0;
     top: 0;
@@ -1883,6 +1884,10 @@ input::-moz-focus-inner {
     top: -25%
 }
 
+#nav_avatar img {
+    border-radius: 1000px!important;
+}
+
 .header-nav a img {
     max-width: 40px;
     border-radius: 50%
@@ -1907,15 +1912,12 @@ input::-moz-focus-inner {
 
 .header-nav__content {
     position: relative;
-    left: 50px;
-    opacity: 0;
-    visibility: hidden
+    top: 1em;
 }
 
 .header-nav__list {
     font-family: Solanel-Regular, sans-serif;
-    margin: 1rem 0 3rem 0;
-    padding: 0 0 1.8rem 0;
+    margin: 1rem 0 1rem 0;
     list-style: none
 }
 
@@ -2860,6 +2862,14 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     position: absolute;
     right: 11.2rem;
     bottom: 0;
+}
+
+.divider {
+    margin-top: 20px;
+    background-color: var(--secondary);
+    display: block;
+    height: 2px;
+    margin-bottom: 12px;
 }
 
 html.cl-preload .home-content__main {
@@ -4835,11 +4845,6 @@ footer form {
 .footer-copyright .copyright small {
     text-transform: uppercase;
     font-size: 14px
-}
-
-footer #footer-language {
-    cursor: pointer;
-    background-color: #000
 }
 
 .copyright-text {
