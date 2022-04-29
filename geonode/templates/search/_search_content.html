@@ -3,7 +3,7 @@
 {% include "search/_search_sidebar.html" %}
 
 <div class="w-100" ng-controller="CartList">
-  <div class="row">
+  <div class="row pb-3">
     <div class="col-8 primary-text-green" id="title-ng-search">
       {% if facet_type == 'layers' %}
       <span ng-bind="total_counts + ' ' + '{% trans "Spatial data found" %}'"></span>

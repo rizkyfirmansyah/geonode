@@ -86,8 +86,8 @@
       <div class="btn-danger"><strong>{% trans "WARNING" %}:
         </strong>{% trans "This will most probably overwrite the current default style!" %}</div>
       <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button"
-        class="btn btn-primary">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-info">{% trans "Upload files" %}</a>
+        class="btn btn-danger">{% trans "Clear" %}</a>
+      <a href="#" id="upload-button" class="btn btn-secondary">{% trans "Upload files" %}</a>
     </section>
   </div>
 

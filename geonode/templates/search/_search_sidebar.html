@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="wrapper">
+<div class="wrapper border-top">
   <nav id="sidebar">
   
     {% if facet_type == 'layers' %}
@@ -8,7 +8,7 @@
       emptyString="{% trans "No list items selected. Use the selection fields to add." %}">
     </resource-cart>
     {% endif %}
-    <div>  
+    <div>
         {% if user.is_authenticated and facet_type == 'layers' %}
           {% block bulk_perms_button %}
             <div class="btn-group btn-group-justified" role="group" aria-label="tools">
