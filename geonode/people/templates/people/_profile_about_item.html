@@ -1,17 +1,19 @@
 {% load avatar_tags %}
 {% load i18n %}
 
-<section class="last" style="min-height:80px; background-color:var(--web-container)">
-  <div class="col-xs-2">
-    {% with 240 as avatar_size %}
-      <div class="avatar"><a href="{% url "profile_detail" profile.username %}">{% autoescape off %}{% avatar profile avatar_size %}{% endautoescape %}</a></div>
-    {% endwith %}
+<section class="last">
+  <div class="row w-100">
+    <div class="col-2">
+      {% with 240 as avatar_size %}
+        <div class="avatar"><a href="{% url "profile_detail" profile.username %}">{% autoescape off %}{% avatar profile avatar_size %}{% endautoescape %}</a></div>
+      {% endwith %}
+    </div>
+    <div class="col-10">
+    <a href="{{ profile.get_absolute_url }}" id="btn_wrapper">{{ profile.username }}</a>
+      {{ username }}
+    </div>
   </div>
-  <div class="col-xs-10">
-  <a href="{{ profile.get_absolute_url }}" id="btn_wrapper">{{ profile.username }}</a>
-    {{ username }}
-  </div>
-  <div class="col-xs-9" style="margin-left: 10px;">
+  <div class="col-12 pl-0">
     <div class="details">
       <div class="meta">
         <p>
