@@ -10,20 +10,20 @@
 {% endblock %}
 {% endcomment %}
 
-{% block body_inner %}
-<div class="page-title">
-  <h2>{% trans "Recent activity" %}</h2>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <ul class="nav nav-tabs" id="nav_recent_activity">
-      <li class="active"><a href="#all" data-toggle="tab"><i class=""></i>{% trans "All" %}</a></li>
-      <li><a href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a></li>
-      <li><a href="#maps" data-toggle="tab"><i class="fa-solid fa-map-location-dot"></i> {% trans "Maps" %}</a></li>
-      <li><a href="#documents" data-toggle="tab"><i class="fa-solid fa-newspaper"></i> {% trans "Documents" %}</a></li>
-      <li><a href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
-    </ul>
-    <div class="tab-content">
+{% block body %}
+    <div class="card w-100 mb-1">
+      <div class="card-title text-center"><h2>Recent Activity</h2></div>
+      <div class="card-body">
+        <ul class="nav nav-tabs" id="nav_recent_activity">
+          <li class="active"><a href="#all" data-toggle="tab"><i class=""></i>{% trans "All" %}</a></li>
+          <li><a href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a></li>
+          <li><a href="#maps" data-toggle="tab"><i class="fa-solid fa-map-location-dot"></i> {% trans "Maps" %}</a></li>
+          <li><a href="#documents" data-toggle="tab"><i class="fa-solid fa-newspaper"></i> {% trans "Documents" %}</a></li>
+          <li><a href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab-content w-100">
       <article id="all" class="tab-pane active">
         <ul class="no-style-list">
         {% for action in action_list %}
@@ -70,8 +70,7 @@
         </ul>
       </article>
     </div>
-  </div>
-</div>
+
 {% endblock %}
 
 {% block extra_script %}
