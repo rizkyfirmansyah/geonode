@@ -54,7 +54,7 @@
 }
 
 .secondary-bg-red-color {
-    background-color: var(--primary-warning-color)!important
+    background-color: var(--warning)!important
 }
 
 .secondary-bg-gold-color {
@@ -1394,9 +1394,21 @@ select,
 textarea {
     height: var(--spacing-1);
     background: 0 0;
-    border: none !important;
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
+    padding: 1em;
+}
+
+.card>input[type=email],
+.card>input[type=number],
+.card>input[type=password],
+.card>input[type=search],
+.card>input[type=tel],
+.card>input[type=text],
+.card>input[type=url],
+.card>select,
+.card>textarea {
+    border: none !important;
     background-color: var(--web-surface) !important;
 }
 
@@ -2148,7 +2160,7 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
     border-color: #1D4842;
     color: #fdba12!important;
     text-decoration: none!important;
-    background-color: var(--primary-warning-color)!important;
+    background-color: var(--warning)!important;
     box-shadow: 0 .5rem 1.25rem #ccc
 }
 
@@ -3843,17 +3855,17 @@ form-inline {
 }
 
 .has-error {
-    color: var(--primary-warning-color)!important
+    color: var(--warning)!important
 }
 
 .has-error .select2-selection {
-    border-color: var(--primary-warning-color)!important
+    border-color: var(--warning)!important
 }
 
 #clear-search {
     padding: 2px 6px 2px 6px;
-    border: 1px solid var(--primary-warning-color);
-    background-color: var(--primary-warning-color);
+    border: 1px solid var(--warning);
+    background-color: var(--warning);
     color: var(--secondary);
     border-radius: var(--border-radius-md);
     right: 1em;
@@ -3861,8 +3873,8 @@ form-inline {
 
 .remove-file {
     padding: 2px 6px 2px 6px;
-    border: 1px solid var(--primary-warning-color);
-    background-color: var(--primary-warning-color);
+    border: 1px solid var(--warning);
+    background-color: var(--warning);
     color: var(--secondary);
     border-radius: var(--border-radius-md);
     margin-left: 2em;
@@ -3879,7 +3891,7 @@ form-inline {
 }
 
 #region_search_input .result-wrapper a:hover {
-    color: var(--primary-warning-color)!important
+    color: var(--warning)!important
 }
 
 .search-content {
@@ -3908,7 +3920,7 @@ form-inline {
 #region_search_input:focus,
 .search-content ul input:not(:placeholder-shown) {
     background-color: #fff!important;
-    color: var(--primary-warning-color)!important
+    color: var(--warning)!important
 }
 
 .search-content ul input:focus {
@@ -3927,7 +3939,7 @@ article.tab-pane {
 
 .search-content ul input:active,
 .search-content ul input:focus {
-    color: var(--primary-warning-color)!important;
+    color: var(--warning)!important;
     background-color: #fff!important
 }
 
@@ -4290,7 +4302,7 @@ td>input {
 }
 
 .mandatory-warning {
-    color: var(--primary-warning-color);
+    color: var(--warning);
     font-size: 12px
 }
 
@@ -4659,7 +4671,6 @@ span.grippy {
     box-shadow: none;
     border-radius: none;
     transition: box-shadow .3s, border .3s;
-    padding: 10px!important;
     box-shadow: 0 0 1px 1px #c4bab7
 }
 
@@ -4667,7 +4678,7 @@ input[type=file] {
     position: relative;
     height: 50px;
     border-radius: 25px;
-    background: linear-gradient(40deg, var(--primary-warning-color), #4e98af);
+    background: linear-gradient(40deg, var(--warning), #4e98af);
     box-shadow: 0 4px 7px rgba(0, 0, 0, .4);
     display: flex;
     align-items: center;
@@ -4685,7 +4696,7 @@ label[for=id_doc_file] {
     position: relative;
     height: 50px;
     border-radius: 25px;
-    background: linear-gradient(40deg, var(--primary-warning-color), #4e98af);
+    background: linear-gradient(40deg, var(--warning), #4e98af);
     box-shadow: 0 4px 7px rgba(0, 0, 0, .4);
     display: flex;
     align-items: center;

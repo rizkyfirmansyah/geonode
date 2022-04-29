@@ -4,7 +4,6 @@
     --font-larger-2: 1.7em;
     --web-surface: #F0F2F5;
     --web-container: white;
-    --primary-warning-color: #a23133;
     --shadow-1: #ccc;
     --border-radius-sm: 0.5em;
     --border-radius-md: 0.75em;
@@ -2078,7 +2077,7 @@ input::-moz-focus-inner {
     border-color: #1D4842;
     color: #fdba12!important;
     text-decoration: none!important;
-    background-color: var(--primary-warning-color)!important;
+    background-color: var(--warning)!important;
     box-shadow: 0 .5rem 1.25rem #ccc
 }
 
@@ -3992,17 +3991,17 @@ form-inline {
 }
 
 .has-error {
-    color: var(--primary-warning-color)!important
+    color: var(--warning)!important
 }
 
 .has-error .select2-selection {
-    border-color: var(--primary-warning-color)!important
+    border-color: var(--warning)!important
 }
 
 #clear-search {
     padding: 2px 6px 2px 6px;
-    border: 1px solid var(--primary-warning-color);
-    background-color: var(--primary-warning-color);
+    border: 1px solid var(--warning);
+    background-color: var(--warning);
     color: var(--secondary);
     border-radius: var(--border-radius-md);
     right: 1em;
@@ -4010,8 +4009,8 @@ form-inline {
 
 .remove-file {
     padding: 2px 6px 2px 6px;
-    border: 1px solid var(--primary-warning-color);
-    background-color: var(--primary-warning-color);
+    border: 1px solid var(--warning);
+    background-color: var(--warning);
     color: var(--secondary);
     border-radius: var(--border-radius-md);
     margin-left: 2em;
@@ -4028,7 +4027,7 @@ form-inline {
 }
 
 #region_search_input .result-wrapper a:hover {
-    color: var(--primary-warning-color)!important
+    color: var(--warning)!important
 }
 
 .search-content {
@@ -4057,7 +4056,7 @@ form-inline {
 #region_search_input:focus,
 .search-content ul input:not(:placeholder-shown) {
     background-color: #fff!important;
-    color: var(--primary-warning-color)!important
+    color: var(--warning)!important
 }
 
 .search-content ul input:focus {
@@ -4076,7 +4075,7 @@ article.tab-pane {
 
 .search-content ul input:active,
 .search-content ul input:focus {
-    color: var(--primary-warning-color)!important;
+    color: var(--warning)!important;
     background-color: #fff!important
 }
 
@@ -4439,7 +4438,7 @@ td>input {
 }
 
 .mandatory-warning {
-    color: var(--primary-warning-color);
+    color: var(--warning);
     font-size: 12px
 }
 
@@ -4771,7 +4770,7 @@ input[type=file] {
     position: relative;
     height: 50px;
     border-radius: 25px;
-    background: linear-gradient(40deg, var(--primary-warning-color), #4e98af);
+    background: linear-gradient(40deg, var(--warning), #4e98af);
     box-shadow: 0 4px 7px rgba(0, 0, 0, .4);
     display: flex;
     align-items: center;
@@ -4789,7 +4788,7 @@ label[for=id_doc_file] {
     position: relative;
     height: 50px;
     border-radius: 25px;
-    background: linear-gradient(40deg, var(--primary-warning-color), #4e98af);
+    background: linear-gradient(40deg, var(--warning), #4e98af);
     box-shadow: 0 4px 7px rgba(0, 0, 0, .4);
     display: flex;
     align-items: center;
