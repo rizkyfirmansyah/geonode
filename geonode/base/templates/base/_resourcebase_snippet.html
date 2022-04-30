@@ -45,7 +45,7 @@
             <div class="card-body pt-0">
               <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
             </div>
-            <a href="{{ item.detail_url }}"><img card="card-img-top" ng-src="{{ item.thumbnail_url }}" style="width:100%;"></a>
+            <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a>
             {% endverbatim %}
                     {% verbatim %}
                     <a ng-if="item.detail_url.indexOf('/layers/') > -1" class="create_map col-6" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">

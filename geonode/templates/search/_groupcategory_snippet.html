@@ -1,24 +1,22 @@
+{% load i18n %}
+
 {% verbatim %}
-<div class="row">
-  <article ng-repeat="groupcategory in results" resource_id="{{ groupcategory.id }}" ng-cloak class="ng-cloak">
-    <div class="col-xs-12 item-container">
-        <div class="col-xs-8 item-details">
-          <h4><a href="{{ groupcategory.detail_url }}">{{ groupcategory.name }}</a></h4>
-          <div class="row">
-            <div class="col-xs-12 item-items">
-              <ul class="list-inline">
-                <li>
-                    <a href="{{ groupcategory.detail_url }}">
-                      <strong>{{ groupcategory.member_count }}</strong>
-                      <ng-pluralize count="groupcategory.member_count" when="{'1': 'Member', 'other': 'Members'}"></ng-pluralize>
-                    </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+<article ng-repeat="groupcategory in results" resource_id="{{ groupcategory.id }}" ng-cloak class="ng-cloak p-2">
+  <div class="card">
+    <div class="row p-2">
+      <h4 class="card-title"><a href="{{ groupcategory.detail_url }}">{{ groupcategory.name }}</a></h4>
     </div>
-  </article>
-</div>
+  </div>
+  <div class="card-footer">
+    <ul class="row">
+      <li class="col text-center">
+        <a href="{{ groupcategory.detail_url }}">
+          <strong>{{ groupcategory.member_count }}</strong>
+          <ng-pluralize count="groupcategory.member_count" when="{'1': 'Member', 'other': 'Members'}">
+          </ng-pluralize>
+        </a>
+      </li>
+    </ul>
+  </div>
+</article>
 {% endverbatim %}

@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load static from staticfiles %}
+
+<div class="row">
+  <div class="col-12 mt-2">
+      {% if facet_type == 'groups' %}
+          {% include 'search/_group_snippet.html' %}
+      {% elif facet_type == 'groupcategories' %}
+          {% include 'search/_groupcategory_snippet.html' %}
+      {% elif facet_type == 'people' %}
+          {% include "people/_profile_list_item.html" %}
+      {% endif %}
+      {% include 'search/_pagination.html' %}
+  </div>
+</div>

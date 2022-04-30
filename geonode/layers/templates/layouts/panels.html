@@ -214,12 +214,12 @@
 							<div class="panel-body">
 								<div class="" id="mdinfo">
 									<div class="col-4">
-										<div class="padding-right-sm">
+										<div class="pr-1">
 											<span><label for="{{ layer_form.license|id }}">{{ layer_form.license.label }}</label></span>
 											<!--<p class="xxs-font-size">(License of the dataset)</p>-->
 											{{ layer_form.license }}
 										</div>
-										<div class="padding-right-sm">
+										<div class="pr-1">
 											<span><label
 													for="{{ layer_form.restriction_code_type|id }}">{{ layer_form.restriction_code_type.label }}</label></span>
 											<!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
@@ -227,12 +227,12 @@
 										</div>
 									</div>
 									<div class="col-4">
-										<div class="padding-right-sm">
+										<div class="pr-1">
 											<span><label for="{{ layer_form.language|id }}">{{ layer_form.language.label }}</label></span>
 											<!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
 											{{ layer_form.language }}
 										</div>
-										<div id="regions_multiselect_container" class="padding-right-sm">
+										<div id="regions_multiselect_container" class="pr-1">
 											<span><label for="{{ layer_form.regions|id }}"
 													class="control-label required-field">Regions</label></span>
 											<select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
@@ -280,13 +280,13 @@
 							<div class="panel-body">
 								<div class="" id="cdinfo">
 									<div class="col-6">
-										<div class="padding-right-sm">
+										<div class="pr-1">
 											<span><label for="{{ layer_form.data_type|id }}">{{ layer_form.data_type.label }}</label></span>
 											{{ layer_form.data_type }}
 										</div>
 									</div>
 									<div class="col-6">
-										<div class="padding-left-sm">
+										<div class="pl-1">
 											<span><label
 													for="{{ layer_form.maintenance_frequency|id }}">{{ layer_form.maintenance_frequency.label }}</label></span>
 											<!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
@@ -338,7 +338,7 @@
 					<div class="panel-group">
 						<div class="panel panel-default">
 							<div class="panel-body">
-								<div class="col-6" class="padding-right-sm">
+								<div class="col-6" class="pr-1">
 									<div class="input-group date">
 										<span><label
 												for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
@@ -352,7 +352,7 @@
 										{{ layer_form.temporal_extent_end }}
 									</div>
 								</div>
-								<div class="col-6" class="padding-left-sm">
+								<div class="col-6" class="pl-1">
 									<div>
 										<span><label
 												for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>

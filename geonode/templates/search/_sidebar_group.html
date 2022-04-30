@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="wrapper border-top">
+  <nav id="sidebarGroup">
+    <nav class="filter">
+      <a href="#group-categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Group
+        Categories</a>
+      <ul class="collapse list-unstyled" id="group-categories">
+        {% verbatim %}
+        <li ng-repeat="category in groupCategories">
+          <a data-value="{{ category.slug }}" data-filter="categories__slug__in"
+            ng-click="multiple_choice_listener($event)" class="{{category.active}}">
+            <div ng-if="category.fa_class" class="fa-stack fa-1g">
+              <i class="fa {{category.fa_class}} fa-stack-1x"></i>
+            </div>{{ category.name | limitTo: 25 }}{{ category.name.length > 25 ? '...' : ''}}
+            <span class="badge float-right">{{ category.member_count }}</span>
+          </a>
+        </li>
+        {% endverbatim %}
+      </ul>
+    </nav>
+  </nav>
+</div>

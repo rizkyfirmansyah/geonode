@@ -11,11 +11,11 @@
 </style>
 {% endblock head %}
 
-{% block body_sidebar %}
-<div class="row">
-  <div class="col-md-12">
-    <h2 class="row w-100">{%  trans "Edit Members for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h2>
-    <h3 class="page-title">{%  trans "Current Members" %}</h3>
+{% block body %}
+<div class="card w-100 mb-4 rounded border-dark">
+  <div class="card-header text-center"><h3>{%  trans "Edit Members for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h3></div>
+  <div class="card-body">
+    <h3 class="card-title">{%  trans "Current Members" %}</h3>
     <div class="row">
       <div class="col-md-12">
         <ul class="nav nav-tabs">
@@ -130,20 +130,23 @@
         </div>
       </div>
     </div>
-    {% if member_form %}
-    <div class="row">
-        <h3>{% trans "Add new members" %}</h3>
-        <form method="POST" action="{% url "group_members_add" group.slug %}">
-            {% csrf_token %}
-            <div id="member_form_container">
-                {{ member_form|as_bootstrap }}<br/><br/>
-            </div>
-            <input type="submit" value="{% trans "Add Group Members" %}" class="btn btn-primary"/>
-        </form>
-    </div>
-    {% endif %}
   </div>
 </div>
+
+{% if member_form %}
+  <div class="card w-100 rounded border-dark">
+    <div class="card-header text-center"><h3>{% trans "Add new members" %}</h3></div>
+    <div class="card-body">
+      <form method="POST" action="{% url "group_members_add" group.slug %}">
+        {% csrf_token %}
+        <div id="member_form_container">
+            {{ member_form|as_bootstrap }}<br/><br/>
+        </div>
+        <input type="submit" value="{% trans "Add Group Members" %}" class="btn btn-primary"/>
+    </form>
+    </div>
+  </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_script %}

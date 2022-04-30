@@ -6,22 +6,33 @@
 
 {% block body_class %}{% trans "groups explore" %}{% endblock %}
 
-{% block body_inner %}
-  <div class="row justify-content-between m-0 pb-2">
-    {% if user.is_authenticated and not READ_ONLY_MODE %}
-      <div class="col-3"><a href="{% url "group_create" %}" class="btn btn-secondary ml-2 btn--pill">{% trans "Create a New Group" %}</a></div>
-    {% endif %}
-    {% if SEARCH_FILTERS.TEXT_ENABLED %}
-      {% include "search/_text_container.html" %}
-    {% endif %}
+{% block body %}
+  <div class="card position-sticky fixed-top">
+    <div class="card-body">
+      <div class="row">
+        {% with include_type_filter='true' %}
+          {% with facet_type='groups' %}
+            {% include "search/_search_user_content.html" %}
+          {% endwith %}
+        {% endwith %}
+        <div class="row w-100">
+          {% if user.is_authenticated and not READ_ONLY_MODE %}
+            <div class="col-3"><a href="{% url "group_create" %}" class="btn btn-secondary ml-2 btn--pill">{% trans "Create a New Group" %}</a></div>
+          {% endif %}
+          {% if SEARCH_FILTERS.TEXT_ENABLED %}
+            {% include "search/_text_container.html" %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
   </div>
 
-  {% with include_type_filter='true' %}
   {% with facet_type='groups' %}
-  {% include "search/_search_user_content.html" %}
+    {% include 'search/_result_user_content.html' %}
   {% endwith %}
-  {% endwith %}
+
   {% include "_bulk_permissions_form.html" %}
+
 {% endblock %}
 
 {% block extra_script %}

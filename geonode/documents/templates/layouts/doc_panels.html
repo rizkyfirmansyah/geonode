@@ -209,13 +209,13 @@
             <div id="cdinfo">
               <div class="row">
                 <div class="col-6">
-                  <div class="padding-right-sm">
+                  <div class="pr-1">
                     <span><label for="{{ document_form.data_type|id }}">{{ document_form.data_type.label }}</label></span>
                     {{ document_form.data_type }}
                   </div>
                 </div>
-                <div class="col-6 padding-left-sm">
-                  <div class="padding-left-sm">
+                <div class="col-6 pl-1">
+                  <div class="pl-1">
                     <span><label
                         for="{{ document_form.maintenance_frequency|id }}">{{ document_form.maintenance_frequency.label }}</label></span>
                     <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
@@ -260,13 +260,13 @@
           <div class="panel-body">
             <div class="row" id="mdinfo">
               <div class="col-4">
-                <div class="padding-right-sm">
+                <div class="pr-1">
                   <span><label for="{{ document_form.license|id }}"
                       class="control-label required-field">{{ document_form.license.label }}</label></span>
                   <!--<p class="xxs-font-size">(License of the dataset)</p>-->
                   {{ document_form.license }}
                 </div>
-                <div class="padding-right-sm">
+                <div class="pr-1">
                   <span><label for="{{ document_form.restriction_code_type|id }}"
                       class="control-label required-field">{{ document_form.restriction_code_type.label }}</label></span>
                   <!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
@@ -274,12 +274,12 @@
                 </div>
               </div>
               <div class="col-4">
-                <div class="padding-right-sm">
+                <div class="pr-1">
                   <span><label for="{{ document_form.language|id }}">{{ document_form.language.label }}</label></span>
                   <!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
                   {{ document_form.language }}
                 </div>
-                <div id="regions_multiselect_container" class="padding-right-sm">
+                <div id="regions_multiselect_container" class="pr-1">
                   <span><label for="{{ document_form.regions|id }}"
                       class="control-label required-field">Regions</label></span>
                   <select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"

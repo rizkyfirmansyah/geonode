@@ -15,61 +15,61 @@
 
 {% block body_class %}{% trans "groups" %}{% endblock %}
 
-{% block body_outer %}
-<div class="row w-100">
-  <h2 class="page-title">{{ object.title|default:object.slug }}</h2>
-  <p>
-    {% trans "Last Modified" %}: {{ object.last_modified }}
-  </p>
-</div>
-<div class="row">
-  <div class="col-md-8 group-details">
-    <div class="row">
-      <div class="col-xs-4 col-md-3 group-logo">
-      {% if object.logo_url %}
-        <img src="{{ object.logo_url }}" alt="{{ object.title }}" />
-      {% else %}
-        <!-- <p>{% trans "This group has not created a logo." %}</p> -->
-      {% endif %}
-      </div>
-      <div class="col-xs-8 col-md-9 group-details">
-        <p class="group-desc">{{ object.description }}</p>
-        {% if object.keyword_list %}
-        <p>
-          {% for keyword in object.keyword_list %}
-            <span class="badge badge-pill badge-primary">{{ keyword }}</span>
-          {% endfor %}
-        </p>
+{% block body %}
+
+<div class="row mb-4">
+  <div class="col p-0">
+    <div class="card border-dark rounded">
+      <div class="card-header"><h3>{{ object.title|default:object.slug }}</h3></div>
+      <div class="card-body">
+        {% if object.logo_url %}
+          <img class="card-img-top" src="{{ object.logo_url }}" alt="{{ object.title }}" />
         {% else %}
+          <!-- <p>{% trans "This group has not created a logo." %}</p> -->
         {% endif %}
-        {% if object.email %}
-        <p><i class="fa-regular fa-envelope"></i>
-          <a href="mailto:{{ object.email }}">{{ object.email }}</a>
-        </p>
-        {% endif %}
-
-        {% if object.categories.exists %}
-        <p>
-          {% for category in object.categories.all %}
-            <a href="{{ category.get_absolute_url }}"><span class="label label-info">{{ category.name }}</span></a>
-          {% endfor %}
-        </p>
-        {% endif %}
-
+        <div class="card-text">
+          <p class="group-desc">{{ object.description }}</p>
+          {% if object.keyword_list %}
+          <p>
+            {% for keyword in object.keyword_list %}
+              <span class="badge badge-primary d-inline">{{ keyword }}</span>
+            {% endfor %}
+          </p>
+          {% else %}
+          {% endif %}
+          {% if object.categories.exists %}
+          <p>
+            {% for category in object.categories.all %}
+              <a href="{{ category.get_absolute_url }}"><span class="label label-info">{{ category.name }}</span></a>
+            {% endfor %}
+          </p>
+          {% endif %}
+    
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="row">
+          <small class="col text-muted">{% trans "Last Modified" %}: {{ object.last_modified }}</small>
+          {% if object.email %}
+          <p class="col text-right"><i class="fa-regular fa-envelope"></i>
+            <a href="mailto:{{ object.email }}">{{ object.email }}</a>
+          </p>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
   <div class="col-md-4">
-    <ul class="list-group">
+    <ul class="card border-secondary">
       {% if is_manager %}
-      <li class="list-group-item"><a href="{% url "group_update" object.slug %}" id="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
-      <li class="list-group-item"><a href="{% url "group_members" object.slug %}" id="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
-      <li class="list-group-item"><a href="{% url "group_remove" object.slug %}" id="btn_wrapper">{% trans "Delete this Group" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_update" object.slug %}" id="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_members" object.slug %}" id="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_remove" object.slug %}" id="btn_wrapper">{% trans "Delete this Group" %}</a></li>
       {% endif %}
       {% if can_view %}
-      <li class="list-group-item"><a href="{% url "group_activity" object.slug %}">{% trans "Group Activities" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_activity" object.slug %}" id="btn_wrapper">{% trans "Group Activities" %}</a></li>
       {% endif %}
-      <li class="list-group-item">
+      <li class="list-group-item border-0">
         <h4>{% trans "Permissions" %}</h4>
         <p>
           {% blocktrans with object.get_access_display as access %}
@@ -90,7 +90,7 @@
           {% endif %} {% endif %} {% endif %}
         </p>
       </li>
-      <li class="list-group-item">
+      <li class="list-group-item border-0">
         <h4>{% trans "Managers" %}</h4>
         {% for manager in object.get_managers %}
         {% with manager as profile %}
@@ -102,8 +102,8 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-12">
-    <h4>{% trans "Members" %}</h4>
+  <div class="card border-info rounded">
+    <div class="card-header"><h4>Members</h4></div>
     <div class="tab-content paginate paginate-auto" id="search-content">
     {% include 'people/_profile_list_item.html' %}
     </div>

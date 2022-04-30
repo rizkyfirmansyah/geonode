@@ -1,40 +1,34 @@
 {% verbatim %}
-<div class="row">
-    <article ng-repeat="group_profile in results" resource_id="{{ id }}" ng-cloak class="ng-cloak">
-        <div class="col-lg-12 item-container">
-            <div class="col-lg-12 box-container">
-                <div class="col-xs-4">
-                    <img class="img-responsive" ng-src="{{ group_profile.logo_url }}" alt="{{ group_profile.title }}">
-                </div>
-                <div class="col-xs-8 item-details">
-                    <h4><a href="{{ group_profile.detail_url }}">{{ group_profile.title }}</a></h4>
-                    <p class="abstract">
-                        {{ group_profile.description | limitTo: 300 }}
-                        {{ group_profile.description.length > 300 ? '...' : ''}}
-                    </p>
-                    <div class="row">
-                        <div class="col-xs-12 item-items">
-                            <ul class="list-inline">
-                                <li>
-                                    <a href="{{ group_profile.detail_url }}">
-                                        <strong>{{ group_profile.member_count }}</strong>
-                                        <ng-pluralize count="group_profile.member_count"
-                                                      when="{'1': 'Member', 'other': 'Members'}"></ng-pluralize>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ group_profile.detail_url }}">
-                                        <strong>{{ group_profile.manager_count }}</strong>
-                                        <ng-pluralize count="group_profile.manager_count"
-                                                      when="{'1': 'Manager', 'other': 'Managers'}"></ng-pluralize>
-                                    </a>
-                                </li>
-                                <li>{{ created|date:"d.M.y" }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+<div class="row row-cols-3 ml-1 mr-1">
+    <article ng-repeat="group_profile in results" resource_id="{{ id }}" ng-cloak class="ng-cloak p-2">
+        <div class="card">
+            <img class="card-img-top" ng-src="{{ group_profile.logo_url }}" alt="{{ group_profile.title }}">
+            <div class="card-body">
+                <h4 class="card-title"><a href="{{ group_profile.detail_url }}">{{ group_profile.title }}</a></h4>
+                <p class="card-text">
+                    {{ group_profile.description | limitTo: 300 }}
+                    {{ group_profile.description.length > 300 ? '...' : ''}}
+                </p>
             </div>
+        </div>
+        <div class="card-footer">
+            <ul class="row">
+                <li class="col text-center">
+                    <a href="{{ group_profile.detail_url }}">
+                        <strong>{{ group_profile.member_count }}</strong>
+                        <ng-pluralize count="group_profile.member_count"
+                                        when="{'1': 'Member', 'other': 'Members'}"></ng-pluralize>
+                    </a>
+                </li>
+                <li class="col text-center">
+                    <a href="{{ group_profile.detail_url }}">
+                        <strong>{{ group_profile.manager_count == 0 ? '' : group_profile.manager_count }}</strong>
+                        <ng-pluralize count="group_profile.manager_count"
+                                        when="{'1': 'Manager', '0': 'No Manager', 'other': 'Managers'}"></ng-pluralize>
+                    </a>
+                </li>
+                <li class="col text-center text-muted">Created at {{ group_profile.created|date:"d/M/y" }}</li>
+            </ul>
         </div>
     </article>
 </div>
