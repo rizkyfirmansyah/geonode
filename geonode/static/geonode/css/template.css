@@ -608,12 +608,6 @@ textarea {
     overflow: auto
 }
 
-[type=checkbox],
-[type=radio] {
-    box-sizing: border-box;
-    padding: 0
-}
-
 [type=number]::-webkit-inner-spin-button,
 [type=number]::-webkit-outer-spin-button {
     height: auto
@@ -2165,10 +2159,6 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
     list-style: none
 }
 
-.nav>li {
-    display: grid;
-}
-
 .nav>li>a {
     position: relative;
     display: block
@@ -2202,11 +2192,6 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
 
 .nav>li>a>img {
     max-width: none
-}
-
-.nav-tabs>li {
-    float: left;
-    margin-bottom: 5px;
 }
 
 .nav-tabs>li>a {
@@ -3995,10 +3980,7 @@ form-inline {
 #mdeditor_form .tab-content,
 .content_block .tab-content,
 article.tab-pane {
-    border: #c4bab7;
     box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
-    background-color: var(--web-container);
-    border-radius: var(--border-radius-md)
 }
 
 .search-content ul input:active,
@@ -4210,10 +4192,6 @@ form#text-search-autocomplete .ac-results {
     cursor: pointer;
 }
 
-.metadata_content {
-    padding: .5em
-}
-
 #edit-metadata div.panel-default:nth-of-type(1) {
     margin: 1rem!important
 }
@@ -4222,8 +4200,8 @@ form#text-search-autocomplete .ac-results {
     margin-left: 1rem!important
 }
 
-#metadata_edit_tab a {
-    margin-bottom: .8rem
+.fade:not(.show) {
+    display: none;
 }
 
 .fstChoiceRemove {
@@ -5588,11 +5566,6 @@ span.icon.node-icon:before {
     float: right;
     top: -5rem;
     margin-bottom: 0
-}
-
-.container .container-fluid {
-    padding: 0!important;
-    max-height: 180px
 }
 
 #main_search_input:focus {
