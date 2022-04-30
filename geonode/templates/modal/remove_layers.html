@@ -65,7 +65,7 @@
           <h3 class="light" style="margin-bottom: 40px;">Are you sure you want to remove{{resource.title}}?</h3>
           <form id="remove_layer" method="POST">{% csrf_token %}<div class="form-actions"> <input type="submit"
                 value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
-              <p class="mb-0 cancel l-space"><a href="#" data-dismiss="modal">Maybe later</a></p>
+              <p class="mb-0 cancel l-space"><a href="#" data-dismiss="modal"id="btn_wrapper">Maybe later</a></p>
             </div>
           </form>
         </div>

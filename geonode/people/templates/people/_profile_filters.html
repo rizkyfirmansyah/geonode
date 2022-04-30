@@ -1,8 +1,8 @@
 {% load i18n %}
 
 <ul class="nav nav-pills filter row" id="sort">
-  <div class="col m-1 nav-primary text-center"><a id="btn_wrapper" data-value="all" data-filter="type__in" class="selected" ng-click="single_choice_listener($event)">{% trans "All contents" %}</a></div>
-  <div class="col m-1 nav-primary text-center"><a id="btn_wrapper" data-value="layer" data-filter="type__in" ng-click="single_choice_listener($event)">{% trans "Layers" %}</a></div>
-  <div class="col m-1 nav-primary text-center"><a id="btn_wrapper" data-value="map" data-filter="type__in" ng-click="single_choice_listener($event)">{% trans "Maps" %}</a></div>
-  <div class="col m-1 nav-primary text-center"><a id="btn_wrapper" data-value="document" data-filter="type__in" ng-click="single_choice_listener($event)">{% trans "Documents" %}</a></div>
+  <a data-value="all" data-filter="type__in" class="selected col m-1 nav-primary nav-primary" ng-click="single_choice_listener($event)">{% trans "All contents" %}</a>
+  <a data-value="layer" data-filter="type__in" class="col m-1 nav-primary nav-primary" ng-click="single_choice_listener($event)">{% trans "Layers" %}</a>
+  <a data-value="map" data-filter="type__in" class="col m-1 nav-primary nav-primary" ng-click="single_choice_listener($event)">{% trans "Maps" %}</a>
+  <a data-value="document" data-filter="type__in" class="col m-1 nav-primary nav-primary" ng-click="single_choice_listener($event)">{% trans "Documents" %}</a></div>
 </ul>

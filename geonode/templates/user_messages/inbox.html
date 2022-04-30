@@ -7,19 +7,22 @@
 {% block title %}{% trans "Message Inbox" %} — {{ block.super }}{% endblock %}
 
 {% block body %}
-  <div class="row w-100">
-    <div class="col-12">
-      <h2 class="page-title">{%  trans "Messages" %}</h2>
-      <div class="row">
-        <div class="col-md-12">
+  <div class="card border-dark rounded bg-light">
+      <div class="card-header">
+        <div class="row">
+          <h3 class="col">Messages</h3>
+          <div class="col-4 text-right">
+            {% if not READ_ONLY_MODE %}
+              <a href="{% url 'message_create' %}" class="btn btn-primary w-100" type="button">{% trans "Create Message" %}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
           <ul class="nav nav-tabs" id="nav_messages">
             <li class="active col-4"><a href="#inbox" data-toggle="tab"><i class=""></i>{% trans "Inbox" %}</a></li>
             <li class="col-4"><a href="#all" data-toggle="tab"><i class=""></i> {% trans "All" %}</a></li>
-            <div class="col-4 text-right">
-              {% if not READ_ONLY_MODE %}
-                <a href="{% url 'message_create' %}" class="btn btn-primary" type="button">{% trans "Create Message" %}</a>
-              {% endif %}
-            </div>
           </ul>
 
 
@@ -62,7 +65,6 @@
               </div>
         </div>
       </div>
-    </div>
   </div>
 {% endblock %}
 

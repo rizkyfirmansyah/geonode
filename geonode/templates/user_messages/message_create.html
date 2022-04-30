@@ -33,56 +33,59 @@
 {% block body %}
 <form id="msg_form" method="post" action="{% url 'message_create' %}">
 
-    <div class="row w-100">
-        <h3 class="col-8">{% trans "Create Message" %}</h3>
-        <div class="form-actions col-2 text-right pr-0">
-            <input id="id_form_submit" type="submit" value="{% trans "Send message" %}" class="btn btn-primary"
-                type="button"/>
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <h3 class="col">{% trans "Create Message" %}</h3>
+                <div class="form-actions col-2 text-right pr-0">
+                    <input id="id_form_submit" type="submit" value="{% trans "Send message" %}" class="btn btn-primary w-100"
+                        type="button"/>
+                </div>
+                <div class="col-2 pr-0 text-right">
+                    <a href="{% url "messages_inbox" %}" class="btn btn-primary w-100" type="button">{% trans "Back to Inbox" %}</a>
+                </div>
+            </div>
         </div>
-        <div class="col-2 pr-0 text-right">
-            <a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button">{% trans "Back to Inbox" %}</a>
+        <div class="card-body">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% if form_error_title %}
+                <strong>{{ form_error_title }}</strong><br />
+                {% endif %}
+                {% if form.non_field_errors|length == 1 %}
+                {{ form.non_field_errors|first }}
+                {% else %}
+                {{ form.non_field_errors }}
+                {% endif %}
+            </div>
+            {% endif %}
+            <table style="width=100%">
+                {% include 'user_messages/_field_group_header.html' with form=form field_name="to_users" %}
+                <label for="id_to_users">{% trans "To users" %}</label>
+                <input id="id_to_users" name="to_users" type="text" class="create-msg-form-control">
+                {% include 'user_messages/_field_error_block.html' with form=form field_name="to_users" %}
+                {# Beggining div is in the _field_group_header file#}
+                </div>
+                {% include 'user_messages/_field_group_header.html' with form=form field_name="to_groups" %}
+                <label for="id_to_groups">{% trans "To groups" %}</label>
+                <input id="id_to_groups" name="to_groups" type="text" class="create-msg-form-control">
+                {% include 'user_messages/_field_error_block.html' with form=form field_name="to_groups" %}
+                </div>
+                {% include 'user_messages/_field_group_header.html' with form=form field_name="subject" %}
+                <label for="id_subject">{% trans "Subject" %}</label>
+                <input id="id_subject" name="subject" type="text" class="create-msg-form-control">
+                {% include 'user_messages/_field_error_block.html' with form=form field_name="subject" %}
+                </div>
+                {% include 'user_messages/_field_group_header.html' with form=form field_name="content" %}
+                <label for="id_content">{% trans "Content" %}</label>
+                <textarea id="id_content" name="content" cols="40" rows="10" required=""
+                    class="create-msg-form-control"></textarea>
+                {% include 'user_messages/_field_error_block.html' with form=form field_name="content" %}
+                </div>
+            </table>
         </div>
     </div>
-
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-    <div class="alert alert-danger">
-        {% if form_error_title %}
-        <strong>{{ form_error_title }}</strong><br />
-        {% endif %}
-        {% if form.non_field_errors|length == 1 %}
-        {{ form.non_field_errors|first }}
-        {% else %}
-        {{ form.non_field_errors }}
-        {% endif %}
-    </div>
-    {% endif %}
-    <table style="width=100%">
-
-        {% include 'user_messages/_field_group_header.html' with form=form field_name="to_users" %}
-        <label for="id_to_users">{% trans "To users" %}</label>
-        <input id="id_to_users" name="to_users" type="text" class="create-msg-form-control">
-        {% include 'user_messages/_field_error_block.html' with form=form field_name="to_users" %}
-        {# Beggining div is in the _field_group_header file#}
-        </div>
-        {% include 'user_messages/_field_group_header.html' with form=form field_name="to_groups" %}
-        <label for="id_to_groups">{% trans "To groups" %}</label>
-        <input id="id_to_groups" name="to_groups" type="text" class="create-msg-form-control">
-        {% include 'user_messages/_field_error_block.html' with form=form field_name="to_groups" %}
-        </div>
-        {% include 'user_messages/_field_group_header.html' with form=form field_name="subject" %}
-        <label for="id_subject">{% trans "Subject" %}</label>
-        <input id="id_subject" name="subject" type="text" class="create-msg-form-control">
-        {% include 'user_messages/_field_error_block.html' with form=form field_name="subject" %}
-        </div>
-        {% include 'user_messages/_field_group_header.html' with form=form field_name="content" %}
-        <label for="id_content">{% trans "Content" %}</label>
-        <textarea id="id_content" name="content" cols="40" rows="10" required=""
-            class="create-msg-form-control"></textarea>
-        {% include 'user_messages/_field_error_block.html' with form=form field_name="content" %}
-
-        </div>
-    </table>
 
 </form>
 

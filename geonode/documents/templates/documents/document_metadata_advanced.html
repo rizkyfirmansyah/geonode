@@ -27,7 +27,7 @@
 
 <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
   <div class="card" id="fixed-header">
-    <h2 class="card-title text-center">
+    <h2 class="card-header text-center">
       {% blocktrans with document.title as document_title %}
         Edit Metadata for {{ document_title }}
       {% endblocktrans %}
@@ -42,8 +42,8 @@
         </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12">
+  <div class="card mt-2">
+    <div class="card-body">
       {% block advanced_edit_form %}
           {% csrf_token %}
           <!-- Added in the thesuarus field here since saving the form without it causes the thesuarus keywords to be removed. 

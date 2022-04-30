@@ -27,7 +27,7 @@
 
   <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
     <div class="card" id="fixed-header">
-      <h2 class="card-title text-center">
+      <h2 class="card-header text-center">
         {% blocktrans with layer.title as layer_title %}
           Edit Metadata for {{ layer_title }}
         {% endblocktrans %}

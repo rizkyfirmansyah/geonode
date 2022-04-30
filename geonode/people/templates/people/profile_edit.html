@@ -4,31 +4,38 @@
 
 {% block body_class %}{% trans "edit people" %}{% endblock %}
 
-{% block body_inner %}
-<div class="row w-100">
-  {% if user == profile %}
-    <h2 class="page-title">{% trans "Edit Your Profile" %}</h2>
-  {% else %}
-    <h2 class="page-title">{% trans "Edit Profile for" %} {{ profile.username }}</h2>
-  {% endif %}
-</div>
-
-<div class="col-xs-3 col-md-2 profile-image">
-  {% autoescape off %}{% avatar profile.username 240 %}{% endautoescape %}
-  {% if user == profile %}
-  <p class="x-space"><a class="btn btn-primary btn-block" href="{% url 'avatar_change' %}">{% trans "Change your avatar" %}</a></p>
-  {% endif %}
-</div>
-
-<div class="col-xs-9 col-md-9">
-  <form action="" method="post">
-    {% csrf_token %}
-    <div class="form-controls">
-      {{ form|as_bootstrap }}
+{% block body %}
+<div class="card-deck w-100">
+  <div class="col-3">
+    <div class="card">
+      <div class="card-header">
+        {% if user == profile %}
+        <h2 class="text-center">{% trans "Edit Your Profile" %}</h2>
+        {% else %}
+          <h2 class="text-center">{% trans "Edit Profile for" %} {{ profile.username }}</h2>
+        {% endif %}
+      </div>
+      <div class="card-body">
+        {% autoescape off %}{% avatar profile.username 240 %}{% endautoescape %}
+        {% if user == profile %}
+        <p class="x-space"><a class="btn btn-primary btn-block" href="{% url 'avatar_change' %}">{% trans "Change your avatar" %}</a></p>
+        {% endif %}
+      </div>
     </div>
-    <div class="form-actions">
-      <input type="submit" class="btn btn-primary" value="{% trans "Update profile" %}" />
+  </div>
+  
+  <div class="card">
+    <div class="card-body">
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-controls">
+          {{ form|as_bootstrap }}
+        </div>
+        <div class="form-actions">
+          <input type="submit" class="btn btn-primary w-100 mt-4" value="{% trans "Update profile" %}" />
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}

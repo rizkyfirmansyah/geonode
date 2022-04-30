@@ -15,63 +15,66 @@
 {% endcomment %}
 
 {% block body %}
-<div class="row w-100">
-  <h2 class="page-title">{%  trans "Activity Feed for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h2>
-</div>
+<div class="card border-dark rounded bg-light">
+  <div class="card-header">
+    <h2>{%  trans "Activity Feed for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a>
+    </h2>
+  </div>
 
-<div class="row w-100">
-  <div class="col-12">
+  <div class="card-body">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#all" data-toggle="tab"><i class=""></i>{% trans "All" %}</a></li>
-      <li><a href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a></li>
+      <li><a href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a>
+      </li>
       <li><a href="#maps" data-toggle="tab"><i class="fa-solid fa-map-location-dot"></i> {% trans "Maps" %}</a></li>
-      <li><a href="#documents" data-toggle="tab"><i class="fa-regular fa-file-lines"></i> {% trans "Documents" %}</a></li>
+      <li><a href="#documents" data-toggle="tab"><i class="fa-regular fa-file-lines"></i> {% trans "Documents" %}</a>
+      </li>
       <li><a href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
     </ul>
     <div class="tab-content">
       <article id="all" class="tab-pane active">
         <ul class="no-style-list">
-        {% for action in action_list %}
+          {% for action in action_list %}
           {% activity_item action %}
           {% empty %}
           <p>{% trans "No actions yet" %}</p>
-        {% endfor %}
+          {% endfor %}
         </ul>
       </article>
       <article id="layers" class="tab-pane">
         <ul class="no-style-list">
-        {% for action in action_list_layers %}
+          {% for action in action_list_layers %}
           {% activity_item action %}
           {% empty %}
           <p>{% trans "No actions yet" %}</p>
-        {% endfor %}
+          {% endfor %}
         </ul>
       </article>
       <article id="maps" class="tab-pane">
         <ul class="no-style-list">
-        {% for action in action_list_maps %}
+          {% for action in action_list_maps %}
           {% activity_item action %}
           {% empty %}
           <p>{% trans "No actions yet" %}</p>
-        {% endfor %}
+          {% endfor %}
         </ul>
       </article>
       <article id="documents" class="tab-pane">
         <ul class="no-style-list">
-        {% for action in action_list_documents %}
+          {% for action in action_list_documents %}
           {% activity_item action %}
           {% empty %}
           <p>{% trans "No actions yet" %}</p>
-        {% endfor %}
+          {% endfor %}
         </ul>
       </article>
       <article id="comments" class="tab-pane">
         <ul class="no-style-list">
-        {% for action in action_list_comments %}
+          {% for action in action_list_comments %}
           {% activity_item action %}
           {% empty %}
           <p>{% trans "No actions yet" %}</p>
-        {% endfor %}
+          {% endfor %}
         </ul>
       </article>
     </div>

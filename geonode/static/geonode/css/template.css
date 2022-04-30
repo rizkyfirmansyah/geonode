@@ -10,6 +10,7 @@
     --border-radius-fix-lg: 50px;
     --card-content: 96px;
     --spacing-1: 4rem;
+    --toggle: #e0e8e7;
     --primary: #1D4842 !important;
     --secondary: #fff !important;
     --success: #4F98AF !important;
@@ -107,12 +108,30 @@
     NAV STYLE
 ----------------------------------------------------- */
 
+.nav-toggle {
+    padding: 10px;
+    font-size: 1em;
+    display: block;
+    color: var(--primary) !important;
+    background-color: var(--toggle) !important;
+    border: 1px solid var(--primary);
+}
+
+.nav-toggle:hover {
+    background: var(--primary) !important;
+    color: var(--toggle) !important;
+    text-decoration: none;
+    border: 2px solid var(--toggle);
+}
+
 .nav-primary {
     color: var(--warning) !important;
     background-color: var(--secondary) !important;
     border: 1px solid var(--warning);
     border-radius: var(--border-radius-md);
     text-align: center;
+    display: block;
+    padding: 0.5rem !important;
     box-shadow: 0 5px 10px -8px rgb(0 0 0 / 70%);
 }
 
@@ -121,6 +140,8 @@
     color: var(--secondary) !important;
     background-color: var(--warning) !important;
     border: 1px solid var(--warning);
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .btn.btn--primary,
@@ -4119,10 +4140,8 @@ form#text-search-autocomplete .ac-results {
 #btn_wrapper {
     width: 100%;
     background: 0 0!important;
-    border: none!important;
     padding: 10px 15px;
     display: block;
-    border-radius: var(--border-radius-sm)
 }
 
 #btn_wrapper:hover {
@@ -6245,21 +6264,6 @@ footer li a:hover {
 
 .wrapper nav ul {
     margin-left: 0;
-}
-
-.nav-toggle {
-    padding: 10px;
-    font-size: 1em;
-    display: block;
-    color: var(--secondary) !important;
-    background-color: var(--primary) !important;
-}
-
-.nav-toggle:hover {
-    background: var(--secondary) !important;
-    color: var(--primary) !important;
-    text-decoration: none;
-    border: 2px solid var(--primary);
 }
 
 #sidebar,

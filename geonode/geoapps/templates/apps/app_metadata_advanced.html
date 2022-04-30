@@ -27,7 +27,7 @@
 
 <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
   <div class="card" id="fixed-header">
-    <h2 class="card-title text-center">
+    <h2 class="card-header text-center">
       {% blocktrans with geoapp.title as map_title %}
           Editing details for {{ map_title }}
         {% endblocktrans %}
