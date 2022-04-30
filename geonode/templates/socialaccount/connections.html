@@ -6,51 +6,54 @@
 
 {% block title %}{% trans "Account Connections" %}{% endblock %}
 
-{% block body_outer %}
-<h1>{% trans "Account Connections" %}</h1>
+{% block body %}
 
-{% if form.accounts %}
-<p>{% blocktrans %}You can sign in to your account using any of the following already connected third party accounts:{% endblocktrans %}</p>
+<div class="card w-100 border-dark rounded">
+  <div class="card-header text-center"><h3 class="text-center">{% trans "Account Connections" %}</h3></div>
+  <div class="card-body">
+    {% if form.accounts %}
+    <p class="card-text">{% blocktrans %}You can sign in to your account using any of the following already connected third party accounts:{% endblocktrans %}</p>
 
 
-<form method="post" action="{% url 'socialaccount_connections' %}">
-  {% csrf_token %}
-  {% if form.non_field_errors %}
-    <div id="errorMsg">{{ form.non_field_errors }}</div>
-  {% endif %}
+    <form method="post" action="{% url 'socialaccount_connections' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div id="errorMsg">{{ form.non_field_errors }}</div>
+      {% endif %}
 
-  {% for base_account in form.accounts %}
-    {% with base_account.get_provider_account as account %}
-      <div class="form-group">
-        <label for="id_account_{{ base_account.id }}"></label>
-        <input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>
-        <i class="fa-solid fa-{{ account.get_brand.name|lower }}-square fa-2x" aria-hidden="true"></i> {{ account.get_brand.name }} account: {{ account }}
+      {% for base_account in form.accounts %}
+        {% with base_account.get_provider_account as account %}
+          <div class="form-group">
+            <label for="id_account_{{ base_account.id }}"></label>
+            <input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>
+            <i class="fa-solid fa-{{ account.get_brand.name|lower }}-square fa-2x" aria-hidden="true"></i> {{ account.get_brand.name }} account: {{ account }}
+          </div>
+        {% endwith %}
+      {% endfor %}
+
+      <div>
+        <button type="submit">{% trans 'Remove' %}</button>
       </div>
-    {% endwith %}
-  {% endfor %}
 
-  <div>
-    <button type="submit">{% trans 'Remove' %}</button>
+    </form>
+
+    {% else %}
+      <p class="card-text">{% trans 'You currently have no social network accounts connected to this account.' %}</p>
+    {% endif %}
+
+    {% get_number_unconnected_providers user as unconnected_providers %}
+
+    {% if unconnected_providers > 0 %}
+
+    <h3>{% trans 'Add a 3rd Party Account' %}</h3>
+
+    <div class="row">
+      {% include "socialaccount/snippets/remaining_providers_list.html" with process="connect" %}
+    </div>
+
+    {% include "socialaccount/snippets/login_extra.html" %}
+
+    {% endif %}
   </div>
-
-</form>
-
-{% else %}
-<p>{% trans 'You currently have no social network accounts connected to this account.' %}</p>
-{% endif %}
-
-{% get_number_unconnected_providers user as unconnected_providers %}
-
-{% if unconnected_providers > 0 %}
-
-<h3>{% trans 'Add a 3rd Party Account' %}</h3>
-
-<div class="row">
-  {% include "socialaccount/snippets/remaining_providers_list.html" with process="connect" %}
 </div>
-
-{% include "socialaccount/snippets/login_extra.html" %}
-
-{% endif %}
-
 {% endblock %}
