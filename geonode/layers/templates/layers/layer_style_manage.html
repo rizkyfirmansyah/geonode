@@ -17,7 +17,7 @@
       Manage Available Styles for <a href="/layers/{{ layer_title }}">{{ layer_title }}</a>
     {% endblocktrans %}</h4>
 <form action="{% url "layer_style_manage" layer.service_typename %}" method="POST">
-  <div class="row grid-spacer">
+  <div class="row mt-2">
     <fieldset>
       <div class="col-md-4">
         <h4>{% trans "Layer Default Style" %}</h4>
@@ -35,7 +35,7 @@
       </div>
     </fieldset>
   </div>
-  <div class="row grid-spacer">
+  <div class="row mt-2">
     <fieldset>
       <div class="col-md-4">
         <h4>{% trans "Available styles" %}</h4>

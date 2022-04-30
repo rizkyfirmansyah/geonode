@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="w-100" ng-controller="CartList">
-  <div class="col-3 search-content">
-    <div class="row">
+  {% comment %} <div class="col-3 search-content"> {% endcomment %}
+    {% comment %} <div class="row">
       <div class="col-xs-12">
         {% if facet_type == 'groups' %}
         <nav class="filter">
@@ -22,24 +22,24 @@
 
         {% endif %}
       </div>
-    </div>
+    </div> {% endcomment %}
 
-  </div>
-  <div class="col-md-9">
-    <div class="col-md-4 text-primary" id="title-ng-search">
+  {% comment %} </div> {% endcomment %}
+  <div class="row pb-3">
+    <div class="col-10 text-primary" id="title-ng-search">
       <span>{% trans "Total" %}: </span>
       <span ng-bind="total_counts"></span>
     </div>
     {% include "search/_sort_filters.html" %}
-    <div class="col-md-12 grid-spacer">
-        {% if facet_type == 'groups' %}
-            {% include 'search/_group_snippet.html' %}
-        {% elif facet_type == 'groupcategories' %}
-            {% include 'search/_groupcategory_snippet.html' %}
-        {% elif facet_type == 'people' %}
-            {% include "people/_profile_list_item.html" %}
-        {% endif %}
-    </div>
-    {% include 'search/_pagination.html' %}
   </div>
+  <div class="row row-cols-2 ml-1 mr-1">
+      {% if facet_type == 'groups' %}
+          {% include 'search/_group_snippet.html' %}
+      {% elif facet_type == 'groupcategories' %}
+          {% include 'search/_groupcategory_snippet.html' %}
+      {% elif facet_type == 'people' %}
+          {% include "people/_profile_list_item.html" %}
+      {% endif %}
+  </div>
+  {% include 'search/_pagination.html' %}
 </div>

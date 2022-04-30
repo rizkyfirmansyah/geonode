@@ -4975,17 +4975,6 @@ footer form {
     padding-right: 3px
 }
 
-.profile-container {
-    padding: 5px
-}
-
-.profile-avatar {
-    border-radius: var(--border-radius-sm);
-    background: var(--secondary);
-    border: 1px solid #1D4842;
-    padding: 0
-}
-
 .profile-avatar h5 a {
     color: #c4bab7;
     display: block;
@@ -5010,33 +4999,9 @@ footer form {
     text-decoration: none
 }
 
-.profile-items {
-    padding: 0
-}
-
-#profile_info_name {
-    font-size: 1.2em;
-    margin-top: 1vh
-}
-
 #profile_info_position {
     color: #789;
     font-size: 1.1em
-}
-
-.profile-avatar .profile-items {
-    border-top: 1px solid #1D4842;
-    color: #1D4842
-}
-
-.profile-avatar .profile-items i {
-    margin-left: 0;
-    margin-right: .125em
-}
-
-.profile-avatar .profile-items i a:hover {
-    color: #af0900;
-    text-decoration: none
 }
 
 .profile-avatar li a {
@@ -5046,11 +5011,6 @@ footer form {
 .profile-avatar li a:hover {
     color: #af0900;
     text-decoration: none
-}
-
-.profile-avatar img {
-    margin: 0;
-    width: 100%
 }
 
 .profile-image {
@@ -5063,16 +5023,6 @@ footer form {
 .profile-image img {
     width: 100%;
     border-radius: 10em
-}
-
-.profile-details {
-    background: 0 0;
-    color: #000;
-    margin: auto;
-    min-height: 90px;
-    padding-left: .7em;
-    padding-top: .5em;
-    float: right!important
 }
 
 .profile-resources {
@@ -5659,7 +5609,7 @@ article.tab-pane {
     padding-right: 25px
 }
 
-.grid-spacer {
+.mt-2 {
     margin-top: 10px
 }
 
