@@ -15,9 +15,9 @@
 {% endcomment %}
 
 {% block body %}
-<div class="card border-dark rounded bg-light">
+<div class="card w-100 border-dark rounded bg-light">
   <div class="card-header">
-    <h2>{%  trans "Activity Feed for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a>
+    <h2 class="text-center">{%  trans "Activity Feed for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a>
     </h2>
   </div>
 

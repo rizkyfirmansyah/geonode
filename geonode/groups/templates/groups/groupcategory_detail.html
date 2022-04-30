@@ -4,36 +4,36 @@
 
 {% block title %}{{ object.name|default:object.slug }} — {{ block.super.super }}{% endblock %}
 
-{% block body_outer %}
-<div class="row w-100">
-  <h2 class="page-title">{{ object.name|default:object.slug }}</h2>
-</div>
-<div class="row">
-  <div class="col-md-8 group-details">
-    <div class="row">
-      <div class="col-xs-12 col-md-12 group-details">
-        <p class="group-desc">{{ object.description|default_if_none:'' }}</p>
+{% block body %}
 
+<div class="card w-100 border-dark rounded mb-4">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{{ object.name|default:object.slug }}</h3>
+      <div class="col-4 float-right">
+        {% if request.user.is_staff or request.user.is_superuser %}
+          <a class="btn btn-primary w-100" href="{% url "group_category_update" object.slug %}">{% trans "Edit Group Category Details" %}</a></li>
+        {% endif %}
       </div>
     </div>
   </div>
-
-  <div class="col-md-4">
-    <ul class="list-group">
-      {% if request.user.is_staff or request.user.is_superuser %}
-      <li class="list-group-item"><a href="{% url "group_category_update" object.slug %}">{% trans "Edit Group Category Details" %}</a></li>
-      {% endif %}
-    </ul>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <h4>{% trans "Groups" %}</h4>
-    <div class="tab-content paginate paginate-auto" id="search-content">
-    {% include 'groups/_group_profile_list_item.html' %}
+  <div class="card-body">
+    <div class="row">
+      <div class="col-xs-12 col-md-12 group-details">
+        <p class="group-desc">{{ object.description|default_if_none:'' }}</p>
+      </div>
     </div>
   </div>
-  {% include 'search/_pagination.html' %}
+</div>
+<div class="card w-100">
+  <div class="card-header"><h4 class="text-center">{% trans "Groups" %}</h4></div>
+      <div class="card-body">
+        <div class="tab-content paginate paginate-auto" id="search-content">
+          {% include 'groups/_group_profile_list_item.html' %}
+          </div>
+        {% include 'search/_pagination.html' %}
+      </div>
+  </div>
 </div>
 {% endblock %}
 
