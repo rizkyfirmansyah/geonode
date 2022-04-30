@@ -3606,13 +3606,6 @@ html {
     color: #c4bab7
 }
 
-#logout-style {
-    line-height: 3;
-    font-size: 2.9rem;
-    text-align: center;
-    margin: 5px
-}
-
 .stretch {
     height: 100%;
     display: flex;
@@ -5518,22 +5511,9 @@ article.tab-pane {
     }
 }
 
-@media (max-width:1025px) {
-    #logout_container {
-        background-color: var(--secondary);
-        min-height: calc(100vh - 240px);
-        padding: 2em
-    }
-}
-
 @media (min-width:1025px) {
     .container {
         width: calc(100% - 18em)!important
-    }
-    #logout_container {
-        background-color: var(--secondary);
-        min-height: calc(100vh - 240px);
-        padding: 2em
     }
     #datasetsTable_filter input {
         min-width: 340px
