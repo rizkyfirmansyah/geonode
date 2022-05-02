@@ -12,7 +12,7 @@
               </path>
             </svg></span></div>
       </div>
-      <div class="modal-body text-center l-space">
+      <div class="modal-body text-center">
         <div class="row edit-modal">{% if "change_resourcebase_metadata" in perms_list %}<div class="col-sm-3"> <i
               class="fa-solid fa-rectangle-list fa-3x"></i>
             <h5>{% trans "Metadata" %}</h5> <a class="btn btn-primary btn-block btn-md"
@@ -42,10 +42,10 @@
     <div class="modal-content rounded-0 m-modal-width">
       <div class="p-4 to-front">
         <div class="text-center">
-          <h3 class="light" style="margin-bottom: 40px;">Are you sure you want to remove{{resource.title}}?</h3>
+          <h3 class="light">Are you sure you want to remove{{resource.title}}?</h3>
           <form id="remove_document" method="POST">{% csrf_token %}<div class="form-actions"> <input type="submit"
                 value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
-              <p class="mb-0 cancel l-space"><a href="#" data-dismiss="modal"id="btn_wrapper">Maybe later</a></p>
+              <p class="mb-0 cancel"><a href="#" data-dismiss="modal"class="btn_wrapper">Maybe later</a></p>
             </div>
           </form>
         </div>

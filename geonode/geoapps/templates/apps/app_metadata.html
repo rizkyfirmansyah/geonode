@@ -9,7 +9,7 @@
 
 {% block body_class %}data{% endblock body_class %}
 
-{% block body_outer %}
+{% block body %}
   <div class="container-fluid page-header" style="position: relative;">
     <h2 class="page-title">{% trans "Metadata" %}&nbsp;{% blocktrans with geoapp.title as map_title %}for
       {{ map_title }}{% endblocktrans %}
@@ -90,4 +90,4 @@
   </form>
 
 {{ block.super }}
-{% endblock body_outer %}
+{% endblock body %}

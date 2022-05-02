@@ -11,7 +11,6 @@
 <!-- Required to make select2 fields work for autocomplete -->
 <link href="{% static "vendor/select2/dist/css/select2.css" %}" type="text/css" media="screen" rel="stylesheet" />
 <link href="{% static "autocomplete_light/select2.css" %}" type="text/css" media="screen" rel="stylesheet" />
-<script type="text/javascript" src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.init.js" %}"></script>
 <script type="text/javascript" src="{% static "vendor/select2/dist/js/select2.full.js" %}"></script>
 <script type="text/javascript" src="{% static "vendor/select2/dist/js/i18n/en.js" %}"></script>
@@ -22,7 +21,7 @@
 
 <button class="btn btn-success metadata-edit-done w-50" id="btn_upd_md_done" type="submit"
   style="float:right; opacity: 0;">{% trans "Done!" %}</button>
-{% block body_outer %}
+{% block body %}
   <ul id="md_tabs" class="nav nav-tabs">
     <li id="metadata_edit_tab" class="active">
       <a data-toggle="tab" href="#edit-metadata"><i class="fa-solid fa-pencil"></i>{% trans "Edit" %}</a>

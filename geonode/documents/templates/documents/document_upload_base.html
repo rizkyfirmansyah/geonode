@@ -8,7 +8,7 @@
 
 {% block body_class %}documents{% endblock %}
 
-{% block body_outer %}
+{% block body %}
 <div class="card rounded bg-light mb-2">
 	<div class="card-body">
 		<div class="row">
@@ -24,7 +24,6 @@
 	</div>
 </div>
 <div class="row">
-  {% block body_inner %}{% endblock body_inner %}
-  {% block body_sidebar %}{% endblock body_sidebar %}
+
 </div>
-{% endblock body_outer %}
+{% endblock body %}

@@ -196,17 +196,17 @@
         };
     }
 
-    // Load datatype
-    module.load_datatypes = function($http, $rootScope, $location) {
+    // Load data_type
+    module.load_data_type = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == "undefined" ? {} : { 'type': FILTER_TYPE };
         $http.get(DATATYPE_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            if ($location.search().hasOwnProperty('datatype__identifier__in')) {
+            if ($location.search().hasOwnProperty('data_type__identifier__in')) {
                 data.data.objects = module.set_initial_filters_from_query(data.data.objects,
-                    $location.search()['datatype__identifier__in'], 'identifier');
+                    $location.search()['data_type__identifier__in'], 'identifier');
             }
-            $rootScope.datatypes = data.data.objects;
+            $rootScope.data_type = data.data.objects;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -260,15 +260,15 @@
             }
         }
 
-        if ("datatypes" in $rootScope) {
+        if ("data_type" in $rootScope) {
             try {
-                $rootScope.datatype_counts = data.meta.facets.datatype;
-                for (var id in $rootScope.datatypes) {
-                    var datatype = $rootScope.datatypes[id];
-                    if (datatype.identifier in $rootScope.datatype_counts) {
-                        datatype.count = $rootScope.datatype_counts[datatype.identifier]
+                $rootScope.data_type_counts = data.meta.facets.data_type;
+                for (var id in $rootScope.data_type) {
+                    var data_type = $rootScope.data_type[id];
+                    if (data_type.identifier in $rootScope.data_type_counts) {
+                        data_type.count = $rootScope.data_type_counts[data_type.identifier]
                     } else {
-                        datatype.count = 0;
+                        data_type.count = 0;
                     }
                 }
             } catch (err) {
@@ -359,8 +359,8 @@
         if ($('#tkeywords').length > 0) {
             module.load_t_keywords($http, $rootScope, $location);
         }
-        if ($('#datatypes').length > 0) {
-            module.load_datatypes($http, $rootScope, $location);
+        if ($('#data_type').length > 0) {
+            module.load_data_type($http, $rootScope, $location);
         }
 
         // Activate the type filters if in the url

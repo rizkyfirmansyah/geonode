@@ -29,7 +29,7 @@
 
 {% block body_class %}{% trans "maps" %}{% endblock %}
 
-{% block body_outer %}
+{% block body %}
 {% overall_rating resource "map" as map_rating %}
 
 <div class="row w-100">
@@ -121,7 +121,7 @@
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
               <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Download Map" %}</h4>
             </div>
-            <div class="modal-body text-center l-space">
+            <div class="modal-body text-center">
               <ul>
                 {% if links %}
                 {% for link in links %}
@@ -149,7 +149,7 @@
               <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
               <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Editing Tools" %}</h4>
             </div>
-            <div class="modal-body text-center l-space">
+            <div class="modal-body text-center">
               <div class="row edit-modal">
                 {% if "change_resourcebase_metadata" in perms_list %}
                 <div class="col-sm-3">
@@ -277,7 +277,7 @@
         <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
         <h4 class="modal-title w-100 text-center" id="myModalLabel">{% trans "Embed Iframe" %}</h4>
       </div>
-      <div class="modal-body text-center l-space">
+      <div class="modal-body text-center">
         <p>
           {% trans "To embed this map, add the following code snippet and customize its properties (scrolling, width, height) based on your needs to your site" %}:
         </p>

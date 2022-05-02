@@ -315,13 +315,13 @@ class TopicCategoryResource(TypeFilteredResource):
 
 class DataTypeResource(TypeFilteredResource):
     """Datatype api"""
-    layers_count = fields.IntegerField(default=0)
+    catalogue_count = fields.IntegerField(default=0)
 
     def dehydrate_layers_count(self, bundle):
         request = bundle.request
         obj_with_perms = get_objects_for_user(
             request.user,
-            'base.view_resourcebase').filter(polymorphic_ctype__model='layer')
+            'base.view_resourcebase')
 
         filter_set = bundle.obj.resourcebase_set.filter(id__in=obj_with_perms.values('id')).filter(metadata_only=False)
 
@@ -347,7 +347,7 @@ class DataTypeResource(TypeFilteredResource):
 
     class Meta:
         queryset = DataType.objects.all().order_by('gn_description')
-        resource_name = 'datatype'
+        resource_name = 'data_type'
         allowed_methods = ['get']
         excludes = ['is_choice', 'description_en', 'gn_description_en']
 

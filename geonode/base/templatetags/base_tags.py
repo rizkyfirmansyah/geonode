@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+from pydoc import doc
 from django import template
 from django.db.models import Q
 from django.conf import settings
@@ -77,6 +78,7 @@ def facets(context):
     keywords_filter = request.GET.getlist('keywords__slug__in', None)
     category_filter = request.GET.getlist('category__identifier__in', None)
     data_type_filter = request.GET.getlist('data_type__identifier__in', None)
+    resource_type_filter = request.GET.getlist('resource__type__in', None)
     regions_filter = request.GET.getlist('regions__name__in', None)
     owner_filter = request.GET.getlist('owner__username__in', None)
     date_gte_filter = request.GET.get('date__gte', None)
@@ -108,7 +110,9 @@ def facets(context):
                         private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
 
                     if data_type_filter:
-                        geoapps = geoapps.filter(datatype__identifier__in=data_type_filter)
+                        geoapps = geoapps.filter(data_type__identifier__in=data_type_filter)
+                    if resource_type_filter:
+                        geoapps = geoapps.filter(resource__type__in=resource_type_filter)
                     if category_filter:
                         geoapps = geoapps.filter(category__identifier__in=category_filter)
                     if regions_filter:
@@ -146,7 +150,9 @@ def facets(context):
     elif facet_type == 'documents':
         documents = Document.objects.filter(title__icontains=title_filter)
         if data_type_filter:
-            documents = documents.filter(datatype__identifier__in=data_type_filter)
+            documents = documents.filter(data_type__identifier__in=data_type_filter)
+        if resource_type_filter:
+            documents = documents.filter(resource__type__in=resource_type_filter)
         if category_filter:
             documents = documents.filter(category__identifier__in=category_filter)
         if regions_filter:
@@ -194,7 +200,9 @@ def facets(context):
             Q(purpose__icontains=purpose_filter)
         )
         if data_type_filter:
-            layers = layers.filter(datatype__identifier__in=data_type_filter)
+            layers = layers.filter(data_type__identifier__in=data_type_filter)
+        if resource_type_filter:
+            layers = layers.filter(resource__type__in=resource_type_filter)
         if category_filter:
             layers = layers.filter(category__identifier__in=category_filter)
         if regions_filter:
@@ -267,8 +275,11 @@ def facets(context):
         documents = Document.objects.filter(title__icontains=title_filter)
 
         if data_type_filter:
-            maps = maps.filter(datatype__identifier__in=data_type_filter)
-            documents = documents.filter(datatype__identifier__in=data_type_filter)
+            maps = maps.filter(data_type__identifier__in=data_type_filter)
+            documents = documents.filter(data_type__identifier__in=data_type_filter)
+        if resource_type_filter:
+            maps = maps.filter(resource__type__in=resource_type_filter)
+            documents = documents.filter(resource__type__in=resource_type_filter)
         if category_filter:
             maps = maps.filter(category__identifier__in=category_filter)
             documents = documents.filter(category__identifier__in=category_filter)

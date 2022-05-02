@@ -93,7 +93,8 @@ class CommonMetaApi:
         'category': ALL_WITH_RELATIONS,
         'group': ALL_WITH_RELATIONS,
         'owner': ALL_WITH_RELATIONS,
-        'datatype': ALL_WITH_RELATIONS,
+        'data_type': ALL_WITH_RELATIONS,
+        'resource_type': ALL_WITH_RELATIONS,
         'date': ALL,
         'purpose': ALL,
         'uuid': ALL_WITH_RELATIONS,
@@ -111,7 +112,7 @@ class CommonModelApi(ModelResource):
         'category',
         null=True,
         full=True)
-    datatype = fields.ToOneField(DataTypeResource, 'data_type', null=True)
+    data_type = fields.ToOneField(DataTypeResource, 'data_type', null=True)
     group = fields.ToOneField(
         GroupResource,
         'group',
@@ -156,6 +157,7 @@ class CommonModelApi(ModelResource):
         'category__fa_dict',
         'category__identifier',
         'supplemental_information',
+        'resource_type',
         'site_url',
         'thumbnail_url',
         'detail_url',
@@ -180,7 +182,10 @@ class CommonModelApi(ModelResource):
         if 'extent' in filters:
             orm_filters.update({'extent': filters['extent']})
         if 'data_type' in filters:
-            orm_filters.update({'data_type': filters['datatype__identifier__in']})
+            orm_filters.update({'data_type': filters['data_type__identifier__in']})
+        if 'resource_type' in filters:
+            orm_filters.update({'resource_type': filters['resource__type__in']})
+
         orm_filters['f_method'] = filters['f_method'] if 'f_method' in filters else 'and'
         if not settings.SEARCH_RESOURCES_EXTENDED:
             return self._remove_additional_filters(orm_filters)
@@ -295,7 +300,7 @@ class CommonModelApi(ModelResource):
         date_start = parameters.get("date__gte", None)
 
         # Data type filter
-        data_type = parameters.getlist("datatype__identifier__in")
+        data_type = parameters.getlist("data_type__identifier__in")
 
         # Topic category filter
         category = parameters.getlist("category__identifier__in")
@@ -314,6 +319,9 @@ class CommonModelApi(ModelResource):
 
         # Geospatial Elements
         bbox = parameters.get("extent", None)
+
+        # Resource Type filter
+        resource_type = parameters.getlist("resource__type__in")
 
         # Filter by Type and subtype
         if type_facets is not None:
@@ -383,6 +391,12 @@ class CommonModelApi(ModelResource):
         if data_type:
             sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
                 f"data_type:{','.join(map(str, data_type))}")
+
+
+        # filter by resource_type
+        if resource_type:
+            sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
+                f"resource_type:{','.join(map(str, resource_type))}")
 
         # filter by category
         if category:
@@ -484,12 +498,12 @@ class CommonModelApi(ModelResource):
             # results
             if len(filter_set) > 0:
                 sqs = sqs.filter(id__in=filter_set_ids).facet('type').facet('subtype').facet(
-                    'owner') .facet('keywords').facet('regions').facet('category').facet('datatype')
+                    'owner') .facet('keywords').facet('regions').facet('category').facet('data_type').facet('resource_type')
             else:
                 sqs = None
         else:
             sqs = sqs.facet('type').facet('subtype').facet(
-                'owner').facet('keywords').facet('regions').facet('category').facet('datatype')
+                'owner').facet('keywords').facet('regions').facet('category').facet('data_type').facet('resource_type')
 
         if sqs:
             # Build the Facet dict

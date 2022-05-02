@@ -62,12 +62,12 @@
   <div class="col-md-4">
     <ul class="card border-secondary">
       {% if is_manager %}
-      <li class="list-group-item border-0"><a href="{% url "group_update" object.slug %}" id="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
-      <li class="list-group-item border-0"><a href="{% url "group_members" object.slug %}" id="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
-      <li class="list-group-item border-0"><a href="{% url "group_remove" object.slug %}" id="btn_wrapper">{% trans "Delete this Group" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_update" object.slug %}" class="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_members" object.slug %}" class="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_remove" object.slug %}" class="btn_wrapper">{% trans "Delete this Group" %}</a></li>
       {% endif %}
       {% if can_view %}
-      <li class="list-group-item border-0"><a href="{% url "group_activity" object.slug %}" id="btn_wrapper">{% trans "Group Activities" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_activity" object.slug %}" class="btn_wrapper">{% trans "Group Activities" %}</a></li>
       {% endif %}
       <li class="list-group-item border-0">
         <h4>{% trans "Permissions" %}</h4>

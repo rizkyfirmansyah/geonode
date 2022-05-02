@@ -14,14 +14,14 @@
             alt="Homepage">
         </a>
       </div>
-      <div class="col-4 float-right" ng-controller="CartList">
+      <div class="col-4 float-right pt-2" ng-controller="CategoryList">
         <ul class="list-inline pt-3">
           <li class="list-inline-item" id="information_categories">
             <a class="btn btn-light btn--pill">Information Categories</a>
-            <ul class="collapse list-unstyled" id="information_categories_card">
+            <ul class="collapse list-unstyled" id="information_categories_card" style="display: none;">
               {% verbatim %}
-              <li ng-repeat="category in categories" ng-if="category.count > 0">
-                <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
+              <li ng-repeat="category in categories">
+                <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
                   title="{{ category.gn_description }}" ng-click="multiple_choice_listener($event)"
                   class="{{category.active}}">
                   {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
@@ -32,7 +32,7 @@
           </li>
           <li class="list-inline-item" id="user_menu">
             {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
-            <a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
+            <a class="btn btn-light rounded-pill" href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
             {% elif user.is_authenticated %}
             <div id="nav_avatar" class="">
               <a class="btn btn-light rounded-pill">{% autoescape off %}{% avatar profile 34 %}{% endautoescape %}
@@ -45,13 +45,13 @@
                 {% endwith %}
               </a>
             </div>
-            <ul id="user_menu_card" style="display: none;">
-              <div class="card position-absolute" style="top: 80px;">
-                <div class="card-body p-3">
+            <ul id="user_menu_card" style="display: none;" class="m-0">
+              <div class="card">
+                <div class="card-body p-1">
                   <div class="">
                     <ul class="list-group m-0">
                       <li class="list-group-item p-0 border-0">
-                        <a id="btn_wrapper" href="{% url "profile_detail" user.username %}"
+                        <a class="btn_wrapper" href="{% url "profile_detail" user.username %}"
                             role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                               <rect width="24" height="24" fill="url(#patternProfile)"/>
                               <defs>
@@ -67,7 +67,7 @@
                   <div class="">
                     <ul class="list-group m-0">
                       <li class="list-group-item p-0 border-0">
-                        <a id="btn_wrapper" href="{% url "recent-activity" %}"
+                        <a class="btn_wrapper" href="{% url "recent-activity" %}"
                             role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M17.7 13.5L15 4.5H13.5L10.737 14.46L8.985 7.035H7.53L5.775 13.5H1.5V14.985H6.345L7.08 14.43L8.19 10.38L9.885 18H11.43L14.235 7.44L16.425 14.46L17.145 15H22.5V13.5H17.7Z" fill="black"/>
                               </svg> {% trans " Recent Activity" %} </a>
@@ -77,7 +77,7 @@
                   <div class="">
                     <ul class="list-group m-0">
                       <li class="list-group-item p-0 border-0">
-                        <a id="btn_wrapper" href="{% url "favorite_list" %}"
+                        <a class="btn_wrapper" href="{% url "favorite_list" %}"
                             role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                               <rect width="24" height="24" fill="url(#pattern0)"/>
                               <defs>
@@ -99,7 +99,7 @@
                             class="msgInbx">{{ messages }}+</span></span>
                         {% endif %}
                       {% endif %}
-                        <a id="btn_wrapper" href="{% url "messages_inbox" %}"
+                        <a class="btn_wrapper" href="{% url "messages_inbox" %}"
                         role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                           <rect width="24" height="24" fill="url(#patternInbox)"/>
                           <defs>
@@ -114,7 +114,7 @@
                   <div class="">
                     <ul class="list-group m-0">
                       <li class="list-group-item p-0 border-0">
-                        <a id="btn_wrapper" href="{% url "group_list" %}"
+                        <a class="btn_wrapper" href="{% url "group_list" %}"
                             role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <path d="M12 12.75C13.63 12.75 15.07 13.14 16.24 13.65C17.32 14.13 18 15.21 18 16.38V18H6V16.39C6 15.21 6.68 14.13 7.76 13.66C8.93 13.14 10.37 12.75 12 12.75ZM4 13C5.1 13 6 12.1 6 11C6 9.9 5.1 9 4 9C2.9 9 2 9.9 2 11C2 12.1 2.9 13 4 13ZM5.13 14.1C4.76 14.04 4.39 14 4 14C3.01 14 2.07 14.21 1.22 14.58C0.48 14.9 0 15.62 0 16.43V18H4.5V16.39C4.5 15.56 4.73 14.78 5.13 14.1ZM20 13C21.1 13 22 12.1 22 11C22 9.9 21.1 9 20 9C18.9 9 18 9.9 18 11C18 12.1 18.9 13 20 13ZM24 16.43C24 15.62 23.52 14.9 22.78 14.58C21.93 14.21 20.99 14 20 14C19.61 14 19.24 14.04 18.87 14.1C19.27 14.78 19.5 15.56 19.5 16.39V18H24V16.43ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6Z" fill="black"/>
                               </svg> {% trans " Groups" %} </a>
@@ -124,16 +124,15 @@
                   <div class="">
                     <ul class="list-group m-0">
                       <li class="list-group-item p-0 border-0">
-                        <a id="btn_wrapper" href="{% url "group_category_list" %}"
+                        <a class="btn_wrapper" href="{% url "group_category_list" %}"
                             role="tab" class="p-2"><i class="fa-solid fa-user"></i> {% trans " Group Category" %} </a>
                       </li>
                     </ul>
                   </div>
-                  <li role="separator" class="divider"></li>
                   <div class="">
                     <ul class="list-group m-0">
                       <li class="list-group-item p-0 border-0">
-                        <a id="btn_wrapper" href="{% url "account_logout" %}"
+                        <a class="btn_wrapper" href="{% url "account_logout" %}"
                             role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                               <rect width="24" height="24" fill="url(#patternLogOut)"/>
                               <defs>
@@ -157,9 +156,9 @@
           <li class="list-inline-item">
             {% if csrf_token != "NOTPROVIDED" %}
             {% get_current_language as LANGUAGE %}
-            <form class="form-inline" action="/i18n/setlang/" method="post">
+            <form id="select-language" class="form-inline" action="/i18n/setlang/" method="post" style="max-width: 64px;">
               {% csrf_token %}
-              <select id="select-language" class="text-dark" name="language" onchange="javascript:form.submit()">
+              <select class="selectpicker rounded-pill" name="language" onchange="javascript:form.submit()">
                 {% for lang in LANGUAGES %}
                 <option value="{{ lang.0 }}" {% ifequal LANGUAGE_CODE lang.0 %} selected="selected" {% endifequal %}>
                   {{ lang.0|upper }}

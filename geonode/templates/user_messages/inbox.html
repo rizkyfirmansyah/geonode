@@ -31,7 +31,6 @@
               <i id=id-mark-as-unread class="fa-solid fa-envelope" title="{% trans "Mark selected as unread" %}"></i>
           </div>
 
-          <script src="{% static "lib/js/jquery.js" %}"></script>
           <script>
               $("#id-mark-as-unread").click(() => {
                   $( "#id-action-type" ).attr('value', 'unread');

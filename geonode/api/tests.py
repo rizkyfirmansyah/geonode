@@ -628,7 +628,7 @@ class DataTypeResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
             'api_dispatch_list',
             kwargs={
                 'api_name': 'api',
-                'resource_name': 'datatype'})
+                'resource_name': 'data_type'})
         all_public()
         self.token = get_or_create_token(self.user)
         self.auth_header = f'Bearer {self.token}'

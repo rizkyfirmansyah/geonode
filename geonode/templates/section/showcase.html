@@ -6,14 +6,14 @@
       {% with facet_type='home' %}
         {% facets as facets %}
         <div class="col-4">    
-            <p><a href="{% url "document_browse" %}"><i class="text-white fa-solid fa-newspaper fa-4x"></i></a></p>
-            <h2><a class="text-white" href="{% url "document_browse" %}">{{ facets.document|default:_("No") }}
+            <p><a href="{{ SITEURL }}catalogue"><i class="text-white fa-solid fa-newspaper fa-4x"></i></a></p>
+            <h2><a class="text-white" href="{{ SITEURL }}catalogue">{{ facets.document|default:_("No") }}
                 {% blocktrans count counter=facets.document %}Dataset{% plural %}Datasets{% endblocktrans %}</a></h2>
         </div>
         <div class="col-4">
           <p><a href="{% url "maps_browse" %}"><i class="text-white fa-solid fa-map-location-dot fa-4x"></i></a></p>
           <h2><a class="text-white" href="{% url "maps_browse" %}">{{ facets.map|default:_("No") }}
-              {% blocktrans count counter=facets.map %}Map{% plural %}Maps{% endblocktrans %}</a></h2>
+              {% blocktrans count counter=facets.map %}Visualization{% plural %}Visualizations{% endblocktrans %}</a></h2>
         </div>
         <div class="col-4">
           <p><a href="{% url "profile_browse" %}"><i class="text-white fa-solid fa-user fa-4x"></i></a></p>

@@ -139,13 +139,13 @@
     </ul>
 </nav>
 {% endif %}
-{% if SEARCH_FILTERS.REGION_ENABLED and facet_type != 'documents' %}
+{% if SEARCH_FILTERS.REGION_ENABLED %}
 {% include "search/_region_filter.html" %}
 {% endif %}
-{% if SEARCH_FILTERS.EXTENT_ENABLED and facet_type != 'documents' %}
+{% if SEARCH_FILTERS.EXTENT_ENABLED %}
 {% include "search/_extent_filter.html" %}
 {% endif %}
-{% if SEARCH_FILTERS.DATE_ENABLED and facet_type != 'documents' %}
+{% if SEARCH_FILTERS.DATE_ENABLED %}
 {% include "search/_date_filter.html" %}
 {% endif %}
 {% block extrascript %}

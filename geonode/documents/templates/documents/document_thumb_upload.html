@@ -7,7 +7,7 @@
 
 {% block body_class %}data documents upload{% endblock body_class %}
 
-{% block body_outer %}
+{% block body %}
   <div class="row w-100">
     <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Datasets" %}</a>
     <h2 class="page-title">{% trans "Upload Document's Thumbnail" %}</h2>
@@ -60,7 +60,7 @@
         {% endblock %}
     </div>
 </div>
-{% endblock body_outer %}
+{% endblock body %}
 
 {% block extra_script %}
     {{ block.super }}

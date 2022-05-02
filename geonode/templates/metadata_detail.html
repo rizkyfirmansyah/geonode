@@ -6,7 +6,7 @@
 
 {% block body_class %}{% trans "data" %}{% endblock %}
 
-{% block body_outer %}
+{% block body %}
 
 <style>
 
@@ -96,7 +96,7 @@
         
                 {% if resource.data_type %}
                 <dt>{% trans "Data Type" %}</dt>
-                <dd><a href="/search/?datatype__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+                <dd><a href="/search/?data_type__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
                 {% if resource.data_type.description %}
                 <dd class="data_type-more collapse">
                     {{ resource.data_type.description }}

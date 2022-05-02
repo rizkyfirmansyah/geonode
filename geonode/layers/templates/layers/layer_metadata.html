@@ -14,7 +14,7 @@
 
 {% block body_class %}{% trans "data" %}{% endblock body_class %}
 
-{% block body_outer %}
+{% block body %}
 
   <div class="container-fluid page-header" style="position: relative;">
     <h2 class="page-title">{% trans "Metadata" %}&nbsp;{% blocktrans with layer.title as layer_title %}for
@@ -115,4 +115,4 @@
   </form>
 
 {{ block.super }}
-{% endblock body_outer %}
+{% endblock body %}

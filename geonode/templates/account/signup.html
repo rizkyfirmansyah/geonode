@@ -5,7 +5,7 @@
 {% load account socialaccount %}
 
 {% block title %}{% trans "Sign up" %}{% endblock %}
-{% block middle %}
+{% block body %}
     <div class="row">
       <div class="col-md-12 form-body text-center" id="registration" style="margin-top: 120px; padding-right: 60px; padding-left: 60px;">
         <div id="signup_container">
@@ -27,7 +27,7 @@
                   {% endif %}
                   <div class="form-group h-captcha" name="captcha" data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98" data-theme="dark" style="margin-top: 30px;"></div>
                   <div class="form-actions">
-                      <button type="submit" class="btn btn-primary btn-full l-space" style="margin-bottom: 40px;">{% trans "Sign up" %}</button>
+                      <button type="submit" class="btn btn-primary w-100">{% trans "Sign up" %}</button>
                   </div>
               </fieldset>
           </form>

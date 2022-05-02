@@ -86,7 +86,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
     // than scrolling. Set removes any duplicates.
     var results = [...new Set(data.results.map(item => item.text))] || []
     var results_wrapper = $('<div class="ac-results"></div>');
-    var base_elem = $('<div class="result-wrapper"><a href="#" id="btn_wrapper" class="ac-result button"></a></div>');
+    var base_elem = $('<div class="result-wrapper"><a href="#" class="ac-result button btn_wrapper"></a></div>');
     var container = this.query_container;
 
     function appendElement() {

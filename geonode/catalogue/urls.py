@@ -19,6 +19,7 @@
 #########################################################################
 
 from django.conf.urls import url
+from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
@@ -27,5 +28,7 @@ urlpatterns = [
     url(r'^csw_to_extra_format/(?P<layeruuid>[^/]*)/(?P<resname>[^/]*).txt$',
         views.csw_render_extra_format_txt, name="csw_render_extra_format_txt"),
     url(r'^csw_to_extra_format/(?P<layeruuid>[^/]*)/(?P<resname>[^/]*).html$',
-        views.csw_render_extra_format_html, name="csw_render_extra_format_html")
+        views.csw_render_extra_format_html, name="csw_render_extra_format_html"),
+    url(r'', TemplateView.as_view(template_name='catalogue_list.html')),
+
 ]

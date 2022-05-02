@@ -1,10 +1,10 @@
-{% extends "geonode_base.html" %}
+{% extends "catalogue_base.html" %}
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %} {% trans "Search" %} - {{ block.super }} {% endblock %}
+{% block title %} {% trans "Explore Datasets" %} - {{ block.super }} {% endblock %}
 
-{% block body_class %}search{% endblock %}
+{% block body_class %}catalogue catalogue-list explore{% endblock %}
 
 {% block body %}
   {% include "search/_search_sidebar.html" %}
@@ -13,8 +13,8 @@
     <div class="card-body">
       <div class="row">
         {% with include_type_filter='true' %}
-          {% with header='Type' %}
-            {% with filter='type__in' %}
+            {% with header='Document Type' %}
+              {% with filter='doc_type__in' %}
               {% include "search/_search_content.html" %}
             {% endwith %}
           {% endwith %}
@@ -30,30 +30,28 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12 mt-4">
-      {% include 'base/_resourcebase_snippet.html' %}
-      {% include 'search/_pagination.html' %}
+    <div class="row">
+      <div class="col-12 mt-4">
+        {% include 'base/_resourcebase_snippet.html' %}
+        {% include 'search/_pagination.html' %}
+      </div>
     </div>
-  </div>
 {% endblock %}
 
 {% block extra_script %}
 {{ block.super }}
-  {% if GEONODE_SECURITY_ENABLED %}
-    {% include "_permissions_form_js.html" %}
-  {% endif %}
   <script type="text/javascript">
-    {% if HAYSTACK_SEARCH %}
-    SEARCH_URL = '{% url 'api_get_search' api_name='api' resource_name='base' %}'
-    {% else %}
-    SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='base' %}'
-    {% endif %}
+      {% if HAYSTACK_SEARCH %}
+          SEARCH_URL = '{% url 'api_get_search' api_name='api' resource_name='base'%}'
+      {% else %}
+          SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='base' %}';
+      {% endif %}
+    FILTER_TYPE = 'base';
   </script>
   {% with include_spatial='true' %}
-  {% include 'search/search_scripts.html' %}
+    {% include 'search/search_scripts.html' %}
   {% endwith %}
 
   {% include 'section/require_signin.html' %}
-
+  
 {% endblock extra_script %}

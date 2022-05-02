@@ -53,7 +53,7 @@ MD_CORE_MODEL = {
         'pycsw:SecurityConstraints': 'securityconstraints',
         'pycsw:ParentIdentifier': 'parentidentifier',
         'pycsw:TopicCategory': 'topiccategory',
-        'pycsw:DataType': 'datatype',
+        'pycsw:DataType': 'data_type',
         'pycsw:ResourceLanguage': 'language',
         'pycsw:GeographicDescriptionCode': 'geodescode',
         'pycsw:Denominator': 'denominator',

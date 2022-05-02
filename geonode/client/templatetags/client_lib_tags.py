@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -38,6 +37,52 @@ def bing_api_key():
 @register.simple_tag
 def google_api_key():
     return getattr(settings, "GOOGLE_API_KEY", None)
+
+
+# For client single page links
+@register.simple_tag
+def layer_list_url():
+    return hookset.layer_list_url()
+
+
+@register.simple_tag
+def layer_upload_url():
+    return hookset.layer_upload_url()
+
+
+@register.simple_tag
+def layer_detail_url(layer):
+    return hookset.layer_detail_url(layer)
+
+
+@register.simple_tag
+def map_list_url():
+    return hookset.map_list_url()
+
+
+@register.simple_tag
+def map_detail_url(map):
+    return hookset.map_detail_url(map)
+
+
+@register.simple_tag
+def document_list_url():
+    return hookset.document_list_url()
+
+
+@register.simple_tag
+def document_detail_url(document):
+    return hookset.document_detail_url(document)
+
+
+@register.simple_tag
+def geoapp_list_url():
+    return hookset.geoapp_list_url()
+
+
+@register.simple_tag
+def geoapp_detail_url(geoapp):
+    return hookset.geoapp_detail_url(geoapp)
 
 
 def parse_tag(token, parser):
@@ -92,9 +137,7 @@ class GeoNodeClientLibraryTag(template.Node):
                 hookset.layer_list_template(
                     context=context))
         elif self.tag_name == 'get_layer_detail':
-            t = context.template.engine.get_template(
-                hookset.layer_detail_template(
-                    context=context))
+            t = context.template.engine.get_template('geonode-mapstore-client/legacy/layer_detail.html')
         elif self.tag_name == 'get_layer_new':
             t = context.template.engine.get_template(
                 hookset.layer_new_template(
@@ -150,9 +193,7 @@ class GeoNodeClientLibraryTag(template.Node):
                 hookset.map_update_template(
                     context=context))
         elif self.tag_name == 'get_map_embed':
-            t = context.template.engine.get_template(
-                hookset.map_embed_template(
-                    context=context))
+            t = context.template.engine.get_template('geonode-mapstore-client/map_embed.html')
         elif self.tag_name == 'get_map_download':
             t = context.template.engine.get_template(
                 hookset.map_download_template(

@@ -21,6 +21,8 @@
 {% load static from staticfiles %}
 {% load account socialaccount %}
 {% load base_tags %}
+{% load client_lib_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -40,8 +42,6 @@
 
 
     <link rel="shortcut icon" href="{% if custom_theme.favicon %}{{SITEURL}}/uploaded/{{ custom_theme.favicon }} {% else %} {% static 'geonode/img/favicon.ico' %} {% endif %}" />
-    <link href="{% static "lib/css/ol.css" %}" rel="stylesheet" />
-    <script src="{% static "lib/js/ol.js" %}"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" integrity="sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_regular.ttf" %}" crossorigin="" />
@@ -72,6 +72,35 @@
       <link href="{% static "lib/css/toastr.min.css" %}" rel="stylesheet"/>
     {% else %}
       <link href="{% static "lib/css/assets.min.css" %}" rel="stylesheet"/>
+    {% endif %}
+
+    {% if DEBUG_STATIC %}
+      <script src="{% static "lib/js/jquery.js" %}"></script>
+      <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap4-toggle.min.js" %}"></script>
+      <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
+      <script src="{% static "lib/js/select2.full.js" %}"></script>
+      <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
+      <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
+      <script src="{% static "lib/js/jquery-ui.js" %}"></script>
+      <script src="{% static "lib/js/jquery.raty.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap.js" %}"></script>
+      <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
+      <script src="{% static "lib/js/json2.js" %}"></script>
+      <script src="{% static "lib/js/waypoints.js" %}"></script>
+      <script src="{% static "lib/js/underscore.js" %}"></script>
+      <script src="{% static "lib/js/angular.min.js" %}"></script>
+      <script src="{% static "lib/js/angular-cookies.js" %}"></script>
+      <script src="{% static "lib/js/angular-openlayers-directive.min.js" %}"></script>
+      <script src="{% static "lib/js/angular-leaflet-directive.min.js" %}"></script>
+      <script src="{% static "lib/js/angular-sanitize.min.js" %}"></script>
+      <script src="{% static "lib/js/pace.min.js" %}"></script>
+      <script src="{% static "lib/js/toastr.js" %}"></script>
+    {% else %}
+      <script src="{% static "lib/js/assets.min.js" %}"></script>
     {% endif %}
     
       <link rel='stylesheet' id='cookie-law-info-css'  href="{% static "geonode/css/cookie-law-info/cookie-law-info-public.css" %}" type='text/css' media='all' />
@@ -363,39 +392,20 @@
     {% include "modal/remove_documents.html" %}
     <!-- End of Modal -->
 
-    {% if DEBUG_STATIC %}
-      <script src="{% static "lib/js/jquery.js" %}"></script>
-      <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
-      <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
-      <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
-      <script src="{% static "lib/js/bootstrap4-toggle.min.js" %}"></script>
-      <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
-      <script src="{% static "lib/js/select2.full.js" %}"></script>
-      <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
-      <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
-      <script src="{% static "lib/js/jquery-ui.js" %}"></script>
-      <script src="{% static "lib/js/jquery.raty.js" %}"></script>
-      <script src="{% static "lib/js/bootstrap.js" %}"></script>
-      <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
-      <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
-      <script src="{% static "lib/js/json2.js" %}"></script>
-      <script src="{% static "lib/js/waypoints.js" %}"></script>
-      <script src="{% static "lib/js/underscore.js" %}"></script>
-      <script src="{% static "lib/js/angular.min.js" %}"></script>
-      <script src="{% static "lib/js/angular-cookies.js" %}"></script>
-      <script src="{% static "lib/js/angular-openlayers-directive.min.js" %}"></script>
-      <script src="{% static "lib/js/angular-leaflet-directive.min.js" %}"></script>
-      <script src="{% static "lib/js/angular-sanitize.min.js" %}"></script>
-      <script src="{% static "lib/js/pace.min.js" %}"></script>
-      <script src="{% static "lib/js/toastr.js" %}"></script>
-    {% else %}
-      <script src="{% static "lib/js/assets.min.js" %}"></script>
-    {% endif %}
-    <script src="{% static "lib/js/toastr.js" %}"></script>
+    <script text="javascript">
+      var app = angular.module('category', [])
+      .controller("CategoryList", function($scope, $http) {
+          $http.get(siteUrl + 'api/v2/categories')
+              .then(function(response) {
+                  $scope.categories = response.data.categories;
+              });
+      });
+      angular.bootstrap(document, ['category']);
+    </script>
       
     <script src="{% static "geonode/js/utils/utils.js" %}"></script>
     <script src="{% static "geonode/js/base/base.js" %}"></script>
-    <script src="{% static "geonode/js/search/cart.js" %}"></script>
+
     <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
 
     <script src="{% static "geonode/js/base/popper.js" %}"></script>
@@ -403,7 +413,6 @@
     <script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
     <script type="text/javascript" src="{% static "lib/js/modernizr.js" %}"></script>
 
-    {% block extra_script %}{% endblock extra_script %}
 
     {% include "modal/resource_uploading.html" %}
     {% include "modal/thumbnail_processing.html" %}
