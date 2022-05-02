@@ -8,7 +8,7 @@
     --border-radius-sm: 0.5em;
     --border-radius-md: 0.75em;
     --border-radius-fix-lg: 50px;
-    --card-content: 96px;
+    --header-height: 96px;
     --spacing-1: 4rem;
     --primary: #1D4842 !important;
     --secondary: #fff !important;
@@ -25,13 +25,24 @@
     font-size: var(--font-small);
 }
 
-.card-content {
-    min-height: var(--card-content);
+.header-height {
+    min-height: var(--header-height);
+}
+
+#information_categories a {
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+}
+
+#nav_avatar a,
+#information_categories a {
+    font-size: 1.1em;
 }
 
 #information_categories_card,
 #user_menu_card {
-    top: 96px;
+    top: var(--header-height);
     display: table;
     position: absolute;
     background-color: white;
@@ -39,8 +50,13 @@
     font-size: large;
 }
 
+.dropdown-item.active,
+.dropdown-item:active {
+    background-color: var(--web-surface);
+}
+
 #select-language .dropdown-menu.show {
-    top: 2em !important;
+    top: 1.4em !important;
     padding: 0.4rem!important;
 }
 
@@ -50,6 +66,15 @@
 
 #select-language button {
     border-radius: 50rem!important;
+}
+
+#select-language button::after {
+    content: none;
+}
+
+#select-language .filter-option-inner-inner {
+    font-size: 1.1em;
+    padding: 0.2em;
 }
 
 
@@ -1835,11 +1860,15 @@ input::-moz-focus-inner {
 
 .s-header {
     width: 100%;
-    height: 96px;
+    height: var(--header-height);
     background-color: var(--primary);
     position: absolute;
     top: 0;
     z-index: 500
+}
+
+.s-header a {
+    color: var(--primary) !important;
 }
 
 .s-header a img:hover {
@@ -1856,7 +1885,7 @@ input::-moz-focus-inner {
 }
 
 .header-logo img {
-    max-height: 96px;
+    max-height: var(--header-height);
     padding: 20px;
 }
 
@@ -3718,7 +3747,7 @@ html {
 #wrap {
     background-color: var(--web-surface);
     position: relative;
-    margin-top: 96px;
+    margin-top: var(--header-height);
 }
 
 .web-surface {

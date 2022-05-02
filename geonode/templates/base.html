@@ -400,6 +400,20 @@
     {% include "modal/remove_documents.html" %}
     <!-- End of Modal -->
 
+    {% comment %} {% get_current_path as path %}
+    {% if path != '/' or path != '/search' %}
+      <script text="javascript">
+        var app = angular.module('category', [])
+        .controller("CategoryList", function($scope, $http) {
+            $http.get(siteUrl + 'api/v2/categories')
+                .then(function(response) {
+                    $scope.categories = response.data.categories;
+                });
+        });
+        angular.bootstrap(document, ['category']);
+      </script>
+    {% endif %} {% endcomment %}
+
     {% comment %} <script src="{% static "lib/js/toastr.js" %}"></script> {% endcomment %}
       
     <script src="{% static "geonode/js/utils/utils.js" %}"></script>

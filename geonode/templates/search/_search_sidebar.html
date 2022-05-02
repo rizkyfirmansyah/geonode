@@ -2,16 +2,14 @@
 
 <div class="wrapper border-top">
   <nav id="sidebar">
-  
-    {% if facet_type == 'layers' %}
+
+    {% if user.is_authenticated %}
     <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Selection" %}'
       emptyString="{% trans "No list items selected. Use the selection fields to add." %}">
     </resource-cart>
-    {% endif %}
     <div>
-        {% if user.is_authenticated and facet_type == 'layers' %}
           {% block bulk_perms_button %}
-            <div class="btn-group btn-group-justified" role="group" aria-label="tools">
+            <div class="" role="group" aria-label="tools">
               <div class="btn-group btn-search-content" role="group">
                 <button type="button" class="btn btn-primary" ng-disabled="!cart.getCart().items.length" data-toggle="modal"
                   data-target="#_bulk_permissions">{% trans "Set permissions" %}</button>

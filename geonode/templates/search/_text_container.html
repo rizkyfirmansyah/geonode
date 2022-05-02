@@ -1,15 +1,17 @@
 {% load i18n %}
 
-<div class="col-9">
+<div class="mt-4">
   <form class="autocomplete-input input-group" id="text-search-autocomplete">
     {% csrf_token %}
     <div id="text-search-container" class="w-100">
-      <div class="row btn--pill bg-web">
+      <div class="row btn--pill bg-web" id="search_header">
         <span>
           <button class="btn" type="submit" id="text_search_btn"><i class="fa-solid fa-search"></i></button>
         </span>
-        <input autocomplete="off" ng-model="text_query" type="text" name="text_search_input" id="text_search_input"
-          placeholder="{% trans 'Search' %}" class="col">
+        <div class="col d-inline-grid p-0">
+          <input autocomplete="off" ng-model="text_query" type="text" name="text_search_input" class="w-100" id="text_search_input"
+            placeholder="{% trans 'Search' %}">
+        </div>
         <div aria-label="Delete" role="button" class="delete_search mr-3"><span class="dlt_span" role="button" tabindex="0"
             aria-label="Delete" title="Delete"><svg focusable="false" xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24">
@@ -46,7 +48,7 @@
 
     $("#text_search_input").on("change keyup paste click", function () {
       let _length = $("#text_search_input").val().length;
-      let _width = (_length * 1.06) + 'em';
+      let _width = (_length * .54) + 'em';
       if (_length > 0) {
         $(".input-highlight").css("width", _width);
       } else {

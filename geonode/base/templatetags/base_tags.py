@@ -95,7 +95,53 @@ def facets(context):
         except Exception:
             pass
 
-    if facet_type == 'geoapps':
+    if facet_type == 'catalogue':
+        documents = Document.objects.filter(title__icontains=title_filter)
+        if data_type_filter:
+            documents = documents.filter(data_type__identifier__in=data_type_filter)
+        if resource_type_filter:
+            documents = documents.filter(resource__type__in=resource_type_filter)
+        if category_filter:
+            documents = documents.filter(category__identifier__in=category_filter)
+        if regions_filter:
+            documents = documents.filter(regions__name__in=regions_filter)
+        if owner_filter:
+            documents = documents.filter(owner__username__in=owner_filter)
+        if date_gte_filter:
+            documents = documents.filter(date__gte=date_gte_filter)
+        if date_lte_filter:
+            documents = documents.filter(date__lte=date_lte_filter)
+        if date_range_filter:
+            documents = documents.filter(date__range=date_range_filter.split(','))
+
+        documents = get_visible_resources(
+            documents,
+            request.user if request else None,
+            admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
+            unpublished_not_visible=settings.RESOURCE_PUBLISHING,
+            private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
+
+        if keywords_filter:
+            treeqs = HierarchicalKeyword.objects.none()
+            for keyword in keywords_filter:
+                try:
+                    kws = HierarchicalKeyword.objects.filter(name__iexact=keyword)
+                    for kw in kws:
+                        treeqs = treeqs | HierarchicalKeyword.get_tree(kw)
+                except Exception:
+                    # Ignore keywords not actually used?
+                    pass
+
+            documents = documents.filter(Q(keywords__in=treeqs))
+
+        if not settings.SKIP_PERMS_FILTER:
+            documents = documents.filter(id__in=authorized)
+
+        counts = documents.values('doc_type').annotate(count=Count('doc_type'))
+        facets = {count['doc_type']: count['count'] for count in counts}
+
+        return facets
+    elif facet_type == 'geoapps':
         facets = {}
 
         from django.apps import apps
@@ -366,7 +412,7 @@ def get_current_path(context):
 def get_context_resourcetype(context):
     c_path = get_current_path(context)
     resource_types = ['layers', 'maps', 'geoapps', 'documents', 'search', 'people',
-                      'groups/categories', 'groups']
+                      'groups/categories', 'groups', 'catalogue']
     for resource_type in resource_types:
         if f"/{resource_type}/" in c_path:
             return resource_type
