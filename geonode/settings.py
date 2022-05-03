@@ -450,6 +450,7 @@ INSTALLED_APPS = (
     'django_celery_results',
     'markdownify',
     'colorfield',
+    'django_user_agents',
 
     # REST APIs
     'rest_framework',
@@ -729,6 +730,7 @@ MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',   # ref to: http://whitenoise.evans.io/en/stable/django.html#enable-whitenoise
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
     'geonode.base.middleware.MaintenanceMiddleware',
     'geonode.base.middleware.ReadOnlyMiddleware',   # a Middleware enabling Read Only mode of Geonode
 )
@@ -1577,6 +1579,57 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
 
     MAPSTORE_BASELAYERS = DEFAULT_MS2_BACKGROUNDS
 
+    # list of projections available in the mapstore client
+    # properties:
+    # - code: epsg code of the projection
+    # - def: definition of projection in Proj4js string
+    # - extent: max extent in projected coordinates [minx, miny, maxx, maxy]
+    # - worldExtent: max extent in WGS84 coordinates [minx, miny, maxx, maxy]
+    # example:
+    # MAPSTORE_PROJECTION_DEFS = [
+    #   {
+    #        "code": "EPSG:3395",
+    #        "def": "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs",
+    #        "extent": [-20026376.39, -15496570.74, 20026376.39, 18764656.23 ],
+    #        "worldExtent": [ -180.0, -80.0, 180.0, 84.0 ]
+    #    }
+    # ]
+    MAPSTORE_PROJECTION_DEFS = []
+
+    # list of rules to change the plugins configuration
+    # allowed operation: add, remove and replace
+    # example: remove Measure plugin from map_edit page
+    # MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = [
+    #     {
+    #         "op": "remove",
+    #         "jsonpath": "$.map_edit..[?(@.name == 'Measure')]"
+    #     }
+    # ]
+    # example: add SearchServicesConfig plugin to map_edit page
+    # MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = [
+    #     {
+    #         "op": "add",
+    #         "jsonpath": "/map_edit/-",
+    #         "value": {
+    #             "name": "SearchServicesConfig"
+    #         }
+    #     }
+    # ]
+    # example: replace default configuration of Print plugin in map_edit page
+    # MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = [
+    #     {
+    #         "op": "replace",
+    #         "jsonpath": "$.map_edit..[?(@.name == 'Print')].cfg",
+    #         "value": {
+    #             "useFixedScales": False
+    #         }
+    #     }
+    # ]
+    MAPSTORE_PLUGINS_CONFIG_PATCH_RULES = []
+
+    # Extensions path to use in importing custom extensions into geonode
+    MAPSTORE_EXTENSIONS_FOLDER_PATH = '/static/mapstore/extensions/'
+
 # -- END Client Hooksets Setup
 
 SERVICE_UPDATE_INTERVAL = 0
@@ -1762,7 +1815,8 @@ if USE_GEOSERVER:
 #          'task': 'my_app.tasks.send_notification',
 #          'schedule': crontab(hour=16, day_of_week=5),
 #     },
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULER = os.environ.get(
+    'CELERY_BEAT_SCHEDULER', "celery.beat:PersistentScheduler")
 CELERY_BEAT_SCHEDULE = {}
 
 DELAYED_SECURITY_SIGNALS = ast.literal_eval(os.environ.get('DELAYED_SECURITY_SIGNALS', 'False'))
@@ -1995,9 +2049,16 @@ THUMBNAIL_BACKGROUND = {
     # 'class': 'geonode.thumbs.background.GenericXYZBackground',
     # initialization parameters for generator instance, valid only for generic classes
     'options': {
-        # 'url': URL for the generic xyz service
+        # 'url': URL for the generic xyz / tms service
+        # 'tms': False by default. Set to True if the service is TMS
         # 'tile_size': tile size for the generic xyz service, default is 256
     },
+    # example options for a TMS service
+    # 'class': 'geonode.thumbs.background.GenericXYZBackground',
+    # 'options': {
+    #    'url': 'http://maps.geosolutionsgroup.com/geoserver/gwc/service/tms/1.0.0/osm%3Aosm_simple_light@EPSG%3A900913@png/{z}/{x}/{y}.png',
+    #    'tms': True
+    # },
 }
 
 # define the urls after the settings are overridden
@@ -2113,6 +2174,7 @@ FILE_UPLOAD_HANDLERS = [
 
 DEFAULT_MAX_UPLOAD_SIZE = int(os.getenv('DEFAULT_MAX_UPLOAD_SIZE', 2848576000))  # 3 GB
 DEFAULT_BUFFER_CHUNK_SIZE = int(os.getenv('DEFAULT_BUFFER_CHUNK_SIZE', 64 * 1024))
+DEFAULT_MAX_PARALLEL_UPLOADS_PER_USER = int(os.getenv('DEFAULT_MAX_PARALLEL_UPLOADS_PER_USER', 5))
 
 '''
 Default schema used to store extra and dynamic metadata for the resource
