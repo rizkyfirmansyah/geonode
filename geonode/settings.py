@@ -398,8 +398,10 @@ GEONODE_INTERNAL_APPS = (
     'geonode.groups',
     'geonode.services',
     'geonode.management_commands_http',
+
     'geonode.datasets',
     'geonode.faqs',
+    'geonode.storage',
 
     # GeoServer Apps
     # Geoserver needs to come last because
