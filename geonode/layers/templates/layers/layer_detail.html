@@ -38,20 +38,26 @@
 
 {% block body %}
 <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
-<div class="col-md-12">
-
-  <h2 class="col-md-8">{{ resource.title|default:resource.alternate }}</h2>
-  {% if storeType == 'remoteStore' %}
-  <em>
-    <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
-    {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
-  </em>
-  {% endif %}
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="col-md-4" target="_self"><button class="float-right btn btn-info">Return to
-      Explore</button></a>
+<div class="card rounded bg-light mb-2">
+  <div class="card-body">
+    <div class="row">
+      <h2 class="col-8">{{ resource.title|default:resource.alternate }}</h2>
+      <div class="col-4">
+        <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Datasets" %}</a>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    {% if storeType == 'remoteStore' %}
+    <em>
+      <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
+      {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
+    </em>
+    {% endif %}
+  </div>
 </div>
 
-<div class="row">
+<div class="row w-100">
   <div class="col-md-8 content_block">
 
     <div id="embedded_map" class="mrg-btm">
