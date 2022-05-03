@@ -1,5 +1,5 @@
 // OpenLayers. See https://openlayers.org/
-// License: https://raw.githubusercontent.com/openlayers/openlayers/main/LICENSE.md
+// License: https://raw.githubusercontent.com/openlayers/openlayers/master/LICENSE.md
 // Version: v4.6.5
 ;(function (root, factory) {
   if (typeof exports === "object") {
@@ -1070,3 +1070,4 @@ go.prototype.dispatchEvent=go.prototype.b;go.prototype.getRevision=go.prototype.
 lo.prototype.changed=lo.prototype.u;lo.prototype.dispatchEvent=lo.prototype.b;lo.prototype.getRevision=lo.prototype.K;lo.prototype.on=lo.prototype.I;lo.prototype.once=lo.prototype.once;lo.prototype.un=lo.prototype.J;
   return OPENLAYERS.ol;
 }));
+

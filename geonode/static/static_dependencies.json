@@ -1,6 +1,6 @@
 {
     "assets.min.css": [
-        "datatables/media/css/jquery.dataTables.css",
+        "datatables/media/css/jquery.dataTables.min.css",
         "select2/dist/css/select2.css",
         "jquery-ui-dist/jquery-ui.theme.min.css",
         "jquery-ui-dist/jquery-ui.structure.min.css",
@@ -18,20 +18,11 @@
         "@yaireo/tagify/dist/tagify.css",
         "toastr/build/toastr.min.css"
     ],
-    "leaflet.plugins.min.css": [
-        "leaflet/dist/leaflet.css",
-        "leaflet-easybutton/src/easy-button.css",
-        "leaflet.pancontrol/src/L.Control.Pan.css",
-        "leaflet-fullscreen/dist/leaflet.fullscreen.css",
-        "leaflet.control.opacity/dist/L.Control.Opacity.css",
-        "leaflet-measure/dist/leaflet-measure.css",
-        "leaflet-navbar/Leaflet.NavBar.css"
-    ],
     "openlayers.plugins.min.css": [
         "openlayers/dist/ol.css"
     ],
     "other_dependencies": [
-        "jquery/dist/jquery.js",
+        "jquery/dist/jquery.min.js",
         "jquery-ui-dist/jquery-ui.js",
         "angular/angular.js",
         "bootstrap-select/dist/js/bootstrap-select.js",
@@ -41,6 +32,7 @@
         "eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js",
         "handlebars/dist/handlebars.js",
         "jquery-waypoints/waypoints.js",
+        "datatables/media/js/jquery.dataTables.min.js",
         "requirejs/require.js",
         "requirejs-text/text.js",
         "requirejs/require.js"
@@ -61,7 +53,6 @@
         "angular/angular.min.js",
         "angular-cookies/angular-cookies.js",
         "angular-sanitize/angular-sanitize.min.js",
-        "angular-leaflet-directive/dist/angular-leaflet-directive.min.js",
         "angular-openlayers-directive/dist/angular-openlayers-directive.min.js",
 
         "eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js",
@@ -77,7 +68,7 @@
         "fastselect/dist/fastselect.standalone.js",
         "handlebars/dist/handlebars.min.js",
         "json2/lib/JSON2/static/json2.js",
-        "datatables/media/js/jquery.dataTables.js",
+        "datatables/media/js/jquery.dataTables.min.js",
         "raty-js/lib/jquery.raty.js",
         "timeago/jquery.timeago.js",
         "jq-ajax-progress/src/jq-ajax-progress.js",
@@ -93,16 +84,6 @@
         "toastr/build/toastr.min.js",
 
         "tinymce/tinymce.min.js"
-    ],
-    "leaflet-plugins.min.js": [
-        "leaflet/dist/leaflet.js",
-        "leaflet-fullscreen/dist/Leaflet.fullscreen.min.js",
-        "leaflet-measure/dist/leaflet-measure.js",
-        "leaflet-navbar/index.js",
-        "leaflet-easybutton/src/easy-button.js",
-        "leaflet.control.opacity/dist/L.Control.Opacity.js",
-        "leaflet.locatecontrol/dist/L.Control.Locate.min.js",
-        "leaflet.pancontrol/src/L.Control.Pan.js"
     ],
     "openlayers-plugins.min.js": [
         "openlayers/dist/ol.js"
@@ -125,21 +106,15 @@
     "images": [
         "raty-js/lib/images/*.png",
         "jquery-ui-dist/images/*",
-        "leaflet/dist/images/*.png",
-        "leaflet-fullscreen/dist/*.png",
-        "leaflet.control.opacity/img/*",
-        "leaflet-measure/dist/assets/*",
-        "leaflet-navbar/img/*",
-        "leaflet.pancontrol/src/images/*",
         "datatables/media/images/*.png",
         "timeago/*.png",
         "timeago/*.png",
         "zeroclipboard/dist/ZeroClipboard.swf"
     ],
-    "lib_css_assets": [
-        "leaflet-measure/assets/*"
+    "lib_fonts": [],
+    "lib_css_fonts": [
+        "raty-js/lib/fonts/*"
     ],
-    "lib_css_png": [
-        "leaflet-fullscreen/dist/*.png"
-    ]
+    "lib_css_assets": [],
+    "lib_css_png": []
 }
