@@ -1464,9 +1464,10 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'leaflet':
 
 """
 To enable the MapStore2 REACT based Client:
-1. pip install pip install django-geonode-mapstore-client==1.0
+1. pip install django-geonode-mapstore-client==1.0
 2. enable those:
 """
+
 if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     GEONODE_CLIENT_HOOKSET = os.getenv('GEONODE_CLIENT_HOOKSET', 'geonode_mapstore_client.hooksets.MapStoreHookSet')
 
@@ -1475,6 +1476,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             'mapstore2_adapter',
             'mapstore2_adapter.geoapps',
             'mapstore2_adapter.geoapps.geostories',
+            'mapstore2_adapter.geoapps.dashboards',
             'geonode_mapstore_client',)
 
     def get_geonode_catalogue_service():
