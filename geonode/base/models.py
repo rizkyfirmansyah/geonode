@@ -689,6 +689,13 @@ class ResourceBaseManager(PolymorphicManager):
                         file_uploaded_path = storage_manager.save(f'{folder}/{filename}', ff)
                         out.append(storage_manager.path(file_uploaded_path))
 
+            # making an update instead of save in order to avoid others
+            # signal like post_save and commiunication with geoserver
+            ResourceBase.objects.filter(id=resource_id).update(files=out)
+            return out
+        except Exception as e:
+            logger.exception(e)
+
     @staticmethod
     def cleanup_uploaded_files(resource_id):
         """Remove uploaded files, if any"""
