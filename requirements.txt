@@ -42,7 +42,7 @@ django-filter==2.4.0
 django-floppyforms==1.9.0
 django-forms-bootstrap==3.1.0
 # GeoNode org maintained apps.
-django-geonode-mapstore-client==3.3.1
+-e git+https://github.com/GeoNode/geonode-mapstore-client.git@3.3.1#egg=django_geonode_mapstore_client
 django-grappelli==2.15.1
 django-guardian==2.4.0
 django-haystack==3.1.1
