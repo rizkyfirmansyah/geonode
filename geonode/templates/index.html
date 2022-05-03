@@ -1,15 +1,405 @@
-{% extends "geonode_base.html" %}
-{% load markdownify %}
-{% load i18n %}
+{% load i18n avatar_tags %}
 {% load static %}
+{% load account socialaccount %}
 {% load base_tags %}
+{% load client_lib_tags %}
 
-{% block extra_script %}
-  <script type="text/javascript" src="{% static "geonode/js/cookie-law-info/cookie-law-info-public.js" %}"></script>
-  <script type="text/javascript">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta Http-Equiv="Cache-Control" Content="no-cache">
+    <meta Http-Equiv="Pragma" Content="no-cache">
+    <meta Http-Equiv="Expires" Content="0">
+    <meta Http-Equiv="Pragma-directive: no-cache">
+    <meta Http-Equiv="Cache-directive: no-cache">
     
-    $(document).ready(function() {
-      $("#wrap").css({"overflow": "hidden"});
-    });
-  </script>
-{% endblock extra_script %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="description" content="Spatial Data Infrastructure (SDI) is a platform for sharing (geo)spatial data."/>
+
+
+    <link rel="shortcut icon" href="{% if custom_theme.favicon %}{{SITEURL}}/uploaded/{{ custom_theme.favicon }} {% else %} {% static 'geonode/img/favicon.ico' %} {% endif %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js" integrity="sha512-6PM0qYu5KExuNcKt5bURAoT6KCThUmHRewN3zUFNaoI6Di7XJPTMoT6K0nsagZKk2OB4L7E3q1uQKHNHd4stIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preload" as="font" href="{% static "geonode/fonts/lato_regular.ttf" %}" crossorigin="" />
+    <link rel="preload" as="font" href="{% static "geonode/fonts/lato_bold.ttf" %}" crossorigin="" />
+    <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
+
+    <link rel="stylesheet" href="{% static "geonode/css/home.css" %}" />
+    <link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
+
+    {% block head %}
+
+    {% if DEBUG_STATIC %}
+      <link href="{% static "lib/css/jquery.dataTables.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/select2.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-treeview.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap4-toggle.min.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-datetimepicker.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-multiselect.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-select.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-table.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-tokenfield.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/jquery-ui.theme.min.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/jquery-ui.structure.min.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/bootstrap-treeview.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/cropper.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/fastselect.css" %}" rel="stylesheet"/>
+      <link href="{% static "lib/css/toastr.min.css" %}" rel="stylesheet"/>
+    {% else %}
+      <link href="{% static "lib/css/assets.min.css" %}" rel="stylesheet"/>
+    {% endif %}
+
+    {% if DEBUG_STATIC %}
+      <script src="{% static "lib/js/jquery.js" %}"></script>
+      <script src="{% static "lib/js/jquery.dataTables.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-treeview.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-tokenfield.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap4-toggle.min.js" %}"></script>
+      <script src="{% static "lib/js/fastselect.standalone.js" %}"></script>
+      <script src="{% static "lib/js/select2.full.js" %}"></script>
+      <script src="{% static "lib/js/jquery.timeago.js" %}"></script>
+      <script src="{% static "lib/js/jq-ajax-progress.js" %}"></script>
+      <script src="{% static "lib/js/jquery-ui.js" %}"></script>
+      <script src="{% static "lib/js/jquery.raty.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap.js" %}"></script>
+      <script src="{% static "lib/js/moment-with-locales.js" %}"></script>
+      <script src="{% static "lib/js/bootstrap-datetimepicker.js" %}"></script>
+      <script src="{% static "lib/js/json2.js" %}"></script>
+      <script src="{% static "lib/js/waypoints.js" %}"></script>
+      <script src="{% static "lib/js/underscore.js" %}"></script>
+      <script src="{% static "lib/js/angular.min.js" %}"></script>
+      <script src="{% static "lib/js/angular-cookies.js" %}"></script>
+      <script src="{% static "lib/js/angular-openlayers-directive.min.js" %}"></script>
+      <script src="{% static "lib/js/angular-leaflet-directive.min.js" %}"></script>
+      <script src="{% static "lib/js/angular-sanitize.min.js" %}"></script>
+      <script src="{% static "lib/js/pace.min.js" %}"></script>
+      <script src="{% static "lib/js/toastr.js" %}"></script>
+    {% else %}
+      <script src="{% static "lib/js/assets.min.js" %}"></script>
+    {% endif %}
+    
+      <link rel='stylesheet' id='cookie-law-info-css'  href="{% static "geonode/css/cookie-law-info/cookie-law-info-public.css" %}" type='text/css' media='all' />
+      <link rel='stylesheet' id='cookie-law-info-gdpr-css'  href="{% static "geonode/css/cookie-law-info/cookie-law-info-gdpr.css" %}" type='text/css' media='all' />
+      <style type="text/css">[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}</style>
+      <style type="text/css">
+        /* Additional styles by custom themes */
+        {% if custom_theme.body_text_color %}
+        body {
+          {% if custom_theme.body_text_color %}
+          color: {{ custom_theme.body_text_color }};
+          {% endif %}
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_color %}
+        .home .navbar-inverse , .navbar-inverse {
+          background-color: {{ custom_theme.navbar_color }};
+        }
+        {% endif %}
+
+        {% if custom_theme.showcase_bg_color %}
+        #showcase {
+          background-color: {{ custom_theme.showcase_bg_color }} !important;
+        }
+        {% endif %}
+        
+        {% if custom_theme.showcase_text_color %}
+        #showcase .container div,
+        #showcase .container ul,
+        #showcase .container ol,
+        #showcase .container li,
+        #showcase .container h1,
+        #showcase .container h2,
+        #showcase .container h3,
+        #showcase .container h4,
+        #showcase .container h5,
+        #showcase .container h6,
+        #showcase .container pre,
+        #showcase .container p {
+            color: {{ custom_theme.showcase_text_color }} !important;
+        }
+        {% endif %}
+
+        {% if custom_theme.showcase_text_link_color %}
+        #showcase .container a {
+            color: {{ custom_theme.showcase_text_link_color }} !important;
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_text_color %}
+        .navbar-inverse .navbar-nav > li > a {
+          color: {{ custom_theme.navbar_text_color }};
+          font-weight: 600;
+          padding-top: 25px;
+          padding-bottom: 25px;
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_text_hover %}
+        .navbar-inverse .navbar-nav > li > a:hover {
+          background-color: {{ custom_theme.navbar_text_hover }};
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_text_hover_focus %}
+        .navbar-inverse .navbar-nav > .open > a,
+        .navbar-inverse .navbar-nav > .open > a:hover,
+        .navbar-inverse .navbar-nav > .open > a:focus {
+          background-color: {{ custom_theme.navbar_text_hover_focus }};
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_dropdown_menu %}
+        .navbar-nav .dropdown-menu {
+          background-color: {{ custom_theme.navbar_dropdown_menu }};
+          border-top: 1px solid {{ custom_theme.navbar_dropdown_menu }};
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_dropdown_menu_text %}
+        .navbar-nav .dropdown-menu a {
+          color: {{ custom_theme.navbar_dropdown_menu_text }};
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_dropdown_menu_hover %}
+        .navbar-nav .dropdown-menu li a:hover {
+          background-color: {{ custom_theme.navbar_dropdown_menu_hover }};
+          color: {{ custom_theme.navbar_dropdown_menu_text }};
+        }
+        {% endif %}
+
+        {% if custom_theme.navbar_dropdown_menu_divider %}
+        .navbar-nav .dropdown-menu .divider {
+          background-color: {{ custom_theme.navbar_dropdown_menu_divider }};
+        }
+        {% endif %}
+
+        {% if custom_theme.logo %}
+        .navbar-brand {
+          background-image: url({{ custom_theme.logo.url }});
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: contain;
+        }
+        {% endif %}
+
+        {% if custom_theme.textbox_bg_color %}
+        .select2-container--default,
+        .select2-selection--single,
+        .select2-selection__rendered {
+          background-color: {{ custom_theme.textbox_bg_color }};
+        }
+        {% endif %}
+
+        {% if custom_theme.textbox_input_color %}
+        .select2-container--default .select2-search--inline .select2-search__field {
+          color: {{ custom_theme.textbox_input_color }} !important;
+        }
+        {% endif %}
+
+        {% if custom_theme.jumbotron_color %}
+        .home .jumbotron {
+          background-color: {{ custom_theme.jumbotron_color }}
+        }
+        {% endif %}
+
+        {% if custom_theme.jumbotron_title_color %}
+        .home .jumbotron h1,
+        .home .jumbotron h2,
+        .home .jumbotron h3 {
+          color: {{ custom_theme.jumbotron_title_color }}
+        }
+        {% endif %}
+
+        {% if custom_theme.jumbotron_text_color %}
+        .home .jumbotron p {
+          color: {{ custom_theme.jumbotron_text_color }};
+          font-weight: normal;
+          font-size: xx-large;
+          font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+        }
+        {% endif %}
+
+        {% if custom_theme.jumbotron_welcome_hide %}
+        .home .jumbotron .container {
+          visibility: hidden;
+        }
+        {% endif %}
+
+        {% if custom_theme.jumbotron_bg %}
+        .home .jumbotron .container {
+          position: relative;
+          z-index: 1;
+        }
+        .home .jumbotron:after {
+          content: "";
+          background-image: url({{ custom_theme.jumbotron_bg.url }});
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
+          {% if not custom_theme.jumbotron_welcome_hide %}
+          opacity: 0.5;
+          {% endif %}
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          position: absolute;
+          z-index: 0;
+        }
+        {% endif %}
+
+        {% if custom_theme.search_bg_color or custom_theme.search_title_color %}
+        .home .big-search {
+          background: {{ custom_theme.search_bg_color }};
+          color: {{ custom_theme.search_title_color }};
+          padding-bottom: 3em;
+          padding-top: 1em;
+        }
+        .home .big-search .btn-primary {
+          background: transparent;
+          border: none;
+          color: {{ custom_theme.search_link_color }};
+        }
+        {% endif %}
+
+        {% if custom_theme.copyright_color %}
+        .footer-copyright {
+          background-color: {{ custom_theme.copyright_color }};
+        }
+        {% endif %}
+
+        {% if custom_theme.footer_bg_color or custom_theme.footer_text_color or custom_theme.footer_href_color %}
+        footer {
+          background-color: {{ custom_theme.footer_bg_color }};
+          color: {{ custom_theme.footer_text_color }};
+          padding: 1.5em;
+        }
+        footer a {
+          color: {{ custom_theme.footer_href_color }};
+        }
+        {% endif %}
+      </style>
+      {% block extra_head %}
+      {% endblock %}
+    {% endblock %}
+
+    <link rel="search" type="application/opensearchdescription+xml" href="{% if SITEURL|default:""|slice:"-1:" == "/" %}{{SITEURL}}{% else %}{{SITEURL}}/{% endif %}catalogue/opensearch" title="{% trans "GeoNode Search" %}"/>
+
+    <script>
+        var siteUrl = '{{ SITEURL }}'.replace(/\/?$/, '/');
+        var staticUrl = '{% static '' %}';
+    </script>
+
+    <!-- Autocomplete script for input boxes -->
+    <script src="{% static "geonode/js/search/autocomplete.js" %}"></script>
+
+    <script type="text/javascript">
+      function thumbnailFeedbacks(data, status) {
+        try {
+          $("#_thumbnail_feedbacks").find('.modal-title w-100').text(status);
+          $("#_thumbnail_feedbacks").find('.modal-body').text(data);
+          $("#_thumbnail_feedbacks").modal("show");
+        } catch (err) {
+          console.log(err);
+        } finally {
+          return true;
+        }
+      }
+    </script>
+
+    <!-- RTL styles -->
+    {% get_current_language_bidi as LANGUAGE_BIDI %}
+    {% if LANGUAGE_BIDI %}
+        {% if DEBUG_STATIC %}
+          <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.css" %}">
+        {% else %}
+          <link rel="stylesheet" type="text/css" href="{% static "geonode/css/geonode-rtl.min.css" %}">
+        {% endif %}
+    {% endif %}
+  </head>
+
+  <body class="{% block body_class %}{% endblock %}" id="top">
+    <!-- Loading Mask -->
+    <div class='lmask'></div>
+    
+    {% block header %}
+      <header class="s-header" style="background-color: unset;">
+        {% include 'section/header.html' %}
+      </header>
+    {% endblock header %}
+
+    {% block navigation %}
+      {% include 'section/navigation.html' %}
+    {% endblock navigation %}
+
+    {% block home %}
+      {% include 'section/home.html' %}
+    {% endblock home %}
+    {% block showcase %}
+      {% include 'section/showcase.html' %}
+    {% endblock showcase %}
+    {% block datasets %}
+      {% include 'section/datasets.html' %}
+    {% endblock datasets %}
+
+    {% block cookielawinfo %}
+      {% include 'section/cookie_law_info.html' %}
+    {% endblock cookielawinfo %}
+      
+    <div class="alert alert-danger alert-dismissible" role="alert" id="ieflag" style="display:none">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h1>{% trans "You are using an outdated browser that is not supported by SDI." %}</h1>
+      <p>{% trans "Please use a <strong>modern browser</strong> like Mozilla Firefox, Google Chrome or Safari." %}</p>
+    </div>
+
+
+    {% block footer %}
+      {% include 'section/footer.html' %}
+    {% endblock footer %}
+
+
+    <!-- Modal must stay outside the navbar -->
+    {% include "modal/login.html" %}
+    {% include "modal/forgot_password.html" %}
+    {% include "modal/remove_layers.html" %}
+    {% include "modal/remove_documents.html" %}
+    <!-- End of Modal -->
+
+    <script text="javascript">
+      var app = angular.module('category', [])
+      .controller("CategoryList", function($scope, $http) {
+          $http.get(siteUrl + 'api/v2/categories')
+              .then(function(response) {
+                  $scope.categories = response.data.categories;
+              });
+      });
+      angular.bootstrap(document, ['category']);
+    </script>
+      
+    <script src="{% static "geonode/js/utils/utils.js" %}"></script>
+    <script src="{% static "geonode/js/base/base.js" %}"></script>
+
+    <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
+
+    <script src="{% static "geonode/js/base/popper.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
+    <script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
+    <script type="text/javascript" src="{% static "lib/js/modernizr.js" %}"></script>
+
+
+    {% include "modal/resource_uploading.html" %}
+    {% include "modal/thumbnail_processing.html" %}
+    {% include "modal/thumbnail_feedbacks.html" %}
+    {% include 'modal/change_password.html' %}
+    {% include 'modal/request_data.html' %}
+
+  </body>
+</html>
