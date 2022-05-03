@@ -137,7 +137,9 @@ class GeoNodeClientLibraryTag(template.Node):
                 hookset.layer_list_template(
                     context=context))
         elif self.tag_name == 'get_layer_detail':
-            t = context.template.engine.get_template('geonode-mapstore-client/legacy/layer_detail.html')
+            t = context.template.engine.get_template(
+                hookset.layer_detail_template(
+                    context=context))
         elif self.tag_name == 'get_layer_new':
             t = context.template.engine.get_template(
                 hookset.layer_new_template(
@@ -166,6 +168,10 @@ class GeoNodeClientLibraryTag(template.Node):
             t = context.template.engine.get_template(
                 hookset.layer_style_edit_template(
                     context=context))
+        elif self.tag_name == 'get_layer_export':
+            t = context.template.engine.get_template(
+                hookset.layer_export_template(
+                    context=context))
 
         # MAPS
         if self.tag_name == 'get_map_list':
@@ -193,7 +199,9 @@ class GeoNodeClientLibraryTag(template.Node):
                 hookset.map_update_template(
                     context=context))
         elif self.tag_name == 'get_map_embed':
-            t = context.template.engine.get_template('geonode-mapstore-client/map_embed.html')
+            t = context.template.engine.get_template(
+                hookset.map_embed_template(
+                    context=context))
         elif self.tag_name == 'get_map_download':
             t = context.template.engine.get_template(
                 hookset.map_download_template(
@@ -253,6 +261,7 @@ register.tag('get_layer_update', do_get_client_library_template)
 register.tag('get_layer_embed', do_get_client_library_template)
 register.tag('get_layer_download', do_get_client_library_template)
 register.tag('get_layer_style_edit', do_get_client_library_template)
+register.tag('get_layer_export', do_get_client_library_template)
 
 register.tag('get_map_list', do_get_client_library_template)
 register.tag('get_map_detail', do_get_client_library_template)
