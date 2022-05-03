@@ -305,15 +305,6 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Cache Bustin Settings: enable WhiteNoise compression and caching support
-# ref: http://whitenoise.evans.io/en/stable/django.html#add-compression-and-caching-support
-CACHE_BUSTING_STATIC_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_STATIC_ENABLED', 'False'))
-
-if not DEBUG and CACHE_BUSTING_STATIC_ENABLED:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
 CACHES = {
     # DUMMY CACHE FOR DEVELOPMENT
     'default': {
