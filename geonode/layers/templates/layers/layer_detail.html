@@ -47,14 +47,14 @@
       </div>
     </div>
   </div>
+  {% if storeType == 'remoteStore' %}
   <div class="card-footer">
-    {% if storeType == 'remoteStore' %}
     <em>
       <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
       {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
     </em>
-    {% endif %}
   </div>
+  {% endif %}
 </div>
 
 <div class="row w-100">
