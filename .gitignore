@@ -104,3 +104,5 @@ scripts/spcgeonode/_volume_*
 /worker.state
 uwsgi.ini
 requirements.txt.bak
+
+src/

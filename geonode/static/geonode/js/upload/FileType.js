@@ -1,7 +1,7 @@
 /*global define: true, $:true */
 'use strict';
 
-define(function (require, exports) {
+define(function(require, exports) {
     var getExt = require('./path').getExt,
         FileType;
 
@@ -12,7 +12,7 @@ define(function (require, exports) {
      *  @param {name, main, requires}
      */
 
-    FileType = function (options) {
+    FileType = function(options) {
         this.name = null;
         this.main = null;
         this.requires = !('requires' in options) ? [options.main] : null;
@@ -20,19 +20,19 @@ define(function (require, exports) {
     };
 
 
-    FileType.prototype.isType = function (file, extensions) {
+    FileType.prototype.isType = function(file, extensions) {
         var main_matches = (this.main === getExt(file));
         var aux_matches = this.findAuxiliaryFiles(extensions);
         return main_matches && aux_matches;
     };
 
-    FileType.prototype.findAuxiliaryFiles = function (extensions) {
+    FileType.prototype.findAuxiliaryFiles = function(extensions) {
         if (this.aux === undefined || this.aux === null || this.aux.length === 0) {
             return true;
         }
 
         var matches = false;
-        $.each(this.aux, function (idx, req) {
+        $.each(this.aux, function(idx, req) {
             idx = $.inArray(req, extensions);
             if (idx !== -1) {
                 matches = true;
@@ -41,13 +41,13 @@ define(function (require, exports) {
         return matches;
     };
 
-    FileType.prototype.findTypeErrors = function (extensions) {
+    FileType.prototype.findTypeErrors = function(extensions) {
         var errors = [];
 
-        $.each(this.requires, function (idx, req) {
+        $.each(this.requires, function(idx, req) {
             idx = $.inArray(req, extensions);
             if (idx === -1) {
-                errors.push(interpolate(gettext('Missing a %s file, which is required'),[req]));
+                errors.push(interpolate(gettext('Missing a %s file, which is required'), [req]));
             }
         });
         return errors;

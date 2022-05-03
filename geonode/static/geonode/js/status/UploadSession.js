@@ -1,1 +1,65 @@
-define(function(){"use strict";var t=function(t){this.name=null,this.id=null,this.layer_name=null,this.layer_id=null,this.state=null,this.url=null,this.date=null,$.extend(this,t||{})};return t.prototype.handle_edit=function(t){var e=$(t.target).data("session");console.log(e)},t.prototype.wrap_value=function(t){var e=$("<td/>");return"object"==typeof t&&t?t.appendTo(e):$("<p/>",{text:t}).appendTo(e),e},t.prototype.formatTr=function(){var t,e,a=$("<tr />");return a.data("session",this),t=$("<input/>",{type:"checkbox"}),this.wrap_value(t).appendTo(a),(e=$("<a/>",{text:"Edit"})).on("click",this.handle_edit),this.url?this.wrap_value($("<a/>",{text:this.layer_name,href:this.url})).appendTo(a):this.wrap_value(this.layer_name).appendTo(a),this.wrap_value(e).appendTo(a),this.wrap_value(this.date).appendTo(a),this.wrap_value(this.state).appendTo(a),this.element=a,a},t});
+/*global define: true, $:true */
+
+define(function() {
+    'use strict';
+
+    var UploadSession = function(options) {
+        this.name = null;
+        this.id = null;
+        this.layer_name = null;
+        this.layer_id = null;
+        this.state = null;
+        this.url = null;
+        this.date = null;
+
+        $.extend(this, options || {});
+    };
+
+
+    UploadSession.prototype.handle_edit = function(event) {
+        var target = $(event.target),
+            session = target.data('session');
+        console.log(session);
+    };
+
+
+    UploadSession.prototype.wrap_value = function(value) {
+        var td = $('<td/>');
+
+        if ((typeof value === 'object') && (value)) {
+            value.appendTo(td);
+        } else {
+            $('<p/>', { text: value }).appendTo(td);
+        }
+        return td;
+    };
+
+    // TODO, use a template for this
+    UploadSession.prototype.formatTr = function() {
+        var tr = $('<tr />'),
+            input,
+            name,
+            div,
+            a;
+        tr.data('session', this);
+        input = $('<input/>', { type: 'checkbox' });
+        this.wrap_value(input).appendTo(tr);
+
+        a = $('<a/>', { text: 'Edit' });
+        a.on('click', this.handle_edit);
+        if (this.url) {
+            this.wrap_value($('<a/>', { text: this.layer_name, href: this.url }))
+                .appendTo(tr);
+        } else {
+            this.wrap_value(this.layer_name).appendTo(tr);
+        }
+        this.wrap_value(a).appendTo(tr);
+        this.wrap_value(this.date).appendTo(tr);
+        this.wrap_value(this.state).appendTo(tr);
+        this.element = tr;
+        return tr;
+    };
+
+    return UploadSession;
+
+});
