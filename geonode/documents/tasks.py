@@ -59,7 +59,7 @@ def create_document_thumbnail(self, object_id):
     image_file = None
 
     if document.is_image:
-          dname = storage_manager.path(document.files[0])
+        dname = storage_manager.path(document.files[0])
         if storage_manager.exists(dname):
             image_file = storage_manager.open(dname, 'rb')
     elif document.is_video or document.is_audio:
