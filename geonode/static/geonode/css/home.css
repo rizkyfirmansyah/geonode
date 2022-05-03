@@ -21,6 +21,34 @@
     --edit: #a23133 !important;
 }
 
+@font-face {
+    font-family: 'Solanel-Light';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Solanel Light'), local('Solanel-Light'), url(../fonts/Solanel-Light.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Medium';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Solanel Medium'), local('Solanel-Medium'), url(../fonts/Solanel-Medium.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Light-Italic';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Solanel Light Italic'), local('Solanel-Light-Italic'), url(../fonts/Solanel-Light-Italic.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Solanel-Medium-Italic';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Solanel Medium Italic'), local('Solanel-Medium-Italic'), url(../fonts/Solanel-Medium-Italic.ttf) format('truetype');
+}
+
 .font-small {
     font-size: var(--font-small);
 }
