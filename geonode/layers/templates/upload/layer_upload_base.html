@@ -10,11 +10,28 @@
 {% block body_class %}{% trans "data" %}{% endblock %}
 
 {% block body %}
-<div class="row w-100">
-  <h2 class="col-8">{% trans "Upload Layers" %}</h2>
-  <a href="{% url "layer_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary col-4 float-right">{% trans "Explore Spatial Data" %}</a>
+<div class="card rounded bg-light mb-2">
+	<div class="card-body">
+		<div class="row">
+			<h2 class="col-8">{% trans "Upload Layers" %}</h2>
+			<div class="col-4"><a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Datasets" %}</a></div>
+		</div>
+    <script language="javascript">
+      var json_mosaics = [
+            {% for mosaic in mosaics %}
+              {
+                  "name" : "{{mosaic.name}}",
+                  "workspace" : "{{mosaic.workspace}}",
+                  "is_mosaic" : "{{mosaic.is_mosaic}}",
+                  "has_time" : "{{mosaic.has_time}}",
+                  "has_elevation" : "{{mosaic.has_elevation}}",
+                  "time_regex" : "{{mosaic.time_regex}}",
+                  "elevation_regex" : "{{mosaic.elevation_regex}}"
+              },
+            {% endfor %}
+      ]
+    </script>
+	</div>
 </div>
-<div class="row">
 
-</div>
 {% endblock body %}

@@ -28,7 +28,7 @@
               class="btn btn-edit btn-block btn-md style-edit" data-dismiss="modal"
               href="#">{% trans "Edit" %}</a>{% else %}<a class="btn btn-primary btn-edit btn-md style-edit"
               href="{% url "layer_sld_edit" resource.service_typename %}">{% trans "Edit" %}</a>{% endif %}<a
-              class="btn btn-primary btn-block btn-md"
+              class="btn btn-success btn-block btn-md"
               href="{% url "layer_sld_upload" resource.service_typename %}">{% trans "Upload" %}</a> <a
               class="btn btn-primary btn-block btn-md"
               href="{% url "layer_style_manage" resource.service_typename %}">{% trans "Manage" %}</a>
@@ -36,7 +36,7 @@
               class="fa-solid fa-image fa-3x"></i>
             <h5>{% trans "Thumbnail" %}</h5>{% if resource.storeType != "remoteStore" %}<a
               class="btn btn-primary btn-block btn-md" href="#" id="set_thumbnail">{% trans "Set" %}</a>{% endif %}<a
-              class="btn btn-primary btn-block btn-md"
+              class="btn btn-success btn-block btn-md"
               href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
           </div>
           {% endif %}{% if "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list or "change_layer_data" in layer_perms %}

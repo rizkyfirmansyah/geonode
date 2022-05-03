@@ -180,7 +180,10 @@
           </li>
           <li class="list-inline-item">
             <a class="header-menu-toggle" href="#0">
-              <span class="header-menu-text" style="display: none;">Menu</span>
+              {% get_current_path as path %}
+                {% if path == '/' %}
+                  <span class="header-menu-text" style="display: none;">Menu</span>
+                {% endif %}
               <span class="header-menu-icon"></span>
             </a>
           </li>

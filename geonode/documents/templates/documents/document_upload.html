@@ -10,11 +10,15 @@
 {% block body_inner %}
 
 <div class="col-8">
-  <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-    {{ form.as_p }}
-    <button type="submit" id="upload-button" class="btn btn-secondary">{% trans "Upload" %}</button>
-  </form>
+  <div class="card">
+    <div class="card-body">
+      <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success w-100">{% trans "Upload" %}</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
@@ -23,8 +27,10 @@
 
 {% display_change_perms_button resource request.user perms_list as display_perms_button %}
 {% if display_perms_button %}
-<div class="card col-4">
-  <h3>{% trans "Permissions"  %}</h3>
+<div class="card col-4 p-0">
+  <div class="card-header">
+    <h3 class="text-center">{% trans "Permissions"  %}</h3>
+  </div>
   <form id="permission_form">
     {% include "_permissions.html" %}
   </form>

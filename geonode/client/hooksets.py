@@ -20,7 +20,7 @@ import json
 from geonode.base.models import ResourceBase
 
 def resource_list_url(resource_type):
-    return '/catalogue/resource__type__in' + '={}'.format(resource_type)
+    return '/{}/upload'.format(resource_type)
 
 def resource_detail_url(resource_type, resource_id):
     return '/catalogue/#/{}/{}'.format(resource_type, resource_id)
@@ -70,7 +70,7 @@ class BaseHookSet:
         return NotImplemented
 
     def layer_list_url(self):
-        return resource_list_url('layer')
+        return resource_list_url('layers')
 
     def layer_upload_url(self):
         return '/catalogue/#/upload/layer'
@@ -143,10 +143,10 @@ class BaseHookSet:
 
     # Documents
     def document_list_url(self):
-        return resource_list_url('document')
+        return resource_list_url('documents')
 
     def document_detail_url(self, resource):
-        return resource_detail_url('document', resource.id)
+        return resource_detail_url('documents', resource.id)
 
 
     # Map Persisting

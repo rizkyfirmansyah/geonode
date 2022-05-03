@@ -1,19 +1,29 @@
 {% load i18n %}
 {% if iso_formats %}
       <div class="col-12">
-          <div class="row pb-4 mb-4 mt-4">
-            <div class="container text-center iso-categories">
+          <div class="pb-4 mb-4 mt-4">
+            <div class="text-center iso-categories">
                 <h1 class="restyle-text">{% trans "Discover the available datasets." %}</h1>
-                <div class="row">
+                <div class="row text-center p-4 justify-content-center">
                   {% for iso_format in iso_formats %}
-                  <div class="col-xs-4 col-sm-3 col-md-3 col-2 p-4" id="category_dataset">
-                      <a
+                  <div class="col-4 mb-5 mt-5" id="category_dataset">
+                      <a class="text-decoration-none"
                       href="{% url "search" %}?limit=100&offset=0&category__identifier__in={{ iso_format.category__identifier }}">
                       <div class="category" data-toggle="tooltip" data-placement="auto"
-                        title="{% trans iso_format.category__description %}">
-                        <span class="text-white badge badge-secondary">{{ iso_format.count }}</span>
-                        <i class="text-dark fa {{ iso_format.category__fa_class }} fa-5x" style="font-size: 8em"></i>
-                        <h4>{% trans iso_format.category__gn_description %}</h4>
+                        title="{% trans iso_format.category__description %}" style="display: grid;">
+                        <div class="mb-2">
+                          {% if iso_format.category__svg == None %}
+                            <i class="text-dark fa {{ iso_format.category__fa_class }} fa-5x"></i>
+                          {% else %}
+                            {% autoescape off %}
+                              {{ iso_format.category__svg }}
+                            {% endautoescape %}
+                          {% endif %}
+                          <span class="badge badge-info p-2 rounded-pill btn">{{ iso_format.count }}</span>
+                        </div>
+                        <div class="mt-4">
+                          <h4 class="text-decoration-none">{% trans iso_format.category__gn_description %}</h4>
+                        </div>
                       </div>
                       </a>
                   </div>

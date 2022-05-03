@@ -157,6 +157,7 @@ class TopicCategoryAdmin(TabbedTranslationAdmin):
         'description',
         'gn_description',
         'fa_class',
+        'svg',
         'is_choice')
     if settings.MODIFY_TOPICCATEGORY is False:
         exclude = ('identifier', 'description',)

@@ -168,6 +168,7 @@ class TopicCategory(models.Model):
         'SDI description', default='', null=True)
     is_choice = models.BooleanField(default=True)
     fa_class = models.CharField(max_length=64, default='fa-times')
+    svg = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.gn_description

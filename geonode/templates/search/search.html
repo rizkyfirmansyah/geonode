@@ -13,22 +13,21 @@
     <div class="card-body">
       <div class="row">
         {% with include_type_filter='true' %}
-          {% with header='Type' %}
-            {% with filter='type__in' %}
+            {% with header='Type' %}
+              {% with filter='type__in' %}
               {% include "search/_search_content.html" %}
             {% endwith %}
           {% endwith %}
         {% endwith %}
-        </div>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12 mt-4">
-      {% include 'base/_resourcebase_snippet.html' %}
-      {% include 'search/_pagination.html' %}
+    <div class="row">
+      <div class="col-12 mt-4">
+        {% include 'base/_resourcebase_snippet.html' %}
+        {% include 'search/_pagination.html' %}
+      </div>
     </div>
-  </div>
 {% endblock %}
 
 {% block extra_script %}

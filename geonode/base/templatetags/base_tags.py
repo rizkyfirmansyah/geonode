@@ -454,7 +454,7 @@ def render_nav_menu(placeholder_name):
 def get_visibile_resources(user):
     categories = get_objects_for_user(user, 'view_resourcebase', klass=ResourceBase, any_perm=False)\
         .filter(category__isnull=False).values('category__gn_description',
-                                               'category__fa_class', 'category__description', 'category__identifier')\
+                                               'category__fa_class', 'category__svg', 'category__description', 'category__identifier')\
         .annotate(count=Count('category'))
 
     return {

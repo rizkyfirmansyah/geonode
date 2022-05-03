@@ -1538,6 +1538,10 @@ textarea {
     background-color: var(--web-surface) !important;
 }
 
+.card-content {
+    min-height: 96px;
+}
+
 select option {
     color: var(--primary) !important;
 }
@@ -1638,11 +1642,6 @@ label>input[type=radio] {
 label>input[type=checkbox]:hover,
 label>input[type=radio]:hover {
     cursor: pointer
-}
-
-#upload_form {
-    padding-right: 2em;
-    margin-bottom: 5em
 }
 
 ::-webkit-input-placeholder {
@@ -2782,20 +2781,6 @@ fieldset[disabled] .navbar-inverse .btn-link:hover {
     z-index: 2000
 }
 
-.header-menu-toggle.opaque {
-    background-color: #000
-}
-
-.header-menu-toggle.opaque .header-menu-text {
-    background-color: #000;
-    display: block !important;
-}
-
-.header-menu-toggle:focus,
-.header-menu-toggle:hover {
-    color: #fff
-}
-
 .header-menu-text {
     display: block;
     position: absolute;
@@ -3583,10 +3568,6 @@ html {
 
 .nav-pills>li {
     margin-right: 10px
-}
-
-.btm_section {
-    margin-bottom: 50px
 }
 
 #button-toggle {
@@ -4699,31 +4680,6 @@ span.grippy {
     bottom: 0
 }
 
-.iso-categories {
-    padding-top: 2em
-}
-
-.iso-categories .row {
-    justify-content: center
-}
-
-.iso-categories .row .col-lg-1 {
-    margin-right: 1%
-}
-
-.iso-categories .row .col-lg-1 .category h4 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    word-spacing: 0.3rem;
-    line-height: 2.9rem;
-    letter-spacing: .1rem
-}
-
-.iso-categories .row a:hover span {
-    background-color: #fdba12
-}
-
 .jumbotron .gn-container {
     margin-top: -2px
 }
@@ -4798,17 +4754,6 @@ input[id=id_avatar] {
 #upload_form #s2id_resource {
     display: block;
     width: 100%
-}
-
-@media (max-width:991px) {
-    #upload_form input[type=text] {
-        width: 360px
-    }
-    #upload_form #id_doc_file,
-    #upload_form #id_doc_url,
-    #upload_form #s2id_resource {
-        width: 360px
-    }
 }
 
 footer {
@@ -4946,7 +4891,6 @@ footer form {
     cursor: pointer;
     border-radius: 10px;
     position: relative;
-    padding-right: 4rem
 }
 
 #drop-zone:hover {
@@ -4963,11 +4907,6 @@ footer form {
 
 #drop-zone h3 i {
     font-size: 3em
-}
-
-#clear-button,
-#upload-button {
-    margin-top: 20px
 }
 
 .fa-stack-2x .group-container {
@@ -5585,12 +5524,6 @@ span.icon.node-icon:before {
     min-height: 90px
 }
 
-.upload-progress-table,
-#file-queue,
-.charset {
-    width: 95%!important
-}
-
 #profileCompleteness {
     position: relative;
     float: right;
@@ -5642,7 +5575,11 @@ form textarea[name=content] {
 }
 
 .jss6 {
-    height: 96px!important
+    height: var(--header-height)!important
+}
+
+#ms-container {
+    top: var(--header-height) !important;
 }
 
 .msgapi .btn {
