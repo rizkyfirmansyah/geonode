@@ -28,7 +28,7 @@ from urllib.parse import urljoin, urlparse, urlsplit
 
 import zipstream
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
+from geonode.storage.manager import storage_manager
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, StreamingHttpResponse
 from django.http.request import validate_host
@@ -60,8 +60,6 @@ TIMEOUT = 30
 LINK_TYPES = [L for L in _LT if L.startswith("OGC:")]
 
 logger = logging.getLogger(__name__)
-
-storage = FileSystemStorage()
 
 ows_regexp = re.compile(
     r"^(?i)(version)=(\d\.\d\.\d)(?i)&(?i)request=(?i)(GetCapabilities)&(?i)service=(?i)(\w\w\w)$")
@@ -288,8 +286,8 @@ def download(request, resourceid, sender=Layer):
                 if layer_files:
                     # Copy all Layer related files into a temporary folder
                     for lyr in layer_files:
-                        if storage.exists(str(lyr.file)):
-                            geonode_layer_path = storage.path(str(lyr.file))
+                        if storage_manager.exists(str(lyr.file)):
+                            geonode_layer_path = storage_manager.path(str(lyr.file))
                             file_list.append({
                                 "zip_folder": "",
                                 "name": lyr.file.name.split('/')[-1],

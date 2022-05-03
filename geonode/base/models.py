@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+from fileinput import filename
 import os
 import re
 import html
@@ -96,6 +97,7 @@ from geonode.people.enumerations import ROLE_VALUES
 from pyproj import transform, Proj
 
 from urllib.parse import urlparse, urlsplit, urljoin
+from geonode.storage.manager import storage_manager
 from imagekit.cachefiles.backends import Simple
 
 logger = logging.getLogger(__name__)
@@ -673,31 +675,56 @@ class ResourceBaseManager(PolymorphicManager):
         return super().get_queryset()
 
     @staticmethod
+    def upload_files(resource_id, files, force=False):
+        """Update the ResourceBase model"""
+        try:
+            out = []
+            for f in files:
+                if force:
+                    out.append(f)
+                elif os.path.isfile(f) and os.path.exists(f):
+                    with open(f, 'rb') as ff:
+                        folder = os.path.basename(os.path.dirname(f))
+                        filename = os.path.basename(f)
+                        file_uploaded_path = storage_manager.save(f'{folder}/{filename}', ff)
+                        out.append(storage_manager.path(file_uploaded_path))
+
+    @staticmethod
     def cleanup_uploaded_files(resource_id):
         """Remove uploaded files, if any"""
         if ResourceBase.objects.filter(id=resource_id).exists():
             _resource = ResourceBase.objects.filter(id=resource_id).get()
+            _uploaded_folder = None
+            if _resource.files:
+                for _file in _resource.files:
+                    try:
+                        if storage_manager.exists(_file):
+                            if not _uploaded_folder:
+                                _uploaded_folder = os.path.split(storage_manager.path(_file))[0]
+                            storage_manager.delete(_file)
+                    except Exception as e:
+                        logger.warning(e)
+                try:
+                    if _uploaded_folder and storage_manager.exists(_uploaded_folder):
+                        storage_manager.delete(_uploaded_folder)
+                except Exception as e:
+                    logger.warning(e)
+
+                # Do we want to delete the files also from the resource?
+                ResourceBase.objects.filter(id=resource_id).update(files={})
 
             # Remove generated thumbnails, if any
             filename = f"{_resource.get_real_instance().resource_type}-{_resource.get_real_instance().uuid}"
             remove_thumbs(filename)
 
             # Remove the uploaded sessions, if any
-            try:
-                if 'geonode.upload' in settings.INSTALLED_APPS:
-                    from geonode.upload.models import Upload
-                    # Need to call delete one by one in order to invoke the
-                    #  'delete' overridden method
-                    for upload in Upload.objects.filter(layer_id=_resource.get_real_instance().id):
-                        try:
-                            if upload.upload_dir:
-                                if os.path.exists(upload.upload_dir):
-                                    shutil.rmtree(upload.upload_dir, ignore_errors=True)
-                        finally:
-                            upload.delete()
-            except Exception as e:
-                logger.exception(e)
-
+            # Remove the uploaded sessions, if any
+            if 'geonode.upload' in settings.INSTALLED_APPS:
+                from geonode.upload.models import Upload
+                # Need to call delete one by one in order to invoke the
+                #  'delete' overridden method
+                for upload in Upload.objects.filter(resource_id=_resource.get_real_instance().id):
+                    upload.delete()
 
 class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     """
@@ -1736,33 +1763,33 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     image = None
 
             if upload_path and image:
-                name, ext = os.path.splitext(filename)
-                remove_thumbs(name)
-                actual_name = storage.save(upload_path, ContentFile(image))
-                url = storage.url(actual_name)
-                _url = urlparse(url)
-                _upload_path = thumb_path(os.path.basename(_url.path))
-                if upload_path != _upload_path:
-                    if storage.exists(_upload_path):
-                        storage.delete(_upload_path)
-                    try:
-                        os.rename(
-                            storage.path(upload_path),
-                            storage.path(_upload_path)
-                        )
-                    except Exception as e:
-                        logger.exception(e)
+                actual_name = storage_manager.save(upload_path, ContentFile(image))
+                actual_file_name = os.path.basename(actual_name)
+                if filename != actual_file_name:
+                    upload_path = upload_path.replace(filename, actual_file_name)
+                url = storage_manager.url(upload_path)
 
                 try:
                     # Optimize the Thumbnail size and resolution
                     _default_thumb_size = getattr(
                         settings, 'THUMBNAIL_GENERATOR_DEFAULT_SIZE', {'width': 240, 'height': 200})
-                    im = Image.open(open(storage.path(_upload_path), mode='rb'))
+                    im = Image.open(storage_manager.open(actual_name))
                     im.thumbnail(
                         (_default_thumb_size['width'], _default_thumb_size['height']),
                         resample=Image.ANTIALIAS)
                     cover = ImageOps.fit(im, (_default_thumb_size['width'], _default_thumb_size['height']))
-                    cover.save(storage.path(_upload_path), format='PNG')
+
+                    # Saving the thumb into a temporary directory on file system
+                    tmp_location = os.path.abspath(f"{settings.MEDIA_ROOT}/{upload_path}")
+                    cover.save(tmp_location, format='PNG')
+
+                    with open(tmp_location, 'rb+') as img:
+                        # Saving the img via storage manager
+                        storage_manager.save(storage_manager.path(upload_path), img)
+
+                    # If we use a remote storage, the local img is deleted
+                    if tmp_location != storage_manager.path(upload_path):
+                        os.remove(tmp_location)
                 except Exception as e:
                     logger.exception(e)
 
@@ -1773,7 +1800,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
                     url = urljoin(site_url, url)
 
-                if thumb_size(_upload_path) == 0:
+                if thumb_size(upload_path) == 0:
                     raise Exception("Generated thumbnail image is zero size")
 
                 # should only have one 'Thumbnail' link
@@ -1788,17 +1815,22 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                         link_type='image',
                     )
                 )
+                # Cleaning up the old stuff
+                if self.thumbnail_path and MISSING_THUMB not in self.thumbnail_path and storage_manager.exists(self.thumbnail_path):
+                    storage_manager.delete(self.thumbnail_path)
+                # Store the new url and path
                 self.thumbnail_url = url
+                self.thumbnail_path = upload_path
                 obj.url = url
                 obj.save()
                 ResourceBase.objects.filter(id=self.id).update(
-                    thumbnail_url=url
+                    thumbnail_url=url,
+                    thumbnail_path=upload_path
                 )
         except Exception as e:
             logger.error(
                 f'Error when generating the thumbnail for resource {self.id}. ({e})'
             )
-            logger.error(f'Check permissions for file {upload_path}.')
             try:
                 Link.objects.filter(resource=self, name='Thumbnail').delete()
                 _thumbnail_url = static(MISSING_THUMB)

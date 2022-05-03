@@ -46,7 +46,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import default_storage as storage
+from geonode.storage.manager import storage_manager
 from django.utils.translation import ugettext as _
 
 # Geonode functionality
@@ -899,13 +899,13 @@ def upload(incoming, user=None, overwrite=False,
 def delete_orphaned_layers():
     """Delete orphaned layer files."""
     deleted = []
-    _, files = storage.listdir("layers")
+    _, files = storage_manager.listdir("layers")
 
     for filename in files:
         if LayerFile.objects.filter(file__icontains=filename).count() == 0:
             logger.debug(f"Deleting orphaned layer file {filename}")
             try:
-                storage.delete(os.path.join("layers", filename))
+                storage_manager.delete(os.path.join("layers", filename))
                 deleted.append(filename)
             except NotImplementedError as e:
                 logger.error(

@@ -26,7 +26,6 @@ scattered over the codebase
 
 import os.path
 
-from geonode.utils import fixup_shp_columnnames
 from geoserver.resource import FeatureType, Coverage
 from django.utils.translation import ugettext as _
 
@@ -35,6 +34,10 @@ import zipfile
 import os
 import re
 import logging
+
+from django.core.exceptions import SuspiciousFileOperation
+from geonode.utils import fixup_shp_columnnames
+from geonode.storage.manager import storage_manager
 
 
 logger = logging.getLogger(__name__)
@@ -258,21 +261,33 @@ def get_scan_hint(valid_extensions):
 def scan_file(file_name, scan_hint=None, charset=None):
     '''get a list of SpatialFiles for the provided file'''
     if not os.path.exists(file_name):
-        raise Exception(_("Could not access to uploaded data."))
+        try:
+            if not storage_manager.exists(file_name):
+                raise Exception(_("Could not access to uploaded data."))
+        except SuspiciousFileOperation:
+            pass
+
 
     dirname = os.path.dirname(file_name)
-    if zipfile.is_zipfile(file_name):
-        paths, kept_zip = _process_zip(
-            file_name,
-            dirname,
-            scan_hint=scan_hint,
-            charset=charset)
-        archive = file_name if kept_zip else None
+    paths = []
+    if zipfile.is_zipfile(file_name) or len(os.path.splitext(file_name)) > 0 and os.path.splitext(file_name)[1].lower() == '.zip':
+        try:
+            paths, kept_zip = _process_zip(
+                file_name,
+                dirname,
+                scan_hint=scan_hint,
+                charset=charset)
+            archive = file_name if kept_zip else None
+        except Exception as e:
+            logger.debug(e)
+            archive = file_name
     else:
-        paths = []
         for p in os.listdir(dirname):
             _f = os.path.join(dirname, p)
-            fixup_shp_columnnames(_f, charset)
+            try:
+                fixup_shp_columnnames(_f, charset)
+            except Exception as e:
+                logger.debug(e)
             paths.append(_f)
         archive = None
     if paths is not None:
