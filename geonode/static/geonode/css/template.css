@@ -1994,7 +1994,7 @@ input::-moz-focus-inner {
     height: var(--header-height);
     background-color: var(--primary);
     top: 0;
-    z-index: 300;
+    z-index: 9999;
     position: fixed;
 }
 
