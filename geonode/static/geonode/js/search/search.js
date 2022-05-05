@@ -326,6 +326,21 @@
     }
 
     /*
+     * Bind an event to load infinite to display catalogue
+     */
+    module.directive("infiniteScrollDirective", function() {
+        return function(scope, elm, attr) {
+          var raw = elm[0];
+          $(window).on('scroll', function() {
+            if ($(window).scrollTop() + raw.offsetHeight >= raw.scrollHeight) {
+                scope.$apply(attr.infiniteScrollDirective)
+                scope.infiniteScroll++;
+            }
+          })
+        }
+    })
+
+    /*
      * Load categories and keywords
      */
     module.run(function($http, $rootScope, $location) {
@@ -394,10 +409,28 @@
         $scope.query.limit = $scope.query.limit || CLIENT_RESULTS_LIMIT;
         $scope.query.offset = $scope.query.offset || 0;
         $scope.page = Math.round(($scope.query.offset / $scope.query.limit) + 1);
+        $scope.infiniteScroll = 0;
+        $scope.infiniteScrollLoaded = true;
+        $scope.loadMoreResource = function() {
+            const _infinite = new Promise(function(resolve, reject) {
+                if ($scope.infiniteScroll == 0 && $scope.infiniteScrollLoaded) {
+                    $scope.query.limit += $scope.query.limit || CLIENT_RESULTS_LIMIT
+                    query_api($scope.query);
+                }
+                resolve(true);
+            });
+            _infinite.then((v) => {
+                $scope.infiniteScroll = 1;
+            })
+        };
 
         //Get data from apis and make them available to the page
         function query_api(data) {
-            $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback);
+            if ($scope.infiniteScroll == 0 && $scope.infiniteScrollLoaded) {
+                setTimeout(function() {
+                  $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback)
+                }, 1000);
+            };
 
             function successCallback(data) {
                 //success code
@@ -440,6 +473,11 @@
                         // console.log(err);
                     }
                 }
+                $scope.infiniteScroll = 0;
+                var meta = data.data.meta;
+                if (meta.limit >= meta.total_count) {
+                  $scope.infiniteScrollLoaded = false;
+                }
             };
 
             function errorCallback(error) {
@@ -447,30 +485,6 @@
             };
         };
         query_api($scope.query);
-
-        /*
-         * Pagination
-         */
-        // Control what happens when the total results change
-        $scope.$watch('total_counts', function() {
-            $scope.numpages = Math.round(
-                ($scope.total_counts / $scope.query.limit) + 0.49
-            );
-
-            // In case the user is viewing a page > 1 and a
-            // subsequent query returns less pages, then
-            // reset the page to one and search again.
-            if ($scope.numpages < $scope.page) {
-                $scope.page = 1;
-                $scope.query.offset = 0;
-                query_api($scope.query);
-            }
-
-            // In case of no results, the number of pages is one.
-            if ($scope.numpages == 0) {
-                $scope.numpages = 1
-            };
-        });
 
         $scope.paginate_down = function() {
             if ($scope.page > 1) {
