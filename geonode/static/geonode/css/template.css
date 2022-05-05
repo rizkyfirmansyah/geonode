@@ -160,6 +160,26 @@
 
 
 /* ---------------------------------------------------
+    BORDER STYLE
+----------------------------------------------------- */
+.border-layer {
+  border-color: #007bff !important;
+}
+
+.border-document {
+  border-color: #86ceda !important;
+}
+
+.border-maps {
+  border-color: #ffcc35 !important;
+}
+
+.border-geoapp {
+  border-color: #ff7c30 !important;
+}
+
+
+/* ---------------------------------------------------
     BADGE STYLE
 ----------------------------------------------------- */
 
@@ -1556,7 +1576,6 @@ textarea {
 .card input[type=email],
 .card input[type=number],
 .card input[type=password],
-.card input[type=search],
 .card input[type=tel],
 .card input[type=text],
 .card input[type=url],
@@ -2114,6 +2133,7 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
 }
 
 #nav_avatar img {
+    margin-left: -5px;
     border-radius: 1000px!important;
 }
 

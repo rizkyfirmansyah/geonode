@@ -1969,6 +1969,7 @@ input::-moz-focus-inner {
 }
 
 #nav_avatar img {
+    margin-left: -5px;
     border-radius: 1000px!important;
 }
 

@@ -12,7 +12,7 @@
                 </svg>                
             </a></p>
             <h2><a class="text-white" href="{{ SITEURL }}catalogue">{{ facets.document|default:_("No") }}
-                {% blocktrans count counter=facets.document %}Dataset{% plural %}Datasets{% endblocktrans %}</a></h2>
+                {% blocktrans count counter=facets.document %}Catalogue{% plural %}Catalogues{% endblocktrans %}</a></h2>
         </div>
         <div class="col-4">
           <p><a href="{% url "maps_browse" %}"><i class="text-white fa-solid fa-map-location-dot fa-4x"></i></a></p>
