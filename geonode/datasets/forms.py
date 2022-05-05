@@ -17,10 +17,10 @@ class RodaForm(forms.ModelForm):
         model = Roda
         fields = ["requester_name", "requester_email", "requester_institution",  "requester_position", "purposes", "retention", "uuid", "resource_title", "requester_username"]
         widgets = {
-          'requester_name': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
-          'requester_email': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
-          'requester_institution': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
-          'requester_position': forms.TextInput(attrs={'class': 'form-control light-border m-input-space'}),
-          'purposes': forms.TextInput(attrs={'class': 'form-control light-border m-input-space', 'placeholder': "Please briefly describe how you intend to use this data?"}),
-          'retention': forms.Select(attrs={'class': 'form-control light-border m-input-space'}, choices=Roda.RETENTION_CHOICES)
+          'requester_name': forms.TextInput(attrs={'class': 'form-control light-border'}),
+          'requester_email': forms.TextInput(attrs={'class': 'form-control light-border'}),
+          'requester_institution': forms.TextInput(attrs={'class': 'form-control light-border'}),
+          'requester_position': forms.TextInput(attrs={'class': 'form-control light-border'}),
+          'purposes': forms.TextInput(attrs={'class': 'form-control light-border', 'placeholder': "Please briefly describe how you intend to use this data?"}),
+          'retention': forms.Select(attrs={'class': 'form-control light-border'}, choices=Roda.RETENTION_CHOICES)
         }

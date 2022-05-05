@@ -1467,8 +1467,8 @@ select option {
 }
 
 #header-main-menu {
-    top: 1em;
-    left: 2em;
+  position: relative;
+  right: 4em;
 }
 
 .cl-custom-select {
