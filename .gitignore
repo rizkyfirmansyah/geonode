@@ -106,3 +106,5 @@ uwsgi.ini
 requirements.txt.bak
 
 src/
+
+.env
