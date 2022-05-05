@@ -29,7 +29,7 @@
                   <i ng-if="item.resource_type == 'geoapp'" title="App" class="fa-solid fa-gears p-1"></i>
                 </div>
                 <div class="col-md-9 p-0">
-                  <a href="{{ item.detail_url }}" class="stretched-link" title="See details"></a>
+                  <a href="{{ item.detail_url }}" class="stretched-link" title="See {{ item.resource_type }} details"></a>
                   <p>{{ item.title | limitTo: 30 }}{{ item.title.length > 30 ? '...' : '' }}</p>
                 </div>
                 <span class="col-md-1 text-center">
