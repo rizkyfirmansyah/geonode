@@ -15,8 +15,8 @@
         </a>
       </div>
       <div class="col-5">
-        {% get_current_path as path %}
-          {% if path != '/' %}
+        {% get_search_container as path %}
+          {% if path != '/' and path != '' %}
             {% if SEARCH_FILTERS.TEXT_ENABLED %}
               {% include "search/_text_container.html" %}
             {% endif %}

@@ -394,6 +394,15 @@ def facets(context):
     return facets
 
 
+@register.simple_tag(takes_context=True)
+def get_search_container(context):
+    request = context['request']
+    path = request.get_full_path()
+    if "next" not in path:
+        return path
+    return ''
+
+
 @register.filter(is_safe=True)
 def get_facet_title(value):
     """Converts a facet_type into a human readable string"""
