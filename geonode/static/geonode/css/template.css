@@ -158,6 +158,10 @@
     box-shadow: 0 0 0 .2rem var(--primary) !important;
 }
 
+.modal {
+  top: 96px !important;
+}
+
 
 /* ---------------------------------------------------
     BORDER STYLE
@@ -167,7 +171,7 @@
 }
 
 .border-document {
-  border-color: #86ceda !important;
+  border-color: #a82a54 !important;
 }
 
 .border-maps {
@@ -1078,7 +1082,7 @@ fieldset[disabled] .btn {
     font-size: 24px;
     font-weight: 800;
     min-height: 180px;
-    padding: 2em
+    padding: 1em
 }
 
 .h1,
