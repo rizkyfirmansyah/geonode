@@ -26,9 +26,8 @@
 {% block body %}
 <div class="row w-100">
   <h2 class="col-8">{{ resource.title }}</h2>
-  <a href="{% url "document_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" target="_self" class="col-4"><button
-      class="float-right btn btn-info">Return to
-      Explore</button></a>
+  <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" target="_self" class="col-4"><button
+      class="float-right btn btn-info">Return to Catalogue</button></a>
 </div>
 <div class="row">
   <div class="col-8 content_block">
