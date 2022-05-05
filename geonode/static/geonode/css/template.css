@@ -182,6 +182,42 @@
   border-color: #ff7c30 !important;
 }
 
+/* ---------------------------------------------------
+    BACKGROUND STYLE
+----------------------------------------------------- */
+.bg-layer {
+  background-color: #007bff !important;
+}
+
+.bg-document {
+  background-color: #a82a54 !important;
+}
+
+.bg-maps {
+  background-color: #ffcc35 !important;
+}
+
+.bg-geoapp {
+  background-color: #ff7c30 !important;
+}
+
+.bg-layer div p,
+.bg-document div p {
+  color: white;
+}
+
+.bg-maps div p,
+.bg-geoapp div p {
+  color: black;
+}
+
+.bg-layer span svg,
+.bg-document span svg,
+.bg-maps span svg,
+.bg-geoapp span svg
+{
+  fill: white;
+}
 
 /* ---------------------------------------------------
     BADGE STYLE

@@ -6,7 +6,7 @@
   <div class="row row-cols-1 row-cols-md-3">
     <div ng-repeat="item in results" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
           <div class="card rounded border-{{ item.resource_type }}">
-            <div class="card-header pb-0 border-{{ item.resource_type }}">
+            <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
               <div class="row">
                 <div class="mr-2 h-100">
                   <span class="item-category" ng-if="item.has_time"><i class="fa-solid fa-clock" aria-hidden="true" title="Temporal Serie"></i>Temporal Serie<br></span>
@@ -15,7 +15,7 @@
                   <i ng-if="item.resource_type == 'coverageStore'" title="Raster Data" class="fa-solid fa-image p-1"></i>
                   <span ng-if="item.resource_type == 'document'" title="File/Dataset">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.3605 6.20039L13.7371 1.57695C13.6082 1.44805 13.4342 1.375 13.2516 1.375H4.125C3.74473 1.375 3.4375 1.68223 3.4375 2.0625V19.9375C3.4375 20.3178 3.74473 20.625 4.125 20.625H17.875C18.2553 20.625 18.5625 20.3178 18.5625 19.9375V6.68809C18.5625 6.50547 18.4895 6.3293 18.3605 6.20039ZM16.977 7.00391H12.9336V2.96055L16.977 7.00391ZM17.0156 19.0781H4.98438V2.92188H11.4727V7.5625C11.4727 7.80182 11.5677 8.03133 11.7369 8.20055C11.9062 8.36978 12.1357 8.46484 12.375 8.46484H17.0156V19.0781Z" fill="black"/>
+                      <path d="M18.3605 6.20039L13.7371 1.57695C13.6082 1.44805 13.4342 1.375 13.2516 1.375H4.125C3.74473 1.375 3.4375 1.68223 3.4375 2.0625V19.9375C3.4375 20.3178 3.74473 20.625 4.125 20.625H17.875C18.2553 20.625 18.5625 20.3178 18.5625 19.9375V6.68809C18.5625 6.50547 18.4895 6.3293 18.3605 6.20039ZM16.977 7.00391H12.9336V2.96055L16.977 7.00391ZM17.0156 19.0781H4.98438V2.92188H11.4727V7.5625C11.4727 7.80182 11.5677 8.03133 11.7369 8.20055C11.9062 8.36978 12.1357 8.46484 12.375 8.46484H17.0156V19.0781Z"/>
                       </svg>
                   </span>
                   <span ng-if="item.resource_type == 'layer'" title="Spatial">

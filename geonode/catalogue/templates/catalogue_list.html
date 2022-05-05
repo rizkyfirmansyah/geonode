@@ -13,8 +13,8 @@
     <div class="card-body">
       <div class="row">
         {% with include_type_filter='true' %}
-            {% with header='Document Type' %}
-              {% with filter='doc_type__in' %}
+            {% with header='Resource Type' %}
+              {% with filter='resource_type__in' %}
               {% include "search/_search_content.html" %}
             {% endwith %}
           {% endwith %}
