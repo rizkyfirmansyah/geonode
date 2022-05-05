@@ -33,7 +33,7 @@
                   <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar profile 40 %}</a>
                   {% verbatim %}
                 </div>
-                <div class="col-10 pr-0">
+                <div class="col-10 pr-0 pl-2">
                   <div class="">
                     <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a>
                     <i ng-repeat="(key, value) in item.category__fa_dict" class="fa {{ value }} fa-1x" style="margin-left: 3px; float: right; margin-top: 1vh;" title="{{ key }}" id="category_icon" ng-click="cart.category(key)" ng-if="cart"></i>

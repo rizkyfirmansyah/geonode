@@ -1581,7 +1581,7 @@ textarea {
 .card input[type=url],
 .card select,
 .card textarea {
-    border: none !important;
+    border: 1px solid var(--web-surface);
     background-color: var(--web-surface) !important;
 }
 
@@ -4404,11 +4404,6 @@ td>input {
 
 #mdeditor_form .input-group.date {
     width: 100%
-}
-
-#mdeditor_form textarea {
-    resize: vertical;
-    height: 120px
 }
 
 form #mdeditor_form label {

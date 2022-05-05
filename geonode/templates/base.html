@@ -397,7 +397,9 @@
     {% block monitoring %}{% endblock %}
 
     <!-- Modal must stay outside the navbar -->
-    {% include "modal/login.html" %}
+    {% if not user.is_authenticated or user.is_anonymous %}
+      {% include "modal/login.html" %}
+    {% endif %}
     {% include "modal/forgot_password.html" %}
     {% include "modal/remove_layers.html" %}
     {% include "modal/remove_documents.html" %}
