@@ -10,6 +10,7 @@
     --border-radius-fix-lg: 50px;
     --header-height: 96px;
     --spacing-1: 2.5em;
+    --relative-space-header: 4em;
     --toggle: #e0e8e7;
     --primary: #1D4842 !important;
     --secondary: #fff !important;
@@ -1635,7 +1636,12 @@ select option {
 
 #header-main-menu {
     position: relative;
-    right: 4em;
+    right: var(--relative-space-header);
+}
+
+#search-main-menu {
+    position: relative;
+    right: var(--relative-space-header);
 }
 
 .cl-custom-select {
