@@ -4,7 +4,9 @@
   $('#id_doc_file').on('change', function () {
     if ($('#id_title').val() == '') {
       var _text = $('#id_doc_file').val().replace("C:\\fakepath\\", "");
-      $('#id_title').val(_text);
+      var _title = _text.replace(/\.[^/.]+$/, "");
+      var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+      $('#id_title').val(_fileName);
       $(this).prev('label').text(_text);
     }
   });

@@ -59,13 +59,13 @@ def create_document_thumbnail(self, object_id):
     image_file = None
 
     if document.is_image:
-        dname = storage_manager.path(document.files[0])
+        dname = storage_manager.path(document.doc_file.name)
         if storage_manager.exists(dname):
             image_file = storage_manager.open(dname, 'rb')
     elif document.is_video or document.is_audio:
         image_file = open(document.find_placeholder(), 'rb')
     elif document.is_file:
-        dname = storage_manager.path(document.files[0])
+        dname = storage_manager.path(document.doc_file.name)
         try:
             document_location = storage_manager.path(dname)
         except NotImplementedError as e:
