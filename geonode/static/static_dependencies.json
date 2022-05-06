@@ -60,7 +60,6 @@
         "bootstrap-table/dist/bootstrap-table.min.js",
         "bootstrap4-toggle/js/bootstrap4-toggle.min.js",
         "bootstrap-typeahead/bootstrap-typeahead.js",
-        "tree-multiselect/dist/jquery.tree-multiselect.min.js",
 
         "clipboard/dist/clipboard.min.js",
         "fastselect/dist/fastselect.standalone.js",

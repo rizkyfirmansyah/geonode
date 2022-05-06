@@ -53,8 +53,6 @@
         "timeago": "^1.6.7",
         "tinymce": "^5.10.4",
         "toastr": "2.1.4",
-        "tree-filter": "^0.0.4",
-        "tree-multiselect": "^2.6.1",
         "underscore": "^1.13.2",
         "zeroclipboard": "^2.3.0"
     },
