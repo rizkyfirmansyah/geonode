@@ -687,15 +687,12 @@
                         }
                     }
                     metadata_update_done = true;
-                    let msg = "Metadata has been updated.";
-                    let title = "Success";
-                    const $toast = toastr["success"](msg, title);
-                    toastr.options = {
-                        "newestOnTop": false,
-                        "progressBar": true,
-                        "positionClass": "toast-top-right",
-                        "preventDuplicates": true
-                    }
+                    $(document.body).append(`{% with toast_title='Update Metadata' %}
+                        {% with toast_message='Metadata has been updated.' %}
+                          {% include "toast/_toast.html" %}
+                        {% endwith %}
+                      {% endwith %}`);
+                    $('.toast').toast('show')
                 }).fail(function(xhr, status, error) {
                     // error handling
                     try {

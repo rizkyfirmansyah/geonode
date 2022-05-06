@@ -1,1 +1,52 @@
-{% load i18n %}{% load static %}{% load base_tags %}{% load avatar_tags %}{% block extra_script %}<script type="text/javascript">$(document).ready(function(){const t=Cookies.get("csrftoken");$("#form-signin").submit(function(o){const e=$(this).serialize(),s=Object.assign(...e.split("&").map(t=>t.split("=")).map(([t,o])=>({[t]:o}))),r=s["h-captcha-response"],a=s["g-recaptcha-response"];if(void 0===a||""==a)$.ajax({data:{secret:"{{HCAPTCHA_SECRET}}",response:r},url:"https://hcaptcha.com/siteverify",success:function(t){toastr.success("Your captcha is valid. You can proceed to login.","Captcha Response.");toastr.options={newestOnTop:!1,progressBar:!0,positionClass:"toast-top-right",preventDuplicates:!0,showDuration:"800",hideDuration:"1000"}},error:function(t,o,e){toastr.error("Your captcha is invalid. Please try again.","Captcha Response.");toastr.options={newestOnTop:!1,progressBar:!0,positionClass:"toast-top-right",preventDuplicates:!0,showDuration:"800",hideDuration:"1000"}}});else if(r===a)return o.preventDefault(),$.ajax({data:e,type:$(this).attr("method"),url:'{% url "account_login" %}?next={{request.path}}',headers:{"X-CSRFToken":t},error:function(t,o,e){if(400==t.status){let t="The username and/or password you specified are not correct.",o="Login Error";toastr.error(t,o);toastr.options={newestOnTop:!1,progressBar:!0,positionClass:"toast-top-right",preventDuplicates:!0}}else{let o=JSON.parse(t.responseText).form.errors[0],e="Login Error";toastr.error(o,e);toastr.options={newestOnTop:!1,progressBar:!0,positionClass:"toast-top-right",preventDuplicates:!0}}}}).done(function(t,o,e){setInterval("location.reload()",1e3)}),!1;return!1})});</script>{% endblock extra_script %}
+{% load i18n %}
+{% load static %}
+{% load base_tags %}
+{% load avatar_tags %}
+{% block extra_script %}
+    <script type="text/javascript">
+      $(document).ready(function()
+      {const t=Cookies.get("csrftoken");
+      $("#form-signin").submit(function(o){
+        const e=$(this).serialize(),s=Object.assign(...e.split("&").map(t=>t.split("=")).map(([t,o])=>({[t]:o}))),r=s["h-captcha-response"],a=s["g-recaptcha-response"];
+        if(void 0===a||""==a)
+          $.ajax({
+            data:{secret:"{{HCAPTCHA_SECRET}}",response:r},url:"https://hcaptcha.com/siteverify",
+            success:function(t){
+              $(document.body).append(`{% with toast_title='Captcha Response' %}
+                  {% with toast_message='Your captcha is valid. You can proceed to login.' %}
+                    {% include "toast/_toast.html" %}
+                  {% endwith %}
+                {% endwith %}`);
+              $('.toast').toast('show');
+            },error:function(t,o,e){
+              $(document.body).append(`{% with toast_title='Captcha Response' %}
+                  {% with toast_message='Your captcha is invalid. Please try again.' %}
+                    {% include "toast/_toast.html" %}
+                  {% endwith %}
+                {% endwith %}`);
+              $('.toast').toast('show');
+            }});
+        else if(r===a)
+          return o.preventDefault(),
+          $.ajax({
+            data:e,type:$(this).attr("method"),url:'{% url "account_login" %}?next={{request.path}}',headers:{"X-CSRFToken":t},
+            error:function(t,o,e){
+              if(400==t.status){
+                $(document.body).append(`{% with toast_title='Login Error' %}
+                    {% with toast_message='The username and/or password you specified are not correct.' %}
+                      {% include "toast/_toast.html" %}
+                    {% endwith %}
+                  {% endwith %}`);
+                $('.toast').toast('show')
+              }else{
+                let o=JSON.parse(t.responseText).form.errors[0];
+                console.log(o);
+                $(document.body).append(`{% with toast_title='Login Error' %}
+                    {% with toast_message='The username and/or password you specified are not correct.' %}
+                      {% include "toast/_toast.html" %}
+                    {% endwith %}
+                  {% endwith %}`);
+                $('.toast').toast('show')
+              }}})
+          .done(function(t,o,e){setInterval("location.reload()",1e3)}),!1;return!1})});</script>
+{% endblock extra_script %}

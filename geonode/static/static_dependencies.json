@@ -14,8 +14,7 @@
         "fastselect/dist/fastselect.css",
         "patternfly-bootstrap-treeview/dist/bootstrap-treeview.css",
         "cropperjs/dist/cropper.css",
-        "@yaireo/tagify/dist/tagify.css",
-        "toastr/build/toastr.min.css"
+        "@yaireo/tagify/dist/tagify.css"
     ],
     "openlayers.plugins.min.css": [
         "openlayers/dist/ol.css"
@@ -78,7 +77,6 @@
         "zeroclipboard/dist/ZeroClipboard.js",
         "cropperjs/dist/cropper.js",
         "@yaireo/tagify/dist/tagify.min.js",
-        "toastr/build/toastr.min.js",
 
         "tinymce/tinymce.min.js"
     ],

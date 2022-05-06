@@ -1,1 +1,20 @@
-{% load i18n %}{% load static %}{% load base_tags %}{% load layer_tags %}{% block extra_script %}<script type="text/javascript">$(document).ready(function(){let e=Cookies.get("csrftoken");$("#remove_layer").submit(function(t){return resource_title="{{resource.title}}",layername="{{resource.layer.service_typename}}",t.preventDefault(),$.ajax({data:{layername:layername},type:$(this).attr("method"),method:"POST",url:'{% url "layer_remove" %}',headers:{"X-CSRFToken":e},success:function(e){let t="Your "+resource_title+" has been deleted.";toastr.success(t,"Delete Resource");toastr.options={newestOnTop:!1,progressBar:!0,positionClass:"toast-top-right",preventDuplicates:!0}}}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})});</script>{% endblock extra_script %}
+{% load i18n %}
+{% load static %}
+{% load base_tags %}
+{% load layer_tags %}
+{% block extra_script %}
+    <script type="text/javascript">
+      $(document).ready(function(){let e=Cookies.get("csrftoken");
+      $("#remove_layer").submit(function(t){
+        return resource_title="{{resource.title}}",layername="{{resource.layer.service_typename}}",t.preventDefault(),
+          $.ajax({
+            data:{layername:layername},type:$(this).attr("method"),method:"POST",url:'{% url "layer_remove" %}',headers:{"X-CSRFToken":e},
+            success:function(e){
+              $(document.body).append(`{% with toast_title='Delete Resource' %}
+                  {% with toast_message=resource.title|add:' has been deleted.' %}
+                    {% include "toast/_toast.html" %}
+                  {% endwith %}
+                {% endwith %}`);
+              $('.toast').toast('show')
+            }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})});</script>
+{% endblock extra_script %}
