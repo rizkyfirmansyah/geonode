@@ -11,6 +11,6 @@
           $.ajax({
             data:$(this).serialize(),type:$(this).attr("method"),method:"POST",url:'{% url "account_logout" %}',headers:{"X-CSRFToken":t},
             error:function(t,e,o){console.log(o)}
-          }).done(function(){setInterval("location.reload()",1e3)}),!1})});
+          }).done(function(){setInterval(window.location.href = '{{ SITEURL }}',1e3)}),!1})});
     </script>
 {% endblock extra_script %}
