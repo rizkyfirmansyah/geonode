@@ -1,5 +1,9 @@
 {% extends "layers/layer_base.html" %}
 {% load i18n %}
+{% load static %}
+
+<link href="{% static "lib/css/bootstrap-multiselect.css" %}" rel="stylesheet"/>
+<script src="{% static "lib/js/bootstrap-multiselect.js" %}" type="text/javascript"></script>
 
 {% block title %}{{ layer.alternate }} — {{ block.super }}{% endblock %}
 
