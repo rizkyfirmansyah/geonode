@@ -157,9 +157,9 @@ class StorageManager(StorageManagerInterface):
     def replace(self, resource, files: Union[list, BinaryIO]):
         updated_files = {}
         if isinstance(files, list):
-            updated_files['files'] = self.replace_files_list(resource.files, files)
+            updated_files['doc_file'] = self.replace_files_list(resource.doc_file, files)
         elif len(resource.files):
-            updated_files['files'] = [self.replace_single_file(resource.files[0], files)]
+            updated_files['doc_file'] = [self.replace_single_file(resource.doc_file, files)]
         return updated_files
 
     def copy(self, resource):

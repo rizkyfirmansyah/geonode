@@ -81,13 +81,8 @@ def get_download_response(request, docid, attachment=False):
         register_event(request, EventType.EVENT_DOWNLOAD, document)
     filename = slugify(os.path.splitext(os.path.basename(document.title))[0])
 
-    if document.files and storage_manager.exists(document.files[0]):
-        return DownloadResponse(
-            storage_manager.open(document.files[0]).file,
-            basename=f'{filename}.{document.extension}',
-            attachment=attachment
-        )
-    return HttpResponse(
-        "File is not available",
-        status=404
+    return DownloadResponse(
+        document.doc_file,
+        basename=f'{filename}.{document.extension}',
+        attachment=attachment
     )
