@@ -100,23 +100,24 @@
                   </div>
                   <div class="">
                     <ul class="list-group m-0">
-                      {% if request.user.is_authenticated %}
-                        {% unread_messages request.user as messages %}
-                        {% if messages %}
-                        <span onclick="location='{% url "messages_inbox" %}'" class="msUnrd"><span
-                            class="msgInbx">{{ messages }}+</span></span>
-                        {% endif %}
-                      {% endif %}
                         <a class="btn_wrapper" href="{% url "messages_inbox" %}"
-                        role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                          <rect width="24" height="24" fill="url(#patternInbox)"/>
-                          <defs>
-                          <pattern id="patternInbox" patternContentUnits="objectBoundingBox" width="1" height="1">
-                          <use xlink:href="#image0_13_542" transform="scale(0.0104167)"/>
-                          </pattern>
-                          <image id="image0_13_542" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADEElEQVR4nO2dvW7UQBRGT0iyEhKhBlFAQ8O+BihUFEh5A3gCkCgRJQUEJQ0UPARltG8BCPHTBfECbDoimcIuCErWs54Zf2P7O9KVosQa37lnd3ZmvLHBGGOMMcYYY9qZA/vAZ+AEqCYeJ00t9pvaZGMGHAKnBXS61DgFDppaJWUGLAro4FBiQWIJhwV0amhx0KnS5zDHw06XOAXutBX3UtsBwGNgM+A4c5ZN4FHbQSEC7sXnMllaa7cR0MgSuBKfyyRZAldXHRAioGr5e0gbYyaqPiFDkMmIBYixADEWIMYCxFiAGAsQs6VOIIC2eXYbRa9T/A4QYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYixADEWIMYCxCgEPGO971jGss65nic4X3JyFGhdCX1E1+LnfgFlO0FJEmJe+YMVAGVIiB12Bi0AtBJSjPmDFwAaCak+cEchAPqVkHK2MxoB0I+E1FPNUQmAvBJyzPNHJwDySMi1yBqlAEgrIecKd7QCII2E3NsLoxYAcRL62NsZvQDoJqGvjbVJCID1JPS5qzkZARAmoe8t5UkJgNUSFPv5kxMA50tQXUyZpAA4K0F5JSuqPkP4F6WLeAlcbn5+oUwkBt8rIp6o+vhbEWIsQIwFiEnxIZx6JrRDfS/OHOwAvzO13YkS3wHXMrZ9PWPbnShRwK2Mbd/M2HYnShSwm7Ht+xnbzkboDmSq+EaetcUG8F3Qn2j6TrgCHqZI/D/2RH2JRpH0F2A7RfINM+CrqC/RKJKugPcpkm94K+xHNKrEK+BJgvyfivsQjTL5CnhHt1vBb1HfwVydfzTqDlTU4/ce4bOju8DHAvJuFZBiO7pPfgAfgCPgGPjV/P4G9SJrF3gA3JZkdz4razw0AUPE1wNKxgLEWICYEAHL7FmMl9ZrDyECfiZIZKoctx0QIuAoQSJTJUnt/BirbhH0GKtQSljSDy3edKr0BWzjRxmuEwvSbqcD9YbYAR6OVsUf6ld+8uL/yxx4DXyinqKqO62OZVOLVyQc840xxhhjjDHj5S+3x01jKGtNPgAAAABJRU5ErkJggg=="/>
-                          </defs>
-                          </svg> {% trans " Inbox" %} </a>
+                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <rect width="24" height="24" fill="url(#patternInbox)"/>
+                            <defs>
+                            <pattern id="patternInbox" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_13_542" transform="scale(0.0104167)"/>
+                            </pattern>
+                            <image id="image0_13_542" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADEElEQVR4nO2dvW7UQBRGT0iyEhKhBlFAQ8O+BihUFEh5A3gCkCgRJQUEJQ0UPARltG8BCPHTBfECbDoimcIuCErWs54Zf2P7O9KVosQa37lnd3ZmvLHBGGOMMcYYY9qZA/vAZ+AEqCYeJ00t9pvaZGMGHAKnBXS61DgFDppaJWUGLAro4FBiQWIJhwV0amhx0KnS5zDHw06XOAXutBX3UtsBwGNgM+A4c5ZN4FHbQSEC7sXnMllaa7cR0MgSuBKfyyRZAldXHRAioGr5e0gbYyaqPiFDkMmIBYixADEWIMYCxFiAGAsQs6VOIIC2eXYbRa9T/A4QYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYixADEWIMYCxCgEPGO971jGss65nic4X3JyFGhdCX1E1+LnfgFlO0FJEmJe+YMVAGVIiB12Bi0AtBJSjPmDFwAaCak+cEchAPqVkHK2MxoB0I+E1FPNUQmAvBJyzPNHJwDySMi1yBqlAEgrIecKd7QCII2E3NsLoxYAcRL62NsZvQDoJqGvjbVJCID1JPS5qzkZARAmoe8t5UkJgNUSFPv5kxMA50tQXUyZpAA4K0F5JSuqPkP4F6WLeAlcbn5+oUwkBt8rIp6o+vhbEWIsQIwFiEnxIZx6JrRDfS/OHOwAvzO13YkS3wHXMrZ9PWPbnShRwK2Mbd/M2HYnShSwm7Ht+xnbzkboDmSq+EaetcUG8F3Qn2j6TrgCHqZI/D/2RH2JRpH0F2A7RfINM+CrqC/RKJKugPcpkm94K+xHNKrEK+BJgvyfivsQjTL5CnhHt1vBb1HfwVydfzTqDlTU4/ce4bOju8DHAvJuFZBiO7pPfgAfgCPgGPjV/P4G9SJrF3gA3JZkdz4razw0AUPE1wNKxgLEWICYEAHL7FmMl9ZrDyECfiZIZKoctx0QIuAoQSJTJUnt/BirbhH0GKtQSljSDy3edKr0BWzjRxmuEwvSbqcD9YbYAR6OVsUf6ld+8uL/yxx4DXyinqKqO62OZVOLVyQc840xxhhjjDHj5S+3x01jKGtNPgAAAABJRU5ErkJggg=="/>
+                            </defs>
+                            </svg> {% trans " Inbox" %}
+                            {% if request.user.is_authenticated %}
+                              {% unread_messages request.user as messages %}
+                              {% if messages %}
+                              <span onclick="location='{% url "messages_inbox" %}'" class="badge badge-danger rounded-pill ml-1"><span
+                                  class="text-white">{{ messages }}+</span></span>
+                              {% endif %}
+                            {% endif %}
+                        </a>
                       </ul>
                   </div>
                   <div class="">

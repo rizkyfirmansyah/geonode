@@ -4,8 +4,17 @@
 {% block extra_script %}
     <script type="text/javascript">
       $(document).ready(function(){
-        $(".retention-array").select2({
-          data:[{id:"1 day",text:"1 day"},{id:"1 week",text:"1 week"},{id:"1 month",text:"1 month"},{id:"6 months",text:"6 months"},{id:"1 year",text:"1 year"},{id:"2 years",text:"2 years"},{id:"3 years",text:"3 years"},{id:"5 years",text:"5 years"},{id:"Forever",text:"Forever"}]});
+        function loadSelectItems(select, items) {
+            var options = '';
+            $.each(items, function(key, value) {
+                options += '<option value=' + value.id + '>' + value.text + '</option>';
+            });
+            select.empty();
+            select.append(options);
+            select.selectpicker('refresh');
+        }
+        let data = [{id:"1 day",text:"1 day"},{id:"1 week",text:"1 week"},{id:"1 month",text:"1 month"},{id:"6 months",text:"6 months"},{id:"1 year",text:"1 year"},{id:"2 years",text:"2 years"},{id:"3 years",text:"3 years"},{id:"5 years",text:"5 years"},{id:"Forever",text:"Forever"}]
+        loadSelectItems($("#retentionInput"), data);
           let e=Cookies.get("csrftoken");
           $("#request-download-layer").submit(function(t){
             t.preventDefault();let r=$(this).serialize();

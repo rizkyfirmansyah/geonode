@@ -714,28 +714,6 @@ button.full-width {
   text-decoration: none
 }
 
-@media (min-width:576px) {
-  .modal-dialog {
-      max-width: 500px;
-      margin: 1.75rem auto
-  }
-  .modal-dialog-scrollable {
-      max-height: calc(100% - 3.5rem)
-  }
-  .modal-dialog-scrollable .modal-content {
-      max-height: calc(100vh - 3.5rem)
-  }
-  .modal-dialog-centered {
-      min-height: calc(100% - 3.5rem)
-  }
-  .modal-dialog-centered::before {
-      height: calc(100vh - 3.5rem)
-  }
-  .modal-sm {
-      max-width: 300px
-  }
-}
-
 #SigninModal .modal-dialog {
   width: 100%;
   padding-right: 15px;
@@ -780,6 +758,7 @@ input[type=text],
 input[type=url],
 select,
 textarea {
+    background-color: var(--web-surface)!important;
     border: 1px solid #000 !important;
     color: var(--primary)!important;
     height: var(--spacing-1);
