@@ -5,45 +5,51 @@
 
 {% block title %}{{ thread.subject }} — {{ block.super }}{% endblock %}
 
-{% block body_inner %}
-<h3>{{ thread.subject }}</h3>
-<div>
-    <b>{% trans "Sent to" %}:</b>
-        {% for user in thread.single_users.all%}
-            {% if user.username != request.user.username %}
-                <a href={{  user.get_absolute_url }}>{{ user.full_name_or_nick }}</a>
-                {%if not forloop.last%},{%endif%}
-            {% endif %}
-        {% endfor %}
-        {% if thread.registered_groups.all %}
-            ,
-        {% endif %}
-        {% for group in thread.registered_groups.all%}
-            <a href={{  group.groupprofile.get_absolute_url }}>{{ group.groupprofile.title }}</a>
-            {%if not forloop.last%},{%endif%}
-        {% endfor %}
-</div>
-<hr />
-{% for message in thread.messages.all %}
-  <div class="well">
-    {% autoescape off %}{% avatar message.sender 50 %}{% endautoescape %}
-    {{ message.sent_at }} {% trans "by" %} {% ifequal request.user message.sender %}{% trans "me" %}{% else %}<a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>{% endifequal %}
-    <p>{{ message.content }}</p>
+{% block body %}
+<div class="card border-dark rounded bg-light">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{{ thread.subject }}</h3>
+      <div class="col-4 text-right">
+        <a href="{% url 'messages_inbox' %}" class="btn btn-primary w-100" type="button">{% trans "Back to Inbox" %}</a>
+      </div>
+    </div>
   </div>
-  {% empty %}
-  {% trans "You have no messages" %}.
-{% endfor %}
-<div>
-  <form action="{{ thread.get_absolute_url }}" method="post">
-    {% csrf_token %}
-    <fieldset>
-      <textarea name="content"></textarea>
-    </fieldset>
-    <input type="submit" value="{% trans "Send Reply" %}" class="btn btn-primary" type="button"/>
-  </form>
+  <div class="col-12">
+      {% for message in thread.messages.all %}
+        <div class="card-body">
+          {% autoescape off %}{% avatar message.sender 50 %}{% endautoescape %}
+          {{ message.sent_at }} {% trans "by" %} {% ifequal request.user message.sender %}{% trans "me" %}{% else %}<a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>{% endifequal %}
+          <p class="mt-4">{{ message.content }}</p>
+        </div>
+        {% empty %}
+        {% trans "You have no messages" %}.
+      {% endfor %}
+  </div>
+  <div class="card-body">
+    <form action="{{ thread.get_absolute_url }}" method="post" class="w-100">
+      {% csrf_token %}
+      <fieldset>
+        <textarea name="content"></textarea>
+      </fieldset>
+      <input type="submit" value="{% trans "Send Reply" %}" class="btn btn-primary w-100 mt-4" type="button"/>
+    </form>
+  </div>
+  <div class="card-footer text-right">
+    {% trans "Sent to" %}:
+          {% for user in thread.single_users.all%}
+              {% if user.username != request.user.username %}
+                  <a href={{  user.get_absolute_url }}>{{ user.full_name_or_nick }}</a>
+                  {%if not forloop.last%},{%endif%}
+              {% endif %}
+          {% endfor %}
+          {% if thread.registered_groups.all %}
+              ,
+          {% endif %}
+          {% for group in thread.registered_groups.all%}
+              <a href={{  group.groupprofile.get_absolute_url }}>{{ group.groupprofile.title }}</a>
+              {%if not forloop.last%},{%endif%}
+          {% endfor %}
+  </div>
 </div>
-{% endblock %}
-
-{% block body_sidebar %}
-<a href="{% url "messages_inbox" %}" class="btn btn-primary" type="button" style="margin-top: 40px;">{% trans "Back to Inbox" %}</a>
 {% endblock %}

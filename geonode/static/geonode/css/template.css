@@ -758,6 +758,7 @@ input[type=text],
 input[type=url],
 select,
 textarea {
+    padding: 1em;
     background-color: var(--web-surface)!important;
     border: 1px solid #000 !important;
     color: var(--primary)!important;
@@ -963,10 +964,6 @@ legend {
 progress {
     display: inline-block;
     vertical-align: baseline
-}
-
-textarea {
-    overflow: auto
 }
 
 [type=number]::-webkit-inner-spin-button,
@@ -1749,7 +1746,8 @@ select option {
 }
 
 textarea {
-    min-height: 25rem
+    min-height: 25rem;
+    width: 100%;
 }
 
 label,
@@ -3661,20 +3659,6 @@ html {
     margin-top: -10px
 }
 
-.well textarea {
-    min-width: 480px;
-    width: 100%;
-    margin-bottom: 2rem
-}
-
-#group_container {
-    padding-left: 1em
-}
-
-#group_container img {
-    max-width: 90%!important
-}
-
 @media (max-width:991px) {
     .navbar-header {
         float: none
@@ -4502,8 +4486,6 @@ span.grippy {
 
 .create-msg-form-control {
     width: 100%;
-    color: #1D4842;
-    background-color: var(--secondary);
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px
@@ -5428,11 +5410,6 @@ span.icon.node-icon:before {
 
 .form-metadata {
     text-align: left!important
-}
-
-form textarea[name=content] {
-    width: 100%;
-    margin-bottom: 2em
 }
 
 #preview_tab .fa {
