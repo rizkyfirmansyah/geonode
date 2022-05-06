@@ -381,7 +381,7 @@ def edit_service(request, service_id):
     if request.user != service.owner and not request.user.has_perm('change_service', obj=service):
         return HttpResponse(
             loader.render_to_string(
-                '401.html', context={
+                'error/401.html', context={
                     'error_message': _(
                         "You are not permitted to change this service."
                     )}, request=request), status=401)
@@ -409,7 +409,7 @@ def remove_service(request, service_id):
     if request.user != service.owner and not request.user.has_perm('delete_service', obj=service):
         return HttpResponse(
             loader.render_to_string(
-                '401.html', context={
+                'error/401.html', context={
                     'error_message': _(
                         "You are not permitted to remove this service."
                     )}, request=request), status=401)

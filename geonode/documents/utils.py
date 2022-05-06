@@ -75,7 +75,7 @@ def get_download_response(request, docid, attachment=False):
             obj=document.get_self_resource()):
         return HttpResponse(
             loader.render_to_string(
-                '401.html', context={
+                'error/401.html', context={
                     'error_message': _("You are not allowed to view this document.")}, request=request), status=401)
     if attachment:
         register_event(request, EventType.EVENT_DOWNLOAD, document)

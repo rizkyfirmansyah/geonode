@@ -296,7 +296,7 @@ def download(request, resourceid, sender=Layer):
                         else:
                             return HttpResponse(
                                 loader.render_to_string(
-                                    '401.html',
+                                    'error/401.html',
                                     context={
                                         'error_title': _("No files found."),
                                         'error_message': _no_files_found
@@ -307,7 +307,7 @@ def download(request, resourceid, sender=Layer):
             if not layer_files:
                 return HttpResponse(
                     loader.render_to_string(
-                        '401.html',
+                        'error/401.html',
                         context={
                             'error_title': _("No files found."),
                             'error_message': _no_files_found
@@ -440,7 +440,7 @@ def download(request, resourceid, sender=Layer):
             logger.debug(tb)
             return HttpResponse(
                 loader.render_to_string(
-                    '401.html',
+                    'error/401.html',
                     context={
                         'error_title': _("No files found."),
                         'error_message': _no_files_found
@@ -448,7 +448,7 @@ def download(request, resourceid, sender=Layer):
                     request=request), status=404)
     return HttpResponse(
         loader.render_to_string(
-            '401.html',
+            'error/401.html',
             context={
                 'error_title': _("Not Authorized"),
                 'error_message': _not_authorized

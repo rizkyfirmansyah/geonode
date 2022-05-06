@@ -3522,15 +3522,6 @@ html {
     color: #000
 }
 
-.error_page h1,
-.error_page p {
-    text-align: center
-}
-
-.error_page p {
-    font-size: 2.8rem
-}
-
 .error-link:hover {
     color: #228b22;
     text-decoration: underline

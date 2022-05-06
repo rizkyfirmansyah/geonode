@@ -109,7 +109,7 @@ def updatelayers(request):
     # Attempt to run task synchronously
     result.get()
 
-    return HttpResponseRedirect(reverse('layer_browse'))
+    return HttpResponseRedirect(reverse('catalogue_browse'))
 
 
 @login_required
