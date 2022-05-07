@@ -20,7 +20,6 @@
         "cropperjs": "^1.5.12",
         "datatables": "^1.10.18",
         "fastsearch": "^1.11.1",
-        "fastselect": "^0.7.3",
         "fontselect-jquery-plugin": "^1.1.0",
         "grunt": "^1.5.2",
         "grunt-cli": "^1.4.3",

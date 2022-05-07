@@ -11,7 +11,6 @@
         "bootstrap-select/dist/css/bootstrap-select.css",
         "bootstrap-table/dist/bootstrap-table.css",
         "bootstrap4-toggle/css/bootstrap4-toggle.min.css",
-        "fastselect/dist/fastselect.css",
         "patternfly-bootstrap-treeview/dist/bootstrap-treeview.css",
         "cropperjs/dist/cropper.css",
         "@yaireo/tagify/dist/tagify.css"
@@ -61,7 +60,6 @@
         "bootstrap-typeahead/bootstrap-typeahead.js",
 
         "clipboard/dist/clipboard.min.js",
-        "fastselect/dist/fastselect.standalone.js",
         "handlebars/dist/handlebars.min.js",
         "json2/lib/JSON2/static/json2.js",
         "datatables/media/js/jquery.dataTables.min.js",
