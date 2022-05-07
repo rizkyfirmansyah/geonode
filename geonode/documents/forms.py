@@ -119,9 +119,49 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
             'object_id',
             'doc_file',
             'extension',
+            'alternate',
             'doc_type',
-            'doc_url')
-
+            'temporal_extent_start',
+            'temporal_extent_end',
+            'spatial_representation_type',
+            'resource_type',
+            'spatial_resolution',
+        )
+        fields = [
+          'title',
+          'abstract',
+          'keywords',
+          'data_description',
+          'purpose',
+          'supplemental_information',
+          'data_quality_statement',
+          'author',
+          'source',
+          'doi',
+          'license',
+          'data_type',
+          'constraints_other',
+          'restriction_code_type',
+          'language',
+          'regions',
+          'date',
+          'date_content',
+          'edition',
+          'maintenance_frequency',
+          'poc',
+          'owner',
+          'contacts',
+          'group',
+          'metadata_uploaded_preserve',
+          'featured',
+          'was_published',
+          'is_published',
+          'was_approved',
+          'is_approved',
+          'thumbnail_url',
+          'metadata',
+          'metadata_only'
+        ]
 
 class DocumentDescriptionForm(forms.Form):
     title = forms.CharField(max_length=300)

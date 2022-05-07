@@ -24,6 +24,8 @@
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
+<i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
+
 <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
   <div class="card" id="fixed-header">
     <h2 class="card-header text-center">
@@ -49,43 +51,42 @@
               Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
               There might be a better way to solve this.-->
           <div class="col-12 form-controls" id="doc_metadata_advanced">
+            {% block category %}
+              <div class="p-3">
+                <label class="control-label required-field">{% trans "Category" %}</label>
+                <fieldset id="category_form">
+                  {% autoescape off %}
+                    <div class="row mt-2">
+                      {% for choice in category_form.category_choice_field.field.choices %}
+                        <div class="col-4 text-center p-3">
+                          <label class="fancy-checkbox">
+                            <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
+                              {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
+                            {{ choice.1 }}
+                          </label>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endautoescape %}
+                </fieldset>
+              </div>
+            {% endblock category %}
             {{ document_form|as_bootstrap }}
             {% if THESAURI_FILTERS %}
             {{ tkeywords_form }}
             {% endif %}
           </div>
-          <div class="card rounded web-surface">
-            <div class="p-3">
-              <label class="control-label required-field">{% trans "Category" %}</label>
-              <fieldset id="category_form">
-                {% autoescape off %}
-                  <div class="row mt-2">
-                    {% for choice in category_form.category_choice_field.field.choices %}
-                      <div class="col-4 text-center p-3">
-                        <label class="fancy-checkbox">
-                          <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
-                            {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
-                          {{ choice.1 }}
-                        </label>
-                      </div>
-                    {% endfor %}
-                  </div>
-                {% endautoescape %}
-              </fieldset>
-            </div>
-
-            <div class="col-12 mt-2">
-              <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
-                <h2>{% trans "Point of Contact" %}</h2>
-                {{ poc_form|as_bootstrap }}
-                <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-              </fieldset>
-              <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
-                <h2>{% trans "Metadata Provider" %}</h2>
-                {{ author_form|as_bootstrap }}
-                <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
-              </fieldset>
-            </div>
+          <div class="row mt-2">
+            <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
+              <h2>{% trans "Point of Contact" %}</h2>
+              {{ poc_form|as_bootstrap }}
+              <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+            </fieldset>
+            <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
+              <h2>{% trans "Metadata Provider" %}</h2>
+              {{ author_form|as_bootstrap }}
+              <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
+            </fieldset>
           </div>
       {% endblock advanced_edit_form %}
     </div>

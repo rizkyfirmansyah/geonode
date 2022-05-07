@@ -32,6 +32,45 @@ class GeoAppForm(ResourceBaseForm):
             'center_y',
             'data'
         )
+        fields = [
+          'title',
+          'abstract',
+          'keywords',
+          'data_description',
+          'purpose',
+          'supplemental_information',
+          'data_quality_statement',
+          'author',
+          'source',
+          'doi',
+          'license',
+          'data_type',
+          'constraints_other',
+          'restriction_code_type',
+          'language',
+          'regions',
+          'date',
+          'date_content',
+          'edition',
+          'maintenance_frequency',
+          'temporal_extent_start',
+          'temporal_extent_end',
+          'spatial_representation_type',
+          'spatial_resolution',
+          'poc',
+          'owner',
+          'contacts',
+          'group',
+          'metadata_uploaded_preserve',
+          'featured',
+          'was_published',
+          'is_published',
+          'was_approved',
+          'is_approved',
+          'thumbnail_url',
+          'metadata',
+          'metadata_only'
+        ]
 
     def __init__(self, *args, **kwargs):
         super(GeoAppForm, self).__init__(*args, **kwargs)

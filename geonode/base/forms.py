@@ -295,20 +295,20 @@ class ResourceBaseForm(TranslationModelForm):
         input_formats=['%Y-%m-%d %H:%M %p'],
         widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
     )
-    temporal_extent_start = forms.DateTimeField(
-        label=_("Temporal extent start"),
-        required=False,
-        localize=True,
-        input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
-    )
-    temporal_extent_end = forms.DateTimeField(
-        label=_("Temporal extent end"),
-        required=False,
-        localize=True,
-        input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
-    )
+    # temporal_extent_start = forms.DateTimeField(
+    #     label=_("Temporal extent start"),
+    #     required=False,
+    #     localize=True,
+    #     input_formats=['%Y-%m-%d %H:%M %p'],
+    #     widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
+    # )
+    # temporal_extent_end = forms.DateTimeField(
+    #     label=_("Temporal extent end"),
+    #     required=False,
+    #     localize=True,
+    #     input_formats=['%Y-%m-%d %H:%M %p'],
+    #     widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
+    # )
 
     poc = forms.ModelChoiceField(
         empty_label=_("Person outside SDI (fill form)"),
@@ -332,14 +332,6 @@ class ResourceBaseForm(TranslationModelForm):
         help_text=_("A space or comma-separated list of keywords. Use the widget to select from Hierarchical tree."),
         # widget=TreeWidget(url='autocomplete_hierachical_keyword'), #Needs updating to work with select2
         widget=TaggitSelect2Custom(url='autocomplete_hierachical_keyword'))
-
-    """
-    regions = TreeNodeMultipleChoiceField(
-        label=_("Regions"),
-        required=False,
-        queryset=Region.objects.all(),
-        level_indicator=u'___')
-    """
 
     def __init__(self, *args, **kwargs):
         super(ResourceBaseForm, self).__init__(*args, **kwargs)

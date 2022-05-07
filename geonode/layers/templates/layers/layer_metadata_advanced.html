@@ -24,6 +24,8 @@
   <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
   <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
+  <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
+
   <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
     <div class="card" id="fixed-header">
       <h2 class="card-header text-center">
@@ -98,6 +100,24 @@
                 Unfortunately this needs to appear at the bottom of the form since tkeywords_form is a complete other django form. 
                 There might be a better way to solve this. -->
             <div class="col-md-12 form-controls">
+              {% block category %}
+                <div class="p-3">
+                  <label class="control-label required-field">{% trans "Category" %}</label>
+                  <fieldset id="category_form">
+                    {% autoescape off %}
+                    {% for choice in category_form.category_choice_field.field.choices %}
+                    <div class="col-md-6">
+                      <label class="fancy-checkbox">
+                          <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
+                            {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
+                          {{ choice.1 }}
+                      </label>
+                    </div>
+                    {% endfor %}
+                    {% endautoescape %}
+                  </fieldset>
+                </div>
+              {% endblock category %}
               {% block layer_fields %}
               {% for field in layer_form %}
                 {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' %}
@@ -117,26 +137,7 @@
               {% endblock thesauri %}
             </div>
 
-            {% block category %}
-              <div class="row">
-                <div class="col-md-12">
-                  <label class="control-label required-field">{% trans "Category" %}</label>
-                  <fieldset id="category_form">
-                    {% autoescape off %}
-                    {% for choice in category_form.category_choice_field.field.choices %}
-                    <div class="col-md-6">
-                      <label class="fancy-checkbox">
-                          <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
-                            {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
-                          {{ choice.1 }}
-                      </label>
-                    </div>
-                    {% endfor %}
-                    {% endautoescape %}
-                  </fieldset>
-                </div>
-              {% endblock category %}
-
+            <div class="row">
               {% block other_tab %}{% endblock other_tab %}
 
               {% block attributes %}
