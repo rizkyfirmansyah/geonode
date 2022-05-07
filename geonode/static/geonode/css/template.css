@@ -2065,12 +2065,8 @@ input::-moz-focus-inner {
 }
 
 .s-header {
-    width: 100%;
     height: var(--header-height);
     background-color: var(--primary);
-    top: 0;
-    z-index: 9999;
-    position: fixed;
 }
 
 .s-header a {
@@ -5460,9 +5456,6 @@ span.icon.node-icon:before {
 }
 
 @media only screen and (max-width:600px) {
-    .s-header {
-        height: 90px
-    }
     .header-logo {
         left: 30px
     }
@@ -5574,9 +5567,6 @@ span.icon.node-icon:before {
 }
 
 @media only screen and (max-width:1024px) {
-    .s-header {
-        position: fixed
-    }
     .row .row {
         margin-left: -15px;
         margin-right: -15px

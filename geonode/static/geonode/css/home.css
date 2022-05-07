@@ -1850,12 +1850,8 @@ input::-moz-focus-inner {
 }
 
 .s-header {
-    width: 100%;
     height: var(--header-height);
     background-color: var(--primary);
-    position: absolute;
-    top: 0;
-    z-index: 500
 }
 
 .s-header a {
@@ -4618,9 +4614,6 @@ article.tab-pane {
 }
 
 @media only screen and (max-width:600px) {
-    .s-header {
-        height: 90px
-    }
     .header-logo {
         left: 30px
     }
@@ -4882,9 +4875,6 @@ article.tab-pane {
 }
 
 @media only screen and (max-width:1024px) {
-    .s-header {
-        position: fixed
-    }
     .row .row {
         margin-left: -15px;
         margin-right: -15px
