@@ -758,7 +758,7 @@ input[type=text],
 input[type=url],
 select,
 textarea {
-    padding: 1em;
+    padding: 0.5em;
     background-color: var(--web-surface)!important;
     border: 1px solid #000 !important;
     color: var(--primary)!important;
@@ -3423,7 +3423,11 @@ html {
 }
 
 .select2-container--default .select2-search--inline .select2-search__field {
-    color: var(--primary)!important
+    width: 100% !important;
+}
+
+.select2-container .select2-search--inline {
+  width: 100% !important;
 }
 
 .full-height {
@@ -5388,13 +5392,6 @@ span.icon.node-icon:before {
 
 .query_builder .form-inline {
     min-height: 90px
-}
-
-#profileCompleteness {
-    position: relative;
-    float: right;
-    top: -5rem;
-    margin-bottom: 0
 }
 
 #main_search_input:focus {

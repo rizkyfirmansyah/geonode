@@ -139,7 +139,7 @@
                     <div id="basicCategoryInfo" class="border border-secondary rounded bg-light mb-2">
                       <span><label for="{{ category_form.category_choice_field|id }}"
                           class="control-label required-field">{% trans "Category" %}</label></span>
-                      <select title="{% trans "Choose one of the following..." %}" data-live-search="true"
+                      <select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
                         name="category_choice_field" id="category_form" class="selectpicker form-control" multiple>
                         <option {% if not category_form.initial %} selected="selected" {% endif %} value="">---</option>
                         {% for choice in category_form.category_choice_field.field.choices %}
