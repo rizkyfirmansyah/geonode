@@ -145,6 +145,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
           'language',
           'regions',
           'date',
+          'date_type',
           'date_content',
           'edition',
           'maintenance_frequency',

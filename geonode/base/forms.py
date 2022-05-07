@@ -375,6 +375,9 @@ class ResourceBaseForm(TranslationModelForm):
         return _unsescaped_kwds
 
     class Meta:
+        widgets = {
+            'regions': forms.Select(attrs={'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
+        }
         exclude = (
             'contacts',
             'name',
