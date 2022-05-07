@@ -337,10 +337,10 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         category_form = CategoryForm(request.POST, prefix="category_choice_field", initial=int(
             request.POST["category_choice_field"]) if "category_choice_field" in request.POST and
             request.POST["category_choice_field"] else [])
-        region_form = RegionsForm(request.POST, prefix="region_choice_field",
+        region_form = RegionsForm(request.POST, prefix="resource-regions",
             initial=(
-                request.POST.getlist("region_choice_field") if "region_choice_field" in request.POST or
-                request.POST.getlist("region_choice_field") else []))
+                request.POST.getlist("resource-regions") if "resource-regions" in request.POST or
+                request.POST.getlist("resource-regions") else []))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -398,7 +398,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         new_poc = geoapp_form.cleaned_data['poc']
         new_author = geoapp_form.cleaned_data['metadata_author']
         new_keywords = geoapp_form.cleaned_data['keywords']
-        new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
+        new_regions = [int(c.strip()) for c in request.POST.getlist('resource-regions')]
         new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:

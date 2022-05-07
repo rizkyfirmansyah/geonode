@@ -244,6 +244,10 @@ def map_metadata(
             initial=(
                 request.POST.getlist("category_choice_field") if "category_choice_field" in request.POST or
                 request.POST.getlist("category_choice_field") else []))
+        region_form = RegionsForm(request.POST, prefix="resource-regions",
+                    initial=(
+                        request.POST.getlist("resource-regions") if "resource-regions" in request.POST or
+                        request.POST.getlist("resource-regions") else []))
 
         if hasattr(settings, 'THESAURUS'):
             tkeywords_form = TKeywordForm(request.POST)
@@ -305,7 +309,7 @@ def map_metadata(
         new_poc = map_form.cleaned_data['poc']
         new_author = map_form.cleaned_data['metadata_author']
         new_keywords = current_keywords if request.keyword_readonly else map_form.cleaned_data['keywords']
-        new_regions = [int(c.strip()) for c in request.POST.getlist('region_choice_field')]
+        new_regions = [int(c.strip()) for c in request.POST.getlist('resource-regions')]
         new_title = map_form.cleaned_data['title']
         new_abstract = map_form.cleaned_data['abstract']
         new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]

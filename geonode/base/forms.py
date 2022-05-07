@@ -32,6 +32,7 @@ from django.db.models import Prefetch, Q
 from django.forms import ModelForm, models
 from django.forms.fields import MultipleChoiceField
 from django.utils.translation import ugettext as _
+from geonode.base import widgets
 from modeltranslation.forms import TranslationModelForm
 from taggit.forms import TagField
 from tinymce.widgets import TinyMCE
@@ -376,7 +377,7 @@ class ResourceBaseForm(TranslationModelForm):
 
     class Meta:
         widgets = {
-            'regions': forms.Select(attrs={'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
+            'regions': forms.SelectMultiple(attrs={'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
         }
         exclude = (
             'contacts',
