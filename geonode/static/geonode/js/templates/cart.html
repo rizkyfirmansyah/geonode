@@ -1,14 +1,21 @@
-<div id="composerCart" class="card p-2">
-  <div
-    class="card-header text-center font-lg-1"
-    ng-bind="(selectedString)"></div>
-  <div
-    ng-show="!cart.getCart().items.length"
-    class="card-body">
-    <h5 class="text-muted">{{ emptyString }}</h5>
-  </div>
-  <ul class="list-group">
-    <div class="" ng-click="cart.removeAll()" ng-if="cart.getCart().items.length >= 2"><button class="btn btn-danger btn-block">Remove all selected</button></div>
-    <li class="list-group-item clearfix" ng-if="resource && resource.title" ng-repeat="resource in cart.getCart().items">{{ resource.title | limitTo: 25}}{{ resource.title.length > 25 ? '...' : '' }}<button class="btn btn-primary btn-xs float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-lg"></i></button></li>
-  </ul>
+<div id="composerCart" class="card">
+    <div class="card-header text-center" ng-bind="(selectedString)"></div>
+    <div ng-show="!cart.getCart().items.length" class="card-body p-2">
+        <h6 class="text-muted text-center">{{ emptyString }}</h6>
+    </div>
+    <ul class="list-group" ng-if="cart.getCart().items.length">
+        <div class=""
+             ng-click="cart.removeAll()"
+             ng-if="cart.getCart().items.length >= 2">
+            <button class="btn btn-danger btn-block">Remove all selected</button>
+        </div>
+        <div class="row w-100 ml-1 d-block">
+          <li class="p-1 col"
+              ng-if="resource && resource.title"
+              ng-repeat="resource in cart.getCart().items">
+              {{ resource.title | limitTo: 25 }}{{ resource.title.length > 25 ? '...' : '' }}
+              <button class="btn-primary btn-xs col-1 float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-sm"></i></button>
+          </li>
+        </div>
+    </ul>
 </div>

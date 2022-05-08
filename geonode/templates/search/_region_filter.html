@@ -1,9 +1,9 @@
 {% load i18n %}
 
-<nav class="filter" ng-cloak>
-    <a href="#region_filter" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Regions</a>
-    <ul class="collapse list-unstyled" id="region_filter">
-        <form class="autocomplete-input input-group p-2" id="region-search-autocomplete">
+<div class="filter dropup" ng-cloak>
+    <a data-toggle="dropdown" aria-expanded="false" class="dropdown-toggle nav-toggle" aria-haspopup="true" aria-expanded="false">Regions</a>
+    <div class="dropdown-menu">
+        <form class="autocomplete-input input-group p-1" id="region-search-autocomplete">
             {% csrf_token %}
             <div id="region-search-container" class="row w-100">
                 <div class="col-10 pr-0">
@@ -22,5 +22,5 @@
                 </div>
             </div>
         </form>
-    </ul>
-</nav>
+    </div>
+</div>

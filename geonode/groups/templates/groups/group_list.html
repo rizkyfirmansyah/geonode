@@ -7,14 +7,16 @@
 {% block body_class %}{% trans "groups explore" %}{% endblock %}
 
 {% block body %}
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        {% with include_type_filter='true' %}
-          {% with facet_type='groups' %}
-            {% include "search/_search_user_content.html" %}
+  <div class="col-md-10 p-0 float-right m-0 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          {% with include_type_filter='true' %}
+            {% with facet_type='groups' %}
+              {% include "search/_search_user_content.html" %}
+            {% endwith %}
           {% endwith %}
-        {% endwith %}
+        </div>
       </div>
     </div>
   </div>

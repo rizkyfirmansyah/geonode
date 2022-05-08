@@ -2553,12 +2553,6 @@ html.no-csstransitions .home-content__main {
     padding-left: 1em
 }
 
-.list-group,
-.list-group-item {
-    border-radius: var(--border-radius-sm);
-    background-color: var(--web-container)
-}
-
 .ng-scope .alert {
     margin-bottom: 5px
 }

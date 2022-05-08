@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="w-100" ng-controller="CartList">
-  <div class="row pb-3">
+  <div class="row">
     <div class="col text-primary" id="title-ng-search">
       {% if facet_type == 'layers' %}
       <span ng-bind="total_counts + ' ' + '{% trans "Spatial data found" %}'"></span>

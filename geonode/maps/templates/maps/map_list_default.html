@@ -7,7 +7,6 @@
 {% block body_class %}{% trans "maps explore" %}{% endblock %}
 
 {% block body %}
-  {% include "search/_search_sidebar.html" %}
   <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
   <div class="card">
     <div class="card-body">
@@ -18,10 +17,9 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12 mt-2">
-      {% include 'base/_resourcebase_snippet.html' %}
-    </div>
+  <div class="mt-2">
+    <div class="col-2">{% include "search/_search_sidebar.html" %}</div>
+    <div class="col-10">{% include 'base/_resourcebase_snippet.html' %}</div>
   </div>
 {% endblock %}
 

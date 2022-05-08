@@ -3,7 +3,7 @@
 {% load avatar_tags %}
 {% verbatim %}
 
-  <div class="row row-cols-1 row-cols-md-3">
+  <div class="row row-cols-1 row-cols-md-2">
     <div ng-repeat="item in results | limitTo: limit" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
           <div class="card rounded border-{{ item.resource_type }}">
             <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
@@ -75,7 +75,7 @@
                           ng-click="cart.toggleItem(item)"
                           data-toggle="tooltip"
                           data-placement="bottom"
-                          title="Bulk Select" %}"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
+                          title="Bulk Select"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
                       </div>
                         <div class="col-3 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
                         <div class="col-3 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>

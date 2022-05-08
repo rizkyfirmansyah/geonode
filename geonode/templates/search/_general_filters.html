@@ -140,7 +140,11 @@
 {% block extrascript %}
 <script text="text/javascript">
     $(function () {
-        $(".datepicker").datetimepicker({
+        $("#inpDate2").datetimepicker({
+            viewMode: 'years'
+        });
+
+        $("#inpDate1").datetimepicker({
             viewMode: 'years'
         });
 

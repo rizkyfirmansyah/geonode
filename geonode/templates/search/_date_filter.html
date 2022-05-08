@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<nav class="filter overflow-hidden" ng-cloak>
+<nav class="filter" ng-cloak>
   <a href="#date_filter" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Date</a>
   <ul class="collapse list-unstyled" id="date_filter">
       <ul class="nav" id="date_start">
@@ -8,7 +8,7 @@
               <label>{% trans "Date begins after:" %}</label>
               <div class="row">
                   <div class="col-9 pr-0">
-                      <input value="yyyy-mm-dd" data-date-format="YYYY-MM-DD" type="text" class="datepicker"
+                      <input value="yyyy-mm-dd" data-date-format="YYYY-MM-DD" type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#inpDate1"
                           placeholder="{% trans 'yyyy-mm-dd' %}" ng-model="date_query.date__gte" id="inpDate1" />
                   </div>
                   <div aria-label="Delete" role="button" class="delete_search col-2" id="dltDate1"><span
@@ -26,7 +26,7 @@
               <label>{% trans "Date ends before:" %}</label>
               <div class="row">
                   <div class="col-9 pr-0">
-                      <input value="yyyy-mm-dd" data-date-format="YYYY-MM-DD" type="text" class="datepicker"
+                      <input value="yyyy-mm-dd" data-date-format="YYYY-MM-DD" type="text" class="form-control datetimepicker-input" data-toggle="datetimepicker" data-target="#inpDate2"
                           placeholder="{% trans 'yyyy-mm-dd' %}" ng-model="date_query.date__lte" id="inpDate2" />
                   </div>
                   <div aria-label="Delete" role="button" class="delete_search col-2" id="dltDate2"><span
@@ -39,5 +39,4 @@
               </div>
           </div>
       </ul>
-  </div>
 </nav>

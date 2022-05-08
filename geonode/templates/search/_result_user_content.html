@@ -1,14 +1,20 @@
 {% load i18n %}
 {% load static %}
 
-<div class="row">
-  <div class="col-12 p-0 mt-2">
-      {% if facet_type == 'groups' %}
-          {% include 'search/_group_snippet.html' %}
-      {% elif facet_type == 'groupcategories' %}
-          {% include 'search/_groupcategory_snippet.html' %}
-      {% elif facet_type == 'people' %}
-          {% include "people/_profile_list_item.html" %}
-      {% endif %}
+  {% if facet_type == 'groups' %}
+  <div class="col-md-10 m-0 p-0 float-right">
+        {% include 'search/_group_snippet.html' %}
   </div>
-</div>
+    {% elif facet_type == 'groupcategories' %}
+  <div class="row">
+    <div class="col-md-12 mt-2 p-0"></div>
+        {% include 'search/_groupcategory_snippet.html' %}
+    </div>
+  </div>
+    {% elif facet_type == 'people' %}
+  <div class="row">
+    <div class="col-md-12 mt-2 p-0"></div>
+        {% include "people/_profile_list_item.html" %}
+    </div>
+  </div>
+  {% endif %}
