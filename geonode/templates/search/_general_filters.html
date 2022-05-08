@@ -3,35 +3,24 @@
 <nav class="filter" ng-cloak>
     <a href="#categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Categories</a>
     <ul class="collapse list-unstyled" id="categories">
-        {% if facet_type == 'layers' %}
-        {% verbatim %}
-        <li ng-repeat="category in categories" ng-if="category.layers_count > 0">
-            <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
-                title="{{ category.gn_description }}" ng-click="multiple_choice_listener($event)"
-                class="{{category.active}}">
-                <div class="fa-stack">
-                    <i class="fa fa-{{category.fa_class}} fa-stack-1x"></i>
-                </div>
-                {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
-                <span class="badge float-right">{{ category.layers_count }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% else %}
         {% verbatim %}
         <li ng-repeat="category in categories" ng-if="category.count > 0">
             <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
                 title="{{ category.gn_description }}" ng-click="multiple_choice_listener($event)"
                 class="{{category.active}}">
-                <div class="fa-stack">
-                    <i class="fa fa-{{category.fa_class}} fa-stack-1x"></i>
+                <div class="fa-stack text-right" ng-if="category.svg">
+                    <div class="text-center">
+                      <img src="data:image/svg+xml;charset=UTF-8,{{category.svg}}" style="max-width: 24px;">
+                    </div>
+                </div>
+                <div class="fa-stack text-center" ng-if="!category.svg">
+                    <i class="fa fa-{{category.fa_class}} justify-content-center" style="max-width: 24px;"></i>
                 </div>
                 {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
                 <span class="badge float-right">{{ category.count }}</span>
             </a>
         </li>
         {% endverbatim %}
-        {% endif %}
     </ul>
 </nav>
 {% endif %}

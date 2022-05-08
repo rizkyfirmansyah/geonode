@@ -12,12 +12,10 @@
                       <div class="category" data-toggle="tooltip" data-placement="auto"
                         title="{% trans iso_format.category__description %}" style="display: grid;">
                         <div class="mb-2">
-                          {% if iso_format.category__svg == None %}
-                            <i class="text-dark fa fa-{{ iso_format.category__fa_class }} fa-5x"></i>
+                          {% if iso_format.category__svg %}
+                            <img src="data:image/svg+xml;charset=UTF-8,{{ iso_format.category__svg }}" style="width: 80px;">
                           {% else %}
-                            {% autoescape off %}
-                              {{ iso_format.category__svg }}
-                            {% endautoescape %}
+                            <i class="text-dark fa-solid fa-{{ iso_format.category__fa_class }} fa-5x"></i>
                           {% endif %}
                           <span class="badge badge-info p-2 rounded-pill btn">{{ iso_format.count }}</span>
                         </div>
