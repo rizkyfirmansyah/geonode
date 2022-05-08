@@ -22,5 +22,5 @@ class RodaForm(forms.ModelForm):
           'requester_institution': forms.TextInput(attrs={'class': 'form-control'}),
           'requester_position': forms.TextInput(attrs={'class': 'form-control'}),
           'purposes': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Please briefly describe how you intend to use this data?"}),
-          'retention': forms.Select(attrs={'class': 'selectpicker form-control', 'data-size': '5'}, choices=Roda.RETENTION_CHOICES)
+          'retention': forms.Select(attrs={'class': 'form-control', 'data-size': '5'}, choices=Roda.RETENTION_CHOICES)
         }

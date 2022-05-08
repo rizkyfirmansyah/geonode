@@ -14,8 +14,8 @@ class Roda(models.Model):
       ("six_months", _("6 months")),
       ("one_year", _("1 year")),
       ("two_years", _("2 years")),
-      ("three_year", _("3 years")),
-      ("five_year", _("5 years")),
+      ("three_years", _("3 years")),
+      ("five_years", _("5 years")),
       ("forever", _("Forever")),
     ]
 
