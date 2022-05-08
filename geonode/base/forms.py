@@ -133,11 +133,18 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
     choices = property(_get_choices, MultipleChoiceField._set_choices)
 
     def label_from_instance(self, obj):
-        return '<i class="fa fa-' + obj.fa_class + ' fa-2x unchecked"></i>' \
-                         '<i class="fa fa-' + obj.fa_class + ' fa-2x checked"></i>' \
-                         '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
-                         'data-content="' + obj.description + '" trigger="hover">' \
-                                                              '<br/><strong>' + obj.gn_description + '</strong></span>'
+        if obj.svg:
+            return '<img src="data:image/svg+xml;charset=UTF-8,'+ obj.svg +'" style="max-width: 20px;">' \
+                            '<img src="data:image/svg+xml;charset=UTF-8,'+ obj.svg +'" style="max-width: 20px;">' \
+                            '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
+                            'data-content="' + obj.description + '" trigger="hover">' \
+                                                                '<br/><strong>' + obj.gn_description + '</strong></span>'
+        if obj.fa_class:
+            return '<i class="fa fa-' + obj.fa_class + ' fa-2x unchecked"></i>' \
+                            '<i class="fa fa-' + obj.fa_class + ' fa-2x checked"></i>' \
+                            '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
+                            'data-content="' + obj.description + '" trigger="hover">' \
+                                                                  '<br/><strong>' + obj.gn_description + '</strong></span>'
 
 
 class CategoryForm(forms.Form):
