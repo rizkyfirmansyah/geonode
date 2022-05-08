@@ -8,6 +8,7 @@
     <h5>{{ emptyString }}</h5>
   </div>
   <ul class="list-group">
+    <div class="" ng-click="cart.removeAll()" ng-if="cart.getCart().items.length >= 2"><button class="btn btn-danger btn-block">Remove all selected</button></div>
     <li class="list-group-item clearfix" ng-if="resource && resource.title" ng-repeat="resource in cart.getCart().items">{{ resource.title | limitTo: 25}}{{ resource.title.length > 25 ? '...' : '' }}<button class="btn btn-primary btn-xs float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-lg"></i></button></li>
   </ul>
 </div>

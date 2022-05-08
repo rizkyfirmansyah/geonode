@@ -536,7 +536,7 @@ button.full-width {
 
 .btn-upload.disabled,
 .btn-upload:disabled {
-    color: var(--secondary);
+    color: var(--primary) !important;
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important;
     border: 2px solid var(--disabled);

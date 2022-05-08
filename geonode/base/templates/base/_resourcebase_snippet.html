@@ -32,9 +32,6 @@
                   <a href="{{ item.detail_url }}" class="stretched-link" title="See {{ item.resource_type }} details"></a>
                   <p>{{ item.title | limitTo: 30 }}{{ item.title.length > 30 ? '...' : '' }}</p>
                 </div>
-                <span class="col-md-1 text-center">
-                  <i id="download_icon" class="fa {{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color:{{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
-                </span>
               </div>
             </div>
             <div class="card-body pt-2">
@@ -44,9 +41,14 @@
                   {% verbatim %}
                 </div>
                 <div class="col-10 pr-0 pl-2">
-                  <div class="">
-                    <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a>
-                    <i ng-repeat="(key, value) in item.category__fa_dict" class="fa {{ value }} fa-1x" style="margin-left: 3px; float: right; margin-top: 1vh;" title="{{ key }}" id="category_icon" ng-click="cart.category(key)" ng-if="cart"></i>
+                  <div class="row w-100">
+                    <div class="col-md-10"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
+                    <div>
+                      <i ng-repeat="(key, value) in item.category__fa_dict" class="fa fa-{{ value }} fa-1x" title="{{ key }}" id="category_icon" ng-click="cart.category(key)" ng-if="cart"></i>
+                    </div>
+                    <span class="col-md-1 m-0">
+                      <i id="download_icon" class="fa fa-{{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color:{{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
+                    </span>
                   </div>
                   <div class="row pt-1 w-100">
                     <div class="ml-3 card-subtitle font-small"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
@@ -59,31 +61,20 @@
               <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
             </div>
             <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a>
-            {% endverbatim %}
                   <div class="card-footer">
                     <div class="row">
-                      {% if facet_type == 'layers' %}
-                      <div class="col-3">
+                      <div class="col-3 text-center" ng-controller="CartList">
                         <button
-                          class="btn btn-default btn-xs"
+                          class="btn btn-default btn-xs p-0"
                           ng-if="cart"
                           ng-click="cart.toggleItem(item)"
                           data-toggle="tooltip"
                           data-placement="bottom"
-                          title="{% trans "Select" %}"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
+                          title="Bulk Select" %}"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
                       </div>
-                        {% verbatim %}
                         <div class="col-3 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
                         <div class="col-3 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
                         <div class="col-3 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
-                        {% endverbatim %}
-                      {% else %}
-                        {% verbatim %}
-                          <div class="col-4 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
-                          <div class="col-4 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
-                          <div class="col-4 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
-                        {% endverbatim %}
-                      {% endif %}
                     </div>
                   </div>
                     <em ng-if="item.resource_type == 'remoteStore'">

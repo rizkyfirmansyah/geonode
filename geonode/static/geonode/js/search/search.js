@@ -2,7 +2,7 @@
 
 (function() {
 
-    var module = angular.module('geonode_main_search', [], function($locationProvider) {
+    var module = angular.module('geonode_main_search', ['ngCookies'], function($locationProvider) {
         if (window.navigator.userAgent.indexOf("MSIE") == -1) {
             $locationProvider.html5Mode({
                 enabled: true,
@@ -348,6 +348,7 @@
          * Load categories and keywords if the filter is available in the page
          * and set active class if needed
          */
+        // search.init();
         if ($('#categories').length > 0) {
             module.load_categories($http, $rootScope, $location);
         }
@@ -423,6 +424,26 @@
                 $scope.infiniteScroll = 1;
             })
         };
+
+        // check permission on each resources; display download icon if the user has permission
+        $http.get(siteUrl + 'api/v2/perms')
+        .then(function(response) {
+            var array = [];
+
+            response.data.resources.map(function(value) {
+                array.push({
+                    "pk": value.pk,
+                    "perms": value.perms.includes("download_resourcebase") ? "Available for download" : "Not available for download",
+                    "icon": value.perms.includes("download_resourcebase") ? "download" : "ban",
+                    "color": value.perms.includes("download_resourcebase") ? "#0000FF" : "#D3D3D3"
+                });
+            });
+
+            $scope.resources = function(id) {
+                let _array = array.filter(el => el.pk === id);
+                return _array
+            }
+        });
 
         //Get data from apis and make them available to the page
         function query_api(data) {
@@ -599,6 +620,7 @@
          * and pushes/removes the value of the element from the query object
          */
         $scope.multiple_choice_listener = function($event) {
+            $scope.infiniteScrollLoaded = true;
             var element = $($event.currentTarget);
             var query_entry = [];
             var data_filter = element.attr('data-filter');
@@ -825,4 +847,37 @@
             });
         }
     });
+
+
+    /*
+     * Main search service
+     */
+
+    // module.service('geonode_search_controller', function($cookies) {
+    //   this.init = function() {
+    //       this.$search = {
+    //           items: this.fillSearch(),
+    //       };
+    //   };
+
+    //   this.category = function(key) {
+    //       const url = siteUrl + 'api/categories/';
+    //       const xhttp = new XMLHttpRequest();
+    //       xhttp.onreadystatechange = function() {
+    //           if (this.readyState == 4 && this.status == 200) {
+    //               const response = JSON.parse(xhttp.responseText);
+    //               response.objects.forEach(function(value, index, array) {
+    //                   if (value.gn_description == key) {
+    //                       const cid = value.identifier;
+    //                       const redirect_to = siteUrl + "search/?category__identifier__in=" + cid
+    //                       window.location.replace(redirect_to);
+    //                   }
+    //               })
+    //           }
+    //       };
+    //       xhttp.open("GET", url, true);
+    //       xhttp.send();
+    //   };
+
+    // });
 })();

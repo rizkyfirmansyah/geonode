@@ -11,6 +11,7 @@
     --header-height: 96px;
     --spacing-1: 2.5em;
     --relative-space-header: 4em;
+    --toggle: #e0e8e7;
     --save: #256BF4;
     --upload: #4F98AF !important;
     --primary: #1D4842 !important;
@@ -380,7 +381,7 @@ button.full-width {
 
 .btn-upload.disabled,
 .btn-upload:disabled {
-  color: var(--secondary);
+  color: var(--primary) !important;
   background-color: var(--disabled) !important;
   border-color: var(--disabled) !important;
   border: 2px solid var(--disabled);

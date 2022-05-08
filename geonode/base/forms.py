@@ -133,8 +133,8 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
     choices = property(_get_choices, MultipleChoiceField._set_choices)
 
     def label_from_instance(self, obj):
-        return '<i class="fa ' + obj.fa_class + ' fa-2x unchecked"></i>' \
-                         '<i class="fa ' + obj.fa_class + ' fa-2x checked"></i>' \
+        return '<i class="fa fa-' + obj.fa_class + ' fa-2x unchecked"></i>' \
+                         '<i class="fa fa-' + obj.fa_class + ' fa-2x checked"></i>' \
                          '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
                          'data-content="' + obj.description + '" trigger="hover">' \
                                                               '<br/><strong>' + obj.gn_description + '</strong></span>'

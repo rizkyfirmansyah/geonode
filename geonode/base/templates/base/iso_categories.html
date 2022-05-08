@@ -13,7 +13,7 @@
                         title="{% trans iso_format.category__description %}" style="display: grid;">
                         <div class="mb-2">
                           {% if iso_format.category__svg == None %}
-                            <i class="text-dark fa {{ iso_format.category__fa_class }} fa-5x"></i>
+                            <i class="text-dark fa fa-{{ iso_format.category__fa_class }} fa-5x"></i>
                           {% else %}
                             {% autoescape off %}
                               {{ iso_format.category__svg }}

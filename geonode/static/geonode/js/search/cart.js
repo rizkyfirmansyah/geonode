@@ -95,25 +95,6 @@
                 }
             });
         };
-
-        $http.get(siteUrl + 'api/v2/perms')
-            .then(function(response) {
-                var array = [];
-
-                response.data.resources.map(function(value) {
-                    array.push({
-                        "pk": value.pk,
-                        "perms": value.perms.includes("download_resourcebase") ? "Available for download" : "Not available for download",
-                        "icon": value.perms.includes("download_resourcebase") ? "fa-download" : "fa-ban",
-                        "color": value.perms.includes("download_resourcebase") ? "#0000FF" : "#D3D3D3"
-                    });
-                });
-
-                $scope.resources = function(id) {
-                    let _array = array.filter(el => el.pk === id);
-                    return _array
-                }
-            });
     })
 
     .controller("CategoryList", function($scope, $http) {
@@ -203,6 +184,10 @@
             }
         }
 
+        this.removeAll = function() {
+            return this.getCart().items.splice(0);
+        }
+
         this.toggleItem = function(item) {
             if (this.getItemById(item.id) === null) {
                 this.addItem(item);
@@ -212,7 +197,7 @@
         }
 
         this.getItemById = function(itemId) {
-            var items = this.getCart().items;
+          var items = this.getCart().items;
             var the_item = null;
             angular.forEach(items, function(item) {
                 if (item.id === itemId) {
@@ -230,24 +215,24 @@
             }
         }
 
-        this.category = function(key) {
-            const url = siteUrl + 'api/categories/';
-            const xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    const response = JSON.parse(xhttp.responseText);
-                    response.objects.forEach(function(value, index, array) {
-                        if (value.gn_description == key) {
-                            const cid = value.identifier;
-                            const redirect_to = siteUrl + "search/?category__identifier__in=" + cid
-                            window.location.replace(redirect_to);
-                        }
-                    })
-                }
-            };
-            xhttp.open("GET", url, true);
-            xhttp.send();
-        }
+        // this.category = function(key) {
+        //     const url = siteUrl + 'api/categories/';
+        //     const xhttp = new XMLHttpRequest();
+        //     xhttp.onreadystatechange = function() {
+        //         if (this.readyState == 4 && this.status == 200) {
+        //             const response = JSON.parse(xhttp.responseText);
+        //             response.objects.forEach(function(value, index, array) {
+        //                 if (value.gn_description == key) {
+        //                     const cid = value.identifier;
+        //                     const redirect_to = siteUrl + "search/?category__identifier__in=" + cid
+        //                     window.location.replace(redirect_to);
+        //                 }
+        //             })
+        //         }
+        //     };
+        //     xhttp.open("GET", url, true);
+        //     xhttp.send();
+        // }
     })
 
     .run(['cart', function(cart) {

@@ -5,7 +5,7 @@
             "description": "Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass",
             "gn_description": "Oceans",
             "is_choice": true,
-            "fa_class": "fa-anchor",
+            "fa_class": "anchor",
             "identifier": "oceans"
         }
     },
@@ -16,7 +16,7 @@
             "description": "Forest, mining concessions, small-scale agriculture, oil palm. Examples: logging concession, oil palm concessions, social forestry concessions, smallholder plantations.",
             "gn_description": "Land Use",
             "is_choice": true,
-            "fa_class": "fa-clone",
+            "fa_class": "clone",
             "identifier": "landUse"
         }
     },
@@ -27,7 +27,7 @@
             "description": "Examples: land cover, land use, mangrove, peat, soils, burn area",
             "gn_description": "Land Cover",
             "is_choice": true,
-            "fa_class": "fa-globe",
+            "fa_class": "globe",
             "identifier": "landCover"
         }
     },
@@ -38,7 +38,7 @@
             "description": "Georeferenced images of the Earth’s surface, which have been collected via aerial photography or satellite data. Examples: land cover, topographic maps, imagery, unclassified images, drone.",
             "gn_description": "Imagery",
             "is_choice": true,
-            "fa_class": "fa-image",
+            "fa_class": "image",
             "identifier": "imagery"
         }
     },
@@ -49,7 +49,7 @@
             "description": "Information pertaining to earth sciences. Examples: geophysical features and processes, geology, minerals, sciences dealing with the composition, structure and origin of the earth s rocks, risks of earthquakes, volcanic activity, landslides, gravity information, soils, permafrost, hydrogeology, erosion.",
             "gn_description": "Geoscientific Information",
             "is_choice": true,
-            "fa_class": "fa-bullseye",
+            "fa_class": "bullseye",
             "identifier": "geoscientificInformation"
         }
     },
@@ -60,7 +60,7 @@
             "description": "Height above or below sea level. Examples: altitude, bathymetry, digital elevation models, slope, derived products.",
             "gn_description": "Elevation",
             "is_choice": true,
-            "fa_class": "fa-flag",
+            "fa_class": "flag",
             "identifier": "elevation"
         }
     },
@@ -71,7 +71,7 @@
             "description": "Information used for appropriate actions for future use of the land. Examples: conservation area, zoning maps, cadastral surveys, land ownership, national spatial plan.",
             "gn_description": "Cadastre",
             "is_choice": true,
-            "fa_class": "fa-home",
+            "fa_class": "home",
             "identifier": "planningCadastre"
         }
     },
@@ -82,7 +82,7 @@
             "description": "Economic activities, conditions and employment. Examples: production, labour, revenue, commerce, industry, tourism and ecotourism, forestry, fisheries, commercial or subsistence hunting, exploration and exploitation of resources such as minerals, oil and gas.",
             "gn_description": "Economy",
             "is_choice": true,
-            "fa_class": "fa-shopping-cart",
+            "fa_class": "shopping-cart",
             "identifier": "economy"
         }
     },
@@ -93,7 +93,7 @@
             "description": "Characteristics of society and cultures. Examples: settlements, anthropology, archaeology, education, traditional beliefs, manners and customs, demographic data, recreational areas and activities, social impact assessments, crime and justice, census information.",
             "gn_description": "Society",
             "is_choice": true,
-            "fa_class": "fa-comments",
+            "fa_class": "comments",
             "identifier": "society"
         }
     },
@@ -104,7 +104,7 @@
             "description": "Processes and phenomena of the atmosphere. Examples: cloud cover, weather, climate, atmospheric conditions, climate change, precipitation.",
             "gn_description": "Climate",
             "is_choice": true,
-            "fa_class": "fa-cloud",
+            "fa_class": "cloud",
             "identifier": "climate"
         }
     },
