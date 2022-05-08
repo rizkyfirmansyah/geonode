@@ -42,8 +42,8 @@
                 </div>
                 <div class="col-10 pr-0 pl-2">
                   <div class="row w-100 m-0">
-                    <div class="col-md-7 pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
-                    <div ng-controller="CartList" class="col-md-3 text-right pr-0" ng-repeat="(key, value) in item.category__icons">
+                    <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
+                    <div ng-controller="CartList" class="col-1 text-right pr-0" ng-repeat="(key, value) in item.category__icons">
                       <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
                         <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>
                       </span>
