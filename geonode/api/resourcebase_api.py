@@ -154,6 +154,7 @@ class CommonModelApi(ModelResource):
         'srid',
         'bbox_polygon',
         'category__gn_description',
+        'category__icons',
         'category__fa_class',
         'category__identifier',
         'supplemental_information',
@@ -618,14 +619,28 @@ class CommonModelApi(ModelResource):
                 formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_class = {}
+                icons = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
+                c_svg = [c.svg for c in obj.category.all()]
+                c_icons = list(zip(c_svg, c_fa))
                 if len(c_fa) > 0:
                     for i, v in enumerate(c_fa):
                         fa_class[c_gn[i]] = v
                 else:
                     fa_class = {}
                 formatted_obj['category__fa_class'] = fa_class
+
+                if len(c_icons) > 0:
+                    for i, v in enumerate(c_icons):
+                        # set priority to use inline svg rather than font awesome icon
+                        if v[0]:
+                            icons[c_gn[i]] = v[0]
+                        else:
+                            icons[c_gn[i]] = v[1]
+                else:
+                    icons = {}
+                formatted_obj['category__icons'] = icons
 
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):

@@ -43,8 +43,13 @@
                 <div class="col-10 pr-0 pl-2">
                   <div class="row w-100 m-0">
                     <div class="col-md-7 pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
-                    <div ng-controller="CartList" class="col-md-3 text-right pr-0">
-                      <span role="button" ng-repeat="(key, value) in item.category__fa_class" ng-click="cart.category(key)" ng-if="cart"><i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i></span>
+                    <div ng-controller="CartList" class="col-md-3 text-right pr-0" ng-repeat="(key, value) in item.category__icons">
+                      <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
+                        <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>
+                      </span>
+                      <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') >= 1">
+                        <img src="data:image/svg+xml;charset=UTF-8,{{value}}" style="max-width: 16px;" title="{{ key }}">
+                      </span>
                     </div>
                     <span class="col-md-1 m-0">
                       <i id="download_icon" class="fa fa-{{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color:{{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
