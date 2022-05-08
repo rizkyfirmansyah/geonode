@@ -60,12 +60,8 @@
             </div>
             <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a>
             {% endverbatim %}
-                    {% verbatim %}
-                    <a ng-if="item.detail_url.indexOf('/layers/') > -1" class="create_map col-6" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
-                    <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
                   <div class="card-footer">
                     <div class="row">
-                      {% endverbatim %}
                       {% if facet_type == 'layers' %}
                       <div class="col-3">
                         <button
@@ -106,6 +102,12 @@
                     </div>
                     <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">{% trans "PENDING APPROVAL" %}</div>
                     <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">{% trans "UNPUBLISHED" %}</div>
+                  {% verbatim %}
+                  <div class="card-footer" ng-if="item.resource_type == 'layer'">
+                    <a class="create_map" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+                    <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
+                  </div>
+                  {% endverbatim %}
           </div>
     </div>
   </div>
