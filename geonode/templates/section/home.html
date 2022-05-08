@@ -36,19 +36,17 @@
       </h1>
   
       <div class="search-field mt-5 pt-5">
-        <form id="main_search" action="{% url "search" %}" style="display: flex;">
-            <div style="display: flex;">
-              <div style="">
-                <button class="btn-search" type="submit">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path
-                      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
-                    </path>
-                  </svg>
-                </button>
-              </div>
+        <form id="main_search" action="{% url "search" %}" class="row p-0 m-0">
+            <div class="col-1">
+              <button class="btn-search btn-block h-100" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path
+                    d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
+                  </path>
+                </svg>
+              </button>
             </div>
-            <div style="flex: 1;flex-wrap: wrap;">
+            <div class="col">
               {% if HAYSTACK_SEARCH %}
               <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control pb-4" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
                     <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
