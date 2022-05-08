@@ -128,17 +128,17 @@
         {% if "download_resourcebase" in perms_list %}
         {% if resource.extension|lower in imgtypes and resource.doc_file %}
         <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
-            class="btn btn-primary btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+            class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
         {% elif resource.doc_file %}
         <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
-            class="btn btn-primary btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+            class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
         {% elif  resource.doc_url %}
         <a style="text-decoration:none;" target="_blank" href="{{ resource.doc_url }}"><button
-            class="btn btn-primary btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+            class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
         {%  endif %}
         {% else %}
         {% if request.user.is_authenticated %}
-        <button class="btn btn-primary btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-info btn-md btn-block" data-toggle="modal"
           data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
         {%  endif %}
         {%  endif %}
@@ -161,7 +161,7 @@
       {% endif %}
 
       <li class="list-group-item">
-        <button class="btn btn-primary btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-download btn-md btn-block" data-toggle="modal"
           data-target="#download-metadata">{% trans "Download Metadata" %}</button>
       </li>
       <div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -220,7 +220,7 @@
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
         <p>{% trans "Click the button below to change the permissions of this Datasets." %}</p>
-        <p><a href="#modal_perms" data-toggle="modal" class="btn btn-update btn-block"
+        <p><a href="#modal_perms" data-toggle="modal" class="btn btn-edit btn-block"
             data-target="#_permissions">{% trans "Change Data Permissions" %}</a></p>
       </li>
       {% include "_permissions_form.html" %}

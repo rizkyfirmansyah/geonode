@@ -12,6 +12,8 @@
     --spacing-1: 2.5em;
     --relative-space-header: 4em;
     --toggle: #e0e8e7;
+    --save: #256BF4;
+    --upload: #4F98AF !important;
     --primary: #1D4842 !important;
     --secondary: #fff !important;
     --success: #4F98AF !important;
@@ -346,32 +348,53 @@ button.full-width {
     margin-right: 0
 }
 
-.btn-update {
-    color: var(--link) !important;
-    background-color: var(--primary) !important;
-    border-color: var(--primary) !important
+.btn-download {
+    color: var(--primary) !important;
+    background-color: var(--link) !important;
+    border-color: var(--link) !important
 }
 
-.btn-update:hover {
-    color: var(--secondary) !important;
-    background-color: var(--link) !important;
+.btn-download:hover {
+    color: var(--primary) !important;
+    background-color: var(--secondary) !important;
     border-color: var(--link) !important;
     border: 2px solid var(--link);
 }
 
-.btn-update.focus,
-.btn-update:focus {
+.btn-download.focus,
+.btn-download:focus {
     color: var(--primary) !important;
-    background-color: var(--link) !important;
+    background-color: var(--secondary) !important;
     border-color: var(--link) !important;
     box-shadow: 0 0 0 .2rem var(--link);
 }
 
-.btn-update.disabled,
-.btn-update:disabled {
+.btn-download.disabled,
+.btn-download:disabled {
     color: var(--link) !important;
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important
+}
+
+.btn-save {
+  color: var(--secondary) !important;
+  background-color: var(--save) !important;
+  border-color: var(--save) !important
+}
+
+.btn-save:hover {
+  color: var(--save) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--save) !important;
+  border: 2px solid var(--save);
+}
+
+.btn-save.focus,
+.btn-save:focus {
+  color: var(--save) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--save) !important;
+  box-shadow: 0 0 0 .2rem var(--save);
 }
 
 .btn-edit {
@@ -488,43 +511,43 @@ button.full-width {
     border-color: var(--disabled) !important
 }
 
-.btn-success {
+.btn-upload {
     color: var(--secondary) !important;
-    background-color: var(--success) !important;
-    border-color: var(--success) !important;
-    border: 2px solid var(--success);
+    background-color: var(--upload) !important;
+    border-color: var(--upload) !important;
+    border: 2px solid var(--upload);
 }
 
-.btn-success:hover {
-    color: var(--success) !important;
+.btn-upload:hover {
+    color: var(--upload) !important;
     background-color: var(--secondary) !important;
-    border-color: var(--success) !important;
-    border: 2px solid var(--success);
+    border-color: var(--upload) !important;
+    border: 2px solid var(--upload);
 }
 
-.btn-success.focus,
-.btn-success:focus {
-    color: var(--success) !important;
+.btn-upload.focus,
+.btn-upload:focus {
+    color: var(--upload) !important;
     background-color: var(--secondary) !important;
-    border-color: var(--success) !important;
+    border-color: var(--upload) !important;
     box-shadow: 0 0 0 .2rem var(--secondary);
-    border: 2px solid var(--success);
+    border: 2px solid var(--upload);
 }
 
-.btn-success.disabled,
-.btn-success:disabled {
+.btn-upload.disabled,
+.btn-upload:disabled {
     color: var(--secondary);
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important;
     border: 2px solid var(--disabled);
 }
 
-.btn-success:not(:disabled):not(.disabled).active,
-.btn-success:not(:disabled):not(.disabled):active,
-.show>.btn-success.dropdown-toggle {
+.btn-upload:not(:disabled):not(.disabled).active,
+.btn-upload:not(:disabled):not(.disabled):active,
+.show>.btn-upload.dropdown-toggle {
     color: var(--secondary) !important;
-    background-color: var(--success) !important;
-    border-color: var(--success) !important
+    background-color: var(--upload) !important;
+    border-color: var(--upload) !important
 }
 
 .btn-danger {

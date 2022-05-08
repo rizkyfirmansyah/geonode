@@ -62,7 +62,7 @@
       <form action="{% url 'map_download' map.id %}" method="POST">
         {% csrf_token %}
         <div class="form-actions">
-          <input type="submit" class="btn btn-primary" value="{% trans "Start downloading this map" %}" /> 
+          <input type="submit" class="btn btn-download" value="{% trans "Start downloading this map" %}" /> 
         </div>
       </form>
     {% endif %} 

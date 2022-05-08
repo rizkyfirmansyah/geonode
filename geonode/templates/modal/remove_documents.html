@@ -13,20 +13,20 @@
             </svg></span></div>
       </div>
       <div class="modal-body text-center">
-        <div class="row edit-modal">{% if "change_resourcebase_metadata" in perms_list %}<div class="col-sm-3"> <i
+        <div class="row edit-modal">{% if "change_resourcebase_metadata" in perms_list %}<div class="col-sm-3 p-1"> <i
               class="fa-solid fa-rectangle-list fa-3x"></i>
             <h5>{% trans "Metadata" %}</h5> <a class="btn btn-primary btn-block btn-md"
               href="{% url "document_metadata" resource.id %}">{% trans "Wizard" %}</a> <a
-              class="btn btn-primary btn-block btn-md"
+              class="btn btn-edit btn-block btn-md"
               href="{% url "document_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
-          </div>{% endif %}{% if "change_resourcebase" in perms_list %}<div class="col-sm-3"> <i
+          </div>{% endif %}{% if "change_resourcebase" in perms_list %}<div class="col-sm-3 p-1"> <i
               class="fa-solid fa-image fa-3x"></i>
-            <h5>{% trans "Thumbnail" %}</h5> <a class="btn btn-success btn-block btn-md"
+            <h5>{% trans "Thumbnail" %}</h5> <a class="btn btn-upload btn-block btn-md"
               href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
           </div>{% endif %}{% if "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}<div
-            class="col-sm-3"> <i class="fa-regular fa-file-lines fa-3x"></i>
+            class="col-sm-3 p-1"> <i class="fa-regular fa-file-lines fa-3x"></i>
             <h5>{% trans "Data" %}</h5>{% if "change_resourcebase" in perms_list %}<a
-              class="btn btn-primary btn-block btn-md"
+              class="btn btn-edit btn-block btn-md"
               href="{% url "document_replace" resource.id %}">{% trans "Replace" %}</a>{% endif %}{% if "delete_resourcebase" in perms_list %}<a
               id="removeDocumentModal" data-toggle="modal" class="btn btn-danger btn-block btn-md"
               data-target="#removeDocumentsModal" style="cursor: pointer;">Remove</a>{% endif %}

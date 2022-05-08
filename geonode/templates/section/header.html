@@ -32,7 +32,7 @@
                 <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
                   title="{{ category.gn_description }}" ng-click="multiple_choice_listener($event)"
                   class="{{category.active}}">
-                  {{ category.gn_description | limitTo: 25 }}{{ category.gn_description.length > 25 ? '...' : ''}}
+                  {{ category.gn_description }}
                 </a>
               </li>
               {% endverbatim %}

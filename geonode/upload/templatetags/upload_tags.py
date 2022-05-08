@@ -42,7 +42,7 @@ def upload_js():
                 </div></div>
             </td>
             <td class="start">{% if (!o.options.autoUpload) { %}
-                <button class="btn btn-success">
+                <button class="btn btn-upload">
                     <i class="icon-upload icon-white"></i>
                     <span>{%=locale.fileupload.start%}</span>
                 </button>

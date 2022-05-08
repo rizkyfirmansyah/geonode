@@ -312,11 +312,11 @@
       {% endif %}
       <li class="list-group-item">
         {% if links_download %}
-        <button class="btn btn-primary btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-download btn-md btn-block" data-toggle="modal"
           data-target="#download-layer">{% trans "Download Layer" %}</button>
         {% else %}
         {% if request.user.is_authenticated %}
-        <button class="btn btn-primary btn-md btn-block" data-toggle="modal"
+        <button class="btn btn-info btn-md btn-block" data-toggle="modal"
           data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
         {% endif %}
         {% endif %}
@@ -333,10 +333,10 @@
               <div class="tabbable">
                 <ul class="nav nav-tabs">
                   {% if links %}
-                  <li class="active"><a class="btn btn-light btn-block" href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
+                  <li class="active"><a class="btn btn-info btn-block" href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
                   {% endif %}
                   {% if links_download %}
-                  <li><a class="btn btn-light btn-block" href="#download_tab2" data-toggle="tab">{% trans "Data" %}</a></li>
+                  <li><a class="btn btn-info btn-block" href="#download_tab2" data-toggle="tab">{% trans "Data" %}</a></li>
                   {% endif %}
                 </ul>
                 <div class="tab-content">
@@ -345,7 +345,7 @@
                     <li class="active">
                       <ul>
                         {% for link in links %}
-                        <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
+                        <li><a class="btn btn-info btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
                         {% endfor %}
                       </ul>
                     </li>
@@ -363,7 +363,7 @@
                       <!-- DOWNLOAD FILTER - START -->
 
                       {% if layer_type == "vector" %}
-                      <button type="button" id="button-toggle" class="btn btn-light btn-circle text-nowrap" data-toggle="button"
+                      <button type="button" id="button-toggle" class="btn btn-info btn-circle text-nowrap" data-toggle="button"
                         data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
                         {% trans "Do you want to filter it?" %}
                       </button>
@@ -461,7 +461,7 @@
                           </div>
                           <label style="font-weight: normal;">{% trans "Feature limit" %}: </label>
                           <input type="text" id="max_features" name="filter" />
-                          <a href='#' id="clear_filter" class="btn btn-light btn-block m-space">{% trans "Clear" %}</a> </br>
+                          <a href='#' id="clear_filter" class="btn btn-danger btn-block m-space">{% trans "Clear" %}</a> </br>
                         </div>
                         <hr id="hr_filter_layer" />
                       </div>
@@ -474,14 +474,14 @@
                         {% if link.name == 'Original Dataset' %}
                         {% original_link_available resource.id link.url as original_dwn_link_available %}
                         {% if original_dwn_link_available %}
-                        <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
+                        <li><a class="btn btn-info btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
                             class="urls">{% trans link.name %}</a></li>
                         {% else %}
                         <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
                         <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
                         {% endif %}
                         {% else %}
-                        <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
+                        <li><a class="btn btn-info btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
                             class="urls">{% trans link.name %}</a></li>
                         {% endif %}
                         {% endfor %}

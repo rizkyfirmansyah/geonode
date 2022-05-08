@@ -45,7 +45,7 @@
                   |
                   <form style="display: inline;" method="POST" action="{% url "group_member_promote" group.slug member.user.username %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-success btn-xs">{% trans 'Promote' %}</button>
+                    <button type="submit" class="btn btn-upload btn-xs">{% trans 'Promote' %}</button>
                   </form>
                 {% endif %}
                 {% if member.role == 'manager' %}
@@ -116,7 +116,7 @@
                 |
                 <form style="display: inline;" method="POST" action="{% url "group_member_promote" group.slug member.user.username %}">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-success btn-xs">{% trans 'Promote' %}</button>
+                  <button type="submit" class="btn btn-upload btn-xs">{% trans 'Promote' %}</button>
                 </form>
               <h4>
               <h5>

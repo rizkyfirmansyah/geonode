@@ -34,8 +34,8 @@
       {% endblocktrans %}
     </h2>
     <div class="row w-100 m-0 mb-2">
-      <div class="col-3 text-center p-3"><input type="submit" id="btn_upd_md_done" class="btn btn-success metadata-edit-done w-100" style="opacity: 100; display: none;" data-original-title="" title="Completed Metadata" value="Done"></div>
-      <div class="col-3 text-center p-3"><input type="button" id="btn_upd_md_up" class="btn btn-update w-100" value="{% trans "Update" %}"/></div>
+      <div class="col-3 text-center p-3"><input type="submit" id="btn_upd_md_done" class="btn btn-upload metadata-edit-done w-100" style="opacity: 100; display: none;" data-original-title="" title="Completed Metadata" value="Done"></div>
+      <div class="col-3 text-center p-3"><input type="button" id="btn_upd_md_up" class="btn btn-edit w-100" value="{% trans "Update" %}"/></div>
       <div class="col-3 text-center p-3"><a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-info w-100">{% trans "Return to Maps" %}</a></div>
       <div class="col-3 text-center p-3"><a href="{% url "maps_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary w-100">{% trans "Explore Maps" %}</a></div>
     </div>
