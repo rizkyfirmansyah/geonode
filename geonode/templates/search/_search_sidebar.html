@@ -4,8 +4,8 @@
   <nav id="sidebar">
 
     {% if user.is_authenticated %}
-    <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Selection" %}'
-      emptyString="{% trans "No list items selected. Use the selection fields to add." %}">
+    <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Bulk Selection" %}'
+      emptyString="{% trans "No list items selected. Use the + button to add." %}">
     </resource-cart>
     <div>
           {% block bulk_perms_button %}

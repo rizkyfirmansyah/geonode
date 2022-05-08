@@ -154,7 +154,7 @@ class CommonModelApi(ModelResource):
         'srid',
         'bbox_polygon',
         'category__gn_description',
-        'category__fa_dict',
+        'category__fa_class',
         'category__identifier',
         'supplemental_information',
         'resource_type',
@@ -614,6 +614,19 @@ class CommonModelApi(ModelResource):
             formatted_obj['owner__username'] = obj.owner.username
             formatted_obj['owner_name'] = obj.owner.get_full_name() or obj.owner.username
 
+            if obj.category:
+                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
+                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
+                fa_class = {}
+                c_fa = [c.fa_class for c in obj.category.all()]
+                c_gn = [c.gn_description for c in obj.category.all()]
+                if len(c_fa) > 0:
+                    for i, v in enumerate(c_fa):
+                        fa_class[c_gn[i]] = v
+                else:
+                    fa_class = {}
+                formatted_obj['category__fa_class'] = fa_class
+
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):
                 try:
@@ -766,15 +779,15 @@ class LayerResource(CommonModelApi):
             if obj.category:
                 formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
-                fa_dict = {}
+                fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
                     for i, v in enumerate(c_fa):
-                        fa_dict[c_gn[i]] = v
+                        fa_class[c_gn[i]] = v
                 else:
-                    fa_dict = {}
-                formatted_obj['category__fa_dict'] = fa_dict
+                    fa_class = {}
+                formatted_obj['category__fa_class'] = fa_class
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -933,15 +946,15 @@ class MapResource(CommonModelApi):
             if obj.category:
                 formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
-                fa_dict = {}
+                fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
                     for i, v in enumerate(c_fa):
-                        fa_dict[c_gn[i]] = v
+                        fa_class[c_gn[i]] = v
                 else:
-                    fa_dict = {}
-                formatted_obj['category__fa_dict'] = fa_dict
+                    fa_class = {}
+                formatted_obj['category__fa_class'] = fa_class
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -1025,15 +1038,15 @@ class GeoAppResource(CommonModelApi):
             if obj.category:
                 formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
-                fa_dict = {}
+                fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
                     for i, v in enumerate(c_fa):
-                        fa_dict[c_gn[i]] = v
+                        fa_class[c_gn[i]] = v
                 else:
-                    fa_dict = {}
-                formatted_obj['category__fa_dict'] = fa_dict
+                    fa_class = {}
+                formatted_obj['category__fa_class'] = fa_class
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:
@@ -1103,15 +1116,15 @@ class DocumentResource(CommonModelApi):
             if obj.category:
                 formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
-                fa_dict = {}
+                fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
                 if len(c_fa) > 0:
                     for i, v in enumerate(c_fa):
-                        fa_dict[c_gn[i]] = v
+                        fa_class[c_gn[i]] = v
                 else:
-                    fa_dict = {}
-                formatted_obj['category__fa_dict'] = fa_dict
+                    fa_class = {}
+                formatted_obj['category__fa_class'] = fa_class
             if obj.group:
                 formatted_obj['group'] = obj.group
                 try:

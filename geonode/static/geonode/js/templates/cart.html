@@ -5,7 +5,7 @@
   <div
     ng-show="!cart.getCart().items.length"
     class="card-body">
-    <h5>{{ emptyString }}</h5>
+    <h5 class="text-muted">{{ emptyString }}</h5>
   </div>
   <ul class="list-group">
     <div class="" ng-click="cart.removeAll()" ng-if="cart.getCart().items.length >= 2"><button class="btn btn-danger btn-block">Remove all selected</button></div>

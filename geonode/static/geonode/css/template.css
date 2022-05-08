@@ -3741,11 +3741,6 @@ html {
     .item-container .item-thumb {
         padding: 0
     }
-    #category_icon {
-        margin: auto;
-        position: relative;
-        right: -23%
-    }
 }
 
 @media (max-width:360px) {

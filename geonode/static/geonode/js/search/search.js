@@ -848,36 +848,4 @@
         }
     });
 
-
-    /*
-     * Main search service
-     */
-
-    // module.service('geonode_search_controller', function($cookies) {
-    //   this.init = function() {
-    //       this.$search = {
-    //           items: this.fillSearch(),
-    //       };
-    //   };
-
-    //   this.category = function(key) {
-    //       const url = siteUrl + 'api/categories/';
-    //       const xhttp = new XMLHttpRequest();
-    //       xhttp.onreadystatechange = function() {
-    //           if (this.readyState == 4 && this.status == 200) {
-    //               const response = JSON.parse(xhttp.responseText);
-    //               response.objects.forEach(function(value, index, array) {
-    //                   if (value.gn_description == key) {
-    //                       const cid = value.identifier;
-    //                       const redirect_to = siteUrl + "search/?category__identifier__in=" + cid
-    //                       window.location.replace(redirect_to);
-    //                   }
-    //               })
-    //           }
-    //       };
-    //       xhttp.open("GET", url, true);
-    //       xhttp.send();
-    //   };
-
-    // });
 })();
