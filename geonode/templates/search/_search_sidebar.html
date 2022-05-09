@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="wrapper border-top" ng-controller="CartList">
-  <nav id="sidebar">
+  <div id="sidebar">
 
       {% if user.is_authenticated %}
         <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Bulk Selection" %}'
@@ -47,5 +47,5 @@
         {% include "search/_general_filters.html" %}
         {% endblock search_facet_lists %}
       </div>
-  </nav>
+  </div>
 </div>

@@ -41,101 +41,43 @@
 </nav>
 {% endif %}
 {% if SEARCH_FILTERS.GROUPS_ENABLED %}
-<nav class="filter" ng-cloak>
+{% verbatim %}
+<nav class="filter" ng-cloak ng-repeat="group in groups" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0">
     <a href="#groups" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Groups</a>
     <ul class="collapse list-unstyled" id="groups">
-        {% if facet_type == 'layers' %}
-        {% verbatim %}
-        <li ng-repeat="group in groups" ng-if="group.resource_counts.layer.total > 0">
+        <li>
             <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge float-right">{{ group.resource_counts.layer.total }}</span>
+                <span class="badge float-right">{{ group.resource_counts.all.total }}</span>
             </a>
         </li>
         {% endverbatim %}
-        {% elif facet_type == 'documents' %}
-        {% verbatim %}
-        <li ng-repeat="group in groups" ng-if="group.resource_counts.document.total > 0">
-            <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge float-right">{{ group.resource_counts.document.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% elif facet_type == 'maps' %}
-        {% verbatim %}
-        <li ng-repeat="group in groups" ng-if="group.resource_counts.map.total > 0">
-            <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge float-right">{{ group.resource_counts.map.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% elif facet_type == 'geoapps' %}
-        {% verbatim %}
-        <li ng-repeat="group in groups" ng-if="group.resource_counts.geoapp.total > 0">
-            <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge float-right">{{ group.resource_counts.geoapp.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% endif %}
     </ul>
 </nav>
 {% endif %}
 {% if SEARCH_FILTERS.GROUP_CATEGORIES_ENABLED %}
-<nav class="filter" ng-cloak>
+{% verbatim %}
+<nav class="filter" ng-cloak ng-repeat="groupCategory in groupCategories" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0">
     <a href="#group-categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Group Categories</a>
     <ul class="collapse list-unstyled" id="group-categories">
-        {% if facet_type == 'layers' %}
-        {% verbatim %}
-        <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.layer.total > 0">
+        <li>
             <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
                 ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge float-right">{{ groupCategory.resource_counts.layer.total }}</span>
+                <span class="badge float-right">{{ groupCategory.resource_counts.all.total }}</span>
             </a>
         </li>
         {% endverbatim %}
-        {% elif facet_type == 'documents' %}
-        {% verbatim %}
-        <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.document.total > 0">
-            <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge float-right">{{ groupCategory.resource_counts.document.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% elif facet_type == 'maps' %}
-        {% verbatim %}
-        <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.map.total > 0">
-            <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge float-right">{{ groupCategory.resource_counts.map.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% elif facet_type == 'geoapps' %}
-        {% verbatim %}
-        <li ng-repeat="groupCategory in groupCategories" ng-if="groupCategory.resource_counts.geoapp.total > 0">
-            <a data-value="{{ groupCategory.slug }}" data-filter="group__group_profile__categories__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ groupCategory.active }}">{{ groupCategory.name }}
-                <span class="badge float-right">{{ groupCategory.resource_counts.geoapp.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-        {% endif %}
     </ul>
 </nav>
+{% endif %}
+{% if SEARCH_FILTERS.DATE_ENABLED %}
+{% include "search/_date_filter.html" %}
 {% endif %}
 {% if SEARCH_FILTERS.REGION_ENABLED %}
 {% include "search/_region_filter.html" %}
 {% endif %}
 {% if SEARCH_FILTERS.EXTENT_ENABLED %}
 {% include "search/_extent_filter.html" %}
-{% endif %}
-{% if SEARCH_FILTERS.DATE_ENABLED %}
-{% include "search/_date_filter.html" %}
 {% endif %}
 {% block extrascript %}
 <script text="text/javascript">

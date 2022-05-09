@@ -701,36 +701,17 @@ class ResourceBaseManager(PolymorphicManager):
         """Remove uploaded files, if any"""
         if ResourceBase.objects.filter(id=resource_id).exists():
             _resource = ResourceBase.objects.filter(id=resource_id).get()
-            _uploaded_folder = None
-            if _resource.files:
-                for _file in _resource.files:
-                    try:
-                        if storage_manager.exists(_file):
-                            if not _uploaded_folder:
-                                _uploaded_folder = os.path.split(storage_manager.path(_file))[0]
-                            storage_manager.delete(_file)
-                    except Exception as e:
-                        logger.warning(e)
-                try:
-                    if _uploaded_folder and storage_manager.exists(_uploaded_folder):
-                        storage_manager.delete(_uploaded_folder)
-                except Exception as e:
-                    logger.warning(e)
-
-                # Do we want to delete the files also from the resource?
-                ResourceBase.objects.filter(id=resource_id).update(files={})
 
             # Remove generated thumbnails, if any
             filename = f"{_resource.get_real_instance().resource_type}-{_resource.get_real_instance().uuid}"
             remove_thumbs(filename)
 
             # Remove the uploaded sessions, if any
-            # Remove the uploaded sessions, if any
             if 'geonode.upload' in settings.INSTALLED_APPS:
                 from geonode.upload.models import Upload
                 # Need to call delete one by one in order to invoke the
                 #  'delete' overridden method
-                for upload in Upload.objects.filter(resource_id=_resource.get_real_instance().id):
+                for upload in Upload.objects.filter(layer_id=_resource.get_real_instance().id):
                     upload.delete()
 
 class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):

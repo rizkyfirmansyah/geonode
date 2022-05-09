@@ -10,7 +10,7 @@
           data:{docid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "document_remove" %}',headers:{"X-CSRFToken":e},
           success:function(e){
             $(document.body).append(`{% with toast_title='Delete Datasets' %}
-              {% with toast_message='Your {{ resource.title }} has been deleted.' %}
+              {% with toast_message=resource.title|add:' has been deleted.' %}
                   {% include "toast/_toast.html" %}
                 {% endwith %}
               {% endwith %}`);
