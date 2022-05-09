@@ -393,7 +393,8 @@ button.full-width {
 .btn-download:disabled {
     color: var(--link) !important;
     background-color: var(--disabled) !important;
-    border-color: var(--disabled) !important
+    border-color: var(--disabled) !important;
+    cursor: not-allowed !important;
 }
 
 .btn-save {
@@ -441,8 +442,9 @@ button.full-width {
 .btn-edit.disabled,
 .btn-edit:disabled {
     color: var(--edit) !important;
-    background-color: var(--danger) !important;
-    border-color: var(--danger) !important
+    background-color: var(--disabled) !important;
+    border-color: var(--disabled) !important;
+    cursor: not-allowed !important;
 }
 
 .btn-info {
@@ -468,9 +470,10 @@ button.full-width {
 
 .btn-info.disabled,
 .btn-info:disabled {
-    color: var(--info) !important;
-    background-color: var(--danger) !important;
-    border-color: var(--danger) !important
+    color: var(--success) !important;
+    background-color: var(--disabled) !important;
+    border-color: var(--disabled) !important;
+    cursor: not-allowed !important;
 }
 
 .btn-primary {
@@ -500,7 +503,7 @@ button.full-width {
     color: var(--primary) !important;
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important;
-    border: 2px solid var(--disabled);
+    cursor: not-allowed !important;
 }
 
 .btn-secondary {
@@ -526,9 +529,10 @@ button.full-width {
 
 .btn-secondary.disabled,
 .btn-secondary:disabled {
-    color: var(--secondary) !important;
+    color: var(--success) !important;
     background-color: var(--disabled) !important;
-    border-color: var(--disabled) !important
+    border-color: var(--disabled) !important;
+    cursor: not-allowed !important;
 }
 
 .btn-upload {
@@ -559,7 +563,7 @@ button.full-width {
     color: var(--primary) !important;
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important;
-    border: 2px solid var(--disabled);
+    cursor: not-allowed !important;
 }
 
 .btn-upload:not(:disabled):not(.disabled).active,
@@ -595,7 +599,8 @@ button.full-width {
 .btn-danger:disabled {
     color: var(--danger) !important;
     background-color: var(--disabled) !important;
-    border-color: var(--disabled) !important
+    border-color: var(--disabled) !important;
+    cursor: not-allowed !important;
 }
 
 .btn-warning {
@@ -622,7 +627,8 @@ button.full-width {
 .btn-warning:disabled {
     color: #212529;
     background-color: #ffc107;
-    border-color: #ffc107
+    border-color: #ffc107;
+    cursor: not-allowed !important;
 }
 
 /* ---------------------------------------------------

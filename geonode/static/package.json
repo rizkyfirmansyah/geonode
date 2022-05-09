@@ -1,7 +1,7 @@
 {
     "name": "geonode-assets",
     "version": "3.5.3",
-    "description": "Builds static (JS, CSS, IMG) assets for GeoNode 3.4",
+    "description": "Builds static (JS, CSS, IMG) assets for GeoNode 3.5",
     "main": "gruntfile.js",
     "dependencies": {
         "@yaireo/tagify": "^4.11.0",
@@ -50,7 +50,7 @@
         "sortable": "^2.0.0",
         "tempusdominus-bootstrap-4": "^5.39.2",
         "timeago": "^1.6.7",
-        "tinymce": "^5.10.4",
+        "tinymce": "5.9.2",
         "underscore": "^1.13.2",
         "zeroclipboard": "^2.3.0"
     },

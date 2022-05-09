@@ -73,8 +73,8 @@
     // done button tooltip variables
     var tooltipShown = false;
     var gotIt = false;
-    var tooltipContent =  'All fields declared mandatory by the schema are completed, you can continue editing the optional fields or click on "Done" to save your changes and close this page. '
-      + '<a id="close-popover-done" data-toggle="clickover" class="btn btn-small btn-primary float-right">Got it</a><br/>';
+    var tooltipContent =  '<p>All fields declared mandatory by the schema are completed, you can continue editing the optional fields or click on <span class="text-primary"><strong>Done</strong></span> to save your changes and close this page.</p>'
+      + '<a id="close-popover-done" data-toggle="tooltip" data-placement="left" class="btn btn-small btn-primary btn-block">Got it</a>';
 
 
     {% block completeness  %}
@@ -181,7 +181,7 @@
                 $('.metadata-edit-done').popover('hide');
             };
                 // show/hide done button
-            $('.metadata-edit-done').animate(completeness === 100 ? {opacity: 1} : {opacity: 0});
+            completeness === 100 ? ($('#btn_upd_md_dwn').addClass('disabled'), $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow")) : ($('#btn_upd_md_dwn').removeClass('disabled'), $('#btn_upd_md_done').addClass('d-none').fadeIn("slow"));
         };
     {% endblock completeness  %}
 
@@ -583,13 +583,13 @@
         var stateUpdate = 0;
         $('#btn_upd_md_up').click(function() {
             stateUpdate++;
-            validateMetadataAdvanced() ? $('#btn_upd_md_done').css({'opacity': 100, 'display': 'block'}) : (stateUpdate >= 2 ? $('#btn_upd_md_done').css({'opacity': 100, 'display': 'block'}) : $('#error_mandatoryDialog').modal())
+            validateMetadataAdvanced() ? $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow") : (stateUpdate >=3 ? $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow") : $('#error_mandatoryDialog').modal())
         });
 
         var stateUpdateDwn = 0;
         $('#btn_upd_md_dwn').click(function() {
             stateUpdateDwn++;
-            validateFormInput() ? $('#thxDialog').modal() : (stateUpdateDwn >=3 ? $('#btn_upd_md_done').css({'opacity': 100, 'display': 'block'}) : validateRequiredInput())
+            validateFormInput() ? $('#thxDialog').modal() : (stateUpdateDwn >=3 ? $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow") : validateRequiredInput())
         });
 
         var validateMetadataAdvanced = () => {
@@ -611,7 +611,7 @@
         };
         
         function validateRequiredInput() {
-            validateFormInput() ? $('#btn_upd_md_done').css({'opacity': 100, 'display': 'block'}) : $('#error_mandatoryDialog').modal()
+            validateFormInput() ? $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow") : $('#error_mandatoryDialog').modal()
         };
 
         $('#btn_upd_md_done').click(function(){
