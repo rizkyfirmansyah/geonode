@@ -44,7 +44,7 @@
           <form method="POST" id="id-inbox-form" action={% url "msg_status" %} >
               {% csrf_token %}
               <input id="id-action-type" name="action_type" type="hidden" value="">
-              {% for thread in  threads_all%}
+              {% for thread in threads_all %}
                   <input name=thread_{{ thread.pk }} id=read_unread_{{ thread.pk }} type="hidden" value="">
               {% endfor %}
           </form>

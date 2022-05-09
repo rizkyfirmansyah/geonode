@@ -25,7 +25,7 @@
                 <a href="{{ thread.get_absolute_url }}" style="{% if unread_flag %}font-weight:bold{% endif %}">{{ thread.subject }} - {{ thread.latest_message.content|slice:"10" }}...</a>
             </td>
             <td class="col-md-3">
-                {{ thread.latest_message.sent_at}}
+                {{ thread.latest_message.sent_at }}
             </td>
             <td class="col-md-1">
                 <form method="post" action="{% url "messages_thread_delete" thread.pk %}">
