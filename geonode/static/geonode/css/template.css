@@ -182,14 +182,20 @@
   top: 96px !important;
 }
 
-.bootstrap-datetimepicker-widget {
+.bootstrap-datetimepicker-widget, .bootstrap-datetimepicker-widget.dropdown-menu {
   position: fixed !important;
   display: block !important;
   z-index: 99999 !important;
-  min-width: 240px;
+  min-width: 300px;
   margin-left: auto;
   margin-right: auto;
+  font-size: .9em;
 }
+
+.bootstrap-datetimepicker-widget.dropdown-menu.pull-right:after {
+  right: -2px !important;
+}
+
 /* ---------------------------------------------------
     BORDER STYLE
 ----------------------------------------------------- */
