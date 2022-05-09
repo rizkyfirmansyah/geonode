@@ -132,8 +132,8 @@
   OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
 
-.modal-content {
-  top: var(--header-height-min);
+.modal-dialog {
+  margin: 0 auto !important;
 }
 
 .btn_wrapper,
