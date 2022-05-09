@@ -44,7 +44,7 @@
             <a class="btn btn-light rounded-pill p-link-header" href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
             {% elif user.is_authenticated %}
             <div id="nav_avatar" class="">
-              <a class="btn btn-light rounded-pill p-link-header">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
+              <a class="btn btn-light rounded-pill p-link-header{% unread_messages request.user as messages %}{% if messages %} border-danger{% endif %}">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
                 {% with full_name=user.first_name|add:' '|add:user.last_name %}
                 {% if full_name.strip %}
                 {{ full_name | truncatechars:20 }}

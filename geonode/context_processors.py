@@ -47,7 +47,7 @@ def resource_urls(request):
         VERSION=get_version(),
         SITE_NAME=site.name,
         SITE_DOMAIN=site.domain,
-        BILINGUAL=settings.BILINGUAL,
+        BILINGUAL=getattr(settings, 'BILINGUAL', 'False'),
         SITEURL=settings.SITEURL,
         HCAPTCHA_SECRET=getattr(settings, 'HCAPTCHA_SECRET', ''),
         INSTALLED_APPS=settings.INSTALLED_APPS,
