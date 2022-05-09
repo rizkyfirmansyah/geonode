@@ -2,7 +2,7 @@
 
 {% announcements as site_wide_announcements %}
 {% if site_wide_announcements %}
-<div id="site_wide_announcements">
+<div id="site_wide_announcements" class="system_messages">
     {% for announcement in site_wide_announcements %}
     {% if not announcement.members_only or request.user.is_authenticated %}
     <div class="alert alert-block announcement {{ announcement.level_css  }}">
