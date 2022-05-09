@@ -9,6 +9,7 @@
     --border-radius-md: 0.75em;
     --border-radius-fix-lg: 50px;
     --header-height: 80px;
+    --header-height-min: -80px;
     --padding-link-header: .6em;
     --search-header: 3em;
     --spacing-1: 2.5em;
@@ -172,6 +173,10 @@
 /* ---------------------------------------------------
     OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
+
+.modal-content {
+  top: var(--header-height-min);
+}
 
 .form-control:focus {
     border-color: var(--primary) !important;
