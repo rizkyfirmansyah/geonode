@@ -1606,7 +1606,8 @@ select option {
 }
 
 #header-main-menu {
-  right: var(--relative-space-header);
+  /* right: var(--relative-space-header); */
+  display: contents;
 }
 
 .cl-custom-select {

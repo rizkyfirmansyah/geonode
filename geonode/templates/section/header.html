@@ -15,7 +15,7 @@
             alt="Homepage">
         </a>
       </div>
-      <div class="col-5">
+      <div class="col mr-5 ml-5 pl-5 pr-5">
         {% get_search_container as search %}
           {% if search != '/' and search != '' %}
             {% if SEARCH_FILTERS.TEXT_ENABLED %}
@@ -24,8 +24,8 @@
           {% endif %}
       </div>
       <div class="col p-0" id="header-main-menu" ng-controller="CategoryList">
-        <ul class="list-inline pt-3 float-right">
-          <li class="list-inline-item m-0" id="information_categories">
+        <ul class="list-inline pt-3 mr-4">
+          <li class="list-inline-item mr-2" id="information_categories">
             <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>
             <ul class="collapse list-unstyled m-0" id="information_categories_card" style="display: none;">
               {% verbatim %}
@@ -39,7 +39,7 @@
               {% endverbatim %}
             </ul>
           </li>
-          <li class="list-inline-item m-0" id="user_menu">
+          <li class="list-inline-item mr-2" id="user_menu">
             {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
             <a class="btn btn-light rounded-pill p-link-header" href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
             {% elif user.is_authenticated %}

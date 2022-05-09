@@ -1900,7 +1900,8 @@ select option {
 }
 
 #header-main-menu {
-    right: var(--relative-space-header);
+    /* right: var(--relative-space-header); */
+    display: contents;
 }
 
 .cl-custom-select {
@@ -2327,7 +2328,7 @@ input::-moz-focus-inner {
     height: 2px;
     margin-top: -1px;
     position: absolute;
-    left: 10px;
+    /* left: 10px; */
     top: 50%;
     right: auto;
     bottom: auto;
