@@ -118,12 +118,19 @@
     min-width: 10em;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1600px) {
   #user_menu_card {
     right: 1em;
   }
   #information_categories_card {
     right: 6em;
+  }
+
+  #wrap {
+    min-height: calc(100vh - var(--header-height));
+    margin-top: var(--header-height);
+    max-width: 1200px;
+    width: 100% !important;
   }
 }
 
@@ -3884,11 +3891,6 @@ span.grippy {
     background-image: none;
     border: 1px solid #ccc;
     border-radius: 4px
-}
-
-#wrap {
-    min-height: calc(100vh - var(--header-height));
-    margin-top: var(--header-height);
 }
 
 .home .geonode-slide-show .jumbotron {

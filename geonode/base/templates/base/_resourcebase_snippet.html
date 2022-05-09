@@ -3,7 +3,7 @@
 {% load avatar_tags %}
 {% verbatim %}
 
-  <div class="row row-cols-1 row-cols-md-2">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
     <div ng-repeat="item in results | limitTo: limit" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
           <div class="card rounded border-{{ item.resource_type }}">
             <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
@@ -65,7 +65,7 @@
             <div class="card-body pt-0">
               <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
             </div>
-            <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a>
+            <!-- <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a> -->
                   <div class="card-footer">
                     <div class="row">
                       <div class="col-3 text-center" ng-controller="CartList">
