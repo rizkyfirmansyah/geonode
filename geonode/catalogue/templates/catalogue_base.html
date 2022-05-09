@@ -8,3 +8,21 @@
 {% block body %}
 
 {% endblock %}
+
+{% block extra_script %}
+<script>
+  $(function() {
+    const stretchCol = () => {
+      $("#catalogueList").removeClass('col-md-10').addClass('col-md-12');
+    }
+    stretchCol();
+    $("#sidebarFilter").on('click', function() {
+      if (!$("#sidebar").hasClass('active')) {
+        stretchCol();
+      } else {
+        $("#catalogueList").removeClass('col-md-12').addClass('col-md-10');
+      }
+    })
+  })
+</script>
+{% endblock extra_script %}

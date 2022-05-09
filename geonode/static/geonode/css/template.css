@@ -182,9 +182,13 @@
   top: 96px !important;
 }
 
-nav.filter .bootstrap-datetimepicker-widget {
+.bootstrap-datetimepicker-widget {
+  position: fixed !important;
+  display: block !important;
   z-index: 99999 !important;
-  display: block;
+  min-width: 240px;
+  margin-left: auto;
+  margin-right: auto;
 }
 /* ---------------------------------------------------
     BORDER STYLE
@@ -5223,15 +5227,14 @@ footer li a:hover {
     margin-left: 0;
 }
 
-#sidebar,
-#sidebarGroup {
-    min-width: 100%;
-    max-width: 100%;
-    transition: all 0.3s;
-}
-
 #sidebar.active,
 #sidebarGroup.active {
+    transition: all 0.3s;
+    margin-left: 0%;
+}
+
+#sidebar,
+#sidebarGroup {
     margin-left: -100%;
 }
 

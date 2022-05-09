@@ -767,18 +767,18 @@
         var init_date = true;
         $scope.$watch('date_query', function() {
             if ($scope.date_query.date__gte != '' && $scope.date_query.date__lte != '') {
-                var dateGte = new Date($scope.date_query.date__gte).toISOString();
-                var dateLte = new Date($scope.date_query.date__lte).toISOString();
+                var dateGte = $scope.date_query.date__gte;
+                var dateLte = $scope.date_query.date__lte;
                 $scope.query['date__range'] = dateGte + ',' + dateLte;
                 delete $scope.query['date__gte'];
                 delete $scope.query['date__lte'];
             } else if ($scope.date_query.date__gte != '') {
-                var dateGte = new Date($scope.date_query.date__gte).toISOString();
+                var dateGte = $scope.date_query.date__gte;
                 $scope.query['date__gte'] = dateGte;
                 delete $scope.query['date__range'];
                 delete $scope.query['date__lte'];
             } else if ($scope.date_query.date__lte != '') {
-                var dateLte = new Date($scope.date_query.date__lte).toISOString();
+                var dateLte = $scope.date_query.date__lte;
                 $scope.query['date__lte'] = dateLte;
                 delete $scope.query['date__range'];
                 delete $scope.query['date__gte'];
@@ -788,6 +788,7 @@
                 delete $scope.query['date__lte'];
             }
             if (!init_date) {
+                $scope.infiniteScrollLoaded = true;
                 query_api($scope.query);
             } else {
                 init_date = false;

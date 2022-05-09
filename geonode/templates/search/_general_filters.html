@@ -83,11 +83,15 @@
 <script text="text/javascript">
     $(function () {
         $("#inpDate2").datetimepicker({
-            viewMode: 'years'
+            viewMode: 'years',
+            format: 'L',
+            minDate : '2022-01-01'
         });
 
         $("#inpDate1").datetimepicker({
-            viewMode: 'years'
+            viewMode: 'years',
+            format: 'L',
+            minDate : '2022-01-01'
         });
 
         $("#dltDate1").click(function () {
