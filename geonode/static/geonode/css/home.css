@@ -62,15 +62,10 @@
     min-height: var(--header-height);
 }
 
-#information_categories a {
+#information_categories a, #nav_avatar a {
     height: 46px;
     display: inline-flex;
     align-items: center;
-}
-
-#nav_avatar a,
-#information_categories a {
-    font-size: 1.1em;
 }
 
 #information_categories_card,
