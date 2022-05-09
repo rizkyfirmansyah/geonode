@@ -114,6 +114,25 @@
     background-color: white;
     z-index: 9999;
     font-size: large;
+    min-width: 10em;
+}
+
+@media (min-width: 1200px) {
+  #user_menu_card {
+    right: 1em;
+  }
+  #information_categories_card {
+    right: 6em;
+  }
+}
+
+.svg_category, .svg_category svg {
+  height: 34px;
+  width: 34px;
+}
+
+.fancy-checkbox .checked svg {
+  border: 2px solid red;
 }
 
 #select-language .dropdown-menu.show {

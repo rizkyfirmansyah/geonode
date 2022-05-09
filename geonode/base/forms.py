@@ -33,6 +33,7 @@ from django.forms import ModelForm, models
 from django.forms.fields import MultipleChoiceField
 from django.utils.translation import ugettext as _
 from geonode.base import widgets
+from django.utils.safestring import mark_safe
 from modeltranslation.forms import TranslationModelForm
 from taggit.forms import TagField
 from tinymce.widgets import TinyMCE
@@ -134,11 +135,10 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):
         if obj.svg:
-            return '<img src="data:image/svg+xml;charset=UTF-8,'+ obj.svg +'" style="max-width: 20px;">' \
-                            '<img src="data:image/svg+xml;charset=UTF-8,'+ obj.svg +'" style="max-width: 20px;">' \
-                            '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
-                            'data-content="' + obj.description + '" trigger="hover">' \
-                                                                '<br/><strong>' + obj.gn_description + '</strong></span>'
+            return "<span class='unchecked svg_category'>"+ obj.svg +"</span>" \
+                        "<span class='checked svg_category'>"+ obj.svg +"</span>" \
+                            "<br/><strong>" + obj.gn_description + "</strong></span>"
+
         if obj.fa_class:
             return '<i class="fa fa-' + obj.fa_class + ' fa-2x unchecked"></i>' \
                             '<i class="fa fa-' + obj.fa_class + ' fa-2x checked"></i>' \

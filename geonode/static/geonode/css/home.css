@@ -76,6 +76,16 @@
     background-color: white;
     z-index: 9999;
     font-size: large;
+    min-width: 10em;
+}
+
+@media (min-width: 1200px) {
+  #user_menu_card {
+    right: 1em;
+  }
+  #information_categories_card {
+    right: 6em;
+  }
 }
 
 .dropdown-item.active,
@@ -2068,9 +2078,8 @@ input::-moz-focus-inner {
 .s-home {
     width: 100%;
     height: 100vh;
-    min-height: 786px;
     background-color: transparent;
-    display: table
+    display: flex
 }
 
 .s-home .shadow-overlay {
@@ -2100,7 +2109,6 @@ input::-moz-focus-inner {
 }
 
 .home-content {
-    display: table-cell;
     vertical-align: middle;
 }
 
@@ -2220,8 +2228,8 @@ input::-moz-focus-inner {
 
 .home-content__scroll {
     position: absolute;
-    right: 14.5rem;
-    bottom: 8.4rem
+    right: 12.5rem;
+    bottom: 5rem
 }
 
 .home-content__scroll a {
@@ -2273,7 +2281,7 @@ input::-moz-focus-inner {
 .home-content__line {
     display: block;
     width: 2px;
-    height: 9.2rem;
+    height: 7rem;
     background-color: var(--secondary);
     position: absolute;
     right: 11.2rem;
