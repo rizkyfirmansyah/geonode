@@ -194,6 +194,8 @@ _DEFAULT_LANGUAGES = """(
     ('en', 'English'),
 )"""
 
+BILINGUAL = ast.literal_eval(os.getenv('BILINGUAL', 'False'))
+
 LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', _DEFAULT_LANGUAGES))
 
 EXTRA_LANG_INFO = {

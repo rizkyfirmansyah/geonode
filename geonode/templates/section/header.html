@@ -164,6 +164,7 @@
               role="button">{% trans "Sign in" %} </a></li>
           {% endif %}
           </li>
+          {% if BILINGUAL %}
           <li class="list-inline-item m-0">
             {% if csrf_token != "NOTPROVIDED" %}
             {% get_current_language as LANGUAGE %}
@@ -179,6 +180,7 @@
             </form>
             {% endif %}
           </li>
+          {% endif %}
           <li class="list-inline-item m-0">
             <a class="header-menu-toggle" href="#0">
               {% get_current_path as path %}
