@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from .models import Site
-
+from django.contrib.admin.views.decorators import staff_member_required
 
 class SiteForm(forms.ModelForm):
     class Meta:
@@ -9,6 +9,7 @@ class SiteForm(forms.ModelForm):
         fields = '__all__'
 
 
+@staff_member_required
 @admin.register(Site)
 class SiteFormAdmin(admin.ModelAdmin):
     form = SiteForm

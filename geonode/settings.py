@@ -394,6 +394,7 @@ GEONODE_INTERNAL_APPS = (
 
     'geonode.datasets',
     'geonode.faqs',
+    'geonode.about',
     'geonode.storage',
 
     # GeoServer Apps

@@ -38,6 +38,7 @@ from geonode.api.urls import api, router
 from geonode.api.views import verify_token, user_info, roles, users, admin_role
 from geonode.base.views import thumbnail_upload
 from geonode.faqs.views import FAQView
+from geonode.about.views import AboutView, HelpView
 
 from geonode import geoserver
 from geonode.utils import check_ogc_backend
@@ -67,12 +68,6 @@ urlpatterns = [
     url(r'^$',
         homepage,
         name='home'),
-    url(r'^help/$',
-        TemplateView.as_view(template_name='help.html'),
-        name='help'),
-    url(r'^about/$',
-        TemplateView.as_view(template_name='about.html'),
-        name='about'),
     url(r'^privacy-policy/$',
         TemplateView.as_view(template_name='privacy_policy.html'),
         name='privacy-policy'),
@@ -256,12 +251,17 @@ urlpatterns += [  # '',
         geonode.maps.views.featured_map_info),
 ]
 
-# FAQ
+# FAQ, About and Help
 urlpatterns += [
     url(r'^faqs/$',
         FAQView,
-        name='faqs'
-    ),
+        name='faqs'),
+    url(r'^help/$',
+        HelpView,
+        name='help'),
+    url(r'^about/$',
+        AboutView,
+        name='about'),
 ]
 
 
