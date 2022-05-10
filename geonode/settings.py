@@ -2147,7 +2147,7 @@ UI_DEFAULT_MANDATORY_FIELDS = [
     'id_resource-date',
     'category_form',
     'id_resource-keywords',
-    'id_resource-data_description',
+    # 'id_resource-data_description',
     'id_resource-restriction_code_type',
     'id_resource-metadata_author',
     'id_resource-owner',

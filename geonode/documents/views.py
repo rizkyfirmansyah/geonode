@@ -273,7 +273,7 @@ class DocumentUploadView(CreateView):
         if self.request.GET.get('no__redirect', False):
             out['success'] = True
             out['url'] = reverse(
-                'document_detail',
+                'document_metadata',
                 args=(
                     self.object.id,
                 ))
@@ -288,7 +288,7 @@ class DocumentUploadView(CreateView):
         else:
             return HttpResponseRedirect(
                 reverse(
-                    'document_detail',
+                    'document_metadata',
                     args=(
                         self.object.id,
                     )))
