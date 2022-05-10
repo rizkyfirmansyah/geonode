@@ -314,10 +314,18 @@
     display: block;
     padding: 0.5rem !important;
     box-shadow: 0 5px 10px -8px rgb(0 0 0 / 70%);
+    margin: .2em;
 }
 
 .nav-primary>li>a, .nav-primary>a {
     color: var(--warning) !important;
+}
+
+.nav-primary.active, .nav-primary.selected {
+  color: var(--secondary) !important;
+  background-color: var(--warning) !important;
+  border: 1px solid var(--warning);
+  text-decoration: none;
 }
 
 .nav-primary:hover,
@@ -328,6 +336,30 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+
+.filter .nav {
+  max-height: 340px;
+  overflow-y: auto;
+  display: contents;
+}
+/* 
+.nav-tabs>li>a:hover {
+  border-color: var(--primary);
+  color: #fdba12!important;
+  background-color: var(--warning)!important;
+  box-shadow: 0 .5rem 1.25rem #ccc
+}
+
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover {
+  color: #fdba12!important;
+} */
+
+/* ---------------------------------------------------
+    BUTTON STYLE
+----------------------------------------------------- */
 
 .btn.btn--primary,
 button.btn--primary,
@@ -343,11 +375,6 @@ input[type=submit].btn--primary {
     padding: 0 3rem!important;
     margin: 0 .3rem 1.2rem 0
 }
-
-
-/* ---------------------------------------------------
-    BUTTON STYLE
------------------------------------------------------ */
 
 .btn_wrapper,
 #information_categories_card li a {
@@ -2276,25 +2303,6 @@ input::-moz-focus-inner {
 .filter>ul>.ng-scope {
     padding-top: .4rem;
     padding-left: 0;
-}
-
-.filter .nav {
-    max-height: 340px;
-    overflow-y: auto;
-    display: contents;
-}
-
-.nav-tabs>li>a:hover {
-    border-color: var(--primary);
-    color: #fdba12!important;
-    background-color: var(--warning)!important;
-    box-shadow: 0 .5rem 1.25rem #ccc
-}
-
-.nav-tabs>li.active>a,
-.nav-tabs>li.active>a:focus,
-.nav-tabs>li.active>a:hover {
-    color: #fdba12!important;
 }
 
 .menu-is-open .header-nav {

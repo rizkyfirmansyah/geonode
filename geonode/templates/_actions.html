@@ -1,28 +1,28 @@
 {% load i18n %}
-<ul class="nav nav-tabs m-0">
-  <li class="active"><a href="#info" data-toggle="tab"><i class="fa-solid fa-circle-info"></i>{% trans "Info" %}</a></li>
+<ul class="nav nav-tabs m-0 mt-2">
+  <li><a class="nav-primary active" href="#info" data-toggle="tab"><i class="fa-solid fa-circle-info"></i>{% trans "Info" %}</a></li>
   {% if resource.polymorphic_ctype.name == 'layer' %}
-  <li><a href="#attributes" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Fields" %}</a></li>
+  <li><a class="nav-primary" href="#attributes" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Fields" %}</a></li>
   {% endif %}
   {% if resource.polymorphic_ctype.name == 'layer' %}
-  <li><a href="#datasets" data-toggle="tab"><i class="fa-solid fa-database"></i>{% trans "Attributes" %}</a></li>
+  <li><a class="nav-primary" href="#datasets" data-toggle="tab"><i class="fa-solid fa-database"></i>{% trans "Attributes" %}</a></li>
   {% endif %}
   {% if resource.is_mosaic %}
-  <li><a href="#granules" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Granules" %}</a></li>
+  <li><a class="nav-primary" href="#granules" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Granules" %}</a></li>
   {% endif %}
   {% if DISPLAY_SOCIAL %}
-  <li><a href="#share" data-toggle="tab"><i class="fa-solid fa-share"></i>{% trans "Share" %}</a></li>
+  <li><a class="nav-primary" href="#share" data-toggle="tab"><i class="fa-solid fa-share"></i>{% trans "Share" %}</a></li>
   {% endif %}
   {% if DISPLAY_RATINGS %}
-  <li><a href="#rate" data-toggle="tab"><i class="fa-solid fa-star"></i>{% trans "Ratings" %}</a></li>
+  <li><a class="nav-primary" href="#rate" data-toggle="tab"><i class="fa-solid fa-star"></i>{% trans "Ratings" %}</a></li>
   {% endif %}
   {% if DISPLAY_COMMENTS %}
-  <li><a href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
+  <li><a class="nav-primary" href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
   {% endif %}
   {% if EXIF_ENABLED and resource.polymorphic_ctype.name == 'document' and exif_data %}
-  <li><a href="#exif" data-toggle="tab"><i class="fa-solid fa-image"></i> {% trans "Exif" %}</a></li>
+  <li><a class="nav-primary" href="#exif" data-toggle="tab"><i class="fa-solid fa-image"></i> {% trans "Exif" %}</a></li>
   {% endif %}
   {% if FAVORITE_ENABLED and favorite_info %}
-  <li><a href="#favorite" data-toggle="tab"><i class="fa-solid fa-heart"></i>{% trans "Favorite" %}</a></li>
+  <li><a class="nav-primary" href="#favorite" data-toggle="tab"><i class="fa-solid fa-heart"></i>{% trans "Favorite" %}</a></li>
   {% endif %}
 </ul>

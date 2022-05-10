@@ -78,7 +78,7 @@
         <div class="modal-body text-center">
           <div class="tabbable">
             <ul class="mr-4 ml-4">
-              <li class="active"><a href="#permissions_tab1" data-toggle="tab" class="nav-primary">{% trans "People and Groups" %}</a></li>
+              <li><a href="#permissions_tab1" data-toggle="tab" class="nav-primary active">{% trans "People and Groups" %}</a></li>
               {% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
                 {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
                   <li id="geolimits-tab"><a href="#permissions_tab2" data-toggle="tab">{% trans "Geo Limits" %}</a></li>

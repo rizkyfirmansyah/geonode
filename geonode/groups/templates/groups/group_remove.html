@@ -16,7 +16,7 @@
       {% csrf_token %}
       <input type="hidden" value="{{ group.slug }}" />
       <div class="form-actions">
-        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
+        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger btn-block" />
         <a href="{% url "group_detail" group.slug %}" class="btn btn-info">{% trans "No, don't remove it" %}</a>
       </div>
     </form>

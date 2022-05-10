@@ -18,7 +18,7 @@
     <form action="{% url "document_remove" document.id %}" method="POST">
       {% csrf_token %}
       <div class="form-actions">
-        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger emphasize-button" />
+        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger btn-block emphasize-button" />
         <a href="{{ document.get_absolute_url }}" class="btn btn-primary">{% trans "No, don't remove it" %}</a>
       </div>
     </form>

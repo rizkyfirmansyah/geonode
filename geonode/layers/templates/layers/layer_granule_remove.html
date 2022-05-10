@@ -19,7 +19,7 @@
       {% csrf_token %}
       <input type="hidden" value="{{ layer.service_typename }}" />
       <div class="form-actions">
-        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger" />
+        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger btn-block" />
         <a href="{{ layer.get_absolute_url }}" class="btn btn-primary">{% trans "No, don't remove it" %}</a>
       </div>
     </form>
