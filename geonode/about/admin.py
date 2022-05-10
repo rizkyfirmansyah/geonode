@@ -1,7 +1,5 @@
 from django.contrib import admin
 from django import forms
-
-from geonode.decorators import superuser_or_apiauth
 from .models import About, Help
 
 
@@ -17,7 +15,6 @@ class HelpForm(forms.ModelForm):
         exclude = ('created_date',)
 
 
-@superuser_or_apiauth()
 @admin.register(About)
 class AboutFormAdmin(admin.ModelAdmin):
     form = AboutForm
@@ -25,7 +22,6 @@ class AboutFormAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
 
 
-@superuser_or_apiauth()
 @admin.register(Help)
 class HelpFormAdmin(admin.ModelAdmin):
     form = HelpForm

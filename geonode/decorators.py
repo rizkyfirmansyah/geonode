@@ -312,6 +312,17 @@ def superuser_or_apiauth():
     return view_decorator
 
 
+def staff_or_apiauth():
+
+    def view_decorator(func):
+        def wrapper(request, *args, **kwargs):
+            return view_or_apiauth(func, request,
+                                  lambda u: u.is_staff,
+                                  *args, **kwargs)
+        return wrapper
+    return view_decorator
+
+
 def dump_func_name(func):
     def echo_func(*func_args, **func_kwargs):
         logger.debug(f'Start func: {func.__name__}')
