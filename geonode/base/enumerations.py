@@ -70,6 +70,11 @@ CONTACT_FIELDS = [
     'role'
 ]
 
+IS_CHOICES = (
+    (False, _("Not available to choose. Required by system to automatically classify the uncategorized Dataset.")),
+    (True, _("Certainly yes!"))
+)
+
 COUNTRIES = (
     ('AFG', 'Afghanistan'),
     ('ALA', 'Aland Islands'),
@@ -350,3 +355,35 @@ CHARSETS = (('', 'None/Unknown'),
             ('windows-1256', 'Windows CP1256'),
             ('windows-1257', 'Windows CP1257'),
             ('windows-1258', 'Windows CP1258'))
+
+STATE_READY = "READY"
+STATE_RUNNING = "RUNNING"
+STATE_PENDING = "PENDING"
+STATE_WAITING = "WAITING"
+STATE_INCOMPLETE = "INCOMPLETE"
+STATE_COMPLETE = "COMPLETE"
+STATE_INVALID = "INVALID"
+STATE_PROCESSED = "PROCESSED"
+
+PROCESSING_STATES = (
+    (STATE_READY, "READY"),
+    (STATE_RUNNING, "RUNNING"),
+    (STATE_PENDING, "PENDING"),
+    (STATE_WAITING, "WAITING"),
+    (STATE_INCOMPLETE, "INCOMPLETE"),
+    (STATE_COMPLETE, "COMPLETE"),
+    (STATE_INVALID, "INVALID"),
+    (STATE_PROCESSED, "PROCESSED"),
+)
+
+SOURCE_TYPE_LOCAL = "LOCAL"
+SOURCE_TYPE_REMOTE = "REMOTE"
+SOURCE_TYPE_COPYREMOTE = "COPYREMOTE"
+
+SOURCE_TYPES = (
+    (SOURCE_TYPE_LOCAL, "LOCAL"),
+    (SOURCE_TYPE_REMOTE, "REMOTE"),
+    (SOURCE_TYPE_COPYREMOTE, "COPYREMOTE"),
+)
+
+LAYER_TYPES = ['vector', 'raster', 'remote', 'vector_time']

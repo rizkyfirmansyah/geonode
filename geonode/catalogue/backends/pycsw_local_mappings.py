@@ -39,7 +39,7 @@ MD_CORE_MODEL = {
         'pycsw:Source': 'source',
         'pycsw:Date': 'date',
         'pycsw:Modified': 'date',
-        'pycsw:DateContent': 'date_content',
+        'pycsw:DateDistribution': 'date_distribution',
         'pycsw:Type': 'csw_type',
         'pycsw:BoundingBox': 'csw_wkt_geometry',
         'pycsw:CRS': 'csw_crs',

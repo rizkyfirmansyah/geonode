@@ -406,8 +406,21 @@
     <script type="text/javascript" src="{% static "lib/js/modernizr.js" %}"></script>
 
     {% block extra_script %}{% endblock extra_script %}
+    <script src="text/javascript">
+
+      $(function() {
+          $.ajax({
+              url: 'feedback/',
+              type: 'GET',
+              success: function(data) {
+                  console.log(data);
+              }
+          })
+      })
+    </script>
 
     {% include "modal/resource_uploading.html" %}
+    {% include "modal/feedbacks.html" %}
     {% include "modal/thumbnail_processing.html" %}
     {% include "modal/thumbnail_feedbacks.html" %}
     {% include 'modal/change_password.html' %}

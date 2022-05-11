@@ -5,9 +5,9 @@
 
 {% block body %}
 <div class="row w-100">
-    <h2 class="col-12 text-center">
-      {% if contents.title %}
-        {{ contents.title|safe }}
+  <h2 class="col-12 text-center" {% if contents.header_title_color %}style="color: {{ contents.header_title_color|safe }}"{% endif %}>
+      {% if contents.header_title %}
+        {{ contents.header_title|safe }}
       {% else %}
         {% trans "Help & Support" %}
       {% endif %}

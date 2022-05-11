@@ -10,7 +10,7 @@
                       <a class="text-decoration-none"
                       href="{% url "search" %}?limit=100&offset=0&category__identifier__in={{ iso_format.category__identifier }}">
                       <div class="category" data-toggle="tooltip" data-placement="auto"
-                        title="{% trans iso_format.category__description %}" style="display: grid;">
+                        title="{% trans iso_format.category__title %}" style="display: grid;">
                         <div class="mb-2">
                           {% if iso_format.category__svg %}
                             <img src="data:image/svg+xml;charset=UTF-8,{{ iso_format.category__svg }}" style="width: 80px;">

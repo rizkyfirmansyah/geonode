@@ -30,7 +30,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.templatetags.static import static
-from django.core.files.storage import default_storage as storage
+from geonode.storage.manager import storage_manager
 
 from geonode.utils import bbox_to_projection
 from geonode.base.auth import get_or_create_token
@@ -341,13 +341,13 @@ def thumb_path(filename):
 
 def thumb_exists(filename):
     """Determine if a thumbnail file exists in storage"""
-    return storage.exists(thumb_path(filename))
+    return storage_manager.exists(thumb_path(filename))
 
 
 def thumb_size(filepath):
     """Determine if a thumbnail file size in storage"""
-    if storage.exists(filepath):
-        return storage.size(filepath)
+    if storage_manager.exists(filepath):
+        return storage_manager.size(filepath)
     elif os.path.exists(filepath):
         return os.path.getsize(filepath)
     return 0
@@ -355,20 +355,22 @@ def thumb_size(filepath):
 
 def thumb_open(filename):
     """Returns file handler of a thumbnail on the storage"""
-    return storage.open(thumb_path(filename))
+    return storage_manager.open(thumb_path(filename))
 
 
 def get_thumbs():
     """Fetches a list of all stored thumbnails"""
-    if not storage.exists(settings.THUMBNAIL_LOCATION):
+    if not storage_manager.exists(settings.THUMBNAIL_LOCATION):
         return []
-    subdirs, thumbs = storage.listdir(settings.THUMBNAIL_LOCATION)
+    subdirs, thumbs = storage_manager.listdir(settings.THUMBNAIL_LOCATION)
     return thumbs
 
 
 def remove_thumb(filename):
     """Delete a thumbnail from storage"""
-    storage.delete(thumb_path(filename))
+    path = thumb_path(filename)
+    if storage_manager.exists(path):
+        storage_manager.delete(path)
 
 
 def remove_thumbs(name):

@@ -78,7 +78,7 @@ class LayerForm(ResourceBaseForm):
           'regions',
           'date',
           'date_type',
-          'date_content',
+          'date_distribution',
           'edition',
           'maintenance_frequency',
           'temporal_extent_start',

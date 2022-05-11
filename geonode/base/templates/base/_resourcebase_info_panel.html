@@ -139,9 +139,9 @@
     <dd>{{ resource.source|safe|urlize }}</dd>
     {% endif %}
 
-    {% if resource.date_content %}
-    <dt>{% trans "Date of Content" %}</dt>
-    <dd>{{ resource.date_content }}</dd>
+    {% if resource.date_distribution %}
+    <dt>{% trans "Distribution Date" %}</dt>
+    <dd>{{ resource.date_distribution }}</dd>
     {% endif %}
 
     {% if resource.data_type %}

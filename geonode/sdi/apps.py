@@ -17,8 +17,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-from pkgutil import extend_path
+from django.apps import AppConfig as BaseAppConfig
+from django.utils.translation import ugettext_lazy as _
 
 
-default_app_config = "geonode.about.apps.AboutConfig"
-__path__ = extend_path(__path__, __name__)  # noqa
+class SDIConfig(BaseAppConfig):
+
+    name = "geonode.sdi"
+    verbose_name = _("SDI Page")

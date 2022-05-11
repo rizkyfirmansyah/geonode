@@ -143,17 +143,17 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
             return '<i class="fa fa-' + obj.fa_class + ' fa-2x unchecked"></i>' \
                             '<i class="fa fa-' + obj.fa_class + ' fa-2x checked"></i>' \
                             '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
-                            'data-content="' + obj.description + '" trigger="hover">' \
+                            'data-content="' + obj.title + '" trigger="hover">' \
                                                                   '<br/><strong>' + obj.gn_description + '</strong></span>'
 
 
 class CategoryForm(forms.Form):
     category_choice_field = CategoryChoiceField(
         required=True,
-        label=f"*{_('Category')}",
+        label=f"*{_('Topic Category')}",
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
-            order_by=['gn_description']))
+            order_by=['title']))
 
     def clean(self):
         cleaned_data = self.data
@@ -269,26 +269,46 @@ class ResourceBaseDateTimePicker(DateTimePicker):
 
 
 class ResourceBaseForm(TranslationModelForm):
-    """Base form for metadata, should be inherited by childres classes of ResourceBase"""
-    data_description = forms.CharField(
-        label=_("Data description"),
+    """Base form for metadata, should be inherited by children classes of ResourceBase"""
+    abstract = forms.CharField(
         required=False,
+        help_text=ResourceBase.abstract_help_text,
+        widget=TinyMCE())
+    author = forms.CharField(
+        required=False,
+        help_text=ResourceBase.author_help_text,
+        widget=TinyMCE())
+    source = forms.CharField(
+        required=False,
+        help_text=ResourceBase.source_help_text,
+        widget=TinyMCE())
+    data_citation = forms.CharField(
+        required=False,
+        help_text=ResourceBase.data_citation_help_text,
+        widget=TinyMCE())
+    related_publication = forms.CharField(
+        required=False,
+        help_text=ResourceBase.related_publication_help_text,
+        widget=TinyMCE())
+    data_description = forms.CharField(
+        required=False,
+        help_text=ResourceBase.data_description_help_text,
         widget=TinyMCE())
     supplemental_information = forms.CharField(
-        label=_("Supplemental information"),
         required=False,
+        help_text=ResourceBase.supplemental_information_help_text,
         widget=TinyMCE())
     purpose = forms.CharField(
-        label=_("Purpose"),
         required=False,
+        help_text=ResourceBase.purpose_help_text,
         widget=TinyMCE())
     constraints_other = forms.CharField(
-        label=_("Other constraints"),
         required=False,
+        help_text=ResourceBase.constraints_other_help_text,
         widget=TinyMCE())
     data_quality_statement = forms.CharField(
-        label=_("Data quality statement"),
         required=False,
+        help_text=ResourceBase.data_quality_statement_help_text,
         widget=TinyMCE())
     owner = forms.ModelChoiceField(
         empty_label=_("Owner"),
@@ -298,25 +318,19 @@ class ResourceBaseForm(TranslationModelForm):
         widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
 
     date = forms.DateTimeField(
-        label=_("Date"),
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
-    )
-    # temporal_extent_start = forms.DateTimeField(
-    #     label=_("Temporal extent start"),
-    #     required=False,
-    #     localize=True,
-    #     input_formats=['%Y-%m-%d %H:%M %p'],
-    #     widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
-    # )
-    # temporal_extent_end = forms.DateTimeField(
-    #     label=_("Temporal extent end"),
-    #     required=False,
-    #     localize=True,
-    #     input_formats=['%Y-%m-%d %H:%M %p'],
-    #     widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"})
-    # )
+        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"}))
+    temporal_extent_start = forms.DateTimeField(
+        required=False,
+        localize=True,
+        input_formats=['%Y-%m-%d %H:%M %p'],
+        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"}))
+    temporal_extent_end = forms.DateTimeField(
+        required=False,
+        localize=True,
+        input_formats=['%Y-%m-%d %H:%M %p'],
+        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"}))
 
     poc = forms.ModelChoiceField(
         empty_label=_("Person outside SDI (fill form)"),
@@ -328,7 +342,7 @@ class ResourceBaseForm(TranslationModelForm):
 
     metadata_author = forms.ModelChoiceField(
         empty_label=_("Person outside SDI (fill form)"),
-        label=_("Metadata author"),
+        label=_("Metadata Author"),
         required=True,
         queryset=get_user_model().objects.exclude(
             username='AnonymousUser'),
@@ -337,13 +351,16 @@ class ResourceBaseForm(TranslationModelForm):
     keywords = TagField(
         label=_("Free-text Keywords"),
         required=False,
-        help_text=_("A space or comma-separated list of keywords. Use the widget to select from Hierarchical tree."),
+        help_text=ResourceBase.keywords_help_text,
         # widget=TreeWidget(url='autocomplete_hierachical_keyword'), #Needs updating to work with select2
         widget=TaggitSelect2Custom(url='autocomplete_hierachical_keyword'))
 
     def __init__(self, *args, **kwargs):
-        super(ResourceBaseForm, self).__init__(*args, **kwargs)
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
         for field in self.fields:
+            if field == 'featured' and self.user and not self.user.is_staff:
+                self.fields[field].disabled = True
             help_text = self.fields[field].help_text
             if help_text != '':
                 self.fields[field].widget.attrs.update(
@@ -412,6 +429,11 @@ class ResourceBaseForm(TranslationModelForm):
             'users_geolimits',
             'groups_geolimits',
             'dirty_state'
+            'state',
+            'blob',
+            'files',
+            'was_approved',
+            'was_published'
         )
 
 

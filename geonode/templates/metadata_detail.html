@@ -56,9 +56,9 @@
                 <dd>{{ resource.data_description|linebreaks|safe|escape|truncatechars:1000 }}</dd>
                 {% endif %}
         
-                {% if resource.date_content %}
-                <dt>{% trans "Date of Content" %}</dt>
-                <dd>{{ resource.date_content}}</dd>
+                {% if resource.date_distribution %}
+                <dt>{% trans "Distribution Date" %}</dt>
+                <dd>{{ resource.date_distribution }}</dd>
                 {% endif %}
         
             </dl>

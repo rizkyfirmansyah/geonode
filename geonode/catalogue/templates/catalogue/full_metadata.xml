@@ -192,14 +192,24 @@
        <gmd:abstract>
          <gco:CharacterString>{{layer.raw_abstract}}</gco:CharacterString>
        </gmd:abstract>
-       <gmd:dataDescription>
+       <gmd:description>
          <gco:CharacterString>{{layer.raw_data_description}}</gco:CharacterString>
-       </gmd:dataDescription>
-       {% if layer.date_content %}
+       </gmd:description>
+       {% if layer.date_distribution %}
           <gmd:dateContent>
-            <gco:CharacterString>{{layer.raw_date_content}}</gco:CharacterString>
+            <gco:CharacterString>{{layer.date_distribution}}</gco:CharacterString>
           </gmd:dateContent>
         {% endif %}
+      {% if layer.data_citation %}
+        <gmd:dataCitation>
+          <gco:CharacterString>{{layer.raw_data_citation}}</gco:CharacterString>
+        </gmd:dataCitation>
+      {% endif %}
+      {% if layer.related_publication %}
+        <gmd:relatedPublication>
+          <gco:CharacterString>{{layer.raw_related_publication}}</gco:CharacterString>
+        </gmd:relatedPublication>
+      {% endif %}
        <gmd:purpose {% if not layer.raw_purpose %}gco:nilReason="missing"{% endif %}>
              {% if layer.raw_purpose %}<gco:CharacterString>{{layer.raw_purpose}}</gco:CharacterString>{% endif %}
        </gmd:purpose>
@@ -418,7 +428,7 @@
        <gmd:extent>
         {% if layer.spatial_resolution %}
           <gmd:spatialResolution>
-            <gco:CharacterString>{{layer.raw_spatial_resolution}}</gco:CharacterString>
+            <gco:CharacterString>{{layer.spatial_resolution}}</gco:CharacterString>
           </gmd:spatialResolution>
         {% endif %}
          <gmd:EX_Extent>

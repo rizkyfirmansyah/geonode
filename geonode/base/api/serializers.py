@@ -17,12 +17,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+import json
 from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.forms.models import model_to_dict
+from django.db.models.query import QuerySet
 
 from rest_framework import serializers
 from rest_framework_gis import fields
@@ -44,6 +46,7 @@ from geonode.base.models import (
     DataType,
     SpatialRepresentationType,
     ThesaurusKeyword,
+    ExtraMetadata
 )
 from geonode.groups.models import (
     GroupCategory,
@@ -243,6 +246,24 @@ class DetailUrlField(DynamicComputedField):
         return build_absolute_uri(instance.detail_url)
 
 
+class ExtraMetadataSerializer(DynamicModelSerializer):
+    class Meta:
+        model = ExtraMetadata
+        name = 'ExtraMetadata'
+        fields = ('pk', 'metadata')
+
+    def to_representation(self, obj):
+
+        if isinstance(obj, QuerySet):
+            out = []
+            for el in obj:
+                out.append({**{"id": el.id}, **el.metadata})
+            return out
+        elif isinstance(obj, list):
+            return obj
+        return {**{"id": obj.id}, **obj.metadata}
+
+
 class ThumbnailUrlField(DynamicComputedField):
 
     def __init__(self, **kwargs):
@@ -291,6 +312,29 @@ class ContactRoleField(DynamicComputedField):
         return UserSerializer(embed=True, many=False).to_representation(value)
 
 
+class DataBlobField(DynamicRelationField):
+    
+    def value_to_string(self, obj):
+        value = self.value_from_object(obj)
+        return self.get_prep_value(value)
+
+
+class DataBlobSerializer(DynamicModelSerializer):
+
+    class Meta:
+        model = ResourceBase
+        fields = ('pk', 'blob')
+    
+    def to_internal_value(self, data):
+        return data
+
+    def to_representation(self, value):
+        data = ResourceBase.objects.filter(id=value)
+        if data.exists() and data.count() == 1:
+            return data.get().blob
+        return {}
+
+
 class ResourceBaseSerializer(
     ResourceBaseToRepresentationSerializerMixin,
     BaseDynamicModelSerializer
@@ -307,39 +351,45 @@ class ResourceBaseSerializer(
         self.fields['owner'] = DynamicRelationField(UserSerializer, embed=True, many=False, read_only=True)
         self.fields['poc'] = ContactRoleField('poc', read_only=True)
         self.fields['metadata_author'] = ContactRoleField('metadata_author', read_only=True)
-        self.fields['title'] = serializers.CharField()
-        self.fields['abstract'] = serializers.CharField()
-        self.fields['data_description'] = serializers.CharField()
-        self.fields['author'] = serializers.CharField()
-        self.fields['source'] = serializers.CharField()
-        self.fields['doi'] = serializers.CharField()
-        self.fields['alternate'] = serializers.CharField(read_only=True)
-        self.fields['date'] = serializers.DateTimeField()
-        self.fields['date_type'] = serializers.CharField()
-        self.fields['date_content'] = serializers.CharField()
-        self.fields['spatial_resolution'] = serializers.CharField()
-        self.fields['temporal_extent_start'] = serializers.DateTimeField()
-        self.fields['temporal_extent_end'] = serializers.DateTimeField()
-        self.fields['edition'] = serializers.CharField()
-        self.fields['purpose'] = serializers.CharField()
-        self.fields['maintenance_frequency'] = serializers.CharField()
-        self.fields['constraints_other'] = serializers.CharField()
-        self.fields['language'] = serializers.CharField()
-        self.fields['supplemental_information'] = serializers.CharField()
-        self.fields['data_quality_statement'] = serializers.CharField()
-        self.fields['bbox_polygon'] = fields.GeometryField()
-        self.fields['ll_bbox_polygon'] = fields.GeometryField()
-        self.fields['srid'] = serializers.CharField()
+        self.fields['title'] = serializers.CharField(required=False)
+        self.fields['abstract'] = serializers.CharField(required=False)
+        self.fields['distributor'] = serializers.CharField(required=False)
+        self.fields['doi'] = serializers.CharField(required=False)
+        self.fields['data_citation'] = serializers.CharField(required=False)
+        self.fields['related_publication'] = serializers.CharField(required=False)
+        self.fields['source'] = serializers.CharField(required=False)
+        self.fields['date'] = serializers.DateTimeField(required=False)
+        self.fields['date_type'] = serializers.CharField(required=False)
+        self.fields['date_distribution'] = serializers.CharField(required=False)
+        self.fields['spatial_resolution'] = serializers.CharField(required=False)
+        self.fields['temporal_extent_start'] = serializers.DateTimeField(required=False)
+        self.fields['temporal_extent_end'] = serializers.DateTimeField(required=False)
+        self.fields['edition'] = serializers.CharField(required=False)
+        self.fields['purpose'] = serializers.CharField(required=False)
+        self.fields['maintenance_frequency'] = serializers.CharField(required=False)
+        self.fields['constraints_other'] = serializers.CharField(required=False)
+        self.fields['language'] = serializers.CharField(required=False)
+        self.fields['supplemental_information'] = serializers.CharField(required=False)
+        self.fields['data_quality_statement'] = serializers.CharField(required=False)
+        self.fields['bbox_polygon'] = fields.GeometryField(required=False)
+        self.fields['ll_bbox_polygon'] = fields.GeometryField(required=False)
+        self.fields['srid'] = serializers.CharField(required=False)
         self.fields['group'] = DynamicRelationField(GroupSerializer, embed=True, many=False)
-        self.fields['popular_count'] = serializers.CharField()
-        self.fields['share_count'] = serializers.CharField()
-        self.fields['rating'] = serializers.CharField()
-        self.fields['featured'] = serializers.BooleanField()
-        self.fields['is_published'] = serializers.BooleanField()
-        self.fields['is_approved'] = serializers.BooleanField()
+        self.fields['popular_count'] = serializers.CharField(required=False)
+        self.fields['share_count'] = serializers.CharField(required=False)
+        self.fields['rating'] = serializers.CharField(required=False)
+        self.fields['featured'] = serializers.BooleanField(required=False)
+        self.fields['is_published'] = serializers.BooleanField(required=False)
+        self.fields['alternate'] = serializers.CharField(read_only=True)
+        self.fields['is_approved'] = serializers.BooleanField(required=False)
         self.fields['detail_url'] = DetailUrlField(read_only=True)
         self.fields['created'] = serializers.DateTimeField(read_only=True)
         self.fields['last_updated'] = serializers.DateTimeField(read_only=True)
+        self.fields['raw_data_description'] = serializers.CharField(read_only=True)
+        self.fields['raw_author'] = serializers.CharField(read_only=True)
+        self.fields['raw_source'] = serializers.CharField(read_only=True)
+        self.fields['raw_data_citation'] = serializers.CharField(read_only=True)
+        self.fields['raw_related_publication'] = serializers.CharField(read_only=True)
         self.fields['raw_abstract'] = serializers.CharField(read_only=True)
         self.fields['raw_purpose'] = serializers.CharField(read_only=True)
         self.fields['raw_constraints_other'] = serializers.CharField(read_only=True)
@@ -347,6 +397,8 @@ class ResourceBaseSerializer(
         self.fields['raw_data_quality_statement'] = serializers.CharField(read_only=True)
         self.fields['metadata_only'] = serializers.BooleanField()
         self.fields['processed'] = serializers.BooleanField(read_only=True)
+        self.fields['state'] = serializers.CharField(read_only=True)
+        self.fields['sourcetype'] = serializers.CharField(read_only=True)
 
         self.fields['embed_url'] = EmbedUrlField()
         self.fields['thumbnail_url'] = ThumbnailUrlField()
@@ -364,6 +416,9 @@ class ResourceBaseSerializer(
             LicenseSerializer, embed=True, many=False)
         self.fields['spatial_representation_type'] = DynamicRelationField(
             SpatialRepresentationTypeSerializer, embed=True, many=False)
+        self.fields['blob'] = serializers.JSONField(required=False, write_only=True)
+
+    metadata = DynamicRelationField(ExtraMetadataSerializer, embed=False, many=True, deferred=True)
 
     class Meta:
         model = ResourceBase
@@ -372,22 +427,66 @@ class ResourceBaseSerializer(
         fields = (
             'pk', 'uuid', 'resource_type', 'polymorphic_ctype_id', 'perms',
             'owner', 'poc', 'metadata_author',
-            'keywords', 'regions', 'category',
+            'keywords', 'regions', 'category', 'project_information', 'distributor', 'data_citation', 'related_publication',
             'title', 'abstract', 'doi', 'alternate', 'bbox_polygon', 'll_bbox_polygon', 'srid',
             'date', 'date_type', 'edition', 'purpose', 'maintenance_frequency',
             'restriction_code_type', 'constraints_other', 'license', 'language',
             'spatial_representation_type', 'temporal_extent_start', 'temporal_extent_end',
             'supplemental_information', 'data_quality_statement', 'group',
-            'popular_count', 'share_count', 'rating', 'featured', 'is_published', 'is_approved',
-            'detail_url', 'embed_url', 'created', 'last_updated',
-            'raw_abstract', 'raw_purpose', 'raw_constraints_other',
-            'raw_supplemental_information', 'raw_data_quality_statement', 'metadata_only', 'processed',
-            'data_description', 'author', 'source', 'data_type'
+            'popular_count', 'share_count', 'rating', 'featured', 'is_published', 'is_approved', ''
+            'detail_url', 'embed_url', 'created', 'last_updated', 'date_distribution',
+            'raw_abstract', 'raw_purpose', 'raw_constraints_other', 'raw_source', 'raw_data_citation', 'raw_related_publication',
+            'raw_supplemental_information', 'raw_data_quality_statement', 'metadata_only', 'processed', 'state',
+            'data_description', 'author', 'source', 'data_type', 'sourcetype', 'blob', 'metadata'
             # TODO
             # csw_typename, csw_schema, csw_mdsource, csw_insert_date, csw_type, csw_anytext, csw_wkt_geometry,
             # metadata_uploaded, metadata_uploaded_preserve, metadata_xml,
             # users_geolimits, groups_geolimits
         )
+        extra_kwargs = {
+            "abstract": {"required": False},
+            "author": {"required": False},
+            "doi": {"required": False},
+            "date": {"required": False},
+            "date_type": {"required": False},
+            "data_citation": {"required": False},
+            "related_publication": {"required": False},
+            "distributor": {"required": False},
+            "project_information": {"required": False},
+            "temporal_extent_start": {"required": False},
+            "temporal_extent_end": {"required": False},
+            "edition": {"required": False},
+            "purpose": {"required": False},
+            "maintenance_frequency": {"required": False},
+            "constraints_other": {"required": False},
+            "language": {"required": False},
+            "supplemental_information": {"required": False},
+            "data_quality_statement": {"required": False},
+            "bbox_polygon": {"required": False},
+            "ll_bbox_polygon": {"required": False},
+            "srid": {"required": False},
+            "popular_count": {"required": False},
+            "share_count": {"required": False},
+            "rating": {"required": False},
+            "featured": {"required": False},
+            "is_published": {"required": False},
+            "is_approved": {"required": False},
+            "metadata_only": {"required": False},
+            "embed_url": {"required": False},
+            "thumbnail_url": {"required": False},
+            "blob": {"required": False, "write_only": True},
+            "owner": {"required": False},
+            "resource_type": {"required": False},
+            "download_url": {"required": False},
+        }
+
+    def to_internal_value(self, data):
+        if isinstance(data, str):
+            data = json.loads(data)
+        if 'data' in data:
+            data['blob'] = data.pop('data')
+        data = super(ResourceBaseSerializer, self).to_internal_value(data)
+        return data
 
 
 class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, BaseDynamicModelSerializer):

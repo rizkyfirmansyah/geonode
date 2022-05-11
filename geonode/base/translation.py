@@ -24,11 +24,11 @@ from geonode.base.models import (TopicCategory, DataType, SpatialRepresentationT
 
 
 class TopicCategoryTranslationOptions(TranslationOptions):
-    fields = ('description', 'gn_description',)
+    fields = ('title', 'gn_description',)
 
 
 class DataTypeTranslationOptions(TranslationOptions):
-    fields = ('description', 'gn_description',)
+    fields = ('title', 'gn_description',)
 
 
 class SpatialRepresentationTypeTranslationOptions(TranslationOptions):

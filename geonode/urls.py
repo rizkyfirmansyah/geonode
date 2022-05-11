@@ -37,8 +37,6 @@ from . import version
 from geonode.api.urls import api, router
 from geonode.api.views import verify_token, user_info, roles, users, admin_role
 from geonode.base.views import thumbnail_upload
-from geonode.faqs.views import FAQView
-from geonode.about.views import AboutView, HelpView
 
 from geonode import geoserver
 from geonode.utils import check_ogc_backend
@@ -251,17 +249,9 @@ urlpatterns += [  # '',
         geonode.maps.views.featured_map_info),
 ]
 
-# FAQ, About and Help
+# Custom SDI Pages
 urlpatterns += [
-    url(r'^faqs/$',
-        FAQView,
-        name='faqs'),
-    url(r'^help/$',
-        HelpView,
-        name='help'),
-    url(r'^about/$',
-        AboutView,
-        name='about'),
+    url(r'', include('geonode.sdi.urls')),
 ]
 
 

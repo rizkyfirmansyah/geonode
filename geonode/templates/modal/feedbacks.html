@@ -1,0 +1,31 @@
+{% load i18n %}
+{% load static %}
+{% load base_tags %}
+<div class="modal fade"
+     id="feedbackModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="feedbackModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="dialog">
+        <div class="modal-content rounded-0 m-modal-width">
+            <div class="p-4 to-front">
+                <div class="text-center">
+                    <h3 class="light">Feedback</h3>
+                    <p class="mb-4 ">
+                        Please fill the information below, and we'll notify the owner about your request.
+                    </p>
+                    <form method="POST" class="mb-4" id="feedback-form">
+                        {% csrf_token %}
+                        {{ feedback_form.as_p }}
+                        <input type="submit" class="btn btn-save form-actions w-100 mt-2" value="Submit">
+                    </form>
+                    <p class="mb-0 cancel">
+                        <a href="#" data-dismiss="modal"class="btn_wrapper">Maybe later</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'toast/feedback_form.html' %}

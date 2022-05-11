@@ -255,6 +255,7 @@ ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'geonode.urls')
 STATICFILES_LOCATION = 'static'
 MEDIAFILES_LOCATION = 'uploaded'
 THUMBNAIL_LOCATION = 'thumbs'
+FEEDBACK_LOCATION = 'feedbacks'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -393,8 +394,7 @@ GEONODE_INTERNAL_APPS = (
     'geonode.management_commands_http',
 
     'geonode.datasets',
-    'geonode.faqs',
-    'geonode.about',
+    'geonode.sdi',
     'geonode.storage',
 
     # GeoServer Apps
@@ -442,14 +442,13 @@ INSTALLED_APPS = (
     'taggit',
     'treebeard',
     'leaflet',
-    'bootstrap3_datetime',
+    'tempus_dominus',
     'django_filters',
     'mptt',
     'storages',
     'floppyforms',
     'tinymce',
     'widget_tweaks',
-    'django_celery_beat',
     'django_celery_results',
     'markdownify',
     'colorfield',
@@ -694,7 +693,8 @@ CONTEXT_PROCESSORS = [
     'django.contrib.messages.context_processors.messages',
     'django.contrib.auth.context_processors.auth',
     'geonode.context_processors.resource_urls',
-    'geonode.themes.context_processors.custom_theme'
+    'geonode.themes.context_processors.custom_theme',
+    # 'geonode.sdi.context_processors.feedback_form'
 ]
 if 'geonode.geoserver' in INSTALLED_APPS:
     CONTEXT_PROCESSORS += ['geonode.geoserver.context_processors.geoserver_urls', ]

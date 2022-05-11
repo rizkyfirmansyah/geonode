@@ -2,7 +2,7 @@
 {{ object.title }}
 {{ object.abstract }}
 {{ object.data_description }}
-{{ object.date_content }}
+{{ object.date_distribution }}
 {{ object.source }}
 {{ object.purpose }}
 {{ object.data_type }}

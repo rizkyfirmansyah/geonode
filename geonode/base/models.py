@@ -37,6 +37,7 @@ from django.db.models import Q, signals
 from django.contrib.auth.models import Group
 from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
+from django_jsonfield_backport.models  import JSONField
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 from django.contrib.gis.db.models import PolygonField
 from django.core.exceptions import ValidationError
@@ -47,7 +48,6 @@ from geonode.thumbs.utils import MISSING_THUMB
 from django.core.files.storage import default_storage as storage
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
-from django_jsonfield_backport.models import JSONField
 
 from PIL import Image, ImageOps
 
@@ -66,12 +66,7 @@ from treebeard.mp_tree import MP_Node, MP_NodeQuerySet, MP_NodeManager
 from geonode import GeoNodeException
 
 from geonode.singleton import SingletonModel
-from geonode.base.enumerations import (
-    LINK_TYPES,
-    ALL_LANGUAGES,
-    HIERARCHY_LEVELS,
-    UPDATE_FREQUENCIES,
-    DEFAULT_SUPPLEMENTAL_INFORMATION)
+from geonode.base import enumerations
 from geonode.base.bbox_utils import BBOXHelper, polygon_from_bbox
 from geonode.thumbs.utils import (
     get_unique_upload_path,
@@ -164,13 +159,35 @@ class TopicCategory(models.Model):
     See: http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
     <CodeListDictionary gml:id="MD_MD_TopicCategoryCode">
     """
-    identifier = models.CharField(max_length=255, default='location')
-    description = models.TextField(default='')
+    identifier_help_text = _("identifier database field. write the convention using CamelCase style, i.e.: GreenEconomy, SustainabilityPractice")
+    title_help_text = _("one or more words used to represent the classification scheme for grouping the Dataset.")
+    gn_description_help_text = _("high-level description of classification scheme to assist in the grouping and topic-based search of available Dataset.")
+    help_choice_help_text = _("should be available to choose for grouping the Dataset.")
+    fa_class_choice_help_text = _("font awesome v6 icon name. See more <a href='https://fontawesome.com/search?m=free&s=solid%2Cbrands' target='_blank'>here</a>. Provide only the name, i.e: home, database")
+    svg_help_text = _("SVG element tag wrapped in < svg viewBox='0 0 24 24' >...< /svg >. Copy paste the icon from Figma, Sketch, AI and other Vector Graphics Software.")
+
+    identifier = models.CharField(max_length=255, default='location', help_text=identifier_help_text)
+    title = models.TextField(
+        _('Topic Category Title'),
+        default='',
+        help_text=title_help_text)
     gn_description = models.TextField(
-        'SDI description', default='', null=True)
-    is_choice = models.BooleanField(default=True)
-    fa_class = models.CharField(max_length=64, default='fa-times')
-    svg = models.TextField(null=True, blank=True)
+        _('High-level description of Classification Scheme'),
+        default='', null=True,
+        help_text=gn_description_help_text)
+    is_choice = models.BooleanField(
+        _('Classification Schemes available to choose?'),
+        default=True,
+        choices=enumerations.IS_CHOICES,
+        help_text=help_choice_help_text)
+    fa_class = models.CharField(
+        _('Font Awesome v6 free icon name'),
+        max_length=64, default='times',
+        help_text=fa_class_choice_help_text)
+    svg = models.TextField(
+        _('SVG element tag (optional if Font Awesome Icon is not available)'),
+        null=True, blank=True,
+        help_text=svg_help_text)
 
     def __str__(self):
         return self.gn_description
@@ -184,10 +201,26 @@ class DataType(models.Model):
     """
 
     """
-    identifier = models.CharField(max_length=255)
-    description = models.TextField(default='')
-    gn_description = models.TextField('SDI description', default='', null=True)
-    is_choice = models.BooleanField(default=True)
+    identifier_help_text = _("identifier database field. write the convention using CamelCase style, i.e.: DerivedData, ObservationalData")
+    title_help_text = _("one or more words used to represent the data type for grouping the Dataset.")
+    help_choice_help_text = _("should be available to choose for grouping the Dataset.")
+    gn_description_help_text = _("high-level description of data type to assist in the grouping of available Dataset.")
+    
+    identifier = models.CharField(max_length=255, default='DataType', help_text=identifier_help_text)
+    title = models.CharField(
+        _('Data Type Title'),
+        max_length=255,
+        default='',
+        help_text=title_help_text)
+    gn_description = models.TextField(
+        _('High-level description of Data Type'),
+        default='', null=True,
+        help_text=gn_description_help_text)
+    is_choice = models.BooleanField(
+        _('Data Type available to choose?'),
+        default=True,
+        choices=enumerations.IS_CHOICES,
+        help_text=help_choice_help_text)
 
     def __str__(self):
         return self.gn_description
@@ -737,104 +770,130 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     VALID_DATE_TYPES = [(x.lower(), _(x))
                         for x in ['Creation', 'Publication', 'Revision']]
 
-    date_help_text = _('reference date for the cited resource')
-    date_type_help_text = _('identification of when a given event occurred')
-    edition_help_text = _('version of the cited resource')
+    title_help_text = _('full title by which the Dataset is known.')
+    date_help_text = _('the publication/creation/revision of a dataset.')
+    date_type_help_text = _('identification of when a given event occurred.')
+    edition_help_text = _('version of the Dataset.')
     abstract_help_text = _(
-        'brief narrative summary of the content of the resource(s)')
+        'brief narrative summary of the content of the Dataset.')
     data_description_help_text = _(
-        'description or abstract of the data and methodology')
+        'a summary describing the nature, scope or methodology of the Dataset')
     purpose_help_text = _(
-        'summary of the intentions with which the resource(s) was developed')
+        'summary of the intentions with which the Dataset(s) was developed.')
     maintenance_frequency_help_text = _(
-        'Information about maintenance and update frequency of the dataset')
+        'information about maintenance and update frequency of the dataset.')
     keywords_help_text = _(
-        'commonly used word(s) or formalised word(s) or phrase(s) used to describe the subject '
-        '(space or comma-separated)')
+        'commonly used word(s) or formalised word(s) or phrase(s) used to describe the Dataset '
+        '(space or comma-separated).')
     tkeywords_help_text = _(
         'formalised word(s) or phrase(s) from a fixed thesaurus used to describe the subject '
-        '(space or comma-separated)')
-    regions_help_text = _('keyword identifies a location')
+        '(space or comma-separated).')
+    regions_help_text = _('keyword identifies a location.')
     restriction_code_type_help_text = _(
-        'limitation(s) placed upon the access or use of the data.')
+        'limitation(s) placed upon the access or use of the Dataset.')
     constraints_other_help_text = _(
-        'other restrictions and legal prerequisites for accessing and using the resource or'
-        ' metadata')
-    license_help_text = _('license of the dataset')
-    language_help_text = _('language used within the dataset')
+        'other restrictions and legal prerequisites for accessing and using the Dataset or metadata.')
+    license_help_text = _('outlines how this data can be used once downloaded.')
+    language_help_text = _('language used within the Dataset.')
     category_help_text = _(
         'high-level geographic data thematic classification to assist in the grouping and search of '
         'available geographic data sets.')
     data_type_help_text = _(
-        'type of your data.')
+        'type of data included in the file.')
     spatial_representation_type_help_text = _(
         'method used to represent geographic information in the dataset.')
     temporal_extent_start_help_text = _(
-        'time period covered by the content of the dataset (start)')
+        'time period covered by the content of the dataset (start).')
     temporal_extent_end_help_text = _(
-        'time period covered by the content of the dataset (end)')
+        'time period covered by the content of the dataset (end).')
     spatial_resolution_help_text = _(
-        'describes the spatial resolution: e.g. 1:50.000 or 30m')
-    date_content_help_text = _(
-        'date or time period that the data represents')
+        'describes the spatial resolution: e.g. 1:50.000 or 30m.')
+    date_distribution_help_text = _(
+        'date or time period that the work was made available for distribution/presentation.')
     data_quality_statement_help_text = _(
-        'general explanation of the data producer\'s knowledge about the lineage of a'
-        ' dataset')
+        'general explanation of the data producer\'s knowledge about the lineage of the Dataset.')
     doi_help_text = _(
         'a DOI will be added by Admin before publication.')
-    extra_metadata_help_text = _(
-        'Additional metadata, must be in format [ {"metadata_key": "metadata_value"}, {"metadata_key": "metadata_value"} ]')
+    source_help_text = _(
+        'people/organizations that contributed to the Dataset (separate by commas), from which institutions the data was obtained.')
+    author_help_text = _(
+        'the data custodian, people(s), corporate body(ies) or agency(ies) responsible for creating the work.')
+    owner_help_text = _("the owner for this Dataset.")
+    contacts_help_text = _("the contact for this Dataset.")
+    project_information_help_text = _("name of project with which the research is affiliated.")
+    data_citation_help_text = _("key descriptive information to acknowledge the original author/producer and to help other researchers find the resource. Provide the standards rule such as: author, title, edition or version, publication year, publisher, doi, access date and time.")
+    related_publication_help_text = _("publication(s): article link, journal, or data citation that use the data from this Dataset.")
+    supplemental_information_help_text = _('any other descriptive information about the Dataset.')
+    distributor_help_text = _("the organization designated by the author or producer to generate copies of the particular work including any necessary editions or revisions.")
+    metadata_uploaded_preserve_help_text = _("preserved Spatial Metadata XML file (a subset of ISO, FGDC, and Dublin Core metadata elements). Once it set, the metadata cannot be edited.")
+    featured_help_text = _('should this Dataset be advertised in home page?')
+    was_published_help_text = _('previous published state.')
+    is_published_help_text = _('should this Dataset be published and searchable?')
+    was_approved_help_text = _('previous approved state.')
+    is_approved_help_text = _('is this Dataset validated from a publisher or editor?')
+    metadata_only_help_text =_('should this Dataset be excluded from search?')
+    extra_metadata_help_text = _('additional metadata, must be in format [ {"metadata_key": "metadata_value"}, {"metadata_key": "metadata_value"} ].')
+
+    # internal fields
+    uuid = models.CharField(max_length=36)
     doi = models.CharField(
         _('DOI'),
         max_length=255,
         blank=True,
         null=True,
         help_text=doi_help_text)
-    author_help_text = _(
-        'data custodian or people/organizations that contributed to the data set (separated by commas). A short description rather than source column.')
     author = models.CharField(
         _('Author'),
         max_length=2048,
         blank=True,
         null=True,
         help_text=author_help_text)
-    source_help_text = _(
-        'people/organizations that contributed to the data set (separate by commas), or link to the journal article, from which institutions the data was obtained')
     source = models.CharField(
         _('Source'),
         max_length=2048,
         blank=True,
         null=True,
         help_text=source_help_text)
-    # internal fields
-    uuid = models.CharField(max_length=36)
+    data_citation = models.CharField(
+        _('Data Citation'),
+        max_length=2048,
+        blank=True,
+        null=True,
+        help_text=data_citation_help_text)
+    distributor = models.CharField(
+        _('Distributor'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=distributor_help_text)
+
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='owned_resource',
-        verbose_name=_("Owner"),
+        verbose_name=owner_help_text,
         on_delete=models.PROTECT)
     contacts = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
+        verbose_name=contacts_help_text,
         through='ContactRole')
-    title = models.CharField(_('title'), max_length=255, help_text=_(
-        'name by which the cited resource is known'))
+    title = models.CharField(_('title'), max_length=255, help_text=title_help_text)
     alternate = models.CharField(max_length=128, null=True, blank=True)
     date = models.DateTimeField(
-        _('date'),
+        _('Publication Date'),
         default=now,
         help_text=date_help_text)
     date_type = models.CharField(
-        _('date type'),
+        _('Date Type'),
         max_length=255,
         choices=VALID_DATE_TYPES,
         default='publication',
         help_text=date_type_help_text)
-    date_content = models.CharField(
-        _('date of content'),
+    date_distribution = models.CharField(
+        _('Distribution Date'),
         max_length=255,
         blank=True,
         null=True,
-        help_text=date_content_help_text)
+        help_text=date_distribution_help_text)
     edition = models.CharField(
         _('edition'),
         max_length=255,
@@ -847,7 +906,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         blank=True,
         help_text=abstract_help_text)
     data_description = models.TextField(
-        _('data description'),
+        _('description'),
         max_length=2000,
         blank=True,
         null=True,
@@ -859,9 +918,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         blank=True,
         help_text=purpose_help_text)
     maintenance_frequency = models.CharField(
-        _('maintenance frequency'),
+        _('Maintenance Frequency'),
         max_length=255,
-        choices=UPDATE_FREQUENCIES,
+        choices=enumerations.UPDATE_FREQUENCIES,
         blank=True,
         null=True,
         help_text=maintenance_frequency_help_text)
@@ -879,7 +938,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         help_text=tkeywords_help_text)
     regions = models.ManyToManyField(
         Region,
-        verbose_name=_('keywords region'),
+        verbose_name=_('region'),
         null=True,
         blank=True,
         help_text=regions_help_text)
@@ -892,7 +951,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         on_delete=models.SET_NULL,
         limit_choices_to=Q(is_choice=True))
     constraints_other = models.TextField(
-        _('Restrictions other'),
+        _('Restrictions Other'),
         blank=True,
         null=True,
         help_text=constraints_other_help_text)
@@ -906,7 +965,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     language = models.CharField(
         _('Language'),
         max_length=3,
-        choices=ALL_LANGUAGES,
+        choices=enumerations.ALL_LANGUAGES,
         default='eng',
         help_text=language_help_text)
     category = models.ManyToManyField(
@@ -921,42 +980,53 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         on_delete=models.SET_NULL,
         limit_choices_to=Q(is_choice=True),
         help_text=data_type_help_text)
+
+    # Section 5
+    temporal_extent_start = models.DateTimeField(
+        _('Temporal Extent Start'),
+        blank=True,
+        null=True,
+        help_text=temporal_extent_start_help_text)
+    temporal_extent_end = models.DateTimeField(
+        _('Temporal Extent End'),
+        blank=True,
+        null=True,
+        help_text=temporal_extent_end_help_text)
+    spatial_resolution = models.CharField(
+        _('Spatial Resolution/Scale'),
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text=spatial_resolution_help_text)
     spatial_representation_type = models.ForeignKey(
         SpatialRepresentationType,
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
         limit_choices_to=Q(is_choice=True),
-        verbose_name=_("Spatial representation type"),
+        verbose_name=_("Spatial Representation Type"),
         help_text=spatial_representation_type_help_text)
-
-    # Section 5
-    temporal_extent_start = models.DateTimeField(
-        _('Temporal extent start'),
-        blank=True,
-        null=True,
-        help_text=temporal_extent_start_help_text)
-    temporal_extent_end = models.DateTimeField(
-        _('Temporal extent end'),
-        blank=True,
-        null=True,
-        help_text=temporal_extent_end_help_text)
-    spatial_resolution = models.CharField(
-        _('Spatial resolution/scale'),
+    project_information = models.CharField(
+        _('Project Information'),
         max_length=255,
         blank=True,
         null=True,
-        help_text=spatial_resolution_help_text)
-
-    supplemental_information = models.TextField(
-        _('Supplemental information'),
+        help_text=project_information_help_text)
+    related_publication = models.TextField(
+        _('Related Publication'),
         max_length=2000,
-        default=DEFAULT_SUPPLEMENTAL_INFORMATION,
-        help_text=_('any other descriptive information about the dataset'))
+        blank=True,
+        null=True,
+        help_text=related_publication_help_text)
+    supplemental_information = models.TextField(
+        _('Supplemental Information'),
+        max_length=2000,
+        default=enumerations.DEFAULT_SUPPLEMENTAL_INFORMATION,
+        help_text=supplemental_information_help_text)
 
     # Section 8
     data_quality_statement = models.TextField(
-        _('Data quality statement'),
+        _('Data Quality Statement'),
         max_length=2000,
         blank=True,
         null=True,
@@ -984,63 +1054,64 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     # CSW specific fields
     csw_typename = models.CharField(
-        _('CSW typename'),
+        _('CSW Typename'),
         max_length=32,
         default='gmd:MD_Metadata',
         null=False)
     csw_schema = models.CharField(
-        _('CSW schema'),
+        _('CSW Schema'),
         max_length=64,
         default='http://www.isotc211.org/2005/gmd',
         null=False)
     csw_mdsource = models.CharField(
-        _('CSW source'),
+        _('CSW Source'),
         max_length=256,
         default='local',
         null=False)
     csw_insert_date = models.DateTimeField(
-        _('CSW insert date'), auto_now_add=True, null=True)
+        _('CSW Insert Date'), auto_now_add=True, null=True)
     csw_type = models.CharField(
-        _('CSW type'),
+        _('CSW Type'),
         max_length=32,
         default='dataset',
         null=False,
-        choices=HIERARCHY_LEVELS)
+        choices=enumerations.HIERARCHY_LEVELS)
     csw_anytext = models.TextField(_('CSW anytext'), null=True, blank=True)
     csw_wkt_geometry = models.TextField(
-        _('CSW WKT geometry'),
+        _('CSW WKT Geometry'),
         null=False,
         default='POLYGON((-180 -90,-180 90,180 90,180 -90,-180 -90))')
 
     # metadata XML specific fields
     metadata_uploaded = models.BooleanField(default=False)
-    metadata_uploaded_preserve = models.BooleanField(_('Metadata uploaded preserve'), default=False)
+    metadata_uploaded_preserve = models.BooleanField(
+        _('Metadata Uploaded Preserve'), default=False,
+        help_text=metadata_uploaded_preserve_help_text)
     metadata_xml = models.TextField(
         null=True,
         default='<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"/>',
         blank=True)
     popular_count = models.IntegerField(default=0)
     share_count = models.IntegerField(default=0)
-    featured = models.BooleanField(_("Featured"), default=False, help_text=_(
-        'should this resource be advertised in home page?'))
+    featured = models.BooleanField(_("Advertised to Homepage"), default=False, help_text=featured_help_text)
     was_published = models.BooleanField(
-        _("was published"),
+        _("Was Published"),
         default=True,
         null=True,
-        help_text=_('previous published state.'))
+        help_text=was_published_help_text)
     is_published = models.BooleanField(
-        _("Is Published"),
+        _("Should be Published and Searchable?"),
         default=True,
-        help_text=_('should this resource be published and searchable?'))
+        help_text=is_published_help_text)
     was_approved = models.BooleanField(
-        _("was approved"),
+        _("Was Approved"),
         default=True,
         null=True,
-        help_text=_('previous approved state.'))
+        help_text=was_approved_help_text)
     is_approved = models.BooleanField(
-        _("Approved"),
+        _("Validated from a publisher or editor?"),
         default=True,
-        help_text=_('is this resource validated from a publisher or editor?'))
+        help_text=is_approved_help_text)
 
     # fields necessary for the apis
     thumbnail_url = models.TextField(_("Thumbnail url"), null=True, blank=True)
@@ -1049,11 +1120,36 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    state = models.CharField(
+        _("State"),
+        max_length=16,
+        null=False,
+        blank=False,
+        default=enumerations.STATE_READY,
+        choices=enumerations.PROCESSING_STATES,
+        help_text=_('Hold the resource processing state.'))
+
+    sourcetype = models.CharField(
+        _("Source Type"),
+        max_length=16,
+        null=False,
+        blank=False,
+        default=enumerations.SOURCE_TYPE_LOCAL,
+        choices=enumerations.SOURCE_TYPES,
+        help_text=_('The resource source type, which can be one of "LOCAL", "REMOTE" or "COPYREMOTE".'))
+
+    remote_typename = models.CharField(
+        _('Remote Service Typename'),
+        null=True,
+        blank=True,
+        max_length=512,
+        help_text=_('Name of the Remote Service if any.'))
+
     # fields controlling security state
     dirty_state = models.BooleanField(
         _("Dirty State"),
         default=False,
-        help_text=_('Security Rules Are Not Synched with GeoServer!'))
+        help_text=_('Security Rules Are Not Synced with GeoServer!'))
 
     users_geolimits = models.ManyToManyField(
         "UserGeoLimit",
@@ -1074,9 +1170,13 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         null=True)
 
     metadata_only = models.BooleanField(
-        _("Metadata"),
+        _("Excluded from Search"),
         default=False,
-        help_text=_('if true, will be excluded from search'))
+        help_text=metadata_only_help_text)
+
+    files = JSONField(null=True, default=list, blank=True)
+
+    blob = JSONField(null=True, default=dict, blank=True)
 
     metadata = models.ManyToManyField(
         "ExtraMetadata",
@@ -1125,6 +1225,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         return strip_tags(_attribute_str)
 
     @property
+    def raw_author(self):
+        return self._remove_html_tags(self.author)
+
+    @property
     def raw_abstract(self):
         return self._remove_html_tags(self.abstract)
 
@@ -1133,16 +1237,16 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         return self._remove_html_tags(self.data_description)
 
     @property
-    def raw_date_content(self):
-        return self._remove_html_tags(self.date_content)
-
-    @property
-    def raw_spatial_resolution(self):
-        return self._remove_html_tags(self.spatial_resolution)
-
-    @property
     def raw_source(self):
         return self._remove_html_tags(self.source)
+
+    @property
+    def raw_data_citation(self):
+        return self._remove_html_tags(self.data_citation)
+
+    @property
+    def raw_related_publication(self):
+        return self._remove_html_tags(self.related_publication)
 
     @property
     def raw_purpose(self):
@@ -1401,6 +1505,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     def metadata_completeness(self):
         required_fields = [
             'abstract',
+            'keywords',
             'category',
             'data_quality_statement',
             'date',
@@ -1878,10 +1983,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             self.set_default_permissions(owner=user)
 
     def maintenance_frequency_title(self):
-        return [v for v in UPDATE_FREQUENCIES if v[0] == self.maintenance_frequency][0][1].title()
+        return [v for v in enumerations.UPDATE_FREQUENCIES if v[0] == self.maintenance_frequency][0][1].title()
 
     def language_title(self):
-        return [v for v in ALL_LANGUAGES if v[0] == self.language][0][1].title()
+        return [v for v in enumerations.ALL_LANGUAGES if v[0] == self.language][0][1].title()
 
     def _set_poc(self, poc):
         # reset any poc assignation to this resource
@@ -1990,7 +2095,7 @@ class Link(models.Model):
         help_text=_('For example "kml"'))
     link_type = models.CharField(
         max_length=255, choices=[
-            (x, x) for x in LINK_TYPES])
+            (x, x) for x in enumerations.LINK_TYPES])
     name = models.CharField(max_length=255, help_text=_(
         'For example "View in Google Earth"'))
     mime = models.CharField(max_length=255,
