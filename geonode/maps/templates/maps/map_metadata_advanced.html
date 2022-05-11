@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load base_tags %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 {% load guardian_tags %}
 
 {% block title %}{{ map.title }} — {{ block.super }}{% endblock %}
@@ -97,7 +97,7 @@
                 </fieldset>
               </div>
               {% endblock category %}
-              {{ map_form|as_bootstrap }}
+              {{ map_form|crispy }}
               {% if THESAURI_FILTERS %}
                   {{ tkeywords_form }}
               {% endif %}
@@ -105,12 +105,12 @@
             <div class="row mt-2">
                 <fieldset class="form-controls modal-forms modal hide fade" id="poc_form" >
                   <h2>{% trans "Point of Contact" %}</h2>
-                  {{ poc_form|as_bootstrap }}
+                  {{ poc_form|crispy }}
                   <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
                 </fieldset>
                 <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
                   <h2>{% trans "Metadata Provider" %}</h2>
-                  {{ author_form|as_bootstrap }}
+                  {{ author_form|crispy }}
                   <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
                 </fieldset>
             </div>

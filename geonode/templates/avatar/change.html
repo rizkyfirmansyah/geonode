@@ -1,6 +1,6 @@
 {% extends "geonode_base.html" %}
 {% load i18n avatar_tags %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block body_inner %}
     <h4 class="row w-100"><a href="{% url "profile_edit" user.username %}">{% trans "Back to edit your profile information" %}</a></h4>

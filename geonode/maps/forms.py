@@ -19,10 +19,40 @@
 #########################################################################
 
 from geonode.base.forms import ResourceBaseForm
+from geonode.base.models import ResourceBase
 from geonode.maps.models import Map
 
 
 class MapForm(ResourceBaseForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            help_text = self.fields[field].help_text
+            self.fields[field].help_text = None
+            if help_text != '':
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'has-external-popover text-truncate',
+                        'data-content': help_text,
+                        'placeholder': help_text,
+                        'data-placement': 'right',
+                        'data-container': 'body',
+                        'data-html': 'true',
+                        'data-field': self.fields[field].label
+                    }
+                )
+            if self.fields[field].widget.__class__.__name__ != 'ResourceBaseDateTimePicker':
+                self.fields[field].widget.attrs.update(
+                  {
+                      'class': 'has-external-popover text-truncate w-100'})
+            if field == 'regions':
+                self.fields[field].help_text = ResourceBase.regions_help_text
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'selectpicker',
+                        'data-live-search': 'true',
+                        'data-size': '10'})
 
     class Meta(ResourceBaseForm.Meta):
         model = Map
@@ -31,6 +61,7 @@ class MapForm(ResourceBaseForm):
             'projection',
             'center_x',
             'center_y',
+            'doi'
         )
         fields = [
           'title',
@@ -42,7 +73,6 @@ class MapForm(ResourceBaseForm):
           'data_quality_statement',
           'author',
           'source',
-          'doi',
           'license',
           'data_type',
           'constraints_other',
@@ -64,11 +94,11 @@ class MapForm(ResourceBaseForm):
           'group',
           'metadata_uploaded_preserve',
           'featured',
+          'metadata_only',
           'was_published',
           'is_published',
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata',
-          'metadata_only'
+          'metadata'
         ]

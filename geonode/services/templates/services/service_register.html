@@ -1,5 +1,5 @@
 {% extends "services/services_base.html" %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block head %}
@@ -14,7 +14,7 @@
 </div>
     <form method="POST" id="service_register_form">
     {% csrf_token %}
-    {{ form|as_bootstrap }}
+    {{ form|crispy }}
     <input type="submit" class="btn btn-primary" data-toggle="modal" data-target="progressModal" id="submit_button" value="{% trans "Create" %}" />
     </form>
     <div class="modal fade" data-backdrop="static" data-keyboard="false" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel">

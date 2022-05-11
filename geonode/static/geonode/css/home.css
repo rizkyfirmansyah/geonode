@@ -4406,6 +4406,18 @@ article.tab-pane {
     }
 }
 
+@media screen and (min-width:1600px) {
+  .container {
+      margin-top: 5em;
+  }
+  .search-field {
+      padding-top: 7em;
+  }
+  .auto-margin {
+      padding-top: 5em;
+  }
+}
+
 footer li a {
     color: #fff!important
 }

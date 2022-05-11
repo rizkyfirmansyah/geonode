@@ -21,7 +21,7 @@ import re
 import html
 import logging
 from django.db.models.query import QuerySet
-from bootstrap3_datetime.widgets import DateTimePicker
+from tempus_dominus.widgets import DateTimePicker
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -151,6 +151,7 @@ class CategoryForm(forms.Form):
     category_choice_field = CategoryChoiceField(
         required=True,
         label=f"*{_('Topic Category')}",
+        help_text=ResourceBase.category_help_text,
         queryset=TopicCategory.objects.filter(
             is_choice=True).extra(
             order_by=['title']))
@@ -264,7 +265,7 @@ class ResourceBaseDateTimePicker(DateTimePicker):
         if extra_attrs:
             base_attrs.update(extra_attrs)
         base_attrs.update(kwargs)
-        return super(ResourceBaseDateTimePicker, self).build_attrs(base_attrs)
+        return super().build_attrs(base_attrs)
         # return base_attrs
 
 
@@ -318,19 +319,26 @@ class ResourceBaseForm(TranslationModelForm):
         widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
 
     date = forms.DateTimeField(
+        label=_("Publication Date"),
+        help_text=ResourceBase.date_help_text,
+        required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
     temporal_extent_start = forms.DateTimeField(
+        label=_("Temporal Extent Start"),
+        help_text=ResourceBase.temporal_extent_start_help_text,
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
     temporal_extent_end = forms.DateTimeField(
+        label=_("Temporal Extent End"),
+        help_text=ResourceBase.temporal_extent_end_help_text,
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
 
     poc = forms.ModelChoiceField(
         empty_label=_("Person outside SDI (fill form)"),
@@ -355,6 +363,15 @@ class ResourceBaseForm(TranslationModelForm):
         # widget=TreeWidget(url='autocomplete_hierachical_keyword'), #Needs updating to work with select2
         widget=TaggitSelect2Custom(url='autocomplete_hierachical_keyword'))
 
+    extra_metadata = forms.CharField(
+        required=False,
+        widget=forms.Textarea,
+        help_text=_('Additional metadata, must be in format [\
+                {"metadata_key": "metadata_value"},\
+                {"metadata_key": "metadata_value"} \
+            ]')
+    )
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
@@ -362,6 +379,7 @@ class ResourceBaseForm(TranslationModelForm):
             if field == 'featured' and self.user and not self.user.is_staff:
                 self.fields[field].disabled = True
             help_text = self.fields[field].help_text
+
             if help_text != '':
                 self.fields[field].widget.attrs.update(
                     {
@@ -370,6 +388,50 @@ class ResourceBaseForm(TranslationModelForm):
                         'data-placement': 'right',
                         'data-container': 'body',
                         'data-html': 'true'})
+            # change the style of datetimepicker to work with tempus_dominus style; set the minimum date to Jan 1, 2022
+            if self.fields[field].widget.__class__.__name__ == 'ResourceBaseDateTimePicker':
+                self.fields[field].widget.attrs.update(
+                    {
+                        'append': 'fa fa-calendar',
+                        'icon_toggle': True})
+            # change the style of checkboxinput to toggle instead of boring checkbox. And remove the label!
+            if self.fields[field].widget.__class__.__name__ == 'CheckboxInput':
+                choices = []
+                if field == 'metadata_only':
+                    choices=(
+                      (False, "Make it available from search results"),
+                      (True, "Hide the Dataset from search results"))
+                elif field == 'is_published':
+                    choices=(
+                      (False, "Don't publish and hide from search results"),
+                      (True, "Publish and make the Dataset available from search results"))
+                elif field == 'featured':
+                    choices=(
+                      (False, "Don't advertise to homepage"),
+                      (True, "Advertise the Dataset to homepage"))
+                elif field == 'metadata_uploaded_preserve':
+                    choices=(
+                      (False, "Metadata can be edited for anyone with permission"),
+                      (True, "Preserve metadata from being edited"))
+                elif field == 'is_approved':
+                    choices=(
+                      (False, "Formally not being approved yet by publisher or other parties"),
+                      (True, "This dataset has been approved by publisher or other parties"))
+                else:
+                    choices=(
+                      (False, "False"),
+                      (True, "True"))
+                self.fields[field].label = ''
+                self.fields[field].widget.attrs.update(
+                    {
+                        'data-toggle': 'toggle',
+                        'data-width': '100%',
+                        'data-height': 'auto',
+                        'data-on': choices[0][1],
+                        'data-off': choices[1][1],
+                        'value': choices[0][0],
+                        'data-onstyle': 'primary',
+                        'data-offstyle': 'info'})
 
     def disable_keywords_widget_for_non_superuser(self, user):
         if settings.FREETEXT_KEYWORDS_READONLY and not user.is_superuser:
@@ -400,9 +462,6 @@ class ResourceBaseForm(TranslationModelForm):
         return _unsescaped_kwds
 
     class Meta:
-        widgets = {
-            'regions': forms.SelectMultiple(attrs={'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
-        }
         exclude = (
             'contacts',
             'name',

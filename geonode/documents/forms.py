@@ -29,6 +29,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.forms import HiddenInput
+from geonode.base.models import ResourceBase
 from modeltranslation.forms import TranslationModelForm
 
 from geonode.documents.models import (
@@ -88,25 +89,36 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 
     links = forms.MultipleChoiceField(
         label=_("Link to"),
+        help_text=_("Set a link to spatial dataset if any"),
         required=False)
 
     def __init__(self, *args, **kwargs):
-        super(DocumentForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
             self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update(
                     {
-                        'class': 'has-external-popover',
+                        'class': 'has-external-popover text-truncate',
                         'data-content': help_text,
                         'placeholder': help_text,
                         'data-placement': 'right',
                         'data-container': 'body',
                         'data-html': 'true',
-                        'data-field': self.fields[field].label
-                    }
-                )
+                        'data-field': self.fields[field].label})
+            if self.fields[field].widget.__class__.__name__ != 'ResourceBaseDateTimePicker':
+                self.fields[field].widget.attrs.update(
+                  {
+                      'class': 'has-external-popover text-truncate w-100'})
+            if field == 'regions':
+                self.fields[field].help_text = ResourceBase.regions_help_text
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'selectpicker',
+                        'data-live-search': 'true',
+                        'data-size': '10'})
+
         self.fields['links'].choices = self.generate_link_choices()
         self.fields['links'].initial = self.generate_link_values(
             resources=get_related_resources(self.instance)
@@ -157,15 +169,14 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
           'owner',
           'contacts',
           'group',
-          'metadata_uploaded_preserve',
           'featured',
+          'metadata_only',
           'was_published',
           'is_published',
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata',
-          'metadata_only'
+          'metadata'
         ]
 
 class DocumentDescriptionForm(forms.Form):

@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load base_tags %}
 {% load staticfiles %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %} {% trans "Create Layer"  %} - {{ block.super }}  {% endblock %}
 
@@ -33,7 +33,7 @@
     <section>
       <form id="layer-create-form"  method="post" action="{% url "layer_create" %}">
         {% csrf_token %}
-        {{ form|as_bootstrap }}
+        {{ form|crispy }}
 
         <div class="input-attrs-wrap">
           <button id="add-attr-button" class="add-attr-button btn btn-primary">{% trans "Add Attribute" %}</button>

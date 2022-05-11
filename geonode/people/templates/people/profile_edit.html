@@ -1,6 +1,6 @@
 {% extends "people/profile_base.html" %}
 {% load i18n avatar_tags %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block body_class %}{% trans "edit people" %}{% endblock %}
 
@@ -29,7 +29,7 @@
       <form action="" method="post">
         {% csrf_token %}
         <div class="form-controls">
-          {{ form|as_bootstrap }}
+          {{ form|crispy }}
         </div>
         <div class="form-actions">
           <input type="submit" class="btn btn-primary w-100 mt-4" value="{% trans "Update profile" %}" />

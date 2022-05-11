@@ -195,18 +195,19 @@
 }
 
 .bootstrap-datetimepicker-widget, .bootstrap-datetimepicker-widget.dropdown-menu {
-  position: fixed !important;
+  /* position: fixed !important;
   display: block !important;
-  z-index: 99999 !important;
+  z-index: 99999 !important; */
   min-width: 300px;
   margin-left: auto;
   margin-right: auto;
   font-size: .9em;
 }
 
+/*
 .bootstrap-datetimepicker-widget.dropdown-menu.pull-right:after {
   right: -2px !important;
-}
+} */
 
 /* ---------------------------------------------------
     BORDER STYLE
@@ -1766,12 +1767,6 @@ ul.disc li::before {
     top: 11px;
     vertical-align: middle
 }
-
-dt {
-    margin: 0;
-    color: #1c463f
-}
-
 
 img.pull-right {
     margin: 1.5rem 0 0 3rem
@@ -3428,13 +3423,6 @@ form#text-search-autocomplete .ac-results {
     top: 2.5em;
 }
 
-#edit-metadata div input,
-#edit-metadata div textarea,
-#req_item {
-    padding: .5em;
-    width: 100%
-}
-
 #edit-metadata .thumbnail-title {
     text-align: center
 }
@@ -3443,24 +3431,6 @@ form#text-search-autocomplete .ac-results {
     color: #fff!important;
     background-color: #fdba12!important;
     border-color: #fdba12!important
-}
-
-#edit-metadata input[type=text],
-#edit-metadata select {
-    width: 100%;
-    left: 0;
-    right: 0
-}
-
-#edit-metadata input[placeholder] {
-    text-overflow: ellipsis
-}
-
-#metadata_update .select2-selection__choice {
-    font-size: var(--font-larger-1);
-    padding: .4em;
-    background-color: var(--primary);
-    color: var(--secondary);
 }
 
 #profileCompleteness small {
@@ -3472,8 +3442,11 @@ form#text-search-autocomplete .ac-results {
 }
 
 #metadata_update .select2-selection__clear {
-    font-size: 2em;
-    padding: .4em
+    font-size: 1.3em;
+}
+
+#metadata_update .external-popover {
+    margin-left: .9em;
 }
 
 #id_resource-regions {
@@ -3506,7 +3479,7 @@ form#text-search-autocomplete .ac-results {
 }
 
 #edit-metadata label[for^=id] {
-    padding: .8rem!important
+    padding: .8rem 0!important
 }
 
 #metadata_update .select2-container {
@@ -3577,14 +3550,18 @@ td>input {
     color: #fdba12
 }
 
-#id_resource-title,
-.tokenfield {
-    width: 100%!important
-}
-
 #edit-metadata .tab-pane>.panel-group>.panel.panel-default,
 #settings .panel-group>.panel.panel-default {
     border: none
+}
+
+.subtitle {
+  font-size:16px;
+  color: #428bca;
+}
+
+.sep_title hr {
+  margin-top: 2px;
 }
 
 #mdeditor_form>div.tab-content>.tab-pane {
@@ -5217,6 +5194,15 @@ footer li a:hover {
         margin-left: 2rem;
         margin-right: 2rem;
         margin-top: .9rem
+    }
+}
+
+@media screen and (min-width:1600px) {
+    .container {
+        margin-top: 5em;
+    }
+    .search-field {
+        padding-top: 7em;
     }
 }
 

@@ -1,6 +1,6 @@
 {% extends "metadata_base.html" %}
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 {% load base_tags %}
 {% load guardian_tags %}
 {% load floppyforms %}
@@ -81,12 +81,12 @@
     <div class="col-12 mt-2">
       <fieldset class="form-controls modal-forms modal hide fade" id="poc_form">
         <h2>{% trans "Point of Contact" %}</h2>
-        {{ poc_form|as_bootstrap }}
+        {{ poc_form|crispy }}
         <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
       </fieldset>
       <fieldset class="form-controls modal-forms modal hide fade" id="metadata_form">
         <h2>{% trans "Metadata Provider" %}</h2>
-        {{ author_form|as_bootstrap }}
+        {{ author_form|crispy }}
         <button type='button' class="modal-close-btn btn btn-primary">{% trans "Done" %}</button>
       </fieldset>
     </div>

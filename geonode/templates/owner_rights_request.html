@@ -1,7 +1,7 @@
 {% extends "geonode_base.html" %}
 
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %}{% trans "Request perission" %} {% endblock %}
 {% block body_inner %}
@@ -10,7 +10,7 @@
 <form method="post" action="{% url 'owner_rights_request' resource.id %}">
   {% csrf_token %}
   <table width=100%>
-    {{ form|as_bootstrap }}
+    {{ form|crispy }}
   </table>
   <div class="form-actions">
     <input type="submit" value="{% trans "Send request" %}"  class="btn btn-primary" type="button"/>

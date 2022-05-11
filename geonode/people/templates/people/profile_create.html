@@ -1,14 +1,14 @@
 {% extends "people/profile_base.html" %}
 
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block body_inner %}
   <form action="" class="form-horizontal" method="post">
     <legend>{% trans "Create Profile" %}</legend>
     {% csrf_token %}
     <div class="form-controls">
-      {{ form|as_bootstrap }}
+      {{ form|crispy }}
     </div>
     <div class="form-actions">
       <input type="submit" value="{% trans "Create Profile" %}" class="btn btn-primary"/>

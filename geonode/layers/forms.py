@@ -27,6 +27,7 @@ from django import forms
 from django.conf import settings
 
 from geonode import geoserver
+from geonode.base.models import ResourceBase
 from geonode.utils import check_ogc_backend
 
 import json
@@ -68,8 +69,11 @@ class LayerForm(ResourceBaseForm):
           'supplemental_information',
           'data_quality_statement',
           'author',
+          'distributor',
           'source',
           'doi',
+          'related_publication',
+          'data_citation',
           'license',
           'data_type',
           'constraints_other',
@@ -79,6 +83,7 @@ class LayerForm(ResourceBaseForm):
           'date',
           'date_type',
           'date_distribution',
+          'project_information',
           'edition',
           'maintenance_frequency',
           'temporal_extent_start',
@@ -91,13 +96,13 @@ class LayerForm(ResourceBaseForm):
           'group',
           'metadata_uploaded_preserve',
           'featured',
+          'metadata_only',
           'was_published',
           'is_published',
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata',
-          'metadata_only'
+          'metadata'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -108,14 +113,26 @@ class LayerForm(ResourceBaseForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update(
                     {
-                        'class': 'has-external-popover',
+                        'class': 'has-external-popover text-truncate',
                         'data-content': help_text,
                         'placeholder': help_text,
                         'data-placement': 'right',
                         'data-container': 'body',
-                        'data-html': 'true'
+                        'data-html': 'true',
+                        'data-field': self.fields[field].label
                     }
                 )
+            if self.fields[field].widget.__class__.__name__ != 'ResourceBaseDateTimePicker':
+                self.fields[field].widget.attrs.update(
+                  {
+                      'class': 'has-external-popover text-truncate w-100'})
+            if field == 'regions':
+                self.fields[field].help_text = ResourceBase.regions_help_text
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'selectpicker',
+                        'data-live-search': 'true',
+                        'data-size': '10'})
 
 
 class LayerUploadForm(forms.Form):

@@ -1,25 +1,12 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %}{{ resource.title }} — {{ block.super }}{% endblock %}
 
 {% block body_class %}{% trans "data" %}{% endblock %}
 
 {% block body %}
-
-<style>
-
-    .subtitle {
-        font-size:16px;
-        color: #428bca;
-    }
-
-    .sep_title hr {
-        margin-top: 2px;
-    }
-
-</style>
 
 <div class="card w-100 rounded bg-light">
     <div class="card-header">
@@ -48,12 +35,12 @@
         
                 {% if resource.abstract %}
                 <dt>{% trans "Abstract" %}</dt>
-                <dd>{{ resource.abstract|escape|urlize|linebreaks|safe|truncatechars:1000 }}</dd>
+                <dd>{{ resource.abstract|striptags|truncatechars:1000 }}</dd>
                 {% endif %}
         
                 {% if resource.data_description %}
                 <dt>{% trans "Data Description" %}</dt>
-                <dd>{{ resource.data_description|linebreaks|safe|escape|truncatechars:1000 }}</dd>
+                <dd>{{ resource.data_description|striptags|truncatechars:1000 }}</dd>
                 {% endif %}
         
                 {% if resource.date_distribution %}
@@ -196,27 +183,29 @@
         
             </dl>
         
-            <dl class="dl-horizontal">
-        
-                <dt>{% trans "Spatial Extent" %}</dt>
-                <dd>{% if resource.scale %} {{ resource.scale }} {% else %} --- {% endif %}</dd>
-        
-                <dt>{% trans "Projection System" %}</dt>
-                <dd>{{ resource.srid }}</dd>
-        
-                <dt>{% trans "Extension x0" %}</dt>
-                <dd>{{resource.bbox_x0}}</dd>
-        
-                <dt>{% trans "Extension x1" %}</dt>
-                <dd>{{resource.bbox_x1}}</dd>
-        
-                <dt>{% trans "Extension y0" %}</dt>
-                <dd>{{resource.bbox_y0}}</dd>
-        
-                <dt>{% trans "Extension y1" %}</dt>
-                <dd>{{resource.bbox_y1}}</dd>
-        
-            </dl>
+            {% if resource.class_name != "Document" %}
+              <dl class="dl-horizontal">
+          
+                  <dt>{% trans "Spatial Extent" %}</dt>
+                  <dd>{% if resource.scale %} {{ resource.scale }} {% else %} --- {% endif %}</dd>
+          
+                  <dt>{% trans "Projection System" %}</dt>
+                  <dd>{{ resource.srid }}</dd>
+          
+                  <dt>{% trans "Extension x0" %}</dt>
+                  <dd>{{resource.bbox_x0}}</dd>
+          
+                  <dt>{% trans "Extension x1" %}</dt>
+                  <dd>{{resource.bbox_x1}}</dd>
+          
+                  <dt>{% trans "Extension y0" %}</dt>
+                  <dd>{{resource.bbox_y0}}</dd>
+          
+                  <dt>{% trans "Extension y1" %}</dt>
+                  <dd>{{resource.bbox_y1}}</dd>
+          
+              </dl>
+            {% endif %}
         
             <span class="subtitle">{% trans "Features" %}</span>
             <div class="sep_title"><hr></div>

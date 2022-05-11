@@ -1,7 +1,7 @@
 {% extends "account/base.html" %}
 
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 {% load account socialaccount %}
 
 {% block title %}{% trans "Sign up" %}{% endblock %}
@@ -21,7 +21,7 @@
           <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
               <fieldset>
                   {% csrf_token %}
-                  {{ form|as_bootstrap }}
+                  {{ form|crispy }}
                   {% if redirect_field_value %}
                       <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                   {% endif %}

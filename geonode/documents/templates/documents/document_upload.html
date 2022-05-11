@@ -1,7 +1,7 @@
 {% extends "documents/document_upload_base.html" %}
 {% load i18n %}
 {% load base_tags %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %} {% trans "Upload Document" %} - {{ block.super }} {% endblock %}
 
@@ -14,7 +14,7 @@
     <div class="card-body">
       <form id="upload_form" method="post" enctype="multipart/form-data" action="{% url "document_upload" %}">
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-        {{ form.as_p }}
+        {{ form|crispy }}
         <button type="submit" class="btn btn-upload w-100">{% trans "Upload" %}</button>
       </form>
     </div>

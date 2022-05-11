@@ -1,6 +1,6 @@
 {% load dialogos_tags %}
 {% load pagination_tags %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% load avatar_tags %}
 
@@ -58,7 +58,7 @@
         <form action="{% comment_target resource %}" method="POST" id="form_post_comment">
           <div class="modal-body">
               {% csrf_token %}
-              {{ form|as_bootstrap }}
+              {{ form|crispy }}
           </div>
           <div class="modal-footer">
               <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>

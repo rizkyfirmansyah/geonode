@@ -1,5 +1,5 @@
 {% extends "services/services_base.html" %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block head %}
@@ -16,7 +16,7 @@
 </div>
 <form method="POST" id="service_edit_form">
   {% csrf_token %}
-  {{ service_form|as_bootstrap }}
+  {{ service_form|crispy }}
   <div class="mt-2">
     <p><input type="submit" class="btn btn-save" value="{% trans "Save" %}"/></p>
   </div>

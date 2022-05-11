@@ -1,7 +1,7 @@
 {% extends "geonode_base.html" %}
 
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block body_class %}announcements{% endblock %}
 
@@ -19,7 +19,7 @@
     <div class="card-body">
       <form action="{{ post_url }}" method="POST" class="form form-horizontal">
         {% csrf_token %}
-        {{ form|as_bootstrap }}
+        {{ form|crispy }}
         <div class="form-actions">
           <a href="{% url "announcements_list" %}" class="btn btn-primary">{% trans "Cancel" %}</a>
           {% if announcement %}

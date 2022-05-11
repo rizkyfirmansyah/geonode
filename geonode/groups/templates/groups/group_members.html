@@ -1,6 +1,6 @@
 {% extends "groups/group_base.html" %}
 {% load i18n %}
-{% load bootstrap_tags %}
+{% load crispy_forms_tags %}
 
 {% block head %}
 {{ block.super }}
@@ -140,7 +140,7 @@
       <form method="POST" action="{% url "group_members_add" group.slug %}">
         {% csrf_token %}
         <div id="member_form_container">
-            {{ member_form|as_bootstrap }}<br/><br/>
+            {{ member_form|crispy }}<br/><br/>
         </div>
         <input type="submit" value="{% trans "Add Group Members" %}" class="btn btn-primary w-100"/>
     </form>

@@ -461,7 +461,7 @@ INSTALLED_APPS = (
     'drf_spectacular',
 
     # Theme
-    'django_forms_bootstrap',
+    'crispy_forms',
 
     # Social
     'avatar',
@@ -495,6 +495,8 @@ MARKDOWNIFY = {
         "WHITELIST_TAGS": os.getenv('MARKDOWNIFY_WHITELIST_TAGS', markdown_white_listed_tags)
     }
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 

@@ -121,45 +121,45 @@ class Feedback(models.Model):
             return finders.find(placeholder.format('video'), False)
         return finders.find(placeholder.format('generic'), False)
 
-    # def save_feedback_file(self, filename, image):
-    #     upload_path = get_unique_feedback_path(self, filename)
+    def save_feedback_file(self, filename, image):
+        upload_path = get_unique_feedback_path(self, filename)
 
-    #     try:
-    #         if upload_path and image:
-    #             actual_name = storage_manager.save(upload_path, ContentFile(image))
-    #             actual_file_name = os.path.basename(actual_name)
-    #             if filename != actual_file_name:
-    #                 upload_path = upload_path.replace(filename, actual_file_name)
-    #             url = storage_manager.url(upload_path)
+        try:
+            if upload_path and image:
+                actual_name = storage_manager.save(upload_path, ContentFile(image))
+                actual_file_name = os.path.basename(actual_name)
+                if filename != actual_file_name:
+                    upload_path = upload_path.replace(filename, actual_file_name)
+                url = storage_manager.url(upload_path)
 
-    #     except Exception as e:
-    #         logger.error(
-    #             f'Error when saving the feedback for resource {self.id}. ({e})')
+        except Exception as e:
+            logger.error(
+                f'Error when saving the feedback for resource {self.id}. ({e})')
 
 
-# def post_save_feedback(instance, sender, **kwargs):
-#     from .tasks import create_feedback
+def post_save_feedback(instance, sender, **kwargs):
+    from .tasks import create_feedback
 
-#     base_name, extension = os.path.splitext(instance.feedback_file.name)
-#     ext = extension[1:]
-#     feedback_type_map = DOCUMENT_TYPE_MAP
-#     feedback_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
+    base_name, extension = os.path.splitext(instance.feedback_file.name)
+    ext = extension[1:]
+    feedback_type_map = DOCUMENT_TYPE_MAP
+    feedback_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
 
-#     if instance.id and instance.feedback_file:
-#         create_feedback.apply_sync((instance.id,))
+    if instance.id and instance.feedback_file:
+        create_feedback.apply_sync((instance.id,))
 
-#     if feedback_type_map is None:
-#         feedback_type = 'other'
-#     else:
-#         feedback_type = feedback_type_map.get(ext.lower(), 'other')
-#     feedback_type = feedback_type
+    if feedback_type_map is None:
+        feedback_type = 'other'
+    else:
+        feedback_type = feedback_type_map.get(ext.lower(), 'other')
+    feedback_type = feedback_type
 
-#     if instance.uuid is None or instance.uuid == '':
-#         instance.uuid  = str(uuid.uuid1())
+    if instance.uuid is None or instance.uuid == '':
+        instance.uuid  = str(uuid.uuid1())
 
-#     if ext:
-#         Feedback.objects.get_or_create(
-#             extension=ext,
-#             feedback_type=feedback_type)
+    if ext:
+        Feedback.objects.get_or_create(
+            extension=ext,
+            feedback_type=feedback_type)
 
-# signals.post_save.connect(post_save_feedback, sender=Feedback)
+signals.post_save.connect(post_save_feedback, sender=Feedback)

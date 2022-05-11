@@ -17,6 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+from geonode.base.models import ResourceBase
 from geonode.geoapps.models import GeoApp
 from geonode.base.forms import ResourceBaseForm
 
@@ -64,28 +65,40 @@ class GeoAppForm(ResourceBaseForm):
           'group',
           'metadata_uploaded_preserve',
           'featured',
+          'metadata_only',
           'was_published',
           'is_published',
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata',
-          'metadata_only'
+          'metadata'
         ]
 
     def __init__(self, *args, **kwargs):
-        super(GeoAppForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
             self.fields[field].help_text = None
             if help_text != '':
                 self.fields[field].widget.attrs.update(
                     {
-                        'class': 'has-external-popover',
+                        'class': 'has-external-popover text-truncate',
                         'data-content': help_text,
                         'placeholder': help_text,
                         'data-placement': 'right',
                         'data-container': 'body',
-                        'data-html': 'true'
+                        'data-html': 'true',
+                        'data-field': self.fields[field].label
                     }
                 )
+            if self.fields[field].widget.__class__.__name__ != 'ResourceBaseDateTimePicker':
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'has-external-popover text-truncate w-100'})
+            if field == 'regions':
+                self.fields[field].help_text = ResourceBase.regions_help_text
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'selectpicker',
+                        'data-live-search': 'true',
+                        'data-size': '10'})
