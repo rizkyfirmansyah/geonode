@@ -12,7 +12,19 @@
         <h1 class="text-center">Awwww... Don't cry :)</h1>
         <p class="font-lg-2 text-center">It's just a 404 error!</p>
         <p class="font-lg-2 text-center">What you're looking for may have been misplaced in the Long Term Memory.</p>
-        <a class="error-link" id='back' href='' onclick="goBack(); return false;">Back to memory</a>
+        <p class="font-lg-2 text-center">
+          {% if not request.user.is_anonymous %}
+            {% if message %}
+              <span>{% blocktrans %} {{ message}} {% endblocktrans %}</span>
+            {% else %}
+              {% blocktrans %}Nothing is here.{% endblocktrans %}
+            {% endif %}
+          {% endif %}
+        </p>
+        <div class="row d-flex justify-content-center">
+          <a class="nav-primary" id='back' href='' onclick="goBack(); return false;">Back to memory</a>
+          <a class="nav-secondary" href='{% url "catalogue_browse" %}'>Back to home</a>
+        </div>
       </div>
     </div>
   </div>

@@ -338,6 +338,38 @@
     cursor: pointer;
 }
 
+.nav-secondary {
+  color: var(--primary) !important;
+  background-color: var(--secondary) !important;
+  border: 1px solid var(--primary);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  display: block;
+  padding: 0.5rem !important;
+  box-shadow: 0 5px 10px -8px rgb(0 0 0 / 70%);
+  margin: .2em;
+}
+
+.nav-secondary>li>a, .nav-primary>a {
+  color: var(--primary) !important;
+}
+
+.nav-secondary.active, .nav-primary.selected {
+color: var(--secondary) !important;
+background-color: var(--primary) !important;
+border: 1px solid var(--primary);
+text-decoration: none;
+}
+
+.nav-secondary:hover,
+.nav-secondary a:hover, .nav-primary li:hover {
+  color: var(--secondary) !important;
+  background-color: var(--primary) !important;
+  border: 1px solid var(--primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
 
 .filter .nav {
   max-height: 340px;

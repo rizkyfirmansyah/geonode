@@ -90,11 +90,28 @@ def document_detail(request, docid):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not permitted to view this Dataset")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        return render(request, 'error/403.html', context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        return render(request, 'error/404.html', context=out)
+
     if not document:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        return render(request, 'error/404.html', context=out)
 
     permission_manager = ManageResourceOwnerPermissions(document)
     permission_manager.set_owner_permissions_according_to_workflow()

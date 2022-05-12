@@ -35,6 +35,7 @@ from dal import views, autocomplete
 from user_messages.models import Message
 from guardian.shortcuts import get_objects_for_user
 
+from django.template import loader
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
 from geonode.utils import resolve_object
@@ -219,9 +220,11 @@ def thumbnail_upload(
                 'id': res_id}, 'base.change_resourcebase')
     except PermissionDenied:
         return HttpResponse(
-            'You are not allowed to change permissions for this resource',
-            status=401,
-            content_type='text/plain')
+          loader.render_to_string(
+              'error/401.html', context={
+                  'error_message': _(
+                  'You are not allowed to change permissions for this resource',
+                  )}, request=request), status=401)
 
     form = CuratedThumbnailForm()
 
