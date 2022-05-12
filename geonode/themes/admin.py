@@ -20,8 +20,7 @@
 
 from django import forms
 from django.contrib import admin
-
-from .models import Partner, GeoNodeThemeCustomization, JumbotronThemeSlide
+from .models import Partner, GeoNodeThemeCustomization, JumbotronThemeSlide, Faq, About, Help
 
 
 @admin.register(Partner)
@@ -84,3 +83,25 @@ class GeoNodeThemeCustomizationAdmin(admin.ModelAdmin):
 @admin.register(JumbotronThemeSlide)
 class JumbotronThemeSlideAdmin(admin.ModelAdmin):
     pass
+
+
+class FaqFormAdmin(admin.ModelAdmin):
+    list_display = ('id', 'header_title', 'contents', 'authenticated_users')
+    list_display_links = ('header_title',)
+    exclude = ('created_date',)
+
+class AboutFormAdmin(admin.ModelAdmin):
+    list_display = ('header_title', 'contents')
+    list_display_links = ('header_title',)
+    exclude = ('created_date',)
+
+
+class HelpFormAdmin(admin.ModelAdmin):
+    list_display = ('header_title', 'contents')
+    list_display_links = ('header_title',)
+    exclude = ('created_date',)
+
+
+admin.site.register(Faq, FaqFormAdmin)
+admin.site.register(About, AboutFormAdmin)
+admin.site.register(Help, HelpFormAdmin)

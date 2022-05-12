@@ -1,5 +1,5 @@
 
-from geonode.sdi.utils import feedback_path
+from .utils import feedback_path
 from .models import Feedback
 from geonode.storage.manager import storage_manager
 from celery.utils.log import get_task_logger

@@ -251,7 +251,7 @@ urlpatterns += [  # '',
 
 # Custom SDI Pages
 urlpatterns += [
-    url(r'', include('geonode.sdi.urls')),
+    url(r'', include('geonode.themes.urls')),
 ]
 
 

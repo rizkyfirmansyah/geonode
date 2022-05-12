@@ -394,7 +394,6 @@ GEONODE_INTERNAL_APPS = (
     'geonode.management_commands_http',
 
     'geonode.datasets',
-    'geonode.sdi',
     'geonode.storage',
 
     # GeoServer Apps
@@ -694,7 +693,6 @@ CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
     'geonode.context_processors.resource_urls',
     'geonode.themes.context_processors.custom_theme',
-    # 'geonode.sdi.context_processors.feedback_form'
 ]
 if 'geonode.geoserver' in INSTALLED_APPS:
     CONTEXT_PROCESSORS += ['geonode.geoserver.context_processors.geoserver_urls', ]

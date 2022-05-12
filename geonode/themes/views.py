@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from urllib3 import HTTPResponse
 
-from geonode.sdi.forms import FeedbackForm
+from .forms import FeedbackForm
 from .models import Faq, Help, About
 
 

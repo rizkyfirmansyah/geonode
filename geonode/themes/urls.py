@@ -1,5 +1,5 @@
-from geonode.sdi.context_processors import feedback_form
-from geonode.sdi.views import faq_view, about_view, help_view
+from geonode.themes.context_processors import feedback_form
+from .views import faq_view, about_view, help_view
 from django.conf.urls import url
 
 
