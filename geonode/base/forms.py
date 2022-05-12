@@ -480,7 +480,6 @@ class ResourceBaseForm(TranslationModelForm):
             'csw_anytext',
             'popular_count',
             'share_count',
-            'thumbnail',
             'charset',
             'rating',
             'detail_url',
@@ -492,7 +491,8 @@ class ResourceBaseForm(TranslationModelForm):
             'blob',
             'files',
             'was_approved',
-            'was_published'
+            'was_published',
+            'thumbnail_url'
         )
 
 
