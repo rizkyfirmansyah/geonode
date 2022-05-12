@@ -363,7 +363,7 @@ class ResourceBaseForm(TranslationModelForm):
         # widget=TreeWidget(url='autocomplete_hierachical_keyword'), #Needs updating to work with select2
         widget=TaggitSelect2Custom(url='autocomplete_hierachical_keyword'))
 
-    extra_metadata = forms.CharField(
+    metadata = forms.CharField(
         required=False,
         widget=forms.Textarea,
         help_text=_('Additional metadata, must be in format [\

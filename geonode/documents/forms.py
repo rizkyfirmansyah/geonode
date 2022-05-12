@@ -94,6 +94,9 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields.pop('metadata')
+        self.fields.pop('temporal_extent_start')
+        self.fields.pop('temporal_extent_end')
         for field in self.fields:
             help_text = self.fields[field].help_text
             self.fields[field].help_text = None
@@ -133,11 +136,12 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
             'extension',
             'alternate',
             'doc_type',
-            'temporal_extent_start',
-            'temporal_extent_end',
             'spatial_representation_type',
             'resource_type',
             'spatial_resolution',
+            'metadata',
+            'temporal_extent_start',
+            'temporal_extent_end'
         )
         fields = [
           'title',
