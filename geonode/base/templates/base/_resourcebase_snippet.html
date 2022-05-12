@@ -37,7 +37,7 @@
             <div class="card-body pt-2">
               <div class="row">
                 <div class="avatar ml-2">
-                  <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar profile 40 %}</a>
+                  <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar item.owner_name 40 %}</a>
                   {% verbatim %}
                 </div>
                 <div class="col-10 pr-0 pl-2">

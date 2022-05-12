@@ -13,7 +13,8 @@
         "bootstrap4-toggle/css/bootstrap4-toggle.min.css",
         "patternfly-bootstrap-treeview/dist/bootstrap-treeview.css",
         "cropperjs/dist/cropper.css",
-        "@yaireo/tagify/dist/tagify.css"
+        "@yaireo/tagify/dist/tagify.css",
+        "pdfjs-dist/web/pdf_viewer.css"
     ],
     "openlayers.plugins.min.css": [
         "openlayers/dist/ol.css"

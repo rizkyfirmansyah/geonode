@@ -139,6 +139,16 @@
     <dd>{{ resource.source|safe|urlize }}</dd>
     {% endif %}
 
+    {% if resource.related_publication %}
+    <dt>{% trans "Related Publication" %}</dt>
+    <dd>{{ resource.related_publication|safe }}</dd>
+    {% endif %}
+
+    {% if resource.data_citation %}
+    <dt>{% trans "Cite" %}</dt>
+    <dd>{{ resource.data_citation|safe|urlize }}</dd>
+    {% endif %}
+
     {% if resource.date_distribution %}
     <dt>{% trans "Distribution Date" %}</dt>
     <dd>{{ resource.date_distribution }}</dd>
@@ -225,6 +235,12 @@
     <dt>{% trans "Data Quality" %}</dt>
     <dd>{{ resource.data_quality_statement|safe|escape }}</dd>
     {% endif %}
+
+    {% if resource.project_information %}
+    <dt>{% trans "Cite" %}</dt>
+    <dd>{{ resource.project_information }}</dd>
+    {% endif %}
+
 
     {% if resource.supplemental_information %}
     <dt>{% trans "Supplemental Information" %}</dt>

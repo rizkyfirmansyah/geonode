@@ -1,6 +1,6 @@
 {
     "name": "geonode-assets",
-    "version": "3.5.3",
+    "version": "3.5.4",
     "description": "Builds static (JS, CSS, IMG) assets for GeoNode 3.5",
     "main": "gruntfile.js",
     "dependencies": {
@@ -52,7 +52,8 @@
         "timeago": "^1.6.7",
         "tinymce": "5.9.2",
         "underscore": "^1.13.2",
-        "zeroclipboard": "^2.3.0"
+        "zeroclipboard": "^2.3.0",
+        "pdfjs-dist": "2.13.216"
     },
     "devDependencies": {
         "@babel/core": "^7.8.6",
