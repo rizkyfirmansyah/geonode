@@ -1,18 +1,31 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block body %}
 
     <div class="row">
     <div class="col-md-12">
       <div class="">
-          <img src="../../../static/geonode/img/500.png" class='stretch' alt=''>
+          <img src="{% static 'geonode/img/500.png' %}" class='stretch' alt=''>
       </div>
       <div class="col-md-12">
         <h1 class="text-center">Arrrgghh...</h1>
         <p class="font-lg-2 text-center">What's wrong with your server???!!!! <br> Call your sysadmin!!!</p>
         <p class="font-lg-2 text-center">What you're looking for may have been misplaced in the Long Term Memory</p>
-        <a class="error-link" id='back' href='' onclick="goBack(); return false;">Back to memory</a>
+        <p class="font-lg-2 text-center">
+          {% if not request.user.is_anonymous %}
+            {% if message %}
+              <span>{% blocktrans %} {{ message}} {% endblocktrans %}</span>
+            {% else %}
+              {% blocktrans %}Nothing is here.{% endblocktrans %}
+            {% endif %}
+          {% endif %}
+        </p>
+        <div class="row d-flex justify-content-center">
+          <a class="nav-primary" id='back' href='' onclick="goBack(); return false;">Back to memory</a>
+          <a class="nav-secondary" href='{% url "catalogue_browse" %}'>Back to home</a>
+        </div>
       </div>
     </div>
   </div>
