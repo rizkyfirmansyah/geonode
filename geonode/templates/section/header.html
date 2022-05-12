@@ -6,11 +6,11 @@
 
 {% block header %}
   
-    <div class="row w-100">
-      <div class="col-2 header-logo pt-3">
+    <div class="container-fluid row pt-1">
+      <div class="header-logo pt-3">
         <a href="{{ SITEURL }}">
           <img
-            class="w-100"
+            class="w-auto h-auto"
             src="{% if custom_theme.logo %}{{SITEURL}}/uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}"
             alt="Homepage">
         </a>

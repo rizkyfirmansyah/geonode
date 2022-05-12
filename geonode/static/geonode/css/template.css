@@ -742,7 +742,7 @@ button.full-width {
 }
 
 .header-logo img {
-  max-height: var(--header-height);
+  max-height: 40px;
 }
 
 .navigation_link {
