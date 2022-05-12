@@ -5248,7 +5248,7 @@ footer li a:hover {
     OVERRIDE TINYMCE STYLE
 ----------------------------------------------------- */
 .mce-content-body[data-mce-placeholder] {
-    margin-left: 1em;
+    margin-left: 1em !important;
 }
 
 
