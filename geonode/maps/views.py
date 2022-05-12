@@ -123,11 +123,31 @@ def map_detail(request, mapid, template='maps/map_detail.html'):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to edit this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     # Add metadata_author or poc if missing
     map_obj.add_missing_metadata_author_or_poc()
@@ -217,11 +237,31 @@ def map_metadata(
             'base.change_resourcebase_metadata',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     # Add metadata_author or poc if missing
     map_obj.add_missing_metadata_author_or_poc()
@@ -477,11 +517,31 @@ def map_remove(request, mapid, template='maps/map_remove.html'):
             'base.delete_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to remove this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     if request.method == 'GET':
         return render(request, template, context={
@@ -532,11 +592,31 @@ def add_layer(request):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to edit this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     return map_edit(request, str(map_obj.id), layer_name=layer_name)
 
@@ -555,11 +635,31 @@ def map_view(request, mapid, layer_name=None,
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     config = map_obj.viewer_json(request)
     perms_list = list(
@@ -590,11 +690,31 @@ def map_view_js(request, mapid):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     config = map_obj.viewer_json(request)
     return HttpResponse(
@@ -610,11 +730,31 @@ def map_json_handle_get(request, mapid):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     return HttpResponse(
         json.dumps(
@@ -797,11 +937,31 @@ def new_map_config(request):
                 mapid,
                 'base.view_resourcebase')
         except PermissionDenied:
-            return HttpResponse(_("Not allowed"), status=403)
+            message = f'{_("You are not allowed to edit this resource.")}'
+
+            out = {'success': False}
+            out['status_code'] = 403
+            out['message'] = message
+            _template = 'error/403.html'
+            return render(request, _template, context=out)
+
         except Exception:
-            raise Http404(_("Not found"))
+            message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+            out = {'success': False}
+            out['status_code'] = 404
+            out['message'] = message
+            _template = 'error/404.html'
+            return render(request, _template, context=out)
+
         if not map_obj:
-            raise Http404(_("Not found"))
+            message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+            out = {'success': False}
+            out['status_code'] = 404
+            out['message'] = message
+            _template = 'error/404.html'
+            return render(request, _template, context=out)
 
         map_obj.abstract = DEFAULT_ABSTRACT
         map_obj.title = DEFAULT_TITLE
@@ -1104,11 +1264,31 @@ def map_download(request, mapid, template='maps/map_download.html'):
             'base.download_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to download this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     map_status = dict()
     if request.method == 'POST':
@@ -1188,11 +1368,31 @@ def map_wmc(request, mapid, template="maps/wmc.xml"):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
     return render(request, template, context={
@@ -1218,11 +1418,31 @@ def map_wms(request, mapid):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     if request.method == 'PUT':
         try:
@@ -1337,11 +1557,31 @@ def map_metadata_detail(
             mapid,
             'view_resourcebase')
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not map_obj:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     group = None
     if map_obj.group:

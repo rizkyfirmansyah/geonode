@@ -23,6 +23,7 @@ import logging
 
 from lxml import etree
 from defusedxml import lxml as dlxml
+from django.shortcuts import render
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -59,7 +60,13 @@ def prefix_xsl_line(req, id):
         if record:
             logger.debug(record.xml)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(req, _template, context=out)
     except Exception:
         logger.debug(traceback.format_exc())
         msg = f'Could not connect to catalogue to save information for layer "{str(resource)}"'

@@ -22,7 +22,6 @@
 # Geonode functionality
 from django.shortcuts import render
 from django.conf import settings
-from django.http import HttpResponse
 from django.views.generic import FormView
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model
@@ -219,12 +218,13 @@ def thumbnail_upload(
             request, ResourceBase, {
                 'id': res_id}, 'base.change_resourcebase')
     except PermissionDenied:
-        return HttpResponse(
-          loader.render_to_string(
-              'error/401.html', context={
-                  'error_message': _(
-                  'You are not allowed to change permissions for this resource',
-                  )}, request=request), status=401)
+        message = f'{_("You are not allowed to change permissions for this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 401
+        out['message'] = message
+        _template = 'error/401.html'
+        return render(request, _template, context=out)
 
     form = CuratedThumbnailForm()
 

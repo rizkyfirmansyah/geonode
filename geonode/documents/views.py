@@ -95,7 +95,8 @@ def document_detail(request, docid):
         out = {'success': False}
         out['status_code'] = 403
         out['message'] = message
-        return render(request, 'error/403.html', context=out)
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
 
     except Exception:
         message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
@@ -103,7 +104,8 @@ def document_detail(request, docid):
         out = {'success': False}
         out['status_code'] = 404
         out['message'] = message
-        return render(request, 'error/404.html', context=out)
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     if not document:
         message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
@@ -111,7 +113,8 @@ def document_detail(request, docid):
         out = {'success': False}
         out['status_code'] = 404
         out['message'] = message
-        return render(request, 'error/404.html', context=out)
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     permission_manager = ManageResourceOwnerPermissions(document)
     permission_manager.set_owner_permissions_according_to_workflow()
@@ -350,11 +353,31 @@ def document_metadata(
             'base.change_resourcebase_metadata',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not document:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     # Add metadata_author or poc if missing
     document.add_missing_metadata_author_or_poc()
@@ -617,16 +640,25 @@ def document_remove(request):
         register_event(request, EventType.EVENT_REMOVE, document)
 
     except PermissionDenied:
+        message = f'{_("You are not allowed to remove this resource.")}'
+
         out = {'success': False}
         out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
 
     except Exception:
         traceback.print_exc()
-        message = f'{_("Unable to delete document")}: {document.title}.'
+        message = f'{_("We are incredibly sorry, we could not execute to delete")}: {document.title}.'
+        message += f'{_("Please submit a ticket or fill the form in the help & support. Thank you.")}'
 
         out = {'success': False}
         out['status_code'] = 500
         out['message'] = message
+        _template = 'error/500.html'
+
+        return render(request, _template, context=out)
 
     return render(request, 'documents/document_list.html')
 
@@ -642,11 +674,31 @@ def document_metadata_detail(
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        message = f'{_("You are not allowed to view this resource.")}'
+
+        out = {'success': False}
+        out['status_code'] = 403
+        out['message'] = message
+        _template = 'error/403.html'
+        return render(request, _template, context=out)
+
     except Exception:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
+
     if not document:
-        raise Http404(_("Not found"))
+        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+
+        out = {'success': False}
+        out['status_code'] = 404
+        out['message'] = message
+        _template = 'error/404.html'
+        return render(request, _template, context=out)
 
     group = None
     if document.group:
