@@ -204,6 +204,12 @@
   font-size: .9em;
 }
 
+nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicker-widget.dropdown-menu {
+  margin-left: 3px !important;
+  margin-right: 3px !important;
+  padding: 3px !important;
+  font-size: .88em;
+}
 /*
 .bootstrap-datetimepicker-widget.dropdown-menu.pull-right:after {
   right: -2px !important;
@@ -5265,10 +5271,11 @@ footer li a:hover {
     display: flex;
     z-index: inherit;
     overflow: hidden;
-    width: 270px;
-    min-width: 270px;
-    flex: 0 0 270px;
+    width: 290px;
+    min-width: 290px;
+    flex: 0 0 290px;
     transition: all .2s;
+    font-size: .88em;
 }
 
 .sidebar-shadow {
@@ -5296,13 +5303,13 @@ footer li a:hover {
 
 #sidebar.active,
 #sidebarGroup.active {
-    width: 270px;
+    width: 290px;
     position: relative;
 }
 
 #sidebar:not(.active),
 #sidebarGroup:not(.active) {
-    left: -270px;
+    left: -290px;
     position: relative;
 }
 
