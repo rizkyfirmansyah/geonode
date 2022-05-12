@@ -3,8 +3,10 @@ from .utils import feedback_path
 from .models import Feedback
 from geonode.storage.manager import storage_manager
 from celery.utils.log import get_task_logger
+from geonode.celery_app import app
 
 logger = get_task_logger(__name__)
+
 
 @app.task(
     bind=True,
