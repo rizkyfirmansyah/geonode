@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -19,11 +18,19 @@
 #########################################################################
 
 from geonode.base.forms import ResourceBaseForm
-from geonode.base.models import ResourceBase
 from geonode.maps.models import Map
 
 
 class MapForm(ResourceBaseForm):
+
+    class Meta(ResourceBaseForm.Meta):
+        model = Map
+        exclude = ResourceBaseForm.Meta.exclude + (
+            'zoom',
+            'projection',
+            'center_x',
+            'center_y',
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

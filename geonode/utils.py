@@ -42,12 +42,13 @@ from osgeo import ogr
 from PIL import Image
 from io import BytesIO, StringIO
 from decimal import Decimal
+from threading import local
 from slugify import slugify
 from contextlib import closing
-from collections import defaultdict
+from collections import namedtuple, defaultdict
 from math import atan, exp, log, pi, sin, tan, floor
 from zipfile import ZipFile, is_zipfile, ZIP_DEFLATED
-from urllib3 import Retry
+from requests.packages.urllib3.util.retry import Retry
 
 from django.conf import settings
 from django.core.cache import cache
@@ -60,14 +61,14 @@ from django.forms.models import model_to_dict
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ImproperlyConfigured
 from django.core.serializers.json import DjangoJSONEncoder
-from django.core.files.storage import default_storage as storage
+from geonode.storage.manager import storage_manager
 from django.db import models, connection, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from geonode import geoserver, GeoNodeException  # noqa
 from geonode.compat import ensure_string
-from geonode.storage.manager import storage_manager
 from geonode.base.auth import (
     extend_token,
     get_or_create_token,
@@ -127,9 +128,154 @@ id_none = id(None)
 logger = logging.getLogger("geonode.utils")
 
 
+class ServerDoesNotExist(Exception):
+    pass
+
+
+class OGC_Server(object):  # LGTM: @property will not work in old-style classes
+
+    """
+    OGC Server object.
+    """
+
+    def __init__(self, ogc_server, alias):
+        self.alias = alias
+        self.server = ogc_server
+
+    def __getattr__(self, item):
+        return self.server.get(item)
+
+    @property
+    def credentials(self):
+        """
+        Returns a tuple of the server's credentials.
+        """
+        creds = namedtuple('OGC_SERVER_CREDENTIALS', ['username', 'password'])
+        return creds(username=self.USER, password=self.PASSWORD)
+
+    @property
+    def datastore_db(self):
+        """
+        Returns the server's datastore dict or None.
+        """
+        if self.DATASTORE and settings.DATABASES.get(self.DATASTORE, None):
+            datastore_dict = settings.DATABASES.get(self.DATASTORE, dict())
+            return datastore_dict
+        else:
+            return dict()
+
+    @property
+    def ows(self):
+        """
+        The Open Web Service url for the server.
+        """
+        location = self.PUBLIC_LOCATION if self.PUBLIC_LOCATION else self.LOCATION
+        return self.OWS_LOCATION if self.OWS_LOCATION else urljoin(location, 'ows')
+
+    @property
+    def rest(self):
+        """
+        The REST endpoint for the server.
+        """
+        return urljoin(self.LOCATION, 'rest') if not self.REST_LOCATION else self.REST_LOCATION
+
+    @property
+    def public_url(self):
+        """
+        The global public endpoint for the server.
+        """
+        return self.LOCATION if not self.PUBLIC_LOCATION else self.PUBLIC_LOCATION
+
+    @property
+    def internal_ows(self):
+        """
+        The Open Web Service url for the server used by GeoNode internally.
+        """
+        location = self.LOCATION
+        return urljoin(location, 'ows')
+
+    @property
+    def hostname(self):
+        return urlsplit(self.LOCATION).hostname
+
+    @property
+    def netloc(self):
+        return urlsplit(self.LOCATION).netloc
+
+    def __str__(self):
+        return str(self.alias)
+
+
+class OGC_Servers_Handler:
+
+    """
+    OGC Server Settings Convenience dict.
+    """
+
+    def __init__(self, ogc_server_dict):
+        self.servers = ogc_server_dict
+        # FIXME(Ariel): Are there better ways to do this without involving
+        # local?
+        self._servers = local()
+
+    def ensure_valid_configuration(self, alias):
+        """
+        Ensures the settings are valid.
+        """
+        try:
+            server = self.servers[alias]
+        except KeyError:
+            raise ServerDoesNotExist(f"The server {alias} doesn't exist")
+
+        if 'PRINTNG_ENABLED' in server:
+            raise ImproperlyConfigured("The PRINTNG_ENABLED setting has been removed, use 'PRINT_NG_ENABLED' instead.")
+
+    def ensure_defaults(self, alias):
+        """
+        Puts the defaults into the settings dictionary for a given connection where no settings is provided.
+        """
+        try:
+            server = self.servers[alias]
+        except KeyError:
+            raise ServerDoesNotExist(f"The server {alias} doesn't exist")
+
+        server.setdefault('BACKEND', 'geonode.geoserver')
+        server.setdefault('LOCATION', 'http://localhost:8080/geoserver/')
+        server.setdefault('USER', 'admin')
+        server.setdefault('PASSWORD', 'geoserver')
+        server.setdefault('DATASTORE', '')
+
+        for option in ['MAPFISH_PRINT_ENABLED', 'PRINT_NG_ENABLED', 'GEONODE_SECURITY_ENABLED',
+                       'GEOFENCE_SECURITY_ENABLED', 'BACKEND_WRITE_ENABLED']:
+            server.setdefault(option, True)
+
+        for option in ['WMST_ENABLED', 'WPS_ENABLED']:
+            server.setdefault(option, False)
+
+    def __getitem__(self, alias):
+        if hasattr(self._servers, alias):
+            return getattr(self._servers, alias)
+
+        self.ensure_defaults(alias)
+        self.ensure_valid_configuration(alias)
+        server = self.servers[alias]
+        server = OGC_Server(alias=alias, ogc_server=server)
+        setattr(self._servers, alias, server)
+        return server
+
+    def __setitem__(self, key, value):
+        setattr(self._servers, key, value)
+
+    def __iter__(self):
+        return iter(self.servers)
+
+    def all(self):
+        return [self[alias] for alias in self]
+
+
 def mkdtemp(dir=settings.MEDIA_ROOT):
     if not os.path.exists(dir):
-        os.makedirs(dir)
+        os.makedirs(dir, exist_ok=True)
     tempdir = None
     while not tempdir:
         try:
@@ -527,7 +673,7 @@ def layer_from_viewer_config(map_id, model, layer, source, ordering, save_map=Tr
             if k in source_cfg:
                 del source_cfg[k]
 
-    # We don't want to hardcode 'access_token' into the storage
+    # We don't want to hardcode 'access_token' into the storage_manager
     styles = []
     if 'capability' in layer_cfg:
         _capability = layer_cfg['capability']
@@ -1547,7 +1693,7 @@ def copy_tree(src, dst, symlinks=False, ignore=None):
 def extract_archive(zip_file, dst):
     target_folder = os.path.join(dst, os.path.splitext(os.path.basename(zip_file))[0])
     if not os.path.exists(target_folder):
-        os.makedirs(target_folder)
+        os.makedirs(target_folder, exist_ok=True)
 
     with ZipFile(zip_file, "r", allowZip64=True) as z:
         z.extractall(target_folder)
@@ -1715,7 +1861,7 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                 url=download_url,
                 defaults=dict(
                     extension='zip',
-                    name='Original Dataset',
+                    name='Original Layer',
                     mime='application/octet-stream',
                     link_type='original',
                 )
@@ -1723,7 +1869,7 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
             logger.debug(" -- Resource Links[Create Raw Data download link]...done!")
         else:
             Link.objects.filter(resource=instance.resourcebase_ptr,
-                                name='Original Dataset').delete()
+                                name='Original Layer').delete()
 
         # Set download links for WMS, WCS or WFS and KML
         logger.debug(" -- Resource Links[Set download links for WMS, WCS or WFS and KML]...")
@@ -1789,7 +1935,6 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
             """
             links = wcs_links(f"{ogc_server_settings.public_url}ows?",
                               instance.alternate)
-
         for ext, name, mime, wcs_url in links:
             if (Link.objects.filter(resource=instance.resourcebase_ptr,
                                     url=wcs_url,
@@ -1977,6 +2122,7 @@ json_serializer_k_map = {
     'owner': settings.AUTH_USER_MODEL,
     'restriction_code_type': 'base.RestrictionCodeType',
     'license': 'base.License',
+    'category': 'base.TopicCategory',
     'spatial_representation_type': 'base.SpatialRepresentationType',
     'group': 'auth.Group',
     'default_style': 'layers.Style',
@@ -2125,6 +2271,12 @@ def find_by_attr(lst, val, attr="id"):
             return item
 
     return None
+
+
+def build_absolute_uri(url):
+    if url and 'http' not in url:
+        url = urljoin(settings.SITEURL, url)
+    return url
 
 
 def get_xpath_value(

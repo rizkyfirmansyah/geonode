@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -17,11 +16,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
 import os
 
-from geonode.celery_app import app
 from geonode.storage.manager import storage_manager
+
+from geonode.celery_app import app
 from celery.utils.log import get_task_logger
 
 from geonode.documents.models import Document
@@ -37,12 +36,13 @@ logger = get_task_logger(__name__)
     name='geonode.documents.tasks.create_document_thumbnail',
     queue='geonode',
     expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 5, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def create_document_thumbnail(self, object_id):
     """
     Create thumbnail for a document.
@@ -59,19 +59,22 @@ def create_document_thumbnail(self, object_id):
     image_file = None
 
     if document.is_image:
-        dname = storage_manager.path(document.doc_file.name)
-        if storage_manager.exists(dname):
-            image_file = storage_manager.open(dname, 'rb')
+        if not os.path.exists(storage_manager.path(document.doc_file.name)):
+            from shutil import copyfile
+            copyfile(
+                document.doc_file.path,
+                storage.path(document.doc_file.name)
+            )
+        image_file = storage.open(document.doc_file.name, 'rb')
     elif document.is_video or document.is_audio:
         image_file = open(document.find_placeholder(), 'rb')
     elif document.is_file:
-        dname = storage_manager.path(document.doc_file.name)
         try:
-            document_location = storage_manager.path(dname)
+            document_location = storage_manager.path(document.doc_file.name)
         except NotImplementedError as e:
             logger.debug(e)
 
-            document_location = storage_manager.url(dname)
+            document_location = storage_manager.url(document.doc_file.name)
 
         try:
             image_path = render_document(document_location)
@@ -116,12 +119,13 @@ def create_document_thumbnail(self, object_id):
     name='geonode.documents.tasks.delete_orphaned_document_files',
     queue='cleanup',
     expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def delete_orphaned_document_files(self):
     from geonode.documents.utils import delete_orphaned_document_files
     delete_orphaned_document_files()
@@ -132,12 +136,13 @@ def delete_orphaned_document_files(self):
     name='geonode.documents.tasks.delete_orphaned_thumbnails',
     queue='cleanup',
     expires=600,
+    time_limit=600,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def delete_orphaned_thumbnails(self):
     from geonode.base.utils import delete_orphaned_thumbs
     delete_orphaned_thumbs()

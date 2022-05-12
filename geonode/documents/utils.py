@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -26,13 +25,13 @@ import os
 import logging
 
 # Django functionality
-from geonode.storage.manager import storage_manager
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.utils.translation import ugettext as _
 from django.utils.text import slugify
 from django_downloadview.response import DownloadResponse
+from geonode.storage.manager import storage_manager
 
 # Geonode functionality
 from geonode.documents.models import Document
@@ -80,7 +79,6 @@ def get_download_response(request, docid, attachment=False):
     if attachment:
         register_event(request, EventType.EVENT_DOWNLOAD, document)
     filename = slugify(os.path.splitext(os.path.basename(document.title))[0])
-
     return DownloadResponse(
         document.doc_file,
         basename=f'{filename}.{document.extension}',

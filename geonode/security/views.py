@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -90,9 +89,9 @@ def resource_permissions_handle_post(request, resource):
                not view_any:
 
                 success = False
-                message = f"User {user.username} has download permissions but cannot " \
-                          "access the resource. Please update permission " \
-                          "consistently!"
+                message = _("User {username} has download permissions but cannot "
+                            "access the resource. Please update permission "
+                            "consistently!").format(username=user.username)
 
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
@@ -290,7 +289,7 @@ def resource_geolimits(request, resource_id):
 
 @require_POST
 def invalidate_permissions_cache(request):
-    from .utils import sync_resources_with_guardian
+    from geonode.geoserver.security import sync_resources_with_guardian
     uuid = request.POST['uuid']
     resource = get_object_or_404(ResourceBase, uuid=uuid)
     can_change_permissions = request.user.has_perm(
@@ -384,7 +383,7 @@ def attributes_sats_refresh(request):
 
 @require_POST
 def invalidate_tiledlayer_cache(request):
-    from .utils import set_geowebcache_invalidate_cache
+    from geonode.geoserver.security import set_geowebcache_invalidate_cache
     uuid = request.POST['uuid']
     resource = get_object_or_404(ResourceBase, uuid=uuid)
     can_change_data = request.user.has_perm(
@@ -504,7 +503,7 @@ def request_permissions(request):
         # traceback.print_exc()
         return HttpResponse(
             json.dumps({'error': _('error delivering notification')}),
-            status=403,
+            status=400,
             content_type='text/plain')
 
 

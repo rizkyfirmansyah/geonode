@@ -45,7 +45,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
 from geonode.thumbs.utils import MISSING_THUMB
-from django.core.files.storage import default_storage as storage
+from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -92,7 +92,6 @@ from geonode.people.enumerations import ROLE_VALUES
 from pyproj import transform, Proj
 
 from urllib.parse import urlparse, urlsplit, urljoin
-from geonode.storage.manager import storage_manager
 from imagekit.cachefiles.backends import Simple
 
 logger = logging.getLogger(__name__)
@@ -2213,8 +2212,8 @@ class CuratedThumbnail(models.Model):
         try:
             if not Simple()._exists(self.img_thumbnail):
                 Simple().generate(self.img_thumbnail, force=True)
-            upload_path = storage.path(self.img_thumbnail.name)
-            actual_name = os.path.basename(storage.url(upload_path))
+            upload_path = storage_manager.path(self.img_thumbnail.name)
+            actual_name = os.path.basename(storage_manager.url(upload_path))
             _upload_path = os.path.join(os.path.dirname(upload_path), actual_name)
             if not os.path.exists(_upload_path):
                 os.rename(upload_path, _upload_path)

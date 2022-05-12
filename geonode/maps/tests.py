@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -17,10 +16,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+
 import json
 import logging
-
-from mock import patch
+from uuid import uuid4
+from unittest.mock import patch
 from defusedxml import lxml as dlxml
 from django.test.utils import override_settings
 
@@ -31,8 +31,10 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from geonode.base.populate_test_data import create_single_map
+from geonode.maps.forms import MapForm
 
-from geonode.maps.models import Map
+from geonode.maps.models import Map, MapLayer
 from geonode.settings import on_travis
 from geonode.maps import MapsAppConfig
 from geonode.layers.models import Layer
@@ -85,7 +87,7 @@ class MapsTest(GeoNodeBaseTestSupport):
     """
 
     def setUp(self):
-        super(MapsTest, self).setUp()
+        super().setUp()
 
         self.user = 'admin'
         self.passwd = 'admin'
@@ -330,6 +332,20 @@ community."
         layer = Layer.objects.all().first()
         self.client.get(f"{reverse('new_map')}?layer={layer.alternate}")
 
+    def test_new_map_with_layer_view(self):
+        layer = Layer.objects.all().first()
+        # anonymous user
+        response = self.client.get(f"{reverse('new_map')}?layer={layer.alternate}&view=True")
+        self.assertIn('view_resourcebase', response.context.get('perms_list', []))
+        self.assertFalse('change_resourcebase' in response.context.get('perms_list', []))
+        # admin
+        self.client.login(username=self.user, password=self.passwd)
+        response = self.client.get(f"{reverse('new_map')}?layer={layer.alternate}&view=True")
+        self.assertIn('publish_resourcebase', response.context.get('perms_list', []))
+        # Test with invalid layer name
+        response = self.client.get(f"{reverse('new_map')}?layer=invalid_name&view=True")
+        self.assertListEqual([], response.context.get('perms_list', []))
+
     def test_new_map_with_empty_bbox_layer(self):
         layer = Layer.objects.all().first()
         self.client.get(f"{reverse('new_map')}?layer={layer.alternate}")
@@ -427,7 +443,7 @@ community."
         Test that keyword multiselect widget is disabled when the user is not an admin
         when FREETEXT_KEYWORDS_READONLY=False
         """
-        test_map = Map.objects.create(owner=self.not_admin, title='test', is_approved=True,
+        test_map = Map.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True,
                                       zoom=0, center_x=0.0, center_y=0.0)
         self.client.login(username=self.not_admin.username, password='very-secret')
         url = reverse('map_metadata', args=(test_map.pk,))
@@ -441,7 +457,7 @@ community."
         """
         Test that non admin users cannot edit/create keywords when FREETEXT_KEYWORDS_READONLY=False
         """
-        test_map = Map.objects.create(owner=self.not_admin, title='test', is_approved=True,
+        test_map = Map.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True,
                                       zoom=0, center_x=0.0, center_y=0.0)
         self.client.login(username=self.not_admin.username, password='very-secret')
         url = reverse('map_metadata', args=(test_map.pk,))
@@ -457,22 +473,30 @@ community."
         Test that non admin users can write to maps without creating/editing keywords
         when FREETEXT_KEYWORDS_READONLY=False
         """
-        test_map = Map.objects.create(owner=self.not_admin, title='test', is_approved=True,
+        test_map = Map.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True,
                                       zoom=0, center_x=0.0, center_y=0.0)
         self.client.login(username=self.not_admin.username, password='very-secret')
         url = reverse('map_metadata', args=(test_map.pk,))
 
         with self.settings(FREETEXT_KEYWORDS_READONLY=True):
-            response = self.client.post(url)
+            response = self.client.post(url, data={
+                "resource-owner": self.not_admin.id,
+                "resource-title": "doc",
+                "resource-date": "2022-01-24 16:38 pm",
+                "resource-date_type": "creation",
+                "resource-language": "eng"
+            })
             self.assertFalse(self.not_admin.is_superuser)
             self.assertEqual(response.status_code, 200)
+        test_map.refresh_from_db()
+        self.assertEqual("doc", test_map.title)
 
     def test_that_keyword_multiselect_is_enabled_for_non_admin_users_when_freetext_keywords_readonly_istrue(self):
         """
         Test that keyword multiselect widget is not disabled when the user is not an admin
         and FREETEXT_KEYWORDS_READONLY=False
         """
-        test_map = Map.objects.create(owner=self.not_admin, title='test', is_approved=True,
+        test_map = Map.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True,
                                       zoom=0, center_x=0.0, center_y=0.0)
         self.client.login(username=self.not_admin.username, password='very-secret')
         url = reverse('map_metadata', args=(test_map.pk,))
@@ -486,15 +510,24 @@ community."
         """
         Test that non admin users can edit/create keywords when FREETEXT_KEYWORDS_READONLY=False
         """
-        test_map = Map.objects.create(owner=self.not_admin, title='test', is_approved=True,
+        test_map = Map.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True,
                                       zoom=0, center_x=0.0, center_y=0.0)
         self.client.login(username=self.not_admin.username, password='very-secret')
         url = reverse('map_metadata', args=(test_map.pk,))
 
         with self.settings(FREETEXT_KEYWORDS_READONLY=False):
-            response = self.client.post(url, data={'resource-keywords': 'wonderful-keyword'})
+            response = self.client.post(url, data={
+                "resource-owner": self.not_admin.id,
+                "resource-title": "map",
+                "resource-date": "2022-01-24 16:38 pm",
+                "resource-date_type": "creation",
+                "resource-language": "eng",
+                'resource-keywords': 'wonderful-keyword'
+            })
             self.assertFalse(self.not_admin.is_superuser)
             self.assertEqual(response.status_code, 200)
+        test_map.refresh_from_db()
+        self.assertEqual("map", test_map.title)
 
     @patch('geonode.thumbs.thumbnails.create_thumbnail')
     def test_map_metadata(self, thumbnail_mock):
@@ -534,8 +567,15 @@ community."
         self.assertEqual(response.status_code, 200)
 
         # Now test with a valid user using POST method
+        user = get_user_model().objects.filter(username='admin').first()
         self.client.login(username=self.user, password=self.passwd)
-        response = self.client.post(url)
+        response = self.client.post(url, data={
+            "resource-owner": user.id,
+            "resource-title": "map_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+        })
         self.assertEqual(response.status_code, 200)
 
         # TODO: only invalid mapform is tested
@@ -961,11 +1001,20 @@ community."
             for word in resource.keywords.all():
                 self.assertTrue(word.name in keywords.split(','))
 
+    def test_get_legend(self):
+        layer = Layer.objects.all().first()
+        map_layer = MapLayer.objects.filter(name=layer.alternate).exclude(layer_params='').first()
+        if map_layer and layer.default_style:
+            self.assertIsNone(map_layer.get_legend)
+        elif map_layer:
+            # when there is no style in layer_params
+            self.assertIsNone(map_layer.get_legend)
+
 
 class MapModerationTestCase(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        super(MapModerationTestCase, self).setUp()
+        super().setUp()
 
         self.user = 'admin'
         self.passwd = 'admin'
@@ -1006,13 +1055,13 @@ class MapModerationTestCase(GeoNodeBaseTestSupport):
             map_id = int(json.loads(content)['id'])
             _l = Map.objects.get(id=map_id)
             self.assertFalse(_l.is_approved)
-            self.assertTrue(_l.is_published)
+            self.assertFalse(_l.is_published)
 
 
 class MapsNotificationsTestCase(NotificationsTestsHelper):
 
     def setUp(self):
-        super(MapsNotificationsTestCase, self).setUp()
+        super().setUp()
 
         self.user = 'admin'
         self.passwd = 'admin'
@@ -1076,3 +1125,64 @@ class MapsNotificationsTestCase(NotificationsTestsHelper):
                                 rating=5)
                 rating.save()
                 self.assertTrue(self.check_notification_out('map_rated', self.u))
+
+
+class TestMapForm(GeoNodeBaseTestSupport):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.get(username='admin')
+        self.map = create_single_map("single_map", owner=self.user)
+        self.sut = MapForm
+
+    def test_resource_form_is_invalid_extra_metadata_not_json_format(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("map_metadata", args=(self.map.id,))
+        response = self.client.post(url, data={
+            "resource-owner": self.map.owner.id,
+            "resource-title": "map_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+            "resource-extra_metadata": "not-a-json"
+        })
+        expected = {"success": False, "errors": ["extra_metadata: The value provided for the Extra metadata field is not a valid JSON"]}
+        self.assertDictEqual(expected, response.json())
+
+    @override_settings(EXTRA_METADATA_SCHEMA={"key": "value"})
+    def test_resource_form_is_invalid_extra_metadata_not_schema_in_settings(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("map_metadata", args=(self.map.id,))
+        response = self.client.post(url, data={
+            "resource-owner": self.map.owner.id,
+            "resource-title": "map_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+            "resource-extra_metadata": "[{'key': 'value'}]"
+        })
+        expected = {"success": False, "errors": ["extra_metadata: EXTRA_METADATA_SCHEMA validation schema is not available for resource map"]}
+        self.assertDictEqual(expected, response.json())
+
+    def test_resource_form_is_invalid_extra_metadata_invalids_schema_entry(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("map_metadata", args=(self.map.id,))
+        response = self.client.post(url, data={
+            "resource-owner": self.map.owner.id,
+            "resource-title": "map_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+            "resource-extra_metadata": '[{"key": "value"},{"id": "int", "filter_header": "object", "field_name": "object", "field_label": "object", "field_value": "object"}]'
+        })
+        expected = "extra_metadata: Missing keys: \'field_label\', \'field_name\', \'field_value\', \'filter_header\' at index 0 "
+        self.assertIn(expected, response.json()['errors'][0])
+
+    def test_resource_form_is_valid_extra_metadata(self):
+        form = self.sut(data={
+            "owner": self.map.owner.id,
+            "title": "map_title",
+            "date": "2022-01-24 16:38 pm",
+            "date_type": "creation",
+            "language": "eng",
+            "extra_metadata": '[{"id": 1, "filter_header": "object", "field_name": "object", "field_label": "object", "field_value": "object"}]'
+        })
+        self.assertTrue(form.is_valid())

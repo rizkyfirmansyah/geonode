@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -17,6 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+
+from uuid import uuid4
 from collections import namedtuple
 
 from django.test.client import RequestFactory
@@ -32,7 +33,7 @@ import logging
 import zipfile
 import tempfile
 
-from mock import patch
+from unittest.mock import patch
 from pinax.ratings.models import OverallRating
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -66,7 +67,7 @@ from geonode.layers.utils import (
 from geonode.people.utils import get_valid_user
 from geonode.base.populate_test_data import all_public, create_single_layer
 from geonode.base.models import TopicCategory, License, Region, Link
-from geonode.layers.forms import JSONField, LayerUploadForm
+from geonode.layers.forms import JSONField, LayerForm, LayerUploadForm
 from geonode.utils import check_ogc_backend, set_resource_default_links
 from geonode.layers import LayersAppConfig
 from geonode.tests.utils import NotificationsTestsHelper
@@ -76,7 +77,7 @@ from geonode.layers.views import _resolve_layer
 from geonode.maps.models import Map, MapLayer
 from geonode.utils import DisableDjangoSignals
 from geonode.maps.tests_populate_maplayers import maplayers as ml
-from geonode.security.utils import remove_object_permissions
+from geonode.security.utils import ResourceManager
 from geonode.base.forms import BatchPermissionsForm
 
 logger = logging.getLogger(__name__)
@@ -89,7 +90,7 @@ class LayersTest(GeoNodeBaseTestSupport):
     type = 'layer'
 
     def setUp(self):
-        super(LayersTest, self).setUp()
+        super().setUp()
         create_layer_data()
         self.user = 'admin'
         self.passwd = 'admin'
@@ -154,19 +155,19 @@ class LayersTest(GeoNodeBaseTestSupport):
 
     def test_layer_name_clash(self):
         _ll_1 = Layer.objects.create(
+            uuid=str(uuid4()),
             owner=get_user_model().objects.get(username=self.user),
             name='states',
             store='geonode_data',
             storeType="dataStore",
-            alternate="geonode:states"
-        )
+            alternate="geonode:states")
         _ll_2 = Layer.objects.create(
+            uuid=str(uuid4()),
             owner=get_user_model().objects.get(username=self.user),
             name='geonode:states',
             store='httpfooremoteservce',
             storeType="remoteStore",
-            alternate="geonode:states"
-        )
+            alternate="geonode:states")
         _ll_1.set_permissions({'users': {"bobby": ['base.view_resourcebase']}})
         _ll_2.set_permissions({'users': {"bobby": ['base.view_resourcebase']}})
         self.client.login(username="bobby", password="bob")
@@ -435,82 +436,82 @@ class LayersTest(GeoNodeBaseTestSupport):
 
     def testShapefileValidation(self):
         files = dict(
-            base_file=SimpleUploadedFile('foo.shp', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('foo.shx', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.dbf', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('foo.prj', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.shp', b' '),
+            shx_file=SimpleUploadedFile('foo.shx', b' '),
+            dbf_file=SimpleUploadedFile('foo.dbf', b' '),
+            prj_file=SimpleUploadedFile('foo.prj', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
         files = dict(
-            base_file=SimpleUploadedFile('foo.SHP', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('foo.SHX', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.DBF', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('foo.PRJ', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.SHP', b' '),
+            shx_file=SimpleUploadedFile('foo.SHX', b' '),
+            dbf_file=SimpleUploadedFile('foo.DBF', b' '),
+            prj_file=SimpleUploadedFile('foo.PRJ', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
         files = dict(
-            base_file=SimpleUploadedFile('foo.SHP', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('foo.shx', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.dbf', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.SHP', b' '),
+            shx_file=SimpleUploadedFile('foo.shx', b' '),
+            dbf_file=SimpleUploadedFile('foo.dbf', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
         files = dict(
-            base_file=SimpleUploadedFile('foo.SHP', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('foo.shx', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.dbf', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('foo.PRJ', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.SHP', b' '),
+            shx_file=SimpleUploadedFile('foo.shx', b' '),
+            dbf_file=SimpleUploadedFile('foo.dbf', b' '),
+            prj_file=SimpleUploadedFile('foo.PRJ', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
         files = dict(
-            base_file=SimpleUploadedFile('foo.SHP', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('bar.shx', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('bar.dbf', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('bar.PRJ', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.SHP', b' '),
+            shx_file=SimpleUploadedFile('bar.shx', b' '),
+            dbf_file=SimpleUploadedFile('bar.dbf', b' '),
+            prj_file=SimpleUploadedFile('bar.PRJ', b' '))
         self.assertFalse(LayerUploadForm(dict(), files).is_valid())
 
         files = dict(
-            base_file=SimpleUploadedFile('foo.shp', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.dbf', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('foo.PRJ', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.shp', b' '),
+            dbf_file=SimpleUploadedFile('foo.dbf', b' '),
+            prj_file=SimpleUploadedFile('foo.PRJ', b' '))
         self.assertFalse(LayerUploadForm(dict(), files).is_valid())
 
         files = dict(
-            base_file=SimpleUploadedFile('foo.txt', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('foo.shx', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.sld', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('foo.prj', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.txt', b' '),
+            shx_file=SimpleUploadedFile('foo.shx', b' '),
+            dbf_file=SimpleUploadedFile('foo.sld', b' '),
+            prj_file=SimpleUploadedFile('foo.prj', b' '))
         self.assertFalse(LayerUploadForm(dict(), files).is_valid())
 
     def testGeoTiffValidation(self):
-        files = dict(base_file=SimpleUploadedFile('foo.tif', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.tif', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.TIF', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.TIF', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.tiff', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.tiff', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.TIF', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.TIF', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.geotif', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.geotif', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.GEOTIF', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.GEOTIF', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.geotiff', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.geotiff', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.GEOTIF', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.GEOTIF', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
     def testASCIIValidation(self):
-        files = dict(base_file=SimpleUploadedFile('foo.asc', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.asc', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
-        files = dict(base_file=SimpleUploadedFile('foo.ASC', ' '.encode("UTF-8")))
+        files = dict(base_file=SimpleUploadedFile('foo.ASC', b' '))
         self.assertTrue(LayerUploadForm(dict(), files).is_valid())
 
     def testZipValidation(self):
@@ -529,10 +530,10 @@ class LayersTest(GeoNodeBaseTestSupport):
 
     def testWriteFiles(self):
         files = dict(
-            base_file=SimpleUploadedFile('foo.shp', ' '.encode("UTF-8")),
-            shx_file=SimpleUploadedFile('foo.shx', ' '.encode("UTF-8")),
-            dbf_file=SimpleUploadedFile('foo.dbf', ' '.encode("UTF-8")),
-            prj_file=SimpleUploadedFile('foo.prj', ' '.encode("UTF-8")))
+            base_file=SimpleUploadedFile('foo.shp', b' '),
+            shx_file=SimpleUploadedFile('foo.shx', b' '),
+            dbf_file=SimpleUploadedFile('foo.dbf', b' '),
+            prj_file=SimpleUploadedFile('foo.prj', b' '))
         form = LayerUploadForm(dict(), files)
         self.assertTrue(form.is_valid())
 
@@ -793,73 +794,89 @@ class LayersTest(GeoNodeBaseTestSupport):
         self.assertEqual(response.status_code, 200)
         self.assertFalse("#modal_perms" in content)
 
+    def test_layer_export(self):
+        """Test export layer view
+        """
+        layer = Layer.objects.all().first()
+        url = reverse('layer_export', args=(layer.alternate,))
+        response = self.client.get(url)
+        content = response.content.decode('utf-8')
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse("Export Data" in content)
+        # Now test with a logged-in user
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(url)
+        content = response.content.decode('utf-8')
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse("Export Data" in content)
+
     def test_layer_remove(self):
         """Test layer remove functionality
         """
         layer = Layer.objects.all().first()
-        # url = reverse('layer_remove', args=(layer.alternate,))
+        url = reverse('layer_remove', args=(layer.alternate,))
 
-        # # test unauthenticated
-        # response = self.client.get(url)
-        # self.assertEqual(response.status_code, 302)
+        # test unauthenticated
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
 
-        # # test a user without layer removal permission
-        # self.client.login(username='norman', password='norman')
-        # response = self.client.post(url)
-        # self.assertTrue(response.status_code in (401, 403))
-        # self.client.logout()
+        # test a user without layer removal permission
+        self.client.login(username='norman', password='norman')
+        response = self.client.post(url)
+        self.assertTrue(response.status_code in (401, 403))
+        self.client.logout()
 
-        # # Now test with a valid user
-        # self.client.login(username='admin', password='admin')
+        # Now test with a valid user
+        self.client.login(username='admin', password='admin')
 
-        # # test a method other than POST and GET
-        # response = self.client.put(url)
-        # self.assertTrue(response.status_code in (401, 403))
+        # test a method other than POST and GET
+        response = self.client.put(url)
+        self.assertTrue(response.status_code in (401, 403))
 
-        # # test the page with a valid user with layer removal permission
-        # response = self.client.get(url)
-        # self.assertEqual(response.status_code, 200)
+        # test the page with a valid user with layer removal permission
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
-        # # test the post method that actually removes the layer and redirects
-        # response = self.client.post(url)
-        # self.assertEqual(response.status_code, 302)
-        # self.assertTrue('/layers/' in response['Location'])
+        # test the post method that actually removes the layer and redirects
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue('/layers/' in response['Location'])
 
-        # # test that the layer is actually removed
-        # self.assertEqual(Layer.objects.filter(pk=layer.pk).count(), 0)
+        # test that the layer is actually removed
+        self.assertEqual(Layer.objects.filter(pk=layer.pk).count(), 0)
 
-        # # test that all styles associated to the layer are removed
-        # self.assertEqual(Style.objects.count(), 0)
+        # test that all styles associated to the layer are removed
+        self.assertEqual(Style.objects.count(), 0)
 
     def test_non_cascading(self):
         """
         Tests that deleting a layer with a shared default style will not cascade and
         delete multiple layers.
         """
-        # layer1 = Layer.objects.all().first()
-        # layer2 = Layer.objects.all()[2]
-        # url = reverse('layer_remove', args=(layer1.alternate,))
+        layer1 = Layer.objects.all().first()
+        layer2 = Layer.objects.all()[2]
+        url = reverse('layer_remove', args=(layer1.alternate,))
 
-        # layer2.default_style = layer1.default_style
-        # layer2.save()
+        layer2.default_style = layer1.default_style
+        layer2.save()
 
-        # self.assertEqual(layer1.default_style, layer2.default_style)
+        self.assertEqual(layer1.default_style, layer2.default_style)
 
-        # # Now test with a valid user
-        # self.client.login(username='admin', password='admin')
+        # Now test with a valid user
+        self.client.login(username='admin', password='admin')
 
-        # # test the post method that actually removes the layer and redirects
-        # response = self.client.post(url)
-        # self.assertEqual(response.status_code, 302)
-        # self.assertTrue('/layers/' in response['Location'])
+        # test the post method that actually removes the layer and redirects
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue('/layers/' in response['Location'])
 
-        # # test that the layer is actually removed
+        # test that the layer is actually removed
 
-        # self.assertEqual(Layer.objects.filter(pk=layer1.pk).count(), 0)
-        # self.assertEqual(Layer.objects.filter(pk=layer2.pk).count(), 1)
+        self.assertEqual(Layer.objects.filter(pk=layer1.pk).count(), 0)
+        self.assertEqual(Layer.objects.filter(pk=layer2.pk).count(), 1)
 
-        # # test that all styles associated to the layer are removed
-        # self.assertEqual(Style.objects.count(), 1)
+        # test that all styles associated to the layer are removed
+        self.assertEqual(Style.objects.count(), 1)
 
     def test_category_counts(self):
         topics = TopicCategory.objects.all()
@@ -898,11 +915,11 @@ class LayersTest(GeoNodeBaseTestSupport):
         """
         Ensure set_permissions supports the change_layer_data permission.
         """
-        layer = Layer.objects.first()
-        user = get_anonymous_user()
-        layer.set_permissions({'users': {user.username: ['change_layer_data']}})
+        layer = Layer.objects.filter(storeType='dataStore').first()
+        user = get_user_model().objects.get(username='norman')
+        layer.set_permissions({'users': {user: ['change_layer_data']}})
         perms = layer.get_all_level_info()
-        self.assertIn('change_layer_data', perms['users'][user])
+        self.assertIn('change_layer_data', perms['users'][user], perms['users'])
 
     def test_batch_edit(self):
         """
@@ -1054,7 +1071,7 @@ class LayersTest(GeoNodeBaseTestSupport):
         for resource in resources:
             perm_spec = resource.get_all_level_info()
             logger.debug(f" -- perm_spec[users] --> {perm_spec['users']}")
-            self.assertTrue(user in perm_spec["users"])
+            self.assertFalse(user in perm_spec["users"])
 
     def test_surrogate_escape_string(self):
         surrogate_escape_raw = "Zo\udcc3\udcab"
@@ -1074,7 +1091,7 @@ class UnpublishedObjectTests(GeoNodeBaseTestSupport):
     type = 'layer'
 
     def setUp(self):
-        super(UnpublishedObjectTests, self).setUp()
+        super().setUp()
         self.list_url = reverse(
             'api_dispatch_list',
             kwargs={
@@ -1141,7 +1158,7 @@ class LayerNotificationsTestCase(NotificationsTestsHelper):
     type = 'layer'
 
     def setUp(self):
-        super(LayerNotificationsTestCase, self).setUp()
+        super().setUp()
         self.user = 'admin'
         self.passwd = 'admin'
         create_layer_data()
@@ -1166,6 +1183,7 @@ class LayerNotificationsTestCase(NotificationsTestsHelper):
             self.clear_notifications_queue()
             self.client.login(username=self.user, password=self.passwd)
             _l = Layer.objects.create(
+                uuid=str(uuid4()),
                 name='test notifications',
                 bbox_polygon=Polygon.from_bbox((-180, -90, 180, 90)),
                 srid='EPSG:4326',
@@ -1211,7 +1229,7 @@ class SetLayersPermissions(GeoNodeBaseTestSupport):
     type = 'layer'
 
     def setUp(self):
-        super(SetLayersPermissions, self).setUp()
+        super().setUp()
         create_layer_data()
         self.username = 'test_username'
         self.passwd = 'test_password'
@@ -1221,8 +1239,8 @@ class SetLayersPermissions(GeoNodeBaseTestSupport):
 
     @on_ogc_backend(geoserver.BACKEND_PACKAGE)
     def test_assign_remove_permissions(self):
-        # Assing
-        layer = Layer.objects.all().first()
+        # Assign
+        layer = Layer.objects.filter(storeType='dataStore').first()
         perm_spec = layer.get_all_level_info()
         self.assertNotIn(self.user, perm_spec["users"])
         utils.set_layers_permissions("write", None, [self.user], None, None)
@@ -1276,7 +1294,7 @@ class LayersUploaderTests(GeoNodeBaseTestSupport):
     }
 
     def setUp(self):
-        super(LayersUploaderTests, self).setUp()
+        super().setUp()
         create_layer_data()
         self.user = 'admin'
         self.passwd = 'admin'
@@ -1286,12 +1304,12 @@ class LayersUploaderTests(GeoNodeBaseTestSupport):
 class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        super(TestLayerDetailMapViewRights, self).setUp()
+        super().setUp()
         create_layer_data()
         self.user = get_user_model().objects.create(username='dybala', email='dybala@gmail.com')
         self.user.set_password('very-secret')
         admin = get_user_model().objects.get(username='admin')
-        self.map = Map.objects.create(owner=admin, title='test', is_approved=True, zoom=0, center_x=0.0, center_y=0.0)
+        self.map = Map.objects.create(uuid=str(uuid4()), owner=admin, title='test', is_approved=True, zoom=0, center_x=0.0, center_y=0.0)
         self.not_admin = get_user_model().objects.create(username='r-lukaku', is_active=True)
         self.not_admin.set_password('very-secret')
         self.not_admin.save()
@@ -1316,7 +1334,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         Test that an authenticated user without permissions to view a map does not see the map under
         'Maps using this layer' in layer_detail when map is not viewable by 'anyone'
         """
-        remove_object_permissions(self.map.get_self_resource())
+        ResourceManager.remove_permissions(self.map.uuid, instance=self.map.get_self_resource())
         self.client.login(username='dybala', password='very-secret')
         response = self.client.get(reverse('layer_detail', args=(self.layer.alternate,)))
         self.assertEqual(response.context['map_layers'], [])
@@ -1325,7 +1343,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         """
         Test that keyword multiselect widget is disabled when the user is not an admin
         """
-        self.test_layer = Layer.objects.create(owner=self.not_admin, title='test', is_approved=True)
+        self.test_layer = Layer.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True)
         url = reverse('layer_metadata', args=(self.test_layer.alternate,))
 
         self.client.login(username=self.not_admin.username, password='very-secret')
@@ -1340,7 +1358,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         admin = self.not_admin
         admin.is_superuser = True
         admin.save()
-        self.test_layer = Layer.objects.create(owner=admin, title='test', is_approved=True)
+        self.test_layer = Layer.objects.create(uuid=str(uuid4()), owner=admin, title='test', is_approved=True)
         url = reverse('layer_metadata', args=(self.test_layer.alternate,))
 
         self.client.login(username=admin.username, password='very-secret')
@@ -1352,7 +1370,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         """
         Test that non admin users cannot edit/create keywords when FREETEXT_KEYWORDS_READONLY=True
         """
-        self.test_layer = Layer.objects.create(owner=self.not_admin, title='test', is_approved=True)
+        self.test_layer = Layer.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True)
         url = reverse('layer_metadata', args=(self.test_layer.alternate,))
 
         self.client.login(username=self.not_admin.username, password='very-secret')
@@ -1366,7 +1384,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         Test that keyword multiselect widget is not disabled when the user is not an admin
         and FREETEXT_KEYWORDS_READONLY=False
         """
-        self.test_layer = Layer.objects.create(owner=self.not_admin, title='test', is_approved=True)
+        self.test_layer = Layer.objects.create(uuid=str(uuid4()), owner=self.not_admin, title='test', is_approved=True)
         url = reverse('layer_metadata', args=(self.test_layer.alternate,))
 
         self.client.login(username=self.not_admin.username, password='very-secret')
@@ -1385,7 +1403,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         """
         Test that anonymous user cannot view map that are not viewable by 'anyone'
         """
-        remove_object_permissions(self.map.get_self_resource())
+        ResourceManager.remove_permissions(self.map.uuid, instance=self.map.get_self_resource())
         response = self.client.get(reverse('layer_detail', args=(self.layer.alternate,)))
         self.assertEqual(response.context['map_layers'], [])
 
@@ -1393,7 +1411,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         """
         Test only users with view permissions to a map can view them in layer detail view
         """
-        remove_object_permissions(self.map.get_self_resource())
+        ResourceManager.remove_permissions(self.map.uuid, instance=self.map.get_self_resource())
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('layer_detail', args=(self.layer.alternate,)))
         self.assertEqual(response.context['map_layers'], [self.map_layer])
@@ -1405,6 +1423,7 @@ class TestLayerDetailMapViewRights(GeoNodeBaseTestSupport):
         self.test_dataset = None
         try:
             self.test_dataset = Layer.objects.create(
+                uuid=str(uuid4()),
                 name='test',
                 alternate='geonode:test',
                 title='test,comma,2021',
@@ -1454,7 +1473,7 @@ class TestCustomUUidHandler(TestCase):
         User = get_user_model()
         self.user = User.objects.create(username='test', email='test@test.com')
         self.sut = Layer.objects.create(
-            name="testLayer", owner=self.user, title='test', is_approved=True, uuid='abc-1234-abc'
+            uuid='abc-1234-abc', name="testLayer", owner=self.user, title='test', is_approved=True
         )
 
     def test_layer_will_maintain_his_uud_if_no_handler_is_definded(self):
@@ -1930,3 +1949,64 @@ class TestIsSldUploadOnly(TestCase):
             request.FILES['base_file'] = f
         actual = is_sld_upload_only(request)
         self.assertFalse(actual)
+
+
+class TestLayerForm(GeoNodeBaseTestSupport):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.get(username='admin')
+        self.layer = create_single_layer("my_single_layer", owner=self.user)
+        self.sut = LayerForm
+
+    def test_resource_form_is_invalid_extra_metadata_not_json_format(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("layer_metadata", args=(self.layer.alternate,))
+        response = self.client.post(url, data={
+            "resource-owner": self.layer.owner.id,
+            "resource-title": "layer_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+            "resource-extra_metadata": "not-a-json"
+        })
+        expected = {"success": False, "errors": ["extra_metadata: The value provided for the Extra metadata field is not a valid JSON"]}
+        self.assertDictEqual(expected, response.json())
+
+    @override_settings(EXTRA_METADATA_SCHEMA={"key": "value"})
+    def test_resource_form_is_invalid_extra_metadata_not_schema_in_settings(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("layer_metadata", args=(self.layer.alternate,))
+        response = self.client.post(url, data={
+            "resource-owner": self.layer.owner.id,
+            "resource-title": "layer_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+            "resource-extra_metadata": "[{'key': 'value'}]"
+        })
+        expected = {"success": False, "errors": ["extra_metadata: EXTRA_METADATA_SCHEMA validation schema is not available for resource layer"]}
+        self.assertDictEqual(expected, response.json())
+
+    def test_resource_form_is_invalid_extra_metadata_invalids_schema_entry(self):
+        self.client.login(username="admin", password="admin")
+        url = reverse("layer_metadata", args=(self.layer.alternate,))
+        response = self.client.post(url, data={
+            "resource-owner": self.layer.owner.id,
+            "resource-title": "layer_title",
+            "resource-date": "2022-01-24 16:38 pm",
+            "resource-date_type": "creation",
+            "resource-language": "eng",
+            "resource-extra_metadata": '[{"key": "value"},{"id": "int", "filter_header": "object", "field_name": "object", "field_label": "object", "field_value": "object"}]'
+        })
+        expected = "extra_metadata: Missing keys: \'field_label\', \'field_name\', \'field_value\', \'filter_header\' at index 0 "
+        self.assertIn(expected, response.json()['errors'][0])
+
+    def test_resource_form_is_valid_extra_metadata(self):
+        form = self.sut(instance=self.layer, data={
+            "owner": self.layer.owner.id,
+            "title": "layer_title",
+            "date": "2022-01-24 16:38 pm",
+            "date_type": "creation",
+            "language": "eng",
+            "extra_metadata": '[{"id": 1, "filter_header": "object", "field_name": "object", "field_label": "object", "field_value": "object"}]'
+        })
+        self.assertTrue(form.is_valid())

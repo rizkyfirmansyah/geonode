@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -17,28 +16,29 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
-from geonode.base.forms import ResourceBaseForm
 import os
-import tempfile
 import zipfile
 
 from django import forms
-from django.conf import settings
 
 from geonode import geoserver
 from geonode.base.models import ResourceBase
 from geonode.utils import check_ogc_backend
 
 import json
-from geonode.utils import unzip_file
+from geonode.utils import unzip_file, mkdtemp
+from geonode.base.forms import ResourceBaseForm
 from geonode.layers.models import Layer, Attribute
 
 
 class JSONField(forms.CharField):
 
     def clean(self, text):
-        text = super(JSONField, self).clean(text)
+        text = super().clean(text)
+
+        if not self.required and (text is None or text == ''):
+            return None
+
         try:
             return json.loads(text)
         except ValueError:
@@ -57,9 +57,7 @@ class LayerForm(ResourceBaseForm):
             'styles',
             'upload_session',
             'remote_service',)
-        # widgets = {
-        #     'title': forms.TextInput({'placeholder': title_help_text})
-        # }
+
         fields = [
           'title',
           'abstract',
@@ -106,7 +104,7 @@ class LayerForm(ResourceBaseForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        super(LayerForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.fields:
             help_text = self.fields[field].help_text
             self.fields[field].help_text = None
@@ -162,7 +160,7 @@ class LayerUploadForm(forms.Form):
     spatial_files = tuple(spatial_files)
 
     def clean(self):
-        cleaned = super(LayerUploadForm, self).clean()
+        cleaned = super().clean()
         dbf_file = shx_file = prj_file = xml_file = sld_file = None
         base_name = base_ext = None
         if zipfile.is_zipfile(cleaned["base_file"]):
@@ -206,8 +204,7 @@ class LayerUploadForm(forms.Form):
         if not cleaned["metadata_upload_form"] and not cleaned["style_upload_form"] and base_ext.lower() not in (
                 ".shp", ".tif", ".tiff", ".geotif", ".geotiff", ".asc", ".sld", ".kml", ".kmz", ".csv"):
             raise forms.ValidationError(
-                "Only Shapefiles, GeoTiffs, and ASCIIs are supported. You "
-                "uploaded a %s file" % base_ext)
+                f"Only Shapefiles, GeoTiffs, and ASCIIs are supported. You uploaded a {base_ext} file")
         elif cleaned["metadata_upload_form"] and base_ext.lower() not in (".xml"):
             raise forms.ValidationError(
                 f"Only XML files are supported. You uploaded a {base_ext} file")
@@ -250,7 +247,7 @@ class LayerUploadForm(forms.Form):
 
     def write_files(self):
         absolute_base_file = None
-        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
+        tempdir = mkdtemp()
         if zipfile.is_zipfile(self.cleaned_data['base_file']):
             absolute_base_file = unzip_file(self.cleaned_data['base_file'],
                                             '.shp', tempdir=tempdir)
@@ -295,6 +292,8 @@ class NewLayerUploadForm(LayerUploadForm):
 class LayerDescriptionForm(forms.Form):
     title = forms.CharField(max_length=300, required=True)
     abstract = forms.CharField(max_length=2000, widget=forms.Textarea, required=False)
+    supplemental_information = forms.CharField(max_length=2000, widget=forms.Textarea, required=False)
+    data_quality_statement = forms.CharField(max_length=2000, widget=forms.Textarea, required=False)
     purpose = forms.CharField(max_length=500, required=False)
     keywords = forms.CharField(max_length=500, required=False)
 
@@ -302,7 +301,7 @@ class LayerDescriptionForm(forms.Form):
 class LayerAttributeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(LayerAttributeForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['attribute'].widget.attrs['readonly'] = True
         self.fields['display_order'].widget.attrs['size'] = 3
 

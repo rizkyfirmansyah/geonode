@@ -24,15 +24,14 @@
 import re
 import os
 import glob
-import shutil
 import string
 import sys
 import json
 import logging
 import tarfile
 
+from uuid import uuid4
 from datetime import datetime
-
 from osgeo import gdal, osr, ogr
 from zipfile import ZipFile, is_zipfile
 from random import choice
@@ -46,8 +45,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
-from geonode.storage.manager import storage_manager
 from django.utils.translation import ugettext as _
+from geonode.storage.manager import storage_manager
 
 # Geonode functionality
 from geonode.base.bbox_utils import BBOXHelper
@@ -105,15 +104,17 @@ def _clean_string(
 def resolve_regions(regions):
     regions_resolved = []
     regions_unresolved = []
-    if regions:
-        if len(regions) > 0:
-            for region in regions:
-                try:
+    if regions and len(regions) > 0:
+        for region in regions:
+            try:
+                if region.isnumeric():
+                    region_resolved = Region.objects.get(id=int(region))
+                else:
                     region_resolved = Region.objects.get(
                         Q(name__iexact=region) | Q(code__iexact=region))
-                    regions_resolved.append(region_resolved)
-                except ObjectDoesNotExist:
-                    regions_unresolved.append(region)
+                regions_resolved.append(region_resolved)
+            except ObjectDoesNotExist:
+                regions_unresolved.append(region)
 
     return regions_resolved, regions_unresolved
 
@@ -148,11 +149,10 @@ def get_files(filename):
         raise GeoNodeException(msg)
 
     # Let's unzip the filname in case it is a ZIP file
-    import tempfile
-    from geonode.utils import unzip_file
+    from geonode.utils import unzip_file, mkdtemp
     tempdir = None
     if is_zipfile(filename):
-        tempdir = tempfile.mkdtemp(dir=settings.STATIC_ROOT)
+        tempdir = mkdtemp()
         _filename = unzip_file(filename,
                                '.shp', tempdir=tempdir)
         if not _filename:
@@ -173,8 +173,6 @@ def get_files(filename):
     if not os.path.exists(filename):
         msg = f'Could not open {filename}. Make sure you are using a valid file'
         logger.debug(msg)
-        if tempdir is not None:
-            shutil.rmtree(tempdir, ignore_errors=True)
         raise GeoNodeException(msg)
 
     base_name, extension = os.path.splitext(filename)
@@ -190,14 +188,10 @@ def get_files(filename):
                 msg = (f'Expected helper file {base_name}.{ext} does not exist; a Shapefile '
                        'requires helper files with the following extensions: '
                        f'{list(required_extensions.keys())}')
-                if tempdir is not None:
-                    shutil.rmtree(tempdir, ignore_errors=True)
                 raise GeoNodeException(msg)
             elif len(matches) > 1:
                 msg = ('Multiple helper files for %s exist; they need to be '
                        'distinct by spelling and not just case.') % filename
-                if tempdir is not None:
-                    shutil.rmtree(tempdir, ignore_errors=True)
                 raise GeoNodeException(msg)
             else:
                 files[ext] = matches[0]
@@ -208,8 +202,6 @@ def get_files(filename):
         elif len(matches) > 1:
             msg = ('Multiple helper files for %s exist; they need to be '
                    'distinct by spelling and not just case.') % filename
-            if tempdir is not None:
-                shutil.rmtree(tempdir, ignore_errors=True)
             raise GeoNodeException(msg)
 
     elif extension.lower() in cov_exts:
@@ -227,8 +219,6 @@ def get_files(filename):
             elif len(matches) > 1:
                 msg = ('Multiple style files (sld) for %s exist; they need to be '
                        'distinct by spelling and not just case.') % filename
-                if tempdir is not None:
-                    shutil.rmtree(tempdir, ignore_errors=True)
                 raise GeoNodeException(msg)
 
     matches = glob.glob(f"{glob_name}.[xX][mM][lL]")
@@ -243,8 +233,6 @@ def get_files(filename):
     elif len(matches) > 1:
         msg = ('Multiple XML files for %s exist; they need to be '
                'distinct by spelling and not just case.') % filename
-        if tempdir is not None:
-            shutil.rmtree(tempdir, ignore_errors=True)
         raise GeoNodeException(msg)
 
     return files, tempdir
@@ -323,7 +311,7 @@ def get_default_user():
     """
     superusers = get_user_model().objects.filter(
         is_superuser=True).order_by('id')
-    if superusers.count() > 0:
+    if superusers.exists():
         # Return the first created superuser
         return superusers[0]
     else:
@@ -538,7 +526,7 @@ def file_upload(filename,
                     f, name=f'{assigned_name or valid_name}.{type_name}'))
             # save the system assigned name for the remaining files
             if not assigned_name:
-                the_file = upload_session.layerfile_set.all()[0].file.name
+                the_file = upload_session.layerfile_set.first().file.name
                 assigned_name = os.path.splitext(os.path.basename(the_file))[0]
 
     # Getting a bounding box
@@ -567,11 +555,10 @@ def file_upload(filename,
     # by default, if RESOURCE_PUBLISHING=True then layer.is_published
     # must be set to False
     if not overwrite:
-        if settings.ADMIN_MODERATE_UPLOADS:
+        if settings.ADMIN_MODERATE_UPLOADS or settings.RESOURCE_PUBLISHING:
             is_approved = False
-            defaults['is_approved'] = defaults['was_approved'] = is_approved
-        if settings.RESOURCE_PUBLISHING:
             is_published = False
+            defaults['is_approved'] = defaults['was_approved'] = is_approved
             defaults['is_published'] = defaults['was_published'] = is_published
 
     # set metadata
@@ -630,10 +617,10 @@ def file_upload(filename,
                     layer = Layer.objects.filter(name=valid_name, workspace=settings.DEFAULT_WORKSPACE).first()
                     if not layer:
                         layer = Layer.objects.create(
+                            uuid=str(uuid4()),
                             name=valid_name,
                             owner=user,
-                            workspace=settings.DEFAULT_WORKSPACE
-                        )
+                            workspace=settings.DEFAULT_WORKSPACE)
                         created = True
                 elif identifier:
                     layer = Layer.objects.filter(uuid=identifier).first()
@@ -815,7 +802,7 @@ def upload(incoming, user=None, overwrite=False,
         basename, filename = file_pair
         existing_layers = Layer.objects.filter(name=basename)
 
-        existed = existing_layers.count() > 0
+        existed = existing_layers.exists()
 
         if existed and skip:
             save_it = False
@@ -923,9 +910,7 @@ def surrogate_escape_string(input_string, source_character_set):
     return input_string.encode(source_character_set, "surrogateescape").decode("utf-8", "surrogateescape")
 
 
-def set_layers_permissions(permissions_name, resources_names=None,
-                           users_usernames=None, groups_names=None,
-                           delete_flag=None, verbose=False):
+def set_layers_permissions(permissions_name, resources_names=None, users_usernames=None, groups_names=None, delete_flag=None, verbose=False):
     # Processing information
     if not resources_names:
         # If resources is None we consider all the existing layer
@@ -981,13 +966,16 @@ def set_layers_permissions(permissions_name, resources_names=None,
                     users = []
                     if users_usernames:
                         User = get_user_model()
-                        for username in users_usernames:
+                        for _user in users_usernames:
                             try:
-                                user = User.objects.get(username=username)
+                                if isinstance(_user, str):
+                                    user = User.objects.get(username=_user)
+                                else:
+                                    user = User.objects.get(username=_user.username)
                                 users.append(user)
                             except User.DoesNotExist:
                                 logger.warning(
-                                    f'The user {username} does not exists. '
+                                    f'The user {_user} does not exists. '
                                     'It has been skipped.'
                                 )
                     # GROUPS
@@ -1150,61 +1138,68 @@ def validate_input_source(layer, filename, files, gtype=None, action_type='repla
         raise Exception(_(
             f"You are attempting to {action_type} a raster layer with a vector."))
 
-    if layer.is_vector():
+    if not layer.is_vector():
+        return True
+    absolute_base_file = None
+    try:
+        if 'shp' in files and os.path.exists(files['shp']):
+            absolute_base_file = (
+                _fixup_base_file(files['shp'])
+                if not action_type == 'replace'
+                else files['shp']
+            )
+        elif 'zip' in files and os.path.exists(files['zip']):
+            absolute_base_file = (
+                _fixup_base_file(files['zip'])
+            )
+    except Exception:
         absolute_base_file = None
+
+    if not absolute_base_file or \
+            os.path.splitext(absolute_base_file)[1].lower() != '.shp':
+        raise Exception(
+            _(f"You are attempting to {action_type} a vector layer with an unknown format."))
+    else:
         try:
-            if 'shp' in files and os.path.exists(files['shp']):
-                absolute_base_file = _fixup_base_file(files['shp'])
-            elif 'zip' in files and os.path.exists(files['zip']):
-                absolute_base_file = _fixup_base_file(files['zip'])
-        except Exception:
-            absolute_base_file = None
-
-        if not absolute_base_file or \
-                os.path.splitext(absolute_base_file)[1].lower() != '.shp':
-            raise Exception(
-                _(f"You are attempting to {action_type} a vector layer with an unknown format."))
-        else:
-            try:
-                gtype = layer.gtype if not gtype else gtype
-                inDataSource = ogr.Open(absolute_base_file)
-                lyr = inDataSource.GetLayer(str(layer.name))
-                if not lyr:
-                    raise Exception(
-                        _(f"Please ensure the name is consistent with the file you are trying to {action_type}."))
-                schema_is_compliant = False
-                _ff = json.loads(lyr.GetFeature(0).ExportToJson())
-                if gtype:
-                    logger.warning(
-                        _("Local GeoNode layer has no geometry type."))
-                    if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
-                        schema_is_compliant = True
-                elif "geometry" in _ff and _ff["geometry"]["type"]:
-                    schema_is_compliant = True
-
-                if not schema_is_compliant:
-                    raise Exception(
-                        _(f"Please ensure there is at least one geometry type \
-                            that is consistent with the file you are trying to {action_type}."))
-
-                new_schema_fields = [field.name for field in lyr.schema]
-                gs_layer = gs_catalog.get_layer(layer.name)
-
-                if not gs_layer:
-                    raise Exception(
-                        _("The selected Layer does not exists in the catalog."))
-
-                gs_layer = gs_layer.resource.attributes
-                schema_is_compliant = all([x.replace("-", '_') in gs_layer for x in new_schema_fields])
-
-                if not schema_is_compliant:
-                    raise Exception(
-                        _("Please ensure that the layer structure is consistent "
-                          f"with the file you are trying to {action_type}."))
-                return True
-            except Exception as e:
+            gtype = layer.gtype if not gtype else gtype
+            inDataSource = ogr.Open(absolute_base_file)
+            lyr = inDataSource.GetLayer(str(layer.name))
+            if not lyr:
                 raise Exception(
-                    _(f"Some error occurred while trying to access the uploaded schema: {str(e)}"))
+                    _(f"Please ensure the name is consistent with the file you are trying to {action_type}."))
+            schema_is_compliant = False
+            _ff = json.loads(lyr.GetFeature(0).ExportToJson())
+            if gtype:
+                logger.info(
+                    _("Local GeoNode layer has geometry type."))
+                if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
+                    schema_is_compliant = True
+            elif "geometry" in _ff and _ff["geometry"]["type"]:
+                schema_is_compliant = True
+
+            if not schema_is_compliant:
+                raise Exception(
+                    _(f"Please ensure that the geometry type \
+                        is consistent with the file you are trying to {action_type}."))
+
+            new_schema_fields = [field.name for field in lyr.schema]
+            gs_layer = gs_catalog.get_layer(layer.name)
+
+            if not gs_layer:
+                raise Exception(
+                    _("The selected Layer does not exists in the catalog."))
+
+            gs_layer = gs_layer.resource.attributes
+            schema_is_compliant = all([x.replace("-", '_') in gs_layer for x in new_schema_fields])
+
+            if not schema_is_compliant:
+                raise Exception(
+                    _("Please ensure that the layer structure is consistent "
+                        f"with the file you are trying to {action_type}."))
+            return True
+        except Exception as e:
+            raise Exception(
+                _(f"Some error occurred while trying to access the uploaded schema: {str(e)}"))
 
 
 def is_xml_upload_only(request):

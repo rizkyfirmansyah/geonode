@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ##############################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -38,18 +37,17 @@ urlpatterns = [
         layers_list,
         {'facet_type': 'layers', 'is_layer': True},
         name='layer_browse'),
-    url(r'^remove$',
-        views.layer_remove, name="layer_remove"),
     url(r'^upload$', views.layer_upload, name='layer_upload'),
     url(r'^upload_metadata$', views.layer_metadata_upload,
         name='layer_metadata_upload'),
     url(r'^upload_style$', views.layer_sld_upload, name='layer_sld_upload'),
-    url(r'^load_layer_data$', views.load_layer_data, name='load_layer_data'),
     url(r'^(?P<layername>[^/]*)$', views.layer_detail, name="layer_detail"),
     url(r'^(?P<layername>[^/]*)/metadata$',
         views.layer_metadata, name="layer_metadata"),
     url(r'^(?P<layername>[^/]*)/metadata_advanced$',
         views.layer_metadata_advanced, name="layer_metadata_advanced"),
+    url(r'^(?P<layername>[^/]*)/remove$',
+        views.layer_remove, name="layer_remove"),
     url(r'^(?P<granule_id>[^/]*)/(?P<layername>[^/]*)/granule_remove$', views.layer_granule_remove,
         name="layer_granule_remove"),
     url(r'^(?P<layername>[^/]*)/replace$',
@@ -67,6 +65,8 @@ urlpatterns = [
         views.layer_sld_upload, name='layer_sld_upload'),
     url(r'^(?P<layername>[^/]*)/style_edit$',
         views.layer_sld_edit, name='layer_sld_edit'),
+    url(r'^(?P<layername>[^/]*)/layer_export$',
+        views.layer_export, name='layer_export'),
     url(r'^(?P<layername>[^/]*)/feature_catalogue$',
         views.layer_feature_catalogue, name='layer_feature_catalogue'),
     url(r'^metadata/batch/$',

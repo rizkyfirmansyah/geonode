@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2020 OSGeo
@@ -21,7 +20,6 @@ import json
 import logging
 import traceback
 import warnings
-from itertools import chain
 
 from django.conf import settings
 from django.db.models import F
@@ -45,10 +43,11 @@ from geonode.monitoring.models import EventType
 from geonode.people.forms import ProfileForm
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 
-from geonode.base.models import (
-    Thesaurus,
-    TopicCategory
-)
+from geonode.base.models import ExtraMetadata, Thesaurus
+
+from geonode.security.utils import (
+    get_user_visible_groups,
+    AdvancedSecurityWorkflowManager)
 
 from geonode.utils import (
     resolve_object,
@@ -74,7 +73,7 @@ def _resolve_geoapp(request, id, permission='base.change_resourcebase',
     '''
     Resolve the GeoApp by the provided typename and check the optional permission.
     '''
-    if GeoApp.objects.filter(urlsuffix=id).count() > 0:
+    if GeoApp.objects.filter(urlsuffix=id).exists():
         key = 'urlsuffix'
     else:
         key = 'pk'
@@ -176,6 +175,11 @@ def geoapp_detail(request, geoappid, template='apps/app_detail.html'):
             'DEFAULT_MAP_CRS',
             'EPSG:3857')
     }
+
+    if request.user.is_authenticated:
+        if getattr(settings, 'FAVORITE_ENABLED', False):
+            from geonode.favorite.utils import get_favorite_info
+            context_dict["favorite_info"] = get_favorite_info(request.user, geoapp_obj)
 
     if settings.SOCIAL_ORIGINS:
         context_dict["social_links"] = build_social_links(request, geoapp_obj)
@@ -323,6 +327,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
 
     # Add metadata_author or poc if missing
     geoapp_obj.add_missing_metadata_author_or_poc()
+    current_keywords = [keyword.name for keyword in geoapp_obj.keywords.all()]
     poc = geoapp_obj.poc
     metadata_author = geoapp_obj.metadata_author
     topic_category = geoapp_obj.category.all()
@@ -397,7 +402,7 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
     if request.method == "POST" and geoapp_form.is_valid() and tkeywords_form.is_valid():
         new_poc = geoapp_form.cleaned_data['poc']
         new_author = geoapp_form.cleaned_data['metadata_author']
-        new_keywords = geoapp_form.cleaned_data['keywords']
+        new_keywords = current_keywords if request.keyword_readonly else geoapp_form.cleaned_data.pop('keywords')
         new_regions = [int(c.strip()) for c in request.POST.getlist('resource-regions')]
         new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
@@ -452,6 +457,15 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         geoapp_obj.category.clear()
         geoapp_obj.category.add(*new_categories)
         geoapp_obj.save(notify=True)
+        # clearing old metadata from the resource
+        geoapp_obj.metadata.all().delete()
+        # creating new metadata for the resource
+        for _m in json.loads(geoapp_form.cleaned_data['extra_metadata']):
+            new_m = ExtraMetadata.objects.create(
+                resource=geoapp_obj,
+                metadata=_m
+            )
+            geoapp_obj.metadata.add(new_m)
 
         register_event(request, EventType.EVENT_CHANGE_METADATA, geoapp_obj)
         if not ajax:
@@ -461,6 +475,8 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
                     args=(
                         geoapp_obj.id,
                     )))
+
+        message = geoapp_obj.id
 
         try:
             # Keywords from THESAURUS management
@@ -483,8 +499,31 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             tb = traceback.format_exc()
             logger.error(tb)
 
-        return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
-
+        vals = {}
+        _group_status_changed = False
+        _approval_status_changed = False
+        if 'group' in geoapp_form.changed_data:
+            _group_status_changed = True
+            vals['group'] = geoapp_form.cleaned_data.get('group')
+        if any([x in geoapp_form.changed_data for x in ['is_approved', 'is_published']]):
+            _approval_status_changed = True
+            vals['is_approved'] = geoapp_form.cleaned_data.get('is_approved', geoapp_obj.is_approved)
+            vals['is_published'] = geoapp_form.cleaned_data.get('is_published', geoapp_obj.is_published)
+        geoapp_obj.save(notify=True)
+        geoapp_obj.set_permissions(approval_status_changed=_approval_status_changed, group_status_changed=_group_status_changed)
+        return HttpResponse(json.dumps({'message': message}))
+    elif request.method == "POST" and (not geoapp_form.is_valid(
+    ) or not category_form.is_valid() or not tkeywords_form.is_valid()):
+        errors_list = {**geoapp_form.errors.as_data(), **category_form.errors.as_data(), **tkeywords_form.errors.as_data()}
+        logger.error(f"GeoApp Metadata form is not valid: {errors_list}")
+        out = {
+            'success': False,
+            "errors": [f"{x}: {y[0].messages[0]}" for x, y in errors_list.items()]
+        }
+        return HttpResponse(
+            json.dumps(out),
+            content_type='application/json',
+            status=400)
     # - POST Request Ends here -
 
     # Request.GET
@@ -498,36 +537,12 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
         author_form = ProfileForm(prefix="author")
         author_form.hidden = True
 
-    metadata_author_groups = []
-    if request.user.is_superuser or request.user.is_staff:
-        metadata_author_groups = GroupProfile.objects.all()
-    else:
-        try:
-            all_metadata_author_groups = chain(
-                request.user.group_list_all(),
-                GroupProfile.objects.exclude(
-                    access="private").exclude(access="public-invite"))
-        except Exception:
-            all_metadata_author_groups = GroupProfile.objects.exclude(
-                access="private").exclude(access="public-invite")
-        [metadata_author_groups.append(item) for item in all_metadata_author_groups
-            if item not in metadata_author_groups]
+    metadata_author_groups = get_user_visible_groups(request.user)
 
-    if settings.ADMIN_MODERATE_UPLOADS:
-        if not request.user.is_superuser:
-            can_change_metadata = request.user.has_perm(
-                'change_resourcebase_metadata',
-                geoapp_obj.get_self_resource())
-            try:
-                is_manager = request.user.groupmember_set.all().filter(role='manager').exists()
-            except Exception:
-                is_manager = False
-            if not is_manager or not can_change_metadata:
-                if settings.RESOURCE_PUBLISHING:
-                    geoapp_form.fields['is_published'].widget.attrs.update(
-                        {'disabled': 'true'})
-                geoapp_form.fields['is_approved'].widget.attrs.update(
-                    {'disabled': 'true'})
+    if not AdvancedSecurityWorkflowManager.is_allowed_to_publish(request.user, geoapp_obj):
+        geoapp_form.fields['is_published'].widget.attrs.update({'disabled': 'true'})
+    if not AdvancedSecurityWorkflowManager.is_allowed_to_approve(request.user, geoapp_obj):
+        geoapp_form.fields['is_approved'].widget.attrs.update({'disabled': 'true'})
 
     register_event(request, EventType.EVENT_VIEW_METADATA, geoapp_obj)
     return render(request, template, context={
