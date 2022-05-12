@@ -205,10 +205,11 @@
     {% if resource.restriction_code_type or resource.constraints_other %}
     <dt>{% trans "Restrictions" %}</dt>
     <dd>{% if resource.constraints_other %}
-            {{ resource.constraints_other|safe|escape }}
+            {{ resource.constraints_other }}
         {% else %}
-            {{ resource.restriction_code_type|safe|escape }}
-        {% endif %}</dd>
+            {{ resource.restriction_code_type|safe }}
+        {% endif %}
+    </dd>
     {% endif %}
 
     {% if resource.edition %}

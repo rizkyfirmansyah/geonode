@@ -68,7 +68,7 @@
       {% include "_actions.html" %}
     </div>
 
-    <div class="tab-content">
+    <div class="tab-content bg-light">
       <article id="info" class="tab-pane{% if tab == 'info' or not tab %} active{% endif %}">
         {% include "base/resourcebase_info_panel.html" %}
 
@@ -339,7 +339,7 @@
                   <li><a class="btn btn-info btn-block" href="#download_tab2" data-toggle="tab">{% trans "Data" %}</a></li>
                   {% endif %}
                 </ul>
-                <div class="tab-content">
+                <div class="tab-content bg-light">
                   {% if links %}
                   <div class="tab-pane active" id="download_tab1">
                     <li class="active">
