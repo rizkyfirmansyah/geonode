@@ -53,7 +53,8 @@
         "tinymce": "5.9.2",
         "underscore": "^1.13.2",
         "zeroclipboard": "^2.3.0",
-        "pdfjs-dist": "2.13.216"
+        "pdfjs-dist": "2.13.216",
+        "perfect-scrollbar": "1.5.5"
     },
     "devDependencies": {
         "@babel/core": "^7.8.6",

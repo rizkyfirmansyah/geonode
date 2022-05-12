@@ -63,9 +63,9 @@ def create_document_thumbnail(self, object_id):
             from shutil import copyfile
             copyfile(
                 document.doc_file.path,
-                storage.path(document.doc_file.name)
+                storage_manager.path(document.doc_file.name)
             )
-        image_file = storage.open(document.doc_file.name, 'rb')
+        image_file = storage_manager.open(document.doc_file.name, 'rb')
     elif document.is_video or document.is_audio:
         image_file = open(document.find_placeholder(), 'rb')
     elif document.is_file:

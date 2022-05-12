@@ -1,51 +1,60 @@
 {% load i18n %}
 
-<div class="wrapper border-top" ng-controller="CartList">
-  <div id="sidebar" class="w-100">
-
-      {% if user.is_authenticated %}
-        <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Bulk Selection" %}'
-          emptyString="{% trans "No list items selected. Use the + button to add." %}">
-        </resource-cart>
-
-        {% block bulk_perms_button %}
-          <div class="" role="group" aria-label="tools" ng-if="cart.getCart().items.length">
-            <div class="btn-group btn-search-content" role="group">
-              <button type="button" class="btn btn-upload" ng-disabled="!cart.getCart().items.length" data-toggle="modal"
-                data-target="#_bulk_permissions">{% trans "Set permissions" %}</button>
+<div class="wrapper app-sidebar border-top" ng-controller="CartList">
+  <div class="scrollbar-sidebar" id="ps_sidebar" data-mdb-perfect-scrollbar='true'>
+    <div id="sidebar" class="bg-white">
+        {% if user.is_authenticated %}
+          <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Bulk Selection" %}'
+            emptyString="{% trans "No list items selected. Use the + button to add." %}">
+          </resource-cart>
+          {% block bulk_perms_button %}
+            <div class="" role="group" aria-label="tools" ng-if="cart.getCart().items.length">
+              <div class="btn-group btn-search-content" role="group">
+                <button type="button" class="btn btn-upload" ng-disabled="!cart.getCart().items.length" data-toggle="modal"
+                  data-target="#_bulk_permissions">{% trans "Set permissions" %}</button>
+              </div>
+              <div class="btn-group btn-search-content" role="group">
+                <button type="button" class="btn btn-primary" ng-disabled="!cart.getCart().items.length || (cart.getCart().items[0].resource_type != document)"
+                  ng-click="newMap()">{% trans "Create a Map" %}</button>
+              </div>
             </div>
-            <div class="btn-group btn-search-content" role="group">
-              <button type="button" class="btn btn-primary" ng-disabled="!cart.getCart().items.length || (cart.getCart().items[0].resource_type != document)"
-                ng-click="newMap()">{% trans "Create a Map" %}</button>
-            </div>
-          </div>
-        {% endblock bulk_perms_button %}
-      {% endif %}
-
-      <div class="row justify-content-between mb-2 pt-2">
-        <div class="col-4 ml-2">{% trans "Filters" %}</div>
-        <a href="." id="clear-search" class="col-4 text-center">{% trans "Clear" %}</a>
-      </div>
-      {% comment %} {% if SEARCH_FILTERS.TEXT_ENABLED %}
-      {% include "search/_text_filter.html" %}
-      {% endif  %} {% endcomment %}
-      <div id="">
-        {% block search_facet_lists %}
-        {% if SEARCH_FILTERS.H_KEYWORDS_ENABLED %}
-        {% include "search/_h_keywords_filter.html" %}
+          {% endblock bulk_perms_button %}
         {% endif %}
-        {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
-        {% include "search/_keywords_filter.html" %}
-        {% endif %}
-        {% include "search/_datatype_filter.html" %}
-        {% if SEARCH_FILTERS.T_KEYWORDS_ENABLED %}
-        {% include "search/_t_keywords_filter.html" %}
-        {% endif %}
-        {% if SEARCH_FILTERS.TYPE_ENABLED and include_type_filter == 'true' %}
-        {% include "search/_type_filters.html" %}
-        {% endif %}
-        {% include "search/_general_filters.html" %}
-        {% endblock search_facet_lists %}
-      </div>
+        <div class="row justify-content-between mb-2 pt-2">
+          <div class="col-4 ml-2">{% trans "Filters" %}</div>
+          <a href="." id="clear-search" class="col-4 text-center">{% trans "Clear" %}</a>
+        </div>
+        {% comment %} {% if SEARCH_FILTERS.TEXT_ENABLED %}
+        {% include "search/_text_filter.html" %}
+        {% endif  %} {% endcomment %}
+        <div id="">
+          {% block search_facet_lists %}
+          {% if SEARCH_FILTERS.H_KEYWORDS_ENABLED %}
+          {% include "search/_h_keywords_filter.html" %}
+          {% endif %}
+          {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
+          {% include "search/_keywords_filter.html" %}
+          {% endif %}
+          {% include "search/_datatype_filter.html" %}
+          {% if SEARCH_FILTERS.T_KEYWORDS_ENABLED %}
+          {% include "search/_t_keywords_filter.html" %}
+          {% endif %}
+          {% if SEARCH_FILTERS.TYPE_ENABLED and include_type_filter == 'true' %}
+          {% include "search/_type_filters.html" %}
+          {% endif %}
+          {% include "search/_general_filters.html" %}
+          {% endblock search_facet_lists %}
+        </div>
+    </div>
   </div>
 </div>
+
+{% block extra_script %}
+<script>
+const ps = new PerfectScrollbar("#ps_sidebar", {
+    wheelSpeed: 1,
+    wheelPropagation: true,
+    minScrollbarLength: 20
+});
+</script>
+{% endblock extra_script %}

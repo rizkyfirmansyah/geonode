@@ -378,7 +378,7 @@
             {% include "_announcements.html" %}
             {% include "_messages.html" %}
             {% block body %}{% endblock body %}
-            <div class="row">
+            <div class="row d-flex" id="body_inner">
               {% block body_inner %}{% endblock body_inner %}
               {% block body_sidebar %}{% endblock body_sidebar %}
             </div>

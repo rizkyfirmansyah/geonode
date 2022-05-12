@@ -430,8 +430,8 @@ class ResourceBaseForm(TranslationModelForm):
                         'data-on': choices[0][1],
                         'data-off': choices[1][1],
                         'value': choices[0][0],
-                        'data-onstyle': 'primary',
-                        'data-offstyle': 'info'})
+                        'data-onstyle': 'info',
+                        'data-offstyle': 'primary'})
 
     def disable_keywords_widget_for_non_superuser(self, user):
         if settings.FREETEXT_KEYWORDS_READONLY and not user.is_superuser:

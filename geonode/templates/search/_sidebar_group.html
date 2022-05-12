@@ -1,23 +1,35 @@
 {% load i18n %}
 
-<div class="wrapper border-top">
-  <div id="sidebarGroup" class="w-100">
-    <nav class="filter">
-      <a href="#group-categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Group
-        Categories</a>
-      <ul class="collapse list-unstyled" id="group-categories">
-        {% verbatim %}
-        <li ng-repeat="category in groupCategories">
-          <a data-value="{{ category.slug }}" data-filter="categories__slug__in"
-            ng-click="multiple_choice_listener($event)" class="{{category.active}}">
-            <div ng-if="category.fa_class" class="fa-stack fa-1g">
-              <i class="fa fa-{{category.fa_class}} fa-stack-1x"></i>
-            </div>{{ category.name | limitTo: 25 }}{{ category.name.length > 25 ? '...' : ''}}
-            <span class="badge float-right">{{ category.member_count }}</span>
-          </a>
-        </li>
-        {% endverbatim %}
-      </ul>
-    </nav>
+<div class="wrapper app-sidebar border-top">
+  <div class="scrollbar-sidebar" id="ps_sidebarGroup" data-mdb-perfect-scrollbar='true'>
+    {% verbatim %}
+    <div id="sidebarGroup" class="bg-white" ng-repeat="category in groupCategories">
+      <nav class="filter">
+        <a href="#group-categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Group
+          Categories</a>
+        <ul class="collapse list-unstyled" id="group-categories">
+          <li>
+            <a data-value="{{ category.slug }}" data-filter="categories__slug__in"
+              ng-click="multiple_choice_listener($event)" class="{{category.active}}">
+              <div ng-if="category.fa_class" class="fa-stack fa-1g">
+                <i class="fa fa-{{category.fa_class}} fa-stack-1x"></i>
+              </div>{{ category.name | limitTo: 25 }}{{ category.name.length > 25 ? '...' : ''}}
+              <span class="badge float-right">{{ category.member_count }}</span>
+            </a>
+          </li>
+          {% endverbatim %}
+        </ul>
+      </nav>
+    </div>
   </div>
 </div>
+
+{% block extra_script %}
+<script>
+const ps = new PerfectScrollbar("#ps_sidebarGroup", {
+    wheelSpeed: 1,
+    wheelPropagation: true,
+    minScrollbarLength: 20
+});
+</script>
+{% endblock extra_script %}

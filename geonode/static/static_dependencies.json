@@ -14,7 +14,7 @@
         "patternfly-bootstrap-treeview/dist/bootstrap-treeview.css",
         "cropperjs/dist/cropper.css",
         "@yaireo/tagify/dist/tagify.css",
-        "pdfjs-dist/web/pdf_viewer.css"
+        "perfect-scrollbar/css/perfect-scrollbar.css"
     ],
     "openlayers.plugins.min.css": [
         "openlayers/dist/ol.css"
@@ -77,7 +77,8 @@
         "cropperjs/dist/cropper.js",
         "@yaireo/tagify/dist/tagify.min.js",
 
-        "tinymce/tinymce.min.js"
+        "tinymce/tinymce.min.js",
+        "perfect-scrollbar/dist/perfect-scrollbar.min.js"
     ],
     "openlayers-plugins.min.js": [
         "openlayers/dist/ol.js"
