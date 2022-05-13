@@ -5,11 +5,9 @@
   <div class="col-md-12 m-0 p-0 float-right groupsList">
         {% include 'search/_group_snippet.html' %}
   </div>
-    {% elif facet_type == 'groupcategories' %}
-  <div class="row">
-    <div class="col-md-12 mt-2 p-0"></div>
-        {% include 'search/_groupcategory_snippet.html' %}
-    </div>
+  {% elif facet_type == 'groupcategories' %}
+  <div class="clearfix">
+      {% include 'search/_groupcategory_snippet.html' %}
   </div>
     {% elif facet_type == 'people' %}
   <div class="row">

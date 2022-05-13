@@ -1,6 +1,6 @@
 {% load i18n %}
 {% verbatim %}
-<div class="row row-cols-3 ml-1 mr-1">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
   <article ng-repeat="group in results" ng-cloak class="ng-cloak">
       <div class="card">
           <a ng-if="group.group_profile.logo_url != ''" href="{{ group.detail_url }}"><img

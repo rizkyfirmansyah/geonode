@@ -64,7 +64,9 @@
       {% if is_manager %}
       <li class="list-group-item border-0"><a href="{% url "group_update" object.slug %}" class="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
       <li class="list-group-item border-0"><a href="{% url "group_members" object.slug %}" class="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
-      <li class="list-group-item border-0"><a href="{% url "group_remove" object.slug %}" class="btn_wrapper">{% trans "Delete this Group" %}</a></li>
+      {% comment %} <li class="list-group-item border-0"><a href="{% url "group_remove" object.slug %}" class="btn_wrapper">{% trans "Delete this Group" %}</a></li> {% endcomment %}
+      <li class="list-group-item border-0"><a data-toggle="modal" data-target="#remove_group_modal" class="btn_wrapper" data-id="{{ object.title|default:object.slug }}">{% trans "Delete this Group" %}</a></li>
+
       {% endif %}
       {% if can_view %}
       <li class="list-group-item border-0"><a href="{% url "group_activity" object.slug %}" class="btn_wrapper">{% trans "Group Activities" %}</a></li>
@@ -77,7 +79,7 @@
           {% endblocktrans %}
           {% if object.access == "public" %}
             {% trans "Anyone may join this group." %}
-            <form class="uniForm" method="POST" action="{% url "group_join" object.slug %}">
+            <form method="POST" action="{% url "group_join" object.slug %}">
               {% csrf_token %}
               {% if not is_member %}
               <input type="submit" class="btn btn-primary btn-md btn-block" value="{% trans "Join Group" %}" />
@@ -109,6 +111,9 @@
     </div>
   </div>
 </div>
+
+{% include "modal/remove_group.html" %}
+
 {% endblock %}
 
 
