@@ -41,10 +41,12 @@ from geonode.groups.models import GroupProfile
 from geonode.notifications_helper import send_notification
 
 from geonode.datasets.models import Roda
+from geonode.views import toast_message, toast_server_error, toast_unauthorized
 from user_messages.models import Message, Thread
 
 logger = logging.getLogger(__name__)
 
+_PERMISSION_MSG_MODIFY = _("You are not allowed to change permissions for this resource")
 
 def _perms_info(obj):
     info = obj.get_all_level_info()
@@ -63,7 +65,7 @@ def resource_permisions_handle_get(request, resource):
     return HttpResponse(
         json.dumps({'success': True, 'permissions': permission_spec}),
         status=200,
-        content_type='text/plain'
+        content_type='application/json'
     )
 
 
@@ -110,6 +112,7 @@ def resource_permissions_handle_post(request, resource):
 
 
 def resource_permissions(request, resource_id):
+    toast_title = "Resource Permissions"
     try:
         resource = resolve_object(
             request, ResourceBase, {
@@ -117,10 +120,7 @@ def resource_permissions(request, resource_id):
     except PermissionDenied:
         # traceback.print_exc()
         # we are handling this in a non-standard way
-        return HttpResponse(
-            _('You are not allowed to change permissions for this resource'),
-            status=401,
-            content_type='text/plain')
+        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_MODIFY)
 
     if request.method == 'POST':
         return resource_permissions_handle_post(request, resource)
@@ -134,25 +134,20 @@ def resource_permissions(request, resource_id):
 
 
 def resource_geolimits(request, resource_id):
+    toast_title = _("Resource Geolimits")
     try:
         resource = resolve_object(
             request, ResourceBase, {
                 'id': resource_id}, 'base.change_resourcebase_permissions')
     except PermissionDenied:
-        return HttpResponse(
-            'You are not allowed to change permissions for this resource',
-            status=401,
-            content_type='text/plain')
+        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_MODIFY)
 
     can_change_permissions = request.user.has_perm(
         'change_resourcebase_permissions',
         resource)
 
     if not can_change_permissions:
-        return HttpResponse(
-            'You are not allowed to change permissions for this resource',
-            status=401,
-            content_type='text/plain')
+        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_MODIFY)
 
     user_id = request.GET.get('user_id', None)
     group_id = request.GET.get('group_id', None)
@@ -452,6 +447,7 @@ def request_permissions(request):
     """
     uuid = request.POST['uuid']
     resource = get_object_or_404(ResourceBase, uuid=uuid)
+    toast_title = _("Request Permission")
     try:
 
         resource_owner = resource.owner
@@ -484,27 +480,22 @@ def request_permissions(request):
                 thread=thread,
                 content=message
             )
-        except Exception:
-            return HttpResponse(
-                json.dumps({'error': _('Permission to download the resource could not be requested to resource owner because of an error.')}),
-                status=500,
-                content_type='text/plain')
+            logger.debug("Record request download resources...")
+            send_notification([resource.owner],
+                              'request_download_resourcebase',
+                              {'resource': resource, 'from_user': request.user})
+            
+            _toast_message = _("We have sent an email to the resource owner about your request.")
+            return toast_message(request, toast_title, _toast_message)
 
-        logger.debug("Record request download resources...")
-        send_notification([resource.owner],
-                          'request_download_resourcebase',
-                          {'resource': resource, 'from_user': request.user})
-        return HttpResponse(
-            json.dumps({'success': 'ok', }),
-            status=200,
-            content_type='text/plain')
+        except Exception:
+            _toast_message = _('Permission to download the resource could not be requested to resource owner because of an error.')
+            return toast_unauthorized(request, toast_title, _toast_message)
+
 
     except Exception:
         # traceback.print_exc()
-        return HttpResponse(
-            json.dumps({'error': _('error delivering notification')}),
-            status=400,
-            content_type='text/plain')
+        return toast_server_error(request, toast_title)
 
 
 def send_email_consumer(layer_uuid, user_id):

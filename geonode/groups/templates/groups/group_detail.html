@@ -91,6 +91,9 @@
             {% trans "Membership is by invitation only." %}
           {% endif %} {% endif %} {% endif %}
         </p>
+        {% if object.access == "public-invite" %}
+        <li class="list-group-item border-0 pt-0"><a href="{% url "group_members" object.slug %}" class="btn-save btn_wrapper">{% trans "Request Join" %}</a></li>
+        {% endif %}
       </li>
       <li class="list-group-item border-0">
         <h4>{% trans "Managers" %}</h4>

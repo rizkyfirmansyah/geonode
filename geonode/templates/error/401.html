@@ -7,11 +7,11 @@
   <div class="row">
     <div class="col-md-12">
       <div class="">
-          <img src="{% static 'geonode/img/403.png' %}"  class='stretch' alt=''>
+          <img src="{% static 'geonode/img/403.png' %}" class='stretch' alt=''>
       </div>
       <div class="col-md-12">
         <h1 class="text-center">Ewwwww...</h1>
-        <p class="font-lg-2 text-center">I want to look your restricted nerves! <br> Okay, caution. There is a dangerous smell, people. Hold on. What is this?</p>
+        <p class="font-lg-2 text-center">I want to look your restricted nerves! <br> Okay, caution. There is a bad authentication. Hold on. What is this?</p>
         <p class="font-lg-2 text-center">
           {% if not request.user.is_anonymous %}
             {% if message %}
@@ -19,7 +19,7 @@
               <br/>
               {% blocktrans %}Please <span class='text-danger'>ask permission</span> to the resource owner.{% endblocktrans %}
             {% else %}
-              {% blocktrans %}Please login or register and retry.{% endblocktrans %}
+              {% blocktrans %}You're not authorized to perform the requested operation on the given resource. Who are you?.{% endblocktrans %}
             {% endif %}
           {% endif %}
         </p>

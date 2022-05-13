@@ -3,21 +3,17 @@
 {% load base_tags %}
 {% block extra_script %}
     <script type="text/javascript">
-      $(document).ready(function(){let e=Cookies.get("csrftoken");
+      $(document).ready(function(){;
         $("#feedback-form").submit(function(t){
           return t.preventDefault(),
           $.ajax({
-            data:$(this).serialize(),type:$(this).attr("method"),method:"POST",
+            data:$(this).serialize(),type:$(this).attr("method"),method:"POST",headers:{"X-CSRFToken":'{{csrf_token}}'},
             {% comment %} url:"{% url 'feedback' %}", {% endcomment %}
             headers:{"X-CSRFToken":e},
             error:function(e,t,o){
               let r=JSON.parse(e.responseText).form.fields.password1.errors[0];
               console.log(r)
-              $(document.body).append(`{% with toast_title="Sorry, we can't reset your password" %}
-                  {% with toast_message='Please ask your administrator for this cause.' %}
-                    {% include "toast/_toast.html" %}
-                  {% endwith %}
-                {% endwith %}`);
+              $(document.body).append(data);
               $('.toast').toast('show')
             }}).done(function(){setInterval("location.reload()",1e3)}),!1})});</script>
 {% endblock extra_script %}

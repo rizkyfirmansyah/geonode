@@ -3,13 +3,12 @@
 {% load base_tags %}
 {% load avatar_tags %}
 {% block extra_script %}
-    <script src="{% static "geonode/js/base/js.cookie.min.js" %}"></script><script type="text/javascript">
+    <script type="text/javascript">
       $(document).ready(function(){
-        let t=Cookies.get("csrftoken");
         $("#logged-out").click(function(e){
           return e.preventDefault(),
           $.ajax({
-            data:$(this).serialize(),type:$(this).attr("method"),method:"POST",url:'{% url "account_logout" %}',headers:{"X-CSRFToken":t},
+            data:$(this).serialize(),type:$(this).attr("method"),method:"POST",url:'{% url "account_logout" %}',headers:{"X-CSRFToken":'{{csrf_token}}'},
             error:function(t,e,o){console.log(o)}
           }).done(function(){setInterval(window.location.href = '{{ SITEURL }}',1e3)}),!1})});
     </script>

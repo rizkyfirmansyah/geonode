@@ -39,6 +39,7 @@ urlpatterns = [  # 'geonode.groups.views',
         views.group_category_detail, name="group_category_detail"),
     url(r'^categories/(?P<slug>[-\w]+)/update/$', views.group_category_update,
         name="group_category_update"),
+    url(r'^categories/remove/(?P<slug>[-\w]+)/$', views.group_category_remove, name="group_category_remove"),
 
     url(r'^create/$', views.group_create, name="group_create"),
     url(r'^group/(?P<slug>[-\w]+)/$',

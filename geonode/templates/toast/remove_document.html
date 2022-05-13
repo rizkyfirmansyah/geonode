@@ -2,18 +2,18 @@
 {% load static %}
 {% load document_tags %}
 {% block extra_script %}
-    <script type="text/javascript">$(document).ready(function(){
-      let e=Cookies.get("csrftoken");
+<script type="text/javascript">
+  $(document).ready(function(){
+
       $("#remove_document").submit(function(t){
         return t.preventDefault(),
         $.ajax({
-          data:{docid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "document_remove" %}',headers:{"X-CSRFToken":e},
-          success:function(e){
-            $(document.body).append(`{% with toast_title='Delete Datasets' %}
-              {% with toast_message=resource.title|add:' has been deleted.' %}
-                  {% include "toast/_toast.html" %}
-                {% endwith %}
-              {% endwith %}`);
+          data:{docid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "document_remove" %}',headers:{"X-CSRFToken":'{{csrf_token}}'},
+          success:function(data){
+            $(document.body).append(data);
             $('.toast').toast('show')
-        }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})});</script>
+        }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})
+
+  });
+</script>
 {% endblock extra_script %}

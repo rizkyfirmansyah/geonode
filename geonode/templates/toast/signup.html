@@ -4,7 +4,7 @@
 {% block extra_script %}
     <script type="text/javascript">
       $(document).ready(function(){
-        let t=Cookies.get("csrftoken");
+
         $("#signup_form").submit(function(s){
           const e=$(this).serialize(),o=Object.assign(...e.split("&").map(t=>t.split("=")).map(([t,s])=>({[t]:s}))),r=o["h-captcha-response"],a=o["g-recaptcha-response"];
           if(void 0===a||""==a)
@@ -14,14 +14,14 @@
               success:function(t){
                 $(document.body).append(`{% with toast_title='Captcha Response' %}
                     {% with toast_message='Your captcha is valid. You can proceed to login.' %}
-                      {% include "toast/_toast.html" %}
+                      {% include "toast/_auth_toast.html" %}
                     {% endwith %}
                   {% endwith %}`);
                 $('.toast').toast('show')
               },error:function(t,s,e){
                 $(document.body).append(`{% with toast_title='Captcha Response' %}
                     {% with toast_message='Your captcha is invalid. Please try again.' %}
-                      {% include "toast/_toast.html" %}
+                      {% include "toast/_auth_toast.html" %}
                     {% endwith %}
                   {% endwith %}`);
                 $('.toast').toast('show')
@@ -30,11 +30,11 @@
             $.ajax({
               data:e,type:$(this).attr("method"),
               url:'{% url "account_signup" %}',
-              headers:{"X-CSRFToken":t},
+              headers:{"X-CSRFToken":'{{csrf_token}}'},
               success:function(t){
                 $(document.body).append(`{% with toast_title='Sign up Successful' %}
                     {% with toast_message="We'll notify the admin first to aprrove your request. Once granted, you can access this site." %}
-                      {% include "toast/_toast.html" %}
+                      {% include "toast/_auth_toast.html" %}
                     {% endwith %}
                   {% endwith %}`);
                 $('.toast').toast('show')
@@ -46,7 +46,7 @@
                 console.log(n);
                 $(document.body).append(`{% with toast_title='Password missmatch' %}
                     {% with toast_message="Please ensure your password confirmation exactly the same. Set your password more than 6 characters." %}
-                      {% include "toast/_toast.html" %}
+                      {% include "toast/_auth_toast.html" %}
                     {% endwith %}
                   {% endwith %}`);
                 $('.toast').toast('show')

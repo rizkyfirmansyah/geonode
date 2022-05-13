@@ -50,6 +50,8 @@ class GroupCategory(models.Model):
     slug = models.SlugField(max_length=255, unique=True, null=False, blank=False)
     name = models.CharField(_("Name"), max_length=255, unique=True, null=False, blank=False)
     description = models.TextField(_("Description"), null=True, default=None, blank=True)
+    # created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    # last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = _('Group Categories')

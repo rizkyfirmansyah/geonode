@@ -35,6 +35,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from geonode.utils import resolve_object
 from geonode.catalogue import get_catalogue
 from geonode.base.models import ResourceBase
+from geonode.views import unauthorized_message
 
 logger = logging.getLogger(__name__)
 
@@ -60,13 +61,8 @@ def prefix_xsl_line(req, id):
         if record:
             logger.debug(record.xml)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
+        unauthorized_message(req, "You are not allowed to view this resource.")
 
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(req, _template, context=out)
     except Exception:
         logger.debug(traceback.format_exc())
         msg = f'Could not connect to catalogue to save information for layer "{str(resource)}"'

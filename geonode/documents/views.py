@@ -22,10 +22,11 @@ import logging
 import traceback
 from itertools import chain
 import warnings
+from geonode.views import page_not_found_message, toast_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -64,10 +65,9 @@ ALLOWED_DOC_TYPES = settings.ALLOWED_DOCUMENT_TYPES
 
 _PERMISSION_MSG_DELETE = _("You are not permitted to delete this document")
 _PERMISSION_MSG_GENERIC = _("You do not have permissions for this document.")
-_PERMISSION_MSG_MODIFY = _("You are not permitted to modify this document")
-_PERMISSION_MSG_METADATA = _(
-    "You are not permitted to modify this document's metadata")
-_PERMISSION_MSG_VIEW = _("You are not permitted to view this document")
+_PERMISSION_MSG_MODIFY = _("You are not permitted to modify this document.")
+_PERMISSION_MSG_METADATA = _("You are not permitted to modify this document's metadata.")
+_PERMISSION_MSG_VIEW = _("You are not permitted to view this document.")
 
 
 def _resolve_document(request, docid, permission='base.change_resourcebase',
@@ -90,31 +90,13 @@ def document_detail(request, docid):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        message = f'{_("You are not permitted to view this Dataset")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not document:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     permission_manager = ManageResourceOwnerPermissions(document)
     permission_manager.set_owner_permissions_according_to_workflow()
@@ -353,31 +335,13 @@ def document_metadata(
             'base.change_resourcebase_metadata',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(_PERMISSION_MSG_VIEW)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not document:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     # Add metadata_author or poc if missing
     document.add_missing_metadata_author_or_poc()
@@ -634,19 +598,13 @@ def document_remove(request):
             _PERMISSION_MSG_DELETE)
         logger.debug(f'Deleting Document {document}')
         document.delete()
-        out = {'success': True}
-        out['status_code'] = 200
 
+        message = _("Document: {} has been deleted".format(document.title))
         register_event(request, EventType.EVENT_REMOVE, document)
+        return toast_message(request, document.title, message)
 
     except PermissionDenied:
-        message = f'{_("You are not allowed to remove this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(_PERMISSION_MSG_DELETE)
 
     except Exception:
         traceback.print_exc()
@@ -660,8 +618,6 @@ def document_remove(request):
 
         return render(request, _template, context=out)
 
-    return render(request, 'documents/document_list.html')
-
 
 def document_metadata_detail(
         request,
@@ -674,31 +630,13 @@ def document_metadata_detail(
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(_PERMISSION_MSG_VIEW)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not document:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     group = None
     if document.group:

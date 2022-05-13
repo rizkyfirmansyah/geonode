@@ -2,7 +2,7 @@
 {% load static %}
 {% load base_tags %}
 {% block extra_script %}
-    <script type="text/javascript">
+<script type="text/javascript">
       $(document).ready(function(){
         function loadSelectItems(select, items) {
             var options = '';
@@ -13,33 +13,18 @@
             select.append(options);
             select.selectpicker('refresh');
         }
-          let e=Cookies.get("csrftoken");
+
           $("#request-download-layer").submit(function(t){
             t.preventDefault();let r=$(this).serialize();
             return r+="&uuid={{resource.uuid}}",r+="&resource_title={{resource.title}}",r+="&absolute_url="+$(location).attr("href"),
-            $.ajax({data:r,type:$(this).attr("method"),method:"POST",url:"{% url 'request_permissions' %}",headers:{"X-CSRFToken":e},
-              success:function(e){
-                $(document.body).append(`{% with toast_title='Request Download' %}
-                    {% with toast_message='We have sent an email to the resource owner on your request.' %}
-                      {% include "toast/_toast.html" %}
-                    {% endwith %}
-                  {% endwith %}`);
+            $.ajax({data:r,type:$(this).attr("method"),method:"POST",url:"{% url 'request_permissions' %}",headers:{"X-CSRFToken":'{{csrf_token}}'},
+              success:function(data){
+                $(document.body).append(data);
+                $('.toast').toast('show'),$("#request-download-layer")[0].reset()
+              },
+              error:function(data){
+                $(document.body).append(data);
                 $('.toast').toast('show')
-              ,$("#request-download-layer")[0].reset()},
-              error:function(e,t,r){
-                if(e.status=403){
-                  $(document.body).append(`{% with toast_title='Request Error' %}
-                      {% with toast_message='Please fill in the form completely.' %}
-                        {% include "toast/_toast.html" %}
-                      {% endwith %}
-                    {% endwith %}`);
-                  $('.toast').toast('show')
-                }else{
-                  $(document.body).append(`{% with toast_title='Request Error' %}
-                      {% with toast_message='Something is wrong. Apologies and please ask directly to the resource owner.' %}
-                        {% include "toast/_toast.html" %}
-                      {% endwith %}
-                    {% endwith %}`);
-                  $('.toast').toast('show')
-              }}}).done(function(){$(".modal").modal("hide")}),!1})});</script>
+              }}).done(function(){$(".modal").modal("hide")}),!1})});
+</script>
 {% endblock extra_script %}

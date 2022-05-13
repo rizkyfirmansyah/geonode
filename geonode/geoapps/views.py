@@ -53,6 +53,7 @@ from geonode.utils import (
     resolve_object,
     build_social_links
 )
+from geonode.views import page_not_found_message, unauthorized_message
 
 from .forms import GeoAppForm
 
@@ -115,31 +116,13 @@ def geoapp_detail(request, geoappid, template='apps/app_detail.html'):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not geoapp_obj:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     # Add metadata_author or poc if missing
     geoapp_obj.add_missing_metadata_author_or_poc()
@@ -222,31 +205,13 @@ def geoapp_edit(request, geoappid, template='apps/app_edit.html'):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        message = f'{_("You are not allowed to edit this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_SAVE)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not geoapp_obj:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(geoapp_obj)
@@ -301,31 +266,13 @@ def geoapp_remove(request, geoappid, template='apps/app_remove.html'):
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
     except PermissionDenied:
-        message = f'{_("You are not allowed to delete this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_DELETE)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not geoapp_obj:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if request.method == 'GET':
         return render(request, template, context={
@@ -347,31 +294,13 @@ def geoapp_metadata_detail(request, geoappid, template='apps/app_metadata_detail
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not geoapp_obj:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     group = None
     if geoapp_obj.group:
@@ -399,31 +328,13 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             'base.change_resourcebase_metadata',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not geoapp_obj:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     # Add metadata_author or poc if missing
     geoapp_obj.add_missing_metadata_author_or_poc()

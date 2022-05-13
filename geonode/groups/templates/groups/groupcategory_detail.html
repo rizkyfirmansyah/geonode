@@ -12,6 +12,11 @@
       <h3 class="col">{{ object.name|default:object.slug }}</h3>
       <div class="col-4 float-right">
         {% if request.user.is_staff or request.user.is_superuser %}
+          <a class="btn btn-danger w-100" data-toggle="modal" data-target="#remove_gc_modal">{% trans "Delete Group Category" %}</a></li>
+        {% endif %}
+      </div>
+      <div class="col-4 float-right">
+        {% if request.user.is_staff or request.user.is_superuser %}
           <a class="btn btn-primary w-100" href="{% url "group_category_update" object.slug %}">{% trans "Edit Group Category Details" %}</a></li>
         {% endif %}
       </div>
@@ -34,6 +39,9 @@
       </div>
   </div>
 </div>
+
+{% include "modal/remove_group_categories.html" %}
+
 {% endblock %}
 
 

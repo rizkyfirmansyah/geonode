@@ -4,17 +4,13 @@
 {% load layer_tags %}
 {% block extra_script %}
     <script type="text/javascript">
-      $(document).ready(function(){let e=Cookies.get("csrftoken");
+      $(document).ready(function(){
       $("#remove_layer").submit(function(t){
         return resource_title="{{resource.title}}",layername="{{resource.layer.service_typename}}",t.preventDefault(),
           $.ajax({
-            data:{layername:layername},type:$(this).attr("method"),method:"POST",url:'{% url "layer_remove" %}',headers:{"X-CSRFToken":e},
-            success:function(e){
-              $(document.body).append(`{% with toast_title='Delete Resource' %}
-                  {% with toast_message=resource.title|add:' has been deleted.' %}
-                    {% include "toast/_toast.html" %}
-                  {% endwith %}
-                {% endwith %}`);
+            data:{layername:layername},type:$(this).attr("method"),method:"POST",url:'{% url "layer_remove" %}',headers:{"X-CSRFToken":'{{csrftoken}}'},
+            success:function(data){
+              $(document.body).append(data);
               $('.toast').toast('show')
             }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})});</script>
 {% endblock extra_script %}

@@ -174,6 +174,18 @@ def has_perm_or_basicauth(perm, realm=""):
     return view_decorator
 
 
+def activeuser_only(function):
+    """
+    Limit view to active users only.
+    --------------------------------------------------------------------------
+    """
+    def _inner(request, *args, **kwargs):
+        if not auth.get_user(request).is_active:
+            raise PermissionDenied
+        return function(request, *args, **kwargs)
+    return _inner
+
+
 def superuser_only(function):
     """
     Limit view to superusers only.

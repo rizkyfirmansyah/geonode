@@ -52,6 +52,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
+from geonode.views import page_not_found_message, toast_message, toast_unauthorized, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
 
@@ -412,31 +413,13 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     # Add metadata_author or poc if missing
     layer.add_missing_metadata_author_or_poc()
@@ -788,31 +771,13 @@ def layer_feature_catalogue(
     try:
         layer = _resolve_layer(request, layername)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if layer.storeType != 'dataStore':
         out = {
@@ -860,31 +825,13 @@ def layer_metadata(
             'base.change_resourcebase_metadata',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     layer_attribute_set = inlineformset_factory(
         Layer,
@@ -1285,31 +1232,13 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
             'base.change_resourcebase',
             _PERMISSION_MSG_MODIFY)
     except PermissionDenied:
-        message = f'{_("You are not allowed to edit this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if request.method == 'GET':
         ctx = {
@@ -1413,31 +1342,13 @@ def layer_append(request, layername, template='layers/layer_append.html'):
             'base.change_resourcebase',
             _PERMISSION_MSG_MODIFY)
     except PermissionDenied:
-        message = f'{_("You are not allowed to edit this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if request.method == 'GET':
         ctx = {
@@ -1511,6 +1422,8 @@ def layer_append(request, layername, template='layers/layer_append.html'):
 def layer_remove(request):
 
     layername = request.POST['layername']
+    toast_title = _("Delete Spatial Data")
+
     try:
         layer = _resolve_layer(
             request,
@@ -1522,6 +1435,7 @@ def layer_remove(request):
             logger.debug(f'Deleting Layer {layer}')
             with transaction.atomic():
                 Layer.objects.filter(id=layer.id).delete()
+
         except IntegrityError:
             raise
         except Exception as e:
@@ -1531,50 +1445,23 @@ def layer_remove(request):
                 message = _(
                     'This layer is a member of a layer group, you must remove the layer from the group '
                     'before deleting.')
-            response = {
-                'success': False,
-                'status_code': 403,
-                'message': message
-            }
-            return HttpResponse(json.dumps(
-                response,
-            ),
-            content_type='application/javascript')
+
+            return toast_unauthorized(request, toast_title, message)
 
         register_event(request, 'remove', layer)
+        message = _("Spatial data: {} has been deleted".format(layer.alternate))
 
-        response = {
-            'success': True,
-            'status_code': 200
-        }
-        return HttpResponse(json.dumps(
-                response,
-            ),
-            content_type='application/javascript')
+        return toast_message(request, toast_title, message)
 
     except PermissionDenied:
-        response = {
-            'success': False,
-            'status_code': 403
-        }
-        return HttpResponse(json.dumps(
-                response,
-            ),
-            content_type='application/javascript')
+        return toast_unauthorized(request, toast_title)
 
     except Exception:
         traceback.print_exc()
         message = f'{_("Unable to delete layer")}: {layer.alternate}.'
 
-        response = {
-            'success': False,
-            'status_code': 500,
-            'message': message
-        }
-        return HttpResponse(json.dumps(
-                response,
-            ),
-            content_type='application/javascript')
+        return toast_message(request, toast_title, message)
+
 
 
 @login_required
@@ -1590,31 +1477,13 @@ def layer_granule_remove(
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
     except PermissionDenied:
-        message = f'{_("You are not allowed to remove this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_DELETE)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if (request.method == 'GET'):
         return render(request, template, context={
@@ -1662,30 +1531,13 @@ def get_layer(request, layername):
         try:
             layer_obj = _resolve_layer(request, layername)
         except PermissionDenied:
-            message = f'{_("You are not allowed to view this resource.")}'
-
-            out = {'success': False}
-            out['status_code'] = 403
-            out['message'] = message
-            _template = 'error/403.html'
-            return render(request, _template, context=out)
+            return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
         except Exception:
-            message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
+            return page_not_found_message(request)
 
-            out = {'success': False}
-            out['status_code'] = 404
-            out['message'] = message
-            _template = 'error/404.html'
-            return render(request, _template, context=out)
         if not layer_obj:
-            message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-            out = {'success': False}
-            out['status_code'] = 404
-            out['message'] = message
-            _template = 'error/404.html'
-            return render(request, _template, context=out)
+            return page_not_found_message(request)
 
         logger.debug(layername)
         response = {
@@ -1719,31 +1571,13 @@ def layer_metadata_detail(
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to view this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     group = None
     if layer.group:
@@ -1778,31 +1612,13 @@ def layer_metadata_upload(
             'base.change_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to edit this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
     return render(request, template, context={
@@ -1823,31 +1639,13 @@ def layer_sld_upload(
             'base.change_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        message = f'{_("You are not allowed to edit this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 403
-        out['message'] = message
-        _template = 'error/403.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     if not layer:
-        message = f'{_("Hey... what are you trying to look for? Nothing is here.")}'
-
-        out = {'success': False}
-        out['status_code'] = 404
-        out['message'] = message
-        _template = 'error/404.html'
-        return render(request, _template, context=out)
+        return page_not_found_message(request)
 
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
     return render(request, template, context={

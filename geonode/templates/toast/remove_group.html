@@ -3,17 +3,17 @@
 {% load base_tags %}
 {% block extra_script %}
 <script type="text/javascript">
-  $(document).ready(function(){let e=Cookies.get("csrftoken");
-  $("#remove_group").submit(function(t){
-    return slug="{{object.slug}}",t.preventDefault(),
+  $(document).ready(function(){
+    $("#remove_group").submit(function(t){
+      return slug="{{object.slug}}",t.preventDefault(),
+
       $.ajax({
-        data:{slug:slug},type:$(this).attr("method"),method:"POST",url:'{% url "group_remove" object.slug %}',headers:{"X-CSRFToken":e},
-        success:function(e){
-          $(document.body).append(`{% with toast_title='Delete Group' %}
-              {% with toast_message=object.slug|add:' has been deleted.' %}
-                {% include "toast/_toast.html" %}
-              {% endwith %}
-            {% endwith %}`);
+        data:{slug:slug},type:$(this).attr("method"),method:"POST",url:'{% url "group_remove" object.slug %}',headers:{"X-CSRFToken":'{{csrftoken}}'},
+        success:function(data){
+          $(document.body).append(data);
           $('.toast').toast('show')
-        }}).done(function(){setInterval(function(){location.href="{% url 'group_list' %}"},1e3)}),!1})});</script>
+        }}).done(function(){setInterval(function(){location.href="{% url 'group_list' %}"},1e3)}),!1})
+        
+  });
+</script>
 {% endblock extra_script %}

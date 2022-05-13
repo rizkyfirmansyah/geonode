@@ -263,7 +263,8 @@ class Faq(models.Model):
     header_title_color = ColorField(default="#000000", verbose_name=_("Set the text color of the title"), null=True, blank=True)
     contents = models.TextField(verbose_name=_("Content of the FAQs page"), null=True, blank=True)
     authenticated_users = models.BooleanField(default=True, verbose_name=_("Display for registered users?"), choices=AUTHENTICATED_CHOICES)
-    created_date = models.DateTimeField(_('Created Date'), default=now)
+    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
+    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True)
 
     def __str__(self) -> str:
         return super().__str__(self.header_title)
@@ -278,7 +279,8 @@ class About(models.Model):
     header_title = models.CharField(max_length=255, verbose_name=_("Title Page"), default=_("About SDI"), null=True, blank=True)
     header_title_color = ColorField(default="#000000", verbose_name=_("Set the text color of the title"), null=True, blank=True)
     contents = models.TextField(verbose_name=_("Content of the About page"), null=True, blank=True)
-    created_date = models.DateTimeField(_('Created Date'), default=now)
+    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
+    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True)
 
     def __str__(self) -> str:
         return super().__str__(self.header_title)
@@ -293,7 +295,8 @@ class Help(models.Model):
     header_title = models.CharField(max_length=255, verbose_name=_("Title Page"), default=_("Help & Support"), null=True, blank=True)
     header_title_color = ColorField(default="#000000", verbose_name=_("Set the text color of the title"), null=True, blank=True)
     contents = models.TextField(verbose_name=_("Content of the Help & Support page"), null=True, blank=True)
-    created_date = models.DateTimeField(_('Created Date'), default=now)
+    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
+    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True)
 
     def __str__(self) -> str:
         return super().__str__(self.header_title)
@@ -333,9 +336,7 @@ class Feedback(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     extension = models.CharField(max_length=128, blank=True, null=True)
     feedback_type = models.CharField(max_length=128, blank=True, null=True)
-    created_date = models.DateTimeField(
-        _('Created Date'),
-        default=now)
+    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
     
     def __str__(self) -> str:
         return super().__str__(self.title)

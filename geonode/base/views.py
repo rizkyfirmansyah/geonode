@@ -31,6 +31,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
 from dal import views, autocomplete
+from geonode.views import unauthorized_message
 from user_messages.models import Message
 from guardian.shortcuts import get_objects_for_user
 
@@ -218,13 +219,7 @@ def thumbnail_upload(
             request, ResourceBase, {
                 'id': res_id}, 'base.change_resourcebase')
     except PermissionDenied:
-        message = f'{_("You are not allowed to change permissions for this resource.")}'
-
-        out = {'success': False}
-        out['status_code'] = 401
-        out['message'] = message
-        _template = 'error/401.html'
-        return render(request, _template, context=out)
+        return unauthorized_message(request, 'You are not allowed to modify this resource. Please ask nicely to the resource owner.')
 
     form = CuratedThumbnailForm()
 

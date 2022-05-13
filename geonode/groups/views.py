@@ -41,11 +41,14 @@ from django.views.generic import ListView, CreateView
 from django.views.generic.edit import UpdateView
 from django.views.generic.detail import DetailView
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
-from geonode.decorators import view_decorator, superuser_only
+from geonode.decorators import activeuser_only, view_decorator
 from geonode.base.views import SimpleSelect2View
 
 from dal import autocomplete
+from geonode.views import toast_message, toast_unauthorized
+from django.utils.translation import ugettext as _
 
 from . import forms
 from . import models
@@ -53,6 +56,7 @@ from .models import GroupMember
 
 logger = logging.getLogger(__name__)
 
+_PERMISSION_MSG_DELETE = _("You are not allowed to delete this group.")
 
 class SetGroupLayerPermission(View):
     def get(self, request):
@@ -62,7 +66,7 @@ class SetGroupLayerPermission(View):
         return user_and_group_permission(request, 'groupprofile')
 
 
-@view_decorator(superuser_only, subclass=True)
+@view_decorator(activeuser_only, subclass=True)
 class GroupCategoryCreateView(CreateView):
     model = models.GroupCategory
     fields = ['name', 'description']
@@ -83,7 +87,7 @@ group_category_detail = GroupCategoryDetailView.as_view()
 group_category_update = GroupCategoryUpdateView.as_view()
 
 
-@superuser_only
+@activeuser_only
 def group_create(request):
     if request.method == "POST":
         form = forms.GroupForm(request.POST, request.FILES)
@@ -254,21 +258,39 @@ def group_join(request, slug):
 
 
 @login_required
+@require_POST
 def group_remove(request, slug):
+    toast_title = _("Delete Group")
+
     group = get_object_or_404(models.GroupProfile, slug=slug)
-    if request.method == 'GET':
-        return render(
-            request,
-            "groups/group_remove.html", context={"group": group})
-    if request.method == 'POST':
+    if not group.user_is_role(request.user, role="manager"):
+        return HttpResponseForbidden()
 
-        if not group.user_is_role(request.user, role="manager"):
-            return HttpResponseForbidden()
+    group.delete()
+    message = _("Group : {} has been deleted".format(slug))
+    return toast_message(request, toast_title, message)
 
-        group.delete()
-        return HttpResponseRedirect(reverse("group_list"))
-    else:
-        return HttpResponseNotAllowed()
+
+@login_required
+@require_POST
+def group_category_remove(request, slug):
+    """
+    Remove group category and clear all the relations from group if any
+    """
+    toast_title = _("Delete Group Categories")
+
+    group_category = get_object_or_404(models.GroupCategory, slug=slug)
+    try:
+        group_category.delete()
+        message = _("Group Categories: {} has been deleted".format(slug))
+        return toast_message(request, toast_title, message)
+    
+    except PermissionDenied:
+        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_DELETE)
+
+    except Exception:
+        message = _("Something went wrong with your request. Please ask nicely to your admin or developer. Submit a ticket through give feedback.")
+        return toast_message(request, toast_title, message)
 
 
 class GroupActivityView(ListView):

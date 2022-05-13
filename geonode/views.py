@@ -24,7 +24,7 @@ from django.apps import apps
 from django.db.models import Q
 from django.urls import reverse
 from django.conf import settings
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template.response import TemplateResponse
 from geonode.base.templatetags.base_tags import facets
 from django.http import HttpResponse, HttpResponseRedirect
@@ -33,6 +33,7 @@ from django.contrib.auth import authenticate, login, get_user_model
 from geonode import get_version
 from geonode.groups.models import GroupProfile
 from geonode.geoapps.models import GeoApp
+from django.utils.translation import ugettext as _
 
 import logging
 logger = logging.getLogger(__name__)
@@ -147,6 +148,61 @@ def server_error_view(request, template_name="error/500.html"):
     response = render_to_response(template_name)
     response.status_code = 500
     return response
+
+
+def page_not_found_message(request, template_name="error/404.html"):
+    out = {'success': False}
+    out['status_code'] = 404
+    out['message'] = _("Hey... what are you trying to look for? Nothing is here.")
+    
+    return render(request, template_name, context=out)
+
+
+def unauthorized_message(request, message, template_name="error/403.html"):
+    out = {'success': False}
+    out['status_code'] = 403
+    out['message'] = message
+    
+    return render(request, template_name, context=out)
+
+
+def toast_unauthorized(request, toast_title, toast_message=None):
+    if toast_title is None:
+        toast_title = _("We could not process your request")
+    if toast_message is None:
+        toast_message = _("You don't have any permissions to modify this resource. Please ask to the resource owner.")
+    out = {
+      'status_code': 403,
+      'toast_message': toast_message,
+      'toast_title': toast_title,
+    }
+    return render(request, "toast/_toast.html", context=out)
+
+
+def toast_server_error(request, toast_title=None, toast_message=None, status_code=None):
+    if status_code is None:
+        status_code = 500
+    if toast_title is None:
+        toast_title = _("We could not process your request")
+    if toast_message is None:
+        toast_message = _("Something went wrong with your request. Please ask nicely to your admin or developer. Submit a ticket through give feedback.")
+    out = {
+      'status_code': status_code,
+      'toast_message': toast_message,
+      'toast_title': toast_title,
+    }
+    return render(request, "toast/_toast.html", context=out)
+
+
+def toast_message(request, toast_title, toast_message, status_code=None):
+    if status_code is None:
+        status_code = 200
+    out = {
+      'status_code': status_code,
+      'toast_message': toast_message,
+      'toast_title': toast_title,
+    }
+    return render(request, "toast/_toast.html", context=out)
 
 
 def ident_json(request):
