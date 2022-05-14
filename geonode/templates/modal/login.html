@@ -43,7 +43,7 @@
                             <div class="tab-content border-0">
                                 <div class="tab-pane p-0 container active" id="signin">
                                     <div class="text w-100" style="margin-top: 20px;">
-                                        <form class="form-signin" role="form" method="POST" id="form-signin">
+                                        <form class="form-signin" role="form" method="POST" id="form-signin" action='{% url "account_login" %}?next={{request.path}}'>
                                             {% csrf_token %}
                                             <div class="form-group mb-3">
                                                 <label class="" for="id_username">Username</label>
@@ -97,6 +97,7 @@
                                               role="form"
                                               method="POST"
                                               id="signup_form"
+                                              action='{% url "account_signup" %}'
                                               {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
                                             {% csrf_token %}
                                             <div class="form-group mb-3">
@@ -155,8 +156,6 @@
         </div>
     </div>
 </div>
-{% include 'toast/login.html' %}
-{% include 'toast/signup.html' %}
 {% block extra_script %}
     <script type="text/javascript">$(document).ready(function(){$("#aSignIn").click(function(){$("#navSignUp").removeClass("active"); $("#navSignIn").addClass("active");}); $("#aSignUp").click(function(){$("#navSignIn").removeClass("active"); $("#navSignUp").addClass("active");});}); </script><script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 {% endblock %}

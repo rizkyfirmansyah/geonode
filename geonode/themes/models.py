@@ -35,6 +35,7 @@ from geonode.documents.enumerations import DOCUMENT_TYPE_MAP
 from .utils import get_unique_feedback_path
 from uuid_upload_path import upload_to
 from django.conf import settings
+from django.urls import reverse
 from django.contrib.staticfiles import finders
 from django.core.files.base import ContentFile
 from geonode.storage.manager import storage_manager
@@ -263,11 +264,14 @@ class Faq(models.Model):
     header_title_color = ColorField(default="#000000", verbose_name=_("Set the text color of the title"), null=True, blank=True)
     contents = models.TextField(verbose_name=_("Content of the FAQs page"), null=True, blank=True)
     authenticated_users = models.BooleanField(default=True, verbose_name=_("Display for registered users?"), choices=AUTHENTICATED_CHOICES)
-    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
-    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True)
+    created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
+    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True, null=True)
 
     def __str__(self) -> str:
         return super().__str__(self.header_title)
+
+    def get_absolute_url(self):
+        return reverse("faq", kwargs={"pk": self.pk})
 
     class Meta:
         ordering = ("id", )
@@ -279,15 +283,18 @@ class About(models.Model):
     header_title = models.CharField(max_length=255, verbose_name=_("Title Page"), default=_("About SDI"), null=True, blank=True)
     header_title_color = ColorField(default="#000000", verbose_name=_("Set the text color of the title"), null=True, blank=True)
     contents = models.TextField(verbose_name=_("Content of the About page"), null=True, blank=True)
-    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
-    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True)
-
-    def __str__(self) -> str:
-        return super().__str__(self.header_title)
+    created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
+    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True, null=True)
 
     class Meta:
         ordering = ("id", )
         verbose_name_plural = 'SDI About'
+
+    def __str__(self) -> str:
+        return super().__str__(self.header_title)
+
+    def get_absolute_url(self):
+        return reverse("about", kwargs={"pk": self.pk})
 
 
 class Help(models.Model):
@@ -295,15 +302,18 @@ class Help(models.Model):
     header_title = models.CharField(max_length=255, verbose_name=_("Title Page"), default=_("Help & Support"), null=True, blank=True)
     header_title_color = ColorField(default="#000000", verbose_name=_("Set the text color of the title"), null=True, blank=True)
     contents = models.TextField(verbose_name=_("Content of the Help & Support page"), null=True, blank=True)
-    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
-    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True)
-
-    def __str__(self) -> str:
-        return super().__str__(self.header_title)
+    created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
+    last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True, null=True)
 
     class Meta:
         ordering = ("id", )
         verbose_name_plural = 'SDI Help & Support'
+
+    def __str__(self) -> str:
+        return super().__str__(self.header_title)
+
+    def get_absolute_url(self):
+        return reverse("help", kwargs={"pk": self.pk})
 
 
 class Feedback(models.Model):
@@ -333,13 +343,20 @@ class Feedback(models.Model):
         blank=True,
         max_length=255,
         verbose_name=feedback_file_help_text)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     extension = models.CharField(max_length=128, blank=True, null=True)
     feedback_type = models.CharField(max_length=128, blank=True, null=True)
-    created = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True)
+    created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
+
+    class Meta:
+        ordering = ("id", )
+        verbose_name_plural = 'SDI Feedbacks'
     
     def __str__(self) -> str:
         return super().__str__(self.title)
+
+    def get_absolute_url(self):
+        return reverse("(feedback)", kwargs={"pk": self.pk})
 
     @property
     def name(self):

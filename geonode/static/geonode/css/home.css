@@ -1732,7 +1732,6 @@ select:-webkit-autofill:focus,
 select:-webkit-autofill:hover,
 textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus {
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
     transition: background-color 5000s ease-in-out 0s
 }
 

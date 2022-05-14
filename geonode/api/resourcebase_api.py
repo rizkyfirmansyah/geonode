@@ -135,6 +135,7 @@ class CommonModelApi(ModelResource):
         'constraints_other',
         'license',
         'author',
+        'data_type__title',
         'data_type__gn_description',
         'source',
         'data_citation',
@@ -158,6 +159,7 @@ class CommonModelApi(ModelResource):
         'srid',
         'bbox_polygon',
         'category__gn_description',
+        'category__title',
         'category__icons',
         'category__fa_class',
         'category__identifier',
@@ -622,6 +624,7 @@ class CommonModelApi(ModelResource):
             if obj.category:
                 formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
                 formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
+                formatted_obj['category__title'] = [c.title for c in obj.category.all()] if obj.category else []
                 fa_class = {}
                 icons = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
@@ -814,7 +817,8 @@ class LayerResource(CommonModelApi):
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
             if obj.data_type:
-                formatted_obj['data_type__gn_description'] = obj.data_type
+                formatted_obj['data_type__gn_description'] = [d.gn_description for d in obj.data_type.all()]
+                formatted_obj['data_type__title'] = [d.title for d in obj.data_type.all()]
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
@@ -981,7 +985,8 @@ class MapResource(CommonModelApi):
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
             if obj.data_type:
-                formatted_obj['data_type__gn_description'] = obj.data_type
+                formatted_obj['data_type__gn_description'] = [d.gn_description for d in obj.data_type.all()]
+                formatted_obj['data_type__title'] = [d.title for d in obj.data_type.all()]
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
@@ -1073,7 +1078,8 @@ class GeoAppResource(CommonModelApi):
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
             if obj.data_type:
-                formatted_obj['data_type__gn_description'] = obj.data_type
+                formatted_obj['data_type__gn_description'] = [d.gn_description for d in obj.data_type.all()]
+                formatted_obj['data_type__title'] = [d.title for d in obj.data_type.all()]
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 
@@ -1151,7 +1157,8 @@ class DocumentResource(CommonModelApi):
                 except GroupProfile.DoesNotExist:
                     formatted_obj['group_name'] = obj.group
             if obj.data_type:
-                formatted_obj['data_type__gn_description'] = obj.data_type
+                formatted_obj['data_type__gn_description'] = [d.gn_description for d in obj.data_type.all()]
+                formatted_obj['data_type__title'] = [d.title for d in obj.data_type.all()]
             formatted_obj['keywords'] = [k.name for k in obj.keywords.all()] if obj.keywords else []
             formatted_obj['regions'] = [r.name for r in obj.regions.all()] if obj.regions else []
 

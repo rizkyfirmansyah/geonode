@@ -64,7 +64,6 @@
       {% if is_manager %}
       <li class="list-group-item border-0"><a href="{% url "group_update" object.slug %}" class="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
       <li class="list-group-item border-0"><a href="{% url "group_members" object.slug %}" class="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
-      {% comment %} <li class="list-group-item border-0"><a href="{% url "group_remove" object.slug %}" class="btn_wrapper">{% trans "Delete this Group" %}</a></li> {% endcomment %}
       <li class="list-group-item border-0"><a data-toggle="modal" data-target="#remove_group_modal" class="btn_wrapper" data-id="{{ object.title|default:object.slug }}">{% trans "Delete this Group" %}</a></li>
 
       {% endif %}

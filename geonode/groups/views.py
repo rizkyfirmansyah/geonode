@@ -25,6 +25,7 @@ import logging
 from actstream.models import Action
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse
 from django.http import (
     Http404,
@@ -66,17 +67,30 @@ class SetGroupLayerPermission(View):
         return user_and_group_permission(request, 'groupprofile')
 
 
-@view_decorator(activeuser_only, subclass=True)
-class GroupCategoryCreateView(CreateView):
+class GroupCategoryCreateView(LoginRequiredMixin, CreateView):
+    model = models.GroupCategory
+    fields = ['name', 'description']
+    
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+
+class GroupCategoryDetailView(LoginRequiredMixin, DetailView):
     model = models.GroupCategory
     fields = ['name', 'description']
 
+    def get(self, request, *args, **kwargs):
+        self.groupcategory = get_object_or_404(models.GroupCategory, slug=kwargs.get('slug'))
+        return super().get(request, *args, **kwargs)
 
-class GroupCategoryDetailView(DetailView):
-    model = models.GroupCategory
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_owner"] = self.request.user == self.groupcategory.created_by
+        return context    
 
 
-class GroupCategoryUpdateView(UpdateView):
+class GroupCategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = models.GroupCategory
     fields = ['name', 'description']
     template_name_suffix = '_update_form'

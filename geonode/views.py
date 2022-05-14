@@ -18,6 +18,7 @@
 #
 #########################################################################
 import json
+from django.contrib import messages
 
 from django import forms
 from django.apps import apps
@@ -197,12 +198,13 @@ def toast_server_error(request, toast_title=None, toast_message=None, status_cod
 def toast_message(request, toast_title, toast_message, status_code=None):
     if status_code is None:
         status_code = 200
-    out = {
-      'status_code': status_code,
-      'toast_message': toast_message,
-      'toast_title': toast_title,
+    message = {
+      'title': toast_title,
+      'message': toast_message,
     }
-    return render(request, "toast/_toast.html", context=out)
+    messages.success(request, message)
+    print(messages)
+    return render(request, "toast/_toast.html")
 
 
 def ident_json(request):

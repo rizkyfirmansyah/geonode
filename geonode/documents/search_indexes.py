@@ -29,6 +29,7 @@ from geonode.documents.models import Document
 class DocumentIndex(indexes.SearchIndex, indexes.Indexable):
     id = indexes.IntegerField(model_attr='id')
     abstract = indexes.CharField(model_attr="abstract", boost=1.5)
+    category__title = indexes.CharField(model_attr="category__title", null=True)
     category__gn_description = indexes.CharField(model_attr="category__gn_description", null=True)
     csw_type = indexes.CharField(model_attr="csw_type")
     csw_wkt_geometry = indexes.CharField(model_attr="csw_wkt_geometry")
