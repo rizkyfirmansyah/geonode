@@ -20,7 +20,7 @@
 
 from django import forms
 from django.contrib import admin
-from .models import Partner, GeoNodeThemeCustomization, JumbotronThemeSlide, Faq, About, Help
+from .models import Feedback, Partner, GeoNodeThemeCustomization, JumbotronThemeSlide, Faq, About, Help
 
 
 @admin.register(Partner)
@@ -88,20 +88,28 @@ class JumbotronThemeSlideAdmin(admin.ModelAdmin):
 class FaqFormAdmin(admin.ModelAdmin):
     list_display = ('id', 'header_title', 'contents', 'authenticated_users')
     list_display_links = ('header_title',)
-    exclude = ('created_date',)
+    exclude = ('created_at',)
+
 
 class AboutFormAdmin(admin.ModelAdmin):
     list_display = ('header_title', 'contents')
     list_display_links = ('header_title',)
-    exclude = ('created_date',)
+    exclude = ('created_at',)
 
 
 class HelpFormAdmin(admin.ModelAdmin):
     list_display = ('header_title', 'contents')
     list_display_links = ('header_title',)
-    exclude = ('created_date',)
+    exclude = ('created_at',)
+
+
+class FeedbackFormAdmin(admin.ModelAdmin):
+    list_display = ('title', 'details', 'feedback_url', 'feedback_file', 'user', 'created_at')
+    list_display_links = ('title',)
+    exclude = ('uuid', 'extension', 'feedback_type',)
 
 
 admin.site.register(Faq, FaqFormAdmin)
 admin.site.register(About, AboutFormAdmin)
 admin.site.register(Help, HelpFormAdmin)
+admin.site.register(Feedback, FeedbackFormAdmin)

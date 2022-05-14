@@ -25,7 +25,7 @@ import logging
 from actstream.models import Action
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.http import (
     Http404,
@@ -44,7 +44,7 @@ from django.views.generic.detail import DetailView
 from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 
-from geonode.decorators import activeuser_only, view_decorator
+from geonode.decorators import activeuser_only
 from geonode.base.views import SimpleSelect2View
 
 from dal import autocomplete

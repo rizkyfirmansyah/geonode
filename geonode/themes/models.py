@@ -22,21 +22,19 @@ import logging
 import os
 
 from django.db import models
-from django.db.models import signals
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_noop as _
+from django.db.models import Q
 from imagekit.models import ImageSpecField
 from colorfield.fields import ColorField
-from django.utils.timezone import now
 from geonode.documents.enumerations import DOCUMENT_TYPE_MAP
 from .utils import get_unique_feedback_path
 from uuid_upload_path import upload_to
 from django.conf import settings
 from django.urls import reverse
-from django.contrib.staticfiles import finders
 from django.core.files.base import ContentFile
 from geonode.storage.manager import storage_manager
 
@@ -320,6 +318,7 @@ class Feedback(models.Model):
     feedback_file_help_text = _("add a Screenshot or Video (recommended)")
     details_help_text = _("please include as much information as possible..")
     feedback_url_help_text = _("provide the url when the trouble happens")
+    user_help_text = _("reported by")
 
     uuid = models.CharField(max_length=36)
     title = models.TextField(
@@ -343,7 +342,7 @@ class Feedback(models.Model):
         blank=True,
         max_length=255,
         verbose_name=feedback_file_help_text)
-    reported_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, help_text=user_help_text)
     extension = models.CharField(max_length=128, blank=True, null=True)
     feedback_type = models.CharField(max_length=128, blank=True, null=True)
     created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
@@ -352,71 +351,32 @@ class Feedback(models.Model):
         ordering = ("id", )
         verbose_name_plural = 'SDI Feedbacks'
     
-    def __str__(self) -> str:
-        return super().__str__(self.title)
-
-    def get_absolute_url(self):
-        return reverse("(feedback)", kwargs={"pk": self.pk})
-
-    @property
-    def name(self):
-        if not self.title:
-            return str(self.id)
-        else:
-            return self.title
-
-    def find_placeholder(self):
-        placeholder = 'feedbacks/{0}-placeholder.png'
-        if finders.find(placeholder.format(self.extension), False):
-            return finders.find(placeholder.format(self.extension), False)
-        elif self.is_image:
-            return finders.find(placeholder.format('image'), False)
-        elif self.is_video:
-            return finders.find(placeholder.format('video'), False)
-        return finders.find(placeholder.format('generic'), False)
-
-    def save_feedback_file(self, filename, image):
-        upload_path = get_unique_feedback_path(self, filename)
-
-        try:
-            if upload_path and image:
-                actual_name = storage_manager.save(upload_path, ContentFile(image))
-                actual_file_name = os.path.basename(actual_name)
-                if filename != actual_file_name:
-                    upload_path = upload_path.replace(filename, actual_file_name)
-                url = storage_manager.url(upload_path)
-
-        except Exception as e:
-            logger.error(
-                f'Error when saving the feedback for resource {self.id}. ({e})')
+    def __str__(self):
+        return self.title
 
 
-def post_save_feedback(instance, sender, **kwargs):
+@receiver(post_save, sender=Feedback)
+def post_save_feedback(instance, sender, created, **kwargs):
     from .tasks import create_feedback
 
-    base_name, extension = os.path.splitext(instance.feedback_file.name)
-    ext = extension[1:]
-    feedback_type_map = DOCUMENT_TYPE_MAP
-    feedback_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
+    if created:
+        base_name, extension = os.path.splitext(instance.feedback_file.name)
+        ext = extension[1:]
+        feedback_type_map = DOCUMENT_TYPE_MAP
+        feedback_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
 
-    if instance.id and instance.feedback_file:
-        create_feedback.apply_sync((instance.id,))
+        if feedback_type_map is None:
+            feedback_type = 'other'
+        else:
+            feedback_type = feedback_type_map.get(ext.lower(), 'other')
+        feedback_type = feedback_type
 
-    if feedback_type_map is None:
-        feedback_type = 'other'
-    else:
-        feedback_type = feedback_type_map.get(ext.lower(), 'other')
-    feedback_type = feedback_type
+        if instance.uuid is None or instance.uuid == '':
+            instance.uuid = str(uuid.uuid4())
 
-    if instance.uuid is None or instance.uuid == '':
-        instance.uuid  = str(uuid.uuid1())
+        if instance.id and instance.feedback_file:
+            create_feedback.apply_async((instance.id, feedback_type, instance.uuid, ext))
 
-    if ext:
-        Feedback.objects.get_or_create(
-            extension=ext,
-            feedback_type=feedback_type)
-
-signals.post_save.connect(post_save_feedback, sender=Feedback)
 
 # Disable other themes if one theme is enabled.
 @receiver(post_save, sender=GeoNodeThemeCustomization)

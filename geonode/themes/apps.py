@@ -24,5 +24,5 @@ from django.utils.translation import ugettext_lazy as _
 class AppConfig(BaseAppConfig):
 
     name = "geonode.themes"
-    label = "sdi_themes"
+    label = "themes"
     verbose_name = _("SDI Themes & Page Library")

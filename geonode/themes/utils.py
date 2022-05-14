@@ -15,7 +15,7 @@ def remove_feedback(filename):
         storage_manager.delete(path)
 
 
-def get_unique_feedback_path(resource, filename):
+def get_unique_feedback_path(filename):
     """ Generates a unique name from the given filename and
     creates a unique file upload path"""
     # create an upload path from a unique filename
