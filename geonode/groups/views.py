@@ -297,7 +297,7 @@ def group_remove(request, slug):
         
         group.delete()
         message = _("Group : {} has been deleted".format(slug))
-        messages.warning(request, message, extra_tags=toast_title)
+        toast_message(request, message, extra_tags=toast_title, remove=True)
         return redirect('group_list')
 
 
