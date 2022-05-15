@@ -33,6 +33,7 @@ from django.http import (
     HttpResponseNotAllowed,
     HttpResponseRedirect)
 from django.contrib import messages
+from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import toast_message
 from django.shortcuts import (
     get_object_or_404,
@@ -104,11 +105,12 @@ group_category_update = GroupCategoryUpdateView.as_view()
 @login_required
 def group_join_request(request, slug):
     group = models.Group.objects.filter(slug=slug)
-    print(group)
     toast_title = _("Request Join Group")
     requester = request.user
-    inbox_message = f"{requester + 'wants to join your group.'}"
+    content = f"{requester + 'wants to join your group.'}"
     message = _("Your request has been sent to owner's inbox.")
+
+    send_inbox(request, toast_title, content, send_to=group.created_by_id)
 
     return toast_message(request, message, extra_tags=toast_title, redirect=True)
 
