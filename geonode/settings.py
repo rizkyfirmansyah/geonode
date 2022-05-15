@@ -737,7 +737,7 @@ MIDDLEWARE = (
     'geonode.base.middleware.ReadOnlyMiddleware',   # a Middleware enabling Read Only mode of Geonode
 )
 
-MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Security stuff
 SESSION_EXPIRED_CONTROL_ENABLED = ast.literal_eval(os.environ.get('SESSION_EXPIRED_CONTROL_ENABLED', 'True'))
@@ -749,7 +749,7 @@ if SESSION_EXPIRED_CONTROL_ENABLED:
         ('geonode.security.middleware.SessionControlMiddleware',)
 
 SESSION_COOKIE_SECURE = ast.literal_eval(os.environ.get('SESSION_COOKIE_SECURE', 'False'))
-SESSION_COOKIE_AGE = 3 * 24 * 60 * 60  # 3 days
+SESSION_COOKIE_AGE = 1 * 24 * 60 * 60  # 1 day
 CSRF_COOKIE_SECURE = ast.literal_eval(os.environ.get('CSRF_COOKIE_SECURE', 'False'))
 CSRF_COOKIE_HTTPONLY = ast.literal_eval(os.environ.get('CSRF_COOKIE_HTTPONLY', 'False'))
 CORS_ORIGIN_ALLOW_ALL = ast.literal_eval(os.environ.get('CORS_ORIGIN_ALLOW_ALL', 'False'))

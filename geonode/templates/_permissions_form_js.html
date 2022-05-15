@@ -126,7 +126,7 @@
             /*
             * Compile the users fields after receiving the current permissions status from the server
             */
-            var perms = $.parseJSON($.parseJSON(data).permissions);
+            var perms = JSON.parse(data.permissions);
 
             var perms_users = perms.users;
 
