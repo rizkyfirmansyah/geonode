@@ -19,7 +19,7 @@
 import logging
 
 from django.conf import settings
-from user_messages.models import Message
+from user_messages.models import Message, Thread
 from user_messages.signals import message_sent
 
 from geonode.notifications_helper import send_notification
@@ -59,3 +59,19 @@ def initialize_notification_signal():
         message_received_notification,
         sender=Message
     )
+
+
+def send_inbox(request, subject, message, send_to):
+      
+      thread = Thread.objects.create(subject=subject)
+      thread.userthread_set.create(user=send_to, unread=True)
+      thread.userthread_set.create(user=request.user, unread=False)
+      Message.objects.create(
+          sender=request.user,
+          thread=thread,
+          content=message
+      )
+
+      logger.debug(f"sending inbox to: {send_to} from: {request.user}")
+
+      return Message

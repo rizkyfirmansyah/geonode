@@ -11,8 +11,8 @@
               processData: false,
               contentType: false,
               success: function(data) {
-                  $(document.body).append(data);
-                  $('.toast-message').toast('show')
+                  $(document.body).append(`{% include "toast/_toast.html" %}`);
+                  $("#feedback-form")[0].reset()
               }
           }).done(function(){$(".modal").modal("hide")},!1);
       });

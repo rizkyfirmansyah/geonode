@@ -693,7 +693,7 @@ CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
     'geonode.context_processors.resource_urls',
     'geonode.themes.context_processors.custom_theme',
-    'geonode.themes.context_processors.feedback_form',
+    'geonode.themes.context_processors.ModalForm',
 ]
 if 'geonode.geoserver' in INSTALLED_APPS:
     CONTEXT_PROCESSORS += ['geonode.geoserver.context_processors.geoserver_urls', ]
@@ -853,10 +853,10 @@ GUARDIAN_GET_INIT_ANONYMOUS_USER = os.getenv(
 # Whether the uplaoded resources should be public and downloadable by default
 # or not
 DEFAULT_ANONYMOUS_VIEW_PERMISSION = ast.literal_eval(
-    os.getenv('DEFAULT_ANONYMOUS_VIEW_PERMISSION', 'True')
+    os.getenv('DEFAULT_ANONYMOUS_VIEW_PERMISSION', 'False')
 )
 DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION = ast.literal_eval(
-    os.getenv('DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION', 'True')
+    os.getenv('DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION', 'False')
 )
 
 #

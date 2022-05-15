@@ -12,7 +12,7 @@
     </div>
     <div id="collapse1" class="panel-collapse collapse">
       <div class="controls">
-        <div class="chk_btn_toggle"><input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="Everyone" data-off="No One" data-onstyle="primary" data-offstyle="info"></div>
+        <div class="chk_btn_toggle"><input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
         <div class="radio">
           <label class="autofit_label">
             {% trans "The following users:" %}
@@ -39,7 +39,7 @@
     </div>
     <div id="collapse2" class="panel-collapse collapse">
       <div class="controls">
-        <div class="chk_btn_toggle"><input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="Everyone" data-off="No One" data-onstyle="primary" data-offstyle="info"></div>
+        <div class="chk_btn_toggle"><input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
         <div class="radio">
           <label class="autofit_label">
             {% trans "The following users:" %}

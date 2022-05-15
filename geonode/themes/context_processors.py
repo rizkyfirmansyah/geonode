@@ -1,5 +1,7 @@
 
 from django.core.cache import cache
+
+from geonode.datasets.forms import RodaForm
 from .forms import FeedbackForm
 from .models import GeoNodeThemeCustomization, THEME_CACHE_KEY
 
@@ -22,7 +24,8 @@ def custom_theme(request):
     return {'custom_theme': theme, 'slides': slides}
 
 
-def feedback_form(request):
+def ModalForm(request):
     return {
-        'feedback_form': FeedbackForm()
+        'feedback_form': FeedbackForm(),
+        'roda_form': RodaForm()
     }

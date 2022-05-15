@@ -4,27 +4,17 @@
 {% block extra_script %}
 <script type="text/javascript">
       $(document).ready(function(){
-        function loadSelectItems(select, items) {
-            var options = '';
-            $.each(items, function(key, value) {
-                options += '<option value=' + value.text + '>' + value.text + '</option>';
-            });
-            select.empty();
-            select.append(options);
-            select.selectpicker('refresh');
-        }
 
-          $("#request-download-layer").submit(function(t){
-            t.preventDefault();let r=$(this).serialize();
-            return r+="&uuid={{resource.uuid}}",r+="&resource_title={{resource.title}}",r+="&absolute_url="+$(location).attr("href"),
-            $.ajax({data:r,type:$(this).attr("method"),method:"POST",url:"{% url 'request_permissions' %}",headers:{"X-CSRFToken":'{{csrf_token}}'},
-              success:function(data){
-                $(document.body).append(data);
-                $('.toast').toast('show'),$("#request-download-layer")[0].reset()
-              },
-              error:function(data){
-                $(document.body).append(data);
-                $('.toast').toast('show')
-              }}).done(function(){$(".modal").modal("hide")},!1)})});
+        $("#request-download-layer").submit(function(t){
+          t.preventDefault();let r=$(this).serialize();
+          return r+="&uuid={{resource.uuid}}",r+="&resource_title={{resource.title}}",r+="&absolute_url="+$(location).attr("href"),
+          $.ajax({data:r,type:$(this).attr("method"),method:"POST",url:"{% url 'request_permissions' %}",headers:{"X-CSRFToken":'{{csrf_token}}'},
+            success:function(xhr, response, data){
+              $(document.body).append(`{% include "toast/_toast.html" %}`);
+              $("#request-download-layer")[0].reset()
+            },
+            error:function(data){
+              $(document.body).append(data);
+            }}).done(function(){$(".modal").modal("hide")},!1)})});
 </script>
 {% endblock extra_script %}

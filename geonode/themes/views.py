@@ -3,7 +3,6 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
-from django.contrib.auth import get_user_model
 import uuid
 from geonode.notifications_helper import toast_message
 from django.contrib.admin.views.decorators import staff_member_required
