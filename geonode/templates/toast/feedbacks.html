@@ -1,0 +1,21 @@
+{% block extra_script %}
+<script>
+  $(function() {
+      $("#feedback-form").submit(function(t) {
+          t.preventDefault();
+          $.ajax({
+              data: new FormData(this),
+              type:$(this).attr('method'),
+              url:"{% url 'feedback' %}",
+              headers:{"X-CSRFToken":'{{csrf_token}}'},
+              processData: false,
+              contentType: false,
+              success: function(data) {
+                  $(document.body).append(data);
+                  $('.toast-message').toast('show')
+              }
+          }).done(function(){$(".modal").modal("hide")},!1);
+      });
+  });
+</script>
+{% endblock extra_script %}

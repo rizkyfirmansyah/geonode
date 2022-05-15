@@ -1,0 +1,52 @@
+{% extends "geonode_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} {% trans "User Feedbacks" %} - {{ block.super }} {% endblock %}
+{% block body_class %}{% trans "feedbacks explore" %}{% endblock %}
+
+{% block body %}
+
+<div class="col-md-12 mb-4 float-right groupsList">
+  <div class="card border-dark rounded">
+    <div class="card-header">
+      <div class="row">
+        <h3 class="col">User Feedbacks</h3>
+        <div class="col-4 text-right">
+            <a href="{% url 'profile_detail' request.user %}" class="btn btn-primary w-100" type="button">{% trans "Back to Profile" %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <table class="table table-borderless">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Details</th>
+              <th scope="col">Feedback File</th>
+              <th scope="col">Reported By</th>
+              <th scope="col">Reported Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for feedback in feedback_list %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>{{ feedback.title }}</td>
+              <td>{{ feedback.details }}</td>
+              <td>{{ feedback.feedback_file }}</td>
+              <td>{{ feedback.user }}</td>
+              <td>{{ feedback.created_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

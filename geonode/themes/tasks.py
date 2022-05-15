@@ -34,6 +34,7 @@ def create_feedback(self, object_id):
     image_file = None
 
     f_name = feedback_path(feedback.feedback_file.name)
+    print(f_name)
     if storage_manager.exists(f_name):
         image_file = storage_manager.open(f_name, 'rb')
 

@@ -23,19 +23,14 @@ import os
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
-from django.db.models.signals import post_save, post_delete, pre_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_noop as _
-from django.db.models import Q
 from imagekit.models import ImageSpecField
 from colorfield.fields import ColorField
-from geonode.documents.enumerations import DOCUMENT_TYPE_MAP
-from .utils import get_unique_feedback_path
 from uuid_upload_path import upload_to
 from django.conf import settings
 from django.urls import reverse
-from django.core.files.base import ContentFile
-from geonode.storage.manager import storage_manager
 
 
 THEME_CACHE_KEY = 'enabled_theme'

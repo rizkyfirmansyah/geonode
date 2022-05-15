@@ -1212,11 +1212,8 @@ input[type=text],
 input[type=url],
 select,
 textarea {
-    padding: 0.5em;
     background-color: var(--web-surface)!important;
-    border: 1px solid #000 !important;
     color: var(--primary)!important;
-    height: var(--spacing-1);
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
     -webkit-appearance: none;
@@ -2692,6 +2689,10 @@ color: #491217;
 @media (min-width:992px) and (max-width:1199px) {
     footer figure {
         padding-bottom: 7.5%
+    }
+
+    textarea {
+        height: 96px;
     }
 }
 

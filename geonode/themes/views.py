@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+from django.contrib.auth import get_user_model
 import uuid
 from geonode.notifications_helper import toast_message
 
 from .forms import FeedbackForm
-from .models import Faq, Help, About
+from .models import Faq, Feedback, Help, About
 
 
 def faq_view(request):
@@ -50,7 +53,7 @@ def feedback_form(request):
             feedback.user_id = request.user.id
             feedback.uuid = str(uuid.uuid4())
             feedback.save()
-            message = _("Your feedback has been submitted.")
+            message = _("Thank you for your feedback :)")
 
             return toast_message(request, message, extra_tags=toast_title, redirect=True)
 
@@ -58,3 +61,13 @@ def feedback_form(request):
         feedback_form = FeedbackForm()
         context = {'feedback_form': feedback_form}
         return render(request, 'modal/feedbacks.html', context)
+
+
+class FeedbackDetailView(LoginRequiredMixin, ListView):
+    model = Feedback
+    template_name = "feedbacks.html"
+    fields = ['title', 'details', 'feedback_file', 'user', 'created_at']
+    context_object_name = 'feedback_list'
+
+    def get_queryset(self):
+        return Feedback.objects.all()
