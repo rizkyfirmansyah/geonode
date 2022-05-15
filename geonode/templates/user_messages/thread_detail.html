@@ -30,7 +30,7 @@
     <form action="{{ thread.get_absolute_url }}" method="post" class="w-100">
       {% csrf_token %}
       <fieldset>
-        <textarea name="content"></textarea>
+        <textarea name="content" class="w-100" style="min-height: 240px; padding: 0.5em;" cols="40" rows="10"></textarea>
       </fieldset>
       <input type="submit" value="{% trans "Send Reply" %}" class="btn btn-primary w-100 mt-4" type="button"/>
     </form>

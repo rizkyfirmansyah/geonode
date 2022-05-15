@@ -1,7 +1,6 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
-{% load staticfiles %}
-{% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %} {% trans "User Feedbacks" %} - {{ block.super }} {% endblock %}
 {% block body_class %}{% trans "feedbacks explore" %}{% endblock %}
@@ -37,7 +36,7 @@
               <th scope="row">{{ forloop.counter }}</th>
               <td>{{ feedback.title|truncatewords:15 }}</td>
               <td>{{ feedback.details|truncatewords:50 }}</td>
-              <td>{{ feedback.feedback_file }}</td>
+              <td><img src="/uploaded/{{ feedback.feedback_file }}" id="{{ feedback.uuid }}"/></td>
               <td>{{ feedback.user }}</td>
               <td>{{ feedback.created_at }}</td>
             </tr>

@@ -61,15 +61,21 @@ def initialize_notification_signal():
     )
 
 
-def send_inbox(request, subject, message, send_to):
+def send_inbox(request, subject, content, send_to):
       
-      thread = Thread.objects.create(subject=subject)
-      thread.userthread_set.create(user=send_to, unread=True)
-      thread.userthread_set.create(user=request.user, unread=False)
-      Message.objects.create(
-          sender=request.user,
-          thread=thread,
-          content=message
+      # thread = Thread.objects.create(subject=subject)
+      # thread.userthread_set.create(user=send_to, unread=True)
+      # thread.userthread_set.create(user=request.user, unread=False)
+      # Message.objects.create(
+      #     sender=request.user,
+      #     thread=thread,
+      #     content=content
+      # )
+      Message.objects.new_message(
+          from_user=request.user,
+          to_users=[send_to],
+          subject=subject,
+          content=content
       )
 
       logger.debug(f"sending inbox to: {send_to} from: {request.user}")

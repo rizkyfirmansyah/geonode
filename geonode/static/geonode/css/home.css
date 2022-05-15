@@ -132,10 +132,6 @@
   OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
 
-.modal-dialog {
-  margin: 0 auto !important;
-}
-
 .btn_wrapper,
 #information_categories_card li a {
     width: 100%;

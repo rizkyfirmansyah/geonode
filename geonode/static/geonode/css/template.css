@@ -181,17 +181,9 @@
     OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
 
-.modal-dialog {
-  margin: 0 auto !important;
-}
-
 .form-control:focus {
     border-color: var(--primary) !important;
     box-shadow: 0 0 0 .2rem var(--primary) !important;
-}
-
-.modal {
-  top: 96px !important;
 }
 
 .bootstrap-datetimepicker-widget, .bootstrap-datetimepicker-widget.dropdown-menu {
@@ -3973,7 +3965,9 @@ span.grippy {
     width: 100%;
     background-image: none;
     border: 1px solid #ccc;
-    border-radius: 4px
+    border-radius: 4px;
+    padding: 0.5em;
+    height: auto;
 }
 
 .home .geonode-slide-show .jumbotron {

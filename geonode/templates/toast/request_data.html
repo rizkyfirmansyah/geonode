@@ -14,7 +14,7 @@
               $("#request-download-layer")[0].reset()
             },
             error:function(data){
-              $(document.body).append(data);
+              $(document.body).append(`{% include "toast/_toast.html" %}`);
             }}).done(function(){$(".modal").modal("hide")},!1)})});
 </script>
 {% endblock extra_script %}

@@ -4,9 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 import uuid
+from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import toast_message
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 from .forms import FeedbackForm
 from .models import Faq, Feedback, Help, About
@@ -48,7 +51,7 @@ def help_view(request):
 def feedback_form(request):
     if request.method == 'POST':
         toast_title = _("Submit Feedback")
-        feedback_form = FeedbackForm(request.POST)
+        feedback_form = FeedbackForm(request.POST, request.FILES)
         if feedback_form.is_valid():
             feedback = feedback_form.save(commit=False)
             feedback.user_id = request.user.id
@@ -56,7 +59,11 @@ def feedback_form(request):
             feedback.save()
             message = _("Thank you for your feedback :)")
 
-            return toast_message(request, message, extra_tags=toast_title, redirect=True)
+            subject = _("User Feedbacks")
+            content = f"New Feedback is coming from user: {request.user}"
+            send_inbox(request, subject, content, send_to = get_user_model().objects.filter(is_superuser=True)[0])
+
+            return toast_message(request, message, extra_tags=toast_title)
 
     else:
         feedback_form = FeedbackForm()

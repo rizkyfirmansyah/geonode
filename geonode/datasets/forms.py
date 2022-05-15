@@ -15,7 +15,7 @@ class RodaForm(forms.ModelForm):
 
     class Meta:
         model = Roda
-        fields = ["requester_name", "requester_email", "requester_institution",  "requester_position", "purposes", "retention", "uuid", "resource_title", "requester_username"]
+        fields = ["requester_name", "requester_email", "requester_institution",  "requester_position", "purposes", "retention"]
         widgets = {
           'requester_name': forms.TextInput(attrs={'class': 'form-control'}),
           'requester_email': forms.TextInput(attrs={'class': 'form-control'}),
@@ -23,7 +23,7 @@ class RodaForm(forms.ModelForm):
           'requester_position': forms.TextInput(attrs={'class': 'form-control'}),
           'purposes': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Please briefly describe how you intend to use this data?"}),
         }
-        exclude = ('created_at', 'absolute_url', 'resource_owner', 'requester_username', 'uuid', 'resource_title',)
+        exclude = ('created_at', 'absolute_url', 'resource_owner', 'uuid', 'resource_title', 'requester',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

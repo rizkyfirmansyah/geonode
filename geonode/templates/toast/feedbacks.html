@@ -12,7 +12,7 @@
               contentType: false,
               success: function(data) {
                   $(document.body).append(`{% include "toast/_toast.html" %}`);
-                  $("#feedback-form")[0].reset()
+                  $("#request-download-layer")[0].reset()
               }
           }).done(function(){$(".modal").modal("hide")},!1);
       });

@@ -22,14 +22,14 @@ class Roda(models.Model):
 
     purposes_help_text = _("Please briefly describe how you intend to use this Dataset.")
     retention_help_text = _("Duration the data should be used, stored, or achived.")
-    resource_owner_help_text = _("Requester Name")
+    requester_help_text = _("Requester Name")
+    resource_owner_help_text = _("Resource Owner")
 
     uuid = models.CharField(max_length=255)
-    requester_username = models.CharField(max_length=150)
     requester_name = models.CharField(max_length=255)
     requester_email = models.CharField(max_length=255, null=True, blank=True)
-    requester_position = models.CharField(max_length=255)
     requester_institution = models.CharField(max_length=255)
+    requester_position = models.CharField(max_length=255)
     purposes = models.TextField(default='', help_text=purposes_help_text)
     retention = models.CharField(
         _('Retention'),
@@ -39,7 +39,8 @@ class Roda(models.Model):
         blank=True,
         help_text=retention_help_text)
     resource_title = models.CharField(max_length=255)
-    resource_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, help_text=resource_owner_help_text)
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, help_text=requester_help_text, related_name='requester')
+    resource_owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, help_text=resource_owner_help_text, related_name='resource_owner')
     absolute_url = models.CharField(max_length=255)
     created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
 
@@ -49,4 +50,4 @@ class Roda(models.Model):
 
 
     def __str__(self):
-        return self.requester_username
+        return self.requester

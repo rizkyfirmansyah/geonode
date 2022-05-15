@@ -463,7 +463,7 @@ def request_permissions(request):
         if roda_form.is_valid():
             roda = roda_form.save(commit=False)
             roda.resource_owner = resource.owner
-            roda.requester_username = request.user
+            roda.requester = request.user
             roda.resource_title = resource_title
             roda.absolute_url = absolute_url
             roda.uuid = uuid
@@ -485,62 +485,6 @@ def request_permissions(request):
         roda_form = RodaForm()
         context = {'roda_form': roda_form}
         return render(request, 'modal/request_data.html', context)
-
-
-# def request_permissions(request):
-#     """ Request permission to download a resource.
-#     """
-#     uuid = request.POST['uuid']
-#     resource = get_object_or_404(ResourceBase, uuid=uuid)
-#     toast_title = _("Request Permission")
-#     try:
-
-#         resource_owner = resource.owner
-#         requester_username = request.user
-#         requester_name = request.POST['requester_name']
-#         requester_email = request.POST['requester_email']
-#         requester_institution = request.POST['requester_institution']
-#         requester_position = request.POST['requester_position']
-#         purposes = request.POST['purposes']
-#         retention = request.POST['retention']
-#         resource_title = request.POST['resource_title']
-#         absolute_url = request.POST['absolute_url']
-
-#         try:
-#             # Save the request download resources to the model
-#             roda = Roda(
-#             uuid=uuid, requester_username=requester_username, requester_name=requester_name,
-#             requester_email=requester_email, requester_institution=requester_institution,
-#             requester_position=requester_position, purposes=purposes,
-#             retention=retention, resource_title=resource_title, resource_owner=resource_owner, absolute_url=absolute_url)
-#             roda.save()
-#             # Add notification to inbox user as well
-#             subject = 'System message: A request to download resource'
-#             message = f'{requester_name} has requested to download the resource {resource_title}. Reason for the request: {purposes}. To allow his/her download the resource, please go to {absolute_url}. Under the permissions setting, change data and assign download to {requester_username}.'
-#             thread = Thread.objects.create(subject=subject)
-#             thread.userthread_set.create(user=resource_owner, unread=True)
-#             thread.userthread_set.create(user=request.user, unread=False)
-#             Message.objects.create(
-#                 sender=request.user,
-#                 thread=thread,
-#                 content=message
-#             )
-#             logger.debug("Record request download resources...")
-#             send_notification([resource.owner],
-#                               'request_download_resourcebase',
-#                               {'resource': resource, 'from_user': request.user})
-            
-#             _toast_message = _("We have sent an email to the resource owner about your request.")
-#             return toast_message(request, _toast_message, extra_tags=toast_title, redirect=True)
-
-#         except Exception:
-#             _toast_message = _('Permission to download the resource could not be requested to resource owner because of an error.')
-#             return toast_unauthorized(request, _toast_message, extra_tags=toast_title, redirect=True)
-
-
-#     except Exception:
-#         # traceback.print_exc()
-#         return toast_server_error(request, toast_title, redirect=True)
 
 
 def send_email_consumer(layer_uuid, user_id):
