@@ -17,7 +17,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-import uuid
 import logging
 import os
 
@@ -265,8 +264,8 @@ class Faq(models.Model):
     created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
     last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True, null=True)
 
-    def __str__(self) -> str:
-        return super().__str__(self.header_title)
+    def __str__(self):
+        return self.header_title
 
     def get_absolute_url(self):
         return reverse("faq", kwargs={"pk": self.pk})
@@ -288,8 +287,8 @@ class About(models.Model):
         ordering = ("id", )
         verbose_name_plural = 'SDI About'
 
-    def __str__(self) -> str:
-        return super().__str__(self.header_title)
+    def __str__(self):
+        return self.header_title
 
     def get_absolute_url(self):
         return reverse("about", kwargs={"pk": self.pk})
@@ -307,8 +306,8 @@ class Help(models.Model):
         ordering = ("id", )
         verbose_name_plural = 'SDI Help & Support'
 
-    def __str__(self) -> str:
-        return super().__str__(self.header_title)
+    def __str__(self):
+        return self.header_title
 
     def get_absolute_url(self):
         return reverse("help", kwargs={"pk": self.pk})
@@ -343,8 +342,6 @@ class Feedback(models.Model):
         max_length=255,
         verbose_name=feedback_file_help_text)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, help_text=user_help_text)
-    extension = models.CharField(max_length=128, blank=True, null=True)
-    feedback_type = models.CharField(max_length=128, blank=True, null=True)
     created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
 
     class Meta:
@@ -354,28 +351,19 @@ class Feedback(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
 
 @receiver(post_save, sender=Feedback)
-def post_save_feedback(instance, sender, created, **kwargs):
+def post_save_feedback(sender, instance, created, *args, **kwargs):
     from .tasks import create_feedback
 
     if created:
-        base_name, extension = os.path.splitext(instance.feedback_file.name)
-        ext = extension[1:]
-        feedback_type_map = DOCUMENT_TYPE_MAP
-        feedback_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
-
-        if feedback_type_map is None:
-            feedback_type = 'other'
-        else:
-            feedback_type = feedback_type_map.get(ext.lower(), 'other')
-        feedback_type = feedback_type
-
-        if instance.uuid is None or instance.uuid == '':
-            instance.uuid = str(uuid.uuid4())
-
         if instance.id and instance.feedback_file:
-            create_feedback.apply_async((instance.id, feedback_type, instance.uuid, ext))
+            create_feedback.apply_async((instance.id,))
+
+        instance.save()
 
 
 # Disable other themes if one theme is enabled.

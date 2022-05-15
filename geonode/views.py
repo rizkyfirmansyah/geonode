@@ -167,46 +167,6 @@ def unauthorized_message(request, message, template_name="error/403.html"):
     return render(request, template_name, context=out)
 
 
-def toast_unauthorized(request, toast_title, toast_message=None):
-    if toast_title is None:
-        toast_title = _("We could not process your request")
-    if toast_message is None:
-        toast_message = _("You don't have any permissions to modify this resource. Please ask to the resource owner.")
-    out = {
-      'status_code': 403,
-      'toast_message': toast_message,
-      'toast_title': toast_title,
-    }
-    return render(request, "toast/_toast.html", context=out)
-
-
-def toast_server_error(request, toast_title=None, toast_message=None, status_code=None):
-    if status_code is None:
-        status_code = 500
-    if toast_title is None:
-        toast_title = _("We could not process your request")
-    if toast_message is None:
-        toast_message = _("Something went wrong with your request. Please ask nicely to your admin or developer. Submit a ticket through give feedback.")
-    out = {
-      'status_code': status_code,
-      'toast_message': toast_message,
-      'toast_title': toast_title,
-    }
-    return render(request, "toast/_toast.html", context=out)
-
-
-def toast_message(request, toast_title, toast_message, status_code=None):
-    if status_code is None:
-        status_code = 200
-    message = {
-      'title': toast_title,
-      'message': toast_message,
-    }
-    messages.success(request, message)
-    print(messages)
-    return render(request, "toast/_toast.html")
-
-
 def ident_json(request):
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
     json_data = {}

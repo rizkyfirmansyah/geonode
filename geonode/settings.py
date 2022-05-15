@@ -693,6 +693,7 @@ CONTEXT_PROCESSORS = [
     'django.contrib.auth.context_processors.auth',
     'geonode.context_processors.resource_urls',
     'geonode.themes.context_processors.custom_theme',
+    'geonode.themes.context_processors.feedback_form',
 ]
 if 'geonode.geoserver' in INSTALLED_APPS:
     CONTEXT_PROCESSORS += ['geonode.geoserver.context_processors.geoserver_urls', ]

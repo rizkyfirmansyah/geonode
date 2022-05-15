@@ -640,7 +640,7 @@ button.full-width {
     border-color: var(--disabled) !important;
     cursor: not-allowed !important;
 }
-
+/* 
 .btn-secondary {
     color: var(--primary) !important;
     background-color: var(--success) !important;
@@ -668,7 +668,7 @@ button.full-width {
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important;
     cursor: not-allowed !important;
-}
+} */
 
 .btn-upload {
     color: var(--secondary) !important;
@@ -2086,11 +2086,6 @@ select option {
     display: none
 }
 
-textarea {
-    min-height: 25rem;
-    width: 100%;
-}
-
 label,
 legend {
     font-family: Solanel-Regular, sans-serif;
@@ -2257,6 +2252,20 @@ input::-moz-focus-inner {
 .alert-box--notice {
     background-color: #fff099;
     color: #bba31b
+}
+
+.alert-error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.alert-error hr {
+border-top-color: #f1b0b7;
+}
+
+.alert-error .alert-link {
+color: #491217;
 }
 
 .drop-cap:first-letter {
@@ -3422,6 +3431,10 @@ article.tab-pane {
 
 #search_header {
     height: var(--search-header);
+}
+
+.close-modal {
+    padding: 5px;
 }
 
 .delete_search {

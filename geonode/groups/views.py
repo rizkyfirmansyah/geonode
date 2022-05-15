@@ -33,6 +33,7 @@ from django.http import (
     HttpResponseNotAllowed,
     HttpResponseRedirect)
 from django.contrib import messages
+from geonode.notifications_helper import toast_message
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -48,7 +49,6 @@ from geonode.decorators import activeuser_only
 from geonode.base.views import SimpleSelect2View
 
 from dal import autocomplete
-from geonode.views import toast_message, toast_unauthorized
 from django.utils.translation import ugettext as _
 
 from . import forms
@@ -101,12 +101,25 @@ group_category_detail = GroupCategoryDetailView.as_view()
 group_category_update = GroupCategoryUpdateView.as_view()
 
 
+@login_required
+def group_join_request(request, slug):
+    group = models.Group.objects.filter(slug=slug)
+    print(group)
+    toast_title = _("Request Join Group")
+    requester = request.user
+    inbox_message = f"{requester + 'wants to join your group.'}"
+    message = _("Your request has been sent to owner's inbox.")
+
+    return toast_message(request, message, extra_tags=toast_title, redirect=True)
+
+
 @activeuser_only
 def group_create(request):
     if request.method == "POST":
         form = forms.GroupForm(request.POST, request.FILES)
         if form.is_valid():
             group = form.save(commit=False)
+            group.created_by_id = request.user.id
             group.save()
             form.save_m2m()
             group.join(request.user, role="manager")
@@ -179,6 +192,7 @@ class GroupDetailView(ListView):
         context['is_manager'] = self.group.user_is_role(
             self.request.user,
             "manager")
+        context["is_owner"] = self.request.user == self.group.created_by
         context['can_view'] = self.group.can_view(self.request.user)
         return context
 
@@ -272,7 +286,6 @@ def group_join(request, slug):
 
 
 @login_required
-@require_POST
 def group_remove(request, slug):
     toast_title = _("Delete Group")
 
@@ -280,9 +293,12 @@ def group_remove(request, slug):
     if not group.user_is_role(request.user, role="manager"):
         return HttpResponseForbidden()
 
-    group.delete()
-    message = _("Group : {} has been deleted".format(slug))
-    return toast_message(request, toast_title, message)
+    if request.method == 'POST':
+        
+        group.delete()
+        message = _("Group : {} has been deleted".format(slug))
+        messages.warning(request, message, extra_tags=toast_title)
+        return redirect('group_list')
 
 
 @login_required
@@ -297,14 +313,15 @@ def group_category_remove(request, slug):
     try:
         group_category.delete()
         message = _("Group Categories: {} has been deleted".format(slug))
-        return toast_message(request, toast_title, message)
+        toast_message(request, message, extra_tags=toast_title, remove=True)
+        return redirect('group_category_list')
     
     except PermissionDenied:
-        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_DELETE)
+        return toast_message(request, _PERMISSION_MSG_DELETE, extra_tags=toast_title, remove=True, redirect=True)
 
     except Exception:
         message = _("Something went wrong with your request. Please ask nicely to your admin or developer. Submit a ticket through give feedback.")
-        return toast_message(request, toast_title, message)
+        return toast_message(request, message, extra_tags=toast_title, remove=True, redirect=True)
 
 
 class GroupActivityView(ListView):

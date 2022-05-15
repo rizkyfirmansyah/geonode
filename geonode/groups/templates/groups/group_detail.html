@@ -53,6 +53,7 @@
           {% if object.email %}
           <p class="col text-right"><i class="fa-regular fa-envelope"></i>
             <a href="mailto:{{ object.email }}">{{ object.email }}</a>
+            {% comment %} need to create inbox modal form to send through inbox {% endcomment %}
           </p>
           {% endif %}
         </div>
@@ -90,8 +91,8 @@
             {% trans "Membership is by invitation only." %}
           {% endif %} {% endif %} {% endif %}
         </p>
-        {% if object.access == "public-invite" %}
-        <li class="list-group-item border-0 pt-0"><a href="{% url "group_members" object.slug %}" class="btn-save btn_wrapper">{% trans "Request Join" %}</a></li>
+        {% if object.access == "public-invite" and not is_owner %}
+        <li class="list-group-item border-0 pt-0"><form id="request-join" method="post" action="{% url 'group_join_request' object.slug %}"></form><a class="btn-save btn_wrapper" onclick="document.getElementById('request-join').submit();">{% trans "Request Join" %}</a></li>
         {% endif %}
       </li>
       <li class="list-group-item border-0">
@@ -115,6 +116,7 @@
 </div>
 
 {% include "modal/remove_group.html" %}
+{% comment %} {% include "toast/request_join.html" %} {% endcomment %}
 
 {% endblock %}
 

@@ -11,9 +11,7 @@
         data:{slug:slug},type:$(this).attr("method"),method:"POST",url:'{% url "group_remove" object.slug %}',headers:{"X-CSRFToken":'{{csrftoken}}'},
         success:function(data){
           $(document.body).append(data);
-          //$('.toast').toast('show')
-        }}).done(function(){}),!1})
-        
+        }}).done(function(){setInterval(function(){location.href="{% url 'group_list' %}"},2e3)}),!1})        
   });
 </script>
 {% endblock extra_script %}

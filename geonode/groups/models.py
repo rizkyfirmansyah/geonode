@@ -63,6 +63,13 @@ class GroupCategory(models.Model):
     def get_absolute_url(self):
         return reverse('group_category_detail', args=(self.slug,))
 
+    def delete(self, *args, **kwargs):
+        try:
+            GroupCategory.objects.filter(name=str(self.slug)).delete()
+        except Exception as e:
+            logger.exception(e)
+        super().delete(*args, **kwargs)
+
 
 def group_category_pre_save(sender, instance, *args, **kwargs):
     instance.slug = slugify(instance.name)
@@ -80,7 +87,7 @@ class GroupProfile(models.Model):
 
     access_help_text = _('Public: Any registered user can view and join a public group.<br>'
                          'Public (invite-only):Any registered user can view the group.  '
-                         'Only invited users can join.<br>'
+                         'Only invited users can join or make a request to group owner.<br>'
                          'Private: Registered users cannot see any details about the group, including membership.  '
                          'Only invited users can join.')
     email_help_text = _('Email used to contact one or all group members, '
@@ -107,7 +114,8 @@ class GroupProfile(models.Model):
         choices=GROUP_CHOICES,
         help_text=access_help_text)
     categories = models.ManyToManyField(GroupCategory, verbose_name=_("Categories"), blank=True, related_name='groups')
-    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):

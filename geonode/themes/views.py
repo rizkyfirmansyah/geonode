@@ -1,6 +1,8 @@
-import json
 from django.shortcuts import render
-from urllib3 import HTTPResponse
+from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import login_required
+import uuid
+from geonode.notifications_helper import toast_message
 
 from .forms import FeedbackForm
 from .models import Faq, Help, About
@@ -38,19 +40,21 @@ def help_view(request):
     return render(request, 'help.html', {'contents': contents})
 
 
+@login_required
 def feedback_form(request):
     if request.method == 'POST':
-        form = FeedbackForm(request.POST)
-        if form.is_valid():
-            form.save()
-            out = {'success': True}
-            return HTTPResponse(
-                json.dumps(out),
-                content_type='application/json',
-                status=200
-            )
-    else:
-        form = FeedbackForm()
+        toast_title = _("Submit Feedback")
+        feedback_form = FeedbackForm(request.POST)
+        if feedback_form.is_valid():
+            feedback = feedback_form.save(commit=False)
+            feedback.user_id = request.user.id
+            feedback.uuid = str(uuid.uuid4())
+            feedback.save()
+            message = _("Your feedback has been submitted.")
 
-    context = {'form': form}
-    return render(request, 'modal/feedbacks.html', context)
+            return toast_message(request, message, extra_tags=toast_title, redirect=True)
+
+    else:
+        feedback_form = FeedbackForm()
+        context = {'feedback_form': feedback_form}
+        return render(request, 'modal/feedbacks.html', context)

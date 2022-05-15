@@ -22,10 +22,11 @@ import logging
 import traceback
 from itertools import chain
 import warnings
-from geonode.views import page_not_found_message, toast_message, unauthorized_message
+from geonode.notifications_helper import toast_message, toast_server_error
+from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
@@ -601,7 +602,8 @@ def document_remove(request):
 
         message = _("Document: {} has been deleted".format(document.title))
         register_event(request, EventType.EVENT_REMOVE, document)
-        return toast_message(request, document.title, message)
+        toast_message(request, message, extra_tags=_PERMISSION_MSG_DELETE, remove=True)
+        return redirect('catalogue_browse')
 
     except PermissionDenied:
         return unauthorized_message(_PERMISSION_MSG_DELETE)
@@ -611,12 +613,7 @@ def document_remove(request):
         message = f'{_("We are incredibly sorry, we could not execute to delete")}: {document.title}.'
         message += f'{_("Please submit a ticket or fill the form in the help & support. Thank you.")}'
 
-        out = {'success': False}
-        out['status_code'] = 500
-        out['message'] = message
-        _template = 'error/500.html'
-
-        return render(request, _template, context=out)
+        return toast_server_error(request, message, redirect=True)
 
 
 def document_metadata_detail(

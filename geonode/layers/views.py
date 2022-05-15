@@ -39,7 +39,7 @@ from django.db.models import F
 from django.http import Http404
 from django.urls import reverse
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.html import escape
 from django.forms.utils import ErrorList
 from django.contrib.auth import get_user_model
@@ -52,7 +52,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
-from geonode.views import page_not_found_message, toast_message, toast_unauthorized, unauthorized_message
+from geonode.views import page_not_found_message, unauthorized_message
+from geonode.notifications_helper import toast_unauthorized
 
 from guardian.shortcuts import get_objects_for_user
 
@@ -1446,22 +1447,25 @@ def layer_remove(request):
                     'This layer is a member of a layer group, you must remove the layer from the group '
                     'before deleting.')
 
-            return toast_unauthorized(request, toast_title, message)
+            toast_unauthorized(request, message, toast_title)
+            return HttpResponseRedirect(request.path_info)
 
         register_event(request, 'remove', layer)
         message = _("Spatial data: {} has been deleted".format(layer.alternate))
 
-        return toast_message(request, toast_title, message)
+        messages.warning(request, message, extra_tags=toast_title)
+        return redirect('catalogue_browse')
 
     except PermissionDenied:
-        return toast_unauthorized(request, toast_title)
+        toast_unauthorized(request)
+        return HttpResponseRedirect(request.path_info)
 
     except Exception:
         traceback.print_exc()
         message = f'{_("Unable to delete layer")}: {layer.alternate}.'
 
-        return toast_message(request, toast_title, message)
-
+        messages.error(request, message, extra_tags=toast_title)
+        return HttpResponseRedirect(request.path_info)
 
 
 @login_required

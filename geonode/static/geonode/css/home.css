@@ -339,7 +339,7 @@ button.full-width {
     border-color: var(--disabled) !important;
     border: 2px solid var(--disabled);
 }
-
+/* 
 .btn-secondary {
     color: var(--primary) !important;
     background-color: var(--success) !important;
@@ -366,7 +366,7 @@ button.full-width {
     color: var(--secondary) !important;
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important
-}
+} */
 
 .btn-upload {
   color: var(--secondary) !important;
@@ -3221,18 +3221,6 @@ article.tab-pane {
     margin: auto
 }
 
-#region_search_btn {
-    width: 100%;
-    background: 0 0;
-    border: none;
-    cursor: pointer;
-    margin-top: 15px
-}
-
-#region_search_btn svg:hover {
-    fill: #fdba12
-}
-
 .fltSpTree {
     display: inline-block;
     height: 28px;
@@ -3251,6 +3239,10 @@ article.tab-pane {
 
 #text_search_btn {
     font-size: 2em;
+}
+
+.close-modal {
+  padding: 5px;
 }
 
 #text_search_btn:hover,

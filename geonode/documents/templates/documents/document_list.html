@@ -20,7 +20,7 @@
         {% endwith %}
         <div class="row w-100">
           {% if user.is_authenticated and not READ_ONLY_MODE %}
-            <div class="col-3"><a href="{% url "document_upload" %}" class="btn btn-secondary ml-2 btn--pill">{% trans "Upload Datasets" %}</a></div>
+            <div class="col-3"><a href="{% url "document_upload" %}" class="btn btn-upload ml-2 btn--pill">{% trans "Upload Datasets" %}</a></div>
           {% endif %}
           {% if SEARCH_FILTERS.TEXT_ENABLED %}
             {% include "search/_text_container.html" %}

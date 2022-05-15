@@ -1,25 +1,30 @@
 {% load i18n %}
 {% load static %}
 {% load base_tags %}
+{% load crispy_forms_tags %}
+
 <div class="modal fade"
      id="feedbackModal"
      tabindex="-1"
      role="dialog"
      aria-labelledby="feedbackModal"
      aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="dialog">
         <div class="modal-content rounded-0 m-modal-width">
-            <div class="p-4 to-front">
-                <div class="text-center">
-                    <h3 class="light">Feedback</h3>
-                    <p class="mb-4 ">
-                        Please fill the information below, and we'll notify the owner about your request.
-                    </p>
+            <div class="modal-header">
+              <h5 class="modal-title text-center">Something went wrong</h5>
+              <div aria-label="Close" role="button" class="close-modal"><i class="fa-solid fa-xmark" data-dismiss="modal"></i></div>
+            </div>
+            <div class="p-4">
+                <div class="text-left">
                     <form method="POST" class="mb-4" id="feedback-form">
                         {% csrf_token %}
-                        {{ feedback_form.as_p }}
+                        {{ feedback_form|crispy }}
                         <input type="submit" class="btn btn-save form-actions w-100 mt-2" value="Submit">
                     </form>
+                    <div class="card-footer">
+                      <p class="">Let us know if you have ideas that can help make our products better.</p>
+                    </div>
                     <p class="mb-0 cancel">
                         <a href="#" data-dismiss="modal"class="btn_wrapper">Maybe later</a>
                     </p>
@@ -28,4 +33,20 @@
         </div>
     </div>
 </div>
-{% include 'toast/feedback_form.html' %}
+
+{% block extra_script %}
+<script>
+  $(function() {
+      $("#feedback-form").submit(function(t) {
+          t.preventDefault();
+          let r=$(this).serialize();
+          $.ajax({
+              data:r,
+              type:$(this).attr('method'),
+              url:"{% url 'feedback' %}",
+              headers:{"X-CSRFToken":'{{csrf_token}}'}
+          }).done(!1);
+      });
+  });
+</script>
+{% endblock extra_script %}

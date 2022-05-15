@@ -24,6 +24,9 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.db.models import signals, Q
 from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+from django.http import HttpResponseRedirect
 
 from geonode.tasks.tasks import send_queued_notifications
 
@@ -139,3 +142,37 @@ def get_comment_notification_recipients(notice_type_label, instance_owner, exclu
     profiles = get_notification_recipients(notice_type_label, exclude_user, resource=resource)
     profiles = profiles.filter(Q(pk=resource.owner.pk) | Q(is_superuser=True))
     return profiles
+
+
+def toast_message(request, message, extra_tags=None, remove=False, redirect=True):
+    if redirect:
+        messages.info(request, message, extra_tags=extra_tags)
+        return HttpResponseRedirect(request.path_info)
+    if remove:
+        return messages.warning(request, message, extra_tags=extra_tags)
+    else:
+        return messages.info(request, message, extra_tags=extra_tags)
+
+
+def toast_unauthorized(request, message=None, extra_tags=None, redirect=True):
+    if extra_tags is None:
+        extra_tags = _("We could not process your request")
+    if message is None:
+        message = _("You don't have any permissions to modify this resource. Please ask to the resource owner.")
+    if redirect:
+        messages.warning(request, message, extra_tags=extra_tags)
+        return HttpResponseRedirect(request.path_info)
+    else:
+        return messages.warning(request, message, extra_tags=extra_tags)
+
+
+def toast_server_error(request, message=None, extra_tags=None, redirect=True):
+    if extra_tags is None:
+        extra_tags = _("We could not process your request")
+    if message is None:
+        message = _("Something went wrong with your request. Please ask nicely to your admin or developer. Submit a ticket through give feedback.")
+    if redirect:
+        messages.error(request, message, extra_tags=extra_tags)
+        return HttpResponseRedirect(request.path_info)
+    else:
+        return messages.error(request, message, extra_tags=extra_tags)

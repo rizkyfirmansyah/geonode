@@ -38,10 +38,12 @@ from geonode.base.models import (
 from geonode.layers.models import Layer
 from geonode.groups.models import GroupProfile
 
-from geonode.notifications_helper import send_notification
+from geonode.notifications_helper import send_notification, toast_message
 
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+from geonode.notifications_helper import toast_unauthorized, toast_server_error
 from geonode.datasets.models import Roda
-from geonode.views import toast_message, toast_server_error, toast_unauthorized
 from user_messages.models import Message, Thread
 
 logger = logging.getLogger(__name__)
@@ -120,7 +122,8 @@ def resource_permissions(request, resource_id):
     except PermissionDenied:
         # traceback.print_exc()
         # we are handling this in a non-standard way
-        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_MODIFY)
+        toast_unauthorized(request, _PERMISSION_MSG_MODIFY, extra_tags=toast_title)
+        return HttpResponseRedirect(request.path_info)
 
     if request.method == 'POST':
         return resource_permissions_handle_post(request, resource)
@@ -486,16 +489,16 @@ def request_permissions(request):
                               {'resource': resource, 'from_user': request.user})
             
             _toast_message = _("We have sent an email to the resource owner about your request.")
-            return toast_message(request, toast_title, _toast_message)
+            return toast_message(request, _toast_message, extra_tags=toast_title, redirect=True)
 
         except Exception:
             _toast_message = _('Permission to download the resource could not be requested to resource owner because of an error.')
-            return toast_unauthorized(request, toast_title, _toast_message)
+            return toast_unauthorized(request, _toast_message, extra_tags=toast_title, redirect=True)
 
 
     except Exception:
         # traceback.print_exc()
-        return toast_server_error(request, toast_title)
+        return toast_server_error(request, toast_title, redirect=True)
 
 
 def send_email_consumer(layer_uuid, user_id):

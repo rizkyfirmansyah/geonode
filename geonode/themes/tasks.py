@@ -19,7 +19,7 @@ logger = get_task_logger(__name__)
     retry_backoff=True,
     retry_backoff_max=700,
     retry_jitter=True)
-def create_feedback(self, object_id, feedback_type, uuid, ext):
+def create_feedback(self, object_id):
     """
     Save feedback file
     """
@@ -39,10 +39,5 @@ def create_feedback(self, object_id, feedback_type, uuid, ext):
 
     if image_file is not None:
         image_file.close()
-
-    Feedback.objects.filter(id=object_id).update(
-        uuid=uuid,
-        extension=ext,
-        feedback_type=feedback_type)
 
     logger.debug(f"Saving feedback #{object_id} created.")
