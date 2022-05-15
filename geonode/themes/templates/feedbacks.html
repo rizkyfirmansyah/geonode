@@ -35,8 +35,8 @@
             {% for feedback in feedback_list %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
-              <td>{{ feedback.title }}</td>
-              <td>{{ feedback.details }}</td>
+              <td>{{ feedback.title|truncatewords:15 }}</td>
+              <td>{{ feedback.details|truncatewords:50 }}</td>
               <td>{{ feedback.feedback_file }}</td>
               <td>{{ feedback.user }}</td>
               <td>{{ feedback.created_at }}</td>

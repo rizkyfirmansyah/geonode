@@ -32,3 +32,48 @@
   </div>
 
 {% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(function() {
+    // dirty hacks to use bootstrap 4 datetimepicker rather than initial renderer
+    $('#id_publish_end').attr('data-toggle', 'datetimepicker');
+    $('#id_publish_end').attr('data-target', '#id_publish_end');
+    $('#id_publish_end').addClass('datetimepicker-input');
+
+    $('#id_publish_start').attr('data-toggle', 'datetimepicker');
+    $('#id_publish_start').attr('data-target', '#id_publish_start');
+    $('#id_publish_start').addClass('datetimepicker-input');
+
+    $('#id_publish_start').datetimepicker({
+      sideBySide: true,
+      format : 'YYYY-MM-DD HH:mm'
+    });
+
+    $('#id_publish_end').datetimepicker({
+      sideBySide: true,
+      format : 'YYYY-MM-DD HH:mm'
+    });
+
+    $('#id_site_wide').attr('checked', true);
+    $('#id_site_wide').attr('data-toggle', 'toggle');
+    $('#id_site_wide').attr('data-width', '100%');
+    $('#id_site_wide').attr('data-height', '50');
+    $('#id_members_only').attr('checked', true);
+    $('#id_members_only').attr('data-toggle', 'toggle');
+    $('#id_members_only').attr('data-width', '100%');
+    $('#id_members_only').attr('data-height', '50');
+    
+    $('#id_site_wide').bootstrapToggle({
+        on: 'Announcement for all users',
+        off: '....'
+    });
+
+    $('#id_members_only').bootstrapToggle({
+        on: 'For registered members',
+        off: 'All users including guests'
+    });
+
+  })
+</script>
+{% endblock extra_script %}

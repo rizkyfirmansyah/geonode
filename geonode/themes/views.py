@@ -6,6 +6,8 @@ from django.views.generic import ListView
 from django.contrib.auth import get_user_model
 import uuid
 from geonode.notifications_helper import toast_message
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 
 from .forms import FeedbackForm
 from .models import Faq, Feedback, Help, About
@@ -63,6 +65,7 @@ def feedback_form(request):
         return render(request, 'modal/feedbacks.html', context)
 
 
+@method_decorator(staff_member_required, name='dispatch')
 class FeedbackDetailView(LoginRequiredMixin, ListView):
     model = Feedback
     template_name = "feedbacks.html"
