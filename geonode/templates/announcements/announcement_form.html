@@ -56,23 +56,19 @@
     });
 
     $('#id_site_wide').attr('checked', true);
-    $('#id_site_wide').attr('data-toggle', 'toggle');
-    $('#id_site_wide').attr('data-width', '100%');
-    $('#id_site_wide').attr('data-height', '50');
     $('#id_members_only').attr('checked', true);
     $('#id_members_only').attr('data-toggle', 'toggle');
     $('#id_members_only').attr('data-width', '100%');
     $('#id_members_only').attr('data-height', '50');
     
-    $('#id_site_wide').bootstrapToggle({
-        on: 'Announcement for all users',
-        off: '....'
-    });
+    $('#div_id_site_wide').css('display', 'none');
 
     $('#id_members_only').bootstrapToggle({
         on: 'For registered members',
         off: 'All users including guests'
     });
+
+    $('.form-check-label').css('display', 'none');
 
   })
 </script>
