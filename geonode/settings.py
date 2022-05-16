@@ -1970,7 +1970,8 @@ MAP_CLIENT_USE_CROSS_ORIGIN_CREDENTIALS = ast.literal_eval(os.getenv(
 ACCOUNT_FORMS = {
     'login': 'geonode.people.forms.ProfileLoginForm',
     'signup': 'geonode.people.forms.ProfileSignupForm',
-    'reset_password': 'geonode.people.forms.ProfileResetPasswordForm'
+    'reset_password': 'geonode.people.forms.ProfileResetPasswordForm',
+    'change_password': 'geonode.people.forms.ProfileChangePasswordForm'
 }
 
 ACCOUNT_OPEN_SIGNUP = ast.literal_eval(os.environ.get('ACCOUNT_OPEN_SIGNUP', 'True'))

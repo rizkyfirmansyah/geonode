@@ -35,6 +35,8 @@ from geonode.base.auth import get_or_create_token
 from geonode.people.forms import ForgotUsernameForm
 from geonode.base.views import user_and_group_permission
 from django.views import View
+from django.contrib.auth import authenticate, login
+from geonode.people.forms import ProfileLoginForm
 
 from dal import autocomplete
 
@@ -61,6 +63,36 @@ class CustomSignupView(SignupView):
         ret = super(CustomSignupView, self).get_context_data(**kwargs)
         ret.update({'account_geonode_local_signup': settings.SOCIALACCOUNT_WITH_GEONODE_LOCAL_SIGNUP})
         return ret
+
+
+def login(request):
+
+    if 'next' in request.GET:
+        title = _("Login Required")
+        message = _("Please login before proceed to explore.")
+        messages.add_message(request, messages.INFO, message, extra_tags=title)
+    if request.method == 'POST':
+        form = ProfileLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            remember_me = form.cleaned_data['remember_me']
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                if not remember_me:
+                    request.session.set_expiry(0)
+                    return redirect('accounts:home')
+                else:
+                    request.session.set_expiry(1209600)
+                    return redirect('accounts:home')
+            else:
+                return redirect('accounts:login')
+        else:
+            return redirect('accounts:register')
+    else:
+        form = ProfileLoginForm()
+        return render(request, "login.html", {'form': form})
 
 
 @login_required
