@@ -401,11 +401,12 @@ def layer_upload(request, template='upload/layer_upload.html'):
         content_type='application/json',
         status=500)
 
-
+@login_required
 def layer_export(request, layername, template='layers/layer_export.html'):
     return layer_detail(request, layername, template)
 
 
+@login_required
 def layer_detail(request, layername, template='layers/layer_detail.html'):
     try:
         layer = _resolve_layer(
@@ -1521,6 +1522,7 @@ def layer_granule_remove(
         return HttpResponse("Not allowed", status=403)
 
 
+@login_required
 def get_layer(request, layername):
     """Get Layer object as JSON"""
 
@@ -1564,6 +1566,7 @@ def get_layer(request, layername):
             content_type='application/javascript')
 
 
+@login_required
 def layer_metadata_detail(
         request,
         layername,
@@ -1605,6 +1608,7 @@ def layer_metadata_detail(
     })
 
 
+@login_required
 def layer_metadata_upload(
         request,
         layername,

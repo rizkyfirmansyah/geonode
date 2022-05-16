@@ -22,6 +22,7 @@ from geonode.utils import check_ogc_backend
 from django.conf.urls import url, include
 from django.views.generic import TemplateView
 from geonode.base import register_url_event
+from django.contrib.auth.decorators import login_required
 
 from . import views
 
@@ -34,7 +35,7 @@ layers_list = register_url_event()(TemplateView.as_view(template_name='layers/la
 urlpatterns = [
     # 'geonode.layers.views',
     url(r'^$',
-        layers_list,
+        login_required(layers_list),
         {'facet_type': 'layers', 'is_layer': True},
         name='layer_browse'),
     url(r'^remove$',

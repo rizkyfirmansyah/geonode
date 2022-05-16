@@ -20,6 +20,7 @@ from django.conf.urls import url, include
 from django.views.generic import TemplateView
 
 from geonode.base import register_url_event
+from django.contrib.auth.decorators import login_required
 
 from . import views
 
@@ -33,7 +34,7 @@ apps_list = register_url_event()(TemplateView.as_view(template_name='apps/app_li
 urlpatterns = [
     # 'geonode.geoapps.views',
     url(r'^$',
-        apps_list,
+        login_required(apps_list),
         {'facet_type': 'geoapps'},
         name='apps_browse'),
     url(r'^new$', views.new_geoapp, name="new_geoapp"),

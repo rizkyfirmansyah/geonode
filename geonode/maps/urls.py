@@ -20,6 +20,7 @@
 from django.conf.urls import url, include
 from django.views.generic import TemplateView
 from geonode.base import register_url_event
+from django.contrib.auth.decorators import login_required
 
 from . import views
 
@@ -38,7 +39,7 @@ maps_list = register_url_event()(TemplateView.as_view(template_name='maps/map_li
 urlpatterns = [
     # 'geonode.maps.views',
     url(r'^$',
-        maps_list,
+        login_required(maps_list),
         {'facet_type': 'maps'},
         name='maps_browse'),
     url(r'^new$', new_map_view, name="new_map"),
