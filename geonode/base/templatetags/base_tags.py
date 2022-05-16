@@ -31,6 +31,7 @@ from django.contrib.contenttypes.models import ContentType
 from pinax.ratings.models import Rating
 from guardian.shortcuts import get_objects_for_user
 
+from django.contrib.auth.decorators import login_required
 from geonode.base.models import ResourceBase
 from geonode.base.bbox_utils import filter_bbox
 from geonode.layers.models import Layer
@@ -459,6 +460,7 @@ def render_nav_menu(placeholder_name):
     return {'menus': OrderedDict(menus.items())}
 
 
+@login_required
 @register.inclusion_tag(filename='base/iso_categories.html')
 def get_visibile_resources(user):
     categories = get_objects_for_user(user, 'view_resourcebase', klass=ResourceBase, any_perm=False)\

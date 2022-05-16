@@ -35,7 +35,6 @@ from geonode import get_version
 from geonode.groups.models import GroupProfile
 from geonode.geoapps.models import GeoApp
 from django.utils.translation import ugettext as _
-
 import logging
 logger = logging.getLogger(__name__)
 

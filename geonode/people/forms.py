@@ -25,6 +25,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
 from geonode.base.models import ContactRole
+from allauth.account.forms import ResetPasswordForm, SignupForm
 
 
 # Ported in from django-registration
@@ -49,6 +50,36 @@ class ProfileCreationForm(UserCreationForm):
             self.error_messages['duplicate_username'],
             code='duplicate_username',
         )
+
+
+class ProfileResetPasswordForm(ResetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['class'] = 'w-100 p-2'
+        self.fields['email'].label = ''
+
+    def save(self, request):
+        email_address = super().save(request)
+
+        return email_address
+
+
+class ProfileSignupForm(SignupForm):
+
+    first_name = forms.CharField(max_length=30, label='First Name')
+    last_name = forms.CharField(max_length=30, label='Last Name')
+  
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs['class'] = 'form-control'
+        self.fields['last_name'].widget.attrs['class'] = 'form-control'
+
+    def signup(self, request, user):
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+
+        return user
 
 
 class ProfileChangeForm(UserChangeForm):

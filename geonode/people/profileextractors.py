@@ -51,9 +51,6 @@ class BaseExtractor(object):
     def extract_country(self, data):
         raise NotImplementedError
 
-    def extract_delivery(self, data):
-        raise NotImplementedError
-
     def extract_email(self, data):
         raise NotImplementedError
 
@@ -70,9 +67,6 @@ class BaseExtractor(object):
         raise NotImplementedError
 
     def extract_profile(self, data):
-        raise NotImplementedError
-
-    def extract_zipcode(self, data):
         raise NotImplementedError
 
 

@@ -393,6 +393,7 @@ GEONODE_INTERNAL_APPS = (
     'geonode.services',
     'geonode.management_commands_http',
 
+    'geonode.core',
     'geonode.datasets',
     'geonode.storage',
 
@@ -416,7 +417,8 @@ GEONODE_APPS = GEONODE_CORE_APPS + GEONODE_INTERNAL_APPS + GEONODE_CONTRIB_APPS
 
 INSTALLED_APPS = (
 
-    # Boostrap admin theme
+    # Admin Honeypot
+    'admin_honeypot',
 
     # Apps bundled with Django
     'modeltranslation',
@@ -907,6 +909,11 @@ THEME_ACCOUNT_CONTACT_EMAIL = os.getenv(
 # Login and logout urls override
 LOGIN_URL = os.getenv('LOGIN_URL', f'{SITEURL}')
 LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}')
+
+ACCOUNT_FORMS = {
+    'signup': 'geonode.people.forms.ProfileSignupForm',
+    'reset_password': 'geonode.people.forms.ProfileResetPasswordForm'
+}
 
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
@@ -1970,10 +1977,12 @@ ACCOUNT_APPROVAL_REQUIRED = ast.literal_eval(
     os.getenv('ACCOUNT_APPROVAL_REQUIRED', 'False')
 )
 ACCOUNT_ADAPTER = 'geonode.people.adapters.LocalAccountAdapter'
-ACCOUNT_AUTHENTICATION_METHOD = os.environ.get('ACCOUNT_AUTHENTICATION_METHOD', 'username_email')
+ACCOUNT_AUTHENTICATION_METHOD = os.environ.get('ACCOUNT_AUTHENTICATION_METHOD', 'email')
 ACCOUNT_CONFIRM_EMAIL_ON_GET = ast.literal_eval(os.environ.get('ACCOUNT_CONFIRM_EMAIL_ON_GET', 'True'))
 ACCOUNT_EMAIL_REQUIRED = ast.literal_eval(os.environ.get('ACCOUNT_EMAIL_REQUIRED', 'True'))
-ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', 'none')
+ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', 'mandatory')
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400 # 1 day in seconds
 
 # Since django-allauth 0.43.0.
 ACCOUNT_SIGNUP_REDIRECT_URL = os.environ.get('ACCOUNT_SIGNUP_REDIRECT_URL', os.getenv('SITEURL', _default_siteurl))

@@ -6,17 +6,21 @@
 
 {% block title %}{% trans "Sign up" %}{% endblock %}
 {% block body %}
-    <div class="row">
-      <div class="col-md-12 form-body text-center" id="registration" style="margin-top: 120px; padding-right: 60px; padding-left: 60px;">
+    <div class="card border-dark rounded bg-light">
+      <div class="card-header text-center">
+        {% get_providers as socialaccount_providers %}
+        {% if socialaccount_providers %}
+            <p>{% blocktrans with site.name as site_name %}Sign up with one
+                of your existing third party accounts{% endblocktrans %}</p>
+            {% include "socialaccount/snippets/provider_list.html" with process="signup" %}
+            {% include "socialaccount/snippets/login_extra.html" %}
+            <hr>
+        {% else %}
+          <h3>Sign up</h3>
+        {% endif %}
+      </div>
+      <div class="card-body">
         <div id="signup_container">
-          {% get_providers as socialaccount_providers %}
-          {% if socialaccount_providers %}
-              <p>{% blocktrans with site.name as site_name %}Sign up with one
-                  of your existing third party accounts{% endblocktrans %}</p>
-              {% include "socialaccount/snippets/provider_list.html" with process="signup" %}
-              {% include "socialaccount/snippets/login_extra.html" %}
-              <hr>
-          {% endif %}
           {% if account_geonode_local_signup %}
           <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
               <fieldset>
@@ -39,12 +43,6 @@
 
 {% block extra_script %}
     {{ block.super }}
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#id_username').focus();
-            $("#signup_container").css({"margin": "0 auto", "max-width": "740px"});
-        });
-    </script>
     <script
       src="https://js.hcaptcha.com/1/api.js"
       async

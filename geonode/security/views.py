@@ -17,6 +17,7 @@
 #
 #########################################################################
 
+from email import message
 import os
 import json
 import logging

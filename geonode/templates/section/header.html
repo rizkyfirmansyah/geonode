@@ -16,15 +16,18 @@
         </a>
       </div>
       <div class="col mr-5 ml-5 pl-5 pr-5">
-        {% get_search_container as search %}
-          {% if search != '/' and search != '' %}
-            {% if SEARCH_FILTERS.TEXT_ENABLED %}
-              {% include "search/_text_container.html" %}
+        {% if request.user.is_authenticated or access_token %}
+          {% get_search_container as search %}
+            {% if search != '/' and search != '' %}
+              {% if SEARCH_FILTERS.TEXT_ENABLED %}
+                {% include "search/_text_container.html" %}
+              {% endif %}
             {% endif %}
-          {% endif %}
+        {% endif %}
       </div>
       <div class="col p-0" id="header-main-menu" ng-controller="CategoryList">
         <ul class="list-inline pt-3 mr-4">
+          {% if request.user.is_authenticated or access_token %}
           <li class="list-inline-item mr-2" id="information_categories">
             <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>
             <ul class="collapse list-unstyled m-0" id="information_categories_card" style="display: none;">
@@ -39,6 +42,7 @@
               {% endverbatim %}
             </ul>
           </li>
+          {% endif %}
           <li class="list-inline-item mr-2" id="user_menu">
             {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
             <a class="btn btn-light rounded-pill p-link-header" href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
@@ -113,12 +117,10 @@
                             <image id="image0_13_542" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADEElEQVR4nO2dvW7UQBRGT0iyEhKhBlFAQ8O+BihUFEh5A3gCkCgRJQUEJQ0UPARltG8BCPHTBfECbDoimcIuCErWs54Zf2P7O9KVosQa37lnd3ZmvLHBGGOMMcYYY9qZA/vAZ+AEqCYeJ00t9pvaZGMGHAKnBXS61DgFDppaJWUGLAro4FBiQWIJhwV0amhx0KnS5zDHw06XOAXutBX3UtsBwGNgM+A4c5ZN4FHbQSEC7sXnMllaa7cR0MgSuBKfyyRZAldXHRAioGr5e0gbYyaqPiFDkMmIBYixADEWIMYCxFiAGAsQs6VOIIC2eXYbRa9T/A4QYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYixADEWIMYCxCgEPGO971jGss65nic4X3JyFGhdCX1E1+LnfgFlO0FJEmJe+YMVAGVIiB12Bi0AtBJSjPmDFwAaCak+cEchAPqVkHK2MxoB0I+E1FPNUQmAvBJyzPNHJwDySMi1yBqlAEgrIecKd7QCII2E3NsLoxYAcRL62NsZvQDoJqGvjbVJCID1JPS5qzkZARAmoe8t5UkJgNUSFPv5kxMA50tQXUyZpAA4K0F5JSuqPkP4F6WLeAlcbn5+oUwkBt8rIp6o+vhbEWIsQIwFiEnxIZx6JrRDfS/OHOwAvzO13YkS3wHXMrZ9PWPbnShRwK2Mbd/M2HYnShSwm7Ht+xnbzkboDmSq+EaetcUG8F3Qn2j6TrgCHqZI/D/2RH2JRpH0F2A7RfINM+CrqC/RKJKugPcpkm94K+xHNKrEK+BJgvyfivsQjTL5CnhHt1vBb1HfwVydfzTqDlTU4/ce4bOju8DHAvJuFZBiO7pPfgAfgCPgGPjV/P4G9SJrF3gA3JZkdz4razw0AUPE1wNKxgLEWICYEAHL7FmMl9ZrDyECfiZIZKoctx0QIuAoQSJTJUnt/BirbhH0GKtQSljSDy3edKr0BWzjRxmuEwvSbqcD9YbYAR6OVsUf6ld+8uL/yxx4DXyinqKqO62OZVOLVyQc840xxhhjjDHj5S+3x01jKGtNPgAAAABJRU5ErkJggg=="/>
                             </defs>
                             </svg> {% trans " Inbox" %}
-                            {% if request.user.is_authenticated %}
                               {% unread_messages request.user as messages %}
                               {% if messages %}
                               <span onclick="location='{% url "messages_inbox" %}'" class="badge badge-danger rounded-pill ml-1 p-1">{{ messages }}+</span>
                               {% endif %}
-                            {% endif %}
                         </a>
                       </ul>
                   </div>
