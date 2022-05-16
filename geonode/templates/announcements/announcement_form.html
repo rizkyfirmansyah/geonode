@@ -6,11 +6,11 @@
 {% block body_class %}announcements{% endblock %}
 
 {% block body %}
-  <div class="card w-100 mb-2">
-    <h2 class="text-center p-2 m-0">{% if announcement %}{% trans "Edit Announcement" %}{% else %}{% trans "Create Announcement" %}{% endif %}</h2>
+  <div class="card mb-2 bg-primary text-center">
+    <h3 class="text-light p-1">{% if announcement %}{% trans "Edit Announcement" %}{% else %}{% trans "Create Announcement" %}{% endif %}</h3>
   </div>
 
-  <div class="card w-100">
+  <div class="card">
     {% if announcement %}
       {% url "announcements_update" pk=announcement.pk as post_url %}
     {% else %}
@@ -20,14 +20,16 @@
       <form action="{{ post_url }}" method="POST" class="form form-horizontal">
         {% csrf_token %}
         {{ form|crispy }}
-        <div class="form-actions">
-          <a href="{% url "announcements_list" %}" class="btn btn-primary">{% trans "Cancel" %}</a>
-          {% if announcement %}
-          <a href="{% url "announcements_delete" pk=announcement.pk %}" class="btn btn-danger">{% trans "Delete" %}</a>
-          {% endif %}
-          <button type="submit" class="btn btn-save">{% trans "Save" %}</button>
-        </div>
       </form>
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <a href="{% url "announcements_list" %}" class="btn btn-info col m-3">{% trans "Cancel" %}</a>
+        {% if announcement %}
+        <a href="{% url "announcements_delete" pk=announcement.pk %}" class="btn btn-danger col m-3">{% trans "Delete" %}</a>
+        {% endif %}
+        <button type="submit" class="btn btn-save col m-3">{% trans "Save" %}</button>
+      </div>
     </div>
   </div>
 
