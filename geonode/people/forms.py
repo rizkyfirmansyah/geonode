@@ -56,8 +56,25 @@ class ProfileLoginForm(LoginForm):
   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.fields['login'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['class'] = 'form-control'
+        self.fields['login'].label = 'Email Address or Username'
+        # change the style of checkboxinput to toggle instead of boring booleanfield. And remove the label!
+        remember_choices=(
+            (False, "Go ahead, forget me"),
+            (True, "Remember me")
+        )
+        self.fields['remember'].label = ''
+        self.fields['remember'].widget.attrs.update({
+                    'data-toggle': 'toggle',
+                    'data-width': '100%',
+                    'data-height': 'auto',
+                    'data-on': remember_choices[0][1],
+                    'data-off': remember_choices[1][1],
+                    'value': remember_choices[0][0],
+                    'data-onstyle': 'info',
+                    'data-offstyle': 'primary'})
 
     def login(self, *args, **kwargs):
         return super().login(*args, **kwargs)
@@ -84,6 +101,8 @@ class ProfileSignupForm(SignupForm):
         super().__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs['class'] = 'form-control'
         self.fields['last_name'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].label = 'Email Address'
+        self.fields.pop('username',)
 
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
@@ -91,6 +110,10 @@ class ProfileSignupForm(SignupForm):
         user.save()
 
         return user
+
+    class Meta:
+        model = get_user_model()
+        fields = ("first_name", "last_name", "email",)
 
 
 class ProfileChangeForm(UserChangeForm):

@@ -701,32 +701,18 @@ button.full-width {
   box-shadow: none!important
 }
 
-#signup .btn,
-#signup button,
-#signup input[type=button],
-#signup input[type=hidden],
-#signup input[type=reset],
-#signup input[type=submit] {
-  display: inline-block;
+.btn-login {
   text-transform: uppercase;
   letter-spacing: .3rem;
-  height: 4em;
-  padding: 0 3rem;
-  margin: 0 .3rem 1.2rem 0;
-  text-decoration: none;
-  text-align: center;
-  white-space: nowrap;
-  cursor: pointer;
   -webkit-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
 }
-
 
 #SigninModal .img {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  max-height: 780px;
+  max-height: 800px;
   height: 100vh
 }
 
@@ -778,7 +764,6 @@ button.full-width {
   background: 0 0!important;
   border: none!important;
   box-shadow: none;
-  color: var(--secondary) !important;
 }
 
 #navSignIn a.active, #navSignUp a.active {

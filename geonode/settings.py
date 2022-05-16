@@ -909,12 +909,6 @@ THEME_ACCOUNT_CONTACT_EMAIL = os.getenv(
 LOGIN_URL = os.getenv('LOGIN_URL', f'{SITEURL}')
 LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}')
 
-ACCOUNT_FORMS = {
-    'login': 'geonode.people.forms.ProfileLoginForm',
-    'signup': 'geonode.people.forms.ProfileSignupForm',
-    'reset_password': 'geonode.people.forms.ProfileResetPasswordForm'
-}
-
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 
@@ -1972,15 +1966,22 @@ MAP_CLIENT_USE_CROSS_ORIGIN_CREDENTIALS = ast.literal_eval(os.getenv(
     'False'
 ))
 
+
+ACCOUNT_FORMS = {
+    'login': 'geonode.people.forms.ProfileLoginForm',
+    'signup': 'geonode.people.forms.ProfileSignupForm',
+    'reset_password': 'geonode.people.forms.ProfileResetPasswordForm'
+}
+
 ACCOUNT_OPEN_SIGNUP = ast.literal_eval(os.environ.get('ACCOUNT_OPEN_SIGNUP', 'True'))
 ACCOUNT_APPROVAL_REQUIRED = ast.literal_eval(
     os.getenv('ACCOUNT_APPROVAL_REQUIRED', 'False')
 )
 ACCOUNT_ADAPTER = 'geonode.people.adapters.LocalAccountAdapter'
-ACCOUNT_AUTHENTICATION_METHOD = os.environ.get('ACCOUNT_AUTHENTICATION_METHOD', 'email')
+ACCOUNT_AUTHENTICATION_METHOD = os.environ.get('ACCOUNT_AUTHENTICATION_METHOD', 'username_email')
 ACCOUNT_CONFIRM_EMAIL_ON_GET = ast.literal_eval(os.environ.get('ACCOUNT_CONFIRM_EMAIL_ON_GET', 'True'))
 ACCOUNT_EMAIL_REQUIRED = ast.literal_eval(os.environ.get('ACCOUNT_EMAIL_REQUIRED', 'True'))
-ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', 'mandatory')
+ACCOUNT_EMAIL_VERIFICATION = os.environ.get('ACCOUNT_EMAIL_VERIFICATION', 'optional')
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 7
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400 # 1 day in seconds
 

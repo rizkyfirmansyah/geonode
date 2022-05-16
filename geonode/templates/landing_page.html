@@ -383,8 +383,9 @@
     <!-- Modal must stay outside the navbar -->
     {% include "modal/login.html" %}
     {% include "modal/forgot_password.html" %}
-    {% include "modal/remove_layers.html" %}
-    {% include "modal/remove_documents.html" %}
+    {% include "toast/_toast.html" %}
+    {% include 'modal/change_password.html' %}
+
     <!-- End of Modal -->
 
     <script text="javascript">
@@ -406,13 +407,6 @@
     <script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>
     <script type="text/javascript" src="{% static "geonode/js/base/main.js" %}"></script>
     <script type="text/javascript" src="{% static "lib/js/modernizr.js" %}"></script>
-
-
-    {% include "modal/resource_uploading.html" %}
-    {% include "modal/thumbnail_processing.html" %}
-    {% include "modal/thumbnail_feedbacks.html" %}
-    {% include 'modal/change_password.html' %}
-    {% include 'modal/request_data.html' %}
 
   </body>
 </html>
