@@ -1971,7 +1971,8 @@ ACCOUNT_FORMS = {
     'login': 'geonode.people.forms.ProfileLoginForm',
     'signup': 'geonode.people.forms.ProfileSignupForm',
     'reset_password': 'geonode.people.forms.ProfileResetPasswordForm',
-    'change_password': 'geonode.people.forms.ProfileChangePasswordForm'
+    'change_password': 'geonode.people.forms.ProfileChangePasswordForm',
+    'add_email': 'geonode.people.forms.ProfileAddEmailForm'
 }
 
 ACCOUNT_OPEN_SIGNUP = ast.literal_eval(os.environ.get('ACCOUNT_OPEN_SIGNUP', 'True'))

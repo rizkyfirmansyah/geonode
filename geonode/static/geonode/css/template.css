@@ -207,6 +207,17 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   right: -2px !important;
 } */
 
+
+.errorlist {
+  display: block;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.errorlist li {
+  color: #721c24;
+  padding: .5em;
+}
 /* ---------------------------------------------------
     CUSTOM TOAST MESSAGES -- INHERITED FROM BOOTSTRAP 4
 ----------------------------------------------------- */

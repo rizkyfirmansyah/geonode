@@ -25,7 +25,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
 from geonode.base.models import ContactRole
-from allauth.account.forms import ResetPasswordForm, SignupForm, LoginForm, ChangePasswordForm
+from allauth.account.forms import ResetPasswordForm, SignupForm, LoginForm, ChangePasswordForm, AddEmailForm
 
 
 # Ported in from django-registration
@@ -97,6 +97,18 @@ class ProfileChangePasswordForm(ChangePasswordForm):
         super().__init__(*args, **kwargs)
         self.fields['password1'].help_text = 'Set your new password more than 6 characters.'
         self.fields['password2'].help_text = 'Confirm again your new password here.'
+
+
+class ProfileAddEmailForm(AddEmailForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['class'] = 'w-100 p-2'
+        self.fields['email'].label = ''
+
+    def save(self, request):
+        email_address = super().save(request)
+
+        return email_address
 
 
 class ProfileSignupForm(SignupForm):

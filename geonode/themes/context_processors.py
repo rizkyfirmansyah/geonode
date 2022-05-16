@@ -2,7 +2,7 @@
 from django.core.cache import cache
 
 from geonode.datasets.forms import RodaForm
-from geonode.people.forms import ProfileSignupForm, ProfileLoginForm, ProfileChangePasswordForm
+from geonode.people.forms import ProfileSignupForm, ProfileLoginForm, ProfileChangePasswordForm, ProfileAddEmailForm
 from .forms import FeedbackForm
 from .models import GeoNodeThemeCustomization, THEME_CACHE_KEY
 
@@ -32,4 +32,5 @@ def ModalForm(request):
         'signup_form': ProfileSignupForm(),
         'login_form': ProfileLoginForm(),
         'change_pwd_form': ProfileChangePasswordForm(),
+        'add_email_form': ProfileAddEmailForm()
     }

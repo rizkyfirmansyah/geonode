@@ -33,17 +33,8 @@
 <form id="msg_form" method="post" action="{% url 'message_create' %}">
 
     <div class="card">
-        <div class="card-header">
-            <div class="row">
-                <h3 class="col">{% trans "Create Message" %}</h3>
-                <div class="form-actions col-2 text-right pr-0">
-                    <input id="id_form_submit" type="submit" value="{% trans "Send message" %}" class="btn btn-primary w-100"
-                        type="button"/>
-                </div>
-                <div class="col-2 pr-0 text-right">
-                    <a href="{% url "messages_inbox" %}" class="btn btn-primary w-100" type="button">{% trans "Back to Inbox" %}</a>
-                </div>
-            </div>
+        <div class="card-header text-center bg-primary">
+            <h3 class="text-light">{% trans "Create Message" %}</h3>
         </div>
         <div class="card-body">
             {% csrf_token %}
@@ -83,6 +74,15 @@
                 {% include 'user_messages/_field_error_block.html' with form=form field_name="content" %}
                 </div>
             </table>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+              <div class="col pr-0"><a href="{% url "messages_inbox" %}" class="btn btn-info w-100" type="button">{% trans "Back to Inbox" %}</a></div>
+              <div class="col-6 pr-0">
+                <input id="id_form_submit" type="submit" value="{% trans "Send message" %}" class="btn btn-save w-100"
+                  type="button"/>
+              </div>
+            </div>
         </div>
     </div>
 
