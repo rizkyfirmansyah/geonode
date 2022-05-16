@@ -393,7 +393,6 @@ GEONODE_INTERNAL_APPS = (
     'geonode.services',
     'geonode.management_commands_http',
 
-    'geonode.core',
     'geonode.datasets',
     'geonode.storage',
 
@@ -911,6 +910,7 @@ LOGIN_URL = os.getenv('LOGIN_URL', f'{SITEURL}')
 LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}')
 
 ACCOUNT_FORMS = {
+    'login': 'geonode.people.forms.ProfileLoginForm',
     'signup': 'geonode.people.forms.ProfileSignupForm',
     'reset_password': 'geonode.people.forms.ProfileResetPasswordForm'
 }
