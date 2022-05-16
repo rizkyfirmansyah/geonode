@@ -1126,28 +1126,8 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
   color: var(--primary)
 }
 
-#SigninModal .close {
-  width: 40px;
-  position: absolute;
-  right: 1em;
-  top: .7em;
-  display: block;
-  border: none;
-  background-color: transparent
-}
-
 .ClsSgnM {
   padding: 0 8px;
-}
-
-#SigninModal .close:hover {
-  font-size: 38px!important;
-  color: #000;
-  opacity: 1;
-  background-color: transparent!important;
-  border: none;
-  outline: 0;
-  text-decoration: none
 }
 
 #SigninModal .modal-dialog {
