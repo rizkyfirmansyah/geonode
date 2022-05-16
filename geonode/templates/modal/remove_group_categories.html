@@ -1,21 +1,26 @@
-{% load i18n %}{% load static %}{% load base_tags %}{% load layer_tags %}
-<div class="modal fade" id="remove_gc_modal" tabindex="-1" role="dialog"
-  aria-labelledby="removeGroupCategoriesModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content rounded-0 m-modal-width">
-      <div class="p-4 to-front">
-        <div class="text-center">
-          <h3 class="light">Are you sure you want to remove <span class="text-primary" id="group_title">{{ object.title|default:object.slug }}</span>?</h3>
-          <form id="remove_gc" method="POST">{% csrf_token %}<div class="form-actions"> <input type="submit"
-                value="{% trans "Yes, I am sure" %}" class="btn btn-danger btn-block" />
-              <p class="mb-0 cancel"><a href="#" data-dismiss="modal"class="btn_wrapper">Maybe later</a></p>
-            </div>
-          </form>
+{% load i18n %}
+{% load static %}
+{% load base_tags %}
+{% load layer_tags %}
+<form id="remove_gc" method="POST">
+  {% csrf_token %}
+  <div class="modal fade" id="remove_gc_modal" tabindex="-1" role="dialog"
+    aria-labelledby="removeGroupCategoriesModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content rounded-0 m-modal-width">
+        <div class="modal-body">
+          <div class="text-center">
+            <h3 class="light">Are you sure you want to remove <span class="text-primary" id="group_title">{{ object.title|default:object.slug }}</span>?</h3>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" data-dismiss="modal" class="btn btn-light">Maybe later</a>
+          <button type="submit" class="btn btn-danger">Yes, I am sure</button>
         </div>
       </div>
     </div>
   </div>
-</div>
+</form>
 {% include 'toast/remove_group_categories.html' %}
 {% block extra_script %}
 <script text="text/javascript">
