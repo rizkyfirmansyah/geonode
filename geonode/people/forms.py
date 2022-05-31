@@ -121,6 +121,8 @@ class ProfileSignupForm(SignupForm):
         self.fields['first_name'].widget.attrs['class'] = 'form-control'
         self.fields['last_name'].widget.attrs['class'] = 'form-control'
         self.fields['email'].label = 'Email Address'
+        self.fields['password1'].help_text = 'Minimum password length of 6 characters'
+        self.fields['password2'].help_text = 'Confirm again your password'
         self.fields.pop('username',)
 
     def signup(self, request, user):

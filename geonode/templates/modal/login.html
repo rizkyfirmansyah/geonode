@@ -6,13 +6,13 @@
 <div class="modal fade" id="SigninModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="row">
+            <div class="row w-100">
                 <div class="col-md-6 d-flex">
                     <div class="modal-body img d-flex img text-center d-flex align-items-center"
                          style="background-image: url({% if custom_theme.modal_login_bg %}{{ SITEURL }}/uploaded/{{ custom_theme.modal_login_bg }}{% else %}{% static "geonode/img/bg-sign.png" %}{% endif %});">
                     </div>
                 </div>
-                <div class="col-md-5 d-flex pr-0">
+                <div class="col d-flex pr-0">
                     <div class="modal-body align-items-center p-0">
                         <ul class="nav" id="loginTab" role="tablist">
                           <li class="nav-item col-5 text-left pl-0" role="presentation">
@@ -39,11 +39,11 @@
                                   <div><button type="submit" class="form-control btn btn-primary rounded btn-login">Sign In</button></div>
                                   <div class="row w-100 mt-4">
                                     <p class="col-7 pr-0">
-                                        Not a member?&nbsp&nbsp&nbsp<a data-toggle="tab" href="#signup" class="light" id="aSignUp">Sign Up</a>
+                                        Not a member?&nbsp&nbsp<a data-toggle="tab" href="#signup" class="light" id="aSignUp" role="tab" aria-controls="signup">Sign Up</a>
                                     </p>
-                                    <div class="col-5 p-0">
+                                    <p class="col-5 p-0">
                                       <a data-toggle="modal" data-target="#forgotPassModal" style="cursor: pointer;" class="light">Forgotten Password?</a>
-                                    </div>
+                                    </p>
                                   </div>
                               </form>
                             </div>
@@ -61,9 +61,9 @@
                                       <div class="h-captcha"
                                             data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98"
                                             data-theme="dark"></div>
-                                      <div><button type="submit" class="form-control btn btn-primary rounded btn-login">Sign Up</button></div>
+                                      <div><button type="submit" class="form-control btn btn-primary rounded btn-login mt-3">Sign Up</button></div>
                                   </form>
-                                  <span class="d-flex align-items-center">I'm already a member! <a data-toggle="tab" href="#signin" class="nav-link light" id="aSignIn" role="tab" aria-controls="signin" aria-selected="false">Sign In</a></span>
+                                  <span class="d-flex align-items-center">I'm already a member! <a data-toggle="tab" href="#signin" class="nav-link light" id="aSignIn" role="tab" aria-controls="signin">Sign In</a></span>
                               </div>
                           </div>
                         </div>

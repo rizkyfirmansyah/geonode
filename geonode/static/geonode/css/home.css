@@ -766,28 +766,27 @@ button.full-width {
   box-shadow: none;
 }
 
-#navSignIn a.active, #navSignUp a.active {
-  color: var(--save) !important;
-}
-
-#navSignIn a:hover, #navSignUp a:hover {
-  color: var(--success) !important;
+#aSignUp a.active, #aSignIn a.active, #SigninModal li a.active {
+  color: #000 !important;
   text-decoration: none;
 }
 
-#signin,
-#signup {
+#aSignUp a:hover, #aSignIn a:hover {
+  color: var(--success) !important;
+  text-decoration: none !important;
+}
+
+#aSignUp,
+#aSignIn {
   color: var(--primary);
-  max-width: 1140px;
-  width: 100%!important;
   margin-top: 1px!important;
   height: auto
 }
 
-#signin h3,
-#signin label,
-#signup h3,
-#signup label {
+#aSignIn h3,
+#aSignIn label,
+#aSignUp h3,
+#aSignUp label {
   color: var(--primary)
 }
 
@@ -819,9 +818,9 @@ button.full-width {
 }
 
 @media (min-width:1024px) {
-  #signin input, #signin button,
-  #signup input,
-  #signup button {
+  #aSignIn input, #aSignIn button,
+  #aSignUp input,
+  #aSignUp button {
     height: 3.5em;
   }
 }
@@ -836,9 +835,8 @@ input[type=text],
 input[type=url],
 select,
 textarea {
-    border: 1px solid #000 !important;
+    background-color: var(--web-surface)!important;
     color: var(--primary)!important;
-    height: var(--spacing-1);
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
     -webkit-appearance: none;
@@ -2177,6 +2175,7 @@ input::-moz-focus-inner {
 }
 
 .search-field form input {
+    background-color: transparent !important;
     background: 0 0;
     border: none!important;
     display: block;
@@ -3022,7 +3021,7 @@ html {
     }
 }
 
-#member_form_container .select2-container {
+#member_form_container .select2-container, #div_id_remember {
     padding: 0
 }
 
