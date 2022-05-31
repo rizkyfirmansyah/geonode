@@ -1185,11 +1185,6 @@ textarea {
     color: var(--primary)!important;
     -webkit-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    -ms-appearance: none;
-    -o-appearance: none;
-    appearance: none
 }
 
 input[type=number]:focus,

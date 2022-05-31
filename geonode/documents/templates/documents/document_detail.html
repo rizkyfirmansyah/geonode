@@ -30,10 +30,16 @@
 {% block body_class %}{% trans "documents" %}{% endblock %}
 
 {% block body %}
-<div class="row w-100">
-  <h2 class="col-8">{{ resource.title }}</h2>
-  <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" target="_self" class="col-4"><button
-      class="float-right btn btn-info">Return to Catalogue</button></a>
+<div class="card mb-2">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-8 d-flex">
+        <h2>{{ resource.title }}</h2>
+        <span class="badge badge-secondary rounded-pill ml-2 p-1" style="width: auto;">{{ resource.extension }}</span>
+      </div>
+      <div class="col-4 float-right"><a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" target="_self" class="btn btn-info btn-block">Return to Catalogue</a></div>
+    </div>
+  </div>
 </div>
 <div class="row">
   <div class="col-8 content_block">
@@ -363,6 +369,7 @@
         </div>
       </div>
 
+      {% if related %}
       <li class="list-group-item">
         <h4>{% trans "Resources using this Datasets" %}</h4>
         {% if layer.maps %}
@@ -370,12 +377,18 @@
         {% endif %}
         <ul class="list-unstyled">
           {% for resource in related %}
-          <li><a href="{{ resource }}">{{ resource.title }}</a></li>
+          {% if resource.document %}
+            <li><a href="{{ resource.id }}">{{ resource.title }}</a></li>
+          {% elif resource.layer %}
+            <li><a href="layers/{{ resource }}">{{ resource.title }}</a></li>
+          {% elif resource.map %}
+            <li><a href="maps/{{ resource }}">{{ resource.title }}</a></li>
+          {% endif %}
           {% empty %}
-          <p>{% trans "This Datasets is not related to any maps or layers" %}</p>
           {% endfor %}
         </ul>
       </li>
+      {% endif %}
 
       {% if GEONODE_SECURITY_ENABLED %}
       {% if "change_resourcebase_permissions" in perms_list %}

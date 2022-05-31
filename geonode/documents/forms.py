@@ -49,6 +49,7 @@ class DocumentFormMixin(object):
 
         if resources is None:
             resources = list(Layer.objects.all())
+            resources += list(Document.objects.all())
             resources += list(Map.objects.all())
             resources.sort(key=lambda x: x.title)
 
