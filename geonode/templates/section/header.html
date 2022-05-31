@@ -7,7 +7,7 @@
 {% block header %}
   
     <div class="container-fluid row p-2">
-      <div class="header-logo pt-2">
+      <div class="header-logo pt-2 pl-4">
         <a href="{{ SITEURL }}">
           <img
             class="w-auto h-auto"
@@ -15,7 +15,7 @@
             alt="Homepage">
         </a>
       </div>
-      <div class="col mr-5 ml-5 pl-5 pr-5">
+      <div class="col mr-5 ml-5 pl-5 pr-5 pt-2">
         {% if request.user.is_authenticated or access_token %}
           {% get_search_container as search %}
             {% if search != '/' and search != '' %}
