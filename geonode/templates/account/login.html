@@ -29,17 +29,17 @@
         <div id="login_container">
           <form id="form-signin" role="form" method="POST" action="{% url 'account_login' %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
             {% csrf_token %}
-            {{ login_form|crispy }}
+            {% crispy login_form %}
             {% if redirect_field_value %}
               <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
             {% endif %}
-            <div class="form-group">
-                <p><a href="{% url 'account_reset_password' %}">{% trans "Forgotten Password?" %}</a></p>
-            </div>
-            <div class="form-group h-captcha" name="captcha" data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98" data-theme="dark" style="margin-top: 30px;"></div>
-            <button class="btn btn-primary w-100" type="submit" style="margin-bottom: 50px;">{% trans "Sign In" %}</button>
           </form>
         </div>
+    </div>
+    <div class="card-footer">
+      <div class="text-right">
+          <a href="{% url 'account_reset_password' %}" class="btn btn-light col-md-3">{% trans "Forgotten Password?" %}</a></p>
+      </div>
     </div>
   </div>
 {% endblock %}

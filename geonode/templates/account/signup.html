@@ -21,17 +21,13 @@
       </div>
       <div class="card-body">
         <div id="signup_container">
-          <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+          <form id="signup_form" method="post" action="{% url "account_signup" %}" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
               <fieldset>
                   {% csrf_token %}
-                  {{ signup_form|crispy }}
+                  {% crispy signup_form %}
                   {% if redirect_field_value %}
                       <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
                   {% endif %}
-                  <div class="form-group h-captcha mt-2" name="captcha" data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98" data-theme="dark"></div>
-                  <div class="form-actions">
-                      <button type="submit" class="btn btn-primary w-100">{% trans "Sign up" %}</button>
-                  </div>
               </fieldset>
           </form>
         </div>

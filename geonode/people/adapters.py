@@ -166,7 +166,7 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
     Check `django-allauth's documentation`_ for more details on this class.
 
     .. _django-allauth's documentation:
-         http //django-allauth.readthedocs.io/en/latest/advanced.html#creating-and-populating-user-instances
+         https://django-allauth.readthedocs.io/en/latest/advanced.html#creating-and-populating-user-instances
 
     """
 

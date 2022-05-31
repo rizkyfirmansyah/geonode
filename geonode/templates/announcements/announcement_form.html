@@ -6,6 +6,7 @@
 {% block body_class %}announcements{% endblock %}
 
 {% block body %}
+<form action="{{ post_url }}" method="POST" class="form form-horizontal">
   <div class="card mb-2 bg-primary text-center">
     <h3 class="text-light p-1">{% if announcement %}{% trans "Edit Announcement" %}{% else %}{% trans "Create Announcement" %}{% endif %}</h3>
   </div>
@@ -17,10 +18,8 @@
       {% url "announcements_create" as post_url %}
     {% endif %}
     <div class="card-body">
-      <form action="{{ post_url }}" method="POST" class="form form-horizontal">
         {% csrf_token %}
         {{ form|crispy }}
-      </form>
     </div>
     <div class="card-footer">
       <div class="row">
@@ -32,7 +31,7 @@
       </div>
     </div>
   </div>
-
+</form>
 {% endblock %}
 
 {% block extra_script %}

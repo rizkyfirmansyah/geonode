@@ -835,6 +835,7 @@ input[type=text],
 input[type=url],
 select,
 textarea {
+    border: 1px solid var(--web-surface) !important;
     background-color: var(--web-surface)!important;
     color: var(--primary)!important;
     -webkit-transition: all .3s ease-in-out;
@@ -1663,26 +1664,6 @@ label>input[type=radio]:hover {
     cursor: pointer
 }
 
-::-webkit-input-placeholder {
-    color: rgba(255, 255, 255, 0.6) !important
-}
-
-:-moz-placeholder {
-    color: rgba(255, 255, 255, 0.6) !important
-}
-
-::-moz-placeholder {
-    color: rgba(255, 255, 255, 0.6) !important
-}
-
-:-ms-input-placeholder {
-    color: rgba(255, 255, 255, 0.6) !important
-}
-
-.placeholder {
-    color: rgba(255, 255, 255, 0.6)!important
-}
-
 input:-webkit-autofill,
 input:-webkit-autofill:focus input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -1967,7 +1948,7 @@ input::-moz-focus-inner {
 
 .header-menu-toggle {
     position: fixed;
-    top: 2.8%;
+    top: 2%;
     height: 42px;
     width: 42px;
     line-height: 42px;

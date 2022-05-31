@@ -6,8 +6,8 @@
 
 {% block header %}
   
-    <div class="container-fluid row pt-1">
-      <div class="header-logo pt-3">
+    <div class="container-fluid row p-2">
+      <div class="header-logo pt-2">
         <a href="{{ SITEURL }}">
           <img
             class="w-auto h-auto"
@@ -26,7 +26,7 @@
         {% endif %}
       </div>
       <div class="col p-0" id="header-main-menu" ng-controller="CategoryList">
-        <ul class="list-inline pt-3 mr-4">
+        <ul class="list-inline pt-2 mr-4">
           {% if request.user.is_authenticated or access_token %}
           <li class="list-inline-item mr-2" id="information_categories">
             <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>

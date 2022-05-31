@@ -26,7 +26,11 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
 from geonode.base.models import ContactRole
 from allauth.account.forms import ResetPasswordForm, SignupForm, LoginForm, ChangePasswordForm, AddEmailForm
-
+from allauth.account.admin import EmailAddress
+from django.core.exceptions import ValidationError
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Column
+from hcaptcha.fields import hCaptchaField
 
 # Ported in from django-registration
 attrs_dict = {'class': 'required'}
@@ -54,18 +58,33 @@ class ProfileCreationForm(UserCreationForm):
 
 class ProfileLoginForm(LoginForm):
   
+    hcaptcha = hCaptchaField()
+
+    class Meta:
+        fields = '__all__'
+        unlabelled_fields = ('remember', 'hcaptcha')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = True
+        for field in ProfileLoginForm.Meta.unlabelled_fields:
+            self.fields[field].label = False
 
-        self.fields['login'].widget.attrs['class'] = 'form-control'
-        self.fields['password'].widget.attrs['class'] = 'form-control'
-        self.fields['login'].label = 'Email Address or Username'
+        self.helper.layout = Layout(
+            Column('login', css_class='form-group'),
+            Column('password', css_class='form-group'),
+            Column('remember'),
+            Column('hcaptcha'),
+            Submit('submit', 'Sign in', css_class='btn btn-primary btn-login w-100')
+        )
+
+        self.fields['login'].label = 'E-mail Address or Username'
         # change the style of checkboxinput to toggle instead of boring booleanfield. And remove the label!
         remember_choices=(
             (False, "Go ahead, forget me"),
             (True, "Remember me")
         )
-        self.fields['remember'].label = ''
         self.fields['remember'].widget.attrs.update({
                     'data-toggle': 'toggle',
                     'data-width': '100%',
@@ -115,15 +134,37 @@ class ProfileSignupForm(SignupForm):
 
     first_name = forms.CharField(max_length=30, label='First Name')
     last_name = forms.CharField(max_length=30, label='Last Name')
-  
+    hcaptcha = hCaptchaField()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs['class'] = 'form-control'
-        self.fields['last_name'].widget.attrs['class'] = 'form-control'
-        self.fields['email'].label = 'Email Address'
-        self.fields['password1'].help_text = 'Minimum password length of 6 characters'
-        self.fields['password2'].help_text = 'Confirm again your password'
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Column('email', css_class='form-group'),
+            Column('first_name', css_class='form-group'),
+            Column('last_name', css_class='form-group'),
+            Column('password1', css_class='form-group'),
+            Column('password2', css_class='form-group'),
+            Column('hcaptcha', css_class='w-100'),
+            Submit('submit', 'Sign up', css_class='btn btn-primary btn-login w-100')
+        )
+
+        self.fields['email'].label = 'E-mail Address'
+        self.fields['hcaptcha'].label = ''
+        self.fields['password1'].widget.attrs['placeholder'] = 'Minimum password length of 6 characters'
+        self.fields['password2'].widget.attrs['placeholder'] = 'Confirm again your password'
         self.fields.pop('username',)
+
+    def clean(self):
+        """
+        Check if email is already exists
+        """
+        cleaned_data = super().clean()
+        email = self.cleaned_data.get('email')
+        if get_user_model().objects.filter(email=email).exists():
+            raise forms.ValidationError('E-mail already exists.')
+
+        return cleaned_data
 
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']

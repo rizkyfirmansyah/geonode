@@ -29,14 +29,8 @@
                           <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
                             <div class="text w-100">
                               <form class="form-signin" role="form" method="POST" id="form-signin" action='{% url "account_login" %}?next={{request.path}}'>
-                                  {% csrf_token %}
-                                  {{ login_form|crispy }}
-                                  <div class="form-group h-captcha"
-                                        name="captcha"
-                                        data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98"
-                                        data-theme="dark">
-                                  </div>
-                                  <div><button type="submit" class="form-control btn btn-primary rounded btn-login">Sign In</button></div>
+                                  {% include "toast/_toast_form.html" %}
+                                  {% crispy login_form %}
                                   <div class="row w-100 mt-4">
                                     <p class="col-7 pr-0">
                                         Not a member?&nbsp&nbsp<a data-toggle="tab" href="#signup" class="light" id="aSignUp" role="tab" aria-controls="signup">Sign Up</a>
@@ -50,18 +44,11 @@
                           </div>
                           <div class="tab-pane fade" id="signup" role="tabpanel" aria-labelledby="signup-tab">
                               <div class="text w-100">
-                                  <form class="signup_form"
-                                        role="form"
-                                        method="POST"
-                                        id="signup_form"
-                                        action='{% url "account_signup" %}'
-                                        {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
-                                        {% csrf_token %}
-                                        {{ signup_form|crispy }}
-                                      <div class="h-captcha"
-                                            data-sitekey="c4422214-72cc-407a-96a7-a9a98469cc98"
-                                            data-theme="dark"></div>
-                                      <div><button type="submit" class="form-control btn btn-primary rounded btn-login mt-3">Sign Up</button></div>
+                                  <form class="signup_form" method="post" id="signup_form" action='{% url "account_signup" %}'>
+                                      {% include "toast/_toast_form.html" %}
+                                      <fieldset>
+                                        {% crispy signup_form %}
+                                      </fieldset>
                                   </form>
                                   <span class="d-flex align-items-center">I'm already a member! <a data-toggle="tab" href="#signin" class="nav-link light" id="aSignIn" role="tab" aria-controls="signin">Sign In</a></span>
                               </div>
@@ -76,7 +63,8 @@
 {% block extra_script %}
 <script>
   $(function () {
-    $('#signin-tab').tab('show')
+    $('#signin-tab').tab('show');
+    $(".custom-control-label").remove();
   })
 </script>
 <script src="https://js.hcaptcha.com/1/api.js" async defer>

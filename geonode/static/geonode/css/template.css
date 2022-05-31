@@ -1180,6 +1180,7 @@ input[type=text],
 input[type=url],
 select,
 textarea {
+    border: 1px solid var(--web-surface) !important;
     background-color: var(--web-surface)!important;
     color: var(--primary)!important;
     -webkit-transition: all .3s ease-in-out;
@@ -1973,18 +1974,6 @@ fieldset {
     border: none
 }
 
-.card input[type=email],
-.card input[type=number],
-.card input[type=password],
-.card input[type=tel],
-.card input[type=text],
-.card input[type=url],
-.card select,
-.card textarea {
-    border: 1px solid var(--web-surface);
-    background-color: var(--web-surface) !important;
-}
-
 .card-content {
     min-height: 96px;
 }
@@ -2085,26 +2074,6 @@ label>input[type=radio] {
 label>input[type=checkbox]:hover,
 label>input[type=radio]:hover {
     cursor: pointer
-}
-
-::-webkit-input-placeholder {
-    color: #828282
-}
-
-:-moz-placeholder {
-    color: #828282
-}
-
-::-moz-placeholder {
-    color: #828282
-}
-
-:-ms-input-placeholder {
-    color: #828282
-}
-
-.placeholder {
-    color: #828282!important
 }
 
 input:-webkit-autofill,
@@ -2382,7 +2351,7 @@ color: #491217;
 
 .header-menu-toggle {
     position: fixed;
-    top: 2.8%;
+    top: 2%;
     height: 42px;
     width: 42px;
     line-height: 42px;
