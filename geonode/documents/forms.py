@@ -90,7 +90,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 
     links = forms.MultipleChoiceField(
         label=_("Link to"),
-        help_text=_("Set a link to spatial dataset if any"),
+        help_text=_("Set a link to datasets if any"),
         required=False)
 
     def __init__(self, *args, **kwargs):
