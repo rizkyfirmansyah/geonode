@@ -3,6 +3,7 @@
 {% load base_tags %}
 {% load crispy_forms_tags %}
 
+<form method="POST" class="mb-4" id="request-download-layer">
 <div class="modal fade"
      id="requestDownloadLayer"
      tabindex="-1"
@@ -11,23 +12,23 @@
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-0 m-modal-width">
-            <div class="p-4 to-front">
-                <div class="text-center">
-                    <h3 class="light">Request Data</h3>
-                    <p class="mb-4 ">
-                        Please fill the information below, and we'll notify the owner about your request.
-                    </p>
-                    <form method="POST" class="mb-4" id="request-download-layer">
-                        {% csrf_token %}
-                        {{ roda_form|crispy }}
-                    <div class="modal-footer">
-                      <a href="#" data-dismiss="modal"class="btn btn-light">Maybe later</a>
-                      <input type="submit" class="btn btn-save form-actions" value="Submit">
-                    </div>
-                    </form>
-                </div>
+            <div class="modal-header">
+              <h3 class="light">Request Data</h3>
+              <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+                <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p class="">Please fill the information below, and we'll notify the owner about your request.</p>
+                {% csrf_token %}
+                {{ roda_form|crispy }}
+            </div>
+            <div class="modal-footer">
+              <a href="#" data-dismiss="modal" class="btn btn-light">Maybe later</a>
+              <input type="submit" class="btn btn-save form-actions" value="Submit">
             </div>
         </div>
     </div>
 </div>
+</form>
 {% include 'toast/request_data.html' %}

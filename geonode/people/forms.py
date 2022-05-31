@@ -155,17 +155,6 @@ class ProfileSignupForm(SignupForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Confirm again your password'
         self.fields.pop('username',)
 
-    def clean(self):
-        """
-        Check if email is already exists
-        """
-        cleaned_data = super().clean()
-        email = self.cleaned_data.get('email')
-        if get_user_model().objects.filter(email=email).exists():
-            raise forms.ValidationError('E-mail already exists.')
-
-        return cleaned_data
-
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
