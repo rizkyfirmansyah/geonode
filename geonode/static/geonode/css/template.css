@@ -1559,12 +1559,6 @@ h6 {
     text-align: center
 }
 
-@media only screen and (max-width:400px) {
-    html {
-        font-size: 9.411764705882353px
-    }
-}
-
 body,
 html {
     height: 100%;
@@ -4883,12 +4877,6 @@ span.icon.node-icon:before {
     }
 }
 
-@media only screen and (max-width:400px) {
-    .header-menu-text {
-        display: none
-    }
-}
-
 @media only screen and (max-width:1024px) {
     .block-m-1-6 .col-block {
         width: 16.66667%
@@ -5100,6 +5088,12 @@ span.icon.node-icon:before {
 }
 
 @media only screen and (max-width:400px) {
+    html {
+        font-size: .56em !important;
+    }
+    .header-menu-text {
+        display: none
+    }
     .row .row {
         padding-left: 0;
         padding-right: 0;
@@ -5116,6 +5110,18 @@ span.icon.node-icon:before {
     }
     [class*=col-]+[class*=col-].end {
         float: none
+    }
+
+    .header-menu-toggle {
+      position: relative;
+      margin-left: 2em;
+    }
+    .auto-margin {
+        width: 100%;
+        padding-left: 1.5em;
+    }
+    #loginImg {
+        display: none !important;
     }
 }
 
@@ -5144,6 +5150,20 @@ span.icon.node-icon:before {
     }
     #datasetsTable_filter input {
         min-width: 340px
+    }
+    .auto-margin {
+        margin: 180px;
+    }
+    
+    .auto-margin:after {
+        content: "";
+        display: table;
+        clear: both
+    }
+    
+    .auto-margin .row {
+        width: auto;
+        max-width: none
     }
 }
 

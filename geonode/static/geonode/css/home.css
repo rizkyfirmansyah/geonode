@@ -1011,21 +1011,6 @@ h6 {
     text-rendering: optimizeLegibility
 }
 
-.auto-margin {
-    margin: 180px;
-}
-
-.auto-margin:after {
-    content: "";
-    display: table;
-    clear: both
-}
-
-.auto-margin .row {
-    width: auto;
-    max-width: none
-}
-
 .col-one {
     width: 8.33333%
 }
@@ -1159,12 +1144,6 @@ h6 {
     margin-left: auto;
     margin-right: auto;
     text-align: center
-}
-
-@media only screen and (max-width:400px) {
-    html {
-        font-size: 9.411764705882353px
-    }
 }
 
 body,
@@ -3869,45 +3848,6 @@ article.tab-pane {
 }
 
 @media only screen and (max-width:1024px) {
-    .display-1 {
-        font-size: 7.2rem
-    }
-    .display-2 {
-        font-size: 4.4rem
-    }
-}
-
-@media only screen and (max-width:800px) {
-    .display-1 {
-        font-size: 6.5rem
-    }
-    .display-2 {
-        font-size: 4rem
-    }
-}
-
-@media only screen and (max-width:600px) {
-    .display-1 {
-        font-size: 5rem
-    }
-    .display-2 {
-        font-size: 3.3rem
-    }
-    .subhead {
-        font-size: 1.5rem
-    }
-}
-
-@media only screen and (max-width:400px) {
-    .display-1 {
-        font-size: 4.2rem
-    }
-    .display-2 {
-        font-size: 3rem
-    }
-}
-
-@media only screen and (max-width:1024px) {
     .section-header {
         max-width: 800px
     }
@@ -3934,34 +3874,19 @@ article.tab-pane {
     }
 }
 
-@media only screen and (max-width:400px) {
-    .header-menu-text {
-        display: none
-    }
-}
-
 @media only screen and (max-width:1500px) {
-    .home-content h1 {
-        font-size: 3rem
-    }
     .home-content__main {
         max-width: 1000px
     }
 }
 
 @media only screen and (max-width:1200px) {
-    .home-content h1 {
-        font-size: 2.5rem
-    }
     .home-content__main {
         max-width: 800px
     }
 }
 
 @media only screen and (max-width:1000px) {
-    .home-content h1 {
-        font-size: 2.2rem
-    }
     .home-content br {
         display: none
     }
@@ -3975,9 +3900,6 @@ article.tab-pane {
 @media only screen and (max-width:800px) {
     .home-content h3 {
         font-size: 1.5rem
-    }
-    .home-content h1 {
-        font-size: 1.7rem
     }
     .home-content__main {
         padding-right: 70px;
@@ -4010,9 +3932,6 @@ article.tab-pane {
 }
 
 @media only screen and (max-width:600px) {
-    .home-content h1 {
-        font-size: 1.4rem
-    }
     .home-social {
         right: 2rem
     }
@@ -4037,9 +3956,6 @@ article.tab-pane {
 @media only screen and (max-width:500px) {
     .s-home {
         min-height: 642px
-    }
-    .home-content h1 {
-        font-size: 1.2rem
     }
     .home-content__main {
         text-align: center;
@@ -4066,29 +3982,7 @@ article.tab-pane {
     }
 }
 
-@media only screen and (max-width:400px) {
-    .s-home {
-        min-height: 630px
-    }
-    .home-content h1 {
-        font-size: 1.2rem
-    }
-    .home-content__main {
-        padding-top: 16.2rem;
-        width: auto
-    }
-}
-
 @media only screen and (max-width:600px) {}
-
-@media only screen and (max-width:400px) {
-    .about-desc {
-        font-size: 1.8rem
-    }
-    .stats__count {
-        font-size: 7.8rem
-    }
-}
 
 @media only screen and (max-width:1024px) {
     .block-m-1-6 .col-block {
@@ -4298,6 +4192,9 @@ article.tab-pane {
 }
 
 @media only screen and (max-width:400px) {
+    html {
+        font-size: .56em !important;
+    }
     .row .row {
         padding-left: 0;
         padding-right: 0;
@@ -4314,6 +4211,30 @@ article.tab-pane {
     }
     [class*=col-]+[class*=col-].end {
         float: none
+    }
+
+    .header-menu-toggle {
+        position: relative;
+        margin-left: 2em;
+    }
+
+    .auto-margin {
+        width: 100%;
+        padding-left: 1.5em;
+    }
+
+    .header-menu-text {
+        display: none
+    }
+    .s-home {
+        min-height: 630px
+    }
+    .home-content__main {
+        padding-top: 16.2rem;
+        width: auto
+    }
+    #loginImg {
+        display: none !important;
     }
 }
 
@@ -4335,6 +4256,20 @@ article.tab-pane {
     }
     #datasetsTable_filter input {
         min-width: 340px
+    }
+    .auto-margin {
+        margin: 180px;
+    }
+    
+    .auto-margin:after {
+        content: "";
+        display: table;
+        clear: both
+    }
+    
+    .auto-margin .row {
+        width: auto;
+        max-width: none
     }
 }
 
