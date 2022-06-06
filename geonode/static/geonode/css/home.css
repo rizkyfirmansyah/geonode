@@ -2142,6 +2142,46 @@ input::-moz-focus-inner {
     -webkit-box-shadow: none!important
 }
 
+.search-field form input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: var(--secondary);
+}
+
+.search-field form input:-moz-placeholder { /* FF 4-18 */
+  color: var(--secondary);
+}
+
+.search-field form input::-moz-placeholder { /* FF 19+ */
+  color: var(--secondary);
+}
+
+.search-field form input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: var(--secondary);
+}
+
+.search-field form input::-ms-input-placeholder { /* Microsoft Edge */
+  color: var(--secondary);
+}
+
+.search-field form input:focus::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: transparent;
+}
+
+.search-field form input:focus:-moz-placeholder { /* FF 4-18 */
+  color: transparent;
+}
+
+.search-field form input:focus::-moz-placeholder { /* FF 19+ */
+  color: transparent;
+}
+
+.search-field form input:focus:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: transparent;
+}
+
+.search-field form input:focus::-ms-input-placeholder { /* Microsoft Edge */
+  color: transparent;
+}
+
 .home-content__scroll {
     position: absolute;
     right: 12.5rem;
