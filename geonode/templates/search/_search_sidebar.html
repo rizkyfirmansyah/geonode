@@ -8,18 +8,16 @@
             emptyString="{% trans "No list items selected. Use the + button to add." %}">
           </resource-cart>
           {% block bulk_perms_button %}
-            {% verbatim %}
             <div class="" role="group" aria-label="tools" ng-if="cart.getCart().items.length">
               <div class="btn-group btn-search-content" role="group">
                 <button type="button" class="btn btn-upload" ng-disabled="!cart.getCart().items.length" data-toggle="modal"
                   data-target="#_bulk_permissions">Set permissions</button>
               </div>
-              <div class="btn-group btn-search-content" role="group" ng-if="!cart.getCart().items.length && (cart.getCart().items[0].resource_type != document">
+              <div class="btn-group btn-search-content" role="group" ng-if="!cart.getCart().items.length">
                 <button type="button" class="btn btn-primary" ng-disabled="cart.getCart().items[0].resource_type != document"
                   ng-click="newMap()">Create a Map</button>
               </div>
             </div>
-              {% endverbatim %}
           {% endblock bulk_perms_button %}
         {% endif %}
         <div class="row justify-content-between mb-2 pt-2">

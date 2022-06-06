@@ -42,9 +42,11 @@
       {% endif %}
 
   </script>
-  {% with include_spatial='true' %}
-    {% include 'search/search_scripts.html' %}
-  {% endwith %}
+  {% include 'search/search_scripts.html' %}
+
+  {% if GEONODE_SECURITY_ENABLED %}
+  {% include "_permissions_form_js.html" %}
+  {% endif %}
 
   {% include 'section/require_signin.html' %}
   

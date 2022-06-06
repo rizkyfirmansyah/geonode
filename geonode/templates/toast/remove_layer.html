@@ -11,6 +11,5 @@
             data:{layername:layername},type:$(this).attr("method"),method:"POST",url:'{% url "layer_remove" %}',headers:{"X-CSRFToken":'{{csrftoken}}'},
             success:function(data){
               $(document.body).append(data);
-              $('.toast').toast('show')
-            }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})});</script>
+            }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},2e3)}),!1})});</script>
 {% endblock extra_script %}

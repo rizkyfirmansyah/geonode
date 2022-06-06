@@ -377,13 +377,7 @@
         {% endif %}
         <ul class="list-unstyled">
           {% for resource in related %}
-          {% if resource.document %}
             <li><a href="{{ resource.id }}">{{ resource.title }}</a></li>
-          {% elif resource.layer %}
-            <li><a href="layers/{{ resource }}">{{ resource.title }}</a></li>
-          {% elif resource.map %}
-            <li><a href="maps/{{ resource }}">{{ resource.title }}</a></li>
-          {% endif %}
           {% empty %}
           {% endfor %}
         </ul>

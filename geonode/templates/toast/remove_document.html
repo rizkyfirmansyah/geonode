@@ -10,8 +10,8 @@
         $.ajax({
           data:{docid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "document_remove" %}',headers:{"X-CSRFToken":'{{csrf_token}}'},
           success:function(data){
-            $(document.body).append(`{% include "toast/_toast.html" %}`);
-        }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},1e3)}),!1})
+            $(document.body).append(data);
+        }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},2e3)}),!1})
 
   });
 </script>

@@ -4771,19 +4771,6 @@ span.icon.node-icon:before {
     background-color: transparent!important
 }
 
-#removeDocumentsModal,
-#removeLayersModal {
-    position: absolute;
-    overflow: hidden!important;
-    top: 30%
-}
-
-#removeDocumentsModal h3,
-#removeLayersModal h3 {
-    padding: 2rem 0 2rem 0;
-    margin-bottom: .4rem
-}
-
 #download-layer li.active {
     color: #fff!important
 }
