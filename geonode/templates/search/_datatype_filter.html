@@ -5,7 +5,7 @@
     <ul class="collapse list-unstyled" id="data_type">
     {% verbatim %}
     <li ng-repeat="data_type in data_type">
-      <a data-value="{{ data_type.identifier }}" data-filter="data_type__identifier__in" title="{{ data_type.gn_description }}"ng-click="multiple_choice_listener($event)" class="{{data_type.active}}">{{ data_type.gn_description }}
+      <a data-value="{{ data_type.identifier }}" data-filter="data_type__identifier__in" title="{{ data_type.title }}"ng-click="multiple_choice_listener($event)" class="{{data_type.active}}">{{ data_type.title }}
         <span class="badge float-right">{{ data_type.count }}</span>
       </a>
     </li>
