@@ -27,7 +27,7 @@
                                         when="{'1': 'Manager', '0': 'No Manager', 'other': 'Managers'}"></ng-pluralize>
                     </a>
                 </li>
-                <li class="col text-center text-muted">Created at {{ group_profile.created_at|date:"d/M/y" }}</li>
+                <li class="col text-center text-muted p-0"><i class="fa-solid fa-person-chalkboard" title="Owner"></i> <a href="{{ group_profile.profile_url }}" class="card-link">{{ group_profile.created_by }}</a></li>
             </ul>
         </div>
     </article>

@@ -235,6 +235,9 @@ class GroupProfile(models.Model):
     def get_absolute_url(self):
         return reverse('group_detail', args=[self.slug, ])
 
+    def get_profile_url(self):
+        return reverse('profile_detail', args=(self.created_by,))
+
     @property
     def class_name(self):
         return self.__class__.__name__

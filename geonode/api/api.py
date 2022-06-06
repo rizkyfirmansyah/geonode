@@ -428,6 +428,8 @@ class GroupProfileResource(ModelResource):
     manager_count = fields.CharField()
     logo_url = fields.CharField()
     detail_url = fields.CharField()
+    created_by = fields.CharField()
+    profile_url = fields.CharField()
 
     class Meta:
         queryset = GroupProfile.objects.all()
@@ -458,6 +460,12 @@ class GroupProfileResource(ModelResource):
 
     def dehydrate_logo_url(self, bundle):
         return bundle.obj.logo_url
+
+    def dehydrate_created_by(self, bundle):
+        return bundle.obj.created_by
+
+    def dehydrate_profile_url(self, bundle):
+        return bundle.obj.get_profile_url()
 
 
 class GroupResource(ModelResource):
