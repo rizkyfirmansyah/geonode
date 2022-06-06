@@ -362,6 +362,8 @@ class GroupCategoryResource(TypeFilteredResource):
     detail_url = fields.CharField()
     member_count = fields.IntegerField()
     resource_counts = fields.CharField()
+    created_by = fields.CharField()
+    profile_url = fields.CharField()
 
     class Meta:
         queryset = GroupCategory.objects.all()
@@ -382,6 +384,12 @@ class GroupCategoryResource(TypeFilteredResource):
 
     def dehydrate_detail_url(self, bundle):
         return bundle.obj.get_absolute_url()
+
+    def dehydrate_created_by(self, bundle):
+        return bundle.obj.created_by
+
+    def dehydrate_profile_url(self, bundle):
+        return bundle.obj.get_profile_url()
 
     def dehydrate_member_count(self, bundle):
         request = bundle.request
