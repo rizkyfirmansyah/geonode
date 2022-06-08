@@ -14,11 +14,19 @@ class RodaAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
 
     def save_model(self, request, obj, form, change):
         # Return nothing to make sure user can't update any data
         pass
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_view_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 admin.site.register(Roda, RodaAdmin)

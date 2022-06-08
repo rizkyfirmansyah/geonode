@@ -50,4 +50,4 @@ class Roda(models.Model):
 
 
     def __str__(self):
-        return self.requester
+        return str(self.requester)

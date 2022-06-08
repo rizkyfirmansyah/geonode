@@ -145,8 +145,20 @@ set_user_and_group_layer_permission.short_description = 'Set layer permissions'
 
 class LicenseAdmin(TabbedTranslationAdmin):
     model = License
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'description')
     list_display_links = ('name',)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_add_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 class TopicCategoryAdmin(TabbedTranslationAdmin):
@@ -177,6 +189,14 @@ class TopicCategoryAdmin(TabbedTranslationAdmin):
         else:
             return False
 
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class DataTypeAdmin(TabbedTranslationAdmin):
     model = DataType
@@ -184,10 +204,19 @@ class DataTypeAdmin(TabbedTranslationAdmin):
     list_display = ('identifier', 'title', 'gn_description', 'is_choice')
 
     def has_add_permission(self, request):
-        return True
+        if request.user.is_staff:
+            return True
 
     def has_delete_permission(self, request, obj=None):
         return True
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 class RegionAdmin(TabbedTranslationAdmin):
@@ -196,6 +225,14 @@ class RegionAdmin(TabbedTranslationAdmin):
     list_display = ('code', 'name', 'parent')
     search_fields = ('code', 'name',)
     group_fieldsets = True
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 class SpatialRepresentationTypeAdmin(TabbedTranslationAdmin):
@@ -224,6 +261,14 @@ class RestrictionCodeTypeAdmin(TabbedTranslationAdmin):
     def has_delete_permission(self, request, obj=None):
         # the records are from the standard TC 211 list, so no way to remove
         return True
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 class ContactRoleAdmin(admin.ModelAdmin):

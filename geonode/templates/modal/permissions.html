@@ -12,23 +12,21 @@
             <i class="fa-solid fa-xmark" data-dismiss="modal" title="Close Panel"></i>
           </button>
         </div>
-        <form id="permission-form" method="post" action="{% url "resource_permissions" resource.id %}">
-          <div class="modal-body text-center">
-            <div class="tabbable">
-              <ul class="mr-4 ml-4">
-                {% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
-                  {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
-                    <li><a href="#permissions_tab1" data-toggle="tab" class="nav-primary active">{% trans "People and Groups" %}</a></li>
-                    <li id="geolimits-tab"><a href="#permissions_tab2" data-toggle="tab">{% trans "Geo Limits" %}</a></li>
-                  {% endif %}
+        <form id="permission-form" accept-charset="UTF-8" method="post" action="{% url "resource_permissions" resource.id %}">
+          <div class="text-center">
+            <ul class="mr-4 ml-4">
+              {% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
+                {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
+                  <li><a href="#permissions_tab1" data-toggle="tab" class="nav-primary active">{% trans "People and Groups" %}</a></li>
+                  <li id="geolimits-tab"><a href="#permissions_tab2" data-toggle="tab">{% trans "Geo Limits" %}</a></li>
                 {% endif %}
-              </ul>
-              <div class="tab-content bg-light">
-                <div class="tab-pane active" id="permissions_tab1">
-                  {% include "modal/permissions_form.html" %}
-                </div>
-                  {% include "modal/permissions_layer_geolimit.html" %}
+              {% endif %}
+            </ul>
+            <div class="tab-content bg-light">
+              <div class="tab-pane active" id="permissions_tab1">
+                {% include "modal/permissions_form.html" %}
               </div>
+                {% include "modal/permissions_layer_geolimit.html" %}
             </div>
           </div>
           <div class="modal-footer">
@@ -40,5 +38,6 @@
     </div>
 </div>
 
+{% include "modal/get_permissions.html" %}
 {% include "modal/permissions_layer.html" %}
 {% include "toast/permissions_form.html" %}

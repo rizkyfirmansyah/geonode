@@ -30,6 +30,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.forms import HiddenInput
 from geonode.base.models import ResourceBase
+from geonode.security.utils import serialize_resource_permissions
 from modeltranslation.forms import TranslationModelForm
 
 from geonode.documents.models import (
@@ -263,10 +264,10 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
         """
         Ensures the JSON field is JSON.
         """
-        permissions = self.cleaned_data['permissions']
-
+        permissions = json.loads(self.cleaned_data['permissions'])
+        resource_permissions = serialize_resource_permissions(permissions)
         try:
-            return json.loads(permissions)
+            return resource_permissions
         except ValueError:
             raise forms.ValidationError(_("Permissions must be valid JSON."))
 

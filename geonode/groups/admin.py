@@ -31,6 +31,18 @@ class GroupCategoryAdmin(TranslationAdmin):
     list_display = ('name', 'slug',)
     readonly_fields = ('slug',)
 
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_add_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class GroupMemberInline(admin.TabularInline):
     model = models.GroupMember
@@ -42,6 +54,18 @@ class GroupProfileAdmin(admin.ModelAdmin):
     ]
     exclude = ['group', ]
     actions = [set_user_and_group_layer_permission]
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_add_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 admin.site.unregister(Group)

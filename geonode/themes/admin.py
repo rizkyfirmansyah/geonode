@@ -90,17 +90,53 @@ class FaqFormAdmin(admin.ModelAdmin):
     list_display_links = ('header_title',)
     exclude = ('created_at',)
 
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_add_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class AboutFormAdmin(admin.ModelAdmin):
     list_display = ('header_title', 'contents')
     list_display_links = ('header_title',)
     exclude = ('created_at',)
 
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_add_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class HelpFormAdmin(admin.ModelAdmin):
     list_display = ('header_title', 'contents')
     list_display_links = ('header_title',)
     exclude = ('created_at',)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_add_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 class FeedbackFormAdmin(admin.ModelAdmin):

@@ -45,10 +45,8 @@ from .forms import ProfileCreationForm, ProfileChangeForm
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
 
-
 class ProfileAdmin(admin.ModelAdmin):
     modelform_factory(get_user_model(), fields='__all__')
-    add_form_template = 'admin/auth/user/add_form.html'
     change_user_password_template = None
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
@@ -65,7 +63,7 @@ class ProfileAdmin(admin.ModelAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password1')}
+            'fields': ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')}
          ),
     )
     form = ProfileChangeForm
@@ -209,6 +207,21 @@ class ProfileAdmin(admin.ModelAdmin):
             request.POST._mutable = mutable
         return super(ProfileAdmin, self).response_add(request, obj,
                                                       post_url_continue)
+
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def get_readonly_fields(self, request, obj=None):
+        readOnlyFields = super().get_readonly_fields(request, obj)
+        if request.user.is_staff and not request.user.is_superuser:
+            readOnlyFields = readOnlyFields + ('email', 'last_name', 'first_name', 'username', 'password', 'organization', 'position', 'city', 'area', 'country', 'keywords', 'last_login', 'date_joined', 'is_superuser',)
+        return readOnlyFields
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 admin.site.register(Profile, ProfileAdmin)

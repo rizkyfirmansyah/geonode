@@ -31,16 +31,39 @@ from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Column
 from hcaptcha.fields import hCaptchaField
+from geonode.people.models import Profile
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth import password_validation
+
+username_validator = UnicodeUsernameValidator()
 
 # Ported in from django-registration
 attrs_dict = {'class': 'required'}
 
 
 class ProfileCreationForm(UserCreationForm):
-
+    first_name = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: First Name',
+                                widget=forms.TextInput(attrs={'class': 'form-control w-100', 'placeholder': 'First Name'}))
+    last_name = forms.CharField(max_length=12, min_length=4, required=True, help_text='Required: Last Name',
+                               widget=(forms.TextInput(attrs={'class': 'form-control w-100'})))
+    email = forms.EmailField(max_length=50, help_text='Required. Inform a valid email address.',
+                             widget=(forms.TextInput(attrs={'class': 'form-control w-100'})))
+    password1 = forms.CharField(label=_('Password'),
+                                widget=(forms.PasswordInput(attrs={'class': 'form-control w-100'})),
+                                help_text=password_validation.password_validators_help_text_html())
+    password2 = forms.CharField(label=_('Password Confirmation'), widget=forms.PasswordInput(attrs={'class': 'form-control w-100'}),
+                                help_text=_('Just Enter the same password, for confirmation'))
+    username = forms.CharField(
+        label=_('Username'),
+        max_length=150,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+        error_messages={'unique': _("A user with that username already exists.")},
+        widget=forms.TextInput(attrs={'class': 'form-control w-100'})
+    )
     class Meta:
         model = get_user_model()
-        fields = ("username",)
+        fields = ('username', 'first_name', 'last_name', 'email',)
 
     def clean_username(self):
         # Since User.username is unique, this check is redundant,
@@ -54,7 +77,6 @@ class ProfileCreationForm(UserCreationForm):
             self.error_messages['duplicate_username'],
             code='duplicate_username',
         )
-
 
 class ProfileLoginForm(LoginForm):
   

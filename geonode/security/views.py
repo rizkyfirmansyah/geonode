@@ -31,6 +31,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _
 from geonode import GeoNodeException
+from geonode.security.utils import serialize_resource_permissions
 from geonode.utils import resolve_object
 from geonode.base.models import (
     ResourceBase,
@@ -45,8 +46,6 @@ from geonode.datasets.forms import RodaForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from geonode.notifications_helper import toast_unauthorized
-from guardian.shortcuts import get_anonymous_user
-from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -77,59 +76,19 @@ def resource_permisions_handle_get(request, resource):
     )
 
 
-def serialize_resource_permissions(obj):
-    perms_users = defaultdict(list)
-    perms_manage = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase']
-    for k, l in obj.items():
-        if k.endswith('users'):
-            if k.startswith('manage_resourcebase'):
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v).username].extend(perms_manage)
-                else:
-                    perms_users[get_user_model().objects.get(username=l).username].append(perms_manage)
-            else:
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
-                else:
-                    perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
-        if k.endswith('anonymous'):
-            perms_users[get_anonymous_user().username] = []
-            # perms_users[get_user_model().objects.get(username='AnonymousUser').username] = []
-
-    perms_groups = defaultdict(list)
-    for k, l in obj.items():
-        if k.endswith('groups'):
-            if k.startswith('manage_resourcebase'):
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_groups[GroupProfile.objects.get(slug=v).slug].extend(perms_manage)
-                else:
-                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(perms_manage)
-            else:
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_groups[GroupProfile.objects.get(slug=v).slug].append(k.replace('_groups', ''))
-                else:
-                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(k.replace('_groups', ''))
-
-    resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
-    return resource_permissions
-
-
 def resource_permissions_handle_post(request, resource):
     success = True
     toast_title = _("Update Permissions")
     message = _("Permissions successfully updated!")
     try:
-        permission_spec = json.loads(request.body)
+        permission_spec = json.loads(request.body.decode('UTF-8'))
         resource_permissions = serialize_resource_permissions(permission_spec)
         resource.set_permissions(resource_permissions)
 
         # Check Users Permissions Consistency
         view_any = False
         info = _perms_info(resource)
+        print("POST INFO ", info)
         for user, perms in info['users'].items():
             if user.username == "AnonymousUser":
                 view_any = "view_resourcebase" in perms
@@ -159,12 +118,11 @@ def resource_permissions_handle_post(request, resource):
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
             status=500,
-            content_type='text/plain'
+            content_type='application/json'
         )
 
 
 def resource_permissions(request, resource_id):
-    toast_title = _("Resource Permissions")
     try:
         resource = resolve_object(
             request, ResourceBase, {

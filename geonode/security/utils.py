@@ -53,6 +53,7 @@ from geonode.security.permissions import (
     DATA_EDITABLE_RESOURCES_SUBTYPES,
     DATA_STYLABLE_RESOURCES_SUBTYPES)
 from geonode.geoserver import security as gs_security
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +148,7 @@ def get_users_with_perms(obj):
                     permissions[perm.id] = perm.codename
     except Exception as e:
         logger.debug(e)
-
+    print(permissions)
     user_model = get_user_obj_perms_model(obj)
     users_with_perms = user_model.objects.filter(object_pk=obj.pk,
                                                  permission_id__in=permissions).values('user_id', 'permission_id')
@@ -952,3 +953,45 @@ class ResourceManager:
                 logger.exception(e)
                 _resource.set_processing_state("FAILED")
         return False
+
+
+def serialize_resource_permissions(obj):
+    perms_users = defaultdict(list)
+    perms_manage = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase']
+    for k, l in obj.items():
+        if k.endswith('users'):
+            if k.startswith('manage_resourcebase'):
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_users[get_user_model().objects.get(username=v)].extend(perms_manage)
+                else:
+                    perms_users[get_user_model().objects.get(username=l)].append(perms_manage)
+            else:
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_users[get_user_model().objects.get(username=v)].append(k.replace('_users', ''))
+                else:
+                    perms_users[get_user_model().objects.get(username=l)].append(k.replace('_users', ''))
+        if k.endswith('anonymous'):
+            perms_users[get_anonymous_user()] = []
+            # perms_users[get_user_model().objects.get(username='AnonymousUser')] = []
+
+    perms_groups = defaultdict(list)
+    for k, l in obj.items():
+        if k.endswith('groups'):
+            if k.startswith('manage_resourcebase'):
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_groups[GroupProfile.objects.get(slug=v).slug].extend(perms_manage)
+                else:
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(perms_manage)
+            else:
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_groups[GroupProfile.objects.get(slug=v).slug].append(k.replace('_groups', ''))
+                else:
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(k.replace('_groups', ''))
+
+    resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
+    print(resource_permissions)
+    return resource_permissions

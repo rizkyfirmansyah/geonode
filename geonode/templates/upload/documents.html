@@ -12,14 +12,14 @@
   });
 
   $("#id_links").select2({
-    width: '100%'
+      width: '100%'
   });
 
   $('#upload_form').submit(function () {
-    $('#permissions').val(JSON.stringify(permissionsString($('#permission_form'), 'base')));
+      $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
   });
 
   $('#upload-button').click(function () {
-    $('#_resource_uploading').modal('toggle');
+      $('#_resource_uploading').modal('toggle');
   });
 </script>

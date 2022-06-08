@@ -260,7 +260,7 @@ class Faq(models.Model):
     last_update = models.DateTimeField(_('Created Date'), auto_now=True, blank=True, null=True)
 
     def __str__(self):
-        return self.header_title
+        return str(self.header_title)
 
     def get_absolute_url(self):
         return reverse("faq", kwargs={"pk": self.pk})
@@ -283,7 +283,7 @@ class About(models.Model):
         verbose_name_plural = 'SDI About'
 
     def __str__(self):
-        return self.header_title
+        return str(self.header_title)
 
     def get_absolute_url(self):
         return reverse("about", kwargs={"pk": self.pk})
@@ -302,7 +302,7 @@ class Help(models.Model):
         verbose_name_plural = 'SDI Help & Support'
 
     def __str__(self):
-        return self.header_title
+        return str(self.header_title)
 
     def get_absolute_url(self):
         return reverse("help", kwargs={"pk": self.pk})
@@ -336,7 +336,7 @@ class Feedback(models.Model):
         blank=True,
         max_length=255,
         verbose_name=feedback_file_help_text)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, help_text=user_help_text)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, help_text=user_help_text, null=True)
     created_at = models.DateTimeField(_('Created Date'), auto_now_add=True, blank=True, null=True)
 
     class Meta:
@@ -344,7 +344,7 @@ class Feedback(models.Model):
         verbose_name_plural = 'SDI Feedbacks'
     
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

@@ -189,7 +189,7 @@ class TopicCategory(models.Model):
         help_text=svg_help_text)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ("identifier",)
@@ -222,7 +222,7 @@ class DataType(models.Model):
         help_text=help_choice_help_text)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         ordering = ("identifier",)
