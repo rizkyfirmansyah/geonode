@@ -86,7 +86,10 @@ class LoginRequiredMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
 
-        if not request.user.is_authenticated or request.user == get_anonymous_user():
+        anonymous_can_access = settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION
+
+        if not request.user.is_authenticated and anonymous_can_access:
+        # if not request.user.is_authenticated or request.user == get_anonymous_user():
 
             if "HTTP_AUTHORIZATION" in request.META:
                 auth_header = request.META.get("HTTP_AUTHORIZATION", request.META.get("HTTP_AUTHORIZATION2"))

@@ -1,0 +1,91 @@
+{% load i18n %}
+
+{% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
+  {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
+    <div class="tab-pane" id="permissions_tab2">
+      <div class="panel-group" id="gis_limits_map" style="height: 344px;width: 544px;"></div>
+      <div class="tabbable">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#gis_limits_tab1" data-toggle="tab">{% trans "Users" %}</a></li>
+          <li><a href="#gis_limits_tab2" data-toggle="tab">{% trans "Groups" %}</a></li>
+        </ul>
+        <div class="tab-content bg-light">
+          <div class="tab-pane active" id="gis_limits_tab1">
+
+              <div id="gis-limits-users">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <input class="search form-control" id="search-users" placeholder="{% trans "Search" %}">
+                      <!-- button class="sort btn btn-primary" data-sort="gis-limits-user-name">Sort by name</button -->
+                      <!-- button class="sort btn btn-primary" data-sort="gis-limits-user-title">Sort by title</button -->
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div id="gis-limits-users-content" class="list-group list bt-scrollable" style="min-height: 200px; height: 500px; overflow-y: scroll">
+                          <span id="gis-limits-users-list">
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+          <div class="tab-pane" id="gis_limits_tab2">
+
+              <div id="gis-limits-groups">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <input class="search form-control" placeholder="{% trans "Search" %}" />
+                      <!-- button class="sort btn btn-primary" data-sort="gis-limits-group-name">Sort by name</button -->
+                      <!-- button class="sort btn btn-primary" data-sort="gis-limits-group-title">Sort by title</button -->
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="list-group list bt-scrollable">
+
+                        {% for group in groups %}
+                        <a href="javascript:void(0)" class="list-group-item">
+                        <div class="col-md-8">
+                          <img src="{{ group.logo_url }}" class="pull-left photo">
+                          <h4 class="list-group-item-heading gis-limits-group-name">{{ group.title }}</h4>
+                          <p class="list-group-item-text gis-limits-group-title">{{ group.description }}</p>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="expertise">
+                            <div class="read-more float-right">
+                              <button id="group-load{{ group.id }}" type="button" class="btn btn-primary btn-sm deserialize-geo-limit"
+                                data-toggle="tooltip" data-placement="top" title="{% trans "Show Geo Limits" %}" aria-pressed="true">
+                                <span class="glyphicon glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                              </button>
+                              <button id="group-upload{{ group.id }}" type="button" class="btn btn-primary btn-sm"
+                                data-toggle="tooltip" data-placement="top" title="{% trans "Upload Geo Limits" %}" aria-pressed="true">
+                                <span class="glyphicon glyphicon glyphicon glyphicon-open-file"
+                                      data-toggle="modal" data-target="#_add_shp_zip" aria-hidden="true"></span>
+                              </button>
+                              <button id="group-save{{ group.id }}" type="button" class="btn btn-primary btn-sm serialize-geo-limit"
+                                data-toggle="tooltip" data-placement="top" title="{% trans "Save Geo Limits" %}" aria-pressed="true">
+                                <span class="glyphicon glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+                              </button>
+                              <button id="group-remove{{ group.id }}" type="button" class="btn btn-primary btn-sm delete-geo-limit"
+                                data-toggle="tooltip" data-placement="top" title="{% trans "Delete Geo Limits" %}" aria-pressed="true">
+                                <span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        </a>
+                        {% endfor %}
+
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}

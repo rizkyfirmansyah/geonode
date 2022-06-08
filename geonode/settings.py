@@ -851,13 +851,16 @@ GUARDIAN_GET_INIT_ANONYMOUS_USER = os.getenv(
     'geonode.people.models.get_anonymous_user_instance'
 )
 
-# Whether the uplaoded resources should be public and downloadable by default
+# Whether the uploaded resources should be public and downloadable by default
 # or not
 DEFAULT_ANONYMOUS_VIEW_PERMISSION = ast.literal_eval(
     os.getenv('DEFAULT_ANONYMOUS_VIEW_PERMISSION', 'False')
 )
 DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION = ast.literal_eval(
     os.getenv('DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION', 'False')
+)
+DEFAULT_ANONYMOUS_ACCESS_PERMISSION = ast.literal_eval(
+    os.getenv('DEFAULT_ANONYMOUS_ACCESS_PERMISSION', 'True')
 )
 
 #

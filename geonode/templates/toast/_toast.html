@@ -2,14 +2,14 @@
 {% load user_messages %}
 
 {% if messages %}
-<div id="liveToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+<div id="liveToast" class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
   {% for message in messages %}
   <div class="toast-message {% if message.level_tag %}alert-{{ message.level_tag }}{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
     {% if message.extra_tags %}
       <div class="toast-header">
           <strong class="mr-auto">{{ message.extra_tags }}</strong>
           <small class="text-muted">{% now "TIME_FORMAT" %}</small>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+          <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('liveToast').remove()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
       </div>
@@ -18,7 +18,7 @@
       </div>
     {% else %}
       <div class="toast-body">
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('liveToast').remove()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         <span class="font-lg-1">{{ message }}</span>

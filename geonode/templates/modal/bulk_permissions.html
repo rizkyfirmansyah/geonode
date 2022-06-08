@@ -1,0 +1,91 @@
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div class="modal fade" id="bulkModalPerms" tabindex="-1" role="dialog" aria-labelledby="bulkPermModal" aria-hidden="true" ng-controller="CartList">
+  <form id="bulk_permission_form" method="post">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="bulkPermModal">{% trans "Set permissions on selected resources" %}</h4>
+          <button class="close float-right col-1" onclick="$('.collapse').collapse('hide');">
+            <i class="fa-solid fa-minus" title="Minimize All Panel Tabs"></i>
+          </button>
+          <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark" data-dismiss="modal" title="Close Panel"></i>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <nav class="bulk_modal">
+            <div class="panel-heading">
+              <h6 class="card-title">
+                <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse1">
+                  {% trans "Who can view it?" %}
+                </a>
+              </h6>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="chk_btn_toggle"><input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
+                {{ permissions_form.view_resourcebase_users|as_crispy_field }}
+                {{ permissions_form.view_resourcebase_groups|as_crispy_field }}
+            </div>
+          </nav>
+
+          <nav class="bulk_modal">
+            <div class="panel-heading">
+              <h6 class="card-title">
+                <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse2">
+                  {% trans "Who can download it?" %}
+                </a>
+              </h6>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+                <div class="chk_btn_toggle"><input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
+                {{ permissions_form.download_resourcebase_users|as_crispy_field }}
+                {{ permissions_form.download_resourcebase_groups|as_crispy_field }}
+            </div>
+          </nav>
+
+          <nav class="bulk_modal">
+            <div class="panel-heading">
+              <h6 class="card-title">
+                <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse3">
+                  {% trans "Who can change metadata for it?" %}
+                </a>
+              </h6>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse">
+              {{ permissions_form.change_resourcebase_metadata_users|as_crispy_field }}
+              {{ permissions_form.change_resourcebase_metadata_groups|as_crispy_field }}
+            </div>
+          </nav>
+
+          <nav class="bulk_modal">
+            <div class="panel-heading">
+              <h6 class="card-title">
+                <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse4">
+                  {% trans "Who can manage it? (update, delete, change permissions, publish/unpublish it)" %}
+                </a>
+              </h6>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse">
+              {{ permissions_form.manage_resourcebase_users|as_crispy_field }}
+              {{ permissions_form.manage_resourcebase_groups|as_crispy_field }}
+            </div>
+          </nav>
+
+        </div>
+        <div class="alert hidden" id="bulk_perms_message">
+          <p class="message"></p>
+          <p class="extra_content"></p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-light" data-dismiss="modal">{% trans "Close" %}</button>
+          {% verbatim %}<button ng-if="cart" class="btn btn-save" ng-click="bulk_perms_submit()" id="bulk_perms_submit" type="submit">Apply Changes</button>{% endverbatim %}
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% include "modal/update_bulk_permissions.html" %}

@@ -1,0 +1,62 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+<div id="permissions_modal_body">
+  <nav class="bulk_modal">
+    <div class="panel-heading">
+      <h6 class="card-title">
+        <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse1">
+          {% trans "Who can view it?" %}
+        </a>
+      </h6>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+        <div class="chk_btn_toggle"><input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
+        {{ permissions_form.view_resourcebase_users|as_crispy_field }}
+        {{ permissions_form.view_resourcebase_groups|as_crispy_field }}
+    </div>
+  </nav>
+  
+  <nav class="bulk_modal">
+    <div class="panel-heading">
+      <h6 class="card-title">
+        <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse2">
+          {% trans "Who can download it?" %}
+        </a>
+      </h6>
+    </div>
+    <div id="collapse2" class="panel-collapse collapse">
+        <div class="chk_btn_toggle"><input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
+        {{ permissions_form.download_resourcebase_users|as_crispy_field }}
+        {{ permissions_form.download_resourcebase_groups|as_crispy_field }}
+    </div>
+  </nav>
+  
+  <nav class="bulk_modal">
+    <div class="panel-heading">
+      <h6 class="card-title">
+        <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse3">
+          {% trans "Who can change metadata for it?" %}
+        </a>
+      </h6>
+    </div>
+    <div id="collapse3" class="panel-collapse collapse">
+      {{ permissions_form.change_resourcebase_metadata_users|as_crispy_field }}
+      {{ permissions_form.change_resourcebase_metadata_groups|as_crispy_field }}
+    </div>
+  </nav>
+  
+  <nav class="bulk_modal">
+    <div class="panel-heading">
+      <h6 class="card-title">
+        <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse4">
+          {% trans "Who can manage it? (update, delete, change permissions, publish/unpublish it)" %}
+        </a>
+      </h6>
+    </div>
+    <div id="collapse4" class="panel-collapse collapse">
+      {{ permissions_form.manage_resourcebase_users|as_crispy_field }}
+      {{ permissions_form.manage_resourcebase_groups|as_crispy_field }}
+    </div>
+  </nav>
+</div>

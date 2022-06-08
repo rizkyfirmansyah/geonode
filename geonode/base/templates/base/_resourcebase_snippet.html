@@ -65,7 +65,6 @@
             <div class="card-body pt-0">
               <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
             </div>
-            <!-- <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a> -->
                   <div class="card-footer">
                     <div class="row">
                       <div class="col-3 text-center" ng-controller="CartList">
@@ -84,21 +83,21 @@
                   </div>
                     <em ng-if="item.resource_type == 'remoteStore'">
                       <div class="card-footer text-center">
-                        <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i> {% trans "Service is" %} {% trans "online" %}</span>
-                        <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i> {% trans "Service is" %} {% trans "offline" %}</span>
+                        <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i>Service is online</span>
+                        <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i>Service is offline</span>
                       </div>
                     </em>
                     <em ng-if="item.processed == false">
                       <div class="card-footer text-center">
-                        <i class="fa-solid fa-gear fa-spin fa-fw"></i>{% trans "Layer not ready yet. Still finalizing layer ingestion..." %}
+                        <i class="fa-solid fa-gear fa-spin fa-fw"></i>Layer not ready yet. Still finalizing layer ingestion...
                       </div>
                     </em>
-                    <div class="alert alert-danger" ng-if="item.dirty_state == true">{% trans "SECURITY NOT YET SYNCHRONIZED" %}
+                    <div class="alert alert-danger" ng-if="item.dirty_state == true">SECURITY NOT YET SYNCHRONIZED
                         <div class="card-footer text-center">{% verbatim %}<a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">{% endverbatim %}{% trans "Sync permissions immediately" %}</a></div>
                     </div>
-                    <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">{% trans "PENDING APPROVAL" %}</div>
-                    <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">{% trans "UNPUBLISHED" %}</div>
-                  {% verbatim %}
+                    {% verbatim %}
+                    <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">PENDING APPROVAL</div>
+                    <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">UNPUBLISHED</div>
                   <div class="card-footer" ng-if="item.resource_type == 'layer'">
                     <a class="create_map" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
                     <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>

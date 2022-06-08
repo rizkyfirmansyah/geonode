@@ -36,8 +36,8 @@
 
         $scope.bulk_perms_submit = function() {
             var items = cart.getCart().items;
-            var permissions = permissionsString($('#permission_form'), 'base');
             var selected_ids = $.map(items, function(item) { return item.id });
+            var data = $("#bulk_permission_form").serializeObject();
             var message = $('#bulk_perms_message');
             if (selected_ids.length == 0) {
                 message.find('.message').html('Please select at least one resource to set the permissions');
@@ -48,7 +48,7 @@
                 type: "POST",
                 url: siteUrl + "security/bulk-permissions",
                 data: {
-                    permissions: JSON.stringify(permissions),
+                    permissions: JSON.stringify(data),
                     resources: JSON.stringify(selected_ids)
                 },
                 beforeSend: function() {

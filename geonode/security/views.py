@@ -44,9 +44,9 @@ from geonode.notifications_helper import send_notification, toast_message
 from geonode.datasets.forms import RodaForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from geonode.notifications_helper import toast_unauthorized, toast_server_error
-# from geonode.datasets.models import Roda
+from geonode.notifications_helper import toast_unauthorized
+from guardian.shortcuts import get_anonymous_user
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -66,24 +66,70 @@ def _perms_info_json(obj):
 
 def resource_permisions_handle_get(request, resource):
     permission_spec = _perms_info_json(resource)
+    out = {}
+    out['success'] = True
+    out['permissions'] = permission_spec
+
     return HttpResponse(
-        json.dumps({'success': True, 'permissions': permission_spec}),
+        json.dumps(out),
         status=200,
-        content_type='application/json'
+        content_type='application/json',
     )
+
+
+def serialize_resource_permissions(obj):
+    perms_users = defaultdict(list)
+    perms_manage = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase']
+    for k, l in obj.items():
+        if k.endswith('users'):
+            if k.startswith('manage_resourcebase'):
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_users[get_user_model().objects.get(username=v).username].extend(perms_manage)
+                else:
+                    perms_users[get_user_model().objects.get(username=l).username].append(perms_manage)
+            else:
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
+                else:
+                    perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
+        if k.endswith('anonymous'):
+            perms_users[get_anonymous_user().username] = []
+            # perms_users[get_user_model().objects.get(username='AnonymousUser').username] = []
+
+    perms_groups = defaultdict(list)
+    for k, l in obj.items():
+        if k.endswith('groups'):
+            if k.startswith('manage_resourcebase'):
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_groups[GroupProfile.objects.get(slug=v).slug].extend(perms_manage)
+                else:
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(perms_manage)
+            else:
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_groups[GroupProfile.objects.get(slug=v).slug].append(k.replace('_groups', ''))
+                else:
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(k.replace('_groups', ''))
+
+    resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
+    return resource_permissions
 
 
 def resource_permissions_handle_post(request, resource):
     success = True
+    toast_title = _("Update Permissions")
     message = _("Permissions successfully updated!")
     try:
-        permission_spec = json.loads(request.body.decode('UTF-8'))
-        resource.set_permissions(permission_spec)
+        permission_spec = json.loads(request.body)
+        resource_permissions = serialize_resource_permissions(permission_spec)
+        resource.set_permissions(resource_permissions)
 
         # Check Users Permissions Consistency
         view_any = False
         info = _perms_info(resource)
-
         for user, perms in info['users'].items():
             if user.username == "AnonymousUser":
                 view_any = "view_resourcebase" in perms
@@ -99,15 +145,17 @@ def resource_permissions_handle_post(request, resource):
                             "access the resource. Please update permission "
                             "consistently!").format(username=user.username)
 
+        toast_message(request, message, extra_tags=toast_title)
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
             status=200,
-            content_type='text/plain'
+            content_type='application/json'
         )
     except Exception as e:
         logger.exception(e)
         success = False
         message = _("Error updating permissions :(")
+        toast_message(request, message, extra_tags=toast_title, remove=True)
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
             status=500,
@@ -124,7 +172,6 @@ def resource_permissions(request, resource_id):
     except PermissionDenied:
         # traceback.print_exc()
         # we are handling this in a non-standard way
-        # return toast_unauthorized(request, _PERMISSION_MSG_MODIFY, extra_tags=toast_title, redirect=True)
         return HttpResponse(
             _('You are not allowed to change permissions for this resource'),
             status=401,
@@ -173,7 +220,7 @@ def resource_geolimits(request, resource_id):
         if user_id:
             if wkt:
                 geo_limit, _ = UserGeoLimit.objects.get_or_create(
-                    user=get_user_model().objects.get(id=user_id),
+                    user=get_user_model().objects.get(username=user_id),
                     resource=resource
                 )
                 geo_limit.wkt = wkt
@@ -181,7 +228,7 @@ def resource_geolimits(request, resource_id):
                 resource.users_geolimits.add(geo_limit)
             else:
                 geo_limits = UserGeoLimit.objects.filter(
-                    user=get_user_model().objects.get(id=user_id),
+                    user=get_user_model().objects.get(username=user_id),
                     resource=resource
                 )
                 for geo_limit in geo_limits:
@@ -196,7 +243,7 @@ def resource_geolimits(request, resource_id):
         elif group_id:
             if wkt:
                 geo_limit, _ = GroupGeoLimit.objects.update_or_create(
-                    group=GroupProfile.objects.get(id=group_id),
+                    group=GroupProfile.objects.get(slug=group_id),
                     resource=resource
                 )
                 geo_limit.wkt = wkt
@@ -204,7 +251,7 @@ def resource_geolimits(request, resource_id):
                 resource.groups_geolimits.add(geo_limit)
             else:
                 geo_limits = GroupGeoLimit.objects.filter(
-                    group=GroupProfile.objects.get(id=group_id),
+                    group=GroupProfile.objects.get(slug=group_id),
                     resource=resource
                 )
                 for geo_limit in geo_limits:
@@ -220,7 +267,7 @@ def resource_geolimits(request, resource_id):
         if user_id:
             try:
                 geo_limits = UserGeoLimit.objects.filter(
-                    user=get_user_model().objects.get(id=user_id),
+                    user=get_user_model().objects.get(username=user_id),
                     resource=resource
                 )
                 for geo_limit in geo_limits:
@@ -240,7 +287,7 @@ def resource_geolimits(request, resource_id):
         elif group_id:
             try:
                 geo_limits = GroupGeoLimit.objects.filter(
-                    group=GroupProfile.objects.get(id=group_id),
+                    group=GroupProfile.objects.get(slug=group_id),
                     resource=resource
                 )
                 for geo_limit in geo_limits:
@@ -261,7 +308,7 @@ def resource_geolimits(request, resource_id):
         if user_id:
             try:
                 _geo_limit = UserGeoLimit.objects.get(
-                    user=get_user_model().objects.get(id=user_id),
+                    user=get_user_model().objects.get(username=user_id),
                     resource=resource
                 ).wkt
                 return HttpResponse(
@@ -276,7 +323,7 @@ def resource_geolimits(request, resource_id):
         elif group_id:
             try:
                 _geo_limit = GroupGeoLimit.objects.get(
-                    group=GroupProfile.objects.get(id=group_id),
+                    group=GroupProfile.objects.get(slug=group_id),
                     resource=resource
                 ).wkt
                 return HttpResponse(
@@ -415,8 +462,10 @@ def invalidate_tiledlayer_cache(request):
 @require_POST
 def set_bulk_permissions(request):
     permission_spec = json.loads(request.POST.get('permissions', None))
+    resource_permissions = serialize_resource_permissions(permission_spec)
     resource_ids = json.loads(request.POST.get('resources', '[]'))
-    if permission_spec is not None:
+
+    if resource_permissions is not None:
         not_permitted = []
         for resource_id in resource_ids:
             try:
@@ -425,7 +474,7 @@ def set_bulk_permissions(request):
                         'id': resource_id
                     },
                     'base.change_resourcebase_permissions')
-                resource.set_permissions(permission_spec)
+                resource.set_permissions(resource_permissions)
             except PermissionDenied:
                 try:
                     resolve_object(
@@ -433,7 +482,7 @@ def set_bulk_permissions(request):
                             'id': resource_id
                         },
                         'base.change_resourcebase')
-                    resource.set_permissions(permission_spec)
+                    resource.set_permissions(resource_permissions)
                 except PermissionDenied:
                     not_permitted.append(ResourceBase.objects.get(id=resource_id).title)
 
@@ -490,7 +539,7 @@ def request_permissions(request):
 
 def send_email_consumer(layer_uuid, user_id):
     resource = get_object_or_404(ResourceBase, uuid=layer_uuid)
-    user = get_user_model().objects.get(id=user_id)
+    user = get_user_model().objects.get(username=user_id)
     send_notification([resource.owner],
                       'request_download_resourcebase',
                       {'resource': resource, 'from_user': user})

@@ -34,4 +34,6 @@ urlpatterns = [
         { 'facet_type': 'catalogue'},
         name="catalogue_browse"    
     ),
+    url(r'^permissions/batch/$',
+    views.catalogue_batch_permissions, name='catalogue_batch_permissions'),
 ]

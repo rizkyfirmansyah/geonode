@@ -5,23 +5,27 @@
 <div id="formToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
   {% for field in form %}
     {% for error in field.errors %}
-    <div class="toast-message alert-error" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <span class="font-lg-1">{{ error|escape }}</span>
+    <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('formToast').remove()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <span class="font-lg-1">{{ error|escape }}</span>
+        </div>
       </div>
     </div>
     {% endfor %}
   {% endfor %}
   {% for error in form.non_field_errors %}
-  <div class="toast-message alert-error" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-body">
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <span class="font-lg-1">{{ error|escape }}</span>
+  <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('formToast').remove()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <span class="font-lg-1">{{ error|escape }}</span>
+      </div>
     </div>
   </div>
   {% endfor %}

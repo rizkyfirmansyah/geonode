@@ -18,6 +18,7 @@
 #########################################################################
 
 from geonode.base.forms import ResourceBaseForm
+from geonode.base.models import ResourceBase
 from geonode.maps.models import Map
 
 
