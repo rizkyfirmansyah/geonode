@@ -1,0 +1,73 @@
+{% load i18n %}
+
+<div class="modal fade w-100 h-100" id="preview_pleaseWaitDialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h3 class="modal-title w-100 text-center">{% trans "Processing..." %}</h3>
+          </div>
+          <div class="modal-body">
+              <div class="progress">
+                <div class="progress-bar bg-info progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                  {% trans "Updating Metadata..." %}
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade w-100 h-100" id="preview_errorDialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header alert alert-danger">
+          <h3 class="modal-title">{% trans "Error Updating Metadata" %}</h3>
+          <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+            <h5 class="text-center">{% trans "Error" %}...</h5>
+        </div>
+        <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Ok, I get it.</button>
+    </div>
+</div>
+</div>
+
+<div class="modal fade w-100 h-100" id="error_mandatoryDialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content panel-warning">
+    <div class="modal-header panel-heading">
+      <h3 class="modal-title">{% trans "Error Updating Metadata" %}</h3>
+      <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+        <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+      </button>
+    </div>
+    <div class="modal-body text-center">
+      <h5 class="text-center">
+        Please fill all the <span class="text-warning">mandatory fields</span> declared by the Metadata Schema
+      </h5>
+    </div>
+    <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Ok, I get it.</button>
+  </div>
+</div>
+</div>
+
+<div class="modal fade w-100 h-100" id="thxDialog" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content panel-warning">
+    <div class="modal-header panel-heading">
+      <h3 class="modal-title">{% trans "Thank you for completing the form!" %}</h3>
+      <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+        <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+      </button>
+    </div>
+    <div class="modal-body text-center">
+      <h5 class="text-center">
+        Now you can click the <span class="text-warning">Done</span> button to save your work.
+      </h5>
+    </div>
+    <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Ok, I get it.</button>
+  </div>
+</div>
+</div>

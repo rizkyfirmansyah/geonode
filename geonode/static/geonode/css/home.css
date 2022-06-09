@@ -1193,17 +1193,6 @@ fieldset[disabled] .btn {
     background-color: transparent!important
 }
 
-#error_mandatoryDialog h3 {
-    font-weight: 800
-}
-
-#general_errors {
-    font-size: 24px;
-    font-weight: 800;
-    min-height: 180px;
-    padding: 1em
-}
-
 .h1,
 .h2,
 .h3,

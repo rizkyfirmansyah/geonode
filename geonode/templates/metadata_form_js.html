@@ -170,6 +170,8 @@
             if(completeness === 100 && !tooltipShown && !gotIt) {
                 tooltipShown = true;
                 setTimeout(function() {
+                    $('#profileCompleteness').removeClass('alert-danger').addClass('alert-success');
+                    $('#progressCompleted').removeClass('bg-danger').addClass('bg-success');
                     $('.metadata-edit-done').popover('show');
                     $(document).on('click', '#close-popover-done', function() {
                         $('.metadata-edit-done').popover('hide');
@@ -177,10 +179,12 @@
                     });
                 }, 1500);
             } else if (completeness < 100) {
+                $('#profileCompleteness').addClass('alert-danger');
+                $('#progressCompleted').addClass('bg-danger');
                 tooltipShown = false;
                 $('.metadata-edit-done').popover('hide');
             };
-                // show/hide done button
+            // show/hide done button
             completeness === 100 ? ($('#btn_upd_md_dwn').addClass('disabled'), $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow")) : ($('#btn_upd_md_dwn').removeClass('disabled'), $('#btn_upd_md_done').addClass('d-none').fadeIn("slow"));
         };
     {% endblock completeness  %}
