@@ -33,6 +33,7 @@ from django.db.models import signals
 from django.utils.timezone import now
 from django.templatetags.static import static
 from geonode.thumbs.utils import MISSING_THUMB
+from django.shortcuts import get_object_or_404
 
 from taggit.managers import TaggableManager
 
@@ -220,6 +221,17 @@ class GroupProfile(models.Model):
         else:
             logger.warning(f"The invited user \"{user.username}\" is already a member")
 
+    def request_join(self, user, owner):
+        GroupRequest.objects.get_or_create(requester=user, owner=owner, group=self, was_requested=True)
+
+    def was_requested(self, user):
+        if user.is_authenticated:
+            try:
+                request = GroupRequest.objects.get(group=self)
+                return request.was_requested
+            except GroupRequest.DoesNotExist:
+                return False
+
     def leave(self, user, **kwargs):
         if not user or user.is_anonymous or user == user.get_anonymous():
             raise ValueError("The invited user cannot be anonymous")
@@ -304,6 +316,15 @@ class GroupMember(models.Model):
                 for perm in ADMIN_PERMISSIONS:
                     remove_perm(perm, self.user, _r.get_self_resource())
         super(GroupMember, self).save(*args, **kwargs)
+
+
+class GroupRequest(models.Model):
+    requester = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='requester_group')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owner_group')
+    group = models.ForeignKey(GroupProfile, on_delete=models.CASCADE)
+    is_approved = models.BooleanField(default=False)
+    was_requested = models.BooleanField(default=False)
+    requested_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 def group_pre_delete(instance, sender, **kwargs):

@@ -53,7 +53,7 @@ from django.utils.translation import ugettext as _
 
 from . import forms
 from . import models
-from .models import GroupMember, GroupProfile
+from .models import GroupMember, GroupProfile, GroupRequest
 
 logger = logging.getLogger(__name__)
 
@@ -103,12 +103,16 @@ group_category_update = GroupCategoryUpdateView.as_view()
 
 @login_required
 def group_join_request(request, slug):
+    """
+    Create log for requester to join group. Destroy the data once being added.
+    """
     group = GroupProfile.objects.get(slug=slug)
     toast_title = _("Request Join Group")
     requester = request.user
     send_to = get_user_model().objects.get(id=group.created_by_id)
     content = f'{requester} wants to join your group {group.title}.'
     message = _("Your request has been sent to owner's inbox.")
+    group.request_join(requester, owner=send_to)
 
     send_inbox(request, toast_title, content, send_to=send_to)
     messages.success(request, message, extra_tags=toast_title)
@@ -197,6 +201,8 @@ class GroupDetailView(ListView):
             "manager")
         context["is_owner"] = self.request.user == self.group.created_by
         context['can_view'] = self.group.can_view(self.request.user)
+        context['was_requested'] = self.group.was_requested(self.request.user)
+
         return context
 
 
@@ -237,7 +243,7 @@ def group_members_add(request, slug):
                 messages.add_message(request, messages.ERROR, e)
                 return redirect("group_members", slug=group.slug)
         message = f"{user} has been added to {group.title}"
-
+        # group.verified_join(user, group)
         messages.success(request, message, extra_tags=toast_title)
 
     return redirect("group_members", slug=group.slug)

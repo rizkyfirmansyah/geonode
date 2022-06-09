@@ -88,22 +88,25 @@
             </form>
             {% endif %}
           {% else %}
-          {% if object.access == "public-invite" %}
-              {% trans "Anyone may view this group but membership is by invitation only." %}
-          {% else %}
           {% if object.access == "private" %}
               {% trans "Membership is by invitation only." %}
           {% endif %}
           {% endif %}
-          {% endif %}
         <p>
-        {% if object.access == "public-invite" and not is_owner %}
-        <li class="list-group-item border-0 pt-0">
-          <form method="POST" action="{% url "group_join_request" object.slug %}" id="request_join">
-            {% csrf_token %}
-            <input type="submit" class="btn btn-save btn-md btn-block" value="{% trans "Request Join" %}" />
-          </form>
-        </li>
+        {% if object.access == "public-invite" and not is_member %}
+          {% trans "Anyone may view this group but membership is by invitation only." %}
+          {% if was_requested %}
+            <li class="list-group-item border-0 pt-0">
+              <button class="btn btn-info btn-block disabled">Waiting for Confirmation</button>
+            </li>
+          {% else %}
+            <li class="list-group-item border-0 pt-0">
+              <form method="POST" action="{% url "group_join_request" object.slug %}" id="request_join">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-save btn-md btn-block" value="{% trans "Request Join" %}" />
+              </form>
+            </li>
+          {% endif %}
         {% endif %}
       </li>
       <li class="list-group-item border-0">
@@ -127,8 +130,6 @@
 </div>
 
 {% include "modal/remove_group.html" %}
-{% comment %} {% include "toast/request_join_group.html" %} {% endcomment %}
-{% comment %} {% include "toast/request_join.html" %} {% endcomment %}
 
 {% endblock %}
 
