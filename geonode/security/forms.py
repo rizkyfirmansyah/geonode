@@ -41,6 +41,7 @@ class PermissionsForm(forms.Form):
                   'class': 'selectpicker',
                   'data-live-search': 'true',
                   'data-selected-text-format': 'count > 4',
+                  'data-actions-box': 'true',
                   'data-size': '5'})
 
     view_resourcebase_users = ProfileMultipleChoiceField(
