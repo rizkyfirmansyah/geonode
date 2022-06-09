@@ -93,15 +93,17 @@
         {% block additional_info %}{% endblock %}
       
         {% if errors %}
-        <div id="errors" class="alert alert-danger">
-          {% for error in errors %}
-          <p>{{ error }}</p>
-          {% endfor %}
+        <div class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
+          <div id="errors" class="toast-message alert alert-danger">
+            {% for error in errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+          </div>
         </div>
         {% endif %}
       
-        <div id="upload-status"></div>
-      
+        <div id="upload-status" class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;"></div>
+
         <section id="drop-zone" class="w-100 mb-2" onclick="document.getElementById('file-input').click();">
           <h3><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "shapefile or raster files" %}</span>{% trans " or click here to upload" %}</h3>
           <form id="file-uploader" method="post" enctype="multipart/form-data">
