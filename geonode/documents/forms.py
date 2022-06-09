@@ -30,7 +30,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.forms import HiddenInput
 from geonode.base.models import ResourceBase
-from geonode.groups.models import GroupProfile
 from geonode.security.utils import serialize_resource_permissions
 from modeltranslation.forms import TranslationModelForm
 
@@ -41,6 +40,7 @@ from geonode.documents.models import (
 )
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
+from django.contrib.auth.models import Group
 
 logger = logging.getLogger(__name__)
 
@@ -88,16 +88,20 @@ class DocumentFormMixin(object):
             .filter(document_id=self.instance.id).exclude(pk__in=[i.pk for i in instances]).delete()
 
 
-class DocumentForm(ResourceBaseForm, DocumentFormMixin):
-    get_groups_choices = [(i.slug, i.title )for i in GroupProfile.objects.all()]
+class GroupsChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
 
+        return obj.groupprofile.title
+
+
+class DocumentForm(ResourceBaseForm, DocumentFormMixin):
     links = forms.MultipleChoiceField(
         label=_("Link to"),
         help_text=_("Set a link to datasets if any"),
         required=False)
 
-    group = forms.ChoiceField(
-        choices=get_groups_choices,
+    group = GroupsChoiceField(
+        queryset = Group.objects.exclude(groupprofile=None),
         required=False)
 
     def __init__(self, *args, **kwargs):
