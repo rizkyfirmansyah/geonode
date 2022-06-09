@@ -1911,17 +1911,12 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                         link_type='image',
                     )
                 )
-                # Cleaning up the old stuff
-                if self.thumbnail_path and MISSING_THUMB not in self.thumbnail_path and storage_manager.exists(self.thumbnail_path):
-                    storage_manager.delete(self.thumbnail_path)
                 # Store the new url and path
                 self.thumbnail_url = url
-                self.thumbnail_path = upload_path
                 obj.url = url
                 obj.save()
                 ResourceBase.objects.filter(id=self.id).update(
-                    thumbnail_url=url,
-                    thumbnail_path=upload_path
+                    thumbnail_url=url
                 )
         except Exception as e:
             logger.error(
