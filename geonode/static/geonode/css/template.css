@@ -14,6 +14,7 @@
     --search-header: 3em;
     --spacing-1: 2.5em;
     --relative-space-header: 4em;
+    --secondary-theme-color: #3abce4;
     --toggle: #e0e8e7;
     --save: #256BF4;
     --upload: #4F98AF !important;
@@ -25,7 +26,8 @@
     --link: #fdba12 !important;
     --danger: #000 !important;
     --disabled: #c4c4c4 !important;
-    --edit: #a23133 !important;
+    --edit: #fdba12 !important;
+    --download: #58c2ff !important;
 }
 
 @font-face {
@@ -513,29 +515,29 @@ button.full-width {
 }
 
 .btn-download {
-    color: var(--primary) !important;
-    background-color: var(--link) !important;
-    border-color: var(--link) !important
+    color: var(--secondary) !important;
+    background-color: var(--download) !important;
+    border-color: var(--download) !important
 }
 
 .btn-download:hover {
     color: var(--primary) !important;
     background-color: var(--secondary) !important;
-    border-color: var(--link) !important;
-    border: 2px solid var(--link);
+    border-color: var(--download) !important;
+    border: 2px solid var(--download);
 }
 
 .btn-download.focus,
 .btn-download:focus {
     color: var(--primary) !important;
     background-color: var(--secondary) !important;
-    border-color: var(--link) !important;
-    box-shadow: 0 0 0 .2rem var(--link);
+    border-color: var(--download) !important;
+    box-shadow: 0 0 0 .2rem var(--download);
 }
 
 .btn-download.disabled,
 .btn-download:disabled {
-    color: var(--link) !important;
+    color: var(--download) !important;
     background-color: var(--disabled) !important;
     border-color: var(--disabled) !important;
     cursor: not-allowed !important;
