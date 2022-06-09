@@ -9,40 +9,39 @@
 <div class="alert alert-error">{{ error }}</div>
 {% endif %}
 
-<div class="row w-100">
-  <h3 class="col-8">{% trans "Upload a Thumbnail" %}</h2>
-</div>
+  <div class="card rounded border-info mb-2 text-center">
+    <div class="card-header">
+      <h3 class="text-primary">Upload Dataset Thumbnail</h3>
+    </div>
 
-<div class="row">
+    <div class="card-body">
 
-  <div class="col-md-8">
-    <img src='{{ resource.thumbnail_url }}'></img>
-    <h4>{% trans "Auto generated thumbnail" %}</h4>
+      <div class="card-img-top mb-2">
+        <!-- current uploaded thumb -->
+        {% if resource.curatedthumbnail %}
+        <img src='{{ resource.curatedthumbnail.thumbnail_url }}'></img>
+        <p class="text-muted">Current thumbnail</p>
+        <form method="POST" class="post-form">
+          {% csrf_token %}
+            <button type="submit" class="save btn btn-primary" name="remove-thumb">
+              {% trans "Remove (and use auto generated thumbnail)" %}</button>
+        </form>
+        {% else %}
+          <img style="max-height: 20em;" title="Auto generated thumbnail" src='{{ resource.thumbnail_url }}'></img>
+          <p class="text-muted">Auto generated thumbnail</p>
+        {% endif %}
+      </div>
+  <form method="POST" enctype="multipart/form-data" class="post-form">
+      {{ form.img }}
   </div>
-
-  <div class="col-md-4">
-
-    <!-- current uploaded thumb -->
-    {% if resource.curatedthumbnail %}
-      <h5>Current thumbnail</h5>
-      <img src='{{ resource.curatedthumbnail.thumbnail_url }}'></img>
-      <form method="POST" class="post-form">
-        {% csrf_token %}
-          <button type="submit" class="save btn btn-primary" name="remove-thumb">
-            {% trans "Remove (and use auto generated thumbnail)" %}</button>
-      </form>
-    {% endif %}
-
-    <!-- upload form -->
-    <form method="POST" enctype="multipart/form-data" class="post-form">
-      {% csrf_token %}
-        {{ form.img }}
-        <br/>
-        <button type="submit" class="save btn btn-upload"  name="upload-thumb">{% trans "Upload" %}</button>
-    </form>
-
-  </div>
-
+    {% csrf_token %}
+    <div class="card-footer">
+      <div class="row">
+        <a href="{% url 'document_detail' resource.id %}" class="btn btn-info col m-3">{% trans "Return to Dataset" %}</a>
+        <button type="submit" class="btn btn-save col m-3" name="upload-thumb">{% trans "Upload" %}</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 {% endblock %}
