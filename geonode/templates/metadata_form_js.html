@@ -139,8 +139,8 @@
 
             var validateMissing = function(classes, miss) {
                 $('#completeness-hints .'+classes+'')
-                .toggleClass('progress-bar-danger', miss)
-                .toggleClass('progress-bar-success', !miss)
+                .toggleClass('bg-danger', miss)
+                .toggleClass('bg-success', !miss)
                 .text(miss ? 'Mandatory' : 'Completed')
                 .attr('title', miss ? gettext("some schema mandatory fields are missing") : gettext("Metadata Schema mandatory fields completed") )
                 .tooltip('dispose');
