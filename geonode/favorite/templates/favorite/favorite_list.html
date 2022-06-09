@@ -52,14 +52,5 @@
         });
     }
 </script>
-<script text="javascript">
-  var app = angular.module('category', [])
-  .controller("CategoryList", function($scope, $http) {
-      $http.get(siteUrl + 'api/v2/categories')
-          .then(function(response) {
-              $scope.categories = response.data.categories;
-          });
-  });
-  angular.bootstrap(document, ['category']);
-</script>
+
 {% endblock extra_script %}

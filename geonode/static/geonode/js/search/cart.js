@@ -81,14 +81,19 @@
                 }
             });
         };
+
+        // $http.get(siteUrl + 'api/v2/categories')
+        // .then(function(response) {
+        //     $scope.categories = response.data.categories;
+        // });
     })
 
-    .controller("CategoryList", function($scope, $http) {
-        $http.get(siteUrl + 'api/v2/categories')
-            .then(function(response) {
-                $scope.categories = response.data.categories;
-            });
-    })
+    // .controller("CategoryList", function($scope, $http) {
+    //     $http.get(siteUrl + 'api/v2/categories')
+    //         .then(function(response) {
+    //             $scope.categories = response.data.categories;
+    //         });
+    // })
 
     .directive('resourceCart', ['$sce', function($sce) {
         return {

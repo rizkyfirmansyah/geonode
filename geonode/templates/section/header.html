@@ -25,21 +25,21 @@
             {% endif %}
         {% endif %}
       </div>
-      <div class="col p-0" id="header-main-menu" ng-controller="CategoryList">
+      <div class="col p-0" id="header-main-menu">
         <ul class="list-inline pt-2 mr-4">
           {% if request.user.is_authenticated or access_token %}
           <li class="list-inline-item mr-2" id="information_categories">
             <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>
+            {% get_categories as categories %}
             <ul class="collapse list-unstyled m-0" id="information_categories_card" style="display: none;">
-              {% verbatim %}
-              <li ng-repeat="category in categories">
+              {% for category in categories %}
+              <li>
                 <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
-                  title="{{ category.gn_description }}" ng-click="multiple_choice_listener($event)"
-                  class="d-flex {{category.active}}">
-                  {{ category.gn_description }}
+                  title="{{ category.title }}" class="d-flex">
+                  {{ category.title }}
                 </a>
               </li>
-              {% endverbatim %}
+              {% endfor %}
             </ul>
           </li>
           {% endif %}

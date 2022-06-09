@@ -32,7 +32,7 @@ from pinax.ratings.models import Rating
 from guardian.shortcuts import get_objects_for_user
 
 from django.contrib.auth.decorators import login_required
-from geonode.base.models import ResourceBase
+from geonode.base.models import ResourceBase, TopicCategory
 from geonode.base.bbox_utils import filter_bbox
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
@@ -502,3 +502,10 @@ def display_change_perms_button(resource, user, perms):
         return True
     else:
         return not getattr(settings, 'ADMIN_MODERATE_UPLOADS', False)
+
+
+@register.simple_tag
+def get_categories():
+    topic_categories = TopicCategory.objects.exclude(is_choice=False)
+
+    return list(topic_categories)

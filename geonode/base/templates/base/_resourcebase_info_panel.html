@@ -90,9 +90,9 @@
     {% if resource.category.count > 0 %}
     <dt>{% trans "Category" %}</dt>
       {% for category in resource.category.all %}
-        <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+        <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.title %}</a> {% if category.gn_description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
         <dd class="category-more-{{ category.id }} collapse">
-          {% trans category.description %}
+          {% trans category.gn_description %}
         </dd>
       {% endfor %}
     {% endif %}
