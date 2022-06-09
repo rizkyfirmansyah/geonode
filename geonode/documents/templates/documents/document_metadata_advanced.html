@@ -28,7 +28,7 @@
 
 <form id="metadata_update" class="form-horizontal" action="{% url "document_metadata" document.id %}" method="POST">
   <div class="card" id="fixed-header">
-    <h2 class="card-header text-center">
+    <h3 class="card-header text-center">
       {% blocktrans with document.title as document_title %}
         Edit Metadata for {{ document_title }}
       {% endblocktrans %}

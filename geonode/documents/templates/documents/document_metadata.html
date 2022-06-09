@@ -16,7 +16,7 @@
   <div class="card border-info">
     <div class="card-header">
       <div class="row">
-        <h2 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with document.title as document_title %}for
+        <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with document.title as document_title %}for
           {{ document_title }}{% endblocktrans %}</h2>
         <div class="col-4 text-right">
           <a href="{% url 'document_detail' docid=resource.id %}"

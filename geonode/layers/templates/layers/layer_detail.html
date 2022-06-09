@@ -41,7 +41,7 @@
 <div class="card rounded bg-light mb-2">
   <div class="card-body">
     <div class="row">
-      <h2 class="col-8">{{ resource.title|default:resource.alternate }}</h2>
+      <h3 class="col-8">{{ resource.title|default:resource.alternate }}</h2>
       <div class="col-4">
         <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Catalogue" %}</a>
       </div>

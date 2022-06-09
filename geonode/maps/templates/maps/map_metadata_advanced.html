@@ -28,7 +28,7 @@
 
 <form id="metadata_update" class="form-horizontal" action="{{ map.get_absolute_url }}/metadata" method="POST">
   <div class="card" id="fixed-header">
-    <h2 class="card-header text-center">
+    <h3 class="card-header text-center">
       {% blocktrans with map.title as map_title %}
         Edit Metadata for {{ map_title }}
       {% endblocktrans %}
