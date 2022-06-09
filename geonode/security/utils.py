@@ -148,7 +148,6 @@ def get_users_with_perms(obj):
                     permissions[perm.id] = perm.codename
     except Exception as e:
         logger.debug(e)
-    print(permissions)
     user_model = get_user_obj_perms_model(obj)
     users_with_perms = user_model.objects.filter(object_pk=obj.pk,
                                                  permission_id__in=permissions).values('user_id', 'permission_id')
@@ -993,5 +992,5 @@ def serialize_resource_permissions(obj):
                     perms_groups[GroupProfile.objects.get(slug=l).slug].append(k.replace('_groups', ''))
 
     resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
-    print(resource_permissions)
+
     return resource_permissions

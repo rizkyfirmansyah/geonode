@@ -73,7 +73,6 @@ class Command(BaseCommand):
         self.dump_thesaurus(name)
 
     def list_thesauri(self):
-        print('LISTING THESAURI')
         max_id_len = len(max(Thesaurus.objects.values_list('identifier', flat=True), key=len))
 
         for t in Thesaurus.objects.order_by('order').all():
