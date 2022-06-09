@@ -28,7 +28,7 @@
           <!-- <p>{% trans "This group has not created a logo." %}</p> -->
         {% endif %}
         <div class="card-text">
-          <p class="group-desc">{{ object.description }}</p>
+          <p class="card-body">{{ object.description }}</p>
           {% if object.keyword_list %}
           <p>
             {% for keyword in object.keyword_list %}
@@ -77,22 +77,33 @@
           {% blocktrans with object.get_access_display as access %}
             This group is <strong>{{ access }}</strong>.
           {% endblocktrans %}
+        </p>
+        <p>
           {% if object.access == "public" %}
+            {% if not is_member %}
             {% trans "Anyone may join this group." %}
             <form method="POST" action="{% url "group_join" object.slug %}">
-              {% csrf_token %}
-              {% if not is_member %}
-              <input type="submit" class="btn btn-primary btn-md btn-block" value="{% trans "Join Group" %}" />
-              {% endif %}
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-md btn-block" value="{% trans "Join Group" %}" />
             </form>
-          {% else %} {% if object.access == "public-invite" %}
-            {% trans "Anyone may view this group but membership is by invitation only." %}
-          {% else %} {% if object.access == "private" %}
-            {% trans "Membership is by invitation only." %}
-          {% endif %} {% endif %} {% endif %}
-        </p>
+            {% endif %}
+          {% else %}
+          {% if object.access == "public-invite" %}
+              {% trans "Anyone may view this group but membership is by invitation only." %}
+          {% else %}
+          {% if object.access == "private" %}
+              {% trans "Membership is by invitation only." %}
+          {% endif %}
+          {% endif %}
+          {% endif %}
+        <p>
         {% if object.access == "public-invite" and not is_owner %}
-        <li class="list-group-item border-0 pt-0"><form id="request-join" method="post" action="{% url 'group_join_request' object.slug %}"></form><a class="btn-save btn_wrapper" onclick="document.getElementById('request-join').submit();">{% trans "Request Join" %}</a></li>
+        <li class="list-group-item border-0 pt-0">
+          <form method="POST" action="{% url "group_join_request" object.slug %}" id="request_join">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-save btn-md btn-block" value="{% trans "Request Join" %}" />
+          </form>
+        </li>
         {% endif %}
       </li>
       <li class="list-group-item border-0">
@@ -116,6 +127,7 @@
 </div>
 
 {% include "modal/remove_group.html" %}
+{% comment %} {% include "toast/request_join_group.html" %} {% endcomment %}
 {% comment %} {% include "toast/request_join.html" %} {% endcomment %}
 
 {% endblock %}

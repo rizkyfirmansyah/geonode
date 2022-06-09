@@ -21,7 +21,7 @@
 {% block extra_script %}
 {{ block.super }}
   {% if GEONODE_SECURITY_ENABLED %}
-    {% include "modal/permissions.html" %}
+    {% include "toast/permissions_form.html" %}
   {% endif %}
   <script type="text/javascript">
       {% if HAYSTACK_SEARCH %}

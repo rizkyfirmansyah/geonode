@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load static %}
+{% load base_tags %}
+{% block extra_script %}
+<script type="text/javascript">
+      $(document).ready(function(){
+
+        $("#request_join").submit(function(t){
+          t.preventDefault();let r=$(this).serialize();
+          $.ajax({
+            data:r,type:$(this).attr("method"),
+            method:"POST",
+            success:function(xhr, response, data){
+                console.log(data)
+            },
+            error:function(data){
+              $(document.body).append(data);
+            }})
+          })
+      });
+</script>
+{% endblock extra_script %}

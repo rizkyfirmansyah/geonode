@@ -305,6 +305,19 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   background-color: #ff7c30 !important;
 }
 
+.bg-private {
+  background-color: #d3d3d3 !important;
+}
+
+.bg-public {
+  background-color: #ffffff !important;
+}
+
+.bg-public-invite {
+  background-color: #edeae9 !important;
+}
+
+
 .bg-layer div p,
 .bg-document div p {
   color: white;

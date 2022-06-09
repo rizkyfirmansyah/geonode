@@ -54,7 +54,7 @@ from django.utils.translation import ugettext as _
 
 from . import forms
 from . import models
-from .models import GroupMember
+from .models import GroupMember, GroupProfile
 
 logger = logging.getLogger(__name__)
 
@@ -104,15 +104,17 @@ group_category_update = GroupCategoryUpdateView.as_view()
 
 @login_required
 def group_join_request(request, slug):
-    group = models.Group.objects.filter(slug=slug)
+    group = GroupProfile.objects.get(slug=slug)
     toast_title = _("Request Join Group")
     requester = request.user
-    content = f"{requester + 'wants to join your group.'}"
+    send_to = get_user_model().objects.get(id=group.created_by_id)
+    content = f'{requester} wants to join your group {group.title}.'
     message = _("Your request has been sent to owner's inbox.")
 
-    send_inbox(request, toast_title, content, send_to=group.created_by_id)
+    send_inbox(request, toast_title, content, send_to=send_to)
+    toast_message(request, message, extra_tags=toast_title)
 
-    return toast_message(request, message, extra_tags=toast_title, redirect=True)
+    return redirect("group_detail", slug=group.slug)
 
 
 @activeuser_only

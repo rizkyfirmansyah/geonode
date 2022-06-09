@@ -3,8 +3,9 @@
     <article ng-repeat="group_profile in results" resource_id="{{ id }}" ng-cloak class="ng-cloak p-2">
         <div class="card">
             <a href="{{ group_profile.detail_url }}" class="card-link"><img class="card-img-top" ng-src="{{ group_profile.logo_url }}" alt="{{ group_profile.title }}"></a>
-            <div class="card-body">
-                <h4 class="card-title"><a href="{{ group_profile.detail_url }}">{{ group_profile.title }}</a></h4>
+
+            <div class="card-body bg-{{ group_profile.access }}">
+                <h4 class="card-title"><a href="{{ group_profile.detail_url }}" title="{{ group_profile.access }} group">{{ group_profile.title }}</a></h4>
                 <p class="card-text">
                     {{ group_profile.description | limitTo: 300 }}
                     {{ group_profile.description.length > 300 ? '...' : ''}}
