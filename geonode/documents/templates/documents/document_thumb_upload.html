@@ -77,7 +77,7 @@
     {% endautoescape %}
     </script>
     {% if GEONODE_SECURITY_ENABLED %}
-        {% include "_permissions_form_js.html" %}
+        {% include "modal/permissions.html" %}
     {% endif %}
 
 {% include "upload/documents.html" %}

@@ -52,27 +52,12 @@
                     resources: JSON.stringify(selected_ids)
                 },
                 beforeSend: function() {
-                    // Handle the beforeSend event
-                    try {
-                        $(".lmask").modal("show");
-                    } catch (err) {
-                        console.log(err);
-                    }
-                    try {
-                        $("#_perms_processing").modal("show");
-                    } catch (err) {
-                        console.log(err);
-                    }
+                    Pace.start();
                 },
                 complete: function() {
                     // Handle the complete event
                     try {
-                        $(".lmask").modal("hide");
-                    } catch (err) {
-                        console.log(err);
-                    }
-                    try {
-                        $("#_perms_processing").modal("hide");
+                        $("#bulkModalPerms").modal("hide");
                     } catch (err) {
                         console.log(err);
                     }
@@ -88,6 +73,7 @@
                         message.find('.message').html('Permissions correctly registered.');
                         message.addClass('alert-success').removeClass('alert-warning alert-danger hidden');
                     }
+                    Pace.stop();
                 },
                 error: function(data) {
                     message.find('.message').html($.parseJSON(data).error);

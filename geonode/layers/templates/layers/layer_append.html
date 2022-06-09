@@ -105,7 +105,7 @@
 </script>
 {% if GEONODE_SECURITY_ENABLED %}
 {% with resource=layer %}
-{% include "_permissions_form_js.html" %}
+{% include "modal/permissions.html" %}
 {% endwith %}
 {% endif %}
 {% endblock extra_script %}

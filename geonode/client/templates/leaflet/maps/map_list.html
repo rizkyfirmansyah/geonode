@@ -15,13 +15,13 @@
     {% endif %}
     {% include "search/_search_content.html" %}
   </div>
-  {% include "_bulk_permissions_form.html" %}
+  {% include "modal/bulk_permissions.html" %}
 {% endblock %}
 
 {% block extra_script %}
 {{ block.super }}
   {% if GEONODE_SECURITY_ENABLED %}
-    {% include "_permissions_form_js.html" %}
+    {% include "modal/permissions.html" %}
   {% endif %}
   <script type="text/javascript">
       {% if HAYSTACK_SEARCH %}

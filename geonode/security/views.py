@@ -53,7 +53,6 @@ _PERMISSION_MSG_MODIFY = _("You are not allowed to change permissions for this r
 
 def _perms_info(obj):
     info = obj.get_all_level_info()
-    print("GET ALL INFO ", info)
     return info
 
 
@@ -85,11 +84,9 @@ def resource_permissions_handle_post(request, resource):
         permission_spec = json.loads(request.body.decode('UTF-8'))
         resource_permissions = serialize_resource_permissions(permission_spec)
         resource.set_permissions(resource_permissions)
-        print("POST RESOURCE PERMISSIONS ", resource_permissions)
         # Check Users Permissions Consistency
         view_any = False
         info = _perms_info(resource)
-        print("POST INFO ", info)
         for user, perms in info['users'].items():
             if user.username == "AnonymousUser":
                 view_any = "view_resourcebase" in perms

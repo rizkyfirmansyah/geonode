@@ -128,24 +128,32 @@ def get_users_with_perms(obj):
     """
     Override of the Guardian get_users_with_perms
     """
-    ctype = ContentType.objects.get_for_model(obj)
     permissions = {}
+    def _get_perms_code(perms, content_type_id=None):
+        for perm in Permission.objects.filter(codename__in=perms, content_type_id=content_type_id):
+            permissions[perm.id] = perm.codename
+
+        return permissions
+
+    ctype = ContentType.objects.get_for_model(obj)
     PERMISSIONS_TO_FETCH = VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS + ADMIN_PERMISSIONS + SERVICE_PERMISSIONS
+    PERMISSIONS_DATASETS_TO_FETCH = VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS + ADMIN_PERMISSIONS
     try:
         if hasattr(obj.get_real_instance(), 'storeType'):
             # include explicit permissions appliable to "storeType == 'dataStore'"
             if obj.get_real_instance().storeType == 'dataStore':
                 PERMISSIONS_TO_FETCH += LAYER_ADMIN_PERMISSIONS
-                for perm in Permission.objects.filter(codename__in=PERMISSIONS_TO_FETCH, content_type_id=ctype.id):
-                    permissions[perm.id] = perm.codename
+                _get_perms_code(PERMISSIONS_TO_FETCH, content_type_id=ctype.id)
             elif obj.get_real_instance().storeType == 'coverageStore':
                 PERMISSIONS_TO_FETCH += LAYER_EDIT_STYLE_PERMISSIONS
-                for perm in Permission.objects.filter(codename__in=PERMISSIONS_TO_FETCH, content_type_id=ctype.id):
-                    permissions[perm.id] = perm.codename
+                _get_perms_code(PERMISSIONS_TO_FETCH, content_type_id=ctype.id)
             else:
                 PERMISSIONS_TO_FETCH += LAYER_EDIT_DATA_PERMISSIONS
-                for perm in Permission.objects.filter(codename__in=PERMISSIONS_TO_FETCH):
-                    permissions[perm.id] = perm.codename
+                _get_perms_code(PERMISSIONS_TO_FETCH, content_type_id=ctype.id)
+
+        else:
+            _get_perms_code(PERMISSIONS_DATASETS_TO_FETCH, content_type_id=ctype.id)
+
     except Exception as e:
         logger.debug(e)
     user_model = get_user_obj_perms_model(obj)
@@ -538,6 +546,7 @@ class AdvancedSecurityWorkflowManager:
                     if not AdvancedSecurityWorkflowManager.is_simple_publishing_workflow() and (_resource.is_approved or _resource.is_published):
                         safe_remove(prev_perms, 'change_resourcebase')
                         safe_remove(prev_perms, 'change_resourcebase_metadata')
+                        safe_remove(prev_perms, 'delete_resourcebase')
                         if _resource.polymorphic_ctype.model == "layer":
                             safe_remove(prev_perms, 'change_layer_style')
                             safe_remove(prev_perms, 'change_layer_data')
@@ -962,15 +971,15 @@ def serialize_resource_permissions(obj):
             if k.startswith('manage_resourcebase'):
                 if isinstance(l, list):
                     for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v)].extend(perms_manage)
+                        perms_users[get_user_model().objects.get(username=v).username].extend(perms_manage)
                 else:
-                    perms_users[get_user_model().objects.get(username=l)].append(perms_manage)
+                    perms_users[get_user_model().objects.get(username=l).username].extend(perms_manage)
             else:
                 if isinstance(l, list):
                     for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v)].append(k.replace('_users', ''))
+                        perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
                 else:
-                    perms_users[get_user_model().objects.get(username=l)].append(k.replace('_users', ''))
+                    perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
         if k.endswith('anonymous'):
             perms_users[get_anonymous_user()] = []
             # perms_users[get_user_model().objects.get(username='AnonymousUser')] = []
@@ -983,7 +992,7 @@ def serialize_resource_permissions(obj):
                     for i, v in enumerate(l):
                         perms_groups[GroupProfile.objects.get(slug=v).slug].extend(perms_manage)
                 else:
-                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(perms_manage)
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].extend(perms_manage)
             else:
                 if isinstance(l, list):
                     for i, v in enumerate(l):
