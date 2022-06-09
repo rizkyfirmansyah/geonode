@@ -30,6 +30,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.forms import HiddenInput
 from geonode.base.models import ResourceBase
+from geonode.groups.models import GroupProfile
 from geonode.security.utils import serialize_resource_permissions
 from modeltranslation.forms import TranslationModelForm
 
@@ -88,10 +89,15 @@ class DocumentFormMixin(object):
 
 
 class DocumentForm(ResourceBaseForm, DocumentFormMixin):
+    get_groups_choices = [(i.slug, i.title )for i in GroupProfile.objects.all()]
 
     links = forms.MultipleChoiceField(
         label=_("Link to"),
         help_text=_("Set a link to datasets if any"),
+        required=False)
+
+    group = forms.ChoiceField(
+        choices=get_groups_choices,
         required=False)
 
     def __init__(self, *args, **kwargs):
@@ -130,6 +136,12 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
                         'class': 'has-external-popover selectpicker',
                         'data-live-search': 'true',
                         'data-size': '10'})
+            if field == 'group':
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'has-external-popover selectpicker',
+                        'data-live-search': 'true',
+                        'data-size': '5'})
 
         self.fields['links'].choices = self.generate_link_choices()
         self.fields['links'].initial = self.generate_link_values(
