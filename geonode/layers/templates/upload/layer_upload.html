@@ -89,7 +89,6 @@
           </div>
         </div>
       </section>
-    <form id="file-uploader" method="post" enctype="multipart/form-data">
     
         {% block additional_info %}{% endblock %}
       
@@ -105,10 +104,11 @@
       
         <section id="drop-zone" class="w-100 mb-2" onclick="document.getElementById('file-input').click();">
           <h3><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "shapefile or raster files" %}</span>{% trans " or click here to upload" %}</h3>
+          <form id="file-uploader" method="post" enctype="multipart/form-data">
             <!-- UI change to hide the list of previously uploaded files from the user -->
             <input type="file" id="file-input" style="display: none;" accept=".shp,.shx,.dbf,.prj,.xml,.tif,.tiff,application/vnd.geo+json,.geojson,application/json,.json,application/vnd.google-earth.kml+xml,.kml,application/vnd.google-earth.kmz,.kmz" multiple>
+          </form>
         </section>
-      
         <div class="learn-more">
             <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal" data-target=".learn-more-modal" style="background: none; border: none;"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></button> </p>
         </div>
@@ -164,10 +164,9 @@
               <a href="{% url "layer_upload" %}" class="btn btn-danger text-center w-100">{% trans "Clear" %}</a>
             </div>
             <div class="col-6">
-              <a href="#" class="btn btn-upload text-center w-100" type="submit">{% trans "Upload files" %}</a>
+              <a href="#" class="btn btn-upload text-center w-100" id="upload-button" type="submit">{% trans "Upload files" %}</a>
             </div>
         </div>
-    </form>
   </div>
 </div>
 </div>
