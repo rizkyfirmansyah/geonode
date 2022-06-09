@@ -3465,6 +3465,15 @@ form#text-search-autocomplete .ac-results {
     width: unset !important;
 }
 
+:not(.input-group)>.bootstrap-select.form-control:not([class*=col-]), .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+    border: 1px solid rgba(0,0,0,.125) !important;
+}
+
+#completeness-hints {
+    height: 2em !important;
+    font-size: .9em;
+}
+
 #profileCompleteness small {
     font-size: 1.2em!important
 }
