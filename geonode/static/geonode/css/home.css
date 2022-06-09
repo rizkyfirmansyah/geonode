@@ -13,6 +13,7 @@
     --padding-link-header: .6em;
     --spacing-1: 2.5em;
     --relative-space-header: 4em;
+    --secondary-theme-color: #4F98AF;
     --toggle: #e0e8e7;
     --save: #256BF4;
     --upload: #4F98AF !important;
@@ -581,6 +582,7 @@ button.full-width {
 #nav_avatar img {
   margin-left: -5px;
   border-radius: 1000px!important;
+  margin-right: 5px;
 }
 
 .header-nav a img {
@@ -1918,7 +1920,7 @@ input::-moz-focus-inner {
 
 .header-menu-toggle {
     position: fixed;
-    top: 2%;
+    top: 2.5%;
     height: 42px;
     width: 42px;
     line-height: 42px;
@@ -2133,6 +2135,7 @@ input::-moz-focus-inner {
     font-size: 2em!important;
     color: #fff!important;
     transition: all .2s ease-out, color .2s ease-out;
+    border-bottom: 1px solid gray !important;
 }
 
 .search-field form input:focus {
@@ -2321,11 +2324,7 @@ html.no-csstransitions .home-content__main {
 }
 
 #showcase {
-    background-color: #1c463f;
-}
-
-#showcase .section-header.has-bottom-sep::before {
-    background-color: #c4bab7
+    background-color: var(--secondary-theme-color);
 }
 
 #showcase .container div,
@@ -4254,8 +4253,7 @@ footer li a:hover {
     .logo-footer {
         height: auto;
         float: left;
-        min-width: 240px;
-        max-width: 340px
+        max-height: 2.5em;
     }
     footer .copyright-notice {
         font-size: 1.375rem;

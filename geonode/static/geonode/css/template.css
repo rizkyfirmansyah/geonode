@@ -902,6 +902,7 @@ button.full-width {
 #nav_avatar img {
   margin-left: -5px;
   border-radius: 1000px!important;
+  margin-right: 5px;
 }
 
 .header-nav a img {
@@ -2338,18 +2339,15 @@ color: #491217;
 
 .header-menu-toggle {
     position: fixed;
-    top: 2%;
-    height: 42px;
-    width: 42px;
-    line-height: 42px;
+    height: 3em;
+    width: 3em;
+    top: 40px;
     font-family: Solanel-Medium, sans-serif;
-    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: .3rem;
-    color: #c4bab7;
     -webkit-transition: all .5s ease-in-out;
     transition: all .5s ease-in-out;
-    z-index: 1060
+    z-index: 1060;
 }
 
 .header-menu-text {
@@ -2363,14 +2361,10 @@ color: #491217;
 
 .header-menu-icon {
     display: block;
-    width: 22px;
+    width: 1.5em;
     height: 2px;
-    margin-top: -1px;
     position: absolute;
-    /* left: 10px; */
-    top: 50%;
-    right: auto;
-    bottom: auto;
+    top: -10%;
     background-color: var(--secondary);
     -webkit-transition: all .5s ease-in-out;
     transition: all .5s ease-in-out
