@@ -41,11 +41,12 @@ from geonode.layers.models import Layer
 from geonode.groups.models import GroupProfile
 
 from geonode.messaging.notifications import send_inbox
-from geonode.notifications_helper import send_notification, toast_message
+from geonode.notifications_helper import send_notification
 from geonode.datasets.forms import RodaForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from geonode.notifications_helper import toast_unauthorized
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -102,7 +103,8 @@ def resource_permissions_handle_post(request, resource):
                             "access the resource. Please update permission "
                             "consistently!").format(username=user.username)
 
-        toast_message(request, message, extra_tags=toast_title)
+        messages.success(request, message, extra_tags=toast_title)
+        
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
             status=200,
@@ -112,7 +114,8 @@ def resource_permissions_handle_post(request, resource):
         logger.exception(e)
         success = False
         message = _("Error updating permissions :(")
-        toast_message(request, message, extra_tags=toast_title, remove=True)
+        messages.error(request, message, extra_tags=toast_title)
+
         return HttpResponse(
             json.dumps({'success': success, 'message': message}),
             status=500,
@@ -485,7 +488,10 @@ def request_permissions(request):
                               'request_download_resourcebase',
                               {'resource': resource, 'from_user': request.user})
 
-            return toast_message(request, _toast_message, extra_tags=toast_title)
+            messages.success(request, _toast_message, extra_tags=toast_title)
+            context = {'roda_form': roda_form}
+
+            return render(request, 'modal/request_data.html', context)
 
     else:
         roda_form = RodaForm()

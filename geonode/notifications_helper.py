@@ -144,16 +144,6 @@ def get_comment_notification_recipients(notice_type_label, instance_owner, exclu
     return profiles
 
 
-def toast_message(request, message, extra_tags=None, remove=False, redirect=True):
-    if redirect:
-        messages.info(request, message, extra_tags=extra_tags)
-        return HttpResponseRedirect(request.path_info)
-    if remove:
-        return messages.warning(request, message, extra_tags=extra_tags)
-    else:
-        return messages.info(request, message, extra_tags=extra_tags)
-
-
 def toast_unauthorized(request, message=None, extra_tags=None, redirect=True):
     if extra_tags is None:
         extra_tags = _("We could not process your request")

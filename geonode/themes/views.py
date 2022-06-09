@@ -5,11 +5,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 import uuid
 from geonode.messaging.notifications import send_inbox
-from geonode.notifications_helper import toast_message
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.contrib import messages
 
 from .forms import FeedbackForm
 from .models import Faq, Feedback, Help, About
@@ -49,6 +48,8 @@ def help_view(request):
 
 @login_required
 def feedback_form(request):
+    feedback_form = FeedbackForm(request.POST or None)
+    success = False
     if request.method == 'POST':
         toast_title = _("Submit Feedback")
         feedback_form = FeedbackForm(request.POST, request.FILES)
@@ -62,13 +63,12 @@ def feedback_form(request):
             subject = _("User Feedbacks")
             content = f"New Feedback is coming from user: {request.user}"
             send_inbox(request, subject, content, send_to = get_user_model().objects.filter(is_superuser=True)[0])
+            messages.success(request, message, extra_tags=toast_title)
+            success = True
 
-            return toast_message(request, message, extra_tags=toast_title)
-
-    else:
-        feedback_form = FeedbackForm()
-        context = {'feedback_form': feedback_form}
-        return render(request, 'modal/feedbacks.html', context)
+    context = {'feedback_form': feedback_form}
+    
+    return render(request, 'modal/feedbacks.html', context)
 
 
 @method_decorator(staff_member_required, name='dispatch')

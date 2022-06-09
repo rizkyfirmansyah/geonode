@@ -34,7 +34,6 @@ from django.http import (
     HttpResponseRedirect)
 from django.contrib import messages
 from geonode.messaging.notifications import send_inbox
-from geonode.notifications_helper import toast_message
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -112,7 +111,7 @@ def group_join_request(request, slug):
     message = _("Your request has been sent to owner's inbox.")
 
     send_inbox(request, toast_title, content, send_to=send_to)
-    toast_message(request, message, extra_tags=toast_title)
+    messages.success(request, message, extra_tags=toast_title)
 
     return redirect("group_detail", slug=group.slug)
 
@@ -220,6 +219,8 @@ def group_members(request, slug):
 @require_POST
 @login_required
 def group_members_add(request, slug):
+    toast_title = _("Add Member")
+
     group = get_object_or_404(models.GroupProfile, slug=slug)
     if not group.user_is_role(request.user, role="manager"):
         return HttpResponseForbidden()
@@ -235,23 +236,32 @@ def group_members_add(request, slug):
             except Exception as e:
                 messages.add_message(request, messages.ERROR, e)
                 return redirect("group_members", slug=group.slug)
-    return redirect("group_detail", slug=group.slug)
+        message = f"{user} has been added to {group.title}"
 
+        messages.success(request, message, extra_tags=toast_title)
+
+    return redirect("group_members", slug=group.slug)
 
 @login_required
 def group_member_remove(request, slug, username):
     group = get_object_or_404(models.GroupProfile, slug=slug)
     user = get_object_or_404(get_user_model(), username=username)
+    toast_title = _("Delete Member")
 
     if not group.user_is_role(request.user, role="manager"):
         return HttpResponseForbidden()
     else:
         GroupMember.objects.get(group=group, user=user).delete()
-        return redirect("group_detail", slug=group.slug)
+        message = f"{user} has been removed from group {group.title}"
+        messages.error(request, message, extra_tags=toast_title)
+
+        return redirect("group_members", slug=group.slug)
 
 
 @login_required
 def group_member_promote(request, slug, username):
+    toast_title = _("Promote Member")
+
     group = get_object_or_404(models.GroupProfile, slug=slug)
     user = get_object_or_404(get_user_model(), username=username)
 
@@ -259,11 +269,16 @@ def group_member_promote(request, slug, username):
         return HttpResponseForbidden()
     else:
         GroupMember.objects.get(group=group, user=user).promote()
+        message = f"{user} has been promoted as manager"
+        messages.success(request, message, extra_tags=toast_title)
+
         return redirect("group_members", slug=group.slug)
 
 
 @login_required
 def group_member_demote(request, slug, username):
+    toast_title = _("Demote Member")
+
     group = get_object_or_404(models.GroupProfile, slug=slug)
     user = get_object_or_404(get_user_model(), username=username)
 
@@ -271,6 +286,9 @@ def group_member_demote(request, slug, username):
         return HttpResponseForbidden()
     else:
         GroupMember.objects.get(group=group, user=user).demote()
+        message = f"{user} has been demoted"
+        messages.warning(request, message, extra_tags=toast_title)
+
         return redirect("group_members", slug=group.slug)
 
 
@@ -301,7 +319,8 @@ def group_remove(request, slug):
         
         group.delete()
         message = _("Group : {} has been deleted".format(slug))
-        toast_message(request, message, extra_tags=toast_title, remove=True)
+        messages.error(request, message, extra_tags=toast_title)
+
         return redirect('group_list')
 
 
@@ -317,15 +336,19 @@ def group_category_remove(request, slug):
     try:
         group_category.delete()
         message = _("Group Categories: {} has been deleted".format(slug))
-        toast_message(request, message, extra_tags=toast_title, remove=True)
+        messages.error(request, message, extra_tags=toast_title)
+
         return redirect('group_category_list')
     
     except PermissionDenied:
-        return toast_message(request, _PERMISSION_MSG_DELETE, extra_tags=toast_title, remove=True, redirect=True)
+        messages.warning(request, _PERMISSION_MSG_DELETE, extra_tags=toast_title)
+        return redirect('group_category_list')
 
     except Exception:
         message = _("Something went wrong with your request. Please ask nicely to your admin or developer. Submit a ticket through give feedback.")
-        return toast_message(request, message, extra_tags=toast_title, remove=True, redirect=True)
+        messages.error(request, message, extra_tags=toast_title)
+
+        return redirect('group_category_list')
 
 
 class GroupActivityView(ListView):

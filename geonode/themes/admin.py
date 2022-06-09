@@ -144,6 +144,14 @@ class FeedbackFormAdmin(admin.ModelAdmin):
     list_display_links = ('title',)
     exclude = ('uuid', 'extension', 'feedback_type',)
 
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_view_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 admin.site.register(Faq, FaqFormAdmin)
 admin.site.register(About, AboutFormAdmin)

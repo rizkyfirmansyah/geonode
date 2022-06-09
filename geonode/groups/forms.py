@@ -21,7 +21,9 @@
 from django import forms
 from slugify import slugify
 from django.utils.translation import ugettext as _
+from geonode.security.forms import ProfileMultipleChoiceField
 from modeltranslation.forms import TranslationModelForm
+from django.db.models import Q
 
 from django.contrib.auth import get_user_model
 
@@ -82,25 +84,31 @@ class GroupUpdateForm(forms.ModelForm):
 
 
 class GroupMemberForm(forms.Form):
-    user_identifiers = forms.CharField(
-        label=_("User Identifiers"),
+    get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+
+    user_identifiers = ProfileMultipleChoiceField(
+        label='Registered Users',
+        queryset=get_users,
         widget=forms.SelectMultiple(
             attrs={
-                'class': 'user-select',
-                'style': 'width:300px'
-            }
-        )
-    )
+                'class': 'selectpicker',
+                'data-live-search': 'true',
+                'data-selected-text-format': 'count > 4',
+                'data-actions-box': 'true',
+                'data-size': '5'
+        }),
+        required=False)
+
     manager_role = forms.BooleanField(
         required=False,
         label=_("Assign manager role")
     )
 
     def clean_user_identifiers(self):
-        values = self.cleaned_data['user_identifiers'].strip('][').split(', ')
+        values = list(self.cleaned_data['user_identifiers'])
         new_members = []
         errors = []
-        for name in (v.strip('\'') for v in values):
+        for name in values:
             try:
                 new_members.append(get_user_model().objects.get(username=name))
             except get_user_model().DoesNotExist:

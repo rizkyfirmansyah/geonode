@@ -22,7 +22,6 @@ import logging
 import traceback
 from itertools import chain
 import warnings
-from geonode.notifications_helper import toast_message, toast_server_error
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -57,6 +56,7 @@ from geonode.base.views import batch_modify
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_visible_resources
+from django.contrib import messages
 
 from dal import autocomplete
 
@@ -602,7 +602,8 @@ def document_remove(request):
 
         message = _("Document: {} has been deleted".format(document.title))
         register_event(request, EventType.EVENT_REMOVE, document)
-        toast_message(request, message, extra_tags=_PERMISSION_MSG_DELETE, remove=True)
+        messages.error(request, message, extra_tags=_PERMISSION_MSG_DELETE)
+
         return redirect('catalogue_browse')
 
     except PermissionDenied:
@@ -613,7 +614,9 @@ def document_remove(request):
         message = f'{_("We are incredibly sorry, we could not execute to delete")}: {document.title}.'
         message += f'{_("Please submit a ticket or fill the form in the help & support. Thank you.")}'
 
-        return toast_server_error(request, message, redirect=True)
+        messages.error(request, message, extra_tags=_PERMISSION_MSG_DELETE)
+
+        return redirect('catalogue_browse')
 
 
 def document_metadata_detail(
