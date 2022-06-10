@@ -50,7 +50,7 @@ class GroupCategory(models.Model):
     slug = models.SlugField(max_length=255, unique=True, null=False, blank=False)
     name = models.CharField(_("Name"), max_length=255, unique=True, null=False, blank=False)
     description = models.TextField(_("Description"), null=True, default=None, blank=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -118,7 +118,7 @@ class GroupProfile(models.Model):
         help_text=access_help_text)
     categories = models.ManyToManyField(GroupCategory, verbose_name=_("Categories"), blank=True, related_name='groups')
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):

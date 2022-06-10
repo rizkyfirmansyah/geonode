@@ -31,7 +31,10 @@ class GroupsMultipleChoiceField(forms.MultipleChoiceField):
 
 class PermissionsForm(forms.Form):
     get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
-    get_groups_choices = [(i.slug, i.title) for i in GroupProfile.objects.all()]
+    if GroupProfile.objects.all().exists():
+        get_groups_choices = [(i.slug, i.title) for i in GroupProfile.objects.all()]
+    else:
+        get_groups_choices = [""]
 
     def __init__(self, *args, **kwargs):
       super().__init__(*args, **kwargs)
