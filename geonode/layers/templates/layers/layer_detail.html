@@ -705,15 +705,15 @@
           <p>
             {% trans "Click the button below to allow SDI refreshing the list of available Layer Attributes. If the option 'WPS_ENABLED' has been also set on the backend, it will recalculate their statistics too." %}
           </p>
-          <a href="#" class="btn btn-info btn-block" data-dismiss="modal"
-            id="attributes_sats_refresh">{% trans "Refresh Attributes and Statistics" %}</a>
+          <button class="btn btn-edit btn-block" data-dismiss="modal"
+            id="attributes_sats_refresh">{% trans "Refresh Attributes and Statistics" %}</button>
         </li>
         {% endif %}
         <li class="list-group-item">
           <h4>{% trans "Clear the Server Cache of this layer" %}</h4>
           <p>{% trans "Click the button below to wipe the tile-cache of this layer." %}</p>
-          <a href="#" class="btn btn-danger btn-block" data-dismiss="modal"
-            id="tiledlayer_refresh">{% trans "Empty Tiled-Layer Cache" %}</a>
+          <button class="btn btn-danger btn-block" data-dismiss="modal"
+            id="tiledlayer_refresh">{% trans "Empty Tiled-Layer Cache" %}</button>
         </li>
         {% endif %}
         {% endif %}
@@ -724,11 +724,11 @@
         <li class="list-group-item">
           <h4>{% trans "Permissions" %}</h4>
           <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
-          <p><a href="#modal_perms" data-toggle="modal" class="btn btn-edit btn-block"
-              data-target="#_permissions">{% trans "Change Layer Permissions" %}</a></p>
+          <button class="btn btn-edit btn-block" data-toggle="modal"
+          data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
           {% if USE_GEOSERVER and DELAYED_SECURITY_SIGNALS %}
-          <a href="#" class="btn btn-primary btn-block" data-dismiss="modal"
-            id="security_refresh">{% trans "Sync permissions immediately" %}</a>
+            <button class="btn btn-edit btn-block" data-toggle="modal"
+            id="security_refresh">{% trans "Sync Permissions Immediately" %}</button>
           {% endif %}
         </li>
         {% endif %}
