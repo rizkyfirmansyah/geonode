@@ -451,6 +451,7 @@ INSTALLED_APPS = (
     'markdownify',
     'colorfield',
     'django_user_agents',
+    'django_jsonfield_backport',
 
     # REST APIs
     'rest_framework',

@@ -205,7 +205,6 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata'
         ]
 
 class DocumentDescriptionForm(forms.Form):

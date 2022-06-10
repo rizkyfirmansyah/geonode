@@ -2,7 +2,6 @@
 {% load static %}
 {% load floppyforms %}
 
-<!--<link href="{% static "lib/css/bootstrap-select.css" %}" rel="stylesheet" />-->
 <script type="text/javascript">
   // this is used by thumbnail.js to POST to the thumbnail update view
   window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
@@ -43,16 +42,22 @@
 		<div id="edit-metadata" class="tab-pane fade show active" role="tabpanel">
 
 			<div id="completeness-hints" class="progress">
-				<div class="mandatory-hint progress-bar" role="progressbar" style="width:20%">
+				<div class="mandatory-hint progress-bar" role="progressbar" style="width:16.6%">
 					{% trans "Mandatory" %}
 				</div>
-				<div class="licenses-hint progress-bar" role="progressbar" style="width:20%">
+				<div class="licenses-hint progress-bar" role="progressbar" style="width:16.6%">
 					{% trans "Mandatory" %}
 				</div>
-				<div class="content-hint progress-bar" role="progressbar" style="width:20%">
+				<div class="content-hint progress-bar" role="progressbar" style="width:16.6%">
 					{% trans "Mandatory" %}
 				</div>
-				<div class="progress-bar bg-secondary" role="progressbar" style="width:40%">
+				<div class="progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+					{% trans "Optional" %}
+				</div>
+        <div class="progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+					{% trans "Optional" %}
+				</div>
+        <div class="progress-bar bg-secondary" role="progressbar" style="width:16.6%">
 					{% trans "Optional" %}
 				</div>
 			</div>
@@ -66,10 +71,13 @@
 				<li data-step="3" id="nav-content-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#content">
 					<a>{% trans "Content Description" %}</a>
 				</li>
-				<li data-step="4" id="nav-spatial-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#spatial">
+        <li data-step="4" id="nav-optional-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#optional">
+					<a>{% trans "Optional Metadata" %}</a>
+				</li>
+				<li data-step="5" id="nav-spatial-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#spatial">
 					<a>{% trans "Spatial Domain" %}</a>
 				</li>
-				<li data-step="5" id="nav-attribute-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#attribute">
+				<li data-step="6" id="nav-attribute-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#attribute">
 					<a>{% trans "Dataset Attributes" %}</a>
 				</li>
 			</ul>
@@ -298,6 +306,16 @@
 												<!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
 												{{ layer_form.data_description }}
 											</div>
+                      <div>
+                        <span><label
+                            for="{{ layer_form.related_publication|id }}">{{ layer_form.related_publication.label }}</label></span>
+                        {{ layer_form.related_publication }}
+                      </div>
+                      <div>
+                        <span><label
+                            for="{{ layer_form.data_citation|id }}">{{ layer_form.data_citation.label }}</label></span>
+                        {{ layer_form.data_citation }}
+                      </div>
 											<div>
 												<span><label
 														for="{{ layer_form.data_quality_statement|id }}">{{ layer_form.data_quality_statement.label }}</label></span>
@@ -314,12 +332,6 @@
 														for="{{ layer_form.constraints_other|id }}">{{ layer_form.constraints_other.label }}</label></span>
 												<!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
 												{{ layer_form.constraints_other }}
-											</div>
-											<div>
-												<span><label
-														for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
-												<!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
-												{{ layer_form.supplemental_information }}
 											</div>
 										</div>
 									</div>
@@ -367,6 +379,34 @@
 					</div>
 				</div>
 			{% endblock spatial %}
+
+      {% block optional %}
+      <div id="optional" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-optional-tab">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6 pr-1">
+                  <span><label
+                      for="{{ layer_form.distributor|id }}">{{ layer_form.distributor.label }}</label></span>
+                  {{ layer_form.distributor }}
+              </div>
+              <div class="col-6 pl-1">
+                <span><label
+                    for="{{ layer_form.project_information|id }}">{{ layer_form.project_information.label }}</label></span>
+                {{ layer_form.project_information }}
+              </div>
+              <div class="col-12">
+                <div>
+                  <span><label
+                      for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
+                  {{ layer_form.supplemental_information }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endblock optional %}
 
 			{% block attribute %}
 				<div id="attribute" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-attribute-tab">
@@ -517,7 +557,7 @@
 				$("#content").toggleClass("show")
 			})
 			$("#nav-attribute-tab").click(function() {
-				$("#optional").toggleClass("show")
+				$("#attribute").toggleClass("show")
 			})
 		})
 

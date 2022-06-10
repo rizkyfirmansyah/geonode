@@ -23,6 +23,8 @@ from django import forms
 
 from geonode import geoserver
 from geonode.base.models import ResourceBase
+from geonode.documents.forms import GroupsChoiceField
+from django.contrib.auth.models import Group
 from geonode.utils import check_ogc_backend
 
 import json
@@ -46,6 +48,10 @@ class JSONField(forms.CharField):
 
 
 class LayerForm(ResourceBaseForm):
+    group = GroupsChoiceField(
+        queryset = Group.objects.exclude(groupprofile=None),
+        required=False)
+
     class Meta(ResourceBaseForm.Meta):
         model = Layer
         exclude = ResourceBaseForm.Meta.exclude + (
@@ -128,9 +134,15 @@ class LayerForm(ResourceBaseForm):
                 self.fields[field].help_text = ResourceBase.regions_help_text
                 self.fields[field].widget.attrs.update(
                     {
-                        'class': 'selectpicker',
+                        'class': 'has-external-popover selectpicker',
                         'data-live-search': 'true',
                         'data-size': '10'})
+            if field == 'group':
+                self.fields[field].widget.attrs.update(
+                    {
+                        'class': 'has-external-popover selectpicker',
+                        'data-live-search': 'true',
+                        'data-size': '5'})
 
 
 class LayerUploadForm(forms.Form):
