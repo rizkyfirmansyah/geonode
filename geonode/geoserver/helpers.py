@@ -37,6 +37,8 @@ from collections import defaultdict
 from os.path import basename, splitext, isfile
 from urllib.parse import urlparse, urlencode, urlsplit, urljoin
 from pinax.ratings.models import OverallRating
+from django.templatetags.static import static
+from geonode.thumbs.utils import MISSING_THUMB
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from dialogos.models import Comment
@@ -44,8 +46,6 @@ from dialogos.models import Comment
 from django.conf import settings
 from django.utils import timezone
 from django.db import transaction
-from django.templatetags.static import static
-from geonode.thumbs.utils import MISSING_THUMB
 from django.contrib.auth import get_user_model
 from django.utils.module_loading import import_string
 from django.db.models.signals import pre_delete
@@ -2140,7 +2140,7 @@ def sync_instance_with_geoserver(
                         }
 
                     if updatebbox and is_monochromatic_image(instance.thumbnail_url):
-                        to_update['thumbnail_url'] = staticfiles.static(settings.MISSING_THUMBNAIL)
+                        to_update['thumbnail_url'] = static(MISSING_THUMB)
 
                     # Save all the modified information in the instance without triggering signals.
                     try:

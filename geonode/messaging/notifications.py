@@ -19,7 +19,7 @@
 import logging
 
 from django.conf import settings
-from user_messages.models import Message, Thread
+from user_messages.models import Message
 from user_messages.signals import message_sent
 
 from geonode.notifications_helper import send_notification

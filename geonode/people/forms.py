@@ -26,12 +26,9 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
 from geonode.base.models import ContactRole
 from allauth.account.forms import ResetPasswordForm, SignupForm, LoginForm, ChangePasswordForm, AddEmailForm
-from allauth.account.admin import EmailAddress
-from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Column
 from hcaptcha.fields import hCaptchaField
-from geonode.people.models import Profile
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.contrib.auth import password_validation
 

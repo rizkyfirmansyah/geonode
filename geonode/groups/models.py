@@ -33,7 +33,6 @@ from django.db.models import signals
 from django.utils.timezone import now
 from django.templatetags.static import static
 from geonode.thumbs.utils import MISSING_THUMB
-from django.shortcuts import get_object_or_404
 
 from taggit.managers import TaggableManager
 

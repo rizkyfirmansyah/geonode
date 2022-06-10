@@ -30,7 +30,6 @@ from django.urls import reverse
 from django.http import (
     Http404,
     HttpResponseForbidden,
-    HttpResponseNotAllowed,
     HttpResponseRedirect)
 from django.contrib import messages
 from geonode.messaging.notifications import send_inbox
@@ -53,7 +52,7 @@ from django.utils.translation import ugettext as _
 
 from . import forms
 from . import models
-from .models import GroupMember, GroupProfile, GroupRequest
+from .models import GroupMember, GroupProfile
 
 logger = logging.getLogger(__name__)
 

@@ -40,7 +40,7 @@ from django.views.decorators.http import require_POST
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
 from geonode.utils import resolve_object
-from geonode.security.views import _perms_info_json, serialize_resource_permissions
+from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
 from geonode.base.auth import get_or_create_token
 from geonode.base.bbox_utils import BBOXHelper

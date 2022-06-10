@@ -18,13 +18,11 @@
 #
 #########################################################################
 
-from fileinput import filename
 import os
 import re
 import html
 import math
 import uuid
-import shutil
 import logging
 import traceback
 
@@ -70,7 +68,6 @@ from geonode.base import enumerations
 from geonode.base.bbox_utils import BBOXHelper, polygon_from_bbox
 from geonode.thumbs.utils import (
     get_unique_upload_path,
-    thumb_path,
     thumb_size,
     remove_thumbs)
 from geonode.utils import (
@@ -91,7 +88,7 @@ from geonode.people.enumerations import ROLE_VALUES
 
 from pyproj import transform, Proj
 
-from urllib.parse import urlparse, urlsplit, urljoin
+from urllib.parse import urlsplit, urljoin
 from imagekit.cachefiles.backends import Simple
 
 logger = logging.getLogger(__name__)

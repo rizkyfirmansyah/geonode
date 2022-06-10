@@ -18,7 +18,6 @@
 #
 #########################################################################
 
-from pydoc import doc
 from django import template
 from django.db.models import Q
 from django.conf import settings

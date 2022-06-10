@@ -17,7 +17,6 @@
 #
 #########################################################################
 import json
-from geonode.base.models import ResourceBase
 
 def resource_list_url(resource_type):
     return '/{}/upload'.format(resource_type)

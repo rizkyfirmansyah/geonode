@@ -49,7 +49,6 @@ def help_view(request):
 @login_required
 def feedback_form(request):
     feedback_form = FeedbackForm(request.POST or None)
-    success = False
     if request.method == 'POST':
         toast_title = _("Submit Feedback")
         feedback_form = FeedbackForm(request.POST, request.FILES)
@@ -64,7 +63,6 @@ def feedback_form(request):
             content = f"New Feedback is coming from user: {request.user}"
             send_inbox(request, subject, content, send_to = get_user_model().objects.filter(is_superuser=True)[0])
             messages.success(request, message, extra_tags=toast_title)
-            success = True
 
     context = {'feedback_form': feedback_form}
     

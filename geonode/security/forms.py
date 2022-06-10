@@ -9,13 +9,13 @@ class ProfileMultipleChoiceField(forms.ModelMultipleChoiceField):
     def label_from_instance(self, obj):
         full_name = ''
         if obj.first_name and obj.last_name and obj.organization:
-            full_name = " ".join([obj.first_name , obj.last_name]) + " (" + obj.organization + ")"
+            full_name = " ".join([obj.first_name, obj.last_name]) + " (" + obj.organization + ")"
             return full_name
         elif obj.first_name and obj.organization:
             full_name = obj.first_name + " (" + obj.organization + ")"
             return full_name
         elif obj.first_name and obj.last_name:
-            full_name = " ".join([obj.first_name , obj.last_name])
+            full_name = " ".join([obj.first_name, obj.last_name])
             return full_name
         elif obj.first_name:
               full_name = obj.first_name

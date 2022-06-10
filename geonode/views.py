@@ -18,7 +18,6 @@
 #
 #########################################################################
 import json
-from django.contrib import messages
 
 from django import forms
 from django.apps import apps

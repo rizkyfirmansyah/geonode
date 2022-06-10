@@ -35,7 +35,6 @@ from geonode.views import unauthorized_message
 from user_messages.models import Message
 from guardian.shortcuts import get_objects_for_user
 
-from django.template import loader
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
 from geonode.utils import resolve_object

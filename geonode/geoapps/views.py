@@ -29,7 +29,7 @@ from django.forms.utils import ErrorList
 from django.utils.translation import ugettext as _
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 from geonode.groups.models import GroupProfile

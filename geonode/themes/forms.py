@@ -24,7 +24,7 @@ class FeedbackForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['details'].widget.attrs['rows'] = 10
         self.fields['details'].widget.attrs['columns'] = 15
-        self.fields['details'].widget.attrs.update({'class' : ''})
+        self.fields['details'].widget.attrs.update({'class': ''})
         self.fields['feedback_file'].label = ''
         self.fields['details'].widget.attrs['placeholder'] = Feedback.details_help_text
         self.fields['details'].widget.attrs['feedback_url'] = Feedback.feedback_url_help_text

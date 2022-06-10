@@ -20,7 +20,6 @@
 from django.conf import settings
 from django.urls import reverse
 from geonode.geoserver.helpers import ogc_server_settings
-from geonode.utils import DEFAULT_ABSTRACT
 from geonode.settings import DEFAULT_WORKSPACE
 
 

@@ -29,9 +29,6 @@ from geonode import geoserver
 from geonode.utils import check_ogc_backend
 from geonode.base.auth import get_token_object_from_session, basic_auth_authenticate_user
 
-from guardian.shortcuts import get_anonymous_user
-
-
 # make sure login_url can be mapped to redirection URL and will match request.path
 login_url = settings.LOGIN_URL.replace(settings.SITEURL.rstrip('/'), '')
 if not login_url.startswith('/'):

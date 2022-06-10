@@ -9,7 +9,6 @@
 <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
 
 <!-- Required to make select2 fields work for autocomplete -->
-<link href="{% static "vendor/select2/dist/css/select2.css" %}" type="text/css" media="screen" rel="stylesheet" />
 <link href="{% static "autocomplete_light/select2.css" %}" type="text/css" media="screen" rel="stylesheet" />
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.init.js" %}"></script>
 <script type="text/javascript" src="{% static "vendor/select2/dist/js/select2.full.js" %}"></script>
@@ -367,6 +366,12 @@
 										<!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
 										{{ layer_form.spatial_representation_type }}
 									</div>
+                  {% block layer_extra_metadata %}
+                  <div>
+                      <span><label for="{{ layer_form.extra_metadata|id }}">{{ layer_form.extra_metadata.label }}</label></span>
+                      {{ layer_form.extra_metadata }}
+                  </div>
+                  {% endblock layer_extra_metadata %}
 									<div>
 										<span><label
 												for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
@@ -551,6 +556,9 @@
 				$("#mandatory").toggleClass("show")
 			})
 			$("#nav-spatial-tab").click(function() {
+				$("#spatial").toggleClass("show")
+			})
+      $("#nav-optional-tab").click(function() {
 				$("#optional").toggleClass("show")
 			})
 			$("#nav-content-tab").click(function() {

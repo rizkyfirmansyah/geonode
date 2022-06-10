@@ -32,8 +32,6 @@ from django.db.models import Prefetch, Q
 from django.forms import ModelForm, models
 from django.forms.fields import MultipleChoiceField
 from django.utils.translation import ugettext as _
-from geonode.base import widgets
-from django.utils.safestring import mark_safe
 from modeltranslation.forms import TranslationModelForm
 from taggit.forms import TagField
 from tinymce.widgets import TinyMCE
@@ -480,7 +478,6 @@ class ResourceBaseForm(TranslationModelForm):
             'csw_anytext',
             'popular_count',
             'share_count',
-            'charset',
             'rating',
             'detail_url',
             'tkeywords',
@@ -490,8 +487,6 @@ class ResourceBaseForm(TranslationModelForm):
             'state',
             'blob',
             'files',
-            'was_approved',
-            'was_published',
             'thumbnail_url'
         )
 

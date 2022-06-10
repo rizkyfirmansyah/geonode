@@ -67,8 +67,7 @@ from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, BatchPer
 from geonode.base.views import batch_modify, get_url_for_model
 from geonode.base.models import (
     ExtraMetadata,
-    Thesaurus,
-    TopicCategory)
+    Thesaurus)
 from geonode.base.enumerations import CHARSETS
 from geonode.decorators import check_keyword_write_perms
 from geonode.layers.forms import (
