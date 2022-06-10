@@ -14,14 +14,14 @@
         </div>
         <form id="permission-form" accept-charset="UTF-8" method="post" action="{% url "resource_permissions" resource.id %}">
           <div class="text-center">
-            <ul class="mr-4 ml-4">
-              {% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
-                {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
-                  <li><a href="#permissions_tab1" data-toggle="tab" class="nav-primary active">{% trans "People and Groups" %}</a></li>
-                  <li id="geolimits-tab"><a href="#permissions_tab2" data-toggle="tab">{% trans "Geo Limits" %}</a></li>
+            {% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
+              {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item col"><a href="#permissions_tab1" data-toggle="tab" class="nav-primary active" role="tab" aria-controls="permissions_tab1" aria-selected="true">{% trans "People and Groups" %}</a></li>
+                    <li class="nav-item col" id="geolimits-tab"><a href="#permissions_tab2" data-toggle="tab" class="nav-primary" role="tab" aria-controls="permissions_tab2" aria-selected="false">{% trans "Geo Limits" %}</a></li>
+                </ul>
                 {% endif %}
-              {% endif %}
-            </ul>
+            {% endif %}
             <div class="tab-content bg-light">
               <div class="tab-pane active" id="permissions_tab1">
                 {% include "modal/permissions_form.html" %}
@@ -39,5 +39,7 @@
 </div>
 
 {% include "modal/get_permissions.html" %}
-{% include "modal/permissions_layer.html" %}
+{% if GEONODE_SECURITY_ENABLED %}
+  {% include "modal/permissions_layer.html" %}
+{% endif %}
 {% include "toast/permissions_form.html" %}

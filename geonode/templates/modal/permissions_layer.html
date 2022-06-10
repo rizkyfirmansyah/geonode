@@ -198,34 +198,41 @@
                 }
                 html += `
                    <a href="javascript:void(0)" class="list-group-item">
-                     <div class="col-md-8">
-                       <div class="pull-left photo">
-                         <img src="${avatar}" class="pull-left photo">
-                       </div>
-                       <h4 class="list-group-item-heading gis-limits-user-name">${username}</h4>
-                       <p class="list-group-item-text gis-limits-user-title">${organization}</p>
+                     <div class="card-body">
+                        <div class="row">
+                          <img src="${avatar}" class="avatar">
+                          <div class="col-10 text-left">
+                            <p class="list-group-item-heading gis-limits-user-name">${username}</p>
+                            <p class="list-group-item-text gis-limits-user-title font-small card-subtitle">${organization}</p>
+                          </div>
+                        </div>
                      </div>
-                     <div class="col-md-4">
-                       <div class="expertise">
-                         <div class="read-more float-right">
-                           <button id="user-load${userid}" type="button" class="btn btn-primary btn-sm deserialize-geo-limit"
-                             data-toggle="tooltip" data-placement="top" title="{% trans "Show Geo Limits" %}" aria-pressed="true">
-                             <span class="glyphicon glyphicon glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                           </button>
-                           <button id="user-upload${userid}" type="button" class="btn btn-primary btn-sm"
-                             data-toggle="tooltip" data-placement="top" title="{% trans "Upload Geo Limits" %}" aria-pressed="true">
-                             <span class="glyphicon glyphicon glyphicon glyphicon-open-file"
-                               data-toggle="modal" data-target="#_add_shp_zip" aria-hidden="true"></span>
-                           </button>
-                           <button id="user-save${userid}" type="button" class="btn btn-primary btn-sm serialize-geo-limit"
-                             data-toggle="tooltip" data-placement="top" title="{% trans "Save Geo Limits" %}" aria-pressed="true">
-                             <span class="glyphicon glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
-                           </button>
-                           <button id="user-remove${userid}" type="button" class="btn btn-primary btn-sm delete-geo-limit"
-                             data-toggle="tooltip" data-placement="top" title="{% trans "Delete Geo Limits" %}" aria-pressed="true">
-                             <span class="glyphicon glyphicon glyphicon-trash" aria-hidden="true"></span>
-                           </button>
-                         </div>
+                     <div class="card-footer">
+                       <div class="row">
+                           <div class="col-3 text-center">
+                             <button id="user-load${userid}" type="button" class="btn btn-block btn-primary btn-sm deserialize-geo-limit"
+                               data-toggle="tooltip" data-placement="top" title="{% trans "Show Geo Limits" %}" aria-pressed="true">
+                               <i class="fa-solid fa-eye"></i>
+                             </button>
+                           </div>
+                           <div class="col-3 text-center">
+                             <button id="user-upload${userid}" type="button" class="btn btn-block btn-primary btn-sm"
+                               data-toggle="tooltip" data-placement="top" title="{% trans "Upload Geo Limits" %}" aria-pressed="true">
+                               <span data-toggle="modal" data-target="#_add_shp_zip" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span>
+                             </button>
+                           </div>
+                           <div class="col-3 text-center">
+                             <button id="user-save${userid}" type="button" class="btn btn-block btn-primary btn-sm serialize-geo-limit"
+                               data-toggle="tooltip" data-placement="top" title="{% trans "Save Geo Limits" %}" aria-pressed="true">
+                               <i class="fa-solid fa-floppy-disk"></i>
+                             </button>
+                           </div>
+                           <div class="col-3 text-center">
+                             <button id="user-remove${userid}" type="button" class="btn btn-block btn-primary btn-sm delete-geo-limit"
+                               data-toggle="tooltip" data-placement="top" title="{% trans "Delete Geo Limits" %}" aria-pressed="true">
+                               <i class="fa-solid fa-trash"></i>
+                             </button>
+                           </div>
                        </div>
                      </div>
                      <div class="clearfix"></div>

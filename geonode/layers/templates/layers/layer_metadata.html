@@ -51,8 +51,7 @@
     {% endif %}
   </div>
 
-  <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}"
-  method="POST">
+  <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
     {% if layer.metadata_uploaded_preserve %}
     <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a
       metadata XML file.
