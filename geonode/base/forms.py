@@ -20,6 +20,7 @@
 import re
 import html
 import logging
+import json
 from django.db.models.query import QuerySet
 from tempus_dominus.widgets import DateTimePicker
 from dal import autocomplete
@@ -41,6 +42,7 @@ from geonode.base.models import (CuratedThumbnail, HierarchicalKeyword,
                                  License, Region, ResourceBase, Thesaurus,
                                  ThesaurusKeyword, ThesaurusKeywordLabel, ThesaurusLabel,
                                  TopicCategory)
+from geonode.base.utils import validate_extra_metadata
 from geonode.base.widgets import TaggitSelect2Custom
 from geonode.documents.models import Document
 from geonode.layers.models import Layer
@@ -361,7 +363,7 @@ class ResourceBaseForm(TranslationModelForm):
         # widget=TreeWidget(url='autocomplete_hierachical_keyword'), #Needs updating to work with select2
         widget=TaggitSelect2Custom(url='autocomplete_hierachical_keyword'))
 
-    metadata = forms.CharField(
+    extra_metadata = forms.CharField(
         required=False,
         widget=forms.Textarea,
         help_text=_('Additional metadata, must be in format [\
@@ -374,6 +376,9 @@ class ResourceBaseForm(TranslationModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         for field in self.fields:
+            if self.instance and self.instance.id and self.instance.metadata.exists():
+                self.fields['extra_metadata'].initial = [x.metadata for x in self.instance.metadata.all()]
+
             if field == 'featured' and self.user and not self.user.is_staff:
                 self.fields[field].disabled = True
             help_text = self.fields[field].help_text
@@ -458,6 +463,16 @@ class ResourceBaseForm(TranslationModelForm):
                 else:
                     _unsescaped_kwds.append(str(_k))
         return _unsescaped_kwds
+
+    def clean_title(self):
+        title = self.cleaned_data.get("title", None)
+        if title:
+            title = title.replace(",", "_")
+        return title
+
+    def clean_extra_metadata(self):
+        cleaned_data = self.cleaned_data.get('extra_metadata', [])
+        return json.dumps(validate_extra_metadata(cleaned_data, self.instance), indent=4)
 
     class Meta:
         exclude = (

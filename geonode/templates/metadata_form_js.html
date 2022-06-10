@@ -472,6 +472,13 @@
           }
         });
 
+        var _area = $("#id_resource-extra_metadata").val()
+        if (_area) {
+            var areaAsObj = (0, eval)('(' + _area + ')');
+            var _value = JSON.stringify(areaAsObj,null,2);
+            $("#id_resource-extra_metadata").val(_value);
+        }
+
         $('#id_resource-metadata_author').change(function(){
             if($(this).val() === ''){
                 $('#metadata_form').modal();
