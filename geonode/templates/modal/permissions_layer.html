@@ -112,7 +112,7 @@
 
             </div>
             <div class="modal-footer">
-              <a href="#" class="btn btn-primary" data-dismiss="modal">{% trans "Cancel" %}</a>
+              <a href="#" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</a>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -433,15 +433,15 @@
         }
 
         $('#loadShpZip').click(function() {
-          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Load SHP-ZIP" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-title').html('{% trans "Load SHP-ZIP" %}');
           $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will remove the Geo Limits currently drawn on the map.</p><p>In order to store the Geo Limits you will need to <strong>save</strong> them anyway.</p><p>Do you want to proceed?</p>" %}');
           $("#confirmMsgBoxModalSubmit_control_field").val('loadShpZip');
           $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_loadShpZip', class:'btn btn-danger confirm' });
           $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
           $("#confirmMsgBoxModalSubmit").modal("show");
-          $('#confirm_loadShpZip').html('{% trans "OK" %}');
-          $('#confirm_loadShpZip').prop('value', '{% trans "OK" %}');
+          $('#confirm_loadShpZip').html('{% trans "Submit" %}');
+          $('#confirm_loadShpZip').prop('value', '{% trans "Submit" %}');
 
           $('#confirm_loadShpZip').on('click', function(e) {
             e.stopImmediatePropagation();
@@ -454,15 +454,15 @@
         });
 
         function serializeGeoLimit(ID) {
-          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Save Geo Limits" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-title').html('{% trans "Save Geo Limits" %}');
           $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will override the current stored Geo Limits on the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button anyway.</p><p><strong>WARNING:</strong> This operation cannot be reverted!</p><p>Do you want to proceed?</p>" %}');
           $("#confirmMsgBoxModalSubmit_control_field").val('serializeGeoLimit');
           $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_serializeGeoLimit', class:'btn btn-danger confirm' });
           $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
           $("#confirmMsgBoxModalSubmit").modal("show");
-          $('#confirm_serializeGeoLimit').html('{% trans "OK" %}');
-          $('#confirm_serializeGeoLimit').prop('value', '{% trans "OK" %}');
+          $('#confirm_serializeGeoLimit').html('{% trans "Submit" %}');
+          $('#confirm_serializeGeoLimit').prop('value', '{% trans "Submit" %}');
 
           $('#confirm_serializeGeoLimit').on('click', function(e) {
             e.stopImmediatePropagation();
@@ -500,12 +500,12 @@
                 url: '{% url "resource_geolimits" resource.id %}?' + query_param,
                 data: data,
                 success: function(data, status, xhr) {
-                  $("#_thumbnail_feedbacks").find('.modal-title w-100').text('{% trans "Save Geo Limit" %}');
+                  $("#_thumbnail_feedbacks").find('.modal-title').text('{% trans "Save Geo Limit" %}');
                   $("#_thumbnail_feedbacks").find('.modal-body').html('{% trans "<p>Geometry <strong>successfully</strong> saved!</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button.</p>" %}');
                   $("#_thumbnail_feedbacks").modal("show");
                 },
                 error: function(xhr, status, error) {
-                  $("#_thumbnail_feedbacks").find('.modal-title w-100').text('{% trans "Save Geo Limit" %}');
+                  $("#_thumbnail_feedbacks").find('.modal-title').text('{% trans "Save Geo Limit" %}');
                   $("#_thumbnail_feedbacks").find('.modal-body').html('{% trans "<p><strong>Error</strong> while trying to save the Geometry!</p>" %}');
                   $("#_thumbnail_feedbacks").modal("show");
                 }
@@ -520,15 +520,15 @@
         });
 
         function deserializeGeoLimit(ID) {
-          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Load Geo Limits" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-title').html('{% trans "Load Geo Limits" %}');
           $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will remove the Geo Limits currently drawn on the map.</p><p>In order to store the Geo Limits you will need to <strong>save</strong> them anyway.</p><p>Do you want to proceed?</p>" %}');
           $("#confirmMsgBoxModalSubmit_control_field").val('deserializeGeoLimit');
           $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
-          var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_deserializeGeoLimit', class:'btn btn-danger confirm' });
+          var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_deserializeGeoLimit', class:'btn btn-save confirm' });
           $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
           $("#confirmMsgBoxModalSubmit").modal("show");
-          $('#confirm_deserializeGeoLimit').html('{% trans "OK" %}');
-          $('#confirm_deserializeGeoLimit').prop('value', '{% trans "OK" %}');
+          $('#confirm_deserializeGeoLimit').html('{% trans "Submit" %}');
+          $('#confirm_deserializeGeoLimit').prop('value', '{% trans "Submit" %}');
 
           $('#confirm_deserializeGeoLimit').on('click', function(e) {
             e.stopImmediatePropagation();
@@ -576,7 +576,7 @@
                   return;
                 },
                 error: function(xhr, status, error) {
-                  $("#_thumbnail_feedbacks").find('.modal-title w-100').text('{% trans "Load Geo Limit" %}');
+                  $("#_thumbnail_feedbacks").find('.modal-title').text('{% trans "Load Geo Limit" %}');
                   $("#_thumbnail_feedbacks").find('.modal-body').html('{% trans "<p><strong>No Geometry</strong> found!</p>" %}');
                   $("#_thumbnail_feedbacks").modal("show");
                 }
@@ -592,15 +592,15 @@
         });
 
         function deleteGeoLimit(ID) {
-          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Delete Geo Limits" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-title').html('{% trans "Delete Geo Limits" %}');
           $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will <strong>permanently</strong> remove the Geo Limits from the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button.</p><p>Do you want to proceed?</p>" %}');
           $("#confirmMsgBoxModalSubmit_control_field").val('deleteGeoLimit');
           $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_deleteGeoLimit', class:'btn btn-danger confirm' });
           $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
           $("#confirmMsgBoxModalSubmit").modal("show");
-          $('#confirm_deleteGeoLimit').html('{% trans "OK" %}');
-          $('#confirm_deleteGeoLimit').prop('value', '{% trans "OK" %}');
+          $('#confirm_deleteGeoLimit').html('{% trans "Submit" %}');
+          $('#confirm_deleteGeoLimit').prop('value', '{% trans "Submit" %}');
 
           $('#confirm_deleteGeoLimit').on('click', function(e) {
             e.stopImmediatePropagation();
@@ -619,7 +619,7 @@
                 type: "DELETE",
                 url: '{% url "resource_geolimits" resource.id %}?' + query_param,
                 success: function(data, status, xhr) {
-                  $("#_thumbnail_feedbacks").find('.modal-title w-100').text('{% trans "Delete Geo Limit" %}');
+                  $("#_thumbnail_feedbacks").find('.modal-title').text('{% trans "Delete Geo Limit" %}');
                   $("#_thumbnail_feedbacks").find('.modal-body').html('{% trans "<p><strong>Geo Limitsy</strong> successfully deleted!</p>" %}');
                   $("#_thumbnail_feedbacks").modal("show");
 
@@ -627,7 +627,7 @@
                   return;
                 },
                 error: function(xhr, status, error) {
-                  $("#_thumbnail_feedbacks").find('.modal-title w-100').text('{% trans "Delete Geo Limit" %}');
+                  $("#_thumbnail_feedbacks").find('.modal-title').text('{% trans "Delete Geo Limit" %}');
                   $("#_thumbnail_feedbacks").find('.modal-body').html(
                     "{% trans '<p><strong>Error</strong> occurred while trying to delete Geo Limits:</p>' %}" + '<q>' + xhr.responseText + '</q>');
                   $("#_thumbnail_feedbacks").modal("show");

@@ -20,7 +20,6 @@
     --primary: #1D4842 !important;
     --secondary: #fff !important;
     --success: #4F98AF !important;
-    --info: #c4bab7 !important;
     --warning: #a23133 !important;
     --link: #fdba12 !important;
     --danger: #000 !important;
@@ -275,34 +274,6 @@ button.full-width {
 .btn-edit.disabled,
 .btn-edit:disabled {
     color: var(--edit) !important;
-    background-color: var(--danger) !important;
-    border-color: var(--danger) !important
-}
-
-.btn-info {
-    color: var(--secondary) !important;
-    background-color: var(--info) !important;
-    border-color: var(--info) !important
-}
-
-.btn-info:hover {
-    color: var(--secondary) !important;
-    background-color: var(--success) !important;
-    border-color: var(--success) !important;
-    border: 2px solid var(--success);
-}
-
-.btn-info.focus,
-.btn-info:focus {
-    color: var(--info) !important;
-    background-color: var(--success) !important;
-    border-color: var(--success) !important;
-    box-shadow: 0 0 0 .2rem var(--success);
-}
-
-.btn-info.disabled,
-.btn-info:disabled {
-    color: var(--info) !important;
     background-color: var(--danger) !important;
     border-color: var(--danger) !important
 }

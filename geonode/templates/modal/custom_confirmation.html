@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div id="confirmMsgBoxModalSubmit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalSubmit" aria-hidden="true">
+<div id="confirmMsgBoxModalSubmit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalSubmit" aria-hidden="true" style="z-index: 9999;">
   <!-- How to use it:
     $("#confirmMsgBoxModalSubmit").find('.modal-title').text('{% trans "Title" %}');
     $("#confirmMsgBoxModalSubmit").find('.modal-body').text('{% trans "Message. Do you want to proceed?" %}');
@@ -16,7 +16,7 @@
   <div class="modal-dialog">
     <input type="hidden" class="form-control" id="confirmMsgBoxModalSubmit_control_field" />
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header alert-box--info">
         <h4 class="modal-title text-primary">{% trans "Confirm" %}</h4>
         <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
           <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
@@ -28,8 +28,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-light" data-dismiss="modal">{% trans "Cancel" %}</button>
-        <button type="button" class="btn btn-save" type="submit">{% trans "Submit" %}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" class="btn btn-save confirm" type="submit" id="confirm">{% trans "Submit" %}</button>
       </div>
     </div>
   </div>

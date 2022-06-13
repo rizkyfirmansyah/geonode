@@ -31,9 +31,9 @@
     {% if not layer.metadata_uploaded_preserve %}
     <div class="card-body">
       <div class="row">
-        <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-info w-100" style="display: none" value="{% trans '<< Back' %}" /></div>
+        <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-secondary w-100" style="display: none" value="{% trans '<< Back' %}" /></div>
         <div class="col text-left"><input type="button" id="btn_upd_md_dwn" class="btn btn-edit w-100" value="{% trans 'Update' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-info w-100" value="{% trans 'Next >>' %}" /></div>
+        <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-secondary w-100" value="{% trans 'Next >>' %}" /></div>
       </div>
     </div>
 
@@ -112,6 +112,4 @@
       </div>
     </div>
   </form>
-
-{{ block.super }}
 {% endblock body %}
