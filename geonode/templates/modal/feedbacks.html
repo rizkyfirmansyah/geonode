@@ -3,12 +3,7 @@
 {% load base_tags %}
 {% load crispy_forms_tags %}
 
-<div class="modal fade"
-     id="feedbackModal"
-     tabindex="-1"
-     role="dialog"
-     aria-labelledby="feedbackModal"
-     aria-hidden="true">
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="dialog">
         <div class="modal-content rounded-0 m-modal-width">
             <form method="POST" class="mb-4" id="feedback-form">
@@ -17,11 +12,11 @@
                 <div aria-label="Close" role="button" class="close-modal"><i class="fa-solid fa-xmark" data-dismiss="modal"></i></div>
               </div>
               <div class="modal-body text-left">
-                          {% csrf_token %}
-                          {{ feedback_form|crispy }}
-                          <div class="card-footer">
-                            <p class="text-center">Let us know if you have ideas that can help make our products better.</p>
-                          </div>
+                  {% csrf_token %}
+                  {{ feedback_form|crispy }}
+                  <div class="card-footer">
+                    <p class="text-center">Let us know if you have ideas that can help make our products better.</p>
+                  </div>
               </div>
               <div class="modal-footer">
                 <a href="#" data-dismiss="modal"class="btn btn-secondary">Maybe later</a>
