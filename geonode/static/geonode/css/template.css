@@ -3424,6 +3424,10 @@ form#text-search-autocomplete .ac-results {
     border: 1px solid rgba(0,0,0,.125) !important;
 }
 
+#layer_metadata_advanced .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+    width: 100% !important;
+}
+
 .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
     width: unset !important;
 }
@@ -3503,6 +3507,12 @@ form#text-search-autocomplete .ac-results {
 #metadata_update .form-controls {
     padding-right: 0!important;
     padding-left: 0!important
+}
+
+#layer_metadata_advanced input,
+#layer_metadata_advanced textarea,
+#layer_metadata_advanced select {
+  padding: .5rem!important;
 }
 
 #metadata_update .form-group {
