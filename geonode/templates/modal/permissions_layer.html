@@ -458,7 +458,7 @@
           $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will override the current stored Geo Limits on the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button anyway.</p><p><strong>WARNING:</strong> This operation cannot be reverted!</p><p>Do you want to proceed?</p>" %}');
           $("#confirmMsgBoxModalSubmit_control_field").val('serializeGeoLimit');
           $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
-          var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_serializeGeoLimit', class:'btn btn-danger confirm' });
+          var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_serializeGeoLimit', class:'btn btn-save confirm' });
           $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
           $("#confirmMsgBoxModalSubmit").modal("show");
           $('#confirm_serializeGeoLimit').html('{% trans "Submit" %}');

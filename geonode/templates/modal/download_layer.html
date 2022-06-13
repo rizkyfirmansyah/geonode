@@ -1,10 +1,14 @@
 {% load i18n %}
+{% load static %}
+{% load base_tags %}
+{% load layer_tags %}
+{% load proxy_lib_tags %}
 
 <div class="modal fade" id="download-layer" role="dialog" aria-labelledby="downloadModalLayer" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Download Layer" %}</h4>
+        <h4 class="modal-title" id="downloadModalLayer">{% trans "Download Layer" %}</h4>
         <div aria-label="Close" role="button" class="close-modal"><i class="fa-solid fa-xmark" data-dismiss="modal"></i></div>
       </div>
       <div class="modal-body text-center">
@@ -51,8 +55,7 @@
                 </br></br>
                 {% endif %}
                 <ul class="nav nav-tabs" id="tabContent" style="display: none;">
-                  <li class="active"><a href="#query_builder"
-                      data-toggle="tab">{% trans "Filter by attributes" %}</a></li>
+                  <li class="nav-item col"><a class="btn btn_wrapper active" href="#query_builder" data-toggle="tab">{% trans "Filter by attributes" %}</a></li>
                 </ul>
                 </br>
 
@@ -62,16 +65,13 @@
                       {% trans "Match" %}
                       <div class="input-group"
                         style=" display: inline-table; vertical-align: middle; width: auto;  ">
-                        <div class="input-group-btn" id="drop_operator_list">
+                        <div class="btn-group" id="drop_operator_list">
                           <div class="btn-group btn-group-xs">
                             <div class="dropdown">
-                              <button class="btn btn-primary btn-xs dropdown-toggle" id="modal-button-and-or"
-                                type="button" data-toggle="dropdown" value="AND">
-                                <span class="caret"></span></button>
-                              <ul class="dropdown-menu dropdown-menu-and-or" id="and-or_list"
-                                data-modal-button-id="and-or">
-                                <li><a href="#" id="AND">{% trans "all" %}</a></li>
-                                <li><a href="#" id="OR">{% trans "any" %}</a></li>
+                              <button class="btn btn-primary btn-xs dropdown-toggle" id="modal-button-and-or" type="button" data-toggle="dropdown" value="AND"><span class="ml-2"></span></button>
+                              <ul class="dropdown-menu dropdown-menu-and-or" id="and-or_list" data-modal-button-id="and-or">
+                                <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex align-items-center" href="#" id="AND">{% trans "all" %}</a></li>
+                                <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex align-items-center" href="#" id="OR">{% trans "any" %}</a></li>
                               </ul>
                             </div>
                           </div>
@@ -81,7 +81,7 @@
                     </div>
                     </br></br>
                     <div class="input-group" id="query-filter-tools">
-                      <div class="input-group-btn">
+                      <div class="btn-group">
                         <div class="btn-group btn-group-sm">
                           <div class="dropdown">
                             <button class="btn btn-primary dropdown-toggle" id="modal-button-attributes" type="button" data-toggle="dropdown">{% trans "Attribute" %}<span class="caret"></span></button>
@@ -100,28 +100,22 @@
                         </div>
                         <div class="btn-group btn-group-sm">
                           <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" id="modal-button-operator"
-                              type="button" data-toggle="dropdown">{% trans "Operator" %}<span
-                                class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-operator" id="operator_list"
-                              data-modal-button-id="operator">
-                              <li><a href="#" id="=">=</a></li>
-                              <li><a href="#" id="&lt;&gt;">&lt;&gt;</a></li>
-                              <li><a href="#" id="&gt;">&gt;</a></li>
-                              <li><a href="#" id="&lt;">&lt;</a></li>
-                              <li><a href="#" id="&gt;=">&gt;=</a></li>
-                              <li><a href="#" id="&lt;=">&lt;=</a></li>
-                              <li role="separator" class="divider"></li>
-                              <li><a href="#" id=" LIKE ">LIKE</a></li>
+                            <button class="btn btn-primary dropdown-toggle" id="modal-button-operator" type="button" data-toggle="dropdown">{% trans "Operator" %}<span class="ml-2"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-operator" id="operator_list" data-modal-button-id="operator">
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="=">=</a></li>
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&lt;&gt;">&lt;&gt;</a></li>
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&gt;">&gt;</a></li>
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&lt;">&lt;</a></li>
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&gt;=">&gt;=</a></li>
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&lt;=">&lt;=</a></li>
+                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id=" LIKE ">LIKE</a></li>
                             </ul>
                           </div>
                         </div>
                       </div>
-                      <select class="form-control js-data-array" id="single_value"
-                        placeholder="Input your query here" data-toggle="tooltip" title="Query"></select>
-                      <div class="input-group-btn" id="button_query">
-                        <a href="#" id="query_part" class="btn btn-primary btn-mg" data-toggle="modal"
-                          data-target="#myModal" title=""><span class="glyphicon glyphicon-plus"></span></a>
+                      <select class="form-control js-data-array" id="single_value" placeholder="Input your query here" data-toggle="tooltip" title="Query"></select>
+                      <div class="btn-group" id="button_query">
+                        <a href="#" id="query_part" class="btn btn-primary btn-mg" data-toggle="modal" data-target="#myModal" title=""><i class="fa-solid fa-plus"></i></a>
                       </div>
                     </div>
                     </br>
@@ -166,245 +160,49 @@
         <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
     </div>
   </div>
+</div>
 
-  {% if GEOSERVER_BASE_URL %}
-  {% get_obj_perms request.user for resource.layer as "layer_perms" %}
-  {% endif %}
-
-  <li class="list-group-item">
-    <a class="btn btn-primary btn-md btn-block" href="{% url "layer_metadata_detail" resource.alternate %}">{% trans "Metadata Detail" %}</a>
-  </li>
-  {% display_edit_request_button resource request.user perms_list as display_request_button %}
-  {% if display_request_button %}
-  <li class="list-group-item">
-    <a href="{% url "owner_rights_request" resource.id %}">
-      <button class="btn btn-primary btn-md btn-block">{% trans "Request change" %}</button>
-    </a>
-  </li>
-  {% endif %}
-  {% if not READ_ONLY_MODE %}
-  {% if "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list or "change_layer_style" in layer_perms %}
-  <li class="list-group-item">
-    <button class="btn btn-edit btn-md btn-block" data-toggle="modal"
-      data-target="#edit-layer">{% trans "Editing Tools" %}</button>
-  </li>
-  {% endif %}
-  {% endif %}
-
-  <li class="list-group-item">
-    <a href="{% url "new_map" %}?layer={{resource.service_typename}}&view=True"
-      class="btn btn-primary btn-md btn-block">{% trans "View Layer" %}</a>
-  </li>
-
-  <li class="list-group-item">
-    <button class="btn btn-primary btn-md btn-block" data-toggle="modal"
-      data-target="#download-metadata">{% trans "Download Metadata" %}</button>
-  </li>
-
-  <div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="downloadModalLayer"
-    aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Download Metadata" %}</h4>
-          <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
-        </div>
-        <div class="modal-body text-center">
-          <div style="margin-bottom:20px">
-            <h5 class="modal-title w-100 text-center" id="downloadModalLayer">
-              {% trans "Full metadata" %}
-            </h5>
-            <ul>
-              <li><a class="btn btn-light btn-block" target="_blank"
-                  href="{% url 'csw_render_extra_format_txt'  resource.uuid resource.title|slugify %}">
-                  {% trans "Text format" %} </a></li>
-              <li><a class="btn btn-light btn-block" target="_blank"
-                  href="{% url 'csw_render_extra_format_html' resource.uuid resource.title|slugify %}">
-                  {% trans "HTML format" %} </a></li>
-            </ul>
-          </div>
-          <div style="margin-bottom:20px">
-            <h5 class="modal-title w-100 text-center" id="downloadModalLayer">
-              {% trans "Standard Metadata - XML format" %}
-            </h5>
-            <ul>
-              {% for link in metadata %}
-              <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank">{{ link.name }}</a></li>
-              {% endfor %}
-              <ul>
-          </div>
-          {% if resource.storeType == 'dataStore' %}
-          <h5 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Attribute Information" %}</h5>
-          <ul>
-            <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
-                target="_blank">{% trans "ISO Feature Catalogue" %}</a></li>
-            <ul>
-              {% endif %}
-        </div>
-        <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
+<div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="downloadModalLayer"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Download Metadata" %}</h4>
+        <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
       </div>
+      <div class="modal-body text-center">
+        <div style="margin-bottom:20px">
+          <h5 class="modal-title w-100 text-center" id="downloadModalLayer">
+            {% trans "Full metadata" %}
+          </h5>
+          <ul>
+            <li><a class="btn btn-light btn-block" target="_blank"
+                href="{% url 'csw_render_extra_format_txt'  resource.uuid resource.title|slugify %}">
+                {% trans "Text format" %} </a></li>
+            <li><a class="btn btn-light btn-block" target="_blank"
+                href="{% url 'csw_render_extra_format_html' resource.uuid resource.title|slugify %}">
+                {% trans "HTML format" %} </a></li>
+          </ul>
+        </div>
+        <div style="margin-bottom:20px">
+          <h5 class="modal-title w-100 text-center" id="downloadModalLayer">
+            {% trans "Standard Metadata - XML format" %}
+          </h5>
+          <ul>
+            {% for link in metadata %}
+            <li><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank">{{ link.name }}</a></li>
+            {% endfor %}
+            <ul>
+        </div>
+        {% if resource.storeType == 'dataStore' %}
+        <h5 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Attribute Information" %}</h5>
+        <ul>
+          <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
+              target="_blank">{% trans "ISO Feature Catalogue" %}</a></li>
+          <ul>
+            {% endif %}
+      </div>
+      <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
     </div>
   </div>
-
-  {% if resource.get_legend %}
-  <li class="list-group-item">
-    <h4 class="list-group-item-heading">{%trans "Legend" %}</h4>
-    {% if resource.default_style %}
-    {% get_all_resource_styles resource as resource_styles_all%}
-    {% for style in resource_styles_all %}
-    {% if style.name or style.sld_title %}
-    {% if resource.default_style == style or resource.default_style.name == style.name or style.sld_title and resource.default_style.sld_title == style.sld_title %}
-    {% for legend in resource.get_legend %}
-    {% get_sld_name_from_url style.sld_url as sld_name %}
-    {% get_style_name_from_legend_url legend.url as legend_style_name %}
-    {% if legend.link_type == 'image' and sld_name == legend_style_name %}
-    <p id="legend_sld_title" style="font-size:10px">{{ style.sld_title|default:style.name }}</p>
-    {% if request.user.is_authenticated and access_token %}
-    <p><img id="legend_icon" src="{{ legend.url }}&access_token={{access_token}}"></p>
-    {% else %}
-    <p><img id="legend_icon" src="{{ legend.url }}"></p>
-    {% endif %}
-    {% else %}
-    <div id='legend_placeholder'></div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    {% endif %}
-    {% endfor %}
-    {% else %}
-    {% for legend in resource.get_legend %}
-    <p><img id="legend_icon" src="{{ legend.url }}"></p>
-    {% endfor %}
-    {% endif %}
-  </li>
-  {% endif %}
-  <li class="list-group-item">
-    <h4>{% trans "Maps using this layer" %}</h4>
-    {% if map_layers %}
-    <p>{% trans "List of maps using this layer:" %}</p>
-    {% endif %}
-    <ul class="list-unstyled">
-      {% for maplayer in map_layers %}
-      <li><a href="{{ maplayer.map.get_absolute_url }}">{{ maplayer.map.title }}</a></li>
-      {% empty %}
-      <li>{% trans "This layer is not currently used in any maps." %}</li>
-      {% endfor %}
-    </ul>
-  </li>
-  {% if user.is_authenticated and not READ_ONLY_MODE %}
-  <li class="list-group-item">
-    <h4>{% trans "Create a map using this layer" %}</h4>
-    <p>{% trans "Click the button below to generate a new map based on this layer." %}</p>
-    <a href="{% url "new_map" %}?layer={{resource.service_typename}}"
-      class="btn btn-primary btn-block">{% trans "Create a Map" %}</a>
-  </li>
-  {% endif %}
-  {% if maps %}
-  <li class="list-group-item">
-    <h4>{% trans "Add the layer to an existing map" %}</h4>
-    <form action="{% url "add_layer" %}" method="GET">
-      {% csrf_token %}
-      <select name="map_id">
-        {% for map in maps %}
-        <option value="{{ map.id }}">{{ map.title|truncatechars:40 }}</option>
-        {% endfor %}
-      </select>
-      <p>{% trans "Click the button below to add the layer to the selected map." %}</p>
-      <input type="hidden" name="layer_name" value="{{ resource.alternate }}">
-      <input type="submit" class="btn btn-primary btn-block" value="{% trans "Add to Map" %}">
-    </form>
-  </li>
-  {% endif %}
-
-  {% if documents.count > 0 %}
-  <li class="list-group-item">
-    <h4>{% trans "Documents related to this layer" %}</h4>
-    <p>{% trans "List of documents related to this layer:" %}</p>
-    <ul class="list-unstyled">
-      {% for document in documents %}
-      <li><a href="{{ document.get_absolute_url }}">{{ document.title }}</a></li>
-      {% endfor %}
-    </ul>
-  </li>
-  {% endif %}
-
-  {% if OGC_SERVER.default.BACKEND == 'geonode.geoserver' and resource.storeType != "remoteStore" %}
-  <li class="list-group-item">
-    <h4>{% trans "Styles" %}</h4>
-    <p>
-      {% trans "The following styles are associated with this layer. Choose a style to view it in the preview map." %}
-    </p>
-    <ul class="list-unstyled">
-      {% if OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
-      {% get_all_resource_styles resource as resource_styles_all%}
-      {% for style in resource_styles_all %}
-      <li>
-        {% if resource.default_style == style %}
-        <input type="radio" checked name="style" id="{{ style.name }}"
-          value="{{ style.sld_title|default_if_none:style.name }}" />
-        {% trans "(default style)" %}
-        {% else %}
-        <input type="radio" name="style" id="{{ style.name }}"
-          value="{{ style.sld_title|default_if_none:style.name }}" />
-        {% endif %}
-        <a
-          href="{{ GEOSERVER_BASE_URL }}{{ style.absolute_url }}">{{ style.sld_title|default_if_none:style.name }}</a>
-      </li>
-      {% empty %}
-      <li>{% trans "No styles associated with this layer" %}</li>
-      {% endfor %}
-      {% endif %}
-    </ul>
-  </li>
-  {% endif %}
-
-  {% if resource.storeType == "remoteStore" %}
-  <li class="list-group-item">
-    <h4>{% trans "External service layer" %}</h4>
-    <div>{% trans "Source" %}: <a
-        href="{% url 'service_detail' resource.remote_service.id %}">{{ resource.remote_service.title }}</a>
-    </div>
-    <div>{% trans "Type" %}: {{ resource.remote_service.type }}</div>
-  </li>
-  {% endif %}
-
-  {% if OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
-  {% if "change_resourcebase" in perms_list and resource.storeType != "remoteStore" %}
-  {% if not READ_ONLY_MODE %}
-  <li class="list-group-item">
-    <h4>{% trans "Refresh Attributes and Statistics of this layer" %}</h4>
-    <p>
-      {% trans "Click the button below to allow SDI refreshing the list of available Layer Attributes. If the option 'WPS_ENABLED' has been also set on the backend, it will recalculate their statistics too." %}
-    </p>
-    <button class="btn btn-edit btn-block" data-dismiss="modal"
-      id="attributes_sats_refresh">{% trans "Refresh Attributes and Statistics" %}</button>
-  </li>
-  {% endif %}
-  <li class="list-group-item">
-    <h4>{% trans "Clear the Server Cache of this layer" %}</h4>
-    <p>{% trans "Click the button below to wipe the tile-cache of this layer." %}</p>
-    <button class="btn btn-danger btn-block" data-dismiss="modal"
-      id="tiledlayer_refresh">{% trans "Empty Tiled-Layer Cache" %}</button>
-  </li>
-  {% endif %}
-  {% endif %}
-
-  {% if GEONODE_SECURITY_ENABLED %}
-  {% if "change_resourcebase_permissions" in perms_list %}
-  {% if not READ_ONLY_MODE %}
-  <li class="list-group-item">
-    <h4>{% trans "Permissions" %}</h4>
-    <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
-    <button class="btn btn-edit btn-block" data-toggle="modal"
-    data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
-    {% if USE_GEOSERVER and DELAYED_SECURITY_SIGNALS %}
-      <button class="btn btn-edit btn-block" data-toggle="modal"
-      id="security_refresh">{% trans "Sync Permissions Immediately" %}</button>
-    {% endif %}
-  </li>
-  {% endif %}
-  {% endif %}
-  {% endif %}
-
-  {% include "base/_resourcebase_contact_snippet.html" %}
 </div>

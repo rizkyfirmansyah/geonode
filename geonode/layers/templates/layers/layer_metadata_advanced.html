@@ -125,7 +125,7 @@
                   {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' %}
                   <div class="mb-2">
                     <span><label for="{{ field.id }}">{{ field.label }}</label></span>
-                    {{ field|crispy }}
+                    {{ field }}
                   </div>
                   {% endif %}
                 {% endfor %}
@@ -168,12 +168,12 @@
                           {% if form.attribute %}
                           <tbody>
                             <tr>
-                                <td><div style="display:none">{{ form.id|as_crispy_field }}</div>{{ form.attribute|as_crispy_field }}</td>
-                                <td>{{ form.attribute_label|as_crispy_field }}</td>
-                                <td>{{ form.description|as_crispy_field }}</td>
-                                <td>{{ form.display_order|as_crispy_field }}</td>
-                                <td>{{ form.featureinfo_type|as_crispy_field }}</td>
-                                <td>{{ form.visible|as_crispy_field }}</td>
+                                <td><div style="display:none">{{ form.id }}</div>{{ form.attribute }}</td>
+                                <td>{{ form.attribute_label }}</td>
+                                <td>{{ form.description }}</td>
+                                <td>{{ form.display_order }}</td>
+                                <td>{{ form.featureinfo_type }}</td>
+                                <td>{{ form.visible }}</td>
                             </tr>
                           </tbody>
                           {% endif %}
@@ -184,7 +184,7 @@
 
                   {% block layer_custom_template %}
                     <div id="layer-attributes-custom_template" {% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
-                        {{ layer_form.featureinfo_custom_template|as_crispy_field }}
+                        {{ layer_form.featureinfo_custom_template }}
                     </div>
                   {% endblock layer_custom_template %}
 
