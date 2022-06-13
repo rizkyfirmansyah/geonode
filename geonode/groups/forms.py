@@ -150,7 +150,7 @@ class GroupsMultipleChoiceField(forms.MultipleChoiceField):
 
 
 def get_groups_choices():
-    get_groups_choices = [(i.slug, i.name) for i in GroupProfile.objects.all()]
+    get_groups_choices = [(i.slug, i.title) for i in GroupProfile.objects.all()]
     
     return get_groups_choices
 
