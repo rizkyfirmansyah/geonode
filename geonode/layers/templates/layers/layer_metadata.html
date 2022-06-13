@@ -27,31 +27,26 @@
         </div>
       </div>
     </div>
+
     {% if not layer.metadata_uploaded_preserve %}
     <div class="card-body">
       <div class="row">
         <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-info w-100" style="display: none" value="{% trans '<< Back' %}" /></div>
         <div class="col text-left"><input type="button" id="btn_upd_md_dwn" class="btn btn-edit w-100" value="{% trans 'Update' %}" /></div>
         <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-info w-100" value="{% trans 'Next >>' %}" /></div>
-        <div id="profileCompleteness" class="alert alert-info col-4">
-          <strong>{% trans "Completeness" %}</strong>
-          <div>
-            <small class="completed text-success" style="display: none; "><i
-                class="fa-solid fa-check"></i>{% trans "Metadata Schema mandatory fields completed" %}</small>
-            <small class="not-completed text-danger" style="display: none; "><i
-                class="fa-solid fa-remove"></i>{% trans "Check Schema mandatory fields" %}</small>
-          </div>
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped" role="progress-bar">
-            </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="progress" id="profileCompleteness">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progress-bar" id="progressCompleted" title="Metadata Completeness">
           </div>
         </div>
-      </div>
     </div>
     {% endif %}
   </div>
 
-  <form id="metadata_update" class="form-horizontal" action="{% url "layer_metadata" layer.service_typename %}" method="POST">
+  <form id="metadata_update" class="form-horizontal" action="{% url 'layer_metadata' layer.service_typename %}" method="POST">
     {% if layer.metadata_uploaded_preserve %}
     <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a
       metadata XML file.

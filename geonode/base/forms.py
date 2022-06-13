@@ -386,7 +386,7 @@ class ResourceBaseForm(TranslationModelForm):
             if help_text != '':
                 self.fields[field].widget.attrs.update(
                     {
-                        'class': 'has-popover',
+                        'class': 'has-external-popover',
                         'data-content': help_text,
                         'data-placement': 'right',
                         'data-container': 'body',

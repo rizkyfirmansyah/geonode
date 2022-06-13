@@ -45,18 +45,51 @@
       {{ permissions_form.change_resourcebase_metadata_groups|as_crispy_field }}
     </div>
   </nav>
+
+  {% if resource == 'layer' %}
+    <nav class="bulk_modal">
+      <div class="panel-heading">
+        <h6 class="card-title">
+          <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse4">
+            {% trans "Who can edit data for this Dataset?" %}
+          </a>
+        </h6>
+      </div>
+      <div id="collapse4" class="panel-collapse collapse">
+        {{ permissions_form.change_layer_data_users|as_crispy_field }}
+        {{ permissions_form.change_layer_data_groups|as_crispy_field }}
+      </div>
+    </nav>
+  {% endif %}
   
+  {% if resource == 'layer' %}
+    <nav class="bulk_modal">
+      <div class="panel-heading">
+        <h6 class="card-title">
+          <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse5">
+            {% trans "Who can edit styles for this Dataset?" %}
+          </a>
+        </h6>
+      </div>
+      <div id="collapse5" class="panel-collapse collapse">
+        {{ permissions_form.change_layer_style_users|as_crispy_field }}
+        {{ permissions_form.change_layer_style_groups|as_crispy_field }}
+      </div>
+    </nav>
+  {% endif %}
+
   <nav class="bulk_modal">
     <div class="panel-heading">
       <h6 class="card-title">
-        <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse4">
+        <a data-toggle="collapse" aria-expanded="true" class="nav-toggle" target="_self" href="#collapse6">
           {% trans "Who can manage it? (update, delete, change permissions, publish/unpublish it)" %}
         </a>
       </h6>
     </div>
-    <div id="collapse4" class="panel-collapse collapse">
+    <div id="collapse6" class="panel-collapse collapse">
       {{ permissions_form.manage_resourcebase_users|as_crispy_field }}
       {{ permissions_form.manage_resourcebase_groups|as_crispy_field }}
     </div>
   </nav>
+  
 </div>

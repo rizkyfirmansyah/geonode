@@ -1148,14 +1148,14 @@ def layer_metadata(
             layer.category.add(*new_categories)
 
         # clearing old metadata from the resource
-        layer.metadata.all().delete()
-        # creating new metadata for the resource
-        for _m in json.loads(layer_form.cleaned_data['extra_metadata']):
-            new_m = ExtraMetadata.objects.create(
-                resource=layer,
-                metadata=_m
-            )
-            layer.metadata.add(new_m)
+        # layer.metadata.all().delete()
+        # # creating new metadata for the resource
+        # for _m in json.loads(layer_form.cleaned_data['extra_metadata']):
+        #     new_m = ExtraMetadata.objects.create(
+        #         resource=layer,
+        #         metadata=_m
+        #     )
+        #     layer.metadata.add(new_m)
 
         up_sessions = UploadSession.objects.filter(layer=layer)
         if up_sessions.exists() and up_sessions[0].user != layer.owner:

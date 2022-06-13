@@ -106,7 +106,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields.pop('metadata')
+        self.fields.pop('extra_metadata')
         self.fields.pop('temporal_extent_start')
         self.fields.pop('temporal_extent_end')
         for field in self.fields:
@@ -163,10 +163,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
             'doc_type',
             'spatial_representation_type',
             'resource_type',
-            'spatial_resolution',
-            'metadata',
-            'temporal_extent_start',
-            'temporal_extent_end'
+            'spatial_resolution'
         )
         fields = [
           'title',
@@ -200,9 +197,9 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
           'group',
           'featured',
           'metadata_only',
-          'was_published',
+          # 'was_published',
           'is_published',
-          'was_approved',
+          # 'was_approved',
           'is_approved',
           'thumbnail_url',
         ]

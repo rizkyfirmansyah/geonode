@@ -341,6 +341,10 @@
           {{ document_form.is_approved }}
         </div>
         <div>
+          <span><label for="{{ document_form.metadata_only|id }}">{{ document_form.metadata_only.label }}</label></span>
+          {{ document_form.metadata_only }}
+        </div>
+        <div>
           <span><label
               for="{{ document_form.is_published|id }}">{{ document_form.is_published.label }}</label></span>
           {{ document_form.is_published }}
