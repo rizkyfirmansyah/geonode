@@ -28,6 +28,7 @@ from django.utils.deprecation import MiddlewareMixin
 from geonode import geoserver
 from geonode.utils import check_ogc_backend
 from geonode.base.auth import get_token_object_from_session, basic_auth_authenticate_user
+from guardian.shortcuts import get_anonymous_user
 
 # make sure login_url can be mapped to redirection URL and will match request.path
 login_url = settings.LOGIN_URL.replace(settings.SITEURL.rstrip('/'), '')
@@ -85,8 +86,8 @@ class LoginRequiredMiddleware(MiddlewareMixin):
 
         anonymous_can_access = settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION
 
-        if not request.user.is_authenticated and anonymous_can_access:
-        # if not request.user.is_authenticated or request.user == get_anonymous_user():
+        # if not request.user.is_authenticated and anonymous_can_access:
+        if not request.user.is_authenticated or request.user == get_anonymous_user():
 
             if "HTTP_AUTHORIZATION" in request.META:
                 auth_header = request.META.get("HTTP_AUTHORIZATION", request.META.get("HTTP_AUTHORIZATION2"))

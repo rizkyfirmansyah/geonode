@@ -2,8 +2,8 @@
         "pk": 1,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass",
-            "gn_description": "Oceans",
+            "gn_description": "Features and characteristics of marine areas. Examples: tides, coastal information, reefs, sea grass",
+            "title": "Oceans",
             "is_choice": true,
             "fa_class": "anchor",
             "identifier": "oceans"
@@ -13,8 +13,8 @@
         "pk": 2,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Forest, mining concessions, small-scale agriculture, oil palm. Examples: logging concession, oil palm concessions, social forestry concessions, smallholder plantations.",
-            "gn_description": "Land Use",
+            "gn_description": "Forest, mining concessions, small-scale agriculture, oil palm. Examples: logging concession, oil palm concessions, social forestry concessions, smallholder plantations.",
+            "title": "Land Use",
             "is_choice": true,
             "fa_class": "clone",
             "identifier": "landUse"
@@ -24,8 +24,8 @@
         "pk": 3,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Examples: land cover, land use, mangrove, peat, soils, burn area",
-            "gn_description": "Land Cover",
+            "gn_description": "Examples: land cover, land use, mangrove, peat, soils, burn area",
+            "title": "Land Cover",
             "is_choice": true,
             "fa_class": "globe",
             "identifier": "landCover"
@@ -35,8 +35,8 @@
         "pk": 4,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Georeferenced images of the Earth’s surface, which have been collected via aerial photography or satellite data. Examples: land cover, topographic maps, imagery, unclassified images, drone.",
-            "gn_description": "Imagery",
+            "gn_description": "Georeferenced images of the Earth’s surface, which have been collected via aerial photography or satellite data. Examples: land cover, topographic maps, imagery, unclassified images, drone.",
+            "title": "Imagery",
             "is_choice": true,
             "fa_class": "image",
             "identifier": "imagery"
@@ -46,8 +46,8 @@
         "pk": 5,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Information pertaining to earth sciences. Examples: geophysical features and processes, geology, minerals, sciences dealing with the composition, structure and origin of the earth s rocks, risks of earthquakes, volcanic activity, landslides, gravity information, soils, permafrost, hydrogeology, erosion.",
-            "gn_description": "Geoscientific Information",
+            "gn_description": "Information pertaining to earth sciences. Examples: geophysical features and processes, geology, minerals, sciences dealing with the composition, structure and origin of the earth s rocks, risks of earthquakes, volcanic activity, landslides, gravity information, soils, permafrost, hydrogeology, erosion.",
+            "title": "Geoscientific Information",
             "is_choice": true,
             "fa_class": "bullseye",
             "identifier": "geoscientificInformation"
@@ -57,8 +57,8 @@
         "pk": 6,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Height above or below sea level. Examples: altitude, bathymetry, digital elevation models, slope, derived products.",
-            "gn_description": "Elevation",
+            "gn_description": "Height above or below sea level. Examples: altitude, bathymetry, digital elevation models, slope, derived products.",
+            "title": "Elevation",
             "is_choice": true,
             "fa_class": "flag",
             "identifier": "elevation"
@@ -68,8 +68,8 @@
         "pk": 7,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Information used for appropriate actions for future use of the land. Examples: conservation area, zoning maps, cadastral surveys, land ownership, national spatial plan.",
-            "gn_description": "Cadastre",
+            "gn_description": "Information used for appropriate actions for future use of the land. Examples: conservation area, zoning maps, cadastral surveys, land ownership, national spatial plan.",
+            "title": "Cadastre",
             "is_choice": true,
             "fa_class": "home",
             "identifier": "planningCadastre"
@@ -79,8 +79,8 @@
         "pk": 8,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Economic activities, conditions and employment. Examples: production, labour, revenue, commerce, industry, tourism and ecotourism, forestry, fisheries, commercial or subsistence hunting, exploration and exploitation of resources such as minerals, oil and gas.",
-            "gn_description": "Economy",
+            "gn_description": "Economic activities, conditions and employment. Examples: production, labour, revenue, commerce, industry, tourism and ecotourism, forestry, fisheries, commercial or subsistence hunting, exploration and exploitation of resources such as minerals, oil and gas.",
+            "title": "Economy",
             "is_choice": true,
             "fa_class": "shopping-cart",
             "identifier": "economy"
@@ -90,8 +90,8 @@
         "pk": 9,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Characteristics of society and cultures. Examples: settlements, anthropology, archaeology, education, traditional beliefs, manners and customs, demographic data, recreational areas and activities, social impact assessments, crime and justice, census information.",
-            "gn_description": "Society",
+            "gn_description": "Characteristics of society and cultures. Examples: settlements, anthropology, archaeology, education, traditional beliefs, manners and customs, demographic data, recreational areas and activities, social impact assessments, crime and justice, census information.",
+            "title": "Society",
             "is_choice": true,
             "fa_class": "comments",
             "identifier": "society"
@@ -101,12 +101,23 @@
         "pk": 10,
         "model": "base.topiccategory",
         "fields": {
-            "description": "Processes and phenomena of the atmosphere. Examples: cloud cover, weather, climate, atmospheric conditions, climate change, precipitation.",
-            "gn_description": "Climate",
+            "gn_description": "Processes and phenomena of the atmosphere. Examples: cloud cover, weather, climate, atmospheric conditions, climate change, precipitation.",
+            "title": "Climate",
             "is_choice": true,
             "fa_class": "cloud",
             "identifier": "climate"
         }
+    },
+    {
+      "pk": 11,
+      "model": "base.topiccategory",
+      "fields": {
+          "gn_description": "All uncategorized datasets.",
+          "title": "Uncategorized",
+          "is_choice": false,
+          "fa_class": "circle-nodes",
+          "identifier": "uncategorized"
+      }
     },
     {
         "pk": 1,
@@ -213,9 +224,9 @@
         "model": "base.datatype",
         "fields": {
             "is_choice": true,
-            "gn_description": "Observational data",
+            "title": "Observational data",
             "identifier": "observationalData",
-            "description": "collected through active intervention by researcher to produce and measure changes. Example: tree sapling growth in a climate-controlled experiment', 'collected through active intervention by researcher to produce and measure changes. Example: tree sapling growth in a climate-controlled experiment"
+            "gn_description": "collected through active intervention by researcher to produce and measure changes. Example: tree sapling growth in a climate-controlled experiment', 'collected through active intervention by researcher to produce and measure changes. Example: tree sapling growth in a climate-controlled experiment"
         }
     },
     {
@@ -223,9 +234,9 @@
         "model": "base.datatype",
         "fields": {
             "is_choice": true,
-            "gn_description": "Experimental data",
+            "title": "Experimental data",
             "identifier": "experimentalData",
-            "description": "captured through observation of a behavior or activity. Example: survey data, remote sensing data, air pollution data, etc', 'captured through observation of a behavior or activity. Example: survey data, remote sensing data, air pollution data, etc"
+            "gn_description": "captured through observation of a behavior or activity. Example: survey data, remote sensing data, air pollution data, etc', 'captured through observation of a behavior or activity. Example: survey data, remote sensing data, air pollution data, etc"
         }
     },
     {
@@ -233,9 +244,9 @@
         "model": "base.datatype",
         "fields": {
             "is_choice": true,
-            "gn_description": "Simulation data",
+            "title": "Simulation data",
             "identifier": "simulationData",
-            "description": "generated by imitating the operation of a real-world process or system using computer model. Example: forest growth data generated by Forest Vegetation Simulator model', 'generated by imitating the operation of a real-world process or system using computer model. Example: forest growth data generated by Forest Vegetation Simulator model"
+            "gn_description": "generated by imitating the operation of a real-world process or system using computer model. Example: forest growth data generated by Forest Vegetation Simulator model', 'generated by imitating the operation of a real-world process or system using computer model. Example: forest growth data generated by Forest Vegetation Simulator model"
         }
     },
     {
@@ -243,9 +254,9 @@
         "model": "base.datatype",
         "fields": {
             "is_choice": true,
-            "gn_description": "Derived/compiled data",
+            "title": "Derived/compiled data",
             "identifier": "derivedData",
-            "description": "generated using existing data points to create new data through some sort of transformation. Example: aspect or slope raster data generated from DEM data', 'generated using existing data points to create new data through some sort of transformation. Example: aspect or slope raster data generated from DEM data"
+            "gn_description": "generated using existing data points to create new data through some sort of transformation. Example: aspect or slope raster data generated from DEM data', 'generated using existing data points to create new data through some sort of transformation. Example: aspect or slope raster data generated from DEM data"
         }
     },
     {
