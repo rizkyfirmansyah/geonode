@@ -101,9 +101,9 @@ class LayerForm(ResourceBaseForm):
           'metadata_uploaded_preserve',
           'featured',
           'metadata_only',
-          'was_published',
+          # 'was_published',
           'is_published',
-          'was_approved',
+          # 'was_approved',
           'is_approved',
           'thumbnail_url',
           'metadata'

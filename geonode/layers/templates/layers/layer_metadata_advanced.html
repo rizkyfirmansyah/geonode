@@ -123,9 +123,9 @@
                 {% block layer_fields %}
                 {% for field in layer_form %}
                   {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' %}
-                  <div style="margin-bottom: 25px">
+                  <div class="mb-2">
                     <span><label for="{{ field.id }}">{{ field.label }}</label></span>
-                    {{ field }}
+                    {{ field|crispy }}
                   </div>
                   {% endif %}
                 {% endfor %}
@@ -134,7 +134,7 @@
                 {% block thesauri %}
                   {# layer_form|crispy #}
                   {% if THESAURI_FILTERS %}
-                    {{ tkeywords_form }}
+                    {{ tkeywords_form|crispy }}
                   {% endif %}
                 {% endblock thesauri %}
 
@@ -154,24 +154,28 @@
                       <div id="layer-attributes-panel" {% if resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
                           {{ attribute_form.management_form }}
                           <table class="table table-striped table-bordered table-condensed">
-                          <tr>
-                              <th>{% trans "Attribute" %}</th>
-                              <th>{% trans "Label" %}</th>
-                              <th>{% trans "Description" %}</th>
-                              <th>{% trans "Display Order" %}</th>
-                              <th>{% trans "Display Type" %}</th>
-                              <th>{% trans "Visible" %}</th>
-                          </tr>
+                          <thead>
+                            <tr>
+                                <th>{% trans "Attribute" %}</th>
+                                <th>{% trans "Label" %}</th>
+                                <th>{% trans "Description" %}</th>
+                                <th>{% trans "Display Order" %}</th>
+                                <th>{% trans "Display Type" %}</th>
+                                <th>{% trans "Visible" %}</th>
+                            </tr>
+                          </thead>
                           {% for form in attribute_form.forms %}
                           {% if form.attribute %}
-                          <tr>
-                              <td><div style="display:none">{{form.id}}</div>{{form.attribute}}</td>
-                              <td>{{form.attribute_label}}</td>
-                              <td>{{form.description}}</td>
-                              <td>{{form.display_order}}</td>
-                              <td>{{form.featureinfo_type}}</td>
-                              <td>{{form.visible}}</td>
-                          </tr>
+                          <tbody>
+                            <tr>
+                                <td><div style="display:none">{{ form.id|as_crispy_field }}</div>{{ form.attribute|as_crispy_field }}</td>
+                                <td>{{ form.attribute_label|as_crispy_field }}</td>
+                                <td>{{ form.description|as_crispy_field }}</td>
+                                <td>{{ form.display_order|as_crispy_field }}</td>
+                                <td>{{ form.featureinfo_type|as_crispy_field }}</td>
+                                <td>{{ form.visible|as_crispy_field }}</td>
+                            </tr>
+                          </tbody>
                           {% endif %}
                           {% endfor %}
                           </table>
@@ -180,7 +184,7 @@
 
                   {% block layer_custom_template %}
                     <div id="layer-attributes-custom_template" {% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
-                        {{layer_form.featureinfo_custom_template}}
+                        {{ layer_form.featureinfo_custom_template|as_crispy_field }}
                     </div>
                   {% endblock layer_custom_template %}
 
