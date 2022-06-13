@@ -376,8 +376,13 @@ def attributes_sats_refresh(request):
                     }),
                 status=302,
                 content_type='text/plain')
+
+        message = _('Attributes/Stats Refreshed Successfully!')
+        toast_title = _("Refresh Attributes")
+        messages.success(request, message, extra_tags=toast_title)
+
         return HttpResponse(
-            json.dumps({'success': 'ok', 'message': _('Attributes/Stats Refreshed Successfully!')}),
+            json.dumps({'success': 'ok', 'message': message}),
             status=200,
             content_type='text/plain'
         )
@@ -404,8 +409,13 @@ def invalidate_tiledlayer_cache(request):
         except Exception:
             tb = traceback.format_exc()
             logger.debug(tb)
+
+        message= _('GeoWebCache Tiled Layer Emptied!')
+        toast_title= _('Empty Tiled Cache')
+
+        messages.success(request, message, extra_tags=toast_title)
         return HttpResponse(
-            json.dumps({'success': 'ok', 'message': _('GeoWebCache Tiled Layer Emptied!')}),
+            json.dumps({'success': 'ok', 'message': message}),
             status=200,
             content_type='text/plain'
         )
