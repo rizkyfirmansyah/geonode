@@ -5,104 +5,104 @@
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
     <div ng-repeat="item in results | limitTo: limit" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
-          <div class="card rounded border-{{ item.resource_type }}">
-            <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
-              <div class="row">
-                <div class="mr-2 h-100">
-                  <span class="item-category" ng-if="item.has_time"><i class="fa-solid fa-clock" aria-hidden="true" title="Temporal Serie"></i>Temporal Serie<br></span>
-                  <i ng-if="item.resource_type == 'remoteStore'" title="Remote Service" class="fa-solid fa-arrow-up-right-from-square p-1"></i>
-                  <i ng-if="item.resource_type == 'dataStore'" title="Vector Data" class="fa-solid fa-square-pen p-1"></i>
-                  <i ng-if="item.resource_type == 'coverageStore'" title="Raster Data" class="fa-solid fa-image p-1"></i>
-                  <span ng-if="item.resource_type == 'document'" title="File/Dataset">
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.3605 6.20039L13.7371 1.57695C13.6082 1.44805 13.4342 1.375 13.2516 1.375H4.125C3.74473 1.375 3.4375 1.68223 3.4375 2.0625V19.9375C3.4375 20.3178 3.74473 20.625 4.125 20.625H17.875C18.2553 20.625 18.5625 20.3178 18.5625 19.9375V6.68809C18.5625 6.50547 18.4895 6.3293 18.3605 6.20039ZM16.977 7.00391H12.9336V2.96055L16.977 7.00391ZM17.0156 19.0781H4.98438V2.92188H11.4727V7.5625C11.4727 7.80182 11.5677 8.03133 11.7369 8.20055C11.9062 8.36978 12.1357 8.46484 12.375 8.46484H17.0156V19.0781Z"/>
-                      </svg>
-                  </span>
-                  <span ng-if="item.resource_type == 'layer'" title="Spatial">
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17.4167 2.75H4.58333C3.57081 2.75 2.75 3.57081 2.75 4.58333V17.4167C2.75 18.4292 3.57081 19.25 4.58333 19.25H17.4167C18.4292 19.25 19.25 18.4292 19.25 17.4167V4.58333C19.25 3.57081 18.4292 2.75 17.4167 2.75Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M7.7915 9.16675C8.55089 9.16675 9.1665 8.55114 9.1665 7.79175C9.1665 7.03236 8.55089 6.41675 7.7915 6.41675C7.03211 6.41675 6.4165 7.03236 6.4165 7.79175C6.4165 8.55114 7.03211 9.16675 7.7915 9.16675Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      <path d="M19.2502 13.7501L14.6668 9.16675L4.5835 19.2501" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                  </span>
-                  <i ng-if="item.resource_type == 'map'" title="Map" class="fa-solid fa-map p-1"></i>
-                  <i ng-if="item.resource_type == 'geoapp'" title="App" class="fa-solid fa-gears p-1"></i>
-                </div>
-                <div class="col-md-9 p-0">
-                  <a href="{{ item.detail_url }}" class="stretched-link" title="See {{ item.resource_type }} details"></a>
-                  <p>{{ item.title | limitTo: 30 }}{{ item.title.length > 30 ? '...' : '' }}</p>
-                </div>
+        <div class="card rounded border-{{ item.resource_type }}">
+          <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
+            <div class="row">
+              <div class="mr-2 h-100">
+                <span class="item-category" ng-if="item.has_time"><i class="fa-solid fa-clock" aria-hidden="true" title="Temporal Serie"></i>Temporal Serie<br></span>
+                <i ng-if="item.resource_type == 'remoteStore'" title="Remote Service" class="fa-solid fa-arrow-up-right-from-square p-1"></i>
+                <i ng-if="item.resource_type == 'dataStore'" title="Vector Data" class="fa-solid fa-square-pen p-1"></i>
+                <i ng-if="item.resource_type == 'coverageStore'" title="Raster Data" class="fa-solid fa-image p-1"></i>
+                <span ng-if="item.resource_type == 'document'" title="File/Dataset">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18.3605 6.20039L13.7371 1.57695C13.6082 1.44805 13.4342 1.375 13.2516 1.375H4.125C3.74473 1.375 3.4375 1.68223 3.4375 2.0625V19.9375C3.4375 20.3178 3.74473 20.625 4.125 20.625H17.875C18.2553 20.625 18.5625 20.3178 18.5625 19.9375V6.68809C18.5625 6.50547 18.4895 6.3293 18.3605 6.20039ZM16.977 7.00391H12.9336V2.96055L16.977 7.00391ZM17.0156 19.0781H4.98438V2.92188H11.4727V7.5625C11.4727 7.80182 11.5677 8.03133 11.7369 8.20055C11.9062 8.36978 12.1357 8.46484 12.375 8.46484H17.0156V19.0781Z"/>
+                    </svg>
+                </span>
+                <span ng-if="item.resource_type == 'layer'" title="Spatial">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.4167 2.75H4.58333C3.57081 2.75 2.75 3.57081 2.75 4.58333V17.4167C2.75 18.4292 3.57081 19.25 4.58333 19.25H17.4167C18.4292 19.25 19.25 18.4292 19.25 17.4167V4.58333C19.25 3.57081 18.4292 2.75 17.4167 2.75Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7.7915 9.16675C8.55089 9.16675 9.1665 8.55114 9.1665 7.79175C9.1665 7.03236 8.55089 6.41675 7.7915 6.41675C7.03211 6.41675 6.4165 7.03236 6.4165 7.79175C6.4165 8.55114 7.03211 9.16675 7.7915 9.16675Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19.2502 13.7501L14.6668 9.16675L4.5835 19.2501" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <i ng-if="item.resource_type == 'map'" title="Map" class="fa-solid fa-map p-1"></i>
+                <i ng-if="item.resource_type == 'geoapp'" title="App" class="fa-solid fa-gears p-1"></i>
+              </div>
+              <div class="col-md-9 p-0">
+                <a href="{{ item.detail_url }}" class="stretched-link" title="See {{ item.resource_type }} details"></a>
+                <p>{{ item.title | limitTo: 30 }}{{ item.title.length > 30 ? '...' : '' }}</p>
               </div>
             </div>
-            <div class="card-body pt-2">
-              <div class="row">
-                <div class="avatar ml-2">
-                  <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar item.owner_name 40 %}</a>
-                  {% verbatim %}
-                </div>
-                <div class="col-10 pr-0 pl-2">
-                  <div class="row w-100 m-0">
-                    <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
-                    <div ng-controller="CartList" class="col-1 text-right pr-0" ng-repeat="(key, value) in item.category__icons">
-                      <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
-                        <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>
-                      </span>
-                      <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') >= 1">
-                        <img src="data:image/svg+xml;charset=UTF-8,{{value}}" style="max-width: 16px;">
-                      </span>
-                    </div>
-                    <span class="col-md-1 m-0">
-                      <i id="download_icon" class="fa fa-{{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color:{{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
+          </div>
+          <div class="card-body pt-2">
+            <div class="row">
+              <div class="avatar ml-2">
+                <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar item.owner_name 40 %}</a>
+                {% verbatim %}
+              </div>
+              <div class="col-10 pr-0 pl-2">
+                <div class="row w-100 m-0">
+                  <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
+                  <div ng-controller="CartList" class="col-1 text-right pr-0" ng-repeat="(key, value) in item.category__icons">
+                    <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
+                      <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>
+                    </span>
+                    <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') >= 1">
+                      <img src="data:image/svg+xml;charset=UTF-8,{{value}}" style="max-width: 16px;">
                     </span>
                   </div>
-                  <div class="row pt-1 w-100">
-                    <div class="ml-3 card-subtitle font-small"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
-                    <div class="col-7 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
-                  </div>
+                  <span class="col-md-1 m-0">
+                    <i id="download_icon" class="fa fa-{{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color:{{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
+                  </span>
+                </div>
+                <div class="row pt-1 w-100">
+                  <div class="ml-3 card-subtitle font-small"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
+                  <div class="col-7 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
                 </div>
               </div>
             </div>
-            <div class="card-body pt-0">
-              <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
-            </div>
-                  <div class="card-footer">
-                    <div class="row">
-                      <div class="col-3 text-center" ng-controller="CartList">
-                        <button
-                          class="btn btn-default btn-xs p-0"
-                          ng-if="cart"
-                          ng-click="cart.toggleItem(item)"
-                          data-toggle="tooltip"
-                          data-placement="bottom"
-                          title="Bulk Select"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
-                      </div>
-                        <div class="col-3 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
-                        <div class="col-3 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
-                        <div class="col-3 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
-                    </div>
-                  </div>
-                    <em ng-if="item.resource_type == 'remoteStore'">
-                      <div class="card-footer text-center">
-                        <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i>Service is online</span>
-                        <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i>Service is offline</span>
-                      </div>
-                    </em>
-                    <em ng-if="item.processed == false">
-                      <div class="card-footer text-center">
-                        <i class="fa-solid fa-gear fa-spin fa-fw"></i>Layer not ready yet. Still finalizing layer ingestion...
-                      </div>
-                    </em>
-                    <div class="alert alert-danger" ng-if="item.dirty_state == true">SECURITY NOT YET SYNCHRONIZED
-                        <div class="card-footer text-center">{% verbatim %}<a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">{% endverbatim %}{% trans "Sync permissions immediately" %}</a></div>
-                    </div>
-                    {% verbatim %}
-                    <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">PENDING APPROVAL</div>
-                    <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">UNPUBLISHED</div>
-                  <div class="card-footer" ng-if="item.resource_type == 'layer'">
-                    <a class="create_map" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
-                    <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
-                  </div>
-                  {% endverbatim %}
           </div>
+          <div class="card-body pt-0">
+            <p class="card-text text-justify card-content" ng-bind-html="item.abstract | limitTo: 140">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
+          </div>
+            <div class="card-footer">
+              <div class="row">
+                <div class="col-3 text-center" ng-controller="CartList">
+                  <button
+                    class="btn btn-default btn-xs p-0"
+                    ng-if="cart"
+                    ng-click="cart.toggleItem(item)"
+                    data-toggle="tooltip"
+                    data-placement="bottom"
+                    title="Bulk Select"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
+                </div>
+                  <div class="col-3 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
+                  <div class="col-3 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
+                  <div class="col-3 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
+              </div>
+            </div>
+              <em ng-if="item.resource_type == 'remoteStore'">
+                <div class="card-footer text-center">
+                  <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i>Service is online</span>
+                  <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i>Service is offline</span>
+                </div>
+              </em>
+              <em ng-if="item.processed == false">
+                <div class="card-footer text-center">
+                  <i class="fa-solid fa-gear fa-spin fa-fw"></i>Layer not ready yet. Still finalizing layer ingestion...
+                </div>
+              </em>
+              <div class="alert alert-danger" ng-if="item.dirty_state == true">SECURITY NOT YET SYNCHRONIZED
+                  <div class="card-footer text-center">{% verbatim %}<a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">{% endverbatim %}{% trans "Sync permissions immediately" %}</a></div>
+              </div>
+              {% verbatim %}
+              <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">PENDING APPROVAL</div>
+              <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">UNPUBLISHED</div>
+            <div class="card-footer" ng-if="item.resource_type == 'layer'">
+              <a class="create_map" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+              <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
+            </div>
+            {% endverbatim %}
+        </div>
     </div>
   </div>
