@@ -12,7 +12,7 @@
 <script type='text/html' id='layerTemplate'>
   <div class='file-element' id='<%= selector %>-element'>
     <div class='row'>
-      <div class='col'><h3 class="col"><%= name %></h3><sup class="badge text-muted"><%= type %><sup></div>
+      <div class='col'><h3 class="d-inline-flex"><%= name %></h3><sup class="badge text-muted"><%= type %><sup></div>
     </div>
     <% if (format !== 'raster') { %>
     <div id='<%= name %>-vector-options' class='card-body'>

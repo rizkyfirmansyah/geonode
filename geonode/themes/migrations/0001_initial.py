@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
                 ('welcome_theme', models.CharField(choices=[('JUMBOTRON_BG', 'jumbotron background'), ('SLIDE_SHOW', 'slide show')], default='JUMBOTRON_BG', help_text='Choose between using jumbotron background and slide show', max_length=255)),
                 ('jumbotron_welcome_title', models.CharField(blank=True, help_text='Landing page title', max_length=255, null=True)),
                 ('jumbotron_welcome_content', models.TextField(blank=True, help_text='Landing page welcome title', null=True)),
-                ('showcase_bg_color', colorfield.fields.ColorField(default='#1C463F', help_text='Background color of the showcase landing page, default to green', image_field=None, max_length=18, samples=None)),
+                ('showcase_bg_color', colorfield.fields.ColorField(default='#4F98AF', help_text='Background color of the showcase landing page, default to green', image_field=None, max_length=18, samples=None)),
                 ('showcase_text_color', colorfield.fields.ColorField(default='#ffffff', help_text='Text color of the showcase landing page, default to white', image_field=None, max_length=18, samples=None)),
                 ('showcase_text_link_color', colorfield.fields.ColorField(default='#fdba12', help_text='Text link color of the showcase landing page, default to marigold', image_field=None, max_length=18, samples=None)),
                 ('body_text_color', colorfield.fields.ColorField(default='#3a3a3a', image_field=None, max_length=18, samples=None)),
