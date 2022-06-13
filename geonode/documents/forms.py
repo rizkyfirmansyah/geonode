@@ -197,9 +197,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
           'group',
           'featured',
           'metadata_only',
-          # 'was_published',
           'is_published',
-          # 'was_approved',
           'is_approved',
           'thumbnail_url',
         ]

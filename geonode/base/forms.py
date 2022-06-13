@@ -493,16 +493,19 @@ class ResourceBaseForm(TranslationModelForm):
             'csw_anytext',
             'popular_count',
             'share_count',
+            'thumbnail',
+            'charset',
             'rating',
             'detail_url',
             'tkeywords',
             'users_geolimits',
             'groups_geolimits',
-            'dirty_state'
+            'dirty_state',
             'state',
             'blob',
             'files',
-            'thumbnail_url'
+            'was_approved',
+            'was_published'
         )
 
 

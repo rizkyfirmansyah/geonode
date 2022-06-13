@@ -88,25 +88,26 @@
 								<div class="row">
 									<div class="col-12">
 										<div id="basicDescriptiveInfo" class="row row-cols-2">
-											<div class="col-3">
-												<span><label for="{{ layer_form.thumbnail_url|id }}">{% trans "Thumbnail" %}</label></span>
-												<div id="id_crop_entry" class="crop-widget">
-													<div id="embedded_map" class="mrg-btm">
-														<div id="preview_map">
-														</div>
-														<div id="preview_image">
-															<img id="preview_image_src" src="{{ layer_form.thumbnail_url.value }}" height="100%"
-																width="100%" />
-														</div>
-														<div>
-															<span class="btn-group btn-group-xs btn-group-justified">
-																<a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
-																<a class="btn btn-edit" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
-															</span>
-														</div>
-													</div>
-												</div>
-											</div>
+                      {% block thumbnail %}
+                        <div class="col-3">
+                          <span><label for="{{ layer_form.thumbnail_url|id }}">{% trans "Thumbnail" %}</label></span>
+                          <div id="id_crop_entry" class="crop-widget">
+                            <div id="embedded_map" class="mb-2">
+                              <div id="preview_map">
+                              </div>
+                              <div id="preview_image">
+                                <img id="preview_image_src" src="{{ layer_form.thumbnail_url.value }}" height="100%" width="100%" />
+                              </div>
+                              <div>
+                                <span class="btn-group btn-group-xs btn-group-justified">
+                                  <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
+                                  <a class="btn btn-edit" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endblock %}
 											<div class="col-4">
 												<div>
 													<span><label for="{{ layer_form.title|id }}">{{ layer_form.title.label }}</label></span>
@@ -119,7 +120,7 @@
 											</div>
 											<div class="col-5">
 												<div>
-													<span><label for="{{ layer_form.date_type|id }}">{{ layer_form.keywords.label }}</label></span>
+													<span><label for="{{ layer_form.keywords|id }}">{{ layer_form.keywords.label }}</label></span>
 													{{ layer_form.keywords }}
 												</div>
 												{% if THESAURI_FILTERS %}

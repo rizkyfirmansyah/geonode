@@ -30,7 +30,7 @@ from geonode.maps.models import Map, MapLayer
 from geonode.layers.models import Layer
 from geonode.documents.models import Document
 from geonode.geoapps.models import GeoApp
-from geonode.geoserver.helpers import OGC_Servers_Handler
+from geonode.geoserver.helpers import ogc_server_settings
 from geonode.utils import get_layer_name, get_layer_workspace
 from geonode.thumbs import utils
 from geonode.thumbs.exceptions import ThumbnailError
@@ -43,7 +43,6 @@ def create_gs_thumbnail_geonode(instance, overwrite=False, check_bbox=False):
     """
     Create a thumbnail with a GeoServer request.
     """
-    ogc_server_settings = OGC_Servers_Handler(settings.OGC_SERVER)["default"]
     wms_version = getattr(ogc_server_settings, "WMS_VERSION") or "1.1.1"
 
     create_thumbnail(
@@ -84,9 +83,6 @@ def create_thumbnail(
     instance.refresh_from_db()
 
     default_thumbnail_name = _generate_thumbnail_name(instance)
-    mime_type = "image/png"
-    width = settings.THUMBNAIL_SIZE["width"]
-    height = settings.THUMBNAIL_SIZE["height"]
 
     if default_thumbnail_name is None:
         # instance is Map and has no layers defined
@@ -109,7 +105,7 @@ def create_thumbnail(
     is_map_with_datasets = False
 
     if isinstance(instance, Map):
-        is_map_with_datasets = MapLayer.objects.filter(map=instance, visibility=True, local=True).exclude(ows_url__isnull=True).exclude(ows_url__exact='').count() > 0
+        is_map_with_datasets = MapLayer.objects.filter(map=instance, visibility=True, local=True).exclude(ows_url__isnull=True).exclude(ows_url__exact='').exists()
     if bbox:
         bbox = utils.clean_bbox(bbox, target_crs)
     elif instance.ll_bbox_polygon:
@@ -120,6 +116,25 @@ def create_thumbnail(
     # --- define layer locations ---
     locations, layers_bbox = _layers_locations(instance, compute_bbox=compute_bbox_from_layers, target_crs=target_crs)
 
+    return create_thumbnail_from_locations(instance, locations, layers_bbox, default_thumbnail_name, compute_bbox_from_layers, is_map_with_datasets, bbox, wms_version, styles, background_zoom)
+
+
+def create_thumbnail_from_locations(
+        instance,
+        locations,
+        layers_bbox,
+        default_thumbnail_name,
+        compute_bbox_from_layers,
+        is_map_with_datasets,
+        bbox,
+        wms_version=settings.OGC_SERVER["default"].get("WMS_VERSION", "1.1.1"),
+        styles=None,
+        background_zoom=None
+):
+
+    mime_type = "image/png"
+    width = settings.THUMBNAIL_SIZE["width"]
+    height = settings.THUMBNAIL_SIZE["height"]
     if compute_bbox_from_layers and is_map_with_datasets:
         if not layers_bbox:
             raise ThumbnailError(f"Thumbnail generation couldn't determine a BBOX for: {instance}.")
@@ -256,7 +271,6 @@ def _layers_locations(
              and a list optionally consisting of 5 elements containing west, east, south, north
              instance's boundaries and CRS
     """
-    ogc_server_settings = OGC_Servers_Handler(settings.OGC_SERVER)["default"]
     locations = []
     bbox = []
     if isinstance(instance, Layer):
@@ -305,13 +319,13 @@ def _layers_locations(
             except json.decoder.JSONDecodeError:
                 map_layer_style = None
 
-            if store and Layer.objects.filter(store=store, workspace=workspace, name=name).count() > 0:
+            if store and Layer.objects.filter(store=store, workspace=workspace, name=name).exists():
                 layer = Layer.objects.filter(store=store, workspace=workspace, name=name).first()
 
-            elif workspace and Layer.objects.filter(workspace=workspace, name=name).count() > 0:
+            elif workspace and Layer.objects.filter(workspace=workspace, name=name).exists():
                 layer = Layer.objects.filter(workspace=workspace, name=name).first()
 
-            elif Layer.objects.filter(alternate=map_layer.name).count() > 0:
+            elif Layer.objects.filter(alternate=map_layer.name).exists():
                 layer = Layer.objects.filter(alternate=map_layer.name).first()
             else:
                 logger.warning(f"Layer for MapLayer {name} was not found. Skipping it in the thumbnail.")

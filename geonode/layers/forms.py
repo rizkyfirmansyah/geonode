@@ -102,8 +102,7 @@ class LayerForm(ResourceBaseForm):
           'featured',
           'metadata_only',
           'is_published',
-          'is_approved',
-          'thumbnail_url'
+          'is_approved'
         ]
 
     def __init__(self, *args, **kwargs):
