@@ -40,15 +40,11 @@ class UpdateProfileTestCase(TestCase):
         self.fake_area = "phony_area"
         self.fake_city = "phony_city"
         self.fake_country = "phony_country"
-        self.fake_delivery = "phony_delivery"
-        self.fake_fax = "phony_fax"
         self.fake_first_name = "phony_first_name"
         self.fake_last_name = "phony_last_name"
         self.fake_organization = "phony_organization"
         self.fake_position = "phony_position"
         self.fake_profile = "phony_profile"
-        self.fake_voice = "phony_voice"
-        self.fake_zipcode = "phony_zipcode"
         mock_social_login_class = mock.MagicMock(
             spec="allauth.socialaccount.models.SocialLogin")
         self.mock_social_login = mock_social_login_class.return_value
@@ -60,15 +56,11 @@ class UpdateProfileTestCase(TestCase):
         self.mock_extractor.extract_area.return_value = self.fake_area
         self.mock_extractor.extract_city.return_value = self.fake_city
         self.mock_extractor.extract_country.return_value = self.fake_country
-        self.mock_extractor.extract_delivery.return_value = self.fake_delivery
-        self.mock_extractor.extract_fax.return_value = self.fake_fax
         self.mock_extractor.extract_first_name.return_value = self.fake_first_name
         self.mock_extractor.extract_last_name.return_value = self.fake_last_name
         self.mock_extractor.extract_organization.return_value = self.fake_organization
         self.mock_extractor.extract_position.return_value = self.fake_position
         self.mock_extractor.extract_profile.return_value = self.fake_profile
-        self.mock_extractor.extract_voice.return_value = self.fake_voice
-        self.mock_extractor.extract_zipcode.return_value = self.fake_zipcode
 
     @mock.patch.object(adapters, "get_data_extractor")
     @mock.patch("geonode.people.adapters.user_field", autospec=True)
@@ -102,18 +94,6 @@ class UpdateProfileTestCase(TestCase):
         args_list = mock_user_field.call_args_list
         expected_call = mock.call(
             self.fake_user, "country", self.fake_country)
-        self.assertIn(expected_call, args_list)
-
-    @mock.patch.object(adapters, "get_data_extractor")
-    @mock.patch("geonode.people.adapters.user_field", autospec=True)
-    def test_update_profile_covers_fax_field(self, mock_user_field,
-                                             mock_get_extractor):
-        mock_get_extractor.return_value = self.mock_extractor
-        adapters.update_profile(self.mock_social_login)
-        self.assertTrue(self.mock_extractor.extract_fax.called)
-        args_list = mock_user_field.call_args_list
-        expected_call = mock.call(
-            self.fake_user, "fax", self.fake_fax)
         self.assertIn(expected_call, args_list)
 
     @mock.patch.object(adapters, "get_data_extractor")
@@ -174,18 +154,6 @@ class UpdateProfileTestCase(TestCase):
         args_list = mock_user_field.call_args_list
         expected_call = mock.call(
             self.fake_user, "profile", self.fake_profile)
-        self.assertIn(expected_call, args_list)
-
-    @mock.patch.object(adapters, "get_data_extractor")
-    @mock.patch("geonode.people.adapters.user_field", autospec=True)
-    def test_update_profile_covers_voice_field(self, mock_user_field,
-                                               mock_get_extractor):
-        mock_get_extractor.return_value = self.mock_extractor
-        adapters.update_profile(self.mock_social_login)
-        self.assertTrue(self.mock_extractor.extract_voice.called)
-        args_list = mock_user_field.call_args_list
-        expected_call = mock.call(
-            self.fake_user, "voice", self.fake_voice)
         self.assertIn(expected_call, args_list)
 
 

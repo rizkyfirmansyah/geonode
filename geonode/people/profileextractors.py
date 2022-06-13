@@ -162,9 +162,6 @@ class OpenIDExtractor(BaseExtractor):
     def extract_city(self, data):
         return data.get("city", "")
 
-    def extract_zipcode(self, data):
-        return data.get("postal_code", "")
-
     def extract_organization(self, data):
         return data.get("organization", "")
 

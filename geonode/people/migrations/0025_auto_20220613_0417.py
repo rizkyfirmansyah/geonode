@@ -11,22 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='profile',
-            name='delivery',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='fax',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='voice',
-        ),
-        migrations.RemoveField(
-            model_name='profile',
-            name='zipcode',
-        ),
         migrations.AddField(
             model_name='profile',
             name='language',

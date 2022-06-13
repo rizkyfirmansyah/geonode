@@ -207,10 +207,6 @@ class FacebookExtractorTestCase(GeoNodeBaseTestSupport):
         with self.assertRaises(NotImplementedError):
             self.extractor.extract_country(self.data)
 
-    def test_extract_delivery(self):
-        with self.assertRaises(NotImplementedError):
-            self.extractor.extract_delivery(self.data)
-
     def test_extract_email(self):
         result = self.extractor.extract_email(self.data)
         self.assertEqual(result, self.data["email"])
@@ -234,10 +230,6 @@ class FacebookExtractorTestCase(GeoNodeBaseTestSupport):
     def test_extract_profile(self):
         result = self.extractor.extract_profile(self.data)
         self.assertEqual(result, self.data["cover"])
-
-    def test_extract_zipcode(self):
-        with self.assertRaises(NotImplementedError):
-            self.extractor.extract_zipcode(self.data)
 
 
 class LinkedInExtractorTestCase(GeoNodeBaseTestSupport):
