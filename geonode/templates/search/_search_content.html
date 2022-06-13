@@ -1,29 +1,27 @@
 {% load i18n %}
 
-<div class="w-100" ng-controller="CartList">
-  <div class="row">
-    <div class="col text-primary" id="title-ng-search">
-      {% if facet_type == 'layers' %}
-      <span ng-bind="total_counts + ' ' + '{% trans "Spatial data found" %}'"></span>
-      {% elif facet_type == 'maps' %}
-      <span ng-bind="total_counts + ' ' + '{% trans "Maps found" %}'"></span>
-      {% elif facet_type == 'documents' %}
-      <span ng-bind="total_counts + ' ' + '{% trans "Datasets found" %}'"></span>
-      {% elif facet_type == 'geoapps' %}
-      <span
-        ng-bind="total_counts + ' ' + '{% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %} {% trans "found" %}'"></span>
-      {% else %}
-      <span ng-bind="total_counts + ' {{ facet_type | title }} {% trans "found" %}'"></span>
-      {% endif %}
-    </div>
-    {% if facet_type == 'maps' %}
-      {% if user.is_authenticated and not READ_ONLY_MODE %}
-        <div class="col-2 text-right d-flex"><a href="{% url "new_map" %}" class="btn btn-upload d-flex align-items-center">{% trans "Create a New Map" %}</a></div>
-      {% endif %}
+<div class="col" ng-controller="CartList">
+  <h3 class="text-primary">
+    {% if facet_type == 'layers' %}
+    <span ng-bind="total_counts + ' ' + '{% trans "Spatial data found" %}'"></span>
+    {% elif facet_type == 'maps' %}
+    <span ng-bind="total_counts + ' ' + '{% trans "Maps found" %}'"></span>
+    {% elif facet_type == 'documents' %}
+    <span ng-bind="total_counts + ' ' + '{% trans "Datasets found" %}'"></span>
+    {% elif facet_type == 'geoapps' %}
+    <span
+      ng-bind="total_counts + ' ' + '{% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %} {% trans "found" %}'"></span>
+    {% else %}
+    <span ng-bind="total_counts + ' {{ facet_type | title }} {% trans "found" %}'"></span>
     {% endif %}
-    <button class="btn btn-primary sidebar-toggle col-2" id="sidebarFilter" aria-haspopup="true"
-      aria-expanded="false">Filter</button>
-    {% include "search/_sort_filters.html" %}
-  </div>
+  </h3>
 </div>
+{% if facet_type == 'maps' %}
+{% if user.is_authenticated and not READ_ONLY_MODE %}
+  <div class="col-2 text-right d-flex"><a href="{% url "new_map" %}" class="btn btn-upload d-flex align-items-center">{% trans "Create a New Map" %}</a></div>
+{% endif %}
+{% endif %}
+<button class="btn btn-primary sidebar-toggle col-2" id="sidebarFilter" aria-haspopup="true"
+aria-expanded="false">Filter</button>
+{% include "search/_sort_filters.html" %}
 {% include "modal/bulk_permissions.html" %}

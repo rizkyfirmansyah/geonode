@@ -2910,7 +2910,8 @@ html {
     width: 100%
 }
 
-.svg-inline--fa {
+#catalogueList .svg-inline--fa,
+#sortFilter .svg-inline--fa {
     margin-right: 5px
 }
 
