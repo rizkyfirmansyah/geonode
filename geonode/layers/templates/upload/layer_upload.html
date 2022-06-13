@@ -160,7 +160,7 @@
       <h3 class="text-center">{% trans "Permissions" %}</h3>
     </div>
     <form id="permission_form">
-      {% with resource='layer' %}
+      {% with catalogue='layer' %}
         {% include "modal/permissions_form.html" %}
       {% endwith %}
     </form>
@@ -186,7 +186,7 @@
 
 </script>
 {% if GEONODE_SECURITY_ENABLED %}
-{% with resource='layer' %}
+{% with catalogue='layer' %}
 {% include "toast/permissions_form.html" %}
 {% endwith %}
 {% endif %}

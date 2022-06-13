@@ -393,7 +393,7 @@
         <button class="btn btn-edit btn-block" data-toggle="modal"
         data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
       </li>
-      {% with resource='document' %}
+      {% with catalogue='document' %}
         {% include "modal/permissions.html" %}
       {% endwith %}
       {% endif %}

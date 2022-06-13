@@ -32,7 +32,7 @@
     <h3 class="text-center">{% trans "Permissions" %}</h3>
   </div>
   <form id="permission_form">
-    {% with resource='document' %}
+    {% with catalogue='document' %}
       {% include "modal/permissions_form.html" %}
     {% endwith %}
   </form>
