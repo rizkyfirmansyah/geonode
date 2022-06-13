@@ -10,18 +10,18 @@
 
 {% block body %}
 <div class="card rounded bg-light mb-2">
-	<div class="card-body">
+	<div class="card-body bg-document">
 		<div class="row">
-			<h3 class="col-8">{% trans "Upload Datasets" %}</h2>
-			<div class="col-4"><a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Datasets" %}</a></div>
-			<p>{% trans "Allowed raw data types" %}:</p>
-			<p class="allowed_doctype">
-			{% for doc in ALLOWED_DOC_TYPES %}
-				<span class="badge badge-pill badge-secondary d-inline">.{{ doc }}</span>
-			{% endfor %}
-			</p>
+			<h3 class="col-8 text-light">{% trans "Upload Datasets" %}</h2>
+			<div class="col-4"><a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-light float-right">{% trans "Explore Datasets" %}</a></div>
 		</div>
 	</div>
+  <div class="card-body">
+    <p class="allowed_doctype mb-1">{% trans "Allowed raw data types" %}:</p>
+    {% for doc in ALLOWED_DOC_TYPES %}
+      <div class="mt-1 mb-1 d-inline-block"><span class="badge badge-pill badge-secondary d-inline">.{{ doc }}</span></div>
+    {% endfor %}
+  </div>
 </div>
 <div class="row">
 

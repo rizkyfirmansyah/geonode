@@ -278,6 +278,12 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
     def __init__(self, *args, **kwargs):
         super(DocumentCreateForm, self).__init__(*args, **kwargs)
         self.fields['links'].choices = self.generate_link_choices()
+        self.fields['links'].widget.attrs.update(
+            {
+                'class': 'has-external-popover selectpicker d-block',
+                'data-live-search': 'true',
+                'data-selected-text-format': 'count > 4',
+                'data-size': '5'})
 
     def clean_permissions(self):
         """

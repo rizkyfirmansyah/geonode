@@ -11,10 +11,6 @@
     }
   });
 
-  $("#id_links").select2({
-      width: '100%'
-  });
-
   $('#upload_form').submit(function () {
       $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
   });
