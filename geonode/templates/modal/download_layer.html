@@ -5,7 +5,7 @@
 {% load proxy_lib_tags %}
 
 <div class="modal fade" id="download-layer" role="dialog" aria-labelledby="downloadModalLayer" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="downloadModalLayer">{% trans "Download Layer" %}</h4>
@@ -22,64 +22,63 @@
           </ul>
           <div class="tab-content bg-light">
             {% if links %}
-            <div class="tab-pane active" id="download_tab1">
-              <li class="active">
-                <ul>
-                  {% for link in links %}
-                  <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-info btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
-                  {% endfor %}
-                </ul>
-              </li>
-            </div>
+              <div class="tab-pane active" id="download_tab1">
+                <li class="active">
+                  <ul>
+                    {% for link in links %}
+                    <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-info btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              </div>
             {% endif %}
+
             {% if links_download %}
-            {% if not links %}
-            {#  if links doesn't exist, make this tab active by default #}
-            <div class="tab-pane active" id="download_tab2">
-              {% else %}
-              <div class="tab-pane" id="download_tab2">
+                {% if not links %}
+                  {#  if links doesn't exist, make this tab active by default #}
+                  <div class="tab-pane active" id="download_tab2">
+                {% else %}
+                  <div class="tab-pane" id="download_tab2">
                 {% endif %}
                 </br>
 
                 <!-- DOWNLOAD FILTER - START -->
 
                 {% if layer_type == "vector" %}
-                <button type="button" id="button-toggle" class="btn btn-info btn-circle text-nowrap" data-toggle="button"
-                  data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
-                  {% trans "Do you want to filter it?" %}
-                </button>
-                <img src="{% static 'geonode/img/geonode_icon.png' %}" class="gear float-right loading_msg"
-                  witdth="30" height="30" style="margin-right:10px; display:none" />
-                <div class="float-right loading_msg" style="margin-right:10px;margin-top:5px;display:none">
-                  {% trans "Loading..." %}</div>
-                </br></br>
+                  <button type="button" id="button-toggle" class="btn btn-info btn-circle text-nowrap" data-toggle="button"
+                    data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
+                    {% trans "Do you want to filter it?" %}
+                  </button>
+                  <img src="{% static 'geonode/img/geonode_icon.png' %}" class="gear float-right loading_msg"
+                    witdth="30" height="30" style="margin-right:10px; display:none" />
+                  <div class="float-right loading_msg" style="margin-right:10px;margin-top:5px;display:none">
+                    {% trans "Loading..." %}</div>
+                  </br></br>
                 {% endif %}
-                <ul class="nav nav-tabs" id="tabContent" style="display: none;">
-                  <li class="nav-item col"><a class="btn btn_wrapper active" href="#query_builder" data-toggle="tab">{% trans "Filter by attributes" %}</a></li>
+
+                <ul class="nav nav-tabs" id="tabContent" role="tablist">
+                  <li class="nav-item col"><a class="btn btn_wrapper active" href="#query_builder" data-toggle="tab" role="tab" aria-selected="true" aria-controls="query_builder">{% trans "Filter by attributes" %}</a></li>
                 </ul>
+
                 </br>
 
-                <div class="tab-content query_builder_tab" style="display:none;">
-                  <div id="query_builder" class="tab-pane fade in active">
+                <div class="tab-content query_builder_tab">
+                  <div id="query_builder" class="tab-pane fade show active" role="tabpanel" aria-labelledby="query-builder">
                     <div class="form-inline">
                       {% trans "Match" %}
-                      <div class="input-group"
-                        style=" display: inline-table; vertical-align: middle; width: auto;  ">
-                        <div class="btn-group" id="drop_operator_list">
-                          <div class="btn-group btn-group-xs">
-                            <div class="dropdown">
-                              <button class="btn btn-primary btn-xs dropdown-toggle" id="modal-button-and-or" type="button" data-toggle="dropdown" value="AND"><span class="ml-2"></span></button>
-                              <ul class="dropdown-menu dropdown-menu-and-or" id="and-or_list" data-modal-button-id="and-or">
-                                <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex align-items-center" href="#" id="AND">{% trans "all" %}</a></li>
-                                <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex align-items-center" href="#" id="OR">{% trans "any" %}</a></li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
+                      <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" href="#" role="button" id="modal-button-and-or" data-toggle="dropdown" aria-expanded="false" value="AND">
+                          <span class="ml-2"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-and-or" id="and-or_list" data-modal-button-id="and-or">
+                          <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="AND">{% trans "all" %}</a></li>
+                          <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="OR">{% trans "any" %}</a></li>
+                        </ul>
                       </div>
                       {% trans "of the following:" %}
                     </div>
                     </br></br>
+
                     <div class="input-group" id="query-filter-tools">
                       <div class="btn-group">
                         <div class="btn-group btn-group-sm">
@@ -118,18 +117,21 @@
                         <a href="#" id="query_part" class="btn btn-primary btn-mg" data-toggle="modal" data-target="#myModal" title=""><i class="fa-solid fa-plus"></i></a>
                       </div>
                     </div>
+
                     </br>
+
                     <div class="text_area">
                       <div class="form-group" id="added_rules"></div>
-                      <div>
-                        <p id="whole_query"> </p>
-                      </div>
+                      <div><p id="whole_query"></p></div>
                     </div>
+
                     <label style="font-weight: normal;">{% trans "Feature limit" %}: </label>
                     <input type="text" id="max_features" name="filter" />
-                    <a href='#' id="clear_filter" class="btn btn-danger btn-block m-space">{% trans "Clear" %}</a> </br>
+                    <a href='#' id="clear_filter" class="btn btn-danger btn-block">{% trans "Clear" %}</a>
+                    </br>
+
                   </div>
-                  <hr id="hr_filter_layer" />
+                  <hr/>
                 </div>
 
                 <!-- DOWNLOAD FILTER - END -->
@@ -152,26 +154,27 @@
                   {% endif %}
                   {% endfor %}
                 </ul>
-              </div>
-              {% endif %}
-            </div>
+                
           </div>
-        </div>
-        <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
+            {% endif %}
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="downloadModalLayer"
-  aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="downloadModalLayer" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Download Metadata" %}</h4>
-        <div aria-label="Close" role="button" class="delete_search" style="top: 0;"><span data-dismiss="modal" class="dlt_span" role="button" tabindex="0" aria-label="Close" title="Close"><svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></div>
+        <h4 class="modal-title" id="downloadModalLayer">{% trans "Download Metadata" %}</h4>
+        <div aria-label="Close" role="button" class="close-modal"><i class="fa-solid fa-xmark" data-dismiss="modal"></i></div>
       </div>
       <div class="modal-body text-center">
-        <div style="margin-bottom:20px">
+        <div class="mb-2">
           <h5 class="modal-title w-100 text-center" id="downloadModalLayer">
             {% trans "Full metadata" %}
           </h5>
@@ -184,7 +187,7 @@
                 {% trans "HTML format" %} </a></li>
           </ul>
         </div>
-        <div style="margin-bottom:20px">
+        <div class="mb-2">
           <h5 class="modal-title w-100 text-center" id="downloadModalLayer">
             {% trans "Standard Metadata - XML format" %}
           </h5>
@@ -195,14 +198,16 @@
             <ul>
         </div>
         {% if resource.storeType == 'dataStore' %}
-        <h5 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Attribute Information" %}</h5>
-        <ul>
-          <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
-              target="_blank">{% trans "ISO Feature Catalogue" %}</a></li>
+          <h5 class="modal-title w-100 text-center" id="downloadModalLayer">{% trans "Attribute Information" %}</h5>
           <ul>
-            {% endif %}
+            <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
+                target="_blank">{% trans "ISO Feature Catalogue" %}</a></li>
+          <ul>
+        {% endif %}
       </div>
-      <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>

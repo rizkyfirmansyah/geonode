@@ -4143,12 +4143,6 @@ footer form {
     font-style: italic
 }
 
-#hr_filter_layer {
-    width: 100%;
-    color: #757575;
-    height: 1px
-}
-
 #missing-values {
     color: #bd362f;
     font-style: italic
@@ -5299,14 +5293,6 @@ a[aria-expanded="true"] {
 
 a[data-toggle="collapse"] {
     position: relative;
-}
-
-.dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
 }
 
 ul ul a {
