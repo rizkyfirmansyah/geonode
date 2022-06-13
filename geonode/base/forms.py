@@ -420,6 +420,18 @@ class ResourceBaseForm(TranslationModelForm):
                     choices=(
                       (False, "Formally not being approved yet by publisher or other parties"),
                       (True, "This dataset has been approved by publisher or other parties"))
+                elif field == 'is_mosaic':
+                    choices=(
+                      (False, "Not mosaic data"),
+                      (True, "This dataset is mosaic"))
+                elif field == 'has_time':
+                    choices=(
+                      (False, "No time dimension"),
+                      (True, "Contains time dimension"))
+                elif field == 'has_elevation':
+                    choices=(
+                      (False, "No elevation dimension"),
+                      (True, "Contains elevation dimension"))
                 else:
                     choices=(
                       (False, "False"),
@@ -430,9 +442,9 @@ class ResourceBaseForm(TranslationModelForm):
                         'data-toggle': 'toggle',
                         'data-width': '100%',
                         'data-height': 'auto',
-                        'data-on': choices[0][1],
-                        'data-off': choices[1][1],
-                        'value': choices[0][0],
+                        'data-on': choices[1][1],
+                        'data-off': choices[0][1],
+                        'value': choices[0][1],
                         'data-onstyle': 'info',
                         'data-offstyle': 'primary'})
 

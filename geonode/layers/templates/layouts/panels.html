@@ -18,10 +18,13 @@
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
+<script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
+<link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
+
 <div class="row w-100 m-0 mb-2 mt-2">
-  <button class="btn btn-save metadata-edit-done col-12" id="btn_upd_md_done" type="submit"
-    style="opacity: 0; display: none;">{% trans "Done!" %}</button>
+  <button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done!" %}</button>
 </div>
+
 {% block body %}
 	<div class="row w-100">
 		<ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
@@ -38,7 +41,7 @@
 	</div>
 
 	<div class="tab-content bg-light">
-		<div id="edit-metadata" class="tab-pane fade show active" role="tabpanel">
+		<div id="edit-metadata" class="tab-pane fade show active" role="tabpanel" aria-labelledby="edit-metadata">
 
 			<div id="completeness-hints" class="progress">
 				<div class="mandatory-hint progress-bar" role="progressbar" style="width:16.6%">
@@ -50,33 +53,34 @@
 				<div class="content-hint progress-bar" role="progressbar" style="width:16.6%">
 					{% trans "Mandatory" %}
 				</div>
-				<div class="progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+				<div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
 					{% trans "Optional" %}
 				</div>
-        <div class="progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+        <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
 					{% trans "Optional" %}
 				</div>
-        <div class="progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+        <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
 					{% trans "Optional" %}
 				</div>
 			</div>
+
 			<ul class="wizard--progress wizard--progress--medium" role="tablist">
-				<li data-step="1" id="nav-mandatory-tab" class="nav-item" role="tab" aria-selected="true" data-toggle="tab" href="#mandatory">
+				<li data-step="1" id="nav-mandatory-tab" class="nav-item" role="tab" aria-selected="true" aria-controls="mandatory" data-toggle="tab" href="#mandatory">
 					<a>{% trans "Content Citation" %}</a>
 				</li>
-				<li data-step="2" id="nav-licenses-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#licenses">
+				<li data-step="2" id="nav-licenses-tab" class="nav-item" role="tab" aria-selected="false" aria-controls="licenses" data-toggle="tab" href="#licenses">
 					<a>{% trans "Location and Licenses" %}</a>
 				</li>
-				<li data-step="3" id="nav-content-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#content">
+				<li data-step="3" id="nav-content-tab" class="nav-item" role="tab" aria-selected="false" aria-controls="content" data-toggle="tab" href="#content">
 					<a>{% trans "Content Description" %}</a>
 				</li>
-        <li data-step="4" id="nav-optional-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#optional">
+        <li data-step="4" id="nav-optional-tab" class="nav-item" role="tab" aria-selected="false" aria-controls="optional" data-toggle="tab" href="#optional">
 					<a>{% trans "Optional Metadata" %}</a>
 				</li>
-				<li data-step="5" id="nav-spatial-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#spatial">
+				<li data-step="5" id="nav-spatial-tab" class="nav-item" role="tab" aria-selected="false" aria-controls="spatial" data-toggle="tab" href="#spatial">
 					<a>{% trans "Spatial Domain" %}</a>
 				</li>
-				<li data-step="6" id="nav-attribute-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#attribute">
+				<li data-step="6" id="nav-attribute-tab" class="nav-item" role="tab" aria-selected="false" aria-controls="attribute" data-toggle="tab" href="#attribute">
 					<a>{% trans "Dataset Attributes" %}</a>
 				</li>
 			</ul>
@@ -90,22 +94,21 @@
 										<div id="basicDescriptiveInfo" class="row row-cols-2">
                       {% block thumbnail %}
                         <div class="col-3">
-                          <span><label for="{{ layer_form.thumbnail_url|id }}">{% trans "Thumbnail" %}</label></span>
-                          <div id="id_crop_entry" class="crop-widget">
-                            <div id="embedded_map" class="mb-2">
-                              <div id="preview_map">
-                              </div>
-                              <div id="preview_image">
-                                <img id="preview_image_src" src="{{ layer_form.thumbnail_url.value }}" height="100%" width="100%" />
-                              </div>
-                              <div>
-                                <span class="btn-group btn-group-xs btn-group-justified">
-                                  <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
-                                  <a class="btn btn-edit" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                          <img id="image" style="max-height: 100%; max-width: 100%; min-height: 100%; min-width: 100%">
+                          <script>
+                            const image = document.getElementById('image');
+                            const path = location.pathname.split('/');
+                            const id = path[path.length - 2];
+                            const prefetch_url = "{{ resource.curatedthumbnail.thumbnail_url }}";
+                            const c_widget = new CropWidget(image,
+                              parseInt(
+                                id
+                              ),
+                              '/api/layers/',
+                              prefetch_url
+                            );
+                            c_widget.init();
+                          </script>
                         </div>
                       {% endblock %}
 											<div class="col-4">
@@ -326,77 +329,78 @@
 				</div>
 			{% endblock content %}
 
-			{% block spatial %}
-				<div id="spatial" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-spatial-tab">
-					<div class="card">
-							<div class="card-body">
-								<div class="col-6" class="pr-1">
-									<div class="input-group date">
-										<span><label
-												for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
-										<!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
-										{{ layer_form.temporal_extent_start }}
-									</div>
-									<div class="input-group date">
-										<span><label
-												for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
-										<!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-										{{ layer_form.temporal_extent_end }}
-									</div>
-								</div>
-								<div class="col-6" class="pl-1">
-									<div>
-										<span><label
-												for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
-										<!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
-										{{ layer_form.spatial_representation_type }}
-									</div>
+      {% block optional %}
+        <div id="optional" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-optional-tab">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-6 pr-1">
+                    <span><label
+                        for="{{ layer_form.distributor|id }}">{{ layer_form.distributor.label }}</label></span>
+                    {{ layer_form.distributor }}
+                </div>
+                <div class="col-6 pl-1">
+                  <span><label
+                      for="{{ layer_form.project_information|id }}">{{ layer_form.project_information.label }}</label></span>
+                  {{ layer_form.project_information }}
+                </div>
+                <div class="col-12">
+                  <div>
+                    <span><label
+                        for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
+                    {{ layer_form.supplemental_information }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endblock optional %}
+
+      {% block spatial %}
+        <div id="spatial" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-spatial-tab">
+          <div class="card">
+              <div class="card-body">
+                <div class="col-6" class="pr-1">
+                  <div class="input-group date">
+                    <span><label
+                        for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
+                    <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
+                    {{ layer_form.temporal_extent_start }}
+                  </div>
+                  <div class="input-group date">
+                    <span><label
+                        for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
+                    <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
+                    {{ layer_form.temporal_extent_end }}
+                  </div>
+                </div>
+                <div class="col-6" class="pl-1">
+                  <div>
+                    <span><label
+                        for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
+                    <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
+                    {{ layer_form.spatial_representation_type }}
+                  </div>
                   {% block layer_extra_metadata %}
                   <div>
                       <span><label for="{{ layer_form.extra_metadata|id }}">{{ layer_form.extra_metadata.label }}</label></span>
                       {{ layer_form.extra_metadata }}
                   </div>
                   {% endblock layer_extra_metadata %}
-									<div>
-										<span><label
-												for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
-										<!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
-										{{ layer_form.spatial_resolution }}
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			{% endblock spatial %}
-
-      {% block optional %}
-      <div id="optional" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-optional-tab">
-        <div class="card">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-6 pr-1">
-                  <span><label
-                      for="{{ layer_form.distributor|id }}">{{ layer_form.distributor.label }}</label></span>
-                  {{ layer_form.distributor }}
-              </div>
-              <div class="col-6 pl-1">
-                <span><label
-                    for="{{ layer_form.project_information|id }}">{{ layer_form.project_information.label }}</label></span>
-                {{ layer_form.project_information }}
-              </div>
-              <div class="col-12">
-                <div>
-                  <span><label
-                      for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
-                  {{ layer_form.supplemental_information }}
+                  <div>
+                    <span><label
+                        for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
+                    <!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
+                    {{ layer_form.spatial_resolution }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {% endblock optional %}
+      {% endblock spatial %}
+
 
 			{% block attribute %}
 				<div id="attribute" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-attribute-tab">
@@ -453,17 +457,15 @@
 
 		</div>
 
-		<div id="preview" class="tab-pane fade">
+		<div id="preview" class="tab-pane fade" role="tabpanel" aria-labelledby="preview">
 			{% if metadataxsl %}
-			<iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes"
-				src="/showmetadata/xsl/{{resource.id}}"></iframe>
+			<iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes" src="/showmetadata/xsl/{{resource.id}}"></iframe>
 			{% else %}
-			<iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes"
-				src="/catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.html"></iframe>
+			<iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes" src="/catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.html"></iframe>
 			{% endif %}
 		</div>
 
-		<div id="settings" class="tab-pane fade" style="overflow: hidden;">
+		<div id="settings" class="tab-pane fade" role="tabpanel" aria-labelledby="settings">
 			<div class="card-deck w-100">
 				<div class="card">
 						<div class="card-header"><h5 class="text-center">{% trans "Publishing" %}</h5></div>
@@ -522,7 +524,9 @@
 			</div>
 		</div>
 	</div>
+{% endblock %}
 
+{% block extra_script %}
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", function (event) {
 			$('#id_resource-use_featureinfo_custom_template').on('change', function (event) {
