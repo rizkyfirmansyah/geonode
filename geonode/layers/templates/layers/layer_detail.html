@@ -1025,7 +1025,10 @@
 </script>
 
 {% if GEONODE_SECURITY_ENABLED %}
-{% include "modal/permissions.html" %}
+
+{% with resource='layer' %}
+  {% include "modal/permissions.html" %}
+{% endwith %}
 {% autoescape off %}
 <script type='text/javascript'>
   $(function () {
