@@ -137,14 +137,14 @@ class CategoryChoiceField(forms.ModelMultipleChoiceField):
         if obj.svg:
             return "<span class='unchecked svg_category'>"+ obj.svg +"</span>" \
                         "<span class='checked svg_category'>"+ obj.svg +"</span>" \
-                            "<br/><strong>" + obj.gn_description + "</strong></span>"
+                            "<br/><strong>" + obj.title + "</strong></span>"
 
         if obj.fa_class:
             return '<i class="fa fa-' + obj.fa_class + ' fa-2x unchecked"></i>' \
                             '<i class="fa fa-' + obj.fa_class + ' fa-2x checked"></i>' \
                             '<span class="has-popover" data-container="body" data-toggle="popover" data-placement="top" ' \
                             'data-content="' + obj.title + '" trigger="hover">' \
-                                                                  '<br/><strong>' + obj.gn_description + '</strong></span>'
+                                                                  '<br/><strong>' + obj.title + '</strong></span>'
 
 
 class CategoryForm(forms.Form):
