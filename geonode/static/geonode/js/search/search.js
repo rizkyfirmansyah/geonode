@@ -2,7 +2,7 @@
 
 (function() {
 
-    var module = angular.module('geonode_main_search', ['ngCookies'], function($locationProvider) {
+    var module = angular.module('geonode_main_search', ['ngCookies', 'ngSanitize'], function($locationProvider) {
         if (window.navigator.userAgent.indexOf("MSIE") == -1) {
             $locationProvider.html5Mode({
                 enabled: true,

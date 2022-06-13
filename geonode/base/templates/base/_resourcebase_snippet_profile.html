@@ -62,8 +62,8 @@
               </div>
             </div>
           </div>
-          <div class="card-body pt-0" ng-bind-html="item.abstract | limitTo: 140">
-            <p class="card-text text-justify card-content">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
+          <div class="card-body pt-0">
+            <p class="card-text text-justify card-content" ng-bind-html="item.abstract">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
           </div>
           <!-- <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a> -->
           {% endverbatim %}
