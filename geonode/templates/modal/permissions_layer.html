@@ -217,8 +217,8 @@
                            </div>
                            <div class="col-3 text-center">
                              <button id="user-upload${userid}" type="button" class="btn btn-block btn-primary btn-sm"
-                               data-toggle="tooltip" data-placement="top" title="{% trans "Upload Geo Limits" %}" aria-pressed="true">
-                               <span data-toggle="modal" data-target="#_add_shp_zip" aria-hidden="true"><i class="fa-solid fa-folder-open"></i></span>
+                               title="{% trans "Upload Geo Limits" %}" aria-pressed="true" data-toggle="modal" data-target="#_add_shp_zip">
+                               <i class="fa-solid fa-folder-open"></i>
                              </button>
                            </div>
                            <div class="col-3 text-center">
@@ -433,42 +433,42 @@
         }
 
         $('#loadShpZip').click(function() {
-          $("#confirmMsgBoxModalOK").find('.modal-title w-100').html('{% trans "Load SHP-ZIP" %}');
-          $("#confirmMsgBoxModalOK").find('.modal-body').html('{% trans "<p>This will remove the Geo Limits currently drawn on the map.</p><p>In order to store the Geo Limits you will need to <strong>save</strong> them anyway.</p><p>Do you want to proceed?</p>" %}');
-          $("#confirmMsgBoxModalOK_control_field").val('loadShpZip');
-          $('#confirmMsgBoxModalOK').find('.modal-footer .confirm').remove();
+          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Load SHP-ZIP" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will remove the Geo Limits currently drawn on the map.</p><p>In order to store the Geo Limits you will need to <strong>save</strong> them anyway.</p><p>Do you want to proceed?</p>" %}');
+          $("#confirmMsgBoxModalSubmit_control_field").val('loadShpZip');
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_loadShpZip', class:'btn btn-danger confirm' });
-          $('#confirmMsgBoxModalOK').find('.modal-footer').append(confirm_button);
-          $("#confirmMsgBoxModalOK").modal("show");
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
+          $("#confirmMsgBoxModalSubmit").modal("show");
           $('#confirm_loadShpZip').html('{% trans "OK" %}');
           $('#confirm_loadShpZip').prop('value', '{% trans "OK" %}');
 
           $('#confirm_loadShpZip').on('click', function(e) {
             e.stopImmediatePropagation();
-            if ($("#confirmMsgBoxModalOK_control_field").val() == 'loadShpZip') {
-              $("#confirmMsgBoxModalOK_control_field").val();
-              $("#confirmMsgBoxModalOK").modal("hide");
+            if ($("#confirmMsgBoxModalSubmit_control_field").val() == 'loadShpZip') {
+              $("#confirmMsgBoxModalSubmit_control_field").val();
+              $("#confirmMsgBoxModalSubmit").modal("hide");
               loadShpZip();
             }
           });
         });
 
         function serializeGeoLimit(ID) {
-          $("#confirmMsgBoxModalOK").find('.modal-title w-100').html('{% trans "Save Geo Limits" %}');
-          $("#confirmMsgBoxModalOK").find('.modal-body').html('{% trans "<p>This will override the current stored Geo Limits on the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button anyway.</p><p><strong>WARNING:</strong> This operation cannot be reverted!</p><p>Do you want to proceed?</p>" %}');
-          $("#confirmMsgBoxModalOK_control_field").val('serializeGeoLimit');
-          $('#confirmMsgBoxModalOK').find('.modal-footer .confirm').remove();
+          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Save Geo Limits" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will override the current stored Geo Limits on the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button anyway.</p><p><strong>WARNING:</strong> This operation cannot be reverted!</p><p>Do you want to proceed?</p>" %}');
+          $("#confirmMsgBoxModalSubmit_control_field").val('serializeGeoLimit');
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_serializeGeoLimit', class:'btn btn-danger confirm' });
-          $('#confirmMsgBoxModalOK').find('.modal-footer').append(confirm_button);
-          $("#confirmMsgBoxModalOK").modal("show");
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
+          $("#confirmMsgBoxModalSubmit").modal("show");
           $('#confirm_serializeGeoLimit').html('{% trans "OK" %}');
           $('#confirm_serializeGeoLimit').prop('value', '{% trans "OK" %}');
 
           $('#confirm_serializeGeoLimit').on('click', function(e) {
             e.stopImmediatePropagation();
-            if ($("#confirmMsgBoxModalOK_control_field").val() == 'serializeGeoLimit') {
-              $("#confirmMsgBoxModalOK_control_field").val();
-              $("#confirmMsgBoxModalOK").modal("hide");
+            if ($("#confirmMsgBoxModalSubmit_control_field").val() == 'serializeGeoLimit') {
+              $("#confirmMsgBoxModalSubmit_control_field").val();
+              $("#confirmMsgBoxModalSubmit").modal("hide");
 
               var pretty = false;
               var out_options = {
@@ -520,21 +520,21 @@
         });
 
         function deserializeGeoLimit(ID) {
-          $("#confirmMsgBoxModalOK").find('.modal-title w-100').html('{% trans "Load Geo Limits" %}');
-          $("#confirmMsgBoxModalOK").find('.modal-body').html('{% trans "<p>This will remove the Geo Limits currently drawn on the map.</p><p>In order to store the Geo Limits you will need to <strong>save</strong> them anyway.</p><p>Do you want to proceed?</p>" %}');
-          $("#confirmMsgBoxModalOK_control_field").val('deserializeGeoLimit');
-          $('#confirmMsgBoxModalOK').find('.modal-footer .confirm').remove();
+          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Load Geo Limits" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will remove the Geo Limits currently drawn on the map.</p><p>In order to store the Geo Limits you will need to <strong>save</strong> them anyway.</p><p>Do you want to proceed?</p>" %}');
+          $("#confirmMsgBoxModalSubmit_control_field").val('deserializeGeoLimit');
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_deserializeGeoLimit', class:'btn btn-danger confirm' });
-          $('#confirmMsgBoxModalOK').find('.modal-footer').append(confirm_button);
-          $("#confirmMsgBoxModalOK").modal("show");
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
+          $("#confirmMsgBoxModalSubmit").modal("show");
           $('#confirm_deserializeGeoLimit').html('{% trans "OK" %}');
           $('#confirm_deserializeGeoLimit').prop('value', '{% trans "OK" %}');
 
           $('#confirm_deserializeGeoLimit').on('click', function(e) {
             e.stopImmediatePropagation();
-            if ($("#confirmMsgBoxModalOK_control_field").val() == 'deserializeGeoLimit') {
-              $("#confirmMsgBoxModalOK_control_field").val();
-              $("#confirmMsgBoxModalOK").modal("hide");
+            if ($("#confirmMsgBoxModalSubmit_control_field").val() == 'deserializeGeoLimit') {
+              $("#confirmMsgBoxModalSubmit_control_field").val();
+              $("#confirmMsgBoxModalSubmit").modal("hide");
 
               var in_options = {
                 'internalProjection': map.projection,
@@ -592,21 +592,21 @@
         });
 
         function deleteGeoLimit(ID) {
-          $("#confirmMsgBoxModalOK").find('.modal-title w-100').html('{% trans "Delete Geo Limits" %}');
-          $("#confirmMsgBoxModalOK").find('.modal-body').html('{% trans "<p>This will <strong>permanently</strong> remove the Geo Limits from the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button.</p><p>Do you want to proceed?</p>" %}');
-          $("#confirmMsgBoxModalOK_control_field").val('deleteGeoLimit');
-          $('#confirmMsgBoxModalOK').find('.modal-footer .confirm').remove();
+          $("#confirmMsgBoxModalSubmit").find('.modal-title w-100').html('{% trans "Delete Geo Limits" %}');
+          $("#confirmMsgBoxModalSubmit").find('.modal-body').html('{% trans "<p>This will <strong>permanently</strong> remove the Geo Limits from the DB.</p><p>To apply them you will need to click on <strong>Apply Changes</strong> button.</p><p>Do you want to proceed?</p>" %}');
+          $("#confirmMsgBoxModalSubmit_control_field").val('deleteGeoLimit');
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer .confirm').remove();
           var confirm_button = $('<button />').attr({ type: 'button', id:'confirm_deleteGeoLimit', class:'btn btn-danger confirm' });
-          $('#confirmMsgBoxModalOK').find('.modal-footer').append(confirm_button);
-          $("#confirmMsgBoxModalOK").modal("show");
+          $('#confirmMsgBoxModalSubmit').find('.modal-footer').append(confirm_button);
+          $("#confirmMsgBoxModalSubmit").modal("show");
           $('#confirm_deleteGeoLimit').html('{% trans "OK" %}');
           $('#confirm_deleteGeoLimit').prop('value', '{% trans "OK" %}');
 
           $('#confirm_deleteGeoLimit').on('click', function(e) {
             e.stopImmediatePropagation();
-            if ($("#confirmMsgBoxModalOK_control_field").val() == 'deleteGeoLimit') {
-              $("#confirmMsgBoxModalOK_control_field").val();
-              $("#confirmMsgBoxModalOK").modal("hide");
+            if ($("#confirmMsgBoxModalSubmit_control_field").val() == 'deleteGeoLimit') {
+              $("#confirmMsgBoxModalSubmit_control_field").val();
+              $("#confirmMsgBoxModalSubmit").modal("hide");
 
               var query_param = "";
               if(ID.startsWith("user-remove")) {
