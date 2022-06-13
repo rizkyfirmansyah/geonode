@@ -136,7 +136,7 @@
   }
 </script>
 {% if GEONODE_SECURITY_ENABLED %}
-{% with resource=layer %}
+{% with resource='layer' %}
 {% include "modal/permissions.html" %}
 {% endwith %}
 {% endif %}
