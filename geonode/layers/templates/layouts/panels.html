@@ -266,7 +266,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
 					</div>
 				</div>
 			{% endblock licenses %}
@@ -360,38 +359,38 @@
         <div id="spatial" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-spatial-tab">
           <div class="card">
               <div class="card-body">
-                <div class="col-6" class="pr-1">
-                  <div class="input-group date">
-                    <span><label
-                        for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
-                    <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
-                    {{ layer_form.temporal_extent_start }}
+                <div class="row">
+                  <div class="col-6" class="pr-1">
+                    <div class="input-group date">
+                      <span><label
+                          for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
+                      {{ layer_form.temporal_extent_start }}
+                    </div>
+                    <div>
+                      <span><label
+                          for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
+                      {{ layer_form.spatial_representation_type }}
+                    </div>
                   </div>
-                  <div class="input-group date">
-                    <span><label
-                        for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-                    {{ layer_form.temporal_extent_end }}
+                  <div class="col-6" class="pl-1">
+                    <div class="input-group date">
+                      <span><label
+                          for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
+                      {{ layer_form.temporal_extent_end }}
+                    </div>
+                    <div>
+                      <span><label
+                          for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
+                      {{ layer_form.spatial_resolution }}
+                    </div>
                   </div>
-                </div>
-                <div class="col-6" class="pl-1">
-                  <div>
-                    <span><label
-                        for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
-                    {{ layer_form.spatial_representation_type }}
-                  </div>
-                  {% block layer_extra_metadata %}
-                  <div>
-                      <span><label for="{{ layer_form.extra_metadata|id }}">{{ layer_form.extra_metadata.label }}</label></span>
-                      {{ layer_form.extra_metadata }}
-                  </div>
-                  {% endblock layer_extra_metadata %}
-                  <div>
-                    <span><label
-                        for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
-                    {{ layer_form.spatial_resolution }}
+                  <div class="col-12">
+                    {% block layer_extra_metadata %}
+                    <div>
+                        <span><label for="{{ layer_form.extra_metadata|id }}">{{ layer_form.extra_metadata.label }}</label></span>
+                        {{ layer_form.extra_metadata }}
+                    </div>
+                    {% endblock layer_extra_metadata %}
                   </div>
                 </div>
               </div>
