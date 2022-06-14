@@ -4,13 +4,3 @@
 {% block title %} {{ block.super }} {% endblock %}
 
 {% block body_class %}{% trans "data" %}{% endblock %}
-
-{% block body %}
-<div class="row w-100">
-  <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right">{% trans "Explore Catalogue" %}</a>
-  <h3 class="page-title">{% trans "Upload Layer Metadata" %}</h3>
-</div>
-<div class="row">
-
-</div>
-{% endblock body %}
