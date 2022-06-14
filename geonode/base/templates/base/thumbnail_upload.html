@@ -14,9 +14,9 @@
   <div class="card rounded border-info mb-2 text-center">
       <div class="card-header">
         <div class="row">
-          <h3 class="col">Upload Dataset Thumbnail</h3>
+          <h3 class="col d-flex">Upload Dataset Thumbnail</h3>
           {% if resource.resource_type == 'layer' %}
-            <div class="col-2"><a href="{% url 'layer_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
+            <div class="col-2"><a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
           {% elif resource.resource_type == 'document' %}
             <div class="col-2"><a href="{% url 'document_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
           {% endif %}
