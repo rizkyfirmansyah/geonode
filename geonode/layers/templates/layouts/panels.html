@@ -44,24 +44,24 @@
 		<div id="edit-metadata" class="tab-pane fade show active" role="tabpanel" aria-labelledby="edit-metadata">
 
 			<div id="completeness-hints" class="progress">
-				<div class="mandatory-hint progress-bar" role="progressbar" style="width:16.6%">
-					{% trans "Mandatory" %}
-				</div>
-				<div class="licenses-hint progress-bar" role="progressbar" style="width:16.6%">
-					{% trans "Mandatory" %}
-				</div>
-				<div class="content-hint progress-bar" role="progressbar" style="width:16.6%">
-					{% trans "Mandatory" %}
-				</div>
-				<div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
-					{% trans "Optional" %}
-				</div>
-        <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
-					{% trans "Optional" %}
-				</div>
-        <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
-					{% trans "Optional" %}
-				</div>
+          <div class="mandatory-hint progress-bar" role="progressbar" style="width:16.6%">
+            {% trans "Mandatory" %}
+          </div>
+          <div class="licenses-hint progress-bar" role="progressbar" style="width:16.6%">
+            {% trans "Mandatory" %}
+          </div>
+          <div class="content-hint progress-bar" role="progressbar" style="width:16.6%">
+            {% trans "Mandatory" %}
+          </div>
+          <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+            {% trans "Optional" %}
+          </div>
+          <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+            {% trans "Optional" %}
+          </div>
+          <div class="optional-hint progress-bar bg-secondary" role="progressbar" style="width:16.6%">
+            {% trans "Optional" %}
+          </div>
 			</div>
 
 			<ul class="wizard--progress wizard--progress--medium" role="tablist">
@@ -324,7 +324,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
 					</div>
 				</div>
 			{% endblock content %}
@@ -396,7 +395,6 @@
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       {% endblock spatial %}
@@ -404,125 +402,123 @@
 
 			{% block attribute %}
 				<div id="attribute" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-attribute-tab">
-					<div class="card">
+					  <div class="card">
 							<div class="card-body">
 								<div>
 									<label>{% trans "Use a custom template?" %}</label>
-									<input type="checkbox" name="resource-use_featureinfo_custom_template" class="has-external-popover"
-										data-content="specifies wether or not use a custom GetFeatureInfo template." data-placement="right"
-										data-container="body" data-html="true" data-toggle="toggle"
-										placeholder="specifies wether or not use a custom GetFeatureInfo template."
-										id="id_resource-use_featureinfo_custom_template" />
-										{% if resource.use_featureinfo_custom_template %}checked{% endif %}
-										<div id="layer-attributes-panel"
-										{% if resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
-										{{ attribute_form.management_form }}
-										<table class="table table-striped table-bordered table-condensed">
-											<tr class="table-header">
-												<th style="width:25px;background: #efefef;"></th>
-												<th>{% trans "Attribute" %}</th>
-												<th>{% trans "Label" %}</th>
-												<th>{% trans "Description" %}</th>
-												<th>{% trans "Display Order" %}</th>
-												<th>{% trans "Display Type" %}</th>
-												<th>{% trans "Visible" %}</th>
-											</tr>
-											{% for form in attribute_form.forms %}
-											{% if form.attribute %}
-											<tr>
-												<td style="width:25px;background: #efefef;"> <span class="grippy"></span></td>
-												<td>
-													<div style="display:none">{{form.id}}</div>{{form.attribute}}
-												</td>
-												<td>{{form.attribute_label}}</td>
-												<td>{{form.description}}</td>
-												<td>{{form.display_order}}</td>
-												<td>{{form.featureinfo_type}}</td>
-												<td>{{form.visible}}</td>
-											</tr>
-											{% endif %}
-											{% endfor %}
-										</table>
-									</div>
-									<div id="layer-attributes-custom_template"
-										{% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
+									<input type="checkbox" name="resource-use_featureinfo_custom_template" class="has-external-popover" data-content="specifies wether or not use a custom GetFeatureInfo template." data-placement="right" data-container="body" data-html="true" data-toggle="toggle" placeholder="specifies wether or not use a custom GetFeatureInfo template." id="id_resource-use_featureinfo_custom_template" />
+                  {% if resource.use_featureinfo_custom_template %}checked
+                  {% endif %}
+                  <div id="layer-attributes-panel"{% if resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
+                    {{ attribute_form.management_form }}
+                    <table class="table table-striped table-bordered table-condensed">
+                      <tr class="table-header">
+                        <th style="width:25px;background: #efefef;"></th>
+                        <th>{% trans "Attribute" %}</th>
+                        <th>{% trans "Label" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th>{% trans "Display Order" %}</th>
+                        <th>{% trans "Display Type" %}</th>
+                        <th>{% trans "Visible" %}</th>
+                      </tr>
+                      {% for form in attribute_form.forms %}
+                        {% if form.attribute %}
+                        <tr>
+                          <td style="width:25px;background: #efefef;"> <span class="grippy"></span></td>
+                          <td>
+                            <div style="display:none">{{form.id}}</div>{{form.attribute}}
+                          </td>
+                          <td>{{form.attribute_label}}</td>
+                          <td>{{form.description}}</td>
+                          <td>{{form.display_order}}</td>
+                          <td>{{form.featureinfo_type}}</td>
+                          <td>{{form.visible}}</td>
+                        </tr>
+                        {% endif %}
+                      {% endfor %}
+                    </table>
+                  </div>
+
+									<div id="layer-attributes-custom_template"{% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
 										{{layer_form.featureinfo_custom_template}}
 									</div>
+
 								</div>
 							</div>
-						</div>
-					</div>
+					  </div>
 				</div>
 			{% endblock %}
 
-		</div>
+			{% block preview %}
+        <div id="preview" class="tab-pane fade" role="tabpanel" aria-labelledby="preview">
+          {% if metadataxsl %}
+          <iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes" src="/showmetadata/xsl/{{resource.id}}"></iframe>
+          {% else %}
+          <iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes" src="/catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.html"></iframe>
+          {% endif %}
+        </div>
+			{% endblock %}
 
-		<div id="preview" class="tab-pane fade" role="tabpanel" aria-labelledby="preview">
-			{% if metadataxsl %}
-			<iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes" src="/showmetadata/xsl/{{resource.id}}"></iframe>
-			{% else %}
-			<iframe id="preview_encoder_iframe" frameborder="0" scrolling="yes" src="/catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.html"></iframe>
-			{% endif %}
-		</div>
-
-		<div id="settings" class="tab-pane fade" role="tabpanel" aria-labelledby="settings">
-			<div class="card-deck w-100">
-				<div class="card">
-						<div class="card-header"><h5 class="text-center">{% trans "Publishing" %}</h5></div>
-						<div class="card-body">
-              <div>
-								<span><label for="{{ layer_form.is_approved|id }}">{{ layer_form.is_approved.label }}</label></span>
-								{{ layer_form.is_approved }}
-							</div>
-              <div>
-                <span><label for="{{ layer_form.metadata_only|id }}">{{ layer_form.metadata_only.label }}</label></span>
-                {{ layer_form.metadata_only }}
+			{% block settings %}
+        <div id="settings" class="tab-pane fade" role="tabpanel" aria-labelledby="settings">
+          <div class="card-deck w-100">
+            <div class="card">
+                <div class="card-header"><h5 class="text-center">{% trans "Publishing" %}</h5></div>
+                <div class="card-body">
+                  <div>
+                    <span><label for="{{ layer_form.is_approved|id }}">{{ layer_form.is_approved.label }}</label></span>
+                    {{ layer_form.is_approved }}
+                  </div>
+                  <div>
+                    <span><label for="{{ layer_form.metadata_only|id }}">{{ layer_form.metadata_only.label }}</label></span>
+                    {{ layer_form.metadata_only }}
+                  </div>
+                  <div>
+                    <span><label
+                        for="{{ layer_form.metadata_uploaded_preserve|id }}">{{ layer_form.metadata_uploaded_preserve.label }}</label></span>
+                    {{ layer_form.metadata_uploaded_preserve }}
+                  </div>
+                  <div>
+                    <span><label for="{{ layer_form.is_published|id }}">{{ layer_form.is_published.label }}</label></span>
+                    {{ layer_form.is_published }}
+                  </div>
+                  <div>
+                    <span><label for="{{ layer_form.featured|id }}">{{ layer_form.featured.label }}</label></span>
+                    {{ layer_form.featured }}
+                  </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h5 class="text-center">{% trans "Other Settings" %}</h5></div>
+                <div class="card-body">
+                  <div>
+                    <span><label for="{{ layer_form.is_mosaic|id }}">{{ layer_form.is_mosaic.label }}</label></span>
+                    {{ layer_form.is_mosaic }}
+                  </div>
+                  <div>
+                    <span><label for="{{ layer_form.has_time|id }}">{{ layer_form.has_time.label }}</label></span>
+                    {{ layer_form.has_time }}
+                  </div>
+                  <div>
+                    <span><label
+                        for="{{ layer_form.has_elevation|id }}">{{ layer_form.has_elevation.label }}</label></span>
+                    {{ layer_form.has_elevation }}
+                  </div>
+                  <div>
+                    <span><label for="{{ layer_form.time_regex|id }}">{{ layer_form.time_regex.label }}</label></span>
+                    {{ layer_form.time_regex }}
+                  </div>
+                  <div>
+                    <span><label
+                        for="{{ layer_form.elevation_regex|id }}">{{ layer_form.elevation_regex.label }}</label></span>
+                    {{ layer_form.elevation_regex }}
+                  </div>
+                </div>
               </div>
-							<div>
-								<span><label
-										for="{{ layer_form.metadata_uploaded_preserve|id }}">{{ layer_form.metadata_uploaded_preserve.label }}</label></span>
-								{{ layer_form.metadata_uploaded_preserve }}
-							</div>
-							<div>
-								<span><label for="{{ layer_form.is_published|id }}">{{ layer_form.is_published.label }}</label></span>
-								{{ layer_form.is_published }}
-							</div>
-							<div>
-								<span><label for="{{ layer_form.featured|id }}">{{ layer_form.featured.label }}</label></span>
-								{{ layer_form.featured }}
-							</div>
-						</div>
-				</div>
-				<div class="card">
-						<div class="card-header"><h5 class="text-center">{% trans "Other Settings" %}</h5></div>
-						<div class="card-body">
-							<div>
-								<span><label for="{{ layer_form.is_mosaic|id }}">{{ layer_form.is_mosaic.label }}</label></span>
-								{{ layer_form.is_mosaic }}
-							</div>
-							<div>
-								<span><label for="{{ layer_form.has_time|id }}">{{ layer_form.has_time.label }}</label></span>
-								{{ layer_form.has_time }}
-							</div>
-							<div>
-								<span><label
-										for="{{ layer_form.has_elevation|id }}">{{ layer_form.has_elevation.label }}</label></span>
-								{{ layer_form.has_elevation }}
-							</div>
-							<div>
-								<span><label for="{{ layer_form.time_regex|id }}">{{ layer_form.time_regex.label }}</label></span>
-								{{ layer_form.time_regex }}
-							</div>
-							<div>
-								<span><label
-										for="{{ layer_form.elevation_regex|id }}">{{ layer_form.elevation_regex.label }}</label></span>
-								{{ layer_form.elevation_regex }}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+            </div>
+          </div>
+        </div>
+			{% endblock %}
 	</div>
 {% endblock %}
 
