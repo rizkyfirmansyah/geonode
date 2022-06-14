@@ -11,7 +11,14 @@
 
   <div class="card rounded border-info mb-2 text-center">
     <div class="card-header">
-      <h3 class="text-primary">Upload Dataset Thumbnail</h3>
+      <div class="row">
+        <h3 class="col">Upload Dataset Thumbnail</h3>
+        {% if thumbnail == 'layer' %}
+          <div class="col-2"><a href="{% url 'layer_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
+        {% elif thumbnail == 'document' %}
+          <div class="col-2"><a href="{% url 'document_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
+        {% endif %}
+      </div>
     </div>
 
     <div class="card-body">
@@ -37,8 +44,7 @@
     {% csrf_token %}
     <div class="card-footer">
       <div class="row">
-        <a href="{% url 'document_detail' resource.id %}" class="btn btn-info col m-3">{% trans "Return to Dataset" %}</a>
-        <button type="submit" class="btn btn-save col m-3" name="upload-thumb">{% trans "Upload" %}</button>
+        <button type="submit" class="btn btn-save btn-block" name="upload-thumb">{% trans "Upload" %}</button>
       </div>
     </div>
   </form>

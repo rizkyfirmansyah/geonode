@@ -523,11 +523,11 @@
 
     </ul>
 
-    {% include "_update_permissions_modal.html" %}
+    {% with catalogue='layer' %}
+      {% include "modal/permissions.html" %}
+    {% endwith %}
 
-    {% if GEONODE_SECURITY_ENABLED %}
-    {% include "toast/permissions_form.html" %}
-    {% endif %}
+    {% include "modal/remove_layers.html" %}
 
   </div> <!-- col-md-4 -->
 </div> <!-- row -->
@@ -813,9 +813,6 @@
 
 {% if GEONODE_SECURITY_ENABLED %}
 
-{% with catalogue='layer' %}
-  {% include "modal/permissions.html" %}
-{% endwith %}
 {% autoescape off %}
 <script type='text/javascript'>
   $(function () {
