@@ -214,11 +214,15 @@
       <li class="list-group-item">
         <h4>{% trans "Resources using this Datasets" %}</h4>
         {% if layer.maps %}
-        <p>{% trans "List of resources using this Datasets:" %}</p>
+            <p>{% trans "List of resources using this Datasets:" %}</p>
         {% endif %}
         <ul class="list-unstyled">
           {% for resource in related %}
-            <li><a href="{{ resource.id }}">{{ resource.title }}</a></li>
+            {% if resource.resource_type == 'document' %}
+                <li><a href="{{ resource.id }}" class="text-document">{{ resource.title }}</a></li>
+            {% elif resource.resource_type == 'layer' %}
+                <li><a href="{% url 'layer_detail' layername=resource.alternate %}" class="text-layer">{{ resource.title }}</a></li>
+            {% endif %}
           {% empty %}
           {% endfor %}
         </ul>

@@ -267,6 +267,26 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 }
 
 /* ---------------------------------------------------
+    TEXT STYLE
+----------------------------------------------------- */
+.text-layer {
+  color: #007bff !important;
+}
+
+.text-document {
+  color: #a82a54 !important;
+}
+
+.text-maps {
+  color: #ffcc35 !important;
+}
+
+.text-geoapp {
+  color: #ff7c30 !important;
+}
+
+
+/* ---------------------------------------------------
     BORDER STYLE
 ----------------------------------------------------- */
 .border-layer {
