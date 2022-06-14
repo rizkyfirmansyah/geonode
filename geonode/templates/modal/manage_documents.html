@@ -26,9 +26,7 @@
               <div class="col-sm-3 p-1">
                   <i class="fa-solid fa-image fa-3x"></i>
                   <h5>{% trans "Thumbnail" %}</h5>
-                  {% with thumbnail='document' %}
-                      <a class="btn btn-upload btn-block btn-md" href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
-                  {% endwith %}
+                  <a class="btn btn-upload btn-block btn-md" href="{% url "thumbnail_upload" resource.resourcebase_ptr.id %}">{% trans "Upload" %}</a>
               </div>
             {% endif %}
             {% if "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}

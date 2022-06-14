@@ -5,49 +5,72 @@
 {% block body_class %}{% trans "Upload a Thumbnail" %}{% endblock %}
 
 {% block body %}
-{% if error %}
-<div class="alert alert-error">{{ error }}</div>
-{% endif %}
+  {% if error %}
+    <div class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
+      <div class="toast-message alert alert-error">{{ error }}</div>
+    </div>
+  {% endif %}
 
   <div class="card rounded border-info mb-2 text-center">
-    <div class="card-header">
-      <div class="row">
-        <h3 class="col">Upload Dataset Thumbnail</h3>
-        {% if thumbnail == 'layer' %}
-          <div class="col-2"><a href="{% url 'layer_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
-        {% elif thumbnail == 'document' %}
-          <div class="col-2"><a href="{% url 'document_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
-        {% endif %}
+      <div class="card-header">
+        <div class="row">
+          <h3 class="col">Upload Dataset Thumbnail</h3>
+          {% if resource.resource_type == 'layer' %}
+            <div class="col-2"><a href="{% url 'layer_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
+          {% elif resource.resource_type == 'document' %}
+            <div class="col-2"><a href="{% url 'document_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
+          {% endif %}
+        </div>
       </div>
-    </div>
 
-    <div class="card-body">
+      <div class="card-body">
+          <div class="card-img-top mb-2">
+              <!-- current uploaded thumb -->
+              {% if resource.curatedthumbnail %}
+              <img src='{{ resource.curatedthumbnail.thumbnail_url }}'></img>
+              <p class="text-muted">Current thumbnail</p>
+              <form method="POST" class="post-form">
+                {% csrf_token %}
+                  <button type="submit" class="save btn btn-primary" name="remove-thumb">
+                    {% trans "Remove (and use auto generated thumbnail)" %}</button>
+              </form>
+              {% else %}
+                <img style="max-height: 20em;" title="Auto generated thumbnail" src='{{ resource.thumbnail_url }}'></img>
+                <p class="text-muted">Auto generated thumbnail</p>
+              {% endif %}
+          </div>
 
-      <div class="card-img-top mb-2">
-        <!-- current uploaded thumb -->
-        {% if resource.curatedthumbnail %}
-        <img src='{{ resource.curatedthumbnail.thumbnail_url }}'></img>
-        <p class="text-muted">Current thumbnail</p>
-        <form method="POST" class="post-form">
-          {% csrf_token %}
-            <button type="submit" class="save btn btn-primary" name="remove-thumb">
-              {% trans "Remove (and use auto generated thumbnail)" %}</button>
+        <form method="POST" enctype="multipart/form-data" class="post-form">
+              {{ form.img }}
+
+        <div title="Preview Image" class="mt-2">
+          <div id="divPreview"><span><label id="thumb_change_to"></label></span></div>
+          <img id="previewImage" src="" class="mx-auto d-block" />
+        </div>
+      </div>
+
+      {% csrf_token %}
+      <div class="card-footer">
+        <div class="row">
+          <button type="submit" class="btn btn-save btn-block" name="upload-thumb">{% trans "Upload" %}</button>
+        </div>
+      </div>
         </form>
-        {% else %}
-          <img style="max-height: 20em;" title="Auto generated thumbnail" src='{{ resource.thumbnail_url }}'></img>
-          <p class="text-muted">Auto generated thumbnail</p>
-        {% endif %}
-      </div>
-  <form method="POST" enctype="multipart/form-data" class="post-form">
-      {{ form.img }}
   </div>
-    {% csrf_token %}
-    <div class="card-footer">
-      <div class="row">
-        <button type="submit" class="btn btn-save btn-block" name="upload-thumb">{% trans "Upload" %}</button>
-      </div>
-    </div>
-  </form>
-</div>
 
 {% endblock %}
+
+{% block extra_script %}
+{{ block.super }}
+<script type="text/javascript">
+
+    $('#id_img').on('change', function (e) {
+      var _text = $('#id_img').val().replace("C:\\fakepath\\", "");
+      var _title = _text.replace(/\.[^/.]+$/, "");
+      var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+      $('#thumb_change_to').text("Preview Image: " + _fileName);
+      $('#divPreview').addClass('alert-box--notice mb-2');
+      $('#previewImage').attr('src', URL.createObjectURL(e.target.files[0]));
+    });
+</script>
+{% endblock extra_script %}
