@@ -1,0 +1,39 @@
+{% load i18n %}
+
+
+<div class="modal fade" id="download-metadata" tabindex="-1" role="dialog" aria-labelledby="downloadMetadataDocModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="downloadMetadataDocModal">{% trans "Download Metadata" %}</h4>
+        <div aria-label="Close" role="button" class="close-modal"><i class="fa-solid fa-xmark" data-dismiss="modal"></i></div>
+      </div>
+      <div class="modal-body text-center">
+        <div style="margin-bottom:20px">
+          <h5 class="modal-title text-center" id="downloadMetadataDocModal">
+            {% trans "Full metadata" %}
+          </h5>
+          <ul style="list-style: outside none none;padding: 0;">
+            <li><a class="btn btn-light btn-block text-nowrap" target="_blank"
+                href="../catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.txt">
+                {% trans "Text format" %} </a></li>
+            <li><a class="btn btn-light btn-block text-nowrap" target="_blank"
+                href="../catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.html">
+                {% trans "HTML format" %} </a></li>
+          </ul>
+        </div>
+        <h5 class="modal-title text-center" id="downloadMetadataDocModal">
+          {% trans "Standard Metadata - XML format" %}
+        </h5>
+        <ul style="list-style: outside none none;padding: 0;">
+          {% for link in metadata %}
+          <li><a class="btn btn-light btn-block" href="{{ link.url }}">{{ link.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,7 +9,9 @@
             <form method="POST" class="mb-4" id="feedback-form">
               <div class="modal-header">
                 <h5 class="modal-title text-center">Something went wrong</h5>
-                <div aria-label="Close" role="button" class="close-modal"><i class="fa-solid fa-xmark" data-dismiss="modal"></i></div>
+                <button type="button" class="close col-2" data-dismiss="modal" aria-label="Close">
+                  <i class="fa-solid fa-xmark" data-dismiss="modal" title="Close Panel"></i>
+                </button>
               </div>
               <div class="modal-body text-left">
                   {% csrf_token %}
