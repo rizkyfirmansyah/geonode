@@ -17,7 +17,8 @@
     <div class="card-header">
       <div class="row">
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with document.title as document_title %}for
-          {{ document_title }}{% endblocktrans %}</h2>
+          {{ document_title }}{% endblocktrans %}
+        </h3>
         <div class="col-4 text-right">
           <a href="{% url 'document_detail' docid=resource.id %}"
           class="btn btn-info w-100">{% trans "Return to Datasets" %}</a>

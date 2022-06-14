@@ -20,95 +20,99 @@
 
 {% block body %}
 
-<div class="row w-100">
-  <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right"
-    style="margin-left: 3px;">{% trans "Explore Catalogue" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary float-right"
-    style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
-  <h3 class="page-title">{% trans "Upload Layer Style" %}
-    <small>{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}<small></h2>
-</div>
-
-<div class="row">
-  <div class="col-md-8">
-    {% block additional_info %}{% endblock %}
-
-    {% if errors %}
-    <div id="errors" class="alert alert-danger">
-      {% for error in errors %}
-      <p>{{ error }}</p>
-      {% endfor %}
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+          <h3 class="col">{% trans "Upload Layer Style" %} <small>{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}<small></h3>
+          <div class="col-2">
+            <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
+          </div>
+          <div class="col-2">
+            <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary btn-block">{% trans "Return to Layer" %}</a>
+          </div>
+      </div>
     </div>
-    {% endif %}
+  </div>
 
-    <div id="upload-status"></div>
+  <div class="card">
+    <div class="card-body">
 
-    <section id="drop-zone" onclick="document.getElementById('file-input').click();">
-      <h3><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span
-          style="color:midnightblue">{% trans "style file here" %}</span>{% trans " or click here to upload" %}</h3>
-      <form id="file-uploader" method="post" enctype="multipart/form-data">
-        <!-- UI change to hide the list of previously uploaded files from the user -->
-        <input type="file" id="file-input" style="display: none;" accept=".sld,.xml" multiple>
-      </form>
-    </section>
+      <div id="upload-status"></div>
 
-    <div class="learn-more">
-      <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal"
-          data-target=".learn-more-modal" style="background: none; border: none;"><i class="fa-solid fa-circle-info"
-            aria-hidden="true"></i></button> </p>
-    </div>
-    <div class="modal fade learn-more-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content learn-more-modal-content">
-          <p>Currently only styles in <strong>SLD 1.0 and 1.1</strong> format can be uploaded</p><br />
-          <p>For more info, check the documentation in link below</p>
-          <a target="_blank"
-            href="https://docs.geonode.org/en/master/usage/managing_layers/layer_styling.html#uploading-styles">Geonode
-            Uploading Styles Documentation</a>
-          <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
+      <section id="drop-zone" onclick="document.getElementById('file-input').click();">
+        <h3><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span
+            style="color:midnightblue">{% trans "style file here" %}</span>{% trans " or click here to upload" %}</h3>
+        <form id="file-uploader" method="post" enctype="multipart/form-data">
+          <!-- UI change to hide the list of previously uploaded files from the user -->
+          <input type="file" id="file-input" style="display: none;" accept=".sld,.xml" multiple>
+        </form>
+      </section>
+
+      <div class="learn-more">
+        <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal"
+            data-target="#layer_style_format" style="background: none; border: none;"><i class="fa-solid fa-circle-info"
+              aria-hidden="true"></i></button> </p>
+      </div>
+
+
+      <section class="widget">
+        <ul id="global-errors"></ul>
+        <h4>{% trans "Files to be uploaded" %}</h4>
+        <div id="file-queue"></div>
+        <div class="checkbox" style="display:none;" id="style_upload_form_check">
+          {% trans "Is Upload Metadata XML Form" %} <input type="checkbox" name="style_upload_form"
+            id="id_style_upload_form" checked="true" />
+          <input type="text" name="layer_title" id="id_layer_title" value="{{ resource.alternate }}" />
+        </div>
+      </section>
+
+      <div class="row mt-4">
+        <div class="alert-danger">
+          <strong>{% trans "WARNING" %}:</strong>{% trans "This will most probably overwrite the current default style!" %}
+        </div>
+        <div class="col-6">
+          <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button" class="btn btn-danger btn-block">{% trans "Clear" %}</a>
+        </div>
+        <div class="col-6">
+          <a href="#" id="upload-button" class="btn btn-secondary btn-block">{% trans "Upload files" %}</a>
         </div>
       </div>
     </div>
 
-    <section class="widget">
-      <ul id="global-errors"></ul>
-      <h4>{% trans "Files to be uploaded" %}</h4>
-      <div id="file-queue"></div>
-      <div class="checkbox" style="display:none;" id="style_upload_form_check">
-        {% trans "Is Upload Metadata XML Form" %} <input type="checkbox" name="style_upload_form"
-          id="id_style_upload_form" checked="true" />
-        <input type="text" name="layer_title" id="id_layer_title" value="{{ resource.alternate }}" />
+    {% if errors %}
+      <div class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
+        <div id="errors" class="toast-message alert alert-danger">
+          {% for error in errors %}
+          <p>{{ error }}</p>
+          {% endfor %}
+        </div>
       </div>
-    </section>
+    {% endif %}
 
-    <section>
-      <div class="btn-danger"><strong>{% trans "WARNING" %}:
-        </strong>{% trans "This will most probably overwrite the current default style!" %}</div>
-      <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button"
-        class="btn btn-danger">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-secondary">{% trans "Upload files" %}</a>
-    </section>
+    <div class="card-footer">
+      {% block additional_info %}{% endblock %}
+    </div>
+
+    {% if GEOSERVER_BASE_URL %}
+    {% get_obj_perms request.user for resource.layer as "layer_perms" %}
+    {% endif %}
+
+    {% if GEONODE_SECURITY_ENABLED %}
+    {% if "change_resourcebase_permissions" in perms_list %}
+    {% if not READ_ONLY_MODE %}
+      <li class="list-group-item">
+        <h4>{% trans "Permissions" %}</h4>
+        <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
+        <button class="btn btn-edit btn-block" data-toggle="modal"
+        data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
+      </li>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
   </div>
 
-  {% if GEOSERVER_BASE_URL %}
-  {% get_obj_perms request.user for resource.layer as "layer_perms" %}
-  {% endif %}
-
-  {% if GEONODE_SECURITY_ENABLED %}
-  {% if "change_resourcebase_permissions" in perms_list %}
-  {% if not READ_ONLY_MODE %}
-  <li class="list-group-item">
-    <h4>{% trans "Permissions" %}</h4>
-    <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
-    <button class="btn btn-edit btn-block" data-toggle="modal"
-    data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
-  </li>
-  {% endif %}
-  {% endif %}
-  {% endif %}
-
-</div>
+{% include "modal/style_formats.html" %}
 {% endblock %}
 
 
