@@ -26,11 +26,11 @@
 {% block body_class %}{% trans "documents" %}{% endblock %}
 
 {% block body %}
-<div class="card mb-2">
+<div class="card mb-2 border-document">
   <div class="card-header">
     <div class="row">
       <div class="col-8 d-flex">
-        <h3>{{ resource.title }}</h3>
+        <h3 class="text-document">{{ resource.title }}</h3>
         <span class="badge badge-secondary rounded-pill ml-2 p-1" style="width: auto;">{{ resource.extension }}</span>
       </div>
       <div class="col-4 float-right"><a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a></div>

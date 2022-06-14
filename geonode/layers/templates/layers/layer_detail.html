@@ -38,10 +38,10 @@
 {% block body %}
 
 <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
-<div class="card mb-2">
+<div class="card mb-2 border-layer">
   <div class="card-header">
     <div class="row">
-      <h3 class="col-8 d-flex">{{ resource.title|default:resource.alternate }}</h3>
+      <h3 class="col-8 d-flex text-layer">{{ resource.title|default:resource.alternate }}</h3>
       <div class="col-4 float-right">
         <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
       </div>
