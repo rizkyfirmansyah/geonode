@@ -1,6 +1,7 @@
 {% extends "documents/document_upload_base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block title %} {% trans "Replace Document" %} - {{ block.super }} {% endblock %}
 
@@ -28,9 +29,18 @@
         {{ form.doc_url|as_crispy_field }}
       {% endif %}
     </div>
-    <div title="Preview Image">
+    <div title="Preview Image" id="previewImageDiv" class="d-none">
       <div id="divPreview"><span><label id="doc_change_to"></label></span></div>
       <img id="previewImage" src="" class="mx-auto d-block" />
+    </div>
+    <div class="d-none" id="previewPdf">
+      <canvas id="pdfRendererReplace" class="w-100"></canvas>
+      <div class="row justify-content-center mt-2">
+          <div>
+            <input id="current_page_replace" value="1" type="text" disabled class="btn btn-light text-center mr-3" style="width: 60px; border: 1px solid var(--shadow-1) !important;">
+            <span> / <span id="pageCountReplace"></span> </span>
+          </div>
+      </div>
     </div>
   </div>
   <div class="card-footer bg-transparent">
@@ -44,6 +54,11 @@
 
 {% block extra_script %}
 {{ block.super }}
+
+<script src="{% static "geonode/js/base/pdf.min.js" %}"></script>
+<script src="{% static "geonode/js/base/pdf.worker.min.js" %}"></script>
+<link href="{% static "geonode/css/pdf_viewer.css" %}" rel="stylesheet" />
+
 <script type="text/javascript">
 
   $('#doc_file-clear_id').attr('data-toggle', 'toggle');
@@ -60,9 +75,26 @@
     var _text = $('#id_doc_file').val().replace("C:\\fakepath\\", "");
     var _title = _text.replace(/\.[^/.]+$/, "");
     var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
-    $('#doc_change_to').text("Preview Image: " + _fileName);
-    $('#divPreview').addClass('alert-box--notice mb-2');
-    $('#previewImage').attr('src', URL.createObjectURL(e.target.files[0]));
+    var file = e.target.files[0];
+
+    if (file.type == 'application/pdf') {
+        $('#doc_change_to').text("Document Preview: " + _fileName);
+        $('#divPreview').addClass('alert-box--notice mb-2');
+        $('#previewPdf').removeClass('d-none');
+        {% include "documents/pdf_replace.html" %}
+    } else {
+        $('#doc_change_to').text("Image Preview: " + _fileName);
+        $('#divPreview').addClass('alert-box--notice mb-2');
+        $('#previewImage').attr('src', URL.createObjectURL(e.target.files[0]));
+        $('#previewImageDiv').removeClass('d-none')
+    }
+
   });
+
+  $('#clear-button').on('click', function(e) {
+    $('#id_doc_file').val(null);
+    $('#previewImageDiv').addClass('d-none');
+    $('#previewPdf').addClass('d-none');
+  })
 </script>
 {% endblock extra_script %}

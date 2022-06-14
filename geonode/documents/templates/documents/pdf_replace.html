@@ -1,0 +1,59 @@
+
+  // ref https://mozilla.github.io/pdf.js/examples/index.html#interactive-examples
+  // ref https://stackoverflow.com/questions/55176708/preview-pdf-image-file-before-upload
+  var fileReader = new FileReader();
+  var pdfData = null,
+      pageNum = 1,
+      pageRendering = false,
+      pageNumPending = null,
+      zoom = 1,
+      scale = 0.8,
+      canvas = document.getElementById('pdfRendererReplace'),
+      ctx = canvas.getContext('2d');
+
+  fileReader.onload = function() {
+      pdfData = new Uint8Array(this.result);
+      // Using DocumentInitParameters object to load binary data.
+			var loadingTask = pdfjsLib.getDocument({data: pdfData});
+      loadingTask.promise.then(function(pdf) {        
+        renderPage(pageNum, pdf)
+        document.getElementById('pageCountReplace').textContent = pdf.numPages;
+      })
+
+  };
+
+  fileReader.readAsArrayBuffer(file);
+
+  /**
+    * Get page info from document, resize canvas accordingly, and render page.
+    * @param num Page number.
+    */
+  function renderPage(num, pdf) {
+      pageRendering = true;
+      // Using promise to fetch the page
+      pdf.getPage(num).then(function(page) {
+          var viewport = page.getViewport({scale: scale});
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          // Render PDF page into canvas context
+          var renderContext = {
+              canvasContext: ctx,
+              viewport: viewport
+          };
+          var renderTask = page.render(renderContext);
+
+          // Wait for rendering to finish
+          renderTask.promise.then(function() {
+              pageRendering = false;
+              if (pageNumPending !== null) {
+                  // New page rendering is pending
+                  renderPage(pageNumPending);
+                  pageNumPending = null;
+              }
+          });
+      });
+
+      // Update page counters
+      document.getElementById('current_page_replace').value = num;
+  }
