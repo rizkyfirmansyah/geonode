@@ -19,36 +19,32 @@
 {% endblock %}
 
 {% block body %}
-<div class="row w-100">
-  <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right" style="margin-left: 3px;">{% trans "Explore Catalogue" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.service_typename %}" class="btn btn-primary float-right" style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
-  <h3 class="page-title">{% trans "Append to Layer" %} <small><a href="{{ resource.get_absolute_url }}">{{ resource.title }}</a><small></h3>
-</div>
-<div class="row">
-  <div class="col-md-8">
-    {% block additional_info %}{% endblock %}
 
-    {% if errors %}
-    <div id="errors" class="alert alert-danger">
-      {% for error in errors %}
-      <p>{{ error }}</p>
-      {% endfor %}
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col d-flex">{% trans "Append to Layer" %} <a href="{{ resource.get_absolute_url }}">&nbsp;{{ resource.title }}</a></h3>
+      <div class="col-4 float-right">
+        <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
+      </div>
     </div>
-    {% endif %}
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="card-body">
 
     <div id="upload-status"></div>
 
-    <section id="drop-zone">
-      <h3><i class="fa-solid fa-cloud-arrow-up fa-4x"></i><br />{% trans "Drop files here" %}</h3>
+    <section id="drop-zone" onclick="document.getElementById('file-input').click();">
+      <h3><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span
+          style="color:midnightblue">{% trans "style file here" %}</span>{% trans " or click here to upload" %}</h3>
+      <form id="file-uploader" method="post" enctype="multipart/form-data">
+        <!-- UI change to hide the list of previously uploaded files from the user -->
+        <input type="file" id="file-input" style="display: none;" accept=".sld,.xml" multiple>
+      </form>
     </section>
-
-    <p>{% trans " or select them one by one:" %}</p>
-
-    <form id="file-uploader" method="post" enctype="multipart/form-data">
-      <!-- UI change to hide the list of previously uploaded files from the user -->
-      <input type="file" id="file-input" style="display: none;" multiple>
-      <input class="btn btn-primary" type="button" value="{% trans "Choose Files" %}" onclick="document.getElementById('file-input').click();">
-    </form>
 
     <section class="widget">
       <ul id="global-errors"></ul>
@@ -61,7 +57,7 @@
 
     <section class="charset">
       <p>{% trans "Select the charset or leave default" %}</p>
-      <select id="charset">
+      <select id="charset" class="selectpicker" data-width="100%" data-size="5">
         {% for charset in charsets %}
         {% if charset.0 == 'UTF-8' %}
         <option selected='selected' value={{ charset.0 }}>{{ charset.1 }}</option>
@@ -72,10 +68,30 @@
       </select>
     </section>
 
-    <section>
-      <a href="#" id="clear-button" class="btn btn-danger">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-save">{% trans "Append to Layer" %}</a>
-    </section>
+  </div>
+
+  {% if errors %}
+    <div class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
+      <div id="errors" class="toast-message alert alert-danger">
+        {% for error in errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card-footer">
+    {% block additional_info %}{% endblock %}
+
+    <div class="row">
+      <div class="col-6">
+        <a href="#" id="clear-button" class="btn btn-secondary btn-block">{% trans "Clear" %}</a>
+      </div>
+      <div class="col-6">
+        <a href="#" id="upload-button" class="btn btn-save btn-block">{% trans "Append to Layer" %}</a>
+      </div>
+    </div>
+
   </div>
 
   {% if GEOSERVER_BASE_URL %}
@@ -88,9 +104,7 @@
 
 {% block extra_script %}
 {{ block.super }}
-<script data-main="{% static 'geonode/js/upload/main.js' %}"
-  src="{% static 'lib/js/require.js' %}">
-</script>
+<script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}"></script>
 <script type="text/javascript">
 {% autoescape off %}
 
