@@ -14,43 +14,44 @@
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
 <script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
+<link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
 
 <div class="row w-100 m-0 mb-2 mt-2">
-    <button class="btn btn-save metadata-edit-done col-12" id="btn_upd_md_done" type="submit"
-      style="opacity: 0; display: none;">{% trans "Done!" %}</button>
-  </div>
+    <button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done!" %}</button>
+</div>
+
 {% block body %}
 
-	<div class="row w-100">
-        <ul id="md_tabs" class="nav nav-tabs" role="tablist">
-            <li id="metadata_edit_tab" class="nav-item" role="presentation">
+	  <div class="row w-100 mb-2">
+        <ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
+            <li id="edit-metadata-tab" class="nav-item col" role="presentation">
                 <a class="nav-secondary active" role="tab" aria-controls="edit-metadata" aria-selected="true" data-toggle="tab" href="#edit-metadata"><i class="fa-solid fa-pencil"></i>{% trans "Edit" %}</a>
             </li>
-            <li id="settings_tab" class="nav-item" role="presentation">
+            <li id="edit-settings-tab" class="nav-item col" role="presentation">
                 <a class="nav-secondary" role="tab" aria-controls="settings" aria-selected="false" data-toggle="tab" href="#settings"><i class="fa-solid fa-gear"></i>{% trans "Settings" %}</a>
             </li>
         </ul>
     </div>
 
-    <div class="tab-content bg-light">
-        <div id="edit-metadata" class="tab-pane fade show active" role="tabpanel">
-            <div id="completeness-hints" class="progress">
-                <div class="mandatory-hint progress-bar" role="progressbar" style="width:25%">
+    <div class="tab-content bg-light" id="edit-metadata-content">
+        <div id="edit-metadata" class="tab-pane fade show active" role="tabpanel" aria-labelledby="edit-metadata-tab">
+            <div id="completeness-hints" class="progress mb-2">
+                <div class="mandatory-hint progress-bar" role="progressbar" aria-controls="mandatory" aria-selected="true" style="width:25%">
                     {% trans "Mandatory" %}
                 </div>
-                <div class="licenses-hint progress-bar" role="progressbar" style="width:25%">
+                <div class="licenses-hint progress-bar" role="progressbar" aria-controls="licenses" aria-selected="false" style="width:25%">
                     {% trans "Mandatory" %}
                 </div>
-                <div class="content-hint progress-bar" role="progressbar" style="width:25%">
+                <div class="content-hint progress-bar" role="progressbar" aria-controls="content" aria-selected="false" style="width:25%">
                     {% trans "Mandatory" %}
                 </div>
-                <div class="progress-bar bg-secondary" role="progressbar" style="width:25%">
+                <div class="progress-bar bg-secondary" role="progressbar" aria-controls="spatial" aria-selected="false" style="width:25%">
                     {% trans "Optional" %}
                 </div>
             </div>
 
-            <ul class="wizard--progress wizard--progress--medium">
-                <li data-step="1" id="nav-mandatory-tab" class="nav-item" role="tab" aria-selected="true" data-toggle="tab" href="#mandatory">
+            <ul class="wizard--progress wizard--progress--medium" role="tablist">
+                <li data-step="1" id="nav-mandatory-tab" class="nav-item active" role="tab" aria-selected="true" data-toggle="tab" href="#mandatory">
                     <a>{% trans "Content Citation" %}</a>
                 </li>
                 <li data-step="2" id="nav-licenses-tab" class="nav-item" role="tab" aria-selected="false" data-toggle="tab" href="#licenses">
@@ -203,64 +204,6 @@
                 </div>
             {% endblock mandatory %}
 
-            {% block content %}
-                <div id="content" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-content-tab">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row" id="cdinfo">
-                                <div class="col-6 pr-1">
-                                    <div class="border border-secondary rounded bg-light mb-2">
-                                        <span><label
-                                                for="{{ geoapp_form.data_type|id }}">{{ geoapp_form.data_type.label }}</label></span>
-                                        {{ geoapp_form.data_type }}
-                                    </div>
-                                </div>
-                                <div class="col-6 pl-1">
-                                    <div class="border border-secondary rounded bg-light mb-2">
-                                        <span><label
-                                                for="{{ geoapp_form.maintenance_frequency|id }}">{{ geoapp_form.maintenance_frequency.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-                                        {{ geoapp_form.maintenance_frequency }}
-                                    </div>
-                                </div>
-                                <div class="col-12 mb-4">
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.data_description|id }}">{{ geoapp_form.data_description.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
-                                        {{ geoapp_form.data_description }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.data_quality_statement|id }}">{{ geoapp_form.data_quality_statement.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
-                                        {{ geoapp_form.data_quality_statement|safe }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.purpose|id }}">{{ geoapp_form.purpose.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
-                                        {{ geoapp_form.purpose }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.constraints_other|id }}">{{ geoapp_form.constraints_other.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
-                                        {{ geoapp_form.constraints_other }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.supplemental_information|id }}">{{ geoapp_form.supplemental_information.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
-                                        {{ geoapp_form.supplemental_information }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endblock content %}
-
             {% block licenses %}
                 <div id="licenses" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-licenses-tab">
                     <div class="card">
@@ -323,6 +266,64 @@
                 </div>
             {% endblock licenses %}
 
+            {% block content %}
+                <div id="content" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-content-tab">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row" id="cdinfo">
+                                <div class="col-6 pr-1">
+                                    <div class="border border-secondary rounded bg-light mb-2">
+                                        <span><label
+                                                for="{{ geoapp_form.data_type|id }}">{{ geoapp_form.data_type.label }}</label></span>
+                                        {{ geoapp_form.data_type }}
+                                    </div>
+                                </div>
+                                <div class="col-6 pl-1">
+                                    <div class="border border-secondary rounded bg-light mb-2">
+                                        <span><label
+                                                for="{{ geoapp_form.maintenance_frequency|id }}">{{ geoapp_form.maintenance_frequency.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
+                                        {{ geoapp_form.maintenance_frequency }}
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <div>
+                                        <span><label
+                                                for="{{ geoapp_form.data_description|id }}">{{ geoapp_form.data_description.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
+                                        {{ geoapp_form.data_description }}
+                                    </div>
+                                    <div>
+                                        <span><label
+                                                for="{{ geoapp_form.data_quality_statement|id }}">{{ geoapp_form.data_quality_statement.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
+                                        {{ geoapp_form.data_quality_statement|safe }}
+                                    </div>
+                                    <div>
+                                        <span><label
+                                                for="{{ geoapp_form.purpose|id }}">{{ geoapp_form.purpose.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
+                                        {{ geoapp_form.purpose }}
+                                    </div>
+                                    <div>
+                                        <span><label
+                                                for="{{ geoapp_form.constraints_other|id }}">{{ geoapp_form.constraints_other.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
+                                        {{ geoapp_form.constraints_other }}
+                                    </div>
+                                    <div>
+                                        <span><label
+                                                for="{{ geoapp_form.supplemental_information|id }}">{{ geoapp_form.supplemental_information.label }}</label></span>
+                                        <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
+                                        {{ geoapp_form.supplemental_information }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock content %}
+
             {% block spatial %}
                 <div id="spatial" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-spatial-tab">
                     <div class="card">
@@ -361,7 +362,7 @@
             {% endblock spatial %}
         </div>
 
-        <div id="settings" class="tab-pane fade" style="overflow: hidden;">
+        <div id="settings" class="tab-pane fade" style="overflow: hidden;"  aria-labelledby="edit-settings-tab">
             <!--<br />-->
             <div class="card-deck w-100">
                 <div class="card">
@@ -399,10 +400,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
+{% endblock %}
 
-    <script type="text/javascript">
+{% block extra_script %}
+  <script type="text/javascript">
 		$(function () {
 			$("#nav-licenses-tab").click(function() {
 				$("#licenses").toggleClass("show")
@@ -411,7 +415,7 @@
 				$("#mandatory").toggleClass("show")
 			})
 			$("#nav-spatial-tab").click(function() {
-				$("#optional").toggleClass("show")
+				$("#spatial").toggleClass("show")
 			})
 			$("#nav-content-tab").click(function() {
 				$("#content").toggleClass("show")

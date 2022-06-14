@@ -26,7 +26,7 @@
 </div>
 
 {% block body %}
-	<div class="row w-100">
+	<div class="row w-100 mb-2">
 		<ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
 			<li id="metadata_edit_tab" class="nav-item col" role="presentation">
 				<a class="nav-secondary active" role="tab" aria-controls="edit-metadata" aria-selected="true" data-toggle="tab" href="#edit-metadata"><i class="fa-solid fa-pencil"></i>{% trans "Edit" %}</a>
@@ -65,7 +65,7 @@
 			</div>
 
 			<ul class="wizard--progress wizard--progress--medium" role="tablist">
-				<li data-step="1" id="nav-mandatory-tab" class="nav-item" role="tab" aria-selected="true" aria-controls="mandatory" data-toggle="tab" href="#mandatory">
+				<li data-step="1" id="nav-mandatory-tab" class="nav-item active" role="tab" aria-selected="true" aria-controls="mandatory" data-toggle="tab" href="#mandatory">
 					<a>{% trans "Content Citation" %}</a>
 				</li>
 				<li data-step="2" id="nav-licenses-tab" class="nav-item" role="tab" aria-selected="false" aria-controls="licenses" data-toggle="tab" href="#licenses">
@@ -397,8 +397,7 @@
               </div>
           </div>
         </div>
-      {% endblock spatial %}
-
+      {% endblock %}
 
 			{% block attribute %}
 				<div id="attribute" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-attribute-tab">
