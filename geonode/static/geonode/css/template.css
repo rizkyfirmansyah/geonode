@@ -4893,6 +4893,10 @@ color: transparent;
     color: #2c689c
 }
 
+.msgapi .identify-layer-select {
+    min-width: 240px;
+}
+
 @media only screen and (max-width:1024px) {
     .row .row {
         margin-left: -15px;
