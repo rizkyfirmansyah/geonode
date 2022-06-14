@@ -23,7 +23,7 @@
   <div class="card">
     <div class="card-header">
       <div class="row">
-          <h3 class="col">{% trans "Upload Layer Style" %}<sup>{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}</sup></h3>
+          <h3 class="col">{% trans "Upload Layer Style" %}<sup class="text-muted">{% trans "(SLD - Style Layer Descriptor 1.0, 1.1)" %}</sup></h3>
           <div class="col-2">
             <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
           </div>
@@ -85,10 +85,10 @@
       {% block additional_info %}{% endblock %}
       <div class="row">
         <div class="col-6">
-          <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button" class="btn btn-danger btn-block">{% trans "Clear" %}</a>
+          <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button" class="btn btn-secondary btn-block">{% trans "Clear" %}</a>
         </div>
         <div class="col-6">
-          <a href="#" id="upload-button" class="btn btn-secondary btn-block">{% trans "Upload files" %}</a>
+          <a href="#" id="upload-button" class="btn btn-save btn-block">{% trans "Upload files" %}</a>
         </div>
       </div>
     </div>
@@ -125,8 +125,7 @@
     form_target = "{{ LAYER_ANCILLARY_FILES_UPLOAD_URL }}",
     time_enabled = false,
     mosaic_enabled = false,
-    userLookup = "{% url "
-    account_ajax_lookup " %}"
+    userLookup = "{% url "account_ajax_lookup" %}"
 
     {% endautoescape %}
   </script>

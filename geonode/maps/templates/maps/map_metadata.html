@@ -21,15 +21,15 @@
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with map.title as map_title %}for
           {{ map_title }}{% endblocktrans %}</h3>
         <div class="col-4 text-right">
-          <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-info w-100">{% trans "Return to Map" %}</a>
+          <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-primary btn-block">{% trans "Return to Map" %}</a>
         </div>
       </div>
     </div>
     <div class="card-body">
       <div class="row">
-        <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-secondary w-100" style="display: none" value="{% trans '<< Back' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_upd_md_dwn" class="btn btn-edit w-100" value="{% trans 'Update' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-secondary w-100" value="{% trans 'Next >>' %}" /></div>
+        <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-secondary btn-block" style="display: none" value="{% trans '<< Back' %}" /></div>
+        <div class="col text-left"><input type="button" id="btn_upd_md_dwn" class="btn btn-edit btn-block" value="{% trans 'Update' %}" /></div>
+        <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-secondary btn-block" value="{% trans 'Next >>' %}" /></div>
         <div id="profileCompleteness" class="alert alert-info col-4">
           <strong>{% trans "Completeness" %}</strong>
           <div>

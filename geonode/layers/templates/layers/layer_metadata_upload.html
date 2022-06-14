@@ -20,26 +20,22 @@
 
 {% block body %}
 
-<div class="row w-100">
-  <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-primary float-right"
-    style="margin-left: 3px;">{% trans "Explore Catalogue" %}</a>
-  <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary float-right"
-    style="margin-left: 3px;">{% trans "Return to Layer" %}</a>
-  <h3 class="page-title">{% trans "Upload Layer Metadata" %}
-    <small>{% trans "(XML - ISO, FGDC, ebRIM, Dublin Core)" %}<small></h3>
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{% trans "Upload Layer Metadata" %} <sup class="text-muted">{% trans "(XML - ISO, FGDC, ebRIM, Dublin Core)" %}</sup></h3>
+      <div class="col-2">
+        <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
+      </div>
+      <div class="col-2">
+        <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-info btn-block">{% trans "Return to Layer" %}</a>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="row">
-  <div class="col-md-8">
-    {% block additional_info %}{% endblock %}
-
-    {% if errors %}
-    <div id="errors" class="alert alert-danger">
-      {% for error in errors %}
-      <p>{{ error }}</p>
-      {% endfor %}
-    </div>
-    {% endif %}
+<div class="card">
+  <div class="card-body">
 
     <div id="upload-status"></div>
 
@@ -54,26 +50,8 @@
 
     <div class="learn-more">
       <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal"
-          data-target=".learn-more-modal" style="background: none; border: none;"><i class="fa-solid fa-circle-info"
-            aria-hidden="true"></i></button> </p>
-    </div>
-    <div class="modal fade learn-more-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content learn-more-modal-content">
-          <p>
-            Metadata contains all the information related to the layer. They provide essential information for its
-            identification and its comprehension. Metadata also make the layer more easily retrievable through search by
-            other users.
-          </p>
-          <p>List of supported metadata file formats: <strong>ISO, FGDC, or Dublin Core</strong></p><br />
-          <p>For more info, check the documentation in link below</p>
-          <a target="_blank"
-            href="https://docs.geonode.org/en/master/usage/managing_layers/layer_metadata.html#uploading-metadata">Geonode
-            Metadata Documentation</a>
-          <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
-        </div>
-      </div>
+          data-target="#metadata_format" style="background: none; border: none;">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i></button> </p>
     </div>
 
     <section class="widget">
@@ -87,11 +65,29 @@
       </div>
     </section>
 
-    <section>
-      <a href="{% url "layer_metadata_upload" resource.alternate %}" id="clear-button"
-        class="btn btn-danger">{% trans "Clear" %}</a>
-      <a href="#" id="upload-button" class="btn btn-secondary">{% trans "Upload files" %}</a>
-    </section>
+  </div>
+
+
+  {% if errors %}
+    <div class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
+      <div id="errors" class="toast-message alert alert-danger">
+        {% for error in errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="card-footer">
+    {% block additional_info %}{% endblock %}
+    <div class="row">
+      <div class="col-6">
+          <a href="{% url "layer_metadata_upload" resource.alternate %}" id="clear-button" class="btn btn-secondary btn-block">{% trans "Clear" %}</a>
+      </div>
+      <div class="col-6">
+        <a href="#" id="upload-button" class="btn btn-save btn-block">{% trans "Upload files" %}</a>
+      </div>
+    </div>
   </div>
 
   {% if GEOSERVER_BASE_URL %}
@@ -104,37 +100,34 @@
   <li class="list-group-item">
     <h4>{% trans "Permissions" %}</h4>
     <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
-    <button class="btn btn-edit btn-block" data-toggle="modal"
-    data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
+    <button class="btn btn-edit btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
   </li>
   {% endif %}
   {% endif %}
   {% endif %}
 
 </div>
+
+{% include "modal/metadata_formats.html" %}
+
 {% endblock %}
 
 
 {% block extra_script %}
 {{ block.super }}
-<script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}">
-</script>
+<script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}"></script>
 <script type="text/javascript">
-  {
-    % autoescape off %
-  }
+  {% autoescape off %}
 
   csrf_token = "{{ csrf_token }}",
-    form_target = "{{ LAYER_ANCILLARY_FILES_UPLOAD_URL }}",
-    time_enabled = false,
-    mosaic_enabled = false,
-    userLookup = "{% url "
-  account_ajax_lookup " %}"
+  form_target = "{{ LAYER_ANCILLARY_FILES_UPLOAD_URL }}",
+  time_enabled = false,
+  mosaic_enabled = false,
+  userLookup = "{% url "account_ajax_lookup " %}"
 
-  {
-    % endautoescape %
-  }
+  {% endautoescape %}
 </script>
+
 {% if GEONODE_SECURITY_ENABLED %}
 {% with catalogue='layer' %}
 {% include "modal/permissions.html" %}

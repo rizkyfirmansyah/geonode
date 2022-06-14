@@ -1,0 +1,29 @@
+{% load i18n %}
+
+<div class="modal fade" id="metadata_format" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0 m-modal-width">
+      <div class="modal-header">
+        <h3 class="modal-title">List of supported file formats</h3>
+        <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Metadata contains all the information related to the layer. They provide essential information for its
+          identification and its comprehension. Metadata also make the layer more easily retrievable through search by
+          other users.
+        </p>
+        <p>List of supported metadata file formats: <strong>ISO, FGDC, or Dublin Core</strong></p><br />
+        <p>For more info, check the documentation in link below</p>
+        <a target="_blank"
+          href="https://docs.geonode.org/en/master/usage/managing_layers/layer_metadata.html#uploading-metadata">Geonode
+          Metadata Documentation</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
