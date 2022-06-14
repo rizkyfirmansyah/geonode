@@ -3762,7 +3762,7 @@ form #mdeditor_form label {
 }
 
 .wizard--progress>li.is-complete {
-    color: #333
+    color: #f39f1e
 }
 
 .wizard--progress>li.is-complete:after,
@@ -3772,7 +3772,9 @@ form #mdeditor_form label {
 }
 
 .wizard--progress>li.is-complete:before {
-    z-index: 1
+    z-index: 1;
+    color: var(--secondary);
+    background: #f39f1e;
 }
 
 .wizard--progress>li.is-complete:after {
@@ -3795,7 +3797,7 @@ form #mdeditor_form label {
 }
 
 .wizard--progress>li.is-complete a {
-    color: #000
+    color: #f39f1e
 }
 
 .wizard--progress__last:after {

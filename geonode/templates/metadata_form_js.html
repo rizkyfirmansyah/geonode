@@ -12,7 +12,7 @@
     var is_advanced = (metadata_uri.match(/metadata_advanced/i) != null);
     var ui_mandatory_fields = {{ UI_MANDATORY_FIELDS }};
     var updateWizard = function() {
-      var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+      var activeTab = $("#edit-metadata .wizard--progress li.active");
       var first = $("#edit-metadata .wizard--progress li:first-child");
       var last = $("#edit-metadata .wizard--progress li:last-child");
       var firstIndex= first && $(first[0]).data("step");
@@ -43,19 +43,19 @@
     var empty = 0;
 
     function getTab(number) {
-        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+        var activeTab = $("#edit-metadata .wizard--progress li.active");
         var tabIndex = activeTab && $(activeTab[0]).data("step");
         var nextTab = $("#edit-metadata .wizard--progress li[data-step=" + number + "]");
         if (nextTab) {
-          activeTab.toggleClass('is-active');
+          activeTab.toggleClass('active');
           nextTab.tab('show');
-          nextTab.toggleClass('is-active');
+          nextTab.addClass('active');
         }
         updateWizard();
     };
   
     function getPrevTab(){
-        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+        var activeTab = $("#edit-metadata .wizard--progress li.active");
         var tabIndex = activeTab && $(activeTab[0]).data("step");
         if (tabIndex >= 0) {
             getTab( tabIndex - 1 );
@@ -63,7 +63,7 @@
     };
   
     function getNextTab(){
-        var activeTab = $("#edit-metadata .wizard--progress li.is-active");
+        var activeTab = $("#edit-metadata .wizard--progress li.active");
         var tabIndex = activeTab && $(activeTab[0]).data("step");
         if (tabIndex >= 0) {
             getTab( tabIndex + 1 );
@@ -579,8 +579,8 @@
 
         $(".wizard--progress li").click(function(){
           $(this).tab('show');
-          $(".wizard--progress li.is-active").toggleClass('is-active', false);
-          $(this).toggleClass('is-active', true);
+          $(".wizard--progress li.active").toggleClass('active', false);
+          $(this).toggleClass('active', true);
           updateWizard();
         });
 
