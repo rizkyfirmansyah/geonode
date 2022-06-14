@@ -10,16 +10,20 @@
 
 <div class="card w-100 rounded bg-light">
     <div class="card-header">
-        {% if resource.class_name == "Document" %}
-        <a href="{% url 'document_detail' docid=resource.id %}" class="btn btn-info float-right">{% trans "Return to Document" %}</a>
-        {% elif resource.class_name == "Layer" %}
-        <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-info float-right">{% trans "Return to Layer" %}</a>
-        {% elif resource.class_name == "Map" %}
-        <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-info float-right">{% trans "Return to Map" %}</a>
-        {% elif resource.class_name == "GeoApp" %}
-        <a href="{% url 'geoapp_detail' geoappid=resource.id %}" class="btn btn-info float-right">{% trans "Return to" %} {{ resource.type }}</a>
-        {% endif %}
-        <h3 class="page-title">{% trans "Metadata" %} : {{ resource.title }}</h3>
+        <div class="row">
+          <h3 class="col-8">{% trans "Metadata" %} : {{ resource.title }}</h3>
+          <div class="col">
+            {% if resource.class_name == "Document" %}
+              <a href="{% url 'document_detail' docid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to Document" %}</a>
+            {% elif resource.class_name == "Layer" %}
+              <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-info btn-block">{% trans "Return to Layer" %}</a>
+            {% elif resource.class_name == "Map" %}
+              <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to Map" %}</a>
+            {% elif resource.class_name == "GeoApp" %}
+              <a href="{% url 'geoapp_detail' geoappid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to" %} {{ resource.type }}</a>
+            {% endif %}
+          </div>
+        </div>
     </div>
     <div class="card-body">
         <article class="description tab-pane active" id="info">
@@ -101,9 +105,9 @@
                 {% if resource.category.count > 0 %}
                 <dt>{% trans "Category" %}</dt>
                 {% for category in resource.category.all %}
-                    <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.gn_description %}</a> {% if category.description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+                    <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.title %}</a> {% if category.title %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
                     <dd class="category-more-{{ category.id }} collapse">
-                    {% trans category.description %}
+                    {% trans category.gn_description %}
                     </dd>
                 {% endfor %}
                 {% endif %}
