@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<div class="modal fade removeDocumentsModal" id="removeDocumentsModal" tabindex="-1" role="dialog" aria-labelledby="removeDocumentsModalTitle" aria-hidden="true">
+  <form id="remove_document" method="POST">{% csrf_token %}
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h3 class="modal-title">Delete Confirmation</h3>
+        <button type="button" class="close col-2 float-right text-right" data-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+        </button>
+      </div>
+      <div class="modal-body text-center alert-danger">
+        Are you sure you want to remove <strong>{{resource.title}}</strong>?
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn btn-secondary">Maybe later</a>
+        <button type="submit" class="btn btn-danger">Yes, I am sure</button>
+      </div>
+    </div>
+  </div>
+  </form>
+</div>
+
+{% include 'toast/remove_document.html' %}
