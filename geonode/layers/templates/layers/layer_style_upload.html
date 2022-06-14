@@ -49,27 +49,27 @@
       </section>
 
       <div class="learn-more">
-        <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal"
-            data-target="#layer_style_format" style="background: none; border: none;"><i class="fa-solid fa-circle-info"
-              aria-hidden="true"></i></button> </p>
+        <p>Learn more about supported file formats<button type="button" class="btn" data-toggle="modal" data-target="#layer_style_format" style="background: none; border: none;">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i></button>
+        </p>
       </div>
-
 
       <section class="widget">
         <ul id="global-errors"></ul>
         <h4>{% trans "Files to be uploaded" %}</h4>
         <div id="file-queue"></div>
         <div class="checkbox" style="display:none;" id="style_upload_form_check">
-          {% trans "Is Upload Metadata XML Form" %} <input type="checkbox" name="style_upload_form"
-            id="id_style_upload_form" checked="true" />
+          {% trans "Is Upload Metadata XML Form" %}
+          <input type="checkbox" name="style_upload_form" id="id_style_upload_form" checked="true" />
           <input type="text" name="layer_title" id="id_layer_title" value="{{ resource.alternate }}" />
         </div>
       </section>
 
+      <div class="alert-danger">
+        <strong>{% trans "WARNING" %}:</strong>{% trans "This will most probably overwrite the current default style!" %}
+      </div>
+
       <div class="row mt-4">
-        <div class="alert-danger">
-          <strong>{% trans "WARNING" %}:</strong>{% trans "This will most probably overwrite the current default style!" %}
-        </div>
         <div class="col-6">
           <a href="{% url "layer_sld_upload" resource.alternate %}" id="clear-button" class="btn btn-danger btn-block">{% trans "Clear" %}</a>
         </div>
@@ -103,8 +103,7 @@
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
         <p>{% trans "Click the button below to change the permissions of this layer." %}</p>
-        <button class="btn btn-edit btn-block" data-toggle="modal"
-        data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
+        <button class="btn btn-edit btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
       </li>
     {% endif %}
     {% endif %}
@@ -117,23 +116,18 @@
 
 
 {% block extra_script %}
-{{ block.super }}
-<script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}">
-</script>
-<script type="text/javascript">
-  {
-    % autoescape off %
-  }
+  {{ block.super }}
+  <script data-main="{% static 'geonode/js/upload/main.js' %}" src="{% static 'lib/js/require.js' %}"></script>
+  <script type="text/javascript">
+    {% autoescape off %}
 
-  csrf_token = "{{ csrf_token }}",
+    csrf_token = "{{ csrf_token }}",
     form_target = "{{ LAYER_ANCILLARY_FILES_UPLOAD_URL }}",
     time_enabled = false,
     mosaic_enabled = false,
     userLookup = "{% url "
-  account_ajax_lookup " %}"
+    account_ajax_lookup " %}"
 
-  {
-    % endautoescape %
-  }
-</script>
+    {% endautoescape %}
+  </script>
 {% endblock extra_script %}
