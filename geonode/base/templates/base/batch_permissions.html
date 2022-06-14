@@ -9,7 +9,7 @@
 
 {% block body_inner %}
 <div class="row w-100">
-  <h3 class="page-title">{% trans "Set Permissions" %}</h2>
+  <h3 class="page-title">{% trans "Set Permissions" %}</h3>
 </div>
 <form action="/{{ model|lower }}s/permissions/batch/" method="post">
   {% csrf_token %}

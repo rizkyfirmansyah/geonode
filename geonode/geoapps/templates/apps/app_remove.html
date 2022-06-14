@@ -3,24 +3,32 @@
 
 {% block title %}{% trans "Deleting" %} {{ resource.title }} — {{ block.super }}{% endblock %}
 
-{% block body_inner %}
-<div class="row w-100">
-  <h3 class="page-title">{% trans "Remove" %} {{ resource.type }}</h2>
+{% block body %}
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{% trans "Remove" %} {{ resource.type }}</h3>
+    </div>
+  </div>
 </div>
-<div class="row">
-  <div class="col-md-8">
+<div class="card">
+  <div class="card-body">
     <p class="lead">
         {% blocktrans with resource.title as resource_title %}
           Are you sure you want to remove <a href="{{ resource.get_absolute_url }}">{{ resource_title }}</a>?
         {% endblocktrans %}
       </p>
-    <form action="{% url "geoapp_remove" resource.id %}" method="POST">
-      {% csrf_token %}
-      <div class="form-actions">
-        <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger btn-block btn-block" />
-        <a href="{{ resource.get_absolute_url }}" class="btn btn-primary">{% trans "No, don't remove it" %}</a>
-      </div>
-    </form>
+  </div>
+  <div class="card-footer">
+    <div class="row">
+      <form action="{% url "geoapp_remove" resource.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-actions">
+          <input type="submit" value="{% trans "Yes, I am sure" %}" class="btn btn-danger btn-block col m-3" />
+          <a href="{{ resource.get_absolute_url }}" class="btn btn-secondary col m-3">{% trans "No, don't remove it" %}</a>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 {% endblock %}

@@ -20,7 +20,7 @@
     <div class="card-header">
       <div class="row">
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with layer.title as layer_title %}for
-          {{ layer_title }}{% endblocktrans %}</h2>
+          {{ layer_title }}{% endblocktrans %}</h3>
         <div class="col-4 text-right">
           <a href="{% url 'layer_detail' layername=resource.alternate %}"
             class="btn btn-info w-100">{% trans "Return to Spatial" %}</a>

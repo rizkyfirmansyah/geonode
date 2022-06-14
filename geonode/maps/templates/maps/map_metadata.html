@@ -19,7 +19,7 @@
     <div class="card-header">
       <div class="row">
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with map.title as map_title %}for
-          {{ map_title }}{% endblocktrans %}</h2>
+          {{ map_title }}{% endblocktrans %}</h3>
         <div class="col-4 text-right">
           <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-info w-100">{% trans "Return to Map" %}</a>
         </div>

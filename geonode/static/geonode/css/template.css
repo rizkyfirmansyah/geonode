@@ -3428,7 +3428,7 @@ form#text-search-autocomplete .ac-results {
     width: 100% !important;
 }
 
-.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+#doc_metadata_advanced .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
     width: unset !important;
 }
 

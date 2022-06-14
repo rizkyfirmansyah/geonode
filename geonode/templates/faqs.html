@@ -8,7 +8,7 @@
 {% block body %}
 <div class="container_faqs">
   <div class="row w-100">
-    <h2>
+    <h3>
       {% if auth_faqs.header_title or anon_faqs.header_title %}
         {% if user.is_authenticated %}
           {{ auth_faqs.header_title }}
@@ -18,7 +18,7 @@
       {% else %}
         {% trans "Frequently Asked Questions" %}
       {% endif %}
-    </h2>
+    </h3>
   </div>
 
   {% if auth_faqs.contents or anon_faqs.contents %}

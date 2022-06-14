@@ -15,7 +15,7 @@
   {% csrf_token %}
   <div class="card-header bg-warning">
     <div class="row">
-      <h3 class="col">{% trans "Replace " %}{{ document.title }}</h2>
+      <h3 class="col">{% trans "Replace " %}{{ document.title }}</h3>
       <div class="col-4 text-right"><a href="{% url 'document_detail' docid=document.id %}" class="btn btn-light w-100">{% trans "Return to Datasets" %}</a></div>
     </div>
   </div>

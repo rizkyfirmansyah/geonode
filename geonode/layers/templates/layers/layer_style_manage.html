@@ -2,107 +2,83 @@
 {% load i18n %}
 {% load static %}
 
-<link href="{% static "lib/css/bootstrap-multiselect.css" %}" rel="stylesheet"/>
-<script src="{% static "lib/js/bootstrap-multiselect.js" %}" type="text/javascript"></script>
-
 {% block title %}{{ layer.alternate }} — {{ block.super }}{% endblock %}
 
 {% block body_class %}{% trans "layers" %}{% endblock %}
 
 {% block body %}
 {% if error %}
-<div class="alert alert-error">{{ error }}</div>
+<div class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;">
+  <div class="toast-message alert alert-error">{{ error }}</div>
+</div>
 {% endif %}
 
-<div class="row w-100">
-  <h3 class="col-8">{% trans "Manage Styles" %}</h2>
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{% blocktrans with layer.alternate as layer_title %}
+        Manage Available Styles for <a href="/layers/{{ layer_title }}">{{ layer_title }}</a>
+      {% endblocktrans %}</h3>
+      <div class="col-2">
+        <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-primary btn-block">{% trans "Return to Layer" %}</a>
+      </div>
+    </div>
+  </div>
 </div>
-<h4>{% blocktrans with layer.alternate as layer_title %}
-      Manage Available Styles for <a href="/layers/{{ layer_title }}">{{ layer_title }}</a>
-    {% endblocktrans %}</h4>
-<form action="{% url "layer_style_manage" layer.service_typename %}" method="POST">
-  <div class="row mt-2">
-    <fieldset>
-      <div class="col-md-4">
-        <h4>{% trans "Layer Default Style" %}</h4>
-      </div>
-      <div class="col-md-6">
-        <select id='default_style' name='default_style' required='required'>
-          {% for style in layer_styles %}
-            {% if style.0 == layer.default_style.name or style.0 == layer.default_style.name or style.1 == layer.default_style.sld_title %}
-            <option value="{{ style.0 }}" selected>{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
-            {% else %}
-            <option value="{{ style.0 }}">{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-    </fieldset>
-  </div>
-  <div class="row mt-2">
-    <fieldset>
-      <div class="col-md-4">
-        <h4>{% trans "Available styles" %}</h4>
-        <p>{% trans "Click on an available style in the upper box to assign it to this layer. Selected styles appear in the lower box." %}</p>
-      </div>
 
-      <div class="col-md-6">
-        <select multiple="multiple" id="style-select" name="style-select">
-          {% for style in gs_styles %}
-            {% if style.0 in layer_style_names %}
-            <option value='{{ style.0 }}' selected>{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
-            {% else %}
-            <option value='{{ style.0 }}'>{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-        {% csrf_token %}
-        <input type="hidden" value="{{ layer.service_typename }}" />
+<form action="{% url "layer_style_manage" layer.service_typename %}" method="POST">
+  <div class="card-deck">
+    <div class="card">
+      <div class="card-body">
+        <fieldset>
+          <div class="card-title">
+            <h4>{% trans "Layer Default Style" %}</h4>
+          </div>
+          <div class="card-text">
+            <select id='default_style' name='default_style' required='required' class="selectpicker" data-width="100%">
+              {% for style in layer_styles %}
+                {% if style.0 == layer.default_style.name or style.0 == layer.default_style.name or style.1 == layer.default_style.sld_title %}
+                <option value="{{ style.0 }}" selected>{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
+                {% else %}
+                <option value="{{ style.0 }}">{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </fieldset>
       </div>
-    </fieldset>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <fieldset>
+          <div class="card-title">
+            <h4>{% trans "Available styles" %}</h4>
+          </div>
+          <div class="card-text">
+            <select multiple="multiple" id="style-select" name="style-select" class="selectpicker" data-width="100%">
+              {% for style in gs_styles %}
+                {% if style.0 in layer_style_names %}
+                <option value='{{ style.0 }}' selected>{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
+                {% else %}
+                <option value='{{ style.0 }}'>{% if style.1 %}{{ style.1 }}{% else %}{{ style.0 }}{% endif %}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            {% csrf_token %}
+            <input type="hidden" value="{{ layer.service_typename }}" />
+          </div>
+          <div class="card-subtitle">
+            <p>{% trans "Click on an available style in the upper box to assign it to this layer. Selected styles appear in the lower box." %}</p>
+          </div>
+        </fieldset>
+      </div>
+    </div>
   </div>
-  <br/>
-  <input type="submit" value="{% trans "Update Available Styles" %}" class="btn btn-danger" style="float: right; padding: 8px;"/>
+  <div class="card">
+    <div class="card-footer">
+      <input type="submit" value="{% trans "Update Available Styles" %}" class="btn btn-danger btn-block" />
+    </div>
+  </div>
 </form>
 
-{% endblock %}
-{% block extra_script %}
-{{ block.super }}
-<script type="text/javascript">
-  $(function () {
-    $('#style-select').multiselect({
-      includeSelectAllOption: false,
-      buttonWidth: 550,
-      enableFiltering: true,
-      afterSelect: function(values){
-          $("#style-select :selected").each(function() {
-              if(this.value === values[0]) {
-                  $('#default_style').append($("<option/>", {
-                    value: this.value,
-                    text: this.text
-                  }));
-              }
-          });
-      },
-      afterDeselect: function(values){
-        $('#default_style option').each(function() {
-          if ( $(this).val() == values[0] ) {
-            $(this).remove();
-          }
-        });
-      }
-    });
-
-    $('.js-searchlist').on('keyup', function() {
-      var searchString = $(this).val();
-      $(".ms-elem-selectable:not(.ms-selected)").each(function() {
-        var listElement = $(this);
-        var styleName = $("span", listElement).html();
-        if(styleName !=null)
-          styleName.toUpperCase().indexOf(searchString.toUpperCase()) > -1 ? listElement.show() : listElement.hide();
-      });
-    });
-  });
-
-</script>
 {% endblock %}
