@@ -451,6 +451,10 @@ def document_metadata(
                 tb = traceback.format_exc()
                 logger.error(tb)
 
+            toast_title = _("Update Metadata")
+            message = _("Metadata {} has been updated".format(document.title))
+            messages.success(request, message, extra_tags=toast_title)
+
             return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
 
     else:

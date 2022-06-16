@@ -54,7 +54,7 @@ from geonode.utils import (
     build_social_links
 )
 from geonode.views import page_not_found_message, unauthorized_message
-
+from django.contrib import messages
 from .forms import GeoAppForm
 
 logger = logging.getLogger("geonode.geoapps.views")
@@ -522,6 +522,11 @@ def geoapp_metadata(request, geoappid, template='apps/app_metadata.html', ajax=T
             vals['is_published'] = geoapp_form.cleaned_data.get('is_published', geoapp_obj.is_published)
         geoapp_obj.save(notify=True)
         geoapp_obj.set_permissions(approval_status_changed=_approval_status_changed, group_status_changed=_group_status_changed)
+
+        toast_title = _("Update Metadata")
+        message = _("Metadata {} has been updated".format(geoapp_obj.title))
+        messages.success(request, message, extra_tags=toast_title)
+
         return HttpResponse(json.dumps({'message': message}))
     elif request.method == "POST" and (not geoapp_form.is_valid(
     ) or not category_form.is_valid() or not tkeywords_form.is_valid()):

@@ -75,7 +75,7 @@ from deprecated import deprecated
 from geonode.security.utils import (
     get_user_visible_groups,
     AdvancedSecurityWorkflowManager)
-
+from django.contrib import messages
 from dal import autocomplete
 
 if check_ogc_backend(geoserver.BACKEND_PACKAGE):
@@ -303,8 +303,7 @@ def map_metadata(
                 values = [keyword.id for keyword in topic_thesaurus if int(tid) == keyword.thesaurus.id]
                 tkeywords_form.fields[tid].initial = values
 
-    if request.method == "POST" and map_form.is_valid(
-    ) and tkeywords_form.is_valid():
+    if request.method == "POST" and map_form.is_valid() and tkeywords_form.is_valid():
 
         new_poc = map_form.cleaned_data['poc']
         new_author = map_form.cleaned_data['metadata_author']
@@ -400,6 +399,11 @@ def map_metadata(
             vals['is_published'] = map_form.cleaned_data.get('is_published', map_obj.is_published)
         map_obj.save(notify=True)
         map_obj.set_permissions(approval_status_changed=_approval_status_changed, group_status_changed=_group_status_changed)
+
+        toast_title = _("Update Metadata")
+        message = _("Metadata {} has been updated".format(map_obj.title))
+        messages.success(request, message, extra_tags=toast_title)
+
         return HttpResponse(json.dumps({'message': message}))
     elif request.method == "POST" and (not map_form.is_valid(
     ) or not category_form.is_valid() or not tkeywords_form.is_valid()):

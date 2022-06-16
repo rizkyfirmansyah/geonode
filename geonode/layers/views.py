@@ -611,6 +611,8 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         .union(layer.get_user_perms(request.user))
     )
 
+    print(perms_list)
+
     group = None
     if layer.group:
         try:
@@ -1203,6 +1205,11 @@ def layer_metadata(
             vals['is_published'] = layer_form.cleaned_data.get('is_published', layer.is_published)
         layer.save(notify=True)
         layer.set_permissions(approval_status_changed=_approval_status_changed, group_status_changed=_group_status_changed)
+
+        toast_title = _("Update Metadata")
+        message = _("Metadata {} has been updated".format(layer.title))
+        messages.success(request, message, extra_tags=toast_title)
+
         return HttpResponse(json.dumps({'message': message}))
 
     if not AdvancedSecurityWorkflowManager.is_allowed_to_publish(request.user, layer):
