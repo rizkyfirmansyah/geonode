@@ -1,5 +1,5 @@
 {% block extra_script %}
-<script>
+<script type="text/javascript">
   $(function() {
       $("#feedback-form").submit(function(t) {
           t.preventDefault();
@@ -11,10 +11,9 @@
               processData: false,
               contentType: false,
               success: function(data) {
-                  $(document.body).append(data);
                   $("#request-download-layer")[0].reset()
               }
-          }).done(function(){$(".modal").modal("hide")},!1);
+          }).done(function(){location.reload(); $(".modal").modal("hide")},!1);
       });
   });
 </script>

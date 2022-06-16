@@ -1,20 +1,17 @@
 {% load i18n %}
-{% load static %}
-{% load base_tags %}
 {% block extra_script %}
-<script type="text/javascript">
-      $(document).ready(function(){
 
-        $("#request-download-layer").submit(function(t){
+<script type="text/javascript">
+    $(function(){
+      $("#request-download-layer").submit(function(t){
           t.preventDefault();let r=$(this).serialize();
           return r+="&uuid={{resource.uuid}}",r+="&resource_title={{resource.title}}",r+="&absolute_url="+$(location).attr("href"),
-          $.ajax({data:r,type:$(this).attr("method"),method:"POST",url:"{% url 'request_permissions' %}",headers:{"X-CSRFToken":'{{csrf_token}}'},
+          $.ajax({
+            data:r,type:$(this).attr("method"),method:"POST",url:"{% url 'request_permissions' %}",headers:{"X-CSRFToken":'{{csrf_token}}'},
             success:function(xhr, response, data){
-              $(document.body).append(data);
               $("#request-download-layer")[0].reset()
-            },
-            error:function(data){
-              $(document.body).append(data);
-            }}).done(function(){$(".modal").modal("hide")},!1)})});
+            }
+          }).done(function(){location.reload(); $(".modal").modal("hide")},!1)})
+    });
 </script>
 {% endblock extra_script %}
