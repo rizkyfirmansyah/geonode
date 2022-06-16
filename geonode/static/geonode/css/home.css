@@ -2474,11 +2474,6 @@ html.no-csstransitions .home-content__main {
     margin-bottom: 5px
 }
 
-.remaining-text {
-    position: absolute;
-    color: #000
-}
-
 .allowed_doctype {
     font-size: 110%
 }

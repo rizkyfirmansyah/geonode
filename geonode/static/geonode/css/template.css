@@ -2650,11 +2650,6 @@ color: #491217;
     max-height: 340px
 }
 
-.remaining-text {
-    position: absolute;
-    color: #000
-}
-
 #jump_to_top {
     display: none;
     bottom: 20px;
