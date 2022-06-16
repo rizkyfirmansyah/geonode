@@ -3507,10 +3507,6 @@ form#text-search-autocomplete .ac-results {
     margin: 5px!important
 }
 
-#edit-metadata label[for^=id] {
-    padding: .8rem 0!important
-}
-
 #metadata_update .select2-container {
     width: 100%!important;
     min-width: 0!important
