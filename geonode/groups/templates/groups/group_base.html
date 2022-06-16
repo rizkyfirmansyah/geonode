@@ -16,11 +16,12 @@
       $(".groupsList").removeClass('col-md-10').addClass('col-md-12');
     }
     $("#sidebarGC").on('click', function() {
-      if (!$("#sidebarGroup").hasClass('active')) {
-        stretchCol();
-      } else {
-        $(".groupsList").removeClass('col-md-12').addClass('col-md-10');
-      }
+      if (Modernizr.mq('(max-width: 1368px)'))
+          if (!$("#sidebarGroup").hasClass('active')) {
+            stretchCol();
+          } else {
+            $(".groupsList").removeClass('col-md-12').addClass('col-md-10');
+          }
     })
   })
 </script>

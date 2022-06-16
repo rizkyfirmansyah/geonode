@@ -17,11 +17,12 @@
     }
     stretchCol();
     $("#sidebarFilter").on('click', function() {
-      if (!$("#sidebar").hasClass('active')) {
-        stretchCol();
-      } else {
-        $("#mapList").removeClass('col-md-12').addClass('col-md-10 pl-5');
-      }
+      if (Modernizr.mq('(max-width: 1368px)'))
+        if (!$("#sidebar").hasClass('active')) {
+          stretchCol();
+        } else {
+          $("#mapList").removeClass('col-md-12').addClass('col-md-10 pl-5');
+        }
     })
   })
 </script>
