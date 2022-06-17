@@ -116,7 +116,7 @@ class SessionControlMiddleware(MiddlewareMixin):
         self.get_response = get_response
 
     def process_request(self, request):
-        if request and request.user and not request.user.is_anonymous:
+        if request and request.user:
             if not request.user.is_active:
                 self.do_logout(request)
             elif check_ogc_backend(geoserver.BACKEND_PACKAGE):

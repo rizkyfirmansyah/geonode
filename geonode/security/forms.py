@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from geonode.groups.models import GroupProfile
 from django.db.models import Q
-
+from django.conf import settings
 
 class ProfileMultipleChoiceField(forms.ModelMultipleChoiceField):
   
@@ -37,6 +37,15 @@ def get_groups_choices():
 
 class PermissionsForm(forms.Form):
     get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+    if settings.DEFAULT_ANONYMOUS_VIEW_PERMISSION:
+        get_users_view = get_user_model().objects.all()
+    else:
+        get_users_view = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+
+    if settings.DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION:
+        get_users_download = get_user_model().objects.all()
+    else:
+        get_users_download = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
 
     def __init__(self, user, *args, **kwargs):
       super().__init__(*args, **kwargs)
@@ -54,7 +63,7 @@ class PermissionsForm(forms.Form):
 
     view_resourcebase_users = ProfileMultipleChoiceField(
       label="The following users",
-      queryset=get_users,
+      queryset=get_users_view,
       to_field_name="username",
       required=False)
     view_resourcebase_groups = GroupsMultipleChoiceField(
@@ -63,7 +72,7 @@ class PermissionsForm(forms.Form):
       required=False)
     download_resourcebase_users = ProfileMultipleChoiceField(
       label="The following users",
-      queryset=get_users,
+      queryset=get_users_download,
       to_field_name="username",
       required=False)
     download_resourcebase_groups = GroupsMultipleChoiceField(

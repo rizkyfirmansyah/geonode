@@ -340,3 +340,16 @@ def dump_func_name(func):
         logger.debug(f'Start func: {func.__name__}')
         return func(*func_args, **func_kwargs)
     return echo_func
+
+
+def registered_users(function):
+    """
+    Limit view to registered users only.
+    --------------------------------------------------------------------------
+    """
+    def _inner(request, *args, **kwargs):
+        if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+            return function(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+    return _inner

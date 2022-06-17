@@ -25,7 +25,6 @@
               </h6>
             </div>
             <div id="collapse1" class="panel-collapse collapse">
-                <div class="chk_btn_toggle"><input type="checkbox" name="view_anonymous" id="perms_view_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
                 {{ permissions_form.view_resourcebase_users|as_crispy_field }}
                 {{ permissions_form.view_resourcebase_groups|as_crispy_field }}
             </div>
@@ -40,7 +39,6 @@
               </h6>
             </div>
             <div id="collapse2" class="panel-collapse collapse">
-                <div class="chk_btn_toggle"><input type="checkbox" name="download_anonymous" id="perms_download_resourcebase_anyone" value="AnonymousUser" {% if DEFAULT_ANONYMOUS_VIEW_PERMISSION %}checked{% endif %} data-toggle="toggle" data-on="All Registered Users" data-off="Specific Users/Groups" data-onstyle="primary" data-offstyle="info"></div>
                 {{ permissions_form.download_resourcebase_users|as_crispy_field }}
                 {{ permissions_form.download_resourcebase_groups|as_crispy_field }}
             </div>

@@ -421,6 +421,5 @@ def batch_permissions(request, model):
     )
 
 
-@login_required
 def catalogue_batch_permissions(request):
     return batch_permissions(request, 'Document')

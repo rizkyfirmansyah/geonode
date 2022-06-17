@@ -980,9 +980,7 @@ def serialize_resource_permissions(obj):
                         perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
                 else:
                     perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
-        if k.endswith('anonymous'):
-            perms_users[get_anonymous_user()] = []
-            # perms_users[get_user_model().objects.get(username='AnonymousUser')] = []
+
 
     perms_groups = defaultdict(list)
     for k, l in obj.items():

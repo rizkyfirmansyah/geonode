@@ -21,7 +21,7 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 from . import views
-from django.contrib.auth.decorators import login_required
+from geonode.decorators import registered_users
 
 urlpatterns = [
     url(r'^csw$', views.csw_global_dispatch, name='csw_global_dispatch'),
@@ -30,7 +30,7 @@ urlpatterns = [
         views.csw_render_extra_format_txt, name="csw_render_extra_format_txt"),
     url(r'^csw_to_extra_format/(?P<layeruuid>[^/]*)/(?P<resname>[^/]*).html$',
         views.csw_render_extra_format_html, name="csw_render_extra_format_html"),
-    url(r'^$', login_required(TemplateView.as_view(template_name='catalogue_list.html')), 
+    url(r'^$', registered_users(TemplateView.as_view(template_name='catalogue_list.html')),
         {'facet_type': 'catalogue'},
         name="catalogue_browse"    
     ),
