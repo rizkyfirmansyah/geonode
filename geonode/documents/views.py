@@ -338,7 +338,7 @@ def document_metadata(
             'base.change_resourcebase_metadata',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        return unauthorized_message(_PERMISSION_MSG_VIEW)
+        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
         return page_not_found_message(request)
@@ -613,7 +613,7 @@ def document_remove(request):
         return redirect('catalogue_browse')
 
     except PermissionDenied:
-        return unauthorized_message(_PERMISSION_MSG_DELETE)
+        return unauthorized_message(request, _PERMISSION_MSG_DELETE)
 
     except Exception:
         traceback.print_exc()
@@ -637,7 +637,7 @@ def document_metadata_detail(
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        return unauthorized_message(_PERMISSION_MSG_VIEW)
+        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
         return page_not_found_message(request)
