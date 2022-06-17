@@ -3419,7 +3419,7 @@ form#text-search-autocomplete .ac-results {
     height: 0;
     color: transparent;
     overflow: hidden;
-    margin-left: 6.7rem;
+    margin-left: 2.3em;
     top: 2.5em;
 }
 
@@ -3648,8 +3648,8 @@ td>input {
     width: 100%
 }
 
-form #mdeditor_form label {
-    margin-right: .3em
+.toggle-on.btn {
+    padding-right: 0.5em !important;
 }
 
 #regions_multiselect_container .fstElement {
@@ -3833,6 +3833,10 @@ span.grippy {
     letter-spacing: 2px;
     color: #ccc;
     text-shadow: 1px 0 1px #000
+}
+
+span.grippy::after {
+  content: '.. .. .. ..';
 }
 
 #comments_section .clearfix {

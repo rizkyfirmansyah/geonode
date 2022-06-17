@@ -69,7 +69,7 @@ from geonode.base.models import (
     ExtraMetadata,
     Thesaurus)
 from geonode.base.enumerations import CHARSETS
-from geonode.decorators import check_keyword_write_perms, registered_users
+from geonode.decorators import check_keyword_write_perms
 from geonode.layers.forms import (
     LayerForm,
     LayerUploadForm,
@@ -335,7 +335,6 @@ def layer_style_upload(request):
         status=status_code)
 
 
-@registered_users
 def get_data_tables(table):
     """
     perform query to each layers in order to display on layer detail page as datatables
@@ -407,7 +406,6 @@ def layer_export(request, layername, template='layers/layer_export.html'):
     return layer_detail(request, layername, template)
 
 
-@registered_users
 def layer_detail(request, layername, template='layers/layer_detail.html'):
     try:
         layer = _resolve_layer(
@@ -611,8 +609,6 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         layer.get_self_resource().get_user_perms(request.user)
         .union(layer.get_user_perms(request.user))
     )
-
-    print(perms_list)
 
     group = None
     if layer.group:
@@ -872,7 +868,6 @@ def layer_feature_catalogue(
         content_type='application/xml')
 
 
-@registered_users
 @check_keyword_write_perms
 def layer_metadata(
         request,
@@ -1630,7 +1625,6 @@ def get_layer(request, layername):
             content_type='application/javascript')
 
 
-@registered_users
 def layer_metadata_detail(
         request,
         layername,
