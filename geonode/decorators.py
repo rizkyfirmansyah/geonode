@@ -349,7 +349,11 @@ def registered_users(function):
     """
     def _inner(request, *args, **kwargs):
         if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-            return function(request, *args, **kwargs)
+            pass
         else:
-            raise PermissionDenied
+            if request.user.is_authenticated:
+                pass
+            else:
+                raise PermissionDenied
+        return function(request, *args, **kwargs)
     return _inner

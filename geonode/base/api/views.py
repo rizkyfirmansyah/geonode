@@ -168,7 +168,10 @@ class RegionViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin,
     """
     API endpoint that lists regions.
     """
-    permission_classes = [AllowAny, ]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
     pagination_class = GeoNodeApiPagination
@@ -178,7 +181,10 @@ class HierarchicalKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, Retrie
     """
     API endpoint that lists hierarchical keywords.
     """
-    permission_classes = [AllowAny, ]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
     queryset = HierarchicalKeyword.objects.all()
     serializer_class = HierarchicalKeywordSerializer
     pagination_class = GeoNodeApiPagination
@@ -188,7 +194,10 @@ class ThesaurusKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveM
     """
     API endpoint that lists Thesaurus keywords.
     """
-    permission_classes = [AllowAny, ]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
     queryset = ThesaurusKeyword.objects.all()
     serializer_class = ThesaurusKeywordSerializer
     pagination_class = GeoNodeApiPagination
@@ -198,7 +207,10 @@ class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveMode
     """
     API endpoint that lists categories.
     """
-    permission_classes = [AllowAny, ]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
     queryset = TopicCategory.objects.all()
     serializer_class = TopicCategorySerializer
     pagination_class = GeoNodeApiPagination
@@ -208,7 +220,10 @@ class DataTypeViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixi
     """
     API endpoint that lists data type.
     """
-    permission_classes = [AllowAny, ]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
     queryset = DataType.objects.all()
     serializer_class = DataTypeSerializer
     pagination_class = GeoNodeApiPagination
@@ -219,7 +234,10 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
     API endpoint that lists all possible owners.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [AllowAny, ]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
     serializer_class = OwnerSerializer
     pagination_class = GeoNodeApiPagination
 
@@ -246,7 +264,10 @@ class ResourceBasePermsViewSet(DynamicModelViewSet):
     Minimize API endpoint to check user's permissions.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    else:
+        permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     queryset = ResourceBase.objects.all().order_by('-pk')
     serializer_class = SimpleResourceBaseSerializer
@@ -257,7 +278,10 @@ class ResourceBaseViewSet(DynamicModelViewSet):
     API endpoint that allows base resources to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    else:
+        permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, ResourceBasePermissionsFilter, FavoriteFilter

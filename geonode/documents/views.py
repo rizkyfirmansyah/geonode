@@ -22,6 +22,7 @@ import logging
 import traceback
 from itertools import chain
 import warnings
+from geonode.decorators import registered_users
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -80,6 +81,7 @@ def _resolve_document(request, docid, permission='base.change_resourcebase',
                           permission=permission, permission_msg=msg, **kwargs)
 
 
+@registered_users
 def document_detail(request, docid):
     """
     The view that show details of each document
@@ -623,6 +625,7 @@ def document_remove(request):
         return redirect('catalogue_browse')
 
 
+@registered_users
 def document_metadata_detail(
         request,
         docid,

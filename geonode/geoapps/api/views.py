@@ -20,7 +20,7 @@
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
@@ -28,7 +28,7 @@ from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter
 from geonode.base.api.permissions import IsOwnerOrReadOnly
 from geonode.base.api.pagination import GeoNodeApiPagination
 from geonode.geoapps.models import GeoApp
-
+from django.conf import settings
 from .serializers import GeoAppSerializer
 from .permissions import GeoAppPermissionsFilter
 
@@ -42,7 +42,10 @@ class GeoAppViewSet(DynamicModelViewSet):
     API endpoint that allows geoapps to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    else:
+        permission_classes = [IsAuthenticated, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, GeoAppPermissionsFilter

@@ -37,7 +37,7 @@ from geonode.base.api.serializers import ResourceBaseSerializer
 
 from .serializers import DocumentSerializer
 from .permissions import DocumentPermissionsFilter
-
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,13 +47,17 @@ class DocumentViewSet(DynamicModelViewSet):
     """
     API endpoint that allows documents to be viewed or edited.
     """
+    http_method_names = ['get', 'patch', 'put']
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    else:
+        permission_classes = [IsAuthenticated, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, DocumentPermissionsFilter
     ]
-    queryset = Document.objects.all()
+    queryset = Document.objects.all().order_by('-last_updated')
     serializer_class = DocumentSerializer
     pagination_class = GeoNodeApiPagination
 

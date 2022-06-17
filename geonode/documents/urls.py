@@ -24,6 +24,7 @@ from .views import DocumentUploadView, DocumentUpdateView
 from .views import DocumentAutocomplete
 from . import views
 from geonode.base import register_url_event
+from geonode.decorators import registered_users
 
 js_info_dict = {
     'packages': ('geonode.documents',),
@@ -34,7 +35,7 @@ documents_list = register_url_event()(TemplateView.as_view(
 
 urlpatterns = [  # 'geonode.documents.views',
     url(r'^$',
-        documents_list,
+        registered_users(documents_list),
         {'facet_type': 'documents'},
         name='document_browse'
         ),

@@ -36,7 +36,7 @@ from geonode.maps.models import Map
 
 from .serializers import MapSerializer, MapLayerSerializer
 from .permissions import MapPermissionsFilter
-
+from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,10 @@ class MapViewSet(DynamicModelViewSet):
     API endpoint that allows maps to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    else:
+        permission_classes = [IsAuthenticated, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, MapPermissionsFilter

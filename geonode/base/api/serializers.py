@@ -64,15 +64,16 @@ logger = logging.getLogger(__name__)
 class BaseDynamicModelSerializer(DynamicModelSerializer):
 
     def to_representation(self, instance):
-        data = super(BaseDynamicModelSerializer, self).to_representation(instance)
-        try:
-            path = reverse(self.Meta.view_name)
-            if not path.endswith('/'):
-                path = f"{path}/"
-            url = urljoin(path, str(instance.pk))
-            data['link'] = build_absolute_uri(url)
-        except NoReverseMatch as e:
-            logger.exception(e)
+        data = super().to_representation(instance)
+        if not isinstance(data, int):
+            try:
+                path = reverse(self.Meta.view_name)
+                if not path.endswith('/'):
+                    path = f"{path}/"
+                url = urljoin(path, str(instance.pk))
+                data['link'] = build_absolute_uri(url)
+            except (TypeError, NoReverseMatch) as e:
+                logger.exception(e)
         return data
 
 
