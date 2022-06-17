@@ -23,10 +23,6 @@
 <script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
 <link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
 
-<div class="row w-100 m-0 mb-2 mt-2">
-  <button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done!" %}</button>
-</div>
-
 {% block body %}
 	<div class="row w-100 mb-2">
 		<ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
@@ -118,7 +114,7 @@
 													<span><label for="{{ layer_form.title|id }}">{{ layer_form.title.label }}</label></span>
 													{{ layer_form.title }}
 												</div>
-												<div>
+												<div class="mt-2">
 													<span><label for="{{ layer_form.abstract|id }}">{{ layer_form.abstract.label }}</label></span>
 													{{ layer_form.abstract }}
 												</div>
@@ -129,24 +125,24 @@
 													{{ layer_form.keywords }}
 												</div>
 												{% if THESAURI_FILTERS %}
-												<div class="border border-secondary rounded bg-light mb-2 thesauri_keywords">
+												<div class="mt-2 thesauri_keywords">
 													{{ tkeywords_form }}
 												</div>
 												{% endif %}
-												<div>
+												<div class="mt-2">
 													<span><label
 															for="{{ layer_form.date_distribution|id }}">{{ layer_form.date_distribution.label }}</label></span>
 													{{ layer_form.date_distribution }}
 												</div>
-												<div>
+												<div class="mt-2">
 													<span><label for="{{ layer_form.date_type|id }}">{{ layer_form.date_type.label }}</label></span>
 													{{ layer_form.date_type }}
 												</div>
-												<div>
+												<div class="mt-2">
 													<span><label for="{{ layer_form.date|id }}">{{ layer_form.date.label }}</label></span>
 													{{ layer_form.date }}
 												</div>
-												<div id="basicCategoryInfo">
+												<div id="basicCategoryInfo" class="mt-2">
 													<span><label for="{{ category_form.category_choice_field|id }}"
 															class="control-label required-field">{% trans "Category" %}</label></span>
 													<select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
@@ -159,7 +155,7 @@
 														{% endfor %}
 													</select>
 												</div>
-												<div id="basicGroupInfo">
+												<div id="basicGroupInfo" class="mt-2">
 													<span><label for="id_resource-group"
 															class="control-label required-field">{% trans "Group" %}</label></span>
 													<select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
@@ -177,8 +173,8 @@
 										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="card-deck w-100">
+								<div class="mt-2">
+									<div class="card-deck">
 											<div class="card">
 												<div class="card-header"><h5 class="text-center">{% trans "Responsible Parties" %}</h5></div>
 												<div class="card-body">
@@ -212,23 +208,23 @@
 					<div class="card">
 							<div class="card-body">
 								<div class="row" id="mdinfo">
-									<div class="col-4">
-										<div class="pr-1">
+									<div class="col-4 pr-1">
+										<div>
 											<span><label for="{{ layer_form.license|id }}">{{ layer_form.license.label }}</label></span>
 											{{ layer_form.license }}
 										</div>
-										<div class="pr-1">
+										<div class="mt-2">
 											<span><label
 													for="{{ layer_form.restriction_code_type|id }}">{{ layer_form.restriction_code_type.label }}</label></span>
 											{{ layer_form.restriction_code_type }}
 										</div>
 									</div>
-									<div class="col-4">
-										<div class="pr-1">
+									<div class="col-4 pr-1">
+										<div>
 											<span><label for="{{ layer_form.language|id }}">{{ layer_form.language.label }}</label></span>
 											{{ layer_form.language }}
 										</div>
-										<div id="regions_multiselect_container" class="pr-1">
+										<div id="regions_multiselect_container" class="mt-2">
 											<span><label for="{{ layer_form.regions|id }}"
 													class="control-label required-field">Regions</label></span>
 											<select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
@@ -249,18 +245,18 @@
 											<span><label for="{{ layer_form.doi|id }}">{{ layer_form.doi.label }}</label></span>
 											{{ layer_form.doi }}
 										</div>
-                    <div>
+                    <div class="mt-2">
                       <span><label for="{{ layer_form.edition|id }}">{{ layer_form.edition.label }}</label></span>
                       {{ layer_form.edition }}
                     </div>
 									</div>
 									<div class="col-12">
-										<div class="mb-4">
+										<div class="mb-4 mt-2">
                       <div>
                         <span><label for="{{ layer_form.author|id }}">{{ layer_form.author.label }}</label></span>
                         {{ layer_form.author }}
                       </div>
-											<div>
+											<div class="mt-2">
 												<span><label for="{{ layer_form.source|id }}">{{ layer_form.source.label }}</label></span>
 												{{ layer_form.source }}
 											</div>
@@ -277,53 +273,51 @@
 					<div class="card">
 							<div class="card-body">
 								<div class="row" id="cdinfo">
-									<div class="col-6">
-										<div class="pr-1">
+									<div class="col-6 pr-1">
+										<div>
 											<span><label for="{{ layer_form.data_type|id }}">{{ layer_form.data_type.label }}</label></span>
 											{{ layer_form.data_type }}
 										</div>
 									</div>
-									<div class="col-6">
-										<div class="pl-1">
+									<div class="col-6 pl-1">
+										<div>
 											<span><label
 													for="{{ layer_form.maintenance_frequency|id }}">{{ layer_form.maintenance_frequency.label }}</label></span>
 											{{ layer_form.maintenance_frequency }}
 										</div>
 									</div>
-									<div class="col-12">
-										<div class="mb-4">
-											<div>
-												<span><label
-														for="{{ layer_form.data_description|id }}">{{ layer_form.data_description.label }}</label></span>
-												{{ layer_form.data_description }}
-											</div>
-                      <div>
-                        <span><label
-                            for="{{ layer_form.related_publication|id }}">{{ layer_form.related_publication.label }}</label></span>
-                        {{ layer_form.related_publication }}
-                      </div>
-                      <div>
-                        <span><label
-                            for="{{ layer_form.data_citation|id }}">{{ layer_form.data_citation.label }}</label></span>
-                        {{ layer_form.data_citation }}
-                      </div>
-											<div>
-												<span><label
-														for="{{ layer_form.data_quality_statement|id }}">{{ layer_form.data_quality_statement.label }}</label></span>
-												{{ layer_form.data_quality_statement|safe }}
-											</div>
-											<div>
-												<span><label for="{{ layer_form.purpose|id }}">{{ layer_form.purpose.label }}</label></span>
-												{{ layer_form.purpose }}
-											</div>
-											<div>
-												<span><label
-														for="{{ layer_form.constraints_other|id }}">{{ layer_form.constraints_other.label }}</label></span>
-												{{ layer_form.constraints_other }}
-											</div>
-										</div>
-									</div>
 								</div>
+                <div class="mb-4">
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ layer_form.data_description|id }}">{{ layer_form.data_description.label }}</label></span>
+                    {{ layer_form.data_description }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ layer_form.related_publication|id }}">{{ layer_form.related_publication.label }}</label></span>
+                    {{ layer_form.related_publication }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ layer_form.data_citation|id }}">{{ layer_form.data_citation.label }}</label></span>
+                    {{ layer_form.data_citation }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ layer_form.data_quality_statement|id }}">{{ layer_form.data_quality_statement.label }}</label></span>
+                    {{ layer_form.data_quality_statement|safe }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label for="{{ layer_form.purpose|id }}">{{ layer_form.purpose.label }}</label></span>
+                    {{ layer_form.purpose }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ layer_form.constraints_other|id }}">{{ layer_form.constraints_other.label }}</label></span>
+                    {{ layer_form.constraints_other }}
+                  </div>
+                </div>
 							</div>
 					</div>
 				</div>
@@ -345,7 +339,7 @@
                   {{ layer_form.project_information }}
                 </div>
                 <div class="col-12">
-                  <div>
+                  <div class="mt-2">
                     <span><label
                         for="{{ layer_form.supplemental_information|id }}">{{ layer_form.supplemental_information.label }}</label></span>
                     {{ layer_form.supplemental_information }}
@@ -362,25 +356,25 @@
           <div class="card">
               <div class="card-body">
                 <div class="row">
-                  <div class="col-6" class="pr-1">
+                  <div class="col-6 pr-1">
                     <div class="input-group date">
                       <span><label
                           for="{{ layer_form.temporal_extent_start|id }}">{{ layer_form.temporal_extent_start.label }}</label></span>
                       {{ layer_form.temporal_extent_start }}
                     </div>
-                    <div>
+                    <div class="mt-2">
                       <span><label
                           for="{{ layer_form.spatial_representation_type|id }}">{{ layer_form.spatial_representation_type.label }}</label></span>
                       {{ layer_form.spatial_representation_type }}
                     </div>
                   </div>
-                  <div class="col-6" class="pl-1">
+                  <div class="col-6 pl-1">
                     <div class="input-group date">
                       <span><label
                           for="{{ layer_form.temporal_extent_end|id }}">{{ layer_form.temporal_extent_end.label }}</label></span>
                       {{ layer_form.temporal_extent_end }}
                     </div>
-                    <div>
+                    <div class="mt-2">
                       <span><label
                           for="{{ layer_form.spatial_resolution|id }}">{{ layer_form.spatial_resolution.label }}</label></span>
                       {{ layer_form.spatial_resolution }}
@@ -388,7 +382,7 @@
                   </div>
                   <div class="col-12">
                     {% block layer_extra_metadata %}
-                    <div>
+                    <div class="mt-2">
                         <span><label for="{{ layer_form.extra_metadata|id }}">{{ layer_form.extra_metadata.label }}</label></span>
                         {{ layer_form.extra_metadata }}
                     </div>
@@ -467,7 +461,7 @@
         <div id="settings" class="tab-pane fade" role="tabpanel" aria-labelledby="settings">
           <div class="card-deck w-100">
             <div class="card">
-                <div class="card-header"><h5 class="text-center">{% trans "Publishing" %}</h5></div>
+                <div class="card-header bg-dark"><h5 class="text-center text-light">{% trans "Publishing" %}</h5></div>
                 <div class="card-body">
                   <div>
                     <span><label for="{{ layer_form.is_approved|id }}">{{ layer_form.is_approved.label }}</label></span>
@@ -493,7 +487,7 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-header"><h5 class="text-center">{% trans "Other Settings" %}</h5></div>
+                <div class="card-header bg-dark"><h5 class="text-center text-light">{% trans "Other Settings" %}</h5></div>
                 <div class="card-body">
                   <div>
                     <span><label for="{{ layer_form.is_mosaic|id }}">{{ layer_form.is_mosaic.label }}</label></span>

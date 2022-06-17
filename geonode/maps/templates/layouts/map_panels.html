@@ -22,10 +22,6 @@
 <script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
 <link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
 
-<div class="row w-100 m-0 mb-2 mt-2">
-  <button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done!" %}</button>
-</div>
-
 {% block body %}
   <div class="row w-100 m-0 mb-2">
     <ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
@@ -97,18 +93,11 @@
                       <div class="col-4">
                         <div>
                           <span><label for="{{ map_form.title|id }}">{{ map_form.title.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
                           {{ map_form.title }}
                         </div>
-                        <div>
+                        <div class="mt-2">
                           <span><label for="{{ map_form.abstract|id }}">{{ map_form.abstract.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Brief narrative summary of the content of the resource/s)</p>-->
                           {{ map_form.abstract }}
-                        </div>
-                        <div>
-                          <span><label for="{{ map_form.edition|id }}">{{ map_form.edition.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Version of the cited resource)</p>-->
-                          {{ map_form.edition }}
                         </div>
                       </div>
                       <div class="col-5">
@@ -117,20 +106,18 @@
                           {{ map_form.keywords }}
                         </div>
                         {% if THESAURI_FILTERS %}
-                        <div class="border border-secondary rounded bg-light mb-2 thesauri_keywords">
+                        <div class="mt-2 thesauri_keywords">
                           {{tkeywords_form.as_p}}
                         </div>
-                        <div>
+                        <div class="mt-2">
                           <span><label for="{{ map_form.date_type|id }}">{{ map_form.date_type.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                           {{ map_form.date_type }}
                         </div>
-                        <div>
+                        <div class="mt-2">
                           <span><label for="{{ map_form.date|id }}">{{ map_form.date.label }}</label></span>
-                          <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
                           {{ map_form.date }}
                         </div>
-                        <div id="basicCategoryInfo">
+                        <div id="basicCategoryInfo" class="mt-2">
                           <span><label for="{{ category_form.category_choice_field|id }}"
                               class="control-label required-field">{% trans "Category" %}</label></span>
                           <select data-live-search="true" data-size="5" name="category_choice_field" id="category_form"
@@ -144,7 +131,7 @@
                             {% endfor %}
                           </select>
                         </div>
-                        <div id="basicGroupInfo">
+                        <div id="basicGroupInfo" class="mt-2">
                           <span><label for="id_resource-group"
                               class="control-label required-field">{% trans "Group" %}</label></span>
                           <select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
@@ -163,8 +150,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="card-deck w-100">
+                <div class="mt-2">
+                  <div class="card-deck">
                     <div class="card">
                       <div class="card-header"><h5 class="text-center">{% trans "Responsible Parties" %}</h5></div>
                       <div class="card-body">
@@ -177,13 +164,11 @@
                       <div class="card-body">
                         <div>
                           <span><label for="{{ map_form.owner|id }}">{{ map_form.owner.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Responsible of the cited resource)</p>-->
                           {{ map_form.owner }}
                         </div>
                         <div>
                           <span><label
                               for="{{ map_form.metadata_author|id }}">{{ map_form.metadata_author.label }}</label></span>
-                          <!--<p class="xxs-font-size">(Author of the metadata)</p>-->
                           {{ map_form.metadata_author }}
                         </div>
                       </div>
@@ -200,26 +185,23 @@
             <div class="card">
               <div class="card-body">
                 <div class="row" id="mdinfo">
-                  <div class="col-4">
+                  <div class="col-4 pr-1">
                     <div>
                       <span><label for="{{ map_form.license|id }}">{{ map_form.license.label }}</label></span>
-                      <!--<p class="xxs-font-size">(License of the dataset)</p>-->
                       {{ map_form.license }}
                     </div>
                     <div>
                       <span><label
                           for="{{ map_form.restriction_code_type|id }}">{{ map_form.restriction_code_type.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
                       {{ map_form.restriction_code_type }}
                     </div>
                   </div>
-                  <div class="col-4">
+                  <div class="col-4 pr-1">
                     <div>
                       <span><label for="{{ map_form.language|id }}">{{ map_form.language.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
                       {{ map_form.language }}
                     </div>
-                    <div id="regions_multiselect_container" class="pr-1">
+                    <div id="regions_multiselect_container" class="mt-2">
                       <span><label for="{{ map_form.regions|id }}"
                           class="control-label required-field">Regions</label></span>
                       <select title="{% trans "Choose one of the following..." %}" data-live-search="true" data-size="5"
@@ -237,12 +219,20 @@
                   </div>
                   <div class="col-4">
                     <div>
-                      <span><label for="{{ map_form.author|id }}">{{ map_form.author.label }}</label></span>
-                      {{ map_form.author }}
-                    </div>
-                    <div>
                       <span><label for="{{ map_form.doi|id }}">{{ map_form.doi.label }}</label></span>
                       {{ map_form.doi }}
+                    </div>
+                    <div class="mt-2">
+                      <span><label for="{{ map_form.edition|id }}">{{ map_form.edition.label }}</label></span>
+                      {{ map_form.edition }}
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="mb-4 mt-2">
+                      <div>
+                        <span><label for="{{ map_form.author|id }}">{{ map_form.author.label }}</label></span>
+                        {{ map_form.author }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -256,50 +246,44 @@
             <div class="card">
               <div class="card-body">
                 <div class="row" id="cdinfo">
-                  <div class="col-6">
+                  <div class="col-6 pr-1">
                     <div>
                       <span><label for="{{ map_form.data_type|id }}">{{ map_form.data_type.label }}</label></span>
                       {{ map_form.data_type }}
                     </div>
                   </div>
-                  <div class="col-6">
+                  <div class="col-6 pl-1">
                     <div>
                       <span><label
                           for="{{ map_form.maintenance_frequency|id }}">{{ map_form.maintenance_frequency.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                       {{ map_form.maintenance_frequency }}
                     </div>
                   </div>
-                  <div class="col-12 mb-4">
-                    <div>
-                      <span><label
-                          for="{{ map_form.data_description|id }}">{{ map_form.data_description.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
-                      {{ map_form.data_description }}
-                    </div>
-                    <div>
-                      <span><label
-                          for="{{ map_form.data_quality_statement|id }}">{{ map_form.data_quality_statement.label }}</label></span>
-                      <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
-                      {{ map_form.data_quality_statement|safe }}
-                    </div>
-                    <div>
-                      <span><label for="{{ map_form.purpose|id }}">{{ map_form.purpose.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
-                      {{ map_form.purpose }}
-                    </div>
-                    <div>
-                      <span><label
-                          for="{{ map_form.constraints_other|id }}">{{ map_form.constraints_other.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
-                      {{ map_form.constraints_other }}
-                    </div>
-                    <div>
-                      <span><label
-                          for="{{ map_form.supplemental_information|id }}">{{ map_form.supplemental_information.label }}</label></span>
-                      <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
-                      {{ map_form.supplemental_information }}
-                    </div>
+                </div>
+                <div class="mb-4">
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ map_form.data_description|id }}">{{ map_form.data_description.label }}</label></span>
+                    {{ map_form.data_description }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ map_form.data_quality_statement|id }}">{{ map_form.data_quality_statement.label }}</label></span>
+                    {{ map_form.data_quality_statement|safe }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label for="{{ map_form.purpose|id }}">{{ map_form.purpose.label }}</label></span>
+                    {{ map_form.purpose }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ map_form.constraints_other|id }}">{{ map_form.constraints_other.label }}</label></span>
+                    {{ map_form.constraints_other }}
+                  </div>
+                  <div class="mt-2">
+                    <span><label
+                        for="{{ map_form.supplemental_information|id }}">{{ map_form.supplemental_information.label }}</label></span>
+                    {{ map_form.supplemental_information }}
                   </div>
                 </div>
               </div>
@@ -311,32 +295,30 @@
           <div id="spatial" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-spatial-tab">
             <div class="card">
               <div class="card-body">
-                <div class="col-6" class="pr-1">
-                  <div class="input-group date">
-                    <span><label
-                        for="{{ map_form.temporal_extent_start|id }}">{{ map_form.temporal_extent_start.label }}</label></span>
-                    <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
-                    {{ map_form.temporal_extent_start }}
+                <div class="row">
+                  <div class="col-6 pr-1">
+                    <div class="input-group date">
+                      <span><label
+                          for="{{ map_form.temporal_extent_start|id }}">{{ map_form.temporal_extent_start.label }}</label></span>
+                      {{ map_form.temporal_extent_start }}
+                    </div>
+                    <div class="mt-2">
+                      <span><label
+                          for="{{ map_form.spatial_representation_type|id }}">{{ map_form.spatial_representation_type.label }}</label></span>
+                      {{ map_form.spatial_representation_type }}
+                    </div>
                   </div>
-                  <div class="input-group date">
-                    <span><label
-                        for="{{ map_form.temporal_extent_end|id }}">{{ map_form.temporal_extent_end.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-                    {{ map_form.temporal_extent_end }}
-                  </div>
-                </div>
-                <div class="col-6" class="pl-1">
-                  <div>
-                    <span><label
-                        for="{{ map_form.spatial_representation_type|id }}">{{ map_form.spatial_representation_type.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
-                    {{ map_form.spatial_representation_type }}
-                  </div>
-                  <div>
-                    <span><label
-                        for="{{ map_form.spatial_resolution|id }}">{{ map_form.spatial_resolution.label }}</label></span>
-                    <!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
-                    {{ map_form.spatial_resolution }}
+                  <div class="col-6 pl-1">
+                    <div class="input-group date">
+                      <span><label
+                          for="{{ map_form.temporal_extent_end|id }}">{{ map_form.temporal_extent_end.label }}</label></span>
+                      {{ map_form.temporal_extent_end }}
+                    </div>
+                    <div class="mt-2">
+                      <span><label
+                          for="{{ map_form.spatial_resolution|id }}">{{ map_form.spatial_resolution.label }}</label></span>
+                      {{ map_form.spatial_resolution }}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -347,10 +329,9 @@
     </div>
 
     <div id="settings" class="tab-pane fade" style="overflow: hidden;" aria-labelledby="edit-settings-tab">
-      <!--<br />-->
       <div class="card-deck w-100">
           <div class="card">
-            <div class="card-header"><h5 class="text-center">{% trans "Publishing" %}</h5></div>
+            <div class="card-header bg-dark"><h5 class="text-center text-light">{% trans "Publishing" %}</h5></div>
             <div class="card-body">
               <div>
                 <span><label

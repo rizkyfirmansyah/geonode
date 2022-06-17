@@ -41,6 +41,8 @@
 
     var totalNum = 0;
     var empty = 0;
+    var totalTab = $("#edit-metadata .wizard--progress li:last-child").attr('data-step');
+    var currentTab = 1;
 
     function getTab(number) {
         var activeTab = $("#edit-metadata .wizard--progress li.active");
@@ -60,6 +62,7 @@
         if (tabIndex >= 0) {
             getTab( tabIndex - 1 );
         }
+        currentTab--;
     };
   
     function getNextTab(){
@@ -68,6 +71,7 @@
         if (tabIndex >= 0) {
             getTab( tabIndex + 1 );
         }
+        currentTab++;
     };
 
     // done button tooltip variables
@@ -176,14 +180,14 @@
                         $('.metadata-edit-done').popover('hide');
                         gotIt = true;
                     });
-                }, 1500);
+                }, 700);
             } else if (completeness < 100) {
-                $('#progressCompleted').addClass('bg-danger');
+                $('#progressCompleted').removeClass('bg-success').addClass('bg-danger');
                 tooltipShown = false;
                 $('.metadata-edit-done').popover('hide');
             };
             // show/hide done button
-            completeness === 100 ? ($('#btn_upd_md_dwn').addClass('disabled'), $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow")) : ($('#btn_upd_md_dwn').removeClass('disabled'), $('#btn_upd_md_done').addClass('d-none').fadeIn("slow"));
+            completeness === 100 ? ($('#progressCompleted').removeClass('bg-danger').addClass('bg-success'), $('#btn_upd_md_done').removeClass('d-none').fadeIn("slow")) : $('#btn_upd_md_done').addClass('d-none').fadeIn("slow");
         };
     {% endblock completeness  %}
 
@@ -663,9 +667,16 @@
         });
 
         $('#metadata_edit_tab').on('show.bs.tab', function() {
-          // buttons visibility
-          $('#btn_upd_md_dwn').show();
-          updateWizard();
+            // buttons visibility
+            $('#btn_upd_md_dwn').show();
+            updateWizard();
+        });
+
+        $('#edit-metadata-tab').on('show.bs.tab', function() {
+            if (currentTab > 1)
+              $('#btn_back_dwn').show();
+            if (currentTab < totalTab)
+              $('#btn_next_dwn').show();
         });
 
         var submitMetadata = () => {

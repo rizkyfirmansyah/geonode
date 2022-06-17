@@ -10,7 +10,8 @@
 {% block body_class %}data{% endblock body_class %}
 
 {% block body %}
-  <div class="card border-info">
+<form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
+  <div class="card border-info mb-2">
     <div class="card-header">
       <div class="row">
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with geoapp.title as map_title %}for
@@ -22,62 +23,53 @@
       </div>
     </div>
 
-    <div class="card-body">
-      <div class="row">
-        <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-secondary btn-block" style="display: none" value="{% trans '<< Back' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_upd_md_dwn" class="btn btn-edit btn-block" value="{% trans 'Update' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-secondary btn-block" value="{% trans 'Next >>' %}" /></div>
-        <div id="profileCompleteness" class="alert alert-info col-4">
-          <strong>{% trans "Completeness" %}</strong>
-          <div>
-            <small class="completed text-success" style="display: none; "><i
-                class="fa-solid fa-check"></i>{% trans "Metadata Schema mandatory fields completed" %}</small>
-            <small class="not-completed text-danger" style="display: none; "><i
-                class="fa-solid fa-remove"></i>{% trans "Check Schema mandatory fields" %}</small>
-          </div>
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped" role="progress-bar">
-              70%
-            </div>
-          </div>
+    <div class="card-footer">
+      <div class="progress" id="profileCompleteness">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progress-bar" id="progressCompleted" title="Metadata Completeness">
         </div>
       </div>
+      <div class="row mt-3">
+        <div class="col"><input type="button" id="btn_back_dwn" class="btn btn-secondary btn-block" style="display: none" value="{% trans '&laquo; Previous' %}" /></div>
+        <div class="col"><button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done" %}</button></div>
+        <div class="col"><input type="button" id="btn_next_dwn" class="btn btn-secondary btn-block" value="{% trans 'Next &raquo;' %}" /></div>
+      </div>
     </div>
-  </div>
 
-  <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
     {% if geoapp.metadata_uploaded %}
-      <div style="background-color: orange;">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing
-        a metadata XML file.
-        SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-        Some of your original metadata may have been lost.{% endblocktrans %}
+      <div class="card-footer">
+          <div class="bg-warning">{% blocktrans %}Note: this geoapp's orginal metadata was populated by importing
+            a metadata XML file.
+            SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+            Some of your original metadata may have been lost.{% endblocktrans %}
+          </div>
       </div>
     {% endif %}
 
-    {% if geoapp_form.errors or category_form.errors or tkeywords_form.errors %}
-    <div style="background-color: pink">{% blocktrans %}Error updating metadata. Please check the following fields:
-      {% endblocktrans %}
-      <ul>
-        {% for field in geoapp_form %}
-        {% if field.errors %}
-        <li>{{ field.label }}</li>
-        {% endif %}
-        {% endfor %}
+  </div>
 
-        {% if category_form.errors %}
-        <li>{{ category_form.errors.as_ul }}</li>
-        {% endif %}
-        {% if tkeywords_form.errors %}
-        <li>{{ tkeywords_form.errors.as_ul }}</li>
-        {% endif %}
-      </ul>
-    </div>
+    {% if geoapp_form.errors or category_form.errors or tkeywords_form.errors %}
+      <div class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields:
+        {% endblocktrans %}
+        <ul>
+          {% for field in geoapp_form %}
+          {% if field.errors %}
+          <li>{{ field.label }}</li>
+          {% endif %}
+          {% endfor %}
+
+          {% if category_form.errors %}
+          <li>{{ category_form.errors.as_ul }}</li>
+          {% endif %}
+          {% if tkeywords_form.errors %}
+          <li>{{ tkeywords_form.errors.as_ul }}</li>
+          {% endif %}
+        </ul>
+      </div>
     {% endif %}
 
     {% csrf_token %}
     <div id="mdeditor_form" class="col-md-12 form-controls">
       {% form geoapp_form using "layouts/app_panels.html" %}
-      {# geoapp_form|crispy #}
     </div>
 
     <div class="row">
@@ -94,7 +86,7 @@
         </fieldset>
       </div>
     </div>
-  </form>
+</form>
 
 {{ block.super }}
 {% endblock body %}

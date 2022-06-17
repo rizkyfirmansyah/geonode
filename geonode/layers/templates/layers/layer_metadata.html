@@ -15,8 +15,8 @@
 {% block body_class %}{% trans "data" %}{% endblock body_class %}
 
 {% block body %}
-
-  <div class="card border-info">
+<form id="metadata_update" class="form-horizontal" action="{% url 'layer_metadata' layer.service_typename %}" method="POST">
+  <div class="card border-info mb-2">
     <div class="card-header">
       <div class="row">
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with layer.title as layer_title %}for
@@ -28,34 +28,30 @@
     </div>
 
     {% if not layer.metadata_uploaded_preserve %}
-    <div class="card-body">
-      <div class="row">
-        <div class="col text-left"><input type="button" id="btn_back_dwn" class="btn btn-secondary btn-block" style="display: none" value="{% trans '<< Back' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_upd_md_dwn" class="btn btn-edit btn-block" value="{% trans 'Update' %}" /></div>
-        <div class="col text-left"><input type="button" id="btn_next_dwn" class="btn btn-secondary btn-block" value="{% trans 'Next >>' %}" /></div>
-      </div>
-    </div>
-
-    <div class="card-footer">
-        <div class="progress" id="profileCompleteness">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progress-bar" id="progressCompleted" title="Metadata Completeness">
+      <div class="card-footer">
+          <div class="progress" id="profileCompleteness">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progress-bar" id="progressCompleted" title="Metadata Completeness">
+            </div>
           </div>
-        </div>
-    </div>
+          <div class="row mt-3">
+            <div class="col"><input type="button" id="btn_back_dwn" class="btn btn-secondary btn-block" style="display: none" value="{% trans '&laquo; Previous' %}" /></div>
+            <div class="col"><button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done" %}</button></div>
+            <div class="col"><input type="button" id="btn_next_dwn" class="btn btn-secondary btn-block" value="{% trans 'Next &raquo;' %}" /></div>
+          </div>
+      </div>
+    {% endif %}
+
+    {% if layer.metadata_uploaded_preserve %}
+      <div class="card-footer">
+        <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a metadata XML file.
+          This metadata cannot be edited.{% endblocktrans %}</p>
+        {% elif layer.metadata_uploaded %}
+        <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML file.
+          SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
+          Some of your original metadata may have been lost.{% endblocktrans %}</p>
+      </div>
     {% endif %}
   </div>
-
-  <form id="metadata_update" class="form-horizontal" action="{% url 'layer_metadata' layer.service_typename %}" method="POST">
-    {% if layer.metadata_uploaded_preserve %}
-    <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a
-      metadata XML file.
-      This metadata cannot be edited.{% endblocktrans %}</p>
-    {% elif layer.metadata_uploaded %}
-    <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML
-      file.
-      SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-      Some of your original metadata may have been lost.{% endblocktrans %}</p>
-    {% endif %}
 
     {% if layer_form.errors or attribute_form.errors or category_form.errors or author_form.errors or poc.errors or tkeywords_form.errors %}
     <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields: {% endblocktrans %}
@@ -110,5 +106,5 @@
         </fieldset>
       </div>
     </div>
-  </form>
+</form>
 {% endblock body %}

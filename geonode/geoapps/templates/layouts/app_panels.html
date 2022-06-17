@@ -16,10 +16,6 @@
 <script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
 <link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
 
-<div class="row w-100 m-0 mb-2 mt-2">
-    <button class="btn btn-save metadata-edit-done col-12 d-none" id="btn_upd_md_done" type="submit">{% trans "Done!" %}</button>
-</div>
-
 {% block body %}
 
 	  <div class="row w-100 mb-2">
@@ -91,49 +87,40 @@
                                             </script>
                                         </div>
                                         <div class="col-4">
-                                            <div class="border border-secondary rounded bg-light mb-2">
+                                            <div>
                                                 <span><label
                                                         for="{{ geoapp_form.title|id }}">{{ geoapp_form.title.label }}</label></span>
                                                 <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
                                                 {{ geoapp_form.title }}
                                             </div>
-                                            <div class="border border-secondary rounded bg-light mb-2">
+                                            <div class="mt-2">
                                                 <span><label
                                                         for="{{ geoapp_form.abstract|id }}">{{ geoapp_form.abstract.label }}</label></span>
-                                                <!--<p class="xxs-font-size">(Brief narrative summary of the content of the resource/s)</p>-->
                                                 {{ geoapp_form.abstract }}
-                                            </div>
-                                            <div class="border border-secondary rounded bg-light mb-2">
-                                                <span><label
-                                                        for="{{ geoapp_form.edition|id }}">{{ geoapp_form.edition.label }}</label></span>
-                                                <!--<p class="xxs-font-size">(Version of the cited resource)</p>-->
-                                                {{ geoapp_form.edition }}
                                             </div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="border border-secondary rounded bg-light mb-2">
+                                            <div>
                                                 <span><label
                                                         for="{{ geoapp_form.date_type|id }}">{{ geoapp_form.keywords.label }}</label></span>
                                                 {{ geoapp_form.keywords }}
                                             </div>
                                             {% if THESAURI_FILTERS %}
-                                            <div class="border border-secondary rounded bg-light mb-2 thesauri_keywords">
+                                            <div class="mt-2 thesauri_keywords">
                                                 {{ tkeywords_form }}
                                             </div>
                                             {% endif %}
-                                            <div class="border border-secondary rounded bg-light mb-2">
+                                            <div class="mt-2">
                                                 <span><label
                                                         for="{{ geoapp_form.date_type|id }}">{{ geoapp_form.date_type.label }}</label></span>
-                                                <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                                                 {{ geoapp_form.date_type }}
                                             </div>
-                                            <div class="border border-secondary rounded bg-light mb-2">
+                                            <div class="mt-2">
                                                 <span><label
                                                         for="{{ geoapp_form.date|id }}">{{ geoapp_form.date.label }}</label></span>
-                                                <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
                                                 {{ geoapp_form.date }}
                                             </div>
-                                            <div id="basicCategoryInfo" class="border border-secondary rounded bg-light mb-2">
+                                            <div id="basicCategoryInfo" class="mt-2">
                                                 <span><label for="{{ category_form.category_choice_field|id }}"
                                                         class="control-label required-field">{% trans "Category" %}</label></span>
                                                 <select title="{% trans "Choose one of the following..." %}"
@@ -149,7 +136,7 @@
                                                     {% endfor %}
                                                 </select>
                                             </div>
-                                            <div id="basicGroupInfo" class="border border-secondary rounded bg-light mb-2">
+                                            <div id="basicGroupInfo" class="mt-2">
                                                 <span><label for="id_resource-group"
                                                         class="control-label required-field">{% trans "Group" %}</label></span>
                                                 <select title="{% trans "Choose one of the following..." %}"
@@ -170,8 +157,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="card-deck w-100">
+                            <div class="mt-2">
+                                <div class="card-deck">
                                     <div class="card">
                                         <div class="card-header"><h5 class="text-center">{% trans "Responsible Parties" %}</h5></div>
                                         <div class="card-body">
@@ -210,27 +197,27 @@
                         <div class="card-body">
                             <div class="row" id="mdinfo">
                                 <div class="col-4 pr-1">
-                                    <div class="border border-secondary rounded bg-light mb-2">
+                                    <div>
                                         <span><label
                                                 for="{{ geoapp_form.license|id }}">{{ geoapp_form.license.label }}</label></span>
                                         <!--<p class="xxs-font-size">(License of the dataset)</p>-->
                                         {{ geoapp_form.license }}
                                     </div>
-                                    <div class="border border-secondary rounded bg-light mb-2">
+                                    <div class="mt-2">
                                         <span><label
                                                 for="{{ geoapp_form.restriction_code_type|id }}">{{ geoapp_form.restriction_code_type.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
                                         {{ geoapp_form.restriction_code_type }}
                                     </div>
                                 </div>
-                                <div class="col-4">
-                                    <div class="border border-secondary rounded bg-light mb-2">
+                                <div class="col-4 pr-1">
+                                    <div>
                                         <span><label
                                                 for="{{ geoapp_form.language|id }}">{{ geoapp_form.language.label }}</label></span>
                                         <!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
                                         {{ geoapp_form.language }}
                                     </div>
-                                    <div id="regions_multiselect_container" class="pr-1">
+                                    <div id="regions_multiselect_container" class="mt-2">
                                         <span><label for="{{ geoapp_form.regions|id }}"
                                                 class="control-label required-field">Regions</label></span>
                                         <select title="{% trans "Choose one of the following..." %}" data-live-search="true"
@@ -249,15 +236,22 @@
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="border border-secondary rounded bg-light mb-2">
+                                  <div>
+                                      <span><label
+                                              for="{{ geoapp_form.doi|id }}">{{ geoapp_form.doi.label }}</label></span>
+                                      {{ geoapp_form.doi }}
+                                  </div>
+                                  <div class="mt-2">
+                                    <span><label
+                                            for="{{ geoapp_form.edition|id }}">{{ geoapp_form.edition.label }}</label></span>
+                                    {{ geoapp_form.edition }}
+                                  </div>
+                                </div>
+                                <div class="col-12 mb-4 mt-2">
+                                    <div>
                                         <span><label
                                                 for="{{ geoapp_form.author|id }}">{{ geoapp_form.author.label }}</label></span>
                                         {{ geoapp_form.author }}
-                                    </div>
-                                    <div class="border border-secondary rounded bg-light mb-2">
-                                        <span><label
-                                                for="{{ geoapp_form.doi|id }}">{{ geoapp_form.doi.label }}</label></span>
-                                        {{ geoapp_form.doi }}
                                     </div>
                                 </div>
                             </div>
@@ -272,53 +266,47 @@
                         <div class="card-body">
                             <div class="row" id="cdinfo">
                                 <div class="col-6 pr-1">
-                                    <div class="border border-secondary rounded bg-light mb-2">
+                                    <div>
                                         <span><label
                                                 for="{{ geoapp_form.data_type|id }}">{{ geoapp_form.data_type.label }}</label></span>
                                         {{ geoapp_form.data_type }}
                                     </div>
                                 </div>
                                 <div class="col-6 pl-1">
-                                    <div class="border border-secondary rounded bg-light mb-2">
+                                    <div>
                                         <span><label
                                                 for="{{ geoapp_form.maintenance_frequency|id }}">{{ geoapp_form.maintenance_frequency.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
                                         {{ geoapp_form.maintenance_frequency }}
                                     </div>
                                 </div>
-                                <div class="col-12 mb-4">
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.data_description|id }}">{{ geoapp_form.data_description.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Description or abstract of the data and methodology)</p>-->
-                                        {{ geoapp_form.data_description }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.data_quality_statement|id }}">{{ geoapp_form.data_quality_statement.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(General explanation of the data producer's knowledge about the lineage)</p>-->
-                                        {{ geoapp_form.data_quality_statement|safe }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.purpose|id }}">{{ geoapp_form.purpose.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Brief narrative summary of the intentions with which the resource/s ...)</p>-->
-                                        {{ geoapp_form.purpose }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.constraints_other|id }}">{{ geoapp_form.constraints_other.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Other restrictions and legal prerequisites for accessing or use data and metadata)</p>-->
-                                        {{ geoapp_form.constraints_other }}
-                                    </div>
-                                    <div>
-                                        <span><label
-                                                for="{{ geoapp_form.supplemental_information|id }}">{{ geoapp_form.supplemental_information.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Any other descriptive information about the dataset)</p>-->
-                                        {{ geoapp_form.supplemental_information }}
-                                    </div>
-                                </div>
                             </div>
+                            <div class="mb-4">
+                              <div class="mt-2">
+                                  <span><label
+                                          for="{{ geoapp_form.data_description|id }}">{{ geoapp_form.data_description.label }}</label></span>
+                                  {{ geoapp_form.data_description }}
+                              </div>
+                              <div class="mt-2">
+                                  <span><label
+                                          for="{{ geoapp_form.data_quality_statement|id }}">{{ geoapp_form.data_quality_statement.label }}</label></span>
+                                  {{ geoapp_form.data_quality_statement|safe }}
+                              </div>
+                              <div class="mt-2">
+                                  <span><label
+                                          for="{{ geoapp_form.purpose|id }}">{{ geoapp_form.purpose.label }}</label></span>
+                                  {{ geoapp_form.purpose }}
+                              </div>
+                              <div class="mt-2">
+                                  <span><label
+                                          for="{{ geoapp_form.constraints_other|id }}">{{ geoapp_form.constraints_other.label }}</label></span>
+                                  {{ geoapp_form.constraints_other }}
+                              </div>
+                              <div class="mt-2">
+                                  <span><label
+                                          for="{{ geoapp_form.supplemental_information|id }}">{{ geoapp_form.supplemental_information.label }}</label></span>
+                                  {{ geoapp_form.supplemental_information }}
+                              </div>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -328,33 +316,31 @@
                 <div id="spatial" class="tab-pane fade" role="tabpanel" aria-labelledby="nav-spatial-tab">
                     <div class="card">
                         <div class="card-body">
-                            <div class="col-6" class="pr-1">
-                                <div class="input-group date">
-                                    <span><label
-                                            for="{{ geoapp_form.temporal_extent_start|id }}">{{ geoapp_form.temporal_extent_start.label }}</label></span>
-                                    <!--<p class="xxs-font-size">(When a given event occurred on the resource)</p>-->
-                                    {{ geoapp_form.temporal_extent_start }}
-                                </div>
-                                <div class="input-group date">
-                                    <span><label
-                                            for="{{ geoapp_form.temporal_extent_end|id }}">{{ geoapp_form.temporal_extent_end.label }}</label></span>
-                                    <!--<p class="xxs-font-size">(Identification of when a given event occurred)</p>-->
-                                    {{ geoapp_form.temporal_extent_end }}
-                                </div>
-                            </div>
-                            <div class="col-6" class="pl-1">
-                                <div>
-                                    <span><label
-                                            for="{{ geoapp_form.spatial_representation_type|id }}">{{ geoapp_form.spatial_representation_type.label }}</label></span>
-                                    <!--<p class="xxs-font-size">(Method used to represent geographic information in the dataset)</p>-->
-                                    {{ geoapp_form.spatial_representation_type }}
-                                </div>
-                                <div>
-                                    <span><label
-                                            for="{{ geoapp_form.spatial_resolution|id }}">{{ geoapp_form.spatial_resolution.label }}</label></span>
-                                    <!--<p class="xxs-font-size">(Describes the spatial resolution: e.g. 1:50.000 or 30m)</p>-->
-                                    {{ geoapp_form.spatial_resolution }}
-                                </div>
+                            <div class="row">
+                              <div class="col-6 pr-1">
+                                  <div class="input-group date">
+                                      <span><label
+                                              for="{{ geoapp_form.temporal_extent_start|id }}">{{ geoapp_form.temporal_extent_start.label }}</label></span>
+                                      {{ geoapp_form.temporal_extent_start }}
+                                  </div>
+                                  <div class="mt-2">
+                                      <span><label
+                                              for="{{ geoapp_form.spatial_resolution|id }}">{{ geoapp_form.spatial_resolution.label }}</label></span>
+                                      {{ geoapp_form.spatial_resolution }}
+                                  </div>
+                              </div>
+                              <div class="col-6 pl-1">
+                                  <div class="input-group date">
+                                      <span><label
+                                              for="{{ geoapp_form.temporal_extent_end|id }}">{{ geoapp_form.temporal_extent_end.label }}</label></span>
+                                      {{ geoapp_form.temporal_extent_end }}
+                                  </div>
+                                  <div class="mt-2">
+                                      <span><label
+                                              for="{{ geoapp_form.spatial_representation_type|id }}">{{ geoapp_form.spatial_representation_type.label }}</label></span>
+                                      {{ geoapp_form.spatial_representation_type }}
+                                  </div>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -363,27 +349,26 @@
         </div>
 
         <div id="settings" class="tab-pane fade" style="overflow: hidden;"  aria-labelledby="edit-settings-tab">
-            <!--<br />-->
             <div class="card-deck w-100">
                 <div class="card">
-                    <div class="card-header"><h5 class="text-center">{% trans "Publishing" %}</h5></div>
+                    <div class="card-header bg-dark"><h5 class="text-center text-light">{% trans "Publishing" %}</h5></div>
                     <div class="card-body">
-                        <div class="border border-secondary rounded bg-light mb-2">
+                        <div>
                             <span><label
                                     for="{{ geoapp_form.metadata_uploaded_preserve|id }}">{{ geoapp_form.metadata_uploaded_preserve.label }}</label></span>
                             {{ geoapp_form.metadata_uploaded_preserve }}
                         </div>
-                        <div class="border border-secondary rounded bg-light mb-2">
+                        <div>
                             <span><label
                                     for="{{ geoapp_form.is_approved|id }}">{{ geoapp_form.is_approved.label }}</label></span>
                             {{ geoapp_form.is_approved }}
                         </div>
-                        <div class="border border-secondary rounded bg-light mb-2">
+                        <div>
                             <span><label
                                     for="{{ geoapp_form.is_published|id }}">{{ geoapp_form.is_published.label }}</label></span>
                             {{ geoapp_form.is_published }}
                         </div>
-                        <div class="border border-secondary rounded bg-light mb-2">
+                        <div>
                             <span><label
                                     for="{{ geoapp_form.featured|id }}">{{ geoapp_form.featured.label }}</label></span>
                             {{ geoapp_form.featured }}
@@ -391,9 +376,9 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header"><h5 class="text-center">{% trans "Other Settings" %}</h5></div>
+                    <div class="card-header bg-dark"><h5 class="text-center text-light">{% trans "Other Settings" %}</h5></div>
                     <div class="card-body">
-                        <div class="border border-secondary rounded bg-light mb-2">
+                        <div>
                             <span><label
                                     for="{{ geoapp_form.urlsuffix|id }}">{{ geoapp_form.urlsuffix.label }}</label></span>
                             {{ geoapp_form.urlsuffix }}
