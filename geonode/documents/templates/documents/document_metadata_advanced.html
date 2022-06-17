@@ -34,10 +34,9 @@
       {% endblocktrans %}
     </h3>
     <div class="row w-100 m-0 mb-2">
-        <div class="col-3 text-center p-3"><input type="submit" id="btn_upd_md_done" class="btn btn-save metadata-edit-done btn-block d-none" data-original-title="" title="Completed Metadata" value="Done"></div>
-        <div class="col-3 text-center p-3"><input type="button" id="btn_upd_md_up" class="btn btn-edit btn-block" value="{% trans "Update" %}"/></div>
-        <div class="col-3 text-center p-3"><a href="." class="btn btn-primary btn-block">{% trans "Return to Datasets" %}</a></div>
-        <div class="col-3 text-center p-3">
+        <div class="col-4 text-center p-3"><input type="submit" id="btn_upd_md_done" class="btn btn-save metadata-edit-done btn-block d-none" data-original-title="" title="Completed Metadata" value="Done"></div>
+        <div class="col-4 text-center p-3"><a href="." class="btn btn-primary btn-block">{% trans "Return to Datasets" %}</a></div>
+        <div class="col-4 text-center p-3">
           <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
         </div>
     </div>

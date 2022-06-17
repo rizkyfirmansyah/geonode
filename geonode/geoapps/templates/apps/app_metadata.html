@@ -10,6 +10,8 @@
 {% block body_class %}data{% endblock body_class %}
 
 {% block body %}
+
+{{ block.super }}
 <form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
   <div class="card border-info mb-2">
     <div class="card-header">
@@ -88,5 +90,4 @@
     </div>
 </form>
 
-{{ block.super }}
 {% endblock body %}
