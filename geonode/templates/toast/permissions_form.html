@@ -90,10 +90,6 @@
               } else {
                   title = "Warning";
               }
-              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
-              $("#_permissions_feedbacks").find('.modal-body').text(body);
-              $("#_permissions_feedbacks").modal("show");
-              $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
             },
             error: function(jqXHR, textStatus){
                 try {
@@ -122,11 +118,7 @@
               message = JSON.parse(jqXHR.responseText);
               body = message.message;
               title = "Error";
-              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
-              $("#_permissions_feedbacks").find('.modal-body').text(body);
-              $("#_permissions_feedbacks").modal("show");
-              $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
-        });
+        }).done(function(){ location.reload(); });
         return false;
     });
 
@@ -163,10 +155,6 @@
               } else {
                   title = "Warning";
               }
-              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
-              $("#_permissions_feedbacks").find('.modal-body').text(body);
-              $("#_permissions_feedbacks").modal("show");
-              $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
             },
             cache: false
           }
@@ -176,11 +164,7 @@
               message = JSON.parse(jqXHR.responseText);
               body = message.message;
               title = "Error";
-              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
-              $("#_permissions_feedbacks").find('.modal-body').text(body);
-              $("#_permissions_feedbacks").modal("show");
-              $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
-        });
+        }).done(function(){ location.reload(); });
         return false;
     });
 
@@ -217,10 +201,6 @@
               } else {
                   title = "Warning";
               }
-              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
-              $("#_permissions_feedbacks").find('.modal-body').text(body);
-              $("#_permissions_feedbacks").modal("show");
-              $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
             },
             cache: false
           }
@@ -229,12 +209,7 @@
               $("#modal_perms").modal("hide");
               message = JSON.parse(jqXHR.responseText);
               body = message.message;
-              title = "Error";
-              $("#_permissions_feedbacks").find('.modal-title w-100').text(title);
-              $("#_permissions_feedbacks").find('.modal-body').text(body);
-              $("#_permissions_feedbacks").modal("show");
-              $('#_permissions_feedbacks').on('hidden.bs.modal', function () { location.reload(); });
-        });
+        }).done(function(){ location.reload(); });
         return false;
     });
   });
