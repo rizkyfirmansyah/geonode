@@ -2,9 +2,13 @@
 <li>
   <div class="activity-item">
     <p>
-      <span class="icon-activity"><i class="fa-solid fa-{{ activity_class|default:'activity' }}"></i></span>
+      {% if activity_class == 'delete' %}
+          <span class="icon-activity"><i class="fa-solid fa-trash"></i></span>
+      {% else %}
+          <span class="icon-activity"><i class="fa-solid fa-{{ activity_class|default:'activity' }}"></i></span>
+      {% endif %}
       {% if object %}
-      <span class="thumb-activity"><img src="{{ object.thumbnail_url }}"></span>
+          <span class="thumb-activity"><img src="{{ object.thumbnail_url }}"></span>
       {% endif %}
       <a href="{{ actor.get_absolute_url }}">{{ username }}</a>
 
