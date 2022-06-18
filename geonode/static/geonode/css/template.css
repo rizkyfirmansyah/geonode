@@ -3886,23 +3886,6 @@ span.grippy::after {
     content: ""
 }
 
-.inbox-icons {
-    margin: 5px 0 5px 15px;
-    color: #636363
-}
-
-.inbox-icons button {
-    background: 0 0;
-    border: none;
-    color: var(--secondary);
-    cursor: pointer
-}
-
-.inbox-icons i {
-    cursor: pointer;
-    margin-right: 10px
-}
-
 .create-msg-form-control {
     width: 100%;
     background-image: none;

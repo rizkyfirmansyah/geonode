@@ -20,47 +20,41 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <ul class="nav nav-tabs" id="nav_messages">
-            <li class="col"><a href="#inbox" data-toggle="tab" class="nav-primary active">{% trans "Inbox" %}</a></li>
+          <ul class="nav nav-tabs w-100">
+            <li class="col"><a href="#inbox" data-toggle="tab" class="nav-primary active">{% trans "Unread Messages" %}</a></li>
             <li class="col"><a href="#all" data-toggle="tab" class="nav-primary">{% trans "All" %}</a></li>
-          </ul>
+          </ul>            
 
-          <div class="inbox-icons col">
-              <i id=id-mark-as-read class="fa-regular fa-envelope-open" title="{% trans "Mark selected as read" %}"></i>
-              <i id=id-mark-as-unread class="fa-solid fa-envelope" title="{% trans "Mark selected as unread" %}"></i>
-          </div>
+          <div class="tab-content bg-light mt-2">
+            <div class="col-md-12">
+              <div class="d-flex justify-content-between" id="bulk_inbox">
+                  <form method="POST" id="id-inbox-form" action={% url "msg_status" %} >
+                      {% csrf_token %}
+                      <input id="id-action-type" name="action_type" type="hidden" value="">
+                      {% for thread in threads_all %}
+                          <input name=thread_{{ thread.pk }} id=read_unread_{{ thread.pk }} type="hidden" value="">
+                      {% endfor %}
+                  </form>
 
-          <script>
-              $("#id-mark-as-unread").click(() => {
-                  $( "#id-action-type" ).attr('value', 'unread');
-                  $("#id-inbox-form").submit();
-              });
-
-              $("#id-mark-as-read").click(() => {
-                  $( "#id-action-type" ).attr('value', 'read');
-                  $("#id-inbox-form").submit();
-              });
-          </script>
-          <form method="POST" id="id-inbox-form" action={% url "msg_status" %} >
-              {% csrf_token %}
-              <input id="id-action-type" name="action_type" type="hidden" value="">
-              {% for thread in threads_all %}
-                  <input name=thread_{{ thread.pk }} id=read_unread_{{ thread.pk }} type="hidden" value="">
-              {% endfor %}
-          </form>
-
-              <div class="tab-content bg-light">
-                <article id="inbox" class="tab-pane active">
-                  {% with threads_unread as threads %}
-                      {% include "user_messages/_message_snippet.html" %}
-                  {% endwith %}
-                </article>
-                <article id="all" class="tab-pane">
-                  {% with threads_all as threads %}
-                      {% include "user_messages/_message_snippet.html" %}
-                  {% endwith %}
-                </article>
+                  <button type="submit" class="btn btn-info col-3" id="id-mark-as-read" title="{% trans "Mark selected as read" %}"><span class="mr-2">Mark selected as read</span><i class="fa-solid fa-check"></i></button>
+                  <button type="submit" class="btn btn-warning col-3" id="id-mark-as-unread" title="{% trans "Mark selected as unread" %}"><span class="mr-2">Mark selected as unread</span><i class="fa-regular fa-envelope"></i></button>
+                  <form method="POST" id="delete_bulk_form" action={% url "delete_bulk_messages" %} style="display: contents;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger col-3" id="delete_bulk_btn" title="Delete Bulk Message"><span class="mr-2">Delete Selected</span><i class="fa-solid fa-trash"></i></button>
+                  </form>
               </div>
+            </div>
+            <article id="inbox" class="tab-pane active">
+              {% with threads_unread as threads %}
+                  {% include "user_messages/_message_snippet.html" %}
+              {% endwith %}
+            </article>
+            <article id="all" class="tab-pane">
+              {% with threads_all as threads %}
+                  {% include "user_messages/_message_snippet.html" %}
+              {% endwith %}
+            </article>
+          </div>
         </div>
       </div>
   </div>
@@ -69,6 +63,33 @@
 {% block extra_script %}
 {{ block.super }}
 <script type="text/javascript">
+  $("#id-mark-as-unread").click(() => {
+      $("#id-action-type").attr('value', 'unread');
+      $("#id-inbox-form").submit();
+  });
+
+  $("#id-mark-as-read").click(() => {
+      $("#id-action-type").attr('value', 'read');
+      $("#id-inbox-form").submit();
+  });
+
+  $('#delete_bulk_btn').click(function() {
+      $("#delete_bulk_form").submit(function(t) {
+        t.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: $(this).attr('action'),
+          data: {
+            'delete': deleteList
+          },
+          success: function() {
+            $('#all').load(window.location.pathname + ' #all');
+            $('#inbox').load(window.location.pathname + ' #inbox');
+          }
+        });
+        return false;
+      })
+  });
 
 function prepare_read_unread_form(objectClicked) {
     if (objectClicked.type === 'checkbox') {
@@ -76,15 +97,57 @@ function prepare_read_unread_form(objectClicked) {
     }
 }
 
+function prepare_delete_form(objectClicked) {
+    if (objectClicked.type === 'checkbox') {
+        deleteList.push(objectClicked.name.split("_")[1])
+    }
+}
+var deleteList = [];
+
 $('.tab-content').click(function(event) {
   const objectClicked = event.target;
   prepare_read_unread_form(objectClicked)
+  prepare_delete_form(objectClicked)
 
   // If we clicked the delete button
   if ($(objectClicked)[0].className.indexOf('message_delete_btn') >= 0) {
     // Grab the correct form
     form = $(objectClicked).closest('form')[0];
     // Asynchronous delete thread and refresh on same page
+    $.ajax({
+      type: "POST",
+      url: $(form).attr('action'),
+      data: $(form).serialize(),
+      success: function() {
+        $('#all').load(window.location.pathname + ' #all');
+        $('#inbox').load(window.location.pathname + ' #inbox');
+      }
+    });
+    return false;
+  }
+
+  // If we clicked the unread button
+  if ($(objectClicked)[0].className.indexOf('message_unread_btn') >= 0) {
+    // Grab the correct form
+    form = $(objectClicked).closest('form')[0];
+    // Asynchronous unread thread and refresh on same page
+    $.ajax({
+      type: "POST",
+      url: $(form).attr('action'),
+      data: $(form).serialize(),
+      success: function() {
+        $('#all').load(window.location.pathname + ' #all');
+        $('#inbox').load(window.location.pathname + ' #inbox');
+      }
+    });
+    return false;
+  }
+
+  // If we clicked the read button
+  if ($(objectClicked)[0].className.indexOf('message_read_btn') >= 0) {
+    // Grab the correct form
+    form = $(objectClicked).closest('form')[0];
+    // Asynchronous read thread and refresh on same page
     $.ajax({
       type: "POST",
       url: $(form).attr('action'),

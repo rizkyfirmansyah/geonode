@@ -24,14 +24,28 @@
             <td class="col-md-3">
                 <a href="{{ thread.get_absolute_url }}" style="{% if unread_flag %}font-weight:bold{% endif %}">{{ thread.subject }} - {{ thread.latest_message.content|slice:"10" }}...</a>
             </td>
-            <td class="col-md-3">
+            <td class="col-md-2">
                 {{ thread.latest_message.sent_at }}
             </td>
-            <td class="col-md-1">
-                <form method="post" action="{% url "messages_thread_delete" thread.pk %}">
+            <td class="col-md-2">
+                <div class="row justify-content-between m-1">
+                  <form method="POST" action={% url "msg_status" %} >
                     {% csrf_token %}
-                    <button class="btn btn-danger message_delete_btn">{% trans "Delete" %}</button>
-                </form>
+                    <input name="action_type" type="hidden" value="read">
+                    <input name=thread_{{ thread.pk }} type="hidden" value="true">
+                    <button type="submit" class="btn btn-info message_read_btn" title="{% trans "Mark as read" %}"><i class="fa-solid fa-check" title="{% trans "Mark selected as read" %}"></i></button>
+                  </form>
+                  <form method="POST" action={% url "msg_status" %} >
+                    {% csrf_token %}
+                    <input name="action_type" type="hidden" value="unread">
+                    <input name=thread_{{ thread.pk }} type="hidden" value="true">
+                    <button type="submit" class="btn btn-warning message_unread_btn" title="{% trans "Mark as unread" %}"><i class="fa-regular fa-envelope" title="{% trans "Mark selected as unread" %}"></i></button>
+                  </form>
+                  <form method="post" action="{% url "messages_thread_delete" thread.pk %}">
+                      {% csrf_token %}
+                      <button class="btn btn-danger message_delete_btn" title="Delete Message"><i class="fa-solid fa-trash"></i></button>
+                  </form>
+                </div>
             </td>
         </tr>
     {% endfor %}

@@ -22,6 +22,7 @@ import json
 import logging
 import traceback
 
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
@@ -43,9 +44,10 @@ from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import send_notification
 from geonode.datasets.forms import RodaForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from geonode.notifications_helper import toast_unauthorized
 from django.contrib import messages
+from user_messages.models import Message, Thread
 
 logger = logging.getLogger(__name__)
 
@@ -538,3 +540,20 @@ def send_email_owner_on_view(owner, viewer, layer_id, geonode_email=os.getenv('D
             email.send()
         except Exception:
             traceback.print_exc()
+
+
+@require_POST
+def delete_bulk_messages(request):
+    thread_pk = request.POST.getlist('delete[]')
+    previous = request.META.get('HTTP_REFERER')
+    unique_thread_pk = list(set(thread_pk))
+
+    with transaction.atomic():
+        Thread.objects.filter(pk__in=unique_thread_pk).delete()
+
+        toast_title = _("Delete Inbox Messages")
+        message = _("Selected messages have been deleted")
+        messages.success(request, message, extra_tags=toast_title)
+
+
+        return redirect(previous)

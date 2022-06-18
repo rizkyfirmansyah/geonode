@@ -36,4 +36,6 @@ urlpatterns = [
         views.invalidate_tiledlayer_cache, name='invalidate_tiledlayer_cache'),
     url(r'^attributes_sats_refresh/?$',
         views.attributes_sats_refresh, name='attributes_sats_refresh'),
+    url(r'^delete-bulk-msg/?$',
+        views.delete_bulk_messages, name='delete_bulk_messages'),
 ]
