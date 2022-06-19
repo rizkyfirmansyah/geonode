@@ -1,4 +1,17 @@
 {% load i18n %}
+<nav class="filter" ng-cloak>
+  <a href="#dataset_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Data Extension</a>
+  <ul class="collapse list-unstyled" id="dataset_type">
+  {% verbatim %}
+  <li ng-repeat="item in dataset_type">
+    <a data-value="{{ item.extension }}" data-filter="link__extension__in" title="{{ item.extension }}"ng-click="multiple_choice_listener($event)" class="{{item.extension.active}}">{{ item.extension }}
+      <span class="badge float-right">{{ item.count }}</span>
+    </a>
+  </li>
+  {% endverbatim %}
+</ul>
+</nav>
+
 {% if SEARCH_FILTERS.CATEGORIES_ENABLED %}
 <nav class="filter" ng-cloak ng-if="categories">
     <a href="#categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Categories</a>
@@ -92,14 +105,6 @@
             viewMode: 'years',
             format: 'L',
             minDate : '2022-01-01'
-        });
-
-        $("#dltDate1").click(function () {
-            $("#inpDate1").val('');
-        });
-
-        $("#dltDate2").click(function () {
-            $("#inpDate2").val('');
         });
 
     });

@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+from pydoc import doc
 from django import template
 from django.db.models import Q
 from django.conf import settings
@@ -78,6 +79,7 @@ def facets(context):
     keywords_filter = request.GET.getlist('keywords__slug__in', None)
     category_filter = request.GET.getlist('category__identifier__in', None)
     data_type_filter = request.GET.getlist('data_type__identifier__in', None)
+    link_filter = request.GET.getlist('link__extension__in', None)
     resource_type_filter = request.GET.getlist('resource__type__in', None)
     regions_filter = request.GET.getlist('regions__name__in', None)
     owner_filter = request.GET.getlist('owner__username__in', None)
@@ -99,6 +101,8 @@ def facets(context):
         documents = Document.objects.filter(title__icontains=title_filter)
         if data_type_filter:
             documents = documents.filter(data_type__identifier__in=data_type_filter)
+        if link_filter:
+            documents = documents.filter(link__extension__in=link_filter)
         if resource_type_filter:
             documents = documents.filter(resource__type__in=resource_type_filter)
         if category_filter:
@@ -197,6 +201,8 @@ def facets(context):
         documents = Document.objects.filter(title__icontains=title_filter)
         if data_type_filter:
             documents = documents.filter(data_type__identifier__in=data_type_filter)
+        if link_filter:
+            documents = documents.filter(link__extension__in=link_filter)
         if resource_type_filter:
             documents = documents.filter(resource__type__in=resource_type_filter)
         if category_filter:
@@ -247,6 +253,8 @@ def facets(context):
         )
         if data_type_filter:
             layers = layers.filter(data_type__identifier__in=data_type_filter)
+        if link_filter:
+            layers = layers.filter(link__extension__in=link_filter)
         if resource_type_filter:
             layers = layers.filter(resource__type__in=resource_type_filter)
         if category_filter:

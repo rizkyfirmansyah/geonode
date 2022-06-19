@@ -22,7 +22,7 @@
         {% endif %}
         <div class="row justify-content-between mb-2 pt-2">
           <div class="col-4 ml-2">{% trans "Filters" %}</div>
-          <a href="." id="clear-search" class="col-4 text-center">{% trans "Clear" %}</a>
+          <button type="button" id="clear-search" class="col-4 text-center delete_search_query">{% trans "Clear" %}</button>
         </div>
         {% comment %} {% if SEARCH_FILTERS.TEXT_ENABLED %}
         {% include "search/_text_filter.html" %}

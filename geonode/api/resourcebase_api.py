@@ -48,7 +48,7 @@ from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.geoapps.models import GeoApp
 from geonode.documents.models import Document
-from geonode.base.models import ResourceBase
+from geonode.base.models import ResourceBase, Link
 from geonode.base.models import HierarchicalKeyword
 from geonode.base.bbox_utils import filter_bbox
 from geonode.groups.models import GroupProfile
@@ -65,6 +65,7 @@ from .api import (
     TopicCategoryResource,
     DataTypeResource,
     GroupResource,
+    BaseLinkResource,
     FILTER_TYPES)
 from .paginator import CrossSiteXHRPaginator
 
@@ -95,6 +96,7 @@ class CommonMetaApi:
         'owner': ALL_WITH_RELATIONS,
         'data_type': ALL_WITH_RELATIONS,
         'resource_type': ALL_WITH_RELATIONS,
+        'link': ALL_WITH_RELATIONS,
         'date': ALL,
         'purpose': ALL,
         'uuid': ALL_WITH_RELATIONS,
@@ -121,6 +123,8 @@ class CommonModelApi(ModelResource):
     owner = fields.ToOneField(OwnersResource, 'owner', full=True)
     tkeywords = fields.ToManyField(
         ThesaurusKeywordResource, 'tkeywords', null=True)
+    link = fields.ToOneField(BaseLinkResource, 'link', full=True, null=True)
+
     VALUES = [
         # fields in the db
         'id',
@@ -174,7 +178,8 @@ class CommonModelApi(ModelResource):
         'is_approved',
         'is_published',
         'dirty_state',
-        'metadata_only'
+        'metadata_only',
+        'link__extension',
     ]
 
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
@@ -188,8 +193,6 @@ class CommonModelApi(ModelResource):
             orm_filters.update({'polymorphic_ctype__model': filters['app_type__in'].lower()})
         if 'extent' in filters:
             orm_filters.update({'extent': filters['extent']})
-        if 'data_type' in filters:
-            orm_filters.update({'data_type': filters['data_type__identifier__in']})
         if 'resource_type' in filters:
             orm_filters.update({'resource_type': filters['resource__type__in']})
 
@@ -209,6 +212,7 @@ class CommonModelApi(ModelResource):
         extent = applicable_filters.pop('extent', None)
         keywords = applicable_filters.pop('keywords__slug__in', None)
         metadata_only = applicable_filters.pop('metadata_only', False)
+        link = applicable_filters.pop('link__extension__in', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
         if filtering_method == 'or':
             filters = Q()
@@ -257,6 +261,9 @@ class CommonModelApi(ModelResource):
         if keywords:
             filtered = self.filter_h_keywords(filtered, keywords)
 
+        if link:
+            filtered = self.filter_link_extension(filtered, link)
+
         # return filtered
         return get_visible_resources(
             filtered,
@@ -279,6 +286,23 @@ class CommonModelApi(ModelResource):
                     # Ignore keywords not actually used?
                     pass
             filtered = queryset.filter(Q(keywords__in=treeqs))
+            print("FILTER MTEDHOD KEY", filtered)
+        else:
+            filtered = queryset
+        return filtered
+
+    def filter_link_extension(self, queryset, link):
+        dataset_ext = Link.objects.none()
+
+        if link and len(link) > 0:
+            for ext in link:
+                try:
+                    exts = Link.objects.filter(link_type='data', extension=ext).values('resource_id')
+                    dataset_ext = exts
+                except ObjectDoesNotExist:
+                    # Ignore keywords not actually used?
+                    pass
+            filtered = queryset.filter(Q(id__in=dataset_ext))
         else:
             filtered = queryset
         return filtered
@@ -329,6 +353,9 @@ class CommonModelApi(ModelResource):
 
         # Resource Type filter
         resource_type = parameters.getlist("resource__type__in")
+
+        # Dataset type filter
+        link = parameters.getlist("link__extension__in")
 
         # Filter by Type and subtype
         if type_facets is not None:
@@ -458,6 +485,11 @@ class CommonModelApi(ModelResource):
                     bbox_left__gte=right) | SQ(
                         bbox_right__lte=left))
 
+        # filter by dataset_ext
+        if link:
+            sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
+                f"link__extension:{','.join(map(str, link))}")
+
         # Apply sort
         if sort.lower() == "-date":
             sqs = (
@@ -505,12 +537,12 @@ class CommonModelApi(ModelResource):
             # results
             if len(filter_set) > 0:
                 sqs = sqs.filter(id__in=filter_set_ids).facet('type').facet('subtype').facet(
-                    'owner') .facet('keywords').facet('regions').facet('category').facet('data_type').facet('resource_type')
+                    'owner') .facet('keywords').facet('regions').facet('category').facet('data_type').facet('resource_type').facet('link')
             else:
                 sqs = None
         else:
             sqs = sqs.facet('type').facet('subtype').facet(
-                'owner').facet('keywords').facet('regions').facet('category').facet('data_type').facet('resource_type')
+                'owner').facet('keywords').facet('regions').facet('category').facet('data_type').facet('resource_type').facet('link')
 
         if sqs:
             # Build the Facet dict
@@ -656,6 +688,34 @@ class CommonModelApi(ModelResource):
                         formatted_obj['thumbnail_url'] = obj.curatedthumbnail.thumbnail_url
                 except Exception as e:
                     logger.exception(e)
+
+            if obj.resource_type == 'document':
+                _links = Document.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
+                formatted_obj['link__extension'] = _links[0].get('extension')
+
+            elif obj.resource_type == 'layer':
+                _links = Link.objects.filter(resource_id=obj.id, link_type='original').values('extension', 'name')
+                extension = ''
+                _name = list(_links)[0]['name']
+
+                if "Original Dataset" in _name:
+                    extension = 'shp'
+                else:
+                    extension = list(_links)[0]['extension']
+
+                formatted_obj['link__extension'] = extension
+
+            elif obj.resource_type == 'remoteStore':
+                formatted_obj['link__extension'] = 'Web Map Service'
+
+            elif obj.resource_type == 'map':
+                formatted_obj['link__extension'] = 'Maps'
+
+            elif obj.resource_type == 'geoapp':
+                formatted_obj['link__extension'] = 'GeoApp'
+
+            else:
+                formatted_obj['link__extension'] = 'Uncategorized'
 
             formatted_objects.append(formatted_obj)
 

@@ -196,6 +196,27 @@
         };
     }
 
+    // Load dataset_type
+    module.load_dataset_type = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == "undefined" ? {} : { 'type': FILTER_TYPE };
+        $http.get(DATASETEXT_ENDPOINT, { params: params }).then(successCallback, errorCallback);
+
+        function successCallback(data) {
+            if ($location.search().hasOwnProperty('link__extension__in')) {
+                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+                    $location.search()['link__extension__in'], 'extension');
+            }
+            $rootScope.dataset_type = data.data.objects;
+            if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
+                module.haystack_facets($http, $rootScope, $location);
+            }
+        };
+
+        function errorCallback(error) {
+            console.log(error);
+        };
+    }
+
     // Load data_type
     module.load_data_type = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == "undefined" ? {} : { 'type': FILTER_TYPE };
@@ -269,6 +290,22 @@
                         data_type.count = $rootScope.data_type_counts[data_type.identifier]
                     } else {
                         data_type.count = 0;
+                    }
+                }
+            } catch (err) {
+                // console.log(err);
+            }
+        }
+
+        if ("dataset_type" in $rootScope) {
+            try {
+                $rootScope.dataset_type_counts = data.meta.facets.dataset_type;
+                for (var id in $rootScope.dataset_type) {
+                    var dataset_type = $rootScope.dataset_type[extension];
+                    if (dataset_type.extension in $rootScope.data_type_counts) {
+                        dataset_type.count = $rootScope.dataset_type_counts[dataset_type.extension]
+                    } else {
+                        dataset_type.count = 0;
                     }
                 }
             } catch (err) {
@@ -377,6 +414,9 @@
         }
         if ($('#data_type').length > 0) {
             module.load_data_type($http, $rootScope, $location);
+        }
+        if ($('#dataset_type').length > 0) {
+            module.load_dataset_type($http, $rootScope, $location);
         }
 
         // Activate the type filters if in the url
@@ -742,6 +782,43 @@
                 delete $scope.query['regions__name__in']
             }
             query_api($scope.query);
+        });
+
+        function reset_query() {
+          if (HAYSTACK_SEARCH) {
+            $scope.query['q'] = $('#text_search_input').val('');
+          } else {
+            // Reset query context
+            var limit = $scope.query['limit'];
+            var offset = $scope.query['offset'];
+            var order_by = $scope.query['order_by'];
+            $scope.query = {};
+            $scope.query['limit'] = limit;
+            $scope.query['offset'] = offset;
+            if (order_by) {
+                $scope.query['order_by'] = order_by;
+            }
+          }
+          $scope.infiniteScrollLoaded = true;
+          $location.search($scope.query);
+
+          return query_api($scope.query);
+        }
+
+        $('.delete_search_query').click(function() {
+            reset_query();
+            // remove active class elements from sidebar
+            $(".scrollbar-sidebar a").removeClass("active");
+        });
+
+        $("#dltDate1").click(function () {
+            reset_query();
+            $("#inpDate1").val('');
+        });
+
+        $("#dltDate2").click(function () {
+            reset_query();
+            $("#inpDate2").val('');
         });
 
         $scope.feature_select = function($event) {

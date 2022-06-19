@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+from email.policy import default
 import json
 import time
 
@@ -41,7 +42,7 @@ from geonode.api.authorization import GeoNodeStyleAuthorization, ApiLockdownAuth
 from guardian.shortcuts import get_objects_for_user
 from tastypie.bundle import Bundle
 
-from geonode.base.models import ResourceBase, ThesaurusKeyword
+from geonode.base.models import Link, ResourceBase, ThesaurusKeyword
 from geonode.base.models import TopicCategory
 from geonode.base.models import DataType
 from geonode.base.models import Region
@@ -355,6 +356,29 @@ class DataTypeResource(TypeFilteredResource):
             'identifier': ALL,
         }
         serializer = CountJSONSerializer()
+        authorization = ApiLockdownAuthorization()
+
+
+class BaseLinkResource(TypeFilteredResource):
+    """Extension api List to filter"""
+    count = fields.CharField(readonly=True, attribute='count', default=0)
+
+    def dehydrate_count(self, bundle):
+        return Link.objects.filter(link_type='data', extension=bundle.obj.extension).distinct().count()
+
+    class Meta:
+        # Logical order of query
+        # 1. Query by link_type='data' and name='External Document'
+        # 2. name='Zipped Shapefile' = 'shp'
+        queryset = Link.objects.filter(link_type='data').order_by('extension').distinct('extension')
+        resource_name = 'dataset_type'
+        excludes = ['resource_uri']
+        allowed_methods = ['get']
+        fields = ('count', 'extension', 'name',)
+        
+        filtering = {
+            'extension': ALL,
+        }
         authorization = ApiLockdownAuthorization()
 
 
