@@ -12,12 +12,12 @@
 
 {% if facet_type == 'groupcategories' %}
   {% if user.is_authenticated and not READ_ONLY_MODE %}
-    <div class="text-right d-flex mr-3"><a href="{% url "group_category_create" %}" class="btn btn-upload ml-2 btn--pill">{% trans "Create a New Group Category" %}</a></div>
+    <div class="text-right d-flex mr-3"><a href="{% url "group_category_create" %}" class="btn btn-save ml-2 btn--pill">{% trans "Create a New Group Category" %}</a></div>
   {% endif %}
 {% endif %}
 {% if facet_type == 'groups' %}
 {% if user.is_authenticated and not READ_ONLY_MODE %}
-  <div class="text-right d-flex mr-3"><a href="{% url "group_create" %}" class="btn btn-upload d-flex align-items-center">Create a New Group</a></div>
+  <div class="text-right d-flex mr-3"><a href="{% url "group_create" %}" class="btn btn-save d-flex align-items-center">Create a New Group</a></div>
 {% endif %}
 <button class="btn btn-primary sidebar-toggle" id="sidebarGC" aria-haspopup="true" aria-expanded="false">Search Group Categories</button>  
 {% endif %}
