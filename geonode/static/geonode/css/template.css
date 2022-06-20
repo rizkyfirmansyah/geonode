@@ -195,6 +195,14 @@
   width: 100% !important;
 }
 
+.scrollbar-sidebar .bootstrap-datetimepicker-widget, .scrollbar-sidebar .bootstrap-datetimepicker-widget.dropdown-menu {
+  min-width: 280px !important;
+  margin-left: .5em !important;
+  margin-right: .5em !important;
+  font-size: .8.8em;
+  width: unset !important;
+}
+
 nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicker-widget.dropdown-menu {
   margin-left: 3px !important;
   margin-right: 3px !important;
