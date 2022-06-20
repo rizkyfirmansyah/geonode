@@ -18,13 +18,13 @@
 #
 #########################################################################
 
+from secrets import choice
 from django import forms
 from slugify import slugify
 from django.utils.translation import ugettext as _
 from geonode.security.forms import ProfileMultipleChoiceField
 from modeltranslation.forms import TranslationModelForm
 from django.db.models import Q
-
 from django.contrib.auth import get_user_model
 
 from geonode.groups.models import GroupProfile
@@ -61,12 +61,34 @@ class GroupForm(TranslationModelForm):
 
         return cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields["categories"].label = 'Group Categories'
+        self.fields["categories"].widget.attrs.update(
+              {
+                  'class': 'selectpicker',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-actions-box': 'true',
+                  'data-size': '5'})
+
     class Meta:
         model = GroupProfile
         exclude = ['group', 'created_by', ]
 
 
 class GroupUpdateForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["categories"].widget.attrs.update(
+              {
+                  'class': 'selectpicker',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-actions-box': 'true',
+                  'data-size': '5'})
 
     def clean_name(self):
         if GroupProfile.objects.filter(
@@ -80,7 +102,7 @@ class GroupUpdateForm(forms.ModelForm):
 
     class Meta:
         model = GroupProfile
-        exclude = ['group']
+        exclude = ['group', 'title_en', 'description_en', 'created_by']
 
 
 class GroupMemberForm(forms.Form):
@@ -98,6 +120,10 @@ class GroupMemberForm(forms.Form):
                 'data-size': '5'
         }),
         required=False)
+
+    manager_role_choices=(
+        (False, "Assign to member"),
+        (True, "Assign manager role"))
 
     manager_role = forms.BooleanField(
         required=False,

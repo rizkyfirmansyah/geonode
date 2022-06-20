@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load avatar_tags %}
+
+<div class="card-body">
+    <div class="row">
+      <div class="avatar ml-2">
+        <a href="{{ user.get_absolute_url }}">{% avatar member.user.username 40 %}</a>
+      </div>
+      <h5 class="col">
+        {{ member.user.full_name_or_nick }}
+        {% if member.user.email %}
+        <a href="{% url 'message_create' user.id %}"><i class="fa-regular fa-envelope"></i></a>
+        {% endif %}
+        |
+        {% if member.role == 'manager' %}
+          <span class="btn btn-primary btn-xs">{% trans 'Manager' %}</span>
+          |
+        {% endif %}
+        <form class="d-inline" method="POST" action="{% url "group_member_remove" group.slug member.user.username %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-xs">{% trans 'Remove' %}</button>
+        </form>
+        {% if member.role == 'member' %}
+          |
+          <form class="d-inline" method="POST" action="{% url "group_member_promote" group.slug member.user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-upload btn-xs">{% trans 'Promote' %}</button>
+          </form>
+        {% endif %}
+        {% if member.role == 'manager' %}
+          |
+          <form class="d-inline" method="POST" action="{% url "group_member_demote" group.slug member.user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning btn-xs">{% trans 'Demote' %}</button>
+          </form>
+        {% endif %}
+      <h5>
+      <p class="{% if member.role == 'manager' %}text-primary {% else %}text-muted {% endif %}small float-right">
+          {% trans 'Role' %}: {{ member.role }}
+      </p>
+    </div>
+</div>
+<hr class="m-0">

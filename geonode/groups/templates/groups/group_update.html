@@ -6,6 +6,7 @@
 {% block body_class %}{% trans "groups update" %}{% endblock %}
 
 {% block body %}
+<form id="form" method="POST" action="" enctype="multipart/form-data">
     <div class="card w-100">
       <div class="card-header text-center"><h3>{% trans "Update Group" %}</h3></div>
       <div class="card-body">
@@ -17,18 +18,16 @@
           </div>
         {% endif %}
           <div>
-            <form  id="form" method="POST" action="" enctype="multipart/form-data">
               {% csrf_token %}
                 <fieldset>
                     {{ form|crispy }}
-                    <div>
-                        <input type="hidden" name="action" value="create" />
-                        <input type="submit" class="btn btn-save btn-block" value="{% trans 'Update' %}"/>
-                    </div>
                 </fieldset>
-            </form>
           </div>
       </div>
+      <div class="card-footer">
+          <input type="hidden" name="action" value="create" />
+          <input type="submit" class="btn btn-save btn-block" value="{% trans 'Update' %}"/>
+      </div>
   </div>
-    
+</form>
 {% endblock %}

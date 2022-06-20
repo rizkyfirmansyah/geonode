@@ -6,6 +6,7 @@
 {% block body_class %}{% trans "groups create" %}{% endblock %}
 
 {% block body %}
+<form id="form" method="POST" action="" enctype="multipart/form-data">
     <div class="card border-dark rounded bg-light">
       <div class="card-header">
         <div class="row">
@@ -26,17 +27,16 @@
       </div>
 
       <div class="card-body">
-        <form id="form" method="POST" action="" enctype="multipart/form-data">
           {% csrf_token %}
           <fieldset>
               {{ form|crispy }}
-              <div class="form_block">
-                  <input type="hidden" name="action" value="create" />
-                  <input type="submit" class="btn btn-save btn-block" value="{% block form_button %}{% trans 'Create' %}{% endblock %}"/>
-              </div>
           </fieldset>
-        </form>
+      </div>
+      
+      <div class="card-footer">
+          <input type="hidden" name="action" value="create" />
+          <input type="submit" class="btn btn-save btn-block" value="{% block form_button %}{% trans 'Create' %}{% endblock %}"/>
       </div>
     </div>
-    
+</form>
 {% endblock %}

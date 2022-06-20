@@ -22,7 +22,9 @@
           <div class="card-body">
             {% autoescape off %}
               <div class="row">
-                <div class="avatar ml-2">{% avatar message.sender 50 %}</div>
+                <div class="avatar ml-2">
+                  <a href="{{ user.get_absolute_url }}">{% avatar message.sender 50 %}</a>
+                </div>
                 <div class="col">{{ message.content|safe }}</div>
               </div>
             {% endautoescape %}
