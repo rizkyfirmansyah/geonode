@@ -6,7 +6,7 @@
 {% block title %}{% trans "Create Message" %} — {{ block.super }}{% endblock %}
 
 {% block extra_script %}
-<script>
+<script type="text/javascript">
     tinymce.init({
         selector: 'textarea#id_content',
         theme: 'silver',
@@ -23,6 +23,7 @@
         contextmenu: "link image imagetools table",
         cleanup_on_startup: true
     });
+
 </script>
 
 {% endblock extra_script %}
@@ -49,30 +50,7 @@
                 {% endif %}
             </div>
             {% endif %}
-            <table style="width=100%">
-                {% include 'user_messages/_field_group_header.html' with form=form field_name="to_users" %}
-                <label for="id_to_users">{% trans "To users" %}</label>
-                <input id="id_to_users" name="to_users" type="text" class="create-msg-form-control">
-                {% include 'user_messages/_field_error_block.html' with form=form field_name="to_users" %}
-                {# Beggining div is in the _field_group_header file#}
-                </div>
-                {% include 'user_messages/_field_group_header.html' with form=form field_name="to_groups" %}
-                <label for="id_to_groups">{% trans "To groups" %}</label>
-                <input id="id_to_groups" name="to_groups" type="text" class="create-msg-form-control">
-                {% include 'user_messages/_field_error_block.html' with form=form field_name="to_groups" %}
-                </div>
-                {% include 'user_messages/_field_group_header.html' with form=form field_name="subject" %}
-                <label for="id_subject">{% trans "Subject" %}</label>
-                <input id="id_subject" name="subject" type="text" class="create-msg-form-control">
-                {% include 'user_messages/_field_error_block.html' with form=form field_name="subject" %}
-                </div>
-                {% include 'user_messages/_field_group_header.html' with form=form field_name="content" %}
-                <label for="id_content">{% trans "Content" %}</label>
-                <textarea id="id_content" name="content" cols="40" rows="10" required=""
-                    class="create-msg-form-control"></textarea>
-                {% include 'user_messages/_field_error_block.html' with form=form field_name="content" %}
-                </div>
-            </table>
+            {{ form|crispy }}
         </div>
         <div class="card-footer">
             <div class="row">
@@ -83,28 +61,6 @@
             </div>
         </div>
     </div>
-
 </form>
-
-<script src="{% static "geonode/js/messages/message_recipients_autocomplete_es5.js" %}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function (event) {
-        const user_input = document.getElementById('id_to_users');
-        const blacklist = ["{{ request.user.username }}"];
-        const user_tag = new MessageRecipientsTags(user_input, get_users_data,
-            location.origin + '/api/profiles/?username__icontains=', blacklist);
-        user_tag.init();
-
-        const group_input = document.getElementById('id_to_groups');
-        const group_tag = new MessageRecipientsTags(group_input, get_groups_data,
-            location.origin + '/api/group_profile/?title__icontains=');
-        group_tag.init();
-
-        $('#id_form_submit').on('click', () => {
-            user_tag.fixOutputValue();
-            group_tag.fixOutputValue();
-        })
-    });
-</script>
 
 {% endblock %}

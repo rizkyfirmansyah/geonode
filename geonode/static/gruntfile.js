@@ -226,8 +226,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'geonode/js/crop_widget/crop_widget_es5.js': 'geonode/js/crop_widget/crop_widget.js',
-                    'geonode/js/messages/message_recipients_autocomplete_es5.js': 'geonode/js/messages/message_recipients_autocomplete.js'
+                    'geonode/js/crop_widget/crop_widget_es5.js': 'geonode/js/crop_widget/crop_widget.js'
                 }
             }
         },

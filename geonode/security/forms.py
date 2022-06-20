@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from geonode.groups.models import GroupProfile
 from django.db.models import Q
 from django.conf import settings
+from django.core.exceptions import ValidationError
+
 
 class ProfileMultipleChoiceField(forms.ModelMultipleChoiceField):
   
@@ -115,3 +117,19 @@ class PermissionsForm(forms.Form):
       label="The following groups",
       choices=get_groups_choices,
       required=False)
+
+    def clean(self):
+        """
+        Validate fields that depend on each other
+        In this case we need to verify if at least one user or group has
+        been selected.
+        """
+        super().clean()
+        view_resourcebase_users = self.cleaned_data.get("view_resourcebase_users")
+        download_resourcebase_users = self.cleaned_data.get("download_resourcebase_users")
+        if view_resourcebase_users is None and download_resourcebase_users is None:
+            # when data in field users/groups is not valid,
+            # cleaned_data function will not include the data or its field
+            raise ValidationError(_("Must have at least one validated user or group."))
+        if not any(view_resourcebase_users) and not any(download_resourcebase_users):
+            raise ValidationError(_("Must select at least one user or group."))

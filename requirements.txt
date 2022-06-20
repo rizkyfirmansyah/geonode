@@ -91,7 +91,7 @@ geonode-avatar==5.0.7
 geonode-dialogos==3.0.1
 geonode-django-activity-stream==0.10.0
 geonode-oauth-toolkit==2.2.2
-geonode-user-messages==2.0.2
+-e git+https://github.com/rizkyfirmansyah/geonode-user-messages@master#egg=geonode-user-messages
 geoserver-restconfig==2.0.4.9
 gisdata==0.5.4
 glob2==0.7

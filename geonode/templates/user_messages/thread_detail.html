@@ -2,25 +2,34 @@
 
 {% load i18n %}
 {% load avatar_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %}{{ thread.subject }} — {{ block.super }}{% endblock %}
 
 {% block body %}
 <div class="card border-dark rounded bg-light">
-  <div class="card-header">
+  <div class="card-header bg-primary">
     <div class="row">
-      <h3 class="col">{{ thread.subject }}</h3>
+      <h3 class="col text-light">{{ thread.subject }}</h3>
       <div class="col-4 text-right">
-        <a href="{% url 'messages_inbox' %}" class="btn btn-primary w-100" type="button">{% trans "Back to Inbox" %}</a>
+        <a href="{% url 'messages_inbox' %}" class="btn btn-secondary btn-block" type="button">{% trans "Back to Inbox" %}</a>
       </div>
     </div>
   </div>
   <div class="col-12">
       {% for message in thread.messages.all %}
-        <div class="card-body">
-          {% autoescape off %}{% avatar message.sender 50 %}{% endautoescape %}
-          {{ message.sent_at }} {% trans "by" %} {% ifequal request.user message.sender %}{% trans "me" %}{% else %}<a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>{% endifequal %}
-          <p class="mt-4">{{ message.content }}</p>
+        <div class="card border-0 mt-2">
+          <div class="card-body">
+            {% autoescape off %}
+              <div class="row">
+                <div class="avatar ml-2">{% avatar message.sender 50 %}</div>
+                <div class="col">{{ message.content|safe }}</div>
+              </div>
+            {% endautoescape %}
+          </div>
+          <div class="card-footer">
+            <p class="text-muted small">{{ message.sent_at }} {% trans "by" %} {% ifequal request.user message.sender %}{% trans "me" %}{% else %}<a href="{{ message.sender.get_absolute_url }}">{{ message.sender }}</a>{% endifequal %}</p>
+          </div>
         </div>
         {% empty %}
         {% trans "You have no messages" %}.
@@ -29,10 +38,8 @@
   <div class="card-body">
     <form action="{{ thread.get_absolute_url }}" method="post" class="w-100">
       {% csrf_token %}
-      <fieldset>
-        <textarea name="content" class="w-100" style="min-height: 240px; padding: 0.5em;" cols="40" rows="10"></textarea>
-      </fieldset>
-      <input type="submit" value="{% trans "Send Reply" %}" class="btn btn-primary w-100 mt-4" type="button"/>
+      {{ form|crispy }}
+      <input type="submit" value="{% trans "Send Reply" %}" class="btn btn-save btn-block mt-4" type="button"/>
     </form>
   </div>
   <div class="card-footer text-right">
@@ -53,3 +60,26 @@
   </div>
 </div>
 {% endblock %}
+
+{% block extra_script %}
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea#id_content',
+        theme: 'silver',
+        height: "680",
+        plugins: [
+            "print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons"
+        ],
+        toolbar: [
+            "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save | insertfile image media template link anchor codesample | ltr rtl"
+        ],
+        toolbar_sticky: "true",
+        content_css: '//www.tiny.cloud/css/codepen.min.css',
+        toolbar_mode: 'sliding',
+        contextmenu: "link image imagetools table",
+        cleanup_on_startup: true
+    });
+
+</script>
+
+{% endblock extra_script %}
