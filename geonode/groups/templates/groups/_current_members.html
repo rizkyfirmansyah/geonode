@@ -8,8 +8,8 @@
       </div>
       <h5 class="col">
         {{ member.user.full_name_or_nick }}
-        {% if member.user.email %}
-        <a href="{% url 'message_create' user.id %}"><i class="fa-regular fa-envelope"></i></a>
+        {% if member.user.email and member.user != user %}
+          <a href="{% url 'message_create' member.user.id %}"><i class="fa-regular fa-envelope"></i></a>
         {% endif %}
         |
         {% if member.role == 'manager' %}
