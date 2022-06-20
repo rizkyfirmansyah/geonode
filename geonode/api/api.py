@@ -316,7 +316,6 @@ class TopicCategoryResource(TypeFilteredResource):
 
 class DataTypeResource(TypeFilteredResource):
     """Datatype api"""
-    catalogue_count = fields.IntegerField(default=0)
 
     def dehydrate_layers_count(self, bundle):
         request = bundle.request
