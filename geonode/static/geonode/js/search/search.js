@@ -809,6 +809,9 @@
             reset_query();
             // remove active class elements from sidebar
             $(".scrollbar-sidebar a").removeClass("active");
+            $("#text_search_input").val('');
+            $(".result-wrapper").css('display', 'none');
+            $(".input-highlight").css("width", '0em');
         });
 
         $("#dltDate1").click(function () {

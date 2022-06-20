@@ -763,10 +763,6 @@ button.full-width {
   color: var(--primary)
 }
 
-.ClsSgnM {
-  padding: 0 8px;
-}
-
 #SigninModal .modal-dialog {
   width: 100%;
   margin: 0 auto;
@@ -2955,9 +2951,6 @@ html {
     #text_search_btn {
         font-size: 2rem;
     }
-    .delete_search {
-        padding: 0
-    }
 }
 
 #member_form_container .select2-container, #div_id_remember {
@@ -3161,13 +3154,7 @@ article.tab-pane {
     background-color: var(--web-surface);
 }
 
-.delete_search {
-    padding: 0 8px;
-    display: flex;
-}
-
-.ClsSgnM svg:hover,
-.delete_search svg:hover {
+.delete_search_query svg:hover {
     filter: drop-shadow(3px 5px 2px rgb(0 0 0 / .4))
 }
 
