@@ -1,0 +1,16 @@
+<script type="text/javascript">
+  $(function() {
+    const stretchCol = () => {
+      $("#catalogueList").removeClass('col-md-10 pl-5').addClass('col-md-12');
+    }
+    stretchCol();
+    $("#sidebarFilter").on('click', function() {
+      if (Modernizr.mq('(max-width: 1368px)'))
+        if (!$("#sidebar").hasClass('active')) {
+          stretchCol();
+        } else {
+          $("#catalogueList").removeClass('col-md-12').addClass('col-md-10 pl-5');
+        }
+    })
+  })
+</script>
