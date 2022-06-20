@@ -23,7 +23,7 @@
     </div>
     <div class="card-footer">
       <div class="row">
-        <a href="{% url "announcements_list" %}" class="btn btn-info col m-3">{% trans "Cancel" %}</a>
+        <a href="{% url "announcements_list" %}" class="btn btn-secondary col m-3">{% trans "Back to Announcement" %}</a>
         {% if announcement %}
         <a href="{% url "announcements_delete" pk=announcement.pk %}" class="btn btn-danger col m-3">{% trans "Delete" %}</a>
         {% endif %}
@@ -36,7 +36,7 @@
 
 {% block extra_script %}
 <script type="text/javascript">
-  
+
     tinymce.init({
         selector: 'textarea#id_content',
         theme: 'silver',
