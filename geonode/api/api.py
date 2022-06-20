@@ -366,10 +366,14 @@ class BaseLinkResource(TypeFilteredResource):
         return Link.objects.filter(link_type='data', extension=bundle.obj.extension).distinct().count()
 
     class Meta:
-        # Logical order of query
-        # 1. Query by link_type='data' and name='External Document'
-        # 2. name='Zipped Shapefile' = 'shp'
-        queryset = Link.objects.filter(link_type='data').order_by('extension').distinct('extension')
+        filter_name = ['Hosted Document', 'Zipped Shapefile', 'External Document']
+        results = Link.objects.filter(
+            Q(link_type__exact='data') &
+            Q(name__in=filter_name)
+        )
+        results = results.order_by('extension')
+        results = results.distinct('extension')
+        queryset = results
         resource_name = 'dataset_type'
         excludes = ['resource_uri']
         allowed_methods = ['get']
