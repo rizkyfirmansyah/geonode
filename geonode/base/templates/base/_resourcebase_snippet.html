@@ -56,7 +56,7 @@
                   </span>
                 </div>
                 <div class="row pt-1 w-100">
-                  <div class="ml-3 card-subtitle font-small"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
+                  <div class="ml-3 card-subtitle font-small" title="Published at: {{ item.date|date:'d MMM y' }}"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
                   <div class="col-7 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
                 </div>
               </div>
