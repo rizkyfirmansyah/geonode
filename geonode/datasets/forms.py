@@ -10,7 +10,7 @@ class RodaForm(forms.ModelForm):
     requester_email = forms.CharField(label="Email", required=True)
     requester_institution = forms.CharField(label="Institution", required=True)
     requester_position = forms.CharField(label="Position", required=True)
-    purposes = forms.CharField(label="Purposes", required=True, help_text=Roda.purposes_help_text)
+    purposes = forms.CharField(label="Purposes", required=True, help_text=Roda.purposes_help_text, widget=forms.Textarea)
     retention = forms.ChoiceField(label="Retention", required=False, help_text=Roda.retention_help_text, choices=Roda.RETENTION_CHOICES)
 
     class Meta:
@@ -21,7 +21,7 @@ class RodaForm(forms.ModelForm):
           'requester_email': forms.TextInput(attrs={'class': 'form-control'}),
           'requester_institution': forms.TextInput(attrs={'class': 'form-control'}),
           'requester_position': forms.TextInput(attrs={'class': 'form-control'}),
-          'purposes': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Please briefly describe how you intend to use this data?"}),
+          'purposes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': "Please briefly describe how you intend to use this data?"}),
         }
         exclude = ('created_at', 'absolute_url', 'resource_owner', 'uuid', 'resource_title', 'requester',)
 

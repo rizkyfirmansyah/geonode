@@ -491,7 +491,7 @@ def request_permissions(request):
             _toast_message = _("We have sent an email to the resource owner about your request.")
             
             subject = _('System message: A request to download resource')
-            message = f'{requester_name} has requested to download the resource {resource_title}. Reason for the request: {purposes}. To allow his/her download the resource, please go to {absolute_url}. Under the permissions setting, change data and assign download to {request.user}.'
+            message = f'<p>{requester_name} has requested to download the resource {resource_title}</p><p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {request.user}.</p>'
 
             logger.debug("Record request download resources...")
             send_inbox(request, subject, message, resource.owner)
