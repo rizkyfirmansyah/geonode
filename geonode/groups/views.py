@@ -107,11 +107,16 @@ def group_join_request(request, slug):
     """
     group = GroupProfile.objects.get(slug=slug)
     toast_title = _("Request Join Group")
-    requester = request.user
+    user = get_user_model().objects.get(username=request.user)
+    requester = user.full_name_or_nick
     send_to = get_user_model().objects.get(id=group.created_by_id)
-    content = f'{requester} wants to join your group {group.title}.'
+
+    content_title = f'<p class="font-weight-bold">{requester} wants to join your group <a href="{group.get_absolute_url()}">{group.title}</a>.</p>'
+    content_body = f'<p>Add {requester} by jumping to <a href="{group.get_absolute_url()}members">this page.</a> </p>'
+    content = content_title + content_body
+
     message = _("Your request has been sent to owner's inbox.")
-    group.request_join(requester, owner=send_to)
+    group.request_join(user, owner=send_to)
 
     send_inbox(request, toast_title, content, send_to=send_to)
     messages.success(request, message, extra_tags=toast_title)

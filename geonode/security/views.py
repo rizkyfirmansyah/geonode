@@ -484,6 +484,10 @@ def request_permissions(request):
             roda = roda_form.save(commit=False)
             roda.resource_owner = resource.owner
             roda.requester = request.user
+
+            user = get_user_model().objects.get(username=request.user)
+            requester = user.full_name_or_nick
+
             roda.resource_title = resource_title
             roda.absolute_url = absolute_url
             roda.uuid = uuid
@@ -491,7 +495,10 @@ def request_permissions(request):
             _toast_message = _("We have sent an email to the resource owner about your request.")
             
             subject = _('System message: A request to download resource')
-            message = f'<p>{requester_name} has requested to download the resource {resource_title}</p><p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {request.user}.</p>'
+
+            message_title = f'<p class="font-weight-bold">{requester_name} has requested to download the resource {resource_title}</p>'
+            message_body = f'<p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {requester}.</p>'
+            message = message_title + message_body
 
             logger.debug("Record request download resources...")
             send_inbox(request, subject, message, resource.owner)
