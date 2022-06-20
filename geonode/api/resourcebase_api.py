@@ -177,6 +177,7 @@ class CommonModelApi(ModelResource):
         'dirty_state',
         'metadata_only',
         'link__extension',
+        'featured',
     ]
 
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
