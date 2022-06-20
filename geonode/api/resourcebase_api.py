@@ -162,11 +162,8 @@ class CommonModelApi(ModelResource):
         'popular_count',
         'srid',
         'bbox_polygon',
-        'category__gn_description',
-        'category__title',
         'category__icons',
         'category__fa_class',
-        'category__identifier',
         'supplemental_information',
         'resource_type',
         'site_url',
@@ -202,6 +199,7 @@ class CommonModelApi(ModelResource):
         return orm_filters
 
     def _remove_additional_filters(self, orm_filters):
+        orm_filters.pop('title__icontains', None)
         orm_filters.pop('abstract__icontains', None)
         orm_filters.pop('purpose__icontains', None)
         orm_filters.pop('f_method', None)
@@ -654,18 +652,15 @@ class CommonModelApi(ModelResource):
             formatted_obj['owner_name'] = obj.owner.get_full_name() or obj.owner.username
 
             if obj.category:
-                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
-                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
-                formatted_obj['category__title'] = [c.title for c in obj.category.all()] if obj.category else []
                 fa_class = {}
                 icons = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
-                c_gn = [c.gn_description for c in obj.category.all()]
+                c_title = [c.title for c in obj.category.all()]
                 c_svg = [c.svg for c in obj.category.all()]
                 c_icons = list(zip(c_svg, c_fa))
                 if len(c_fa) > 0:
                     for i, v in enumerate(c_fa):
-                        fa_class[c_gn[i]] = v
+                        fa_class[c_title[i]] = v
                 else:
                     fa_class = {}
                 formatted_obj['category__fa_class'] = fa_class
@@ -674,9 +669,9 @@ class CommonModelApi(ModelResource):
                     for i, v in enumerate(c_icons):
                         # set priority to use inline svg rather than font awesome icon
                         if v[0]:
-                            icons[c_gn[i]] = v[0]
+                            icons[c_title[i]] = v[0]
                         else:
-                            icons[c_gn[i]] = v[1]
+                            icons[c_title[i]] = v[1]
                 else:
                     icons = {}
                 formatted_obj['category__icons'] = icons
@@ -859,8 +854,6 @@ class LayerResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
-                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
@@ -1027,8 +1020,6 @@ class MapResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
-                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
@@ -1120,8 +1111,6 @@ class GeoAppResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
-                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]
@@ -1199,8 +1188,6 @@ class DocumentResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
             if obj.category:
-                formatted_obj['category__identifier'] = [c.identifier for c in obj.category.all()] if obj.category else []
-                formatted_obj['category__gn_description'] = [c.gn_description for c in obj.category.all()] if obj.category else []
                 fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
                 c_gn = [c.gn_description for c in obj.category.all()]

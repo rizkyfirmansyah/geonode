@@ -213,9 +213,9 @@
                 if (this.readyState == 4 && this.status == 200) {
                     const response = JSON.parse(xhttp.responseText);
                     response.objects.forEach(function(value, index, array) {
-                        if (value.gn_description == key) {
+                        if (value.title == key) {
                             const cid = value.identifier;
-                            const redirect_to = siteUrl + "search/?category__identifier__in=" + cid
+                            const redirect_to = siteUrl + "catalogue/?category__identifier__in=" + cid
                             window.location.replace(redirect_to);
                         }
                     })

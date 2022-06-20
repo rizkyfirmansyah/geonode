@@ -5245,6 +5245,10 @@ footer li a:hover {
     height: 100%;
 }
 
+.scrollbar-sidebar .dropdown-toggle::after {
+    float: right;
+}
+
 #body_inner {
     flex: 1;
     position: relative;
