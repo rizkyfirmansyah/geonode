@@ -5,8 +5,7 @@
 
 {% block title %}{% trans "Create Message" %} — {{ block.super }}{% endblock %}
 
-{% block extrahead %}
-<script src="{% static "lib/js/tinymce.min.js" %}"></script>
+{% block extra_script %}
 <script>
     tinymce.init({
         selector: 'textarea#id_content',
@@ -26,7 +25,7 @@
     });
 </script>
 
-{% endblock extrahead %}
+{% endblock extra_script %}
 
 
 {% block body %}

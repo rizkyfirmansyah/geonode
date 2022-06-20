@@ -188,13 +188,11 @@
 }
 
 .bootstrap-datetimepicker-widget, .bootstrap-datetimepicker-widget.dropdown-menu {
-  /* position: fixed !important;
-  display: block !important;
-  z-index: 99999 !important; */
-  min-width: 300px;
+  min-width: 380px;
   margin-left: auto;
   margin-right: auto;
   font-size: .9em;
+  width: 100% !important;
 }
 
 nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicker-widget.dropdown-menu {
@@ -203,10 +201,6 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   padding: 3px !important;
   font-size: .88em;
 }
-/*
-.bootstrap-datetimepicker-widget.dropdown-menu.pull-right:after {
-  right: -2px !important;
-} */
 
 
 .errorlist {
