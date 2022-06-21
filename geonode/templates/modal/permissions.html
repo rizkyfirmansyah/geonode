@@ -39,7 +39,7 @@
 </div>
 
 {% include "modal/get_permissions.html" %}
-{% if GEONODE_SECURITY_ENABLED %}
+{% if catalogue == 'layer' %}
   {% include "modal/permissions_layer.html" %}
 {% endif %}
 {% include "toast/permissions_form.html" %}

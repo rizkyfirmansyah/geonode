@@ -11,15 +11,15 @@
         </button>
       </div>
       <div class="modal-body text-center">
-        <div style="margin-bottom:20px">
+        <div class="mb-2">
           <h5 class="modal-title text-center" id="downloadMetadataDocModal">
             {% trans "Full metadata" %}
           </h5>
-          <ul style="list-style: outside none none;padding: 0;">
-            <li><a class="btn btn-light btn-block text-nowrap" target="_blank"
+          <ul>
+            <li><a class="btn btn-light btn-block" target="_blank"
                 href="../catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.txt">
                 {% trans "Text format" %} </a></li>
-            <li><a class="btn btn-light btn-block text-nowrap" target="_blank"
+            <li><a class="btn btn-light btn-block" target="_blank"
                 href="../catalogue/csw_to_extra_format/{{resource.uuid}}/{{resource.title}}.html">
                 {% trans "HTML format" %} </a></li>
           </ul>
@@ -27,7 +27,7 @@
         <h5 class="modal-title text-center" id="downloadMetadataDocModal">
           {% trans "Standard Metadata - XML format" %}
         </h5>
-        <ul style="list-style: outside none none;padding: 0;">
+        <ul>
           {% for link in metadata %}
           <li><a class="btn btn-light btn-block" href="{{ link.url }}">{{ link.name }}</a></li>
           {% endfor %}
