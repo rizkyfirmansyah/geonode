@@ -956,3 +956,43 @@ class ResourceManager:
                 logger.exception(e)
                 _resource.set_processing_state("FAILED")
         return False
+
+
+def serialize_resource_permissions(obj):
+    perms_users = collections.defaultdict(list)
+    perms_manage = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase']
+    for k, l in obj.items():
+        if k.endswith('users'):
+            if k.startswith('manage_resourcebase'):
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_users[get_user_model().objects.get(username=v).username].extend(perms_manage)
+                else:
+                    perms_users[get_user_model().objects.get(username=l).username].extend(perms_manage)
+            else:
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
+                else:
+                    perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
+
+
+    perms_groups = collections.defaultdict(list)
+    for k, l in obj.items():
+        if k.endswith('groups'):
+            if k.startswith('manage_resourcebase'):
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_groups[GroupProfile.objects.get(slug=v).slug].extend(perms_manage)
+                else:
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].extend(perms_manage)
+            else:
+                if isinstance(l, list):
+                    for i, v in enumerate(l):
+                        perms_groups[GroupProfile.objects.get(slug=v).slug].append(k.replace('_groups', ''))
+                else:
+                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(k.replace('_groups', ''))
+
+    resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
+
+    return resource_permissions
