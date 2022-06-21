@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -28,9 +27,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(PROJECT_ROOT, "uploaded"))
 
-STATIC_ROOT = os.getenv('STATIC_ROOT',
-                        os.path.join(PROJECT_ROOT, "static_root")
-                        )
+STATIC_ROOT = os.getenv('STATIC_ROOT', os.path.join(PROJECT_ROOT, "static_root"))
 
 SECRET_KEY = 'qM-??jCGzC46L$wd'
 
@@ -162,7 +159,6 @@ OGC_SERVER = {
 
 # If you want to enable Mosaics use the following configuration
 UPLOADER = {
-    # 'BACKEND': 'geonode.rest',
     'BACKEND': 'geonode.importer',
     'OPTIONS': {
         'TIME_ENABLED': True,

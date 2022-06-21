@@ -16,10 +16,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+
 import os
 import base64
-import pickle
 import shutil
+import pickle
 import logging
 
 from slugify import slugify
@@ -53,7 +54,7 @@ class UploadManager(models.Manager):
         ).update(state=Upload.STATE_INVALID)
 
     def update_from_session(self, upload_session, layer=None):
-        self.get(
+        return self.get(
             user=upload_session.user,
             name=upload_session.name,
             import_id=upload_session.import_session.id).update_from_session(
@@ -67,8 +68,8 @@ class UploadManager(models.Manager):
             state=import_session.state)
 
     def get_incomplete_uploads(self, user):
-        return self.filter(user=user).exclude(
-            state=Upload.STATE_PROCESSED)
+        return self.filter(user=user).exclude(state=Upload.STATE_PROCESSED).exclude(
+            state=Upload.STATE_WAITING)
 
 
 class UploadSizeLimitManager(models.Manager):
@@ -99,10 +100,10 @@ class Upload(models.Model):
     state = models.CharField(max_length=16)
     create_date = models.DateTimeField('create_date', default=now)
     date = models.DateTimeField('date', default=now)
-    layer = models.ForeignKey(Layer, null=True, on_delete=models.CASCADE)
+    layer = models.ForeignKey(Layer, null=True, on_delete=models.SET_NULL)
     upload_dir = models.TextField(null=True)
     store_spatial_files = models.BooleanField(default=True)
-    name = models.CharField(max_length=64, null=True)
+    name = models.CharField(max_length=64, null=False, blank=False)
     complete = models.BooleanField(default=False)
     # hold our serialized session object
     session = models.TextField(null=True, blank=True)
@@ -185,13 +186,18 @@ class Upload(models.Model):
                                 _f,
                                 assigned_name)
 
-        if "COMPLETE" == self.state:
-            self.complete = True
-        if self.layer and self.layer.processed:
-            self.state = Upload.STATE_RUNNING
+        if self.layer:
+            if self.layer.processed:
+                self.state = Upload.STATE_PROCESSED
+            else:
+                self.state = Upload.STATE_RUNNING
         elif self.state in (Upload.STATE_READY, Upload.STATE_PENDING):
             self.state = upload_session.import_session.state
+            if self.state == Upload.STATE_COMPLETE:
+                self.complete = True
+
         self.save()
+        return self.get_session
 
     @property
     def progress(self):
@@ -203,7 +209,9 @@ class Upload(models.Model):
         elif self.state == Upload.STATE_WAITING:
             return 50.0
         elif self.state == Upload.STATE_PROCESSED:
-            return 100.0
+            if self.layer and self.layer.processed:
+                return 100.0
+            return 80.0
         elif self.state in (Upload.STATE_COMPLETE, Upload.STATE_RUNNING):
             if self.layer and self.layer.processed and self.layer.instance_is_processed:
                 self.state = Upload.STATE_PROCESSED
@@ -235,7 +243,7 @@ class Upload(models.Model):
             if not session or session.state != Upload.STATE_COMPLETE:
                 session = gs_uploader.get_session(self.import_id)
         except (NotFound, Exception):
-            if self.state not in (Upload.STATE_COMPLETE, Upload.STATE_PROCESSED):
+            if not session and self.state not in (Upload.STATE_COMPLETE, Upload.STATE_PROCESSED):
                 self.set_processing_state(Upload.STATE_INVALID)
         if session and self.state != Upload.STATE_INVALID:
             return f"{ogc_server_settings.LOCATION}rest/imports/{session.id}"
@@ -243,28 +251,14 @@ class Upload(models.Model):
             return None
 
     def get_detail_url(self):
-        if self.layer and self.state == Upload.STATE_PROCESSED:
+        if self.layer and self.layer.processed:
             return getattr(self.layer, 'detail_url', None)
         else:
             return None
 
     def delete(self, *args, **kwargs):
-        importer_locations = []
         upload_files = [_file.file for _file in UploadFile.objects.filter(upload=self)]
         super().delete(*args, **kwargs)
-        try:
-            session = gs_uploader.get_session(self.import_id)
-        except (NotFound, Exception):
-            session = None
-        if session:
-            for task in session.tasks:
-                if getattr(task, 'data'):
-                    importer_locations.append(
-                        getattr(task.data, 'location'))
-            try:
-                session.delete()
-            except Exception:
-                logging.warning('error deleting upload session')
 
         # we delete directly the folder with the files of the resource
         if self.layer:
@@ -274,18 +268,10 @@ class Upload(models.Model):
                         os.remove(_file.path)
                 except Exception as e:
                     logger.warning(e)
-        for _location in importer_locations:
-            try:
-                shutil.rmtree(_location)
-            except Exception as e:
-                logger.warning(e)
 
         # here we are deleting the local that soon will be removed
         if self.upload_dir and os.path.exists(self.upload_dir):
-            try:
-                shutil.rmtree(self.upload_dir)
-            except Exception as e:
-                logger.warning(e)
+            shutil.rmtree(self.upload_dir, ignore_errors=True)
 
     def set_processing_state(self, state):
         if self.state != state:
@@ -293,8 +279,6 @@ class Upload(models.Model):
             Upload.objects.filter(id=self.id).update(state=state)
         if self.layer:
             self.layer.set_processing_state(state)
-            if self.state != Upload.STATE_PROCESSED:
-                self.layer.set_dirty_state()
 
     def __str__(self):
         return f'Upload [{self.pk}] gs{self.import_id} - {self.name}, {self.user}'

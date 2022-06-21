@@ -103,10 +103,10 @@ def get_wms(version='1.1.1', type_name=None, username=None, password=None):
             version=version,
             username=username,
             password=password,
-            timeout=ogc_server_settings.get('TIMEOUT', 120)
+            timeout=ogc_server_settings.get('TIMEOUT', 60)
         )
     else:
-        return WebMapService(url, timeout=ogc_server_settings.get('TIMEOUT', 120))
+        return WebMapService(url, timeout=ogc_server_settings.get('TIMEOUT', 60))
 
 
 class UploaderBase(GeoNodeBaseTestSupport):
@@ -454,7 +454,7 @@ class TestUpload(UploaderBase):
                 "No 'original' and 'metadata' links have been found"
             )
             self.assertTrue(
-                _links.count() > 0,
+                _links.exists(),
                 "No 'original' and 'metadata' links have been found"
             )
             # Check original links in csw_anytext
@@ -755,7 +755,7 @@ class TestUpload(UploaderBase):
         self.assertFalse(data['uploads'][0]['complete'])
 
         # - Next step - final
-        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=1800) # set to 30 minutes
+        resp = self.client.make_request(expected_url, ajax=True, force_login=True, max_retry=1, timeout=60)
         data = resp.json()
         #    - Assertions
         self.assertEqual(resp.status_code, 200)
