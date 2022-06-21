@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -39,13 +38,14 @@ logger = logging.getLogger(__name__)
     bind=True,
     name='geonode.services.tasks.harvest_resource',
     queue='upload',
-    expires=600,
+    expires=3600,
+    time_limit=1200,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 3, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def harvest_resource(self, harvest_job_id):
     harvest_job = models.HarvestJob.objects.get(pk=harvest_job_id)
     harvest_job.update_status(
@@ -55,7 +55,6 @@ def harvest_resource(self, harvest_job_id):
     try:
         handler = get_service_handler(
             base_url=harvest_job.service.service_url,
-            proxy_base=harvest_job.service.proxy_base,
             service_type=harvest_job.service.type
         )
         logger.debug("harvesting resource...")
@@ -64,12 +63,15 @@ def harvest_resource(self, harvest_job_id):
         logger.debug("Resource harvested successfully")
         workspace = base.get_geoserver_cascading_workspace(create=False)
         _cnt = 0
+        harvest_job.refresh_from_db()
         while _cnt < 5 and not result:
             try:
                 layer = None
                 if Layer.objects.filter(alternate=f"{harvest_job.resource_id}").count():
                     layer = Layer.objects.get(
                         alternate=f"{harvest_job.resource_id}")
+                elif Layer.objects.filter(alternate=f"{workspace.name}:{slugify(harvest_job.resource_id)}").exists():
+                    layer = Layer.objects.get(alternate=f"{workspace.name}:{slugify(harvest_job.resource_id)}")
                 else:
                     layer = Layer.objects.get(
                         alternate=f"{workspace.name}:{harvest_job.resource_id}")
@@ -107,13 +109,14 @@ def harvest_resource(self, harvest_job_id):
     bind=True,
     name='geonode.services.tasks.probe_services',
     queue='geonode',
-    expires=600,
+    expires=3600,
+    time_limit=1200,
     acks_late=False,
     autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 1, 'countdown': 10},
-    retry_backoff=True,
-    retry_backoff_max=700,
-    retry_jitter=True)
+    retry_kwargs={'max_retries': 5},
+    retry_backoff=3,
+    retry_backoff_max=30,
+    retry_jitter=False)
 def probe_services(self):
     # The cache key consists of the task name and the MD5 digest
     # of the name.
@@ -131,3 +134,5 @@ def probe_services(self):
                         logger.error(e)
             except Exception as e:
                 logger.error(e)
+            finally:
+                lock.release()

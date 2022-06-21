@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -48,7 +47,7 @@ from .models import HarvestJob
 from .models import Service
 from . import tasks
 
-logger = logging.getLogger("geonode.core.layers.views")
+logger = logging.getLogger(__name__)
 
 
 @requires_csrf_token
@@ -125,7 +124,7 @@ def _get_service_handler(request, service):
     feature many layers.
     """
     service_handler = get_service_handler(
-        service.service_url, service.proxy_base, service.type)
+        service.service_url, service.type)
     request.session[service.service_url] = service_handler
     logger.debug("Added handler to the session")
     return service_handler

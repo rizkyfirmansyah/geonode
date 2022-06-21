@@ -17,7 +17,6 @@
 #
 #########################################################################
 """Utilities for enabling OGC WMS remote services in geonode."""
-import re
 import json
 import logging
 import requests
@@ -44,7 +43,7 @@ from geonode.base.models import (
     ResourceBase,
     TopicCategory)
 from geonode.layers.models import Layer
-from geonode.layers.utils import resolve_regions, resolve_categories
+from geonode.layers.utils import resolve_regions
 from geonode.thumbs.thumbnails import create_thumbnail
 from geonode.geoserver.helpers import set_attributes_from_geoserver
 from geonode.utils import http_client, get_legend_url
@@ -306,8 +305,10 @@ class WmsServiceHandler(base.ServiceHandlerBase,
             uuid=str(uuid4()),
             **resource_fields
         )
-        srid = geonode_layer.srid
-        bbox_polygon = geonode_layer.bbox_polygon
+        geonode_layer.set_bounds_from_bbox(
+            geonode_layer.bbox_polygon,
+            geonode_layer.srid or geonode_layer.bbox_polygon.srid
+        )
         geonode_layer.full_clean()
         geonode_layer.save(notify=True)
         geonode_layer.keywords.add(*keywords)
@@ -316,20 +317,6 @@ class WmsServiceHandler(base.ServiceHandlerBase,
             set_attributes_from_geoserver(geonode_layer)
         except Exception as e:
             logger.error(e)
-        if bbox_polygon and srid:
-            try:
-                # Dealing with the BBOX: this is a trick to let GeoDjango storing original coordinates
-                Layer.objects.filter(id=geonode_layer.id).update(
-                    bbox_polygon=bbox_polygon, srid='EPSG:4326')
-                match = re.match(r'^(EPSG:)?(?P<srid>\d{4,6})$', str(srid))
-                bbox_polygon.srid = int(match.group('srid')) if match else 4326
-                Layer.objects.filter(id=geonode_layer.id).update(
-                    ll_bbox_polygon=bbox_polygon, srid=srid)
-            except Exception as e:
-                logger.error(e)
-
-            # Refresh from DB
-            geonode_layer.refresh_from_db()
         return geonode_layer
 
     def _create_layer_thumbnail(self, geonode_service, geonode_layer):
@@ -450,9 +437,8 @@ class WmsServiceHandler(base.ServiceHandlerBase,
         workspace = base.get_geoserver_cascading_workspace(create=create)
         cat = workspace.catalog
         store = cat.get_store(self.name, workspace=workspace)
-        logger.debug(f"name: {self.name}")
-        logger.debug(f"store: {store}")
         if store is None and create:  # store did not exist. Create it
+            logger.debug(f"name: {self.name} - store: {store}")
             store = cat.create_wmsstore(
                 name=self.name,
                 workspace=workspace,
@@ -490,7 +476,6 @@ class WmsServiceHandler(base.ServiceHandlerBase,
             layer_resource = layer_resource.resource
         else:
             logger.debug(f"Layer {layer_meta.id} is already present. Skipping...")
-        layer_resource.refresh()
         return layer_resource
 
     def _offers_geonode_projection(self):
@@ -688,22 +673,6 @@ class GeoNodeServiceHandler(WmsServiceHandler):
                                 geonode_layer.regions.clear()
                                 geonode_layer.regions.add(*regions_resolved)
 
-                        # Remove temporary topic category here as the field converted into m2m field
-                        # any idea how to setup?
-                        # Add Topic Category
-                        # if "category" in _layer and _layer["category"]:
-                        #     (categories_resolved, categories_unresolved) = resolve_categories(_layer["category"])
-                        #     if categories_resolved:
-                        #         geonode_layer.category.clear()
-                        #         geonode_layer.category.add(*categories_resolved)
-                        # if "category__gn_description" in _layer and _layer["category__gn_description"]:
-                        #     try:
-                        #         categories = TopicCategory.objects.filter(
-                        #             Q(gn_description__iexact=_layer["category__gn_description"]))
-                        #         if categories:
-                        #             geonode_layer.category = categories[0]
-                            # except Exception:
-                                # traceback.print_exc()
             except Exception:
                 traceback.print_exc()
             finally:

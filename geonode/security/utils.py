@@ -53,7 +53,6 @@ from geonode.security.permissions import (
     DATA_EDITABLE_RESOURCES_SUBTYPES,
     DATA_STYLABLE_RESOURCES_SUBTYPES)
 from geonode.geoserver import security as gs_security
-from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -128,34 +127,30 @@ def get_users_with_perms(obj):
     """
     Override of the Guardian get_users_with_perms
     """
-    permissions = {}
-    def _get_perms_code(perms, content_type_id=None):
-        for perm in Permission.objects.filter(codename__in=perms, content_type_id=content_type_id):
-            permissions[perm.id] = perm.codename
-
-        return permissions
-
     ctype = ContentType.objects.get_for_model(obj)
+    permissions = {}
     PERMISSIONS_TO_FETCH = VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS + ADMIN_PERMISSIONS + SERVICE_PERMISSIONS
-    PERMISSIONS_DATASETS_TO_FETCH = VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS + ADMIN_PERMISSIONS
     try:
-        if hasattr(obj.get_real_instance(), 'storeType'):
-            # include explicit permissions appliable to "storeType == 'dataStore'"
-            if obj.get_real_instance().storeType == 'dataStore':
-                PERMISSIONS_TO_FETCH += LAYER_ADMIN_PERMISSIONS
-                _get_perms_code(PERMISSIONS_TO_FETCH, content_type_id=ctype.id)
-            elif obj.get_real_instance().storeType == 'coverageStore':
-                PERMISSIONS_TO_FETCH += LAYER_EDIT_STYLE_PERMISSIONS
-                _get_perms_code(PERMISSIONS_TO_FETCH, content_type_id=ctype.id)
-            else:
-                PERMISSIONS_TO_FETCH += LAYER_EDIT_DATA_PERMISSIONS
-                _get_perms_code(PERMISSIONS_TO_FETCH, content_type_id=ctype.id)
-
+        # include explicit permissions appliable to "storeType == 'dataStore'"
+        try:
+            _resource = obj.get_real_instance()
+        except Exception:
+            _resource = obj
+        if hasattr(_resource, 'storeType') and _resource.storeType == 'dataStore':
+            PERMISSIONS_TO_FETCH += LAYER_ADMIN_PERMISSIONS
+            for perm in Permission.objects.filter(codename__in=PERMISSIONS_TO_FETCH, content_type_id=ctype.id):
+                permissions[perm.id] = perm.codename
+        elif hasattr(_resource, 'storeType') and _resource.storeType == 'coverageStore':
+            PERMISSIONS_TO_FETCH += LAYER_EDIT_STYLE_PERMISSIONS
+            for perm in Permission.objects.filter(codename__in=PERMISSIONS_TO_FETCH, content_type_id=ctype.id):
+                permissions[perm.id] = perm.codename
         else:
-            _get_perms_code(PERMISSIONS_DATASETS_TO_FETCH, content_type_id=ctype.id)
-
+            PERMISSIONS_TO_FETCH += LAYER_EDIT_DATA_PERMISSIONS
+            for perm in Permission.objects.filter(codename__in=PERMISSIONS_TO_FETCH):
+                permissions[perm.id] = perm.codename
     except Exception as e:
         logger.debug(e)
+
     user_model = get_user_obj_perms_model(obj)
     users_with_perms = user_model.objects.filter(object_pk=obj.pk,
                                                  permission_id__in=permissions).values('user_id', 'permission_id')
@@ -961,43 +956,3 @@ class ResourceManager:
                 logger.exception(e)
                 _resource.set_processing_state("FAILED")
         return False
-
-
-def serialize_resource_permissions(obj):
-    perms_users = defaultdict(list)
-    perms_manage = ['change_resourcebase', 'delete_resourcebase', 'change_resourcebase_permissions', 'publish_resourcebase']
-    for k, l in obj.items():
-        if k.endswith('users'):
-            if k.startswith('manage_resourcebase'):
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v).username].extend(perms_manage)
-                else:
-                    perms_users[get_user_model().objects.get(username=l).username].extend(perms_manage)
-            else:
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
-                else:
-                    perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
-
-
-    perms_groups = defaultdict(list)
-    for k, l in obj.items():
-        if k.endswith('groups'):
-            if k.startswith('manage_resourcebase'):
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_groups[GroupProfile.objects.get(slug=v).slug].extend(perms_manage)
-                else:
-                    perms_groups[GroupProfile.objects.get(slug=l).slug].extend(perms_manage)
-            else:
-                if isinstance(l, list):
-                    for i, v in enumerate(l):
-                        perms_groups[GroupProfile.objects.get(slug=v).slug].append(k.replace('_groups', ''))
-                else:
-                    perms_groups[GroupProfile.objects.get(slug=l).slug].append(k.replace('_groups', ''))
-
-    resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
-
-    return resource_permissions

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2017 OSGeo
@@ -64,6 +63,7 @@ GXP_PTYPES = {
     'REST_IMG': 'gxp_arcrestsource',
     'HGL': 'gxp_hglsource',
     'GN_WMS': 'gxp_geonodecataloguesource',
+    'SOS': 'gxp_sos',
 }
 
 QUEUED = "QUEUED"
