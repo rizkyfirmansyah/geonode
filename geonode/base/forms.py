@@ -22,6 +22,7 @@ import html
 import logging
 import json
 from django.db.models.query import QuerySet
+from geonode.security.forms import get_groups_choices
 from tempus_dominus.widgets import DateTimePicker
 from dal import autocomplete
 from django import forms
@@ -90,6 +91,11 @@ class AdvancedModelChoiceIterator(models.ModelChoiceIterator):
             self.field.prepare_value(obj),
             self.field.label_from_instance(obj),
             obj)
+
+
+class GroupsChoiceField(forms.ChoiceField):
+    def label_from_instance(self, obj):
+        return obj.title
 
 
 class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -540,35 +546,46 @@ class ValuesListField(forms.Field):
 
 class BatchEditForm(forms.Form):
     LANGUAGES = (('', '--------'),) + ALL_LANGUAGES
-    group = forms.ModelChoiceField(
+    group = GroupsChoiceField(
         label=_('Group'),
-        queryset=Group.objects.all(),
+        choices=get_groups_choices,
         required=False)
     owner = forms.ModelChoiceField(
-        label=_('Owner'),
-        queryset=get_user_model().objects.all(),
-        required=False)
+        label=_("Owner"),
+        required=True,
+        help_text=ResourceBase.owner_help_text,
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
     category = forms.ModelChoiceField(
         label=_('Category'),
+        help_text=ResourceBase.category_help_text,
         queryset=TopicCategory.objects.all(),
         required=False)
     license = forms.ModelChoiceField(
         label=_('License'),
+        help_text=ResourceBase.license_help_text,
         queryset=License.objects.all(),
         required=False)
     regions = forms.ModelChoiceField(
         label=_('Regions'),
+        help_text=ResourceBase.regions_help_text,
         queryset=Region.objects.all(),
         required=False)
     date = forms.DateTimeField(
-        label=_('Date'),
-        required=False)
+        label=_("Publication Date"),
+        help_text=ResourceBase.date_help_text,
+        required=False,
+        localize=True,
+        input_formats=['%Y-%m-%d %H:%M %p'],
+        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
     language = forms.ChoiceField(
         label=_('Language'),
         required=False,
         choices=LANGUAGES,
-    )
-    keywords = forms.CharField(required=False)
+        help_text=ResourceBase.language_help_text)
+    keywords = forms.CharField(
+        label=_("Free-text Keywords"),
+        required=False,
+        help_text=ResourceBase.keywords_help_text)
     ids = forms.CharField(required=False, widget=forms.HiddenInput())
 
 

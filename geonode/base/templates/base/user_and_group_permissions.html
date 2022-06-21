@@ -7,16 +7,31 @@
 
 {% block body_class %}{% trans "batch edit" %}{% endblock %}
 
-{% block body_inner %}
-<div class="row w-100">
-  <h3 class="page-title">{% trans "Batch Edit" %}</h3>
-</div>
+{% block body %}
 <form action="/{{ model|lower }}/layer/permission/" method="post">
-  {% csrf_token %}
-  {{ form|crispy }}
-  <div>
-    <input class="btn" type="submit" name="cancel" value="{% trans "Cancel" %}" />
-    <input class="btn btn-primary" type="submit" value="{% trans "Submit" %}" />
+  <div class="card">
+    {% csrf_token %}
+    <div class="card-header text-center bg-primary">
+      <h3 class="text-light">{% trans "Batch Edit" %}</h3>
+    </div>
+    <div class="card-body">{{ form|crispy }}</div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-6"><a href="#" class="btn btn-secondary btn-block" onclick="history.go(-1)">Go Back</a></div>
+        <div class="col-6"><input class="btn btn-save btn-block" type="submit" value="{% trans "Submit" %}" /></div>
+      </div>
+    </div>
+    </div>
   </div>
 </form>
 {% endblock %}
+
+{% block extra_script %}
+
+<script type="text/javascript">
+  $(function() {
+      $("#id_layers").addClass('selectpicker');
+  })
+</script>
+
+{% endblock extra_script %}
