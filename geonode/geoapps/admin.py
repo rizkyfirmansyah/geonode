@@ -46,5 +46,19 @@ class GeoAppAdmin(TabbedTranslationAdmin):
     search_fields = ('title', 'abstract', 'purpose', 'is_approved', 'is_published',)
     form = GeoAppAdminForm
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 admin.site.register(GeoApp, GeoAppAdmin)

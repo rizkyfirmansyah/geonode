@@ -51,12 +51,40 @@ class MapAdmin(TabbedTranslationAdmin):
     form = MapAdminForm
     actions = [metadata_batch_edit]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class MapLayerAdmin(admin.ModelAdmin):
     list_display = ('id', 'map', 'name')
     list_filter = ('map',)
     search_fields = ('map__title', 'name',)
     form = forms.modelform_factory(MapLayer, fields='__all__')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 admin.site.register(Map, MapAdmin)

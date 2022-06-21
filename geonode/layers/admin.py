@@ -81,6 +81,20 @@ class LayerAdmin(TabbedTranslationAdmin):
     form = LayerAdminForm
     actions = [metadata_batch_edit, set_batch_permissions]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class AttributeAdmin(admin.ModelAdmin):
     model = Attribute
@@ -96,6 +110,20 @@ class AttributeAdmin(admin.ModelAdmin):
     list_filter = ('layer', 'attribute_type')
     search_fields = ('attribute', 'attribute_label',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 
 class StyleAdmin(admin.ModelAdmin):
     model = Style
@@ -103,6 +131,20 @@ class StyleAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'sld_title', 'workspace', 'sld_url')
     list_filter = ('workspace',)
     search_fields = ('name', 'workspace',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 class LayerFileInline(admin.TabularInline):
@@ -113,6 +155,20 @@ class UploadSessionAdmin(admin.ModelAdmin):
     model = UploadSession
     list_display = ('resource', 'date', 'user', 'processed')
     inlines = [LayerFileInline]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
 
 
 admin.site.register(Layer, LayerAdmin)
