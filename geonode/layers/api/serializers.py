@@ -76,7 +76,7 @@ class LayerSerializer(ResourceBaseSerializer):
 
     def __init__(self, *args, **kwargs):
         # Instantiate the superclass normally
-        super(LayerSerializer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = Layer
@@ -87,7 +87,7 @@ class LayerSerializer(ResourceBaseSerializer):
             'is_mosaic', 'has_time', 'has_elevation', 'time_regex', 'elevation_regex',
             'use_featureinfo_custom_template', 'featureinfo_custom_template',
             'default_style', 'styles', 'attribute_set',
-            'ptype', 'ows_url'
+            'ptype', 'ows_url', 'upload_session'
         )
 
     name = serializers.CharField(read_only=True)

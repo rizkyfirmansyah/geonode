@@ -323,7 +323,7 @@ def get_sld_for(gs_catalog, layer):
                 if name:
                     break
         except Exception as e:
-            logger.exception(e)
+            logger.debug(e)
             name = None
         _tries += 1
         time.sleep(3)
@@ -430,11 +430,12 @@ def set_layer_style(saved_layer, title, sld, base_file=None):
             name=saved_layer.name))
         _old_styles.append(gs_catalog.get_style(
             name=f"{saved_layer.workspace}_{saved_layer.name}"))
-        _old_styles.append(gs_catalog.get_style(
-            name=layer.default_style.name))
-        _old_styles.append(gs_catalog.get_style(
-            name=layer.default_style.name,
-            workspace=layer.default_style.workspace))
+        if layer.default_style:
+            _old_styles.append(gs_catalog.get_style(
+                name=layer.default_style.name))
+            _old_styles.append(gs_catalog.get_style(
+                name=layer.default_style.name,
+                workspace=layer.default_style.workspace))
         layer.default_style = style
         gs_catalog.save(layer)
         for _s in _old_styles:
@@ -1144,13 +1145,14 @@ def set_styles(layer, gs_catalog):
             logger.exception("No GeoServer Layer found!")
 
     if gs_layer:
-        default_style = gs_catalog.get_style(
-            name=gs_layer.default_style.name,
-            workspace=gs_layer.default_style.workspace)
-        if default_style:
-            # make sure we are not using a default SLD (which won't be editable)
-            layer.default_style = save_style(default_style, layer)
-            style_set.append(layer.default_style)
+        if gs_layer.default_style:
+            default_style = gs_catalog.get_style(
+                name=gs_layer.default_style.name,
+                workspace=gs_layer.default_style.workspace)
+            if default_style:
+                # make sure we are not using a default SLD (which won't be editable)
+                layer.default_style = save_style(default_style, layer)
+                style_set.append(layer.default_style)
 
         try:
             if gs_layer.styles:
@@ -1420,9 +1422,14 @@ def create_geoserver_db_featurestore(
 
     if ds_exists:
         ds.save_method = "PUT"
-
-    logger.debug('Updating target datastore % s' % dsname)
-    cat.save(ds)
+    else:
+        logger.debug('Updating target datastore % s' % dsname)
+        try:
+            cat.save(ds)
+        except FailedRequestError as e:
+            if 'already exists in workspace' not in e.args[0]:
+                raise e
+            logger.warning("The store was already present in the workspace selected")
 
     logger.debug('Reloading target datastore % s' % dsname)
     ds = get_store(cat, dsname, workspace=workspace)

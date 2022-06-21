@@ -101,7 +101,7 @@ def geoserver_post_save_local(instance, *args, **kwargs):
         * Metadata Links,
         * Point of Contact name and url
     """
-    geoserver_post_save_layers.apply_async(
+    geoserver_post_save_layers.apply(
         (instance.id, args, kwargs))
 
 
@@ -132,8 +132,7 @@ def geoserver_post_save_map(instance, sender, created, **kwargs):
         if not instance.thumbnail_url or \
                 instance.thumbnail_url == static(MISSING_THUMB):
             logger.debug(f"... Creating Thumbnail for Map [{instance.title}]")
-            # create_gs_thumbnail(instance, overwrite=False, check_bbox=True)
-            geoserver_create_thumbnail.apply_async((instance.id, False, True, ))
+            geoserver_create_thumbnail.apply((instance.id, False, True, ))
 
 
 @receiver(geoserver_post_save_complete)
@@ -142,7 +141,6 @@ def geoserver_post_save_thumbnail(sender, instance, **kwargs):
     # some thumbnail generators will update thumbnail_url.  If so, don't
     # immediately re-generate the thumbnail here.  use layer#save(update_fields=['thumbnail_url'])
     try:
-        instance.refresh_from_db()
         logger.debug(f"... Creating Thumbnail for Layer {instance.title}")
         _recreate_thumbnail = False
         if 'update_fields' in kwargs and kwargs['update_fields'] is not None and \
@@ -153,7 +151,7 @@ def geoserver_post_save_thumbnail(sender, instance, **kwargs):
                 is_monochromatic_image(instance.thumbnail_url):
             _recreate_thumbnail = True
         if _recreate_thumbnail:
-            geoserver_create_thumbnail.apply_async((instance.id, False, True, ))
+            geoserver_create_thumbnail.apply((instance.id, False, True, ))
         else:
             logger.debug(f"... Thumbnail for Layer {instance.title} already exists: {instance.thumbnail_url}")
     except Exception as e:

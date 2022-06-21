@@ -167,6 +167,33 @@ class SimpleHierarchicalKeywordSerializer(DynamicModelSerializer):
         return {'name': value.name, 'slug': value.slug}
 
 
+class _ThesaurusKeywordSerializerMixIn:
+
+    def to_representation(self, value):
+        _i18n = {}
+        for _i18n_label in ThesaurusKeywordLabel.objects.filter(keyword__id=value.id).iterator():
+            _i18n[_i18n_label.lang] = _i18n_label.label
+        return {
+            'name': value.alt_label,
+            'slug': slugify(value.about),
+            'uri': value.about,
+            'thesaurus': {
+                'name': value.thesaurus.title,
+                'slug': value.thesaurus.identifier,
+                'uri': value.thesaurus.about
+            },
+            'i18n': _i18n
+        }
+
+
+class SimpleThesaurusKeywordSerializer(_ThesaurusKeywordSerializerMixIn, DynamicModelSerializer):
+
+    class Meta:
+        model = ThesaurusKeyword
+        name = 'ThesaurusKeyword'
+        fields = ('alt_label', )
+
+
 class SimpleRegionSerializer(DynamicModelSerializer):
 
     class Meta:
@@ -228,11 +255,15 @@ class AvatarUrlField(DynamicComputedField):
 class EmbedUrlField(DynamicComputedField):
 
     def __init__(self, **kwargs):
-        super(EmbedUrlField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def get_attribute(self, instance):
-        _instance = instance.get_real_instance()
-        if hasattr(_instance, 'embed_url') and _instance.embed_url != NotImplemented:
+        try:
+            _instance = instance.get_real_instance()
+        except Exception as e:
+            logger.exception(e)
+            _instance = None
+        if _instance and hasattr(_instance, 'embed_url') and _instance.embed_url != NotImplemented:
             return build_absolute_uri(_instance.embed_url)
         else:
             return ""
@@ -289,7 +320,7 @@ class UserSerializer(BaseDynamicModelSerializer):
         model = get_user_model()
         name = 'user'
         view_name = 'users-list'
-        fields = ('pk', 'username', 'first_name', 'last_name', 'avatar', 'perms')
+        fields = ('pk', 'username', 'first_name', 'last_name', 'avatar', 'perms', 'is_superuser', 'is_staff')
 
     @classmethod
     def setup_eager_loading(cls, queryset):
@@ -405,6 +436,8 @@ class ResourceBaseSerializer(
         self.fields['thumbnail_url'] = ThumbnailUrlField()
         self.fields['keywords'] = DynamicRelationField(
             SimpleHierarchicalKeywordSerializer, embed=False, many=True)
+        self.fields['tkeywords'] = DynamicRelationField(
+            SimpleThesaurusKeywordSerializer, embed=False, many=True)
         self.fields['regions'] = DynamicRelationField(
             SimpleRegionSerializer, embed=True, many=True, read_only=True)
         self.fields['category'] = DynamicRelationField(
@@ -428,7 +461,7 @@ class ResourceBaseSerializer(
         fields = (
             'pk', 'uuid', 'resource_type', 'polymorphic_ctype_id', 'perms',
             'owner', 'poc', 'metadata_author',
-            'keywords', 'regions', 'category', 'project_information', 'distributor', 'data_citation', 'related_publication',
+            'keywords', 'tkeywords', 'regions', 'category', 'project_information', 'distributor', 'data_citation', 'related_publication',
             'title', 'abstract', 'doi', 'alternate', 'bbox_polygon', 'll_bbox_polygon', 'srid',
             'date', 'date_type', 'edition', 'purpose', 'maintenance_frequency',
             'restriction_code_type', 'constraints_other', 'license', 'language',
@@ -528,7 +561,7 @@ class BaseResourceCountSerializer(BaseDynamicModelSerializer):
                 'type_filter': request.query_params.get('type'),
                 'title_filter': request.query_params.get('title__icontains')
             }
-        data = super(BaseResourceCountSerializer, self).to_representation(instance)
+        data = super().to_representation(instance)
         count_filter = {self.Meta.count_type: instance}
         data['count'] = get_resources_with_perms(
             request.user, filter_options).filter(**count_filter).count()

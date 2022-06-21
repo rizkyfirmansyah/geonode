@@ -37,6 +37,7 @@ from django.views.generic.edit import UpdateView, CreateView
 from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
@@ -195,7 +196,7 @@ def document_link(request, docid):
     return response
 
 
-class DocumentUploadView(CreateView):
+class DocumentUploadView(LoginRequiredMixin, CreateView):
     template_name = 'documents/document_upload.html'
     form_class = DocumentCreateForm
 
@@ -299,7 +300,7 @@ class DocumentUploadView(CreateView):
                     )))
 
 
-class DocumentUpdateView(UpdateView):
+class DocumentUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'documents/document_replace.html'
     pk_url_kwarg = 'docid'
     form_class = DocumentReplaceForm
