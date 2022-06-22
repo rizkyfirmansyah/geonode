@@ -532,6 +532,9 @@
 
 {% block extra_script %}
 {{ block.super }}
+
+  
+
   {% if request.user.is_authenticated %}
     {% user_rating_js request.user resource "layer" %}
   {% else %}

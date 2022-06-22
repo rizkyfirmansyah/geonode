@@ -225,17 +225,21 @@
 
 {% block extra_script %}
 {{ block.super }}
-{% if DISPLAY_SOCIAL %}
-{% include 'facebook_sdk.html' %}
-{% endif %}
-{% if request.user.is_authenticated %}
-{% user_rating_js request.user resource "document" %}
-{% else %}
-{% overall_rating resource "document" as the_doc_rating %}
-{% endif %}
-{% include 'rating.html' %}
 
-{% if FAVORITE_ENABLED %}
-{% include "favorite/_favorite_js.html" %}
-{% endif %}
+  
+  
+  {% if DISPLAY_SOCIAL %}
+    {% include 'facebook_sdk.html' %}
+  {% endif %}
+  {% if request.user.is_authenticated %}
+    {% user_rating_js request.user resource "document" %}
+  {% else %}
+    {% overall_rating resource "document" as the_doc_rating %}
+  {% endif %}
+
+    {% include 'rating.html' %}
+
+  {% if FAVORITE_ENABLED %}
+    {% include "favorite/_favorite_js.html" %}
+  {% endif %}
 {% endblock extra_script %}

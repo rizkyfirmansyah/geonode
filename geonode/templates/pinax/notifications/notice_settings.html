@@ -9,6 +9,7 @@
 
 {% block body %}
 <div class="card w-100 border-dark rounded">
+  <form method="POST" class="form" action="">
     <div class="card-header">
         <h3 class="text-center">{% trans "Notification Settings" %}</h3>
     </div>
@@ -23,7 +24,6 @@
         </p>
         {% endblocktrans %}
         {% endif %}
-        <form method="POST" class="form" action="">
             {% csrf_token %}
             <table class="table table-striped notice_settings">
                 <tr>
@@ -52,10 +52,27 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary w-100 mt-2">{% trans "Change" %}</button>
-            </div>
-        </form>
     </div>
+    <div class="card-footer">
+        <button id="submitNotification" type="submit" class="btn btn-save btn-block">{% trans "Change" %}</button>
+    </div>
+  </form>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+  
+
+  <script type="text/javascript">
+    $(function() {
+        $("#submitNotification").click(function() {
+            $(document.body).append(`{% with toast_title="Notification Settings" %}
+              {% with toast_message='Your notification setting has been saved.' %}
+                {% include "toast/_trigger_toast.html" %}
+              {% endwith %}
+            {% endwith %}`);
+            $('.toast').toast('show');
+        })
+    })
+  </script>
 {% endblock %}

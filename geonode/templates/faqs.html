@@ -6,8 +6,8 @@
 {% load base_tags %}
 
 {% block body %}
-<div class="container_faqs">
-  <div class="row w-100">
+<div class="card">
+  <div class="card-header">
     <h3>
       {% if auth_faqs.header_title or anon_faqs.header_title %}
         {% if user.is_authenticated %}
@@ -21,43 +21,50 @@
     </h3>
   </div>
 
-  {% if auth_faqs.contents or anon_faqs.contents %}
-    {% if user.is_authenticated %}
-      {{ auth_faqs.contents|safe }}
+  <div class="card-body">
+    {% if auth_faqs.contents or anon_faqs.contents %}
+      {% if user.is_authenticated %}
+        {{ auth_faqs.contents|safe }}
+      {% else %}
+        {{ anon_faqs.contents|safe }}
+      {% endif %}
     {% else %}
-      {{ anon_faqs.contents|safe }}
+      <h3>Are all datasets in Data Catalog "Open" and freely shareable?</h3>
+      <p>No. Depending on the license and restrictions with the data providers. Some datasets may have restricted access.</p>
+      <h3>Who owns the datasets listed in the catalog?</h3>
+      <p>Not all datasets in the catalog are owned by SDI. Neither of the responsible or point of contact of the resource. Data ownership and terms of use are determined by agreements between the parties responsible for creating and maintaining the dataset. Data ownership is an important consideration in the catalog, and is reflected in each dataset's metadata.</p>
     {% endif %}
-  {% else %}
-    <h3>Are all datasets in Data Catalog "Open" and freely shareable?</h3>
-    <p>No. Depending on the license and restrictions with the data providers. Some datasets may have restricted access.</p>
-
-    <h3>Who owns the datasets listed in the catalog?</h3>
-    <p>Not all datasets in the catalog are owned by SDI. Neither of the responsible or point of contact of the resource. Data ownership and terms of use are determined by agreements between the parties responsible for creating and maintaining the dataset. Data ownership is an important consideration in the catalog, and is reflected in each dataset's metadata.</p>
-  {% endif %}
+  </div>
 </div>
 {% endblock %}
 
-<script src="{% static "lib/js/intersection-observer.js" %}"></script>
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-	const observer = new IntersectionObserver(entries => {
-		entries.forEach(entry => {
-			const id = entry.target.getAttribute('id');
-			if (entry.intersectionRatio > 0) {
-				document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.add('active');
-			} else {
-				document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.remove('active');
-			}
-		});
-	});
+{% block extra_script %}
 
-	// Track all sections that have an `id` applied
-	document.querySelectorAll('section[id]').forEach((section) => {
-		observer.observe(section);
-	});
-});
+  
 
-  $(document).ready(function() {
-    $('#wrap').css('overflow-y', 'auto');
+  <script src="{% static "lib/js/intersection-observer.js" %}"></script>
+  <script type="text/javascript">
+  window.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const id = entry.target.getAttribute('id');
+        if (entry.intersectionRatio > 0) {
+          document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.add('active');
+        } else {
+          document.querySelector(`nav li a[href="#${id}"]`).parentElement.classList.remove('active');
+        }
+      });
+    });
+
+    // Track all sections that have an `id` applied
+    document.querySelectorAll('section[id]').forEach((section) => {
+      observer.observe(section);
+    });
   });
-</script>
+
+    $(document).ready(function() {
+      $('#wrap').css('overflow-y', 'auto');
+    });
+  </script>
+
+{% endblock extra_script %}

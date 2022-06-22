@@ -10,15 +10,15 @@
     <div class="card">
       <div class="card-header">
         {% if user == profile %}
-        <h3 class="text-center">{% trans "Edit Your Profile" %}</h3>
+          <h4 class="text-center">{% trans "Edit Your Profile" %}</h4>
         {% else %}
-          <h3 class="text-center">{% trans "Edit Profile for" %} {{ profile.username }}</h3>
+          <h4 class="text-center">{% trans "Edit Profile for" %} {{ profile.username }}</h4>
         {% endif %}
       </div>
       <div class="card-body">
         {% autoescape off %}{% avatar profile.username 240 %}{% endautoescape %}
         {% if user == profile %}
-        <p class="x-space"><a class="btn btn-primary btn-block" href="{% url 'avatar_change' %}">{% trans "Change your avatar" %}</a></p>
+        <p class="mt-2"><a class="btn btn-edit btn-block" href="{% url 'avatar_change' %}">{% trans "Change your avatar" %}</a></p>
         {% endif %}
       </div>
     </div>
@@ -38,4 +38,11 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+{{ block.super }}
+
+  
+
 {% endblock %}

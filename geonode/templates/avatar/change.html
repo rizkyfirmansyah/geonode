@@ -2,28 +2,63 @@
 {% load i18n avatar_tags %}
 {% load crispy_forms_tags %}
 
-{% block body_inner %}
-    <h4 class="row w-100"><a href="{% url "profile_edit" user.username %}">{% trans "Back to edit your profile information" %}</a></h4>
-    <h5>{% trans "Your current avatar: " %}</h5>
-    {% autoescape off %}{% avatar user %}{% endautoescape %}
-    {% if not avatars %}
-        <p>{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
-    {% else %}
-        <form method="POST" action="{% url 'avatar_change' %}">
-            <ul>
-                {{ primary_avatar_form.as_ul }}
-            </ul>
-            <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}" /></p>
-        </form>
-    {% endif %}
-    <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
-        {{ upload_avatar_form.as_p }}
-        <p>{% csrf_token %}<input id="avatar-file" type="submit" class="btn btn-primary" style="visibility: hidden" value="{% trans "Upload New Image" %}" /></p>
+{% block body %}
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <h3 class="col-8">{% trans "Edit Avatar" %}</h3>
+        <div class="col"><a href="#" class="btn btn-secondary btn-block" onclick="history.go(-1)">Go Back</a></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="text-center">
+        {% autoescape off %}{% avatar user %}{% endautoescape %}
+        <p class="text-muted small">{% trans "Your current avatar " %}</p>
+      </div>
+      {% if not avatars %}
+          <p class="text-center alert-warning">{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
+      {% else %}
+          <form method="POST" action="{% url 'avatar_change' %}">
+              <ul>
+                  {{ primary_avatar_form.as_ul }}
+              </ul>
+              <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}" /></p>
+          </form>
+      {% endif %}
+      <div title="Preview Avatar" class="mt-2 mb-3">
+        <div id="divPreview"><span><label id="thumb_change_to"></label></span></div>
+        <img id="previewAvatar" src="" class="mx-auto d-block" />
+      </div>
+
+      <form enctype="multipart/form-data" method="POST" action="{% url 'avatar_add' %}">
+        {% csrf_token %}
+        {{ upload_avatar_form }}
+    </div>
+    <div class="card-footer">
+        <div class="row">
+          <a class="btn btn-primary btn-danger col" href="{% url 'avatar_delete' %}" id="delete_avatar" style="visibility: hidden">{% trans "Delete Your Avatar" %}</a>
+          <input id="avatar-file" type="submit" class="btn btn-save col" style="visibility: hidden" value="{% trans "Upload New Avatar" %}" />
+        </div>
     </form>
-    <a class="btn btn-primary btn-danger" href="{% url 'avatar_delete' %}" id="delete_avatar" style="visibility: hidden">{% trans "Delete Your Avatar" %}</a>
+    </div>
+  </div>
 {% endblock %}
 
 {% block extra_script %}
+{{ block.super }}
+
+<script type="text/javascript">
+
+  $('#id_avatar').on('change', function (e) {
+    var _text = $('#id_avatar').val().replace("C:\\fakepath\\", "");
+    var _title = _text.replace(/\.[^/.]+$/, "");
+    var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+    $('#thumb_change_to').text("Preview Avatar: " + _fileName);
+    $('#divPreview').addClass('alert-box--notice mb-2');
+    $('#previewAvatar').attr('src', URL.createObjectURL(e.target.files[0]));
+  });
+</script>
+
 
 {% include "upload/avatar.html" %}
 

@@ -4,12 +4,12 @@
 {% block body %}
 
 <div class="card w-100 border-dark rounded">
+  <form id="invite-form" method="POST" action="{% url 'geonode.invitations:geonode-send-invite' %}">
+    {% csrf_token %}
     <div class="card-header">
       <h3 class="text-center">{% trans "Invite Users" %}</h3>
     </div>
     <div class="card-body">
-      <form id="invite-form" method="POST" action="{% url 'geonode.invitations:geonode-send-invite' %}">
-        {% csrf_token %}
         <div class="form-group">
             <label for="id_email" style="margin-top: 1vh;">Email</label>
             <input type="text" name="email" id="id_email" value="{{ form.email.value }}" class="form-control" placeholder="{% trans 'Email' %}">
@@ -27,8 +27,14 @@
               <div class="alert alert-success">{{ success_message }}</div>
           {% endif %}
         </div>
-        <input type="submit" value="{% trans "Submit" %}" class="btn btn-primary generic-ajax-submit w-100 mt-2">
-      </form>
     </div>
+    <div class="card-footer">
+      <input type="submit" value="{% trans "Submit" %}" class="btn btn-save btn-block">
+    </div>
+  </form>
 </div>
+{% endblock %}
+
+{% block extra_script %}
+  
 {% endblock %}

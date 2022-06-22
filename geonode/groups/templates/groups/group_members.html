@@ -67,6 +67,9 @@
 {% block extra_script %}
 {{ block.super }}
 {% with "none" as layer %}
-{% include "toast/permissions_form.html" %}
+  {% include "toast/permissions_form.html" %}
 {% endwith %}
+
+
+
 {% endblock extra_script %}

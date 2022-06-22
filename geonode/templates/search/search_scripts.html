@@ -68,12 +68,10 @@
   })
 
   {% get_context_resourcetype as pathc %}
-        {% if pathc == "layers" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_layer"%}';
+        {% if pathc == "catalogue" %}
+                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base"%}';
         {% elif pathc == "maps" %}
                 AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_map" %}';
-        {% elif pathc == "documents" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_document" %}';
         {% elif pathc == "search" %}
                 AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
         {% elif pathc == "people" %}

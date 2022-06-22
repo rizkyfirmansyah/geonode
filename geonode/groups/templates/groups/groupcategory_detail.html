@@ -5,52 +5,38 @@
 {% block title %}{{ object.name|default:object.slug }} — {{ block.super.super }}{% endblock %}
 
 {% block body %}
-
-<div class="card w-100 border-dark rounded mb-4">
-  <div class="card-header">
-    <div class="row">
-      <h3 class="col">{{ object.name|default:object.slug }}</h3>
-      {% if is_owner %}
-        <div class="col-4 float-right">
-              <a class="btn btn-danger w-100" data-toggle="modal" data-target="#remove_gc_modal">{% trans "Delete Group Category" %}</a></li>
-          </div>
+  <div class="card w-100 border-dark rounded mb-4">
+    <div class="card-header">
+      <div class="row">
+        <h3 class="col">{{ object.name|default:object.slug }}</h3>
+        {% if is_owner %}
           <div class="col-4 float-right">
-              <a class="btn btn-primary w-100" href="{% url "group_category_update" object.slug %}">{% trans "Edit Group Category Details" %}</a></li>
-        </div>
-      {% endif %}
-    </div>
-  </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col-xs-12 col-md-12 group-details">
-        <p class="group-desc">{{ object.description|default_if_none:'' }}</p>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="card w-100">
-  <div class="card-header"><h4 class="text-center">{% trans "Groups" %}</h4></div>
-      <div class="card-body">
-        <div class="tab-content paginate paginate-auto" id="search-content">
-          {% include 'groups/_group_profile_list_item.html' %}
+                <a class="btn btn-danger w-100" data-toggle="modal" data-target="#remove_gc_modal">{% trans "Delete Group Category" %}</a></li>
+            </div>
+            <div class="col-4 float-right">
+                <a class="btn btn-primary w-100" href="{% url "group_category_update" object.slug %}">{% trans "Edit Group Category Details" %}</a></li>
           </div>
+        {% endif %}
       </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-xs-12 col-md-12 group-details">
+          <p class="group-desc">{{ object.description|default_if_none:'' }}</p>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+  <div class="card w-100">
+    <div class="card-header"><h4 class="text-center">{% trans "Groups" %}</h4></div>
+        <div class="card-body">
+          <div class="tab-content paginate paginate-auto" id="search-content">
+            {% include 'groups/_group_profile_list_item.html' %}
+            </div>
+        </div>
+    </div>
+  </div>
 
-{% include "modal/remove_group_categories.html" %}
+  {% include "modal/remove_group_categories.html" %}
 
 {% endblock %}
-
-
-{% block extra_script %}
-{{ block.super.super }}
-  <script type="text/javascript">
-  SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='groups' %}'+ '?group_profile__categories__slug='+ '{{ object.slug }}';
-  </script>
-  {% with include_spatial='false' %}
-  {% include 'search/search_scripts.html' %}
-  {% endwith %}
-{% endblock extra_script %}
-
-

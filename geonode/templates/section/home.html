@@ -31,13 +31,13 @@
         {% if custom_theme.jumbotron_welcome_content %}
           {{ custom_theme.jumbotron_welcome_content}}
         {% else %}
-        The Accountability Framework Southeast Asia Coalition
+          Spatial Data Infrastructure
         {% endif %}
       </h1>
       
       {% if request.user.is_authenticated %}
         <div class="search-field mt-4">
-          <form id="main_search" action="{% url "search" %}" class="row p-0 m-0">
+          <form id="main_search" action="{% url "catalogue_browse" %}" class="row p-0 m-0">
               <div class="col-1">
                 <button class="btn-search btn-block h-100" type="submit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -49,15 +49,12 @@
               </div>
               <div class="col">
                 {% if HAYSTACK_SEARCH %}
-                <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control pb-4" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
+                      <input id="main_search_input" type="text" placeholder="{% trans 'What are you looking for?' %}" class="form-control pb-4" name="q" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
                       <input type="hidden" name="abstract__icontains" id="main_search_abstract_input" placeholder="{% trans 'Search' %}" >
                       <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
                       <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
                 {% else %}
-                <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control pb-4" autocomplete="off" name="title__icontains" data-com.bitwarden.browser.user-edited="yes">
-                      <input type="hidden" name="abstract__icontains" id="main_search_abstract_input">
-                      <input type="hidden" name="purpose__icontains" id="main_search_purpose_input">
-                      <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
+                      <input name="title__icontains" id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control pb-4" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
                 {% endif %}
               </div>
           </form>

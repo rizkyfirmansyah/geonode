@@ -268,6 +268,27 @@ class ResourceBaseAutocomplete(autocomplete.Select2QuerySetView):
         returns any visible resources in this queryset for autocomplete
     """
 
+    def get_selected_result_label(self, result):
+        """Return the label of a selected result."""
+        return self.get_result_label(result)
+
+    def get_result_label(self, result):
+        """Return the label of a selected result."""
+        return str(result.title)
+
+    def get_detail_url(self, result):
+        """Return the label of a selected result."""
+        return str(result.detail_url)
+
+    def get_results(self, context):
+        return [
+            {
+                'text': self.get_result_label(result),
+                'selected_text': self.get_selected_result_label(result),
+                'detail_url': self.get_detail_url(result),
+            } for result in context['object_list']
+        ]
+
     def get_queryset(self):
         request = self.request
 

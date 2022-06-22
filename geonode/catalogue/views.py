@@ -38,8 +38,9 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from geonode.base.views import get_url_for_model
 from geonode.base.forms import BatchPermissionsForm
 from geonode.tasks.tasks import set_permissions
-from django.contrib.auth.decorators import login_required
 from celery.utils.log import get_logger
+from django.views.generic import ListView
+from django.db.models import Q
 
 logger = logging.getLogger("geonode.catalogue.views")
 celery_logger = get_logger(__name__)
