@@ -1,4 +1,8 @@
 {% load i18n %}
+{% load static %}
+
+<link rel='stylesheet' id='cookie-law-info-css'  href="{% static "geonode/css/cookie-law-info/cookie-law-info-public.css" %}" type='text/css' media='all' />
+<link rel='stylesheet' id='cookie-law-info-gdpr-css'  href="{% static "geonode/css/cookie-law-info/cookie-law-info-gdpr.css" %}" type='text/css' media='all' />
 
 {% block cookielawinfo %}
 {% if custom_theme.cookie_law_info_bar_enabled %}
@@ -34,3 +38,23 @@
     </style>
 {% endif %}
 {% endblock cookielawinfo %}
+
+{% block extra_script %}
+
+<script type="text/javascript" src="{% static "geonode/js/cookie-law-info/cookie-law-info-public.js" %}"></script>
+
+<script type="text/javascript">
+  var Cli_Data = {"nn_cookie_ids":[],"cookielist":[]};
+  $(function() {
+      $("#cookie_action_close_header").click(function() {
+        $("#cookie-law-info-again").addClass("d-none");
+      });
+
+      // $("#cookie_action_close_header_reject").click(function() {
+      //   $("#cookie-law-info-bar").addClass("d-none");
+      // })
+  })
+
+</script>
+
+{% endblock extra_script %}
