@@ -308,15 +308,17 @@
               GeoTIFF.io</a>
           </li>
         {% endif %}
-        <li class="list-group-item">
-          {% if links_download %}
-            <button class="btn btn-download btn-md btn-block" data-toggle="modal" data-target="#download-layer">{% trans "Download Layer" %}</button>
-          {% else %}
-            {% if request.user.is_authenticated %}
-              <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
+        {% if not request.user_agent.is_mobile %}
+          <li class="list-group-item">
+            {% if links_download %}
+              <button class="btn btn-download btn-md btn-block" data-toggle="modal" data-target="#download-layer">{% trans "Download Layer" %}</button>
+            {% else %}
+              {% if request.user.is_authenticated %}
+                <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
+              {% endif %}
             {% endif %}
-          {% endif %}
-        </li>
+          </li>
+        {% endif %}
       {% endif %}
 
       {% if GEOSERVER_BASE_URL %}
@@ -596,220 +598,6 @@
       {% endif %}
     </script>
   {% endblock thumbnail_script %}
-
-  <script type="text/javascript">
-    // set default values for the logical operator list
-    $("#modal-button-and-or:first-child").text($("#AND").text());
-    $("#and-or_list li:not(.divider)").addClass('selected');
-
-    // on dropdown change, change the value of dropdown
-    $(".dropdown-menu-attribute,.dropdown-menu-and-or,.dropdown-menu-operator")
-      .find('li a')
-      .on('click', function (e) {
-        var id = $(this).closest('[data-modal-button-id]').data().modalButtonId;
-        $('#modal-button-' + id + ':first-child').text($(this).text());
-      });
-
-    $("#button-toggle").one("click", function () {
-      query = [];
-      ajax_loaded = false;
-      json_url = $("#geojson").attr("href");
-      excel_url = $("#excel").attr("href");
-      csv_url = $("#csv").attr("href");
-      shape_url = $("#zipped-shapefile").attr("href");
-      gml2_url = $("#gml-20").attr("href");
-      gml3_url = $("#gml-311").attr("href");
-      all_urls = {
-        'geojson': json_url,
-        'excel': excel_url,
-        'csv': csv_url,
-        'zipped-shapefile': shape_url,
-        'gml-20': gml2_url,
-        'gml-311': gml3_url
-      };
-    });
-
-    // add class selected when an element from the list is clicked.
-    $("#operator_list li:not(.divider),#attribute_list li:not(.divider),#and-or_list li:not(.divider)").click(
-      function () {
-        // Ensure only the current one is selected
-        var id = $(this).closest('[data-modal-button-id]').data().modalButtonId;
-        $("#" + id + "_list li:not(.divider)").removeClass('selected');
-        $(this).addClass('selected');
-      });
-
-    $(document.body).on("click", "#button_query", function (e) {
-      $(".text_area").css("visibility", "visible");
-      attribute_list = $("#attribute_list li.selected a").attr('id');
-      operator_list = $("#operator_list li.selected a").attr('id');
-      single_value_input = ($("#single_value").val()).trim();
-      logical_operator_dropdown = $("#and-or_list li.selected a").attr('id');
-      attribute_data_type = $("#attribute_list li.selected a").attr('data-type');
-      attribute_data_schema = $("#attribute_list li.selected a").attr('data-schema');
-      if (attribute_list == null || operator_list == null || single_value_input == "" || logical_operator_dropdown ==null) {
-        if ($("#missing-values").length == 0) {
-          $("#query-filter-tools").after("<p id='missing-values'> Select all values from menus.</p>");
-        }
-      } else {
-        if ($("#missing-values").length !== 0) {
-          $("p").remove("#missing-values");
-        }
-        // validation that user enters a string for a string attribute or a number for a number attribute
-        var single_value_input = '';
-        try {
-          single_value_input = ($('#single_value').select2('data')[0].text).trim();
-        } catch (err) {
-          single_value_input = '';
-        }
-
-        if (attribute_data_schema == 'yes' && attribute_data_type !== 'string' && isNaN(single_value_input)) {
-          if ($("#wrong-data-type").length !== 0) {
-            $('#wrong-data-type').empty();
-          }
-          $("#query-filter-tools").after("<p id='wrong-data-type'> You entered a string. Not a number.</p>");
-        } else {
-          $("p").remove("#wrong-data-type");
-          // check of single_value_input; string or number
-          let checkArr = ["=", "<>", ">", "<", ">=", "<="];
-          if (checkArr.includes(operator_list)) {
-            if (isNaN(single_value_input)) {
-              single_value_input = "'" + single_value_input.replace(/'/g, "''") + "'";
-            }
-          } else if (operator_list == " LIKE ") {
-            if (single_value_input.indexOf('%') >= 0) {
-              single_value_input = "'" + single_value_input.replace(/%/g, '%25') + "'";
-            } else {
-              single_value_input = "'%25" + single_value_input + "%25'";
-            }
-          }
-
-          input = attribute_list + operator_list + single_value_input;
-          input_id = attribute_list + single_value_input;
-
-          $("#added_rules").append(
-            '<div class="input-group user-input-filters"><div class="input-group-btn" id="erase_query"><a href="#"  class="btn btn-primary btn-mg" data-toggle="modal" data-target="#myModal" title="" ><span class="glyphicon glyphicon-minus"></span></a></div><input type="text" class="form-control" id="' +
-            input_id + '" placeholder="" data-toggle="tooltip" title="" value="' + input + '"readonly></br></div>');
-          // push data to array
-          if (single_value_input != '') {
-            query.push(input);
-          }
-        }
-      }
-    });
-
-    $("div").on("click", "#erase_query", function () {
-      value_to_be_removed = $(this).siblings('input').val();
-      var index = query.indexOf(value_to_be_removed);
-      query.splice(index, 1);
-      $(this).parent().remove();
-    });
-
-    // on url click append the array values in the existing href
-    $(document.body).on("click", ".urls", function (e) {
-      var tab = $('#tabContent .active > a').attr('href')
-      logical_operator = $("#and-or_list li.selected a").attr('id');
-      // get the array, join it, add necessary values and add it in the UI
-      if (typeof query !== 'undefined') {
-        joined_query = query.join(" " + logical_operator + " ");
-        cql_filters = joined_query;
-      } else {
-        cql_filters = '';
-      }
-      // get max features
-      max_features = $('#max_features').val();
-      if (max_features !== "" && Math.floor(max_features) == max_features && $.isNumeric(max_features)) {
-        complete_cql = "&CQL_FILTER=(" + cql_filters + ")&maxfeatures=" + max_features;
-      } else {
-        complete_cql = '&CQL_FILTER=(' + cql_filters + ')';
-      }
-      idValue = $(this).attr("id");
-
-      if (idValue !== "original-dataset" && typeof all_urls !== 'undefined') {
-        url_main = all_urls[idValue]
-        if (cql_filters.length > 1) {
-          addressValue = url_main + complete_cql
-          $("#" + idValue).attr("href", addressValue)
-        } else {
-          addressValue = url_main
-          $("#" + idValue).attr("href", addressValue)
-        }
-      }
-    });
-
-    // change color of toggle button on click
-    $("#button-toggle").click(function () {
-      $(this).toggleClass("clicked");
-      if ($("#button-toggle").hasClass("clicked")) {
-        $("#button-toggle").css({
-          "background-color": "#3276b1",
-          "border-color": "#3276b1"
-        });
-        layer_name = {{ layer_name | safe }};
-        filtered_attributes = {{ filtered_attributes | safe }}
-        attribute_description = {{ attribute_description | safe }}
-        whole_url = "{% url 'load_layer_data' %}";
-        if (!ajax_loaded) {
-          $.ajax({
-            type: "POST",
-            url: whole_url,
-            data: {
-              json_data: JSON.stringify({
-                layer_name: layer_name,
-                filtered_attributes: filtered_attributes
-              })
-            },
-            beforeSend: function (xhr) {
-              {% if request.user.is_authenticated and access_token %}
-              xhr.setRequestHeader("Authorization", "Bearer {{access_token}}"); {% endif %}
-              $(".loading_msg").show();
-            },
-            success: function (data) {
-              $('#tabContent, .query_builder_tab').show();
-              $(".loading_msg").hide();
-              // on dropdown change, change the value of dropdown
-              $(".dropdown-menu-attribute li a").click(function () {
-                $("#modal-button-attributes:first-child").text($(this).text()).val($(this).text());
-
-                // functionality added for the autocomplete
-                property_name = $(this).attr("id");
-                attribute_values = data['feature_properties'];
-                selected_data = attribute_values[$.trim(property_name)];
-                selected_data_prepare = [];
-                for (i = 0; i < selected_data.length; i++) {
-                  var jsonString = {
-                    id: i,
-                    text: selected_data[i].toString()
-                  };
-                  selected_data_prepare.push(jsonString);
-                }
-
-                $("#single_value").empty();
-                $("#single_value").select2({
-                  data: selected_data_prepare,
-                  // allow new values by the user
-                  tags: true
-                });
-              });
-              ajax_loaded = true;
-            }
-          });
-        } else {
-          $('#tabContent, .query_builder_tab').show();
-        }
-      } else {
-        $('#tabContent, .query_builder_tab').hide();
-      }
-      // clear filters
-      $(document.body).on("click", "#clear_filter", function (e) {
-        $('#added_rules').empty();
-        $('#max_features').val("");
-        query = [];
-        $("#button-toggle").removeClass("clicked");
-        $('#tabContent, .query_builder_tab').hide();
-      });
-
-    });
-  </script>
 
   {% if GEONODE_SECURITY_ENABLED %}
     {% include "toast/configure_layers.html" %}

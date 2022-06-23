@@ -16,19 +16,19 @@
       <div class="modal-body text-center">
           <ul class="nav nav-tabs" role="tablist">
             {% if links %}
-            <li class="nav-item col"><a class="nav-primary active" role="tab" aria-controls="download_tab1" aria-selected="true" href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
+              <li class="nav-item col"><a class="nav-primary active" role="tab" aria-controls="download_tab1" aria-selected="true" href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
             {% endif %}
             {% if links_download %}
-            <li class="nav-item col"><a class="nav-primary" href="#download_tab2" role="tab" aria-controls="download_tab2" aria-selected="false" data-toggle="tab">{% trans "Data" %}</a></li>
+              <li class="nav-item col"><a class="nav-primary" href="#download_tab2" role="tab" aria-controls="download_tab2" aria-selected="false" data-toggle="tab">{% trans "Data" %}</a></li>
             {% endif %}
           </ul>
           <div class="tab-content bg-light">
             {% if links %}
               <div class="tab-pane active" id="download_tab1">
                 <li class="active">
-                  <ul>
+                  <ul class="mt-2">
                     {% for link in links %}
-                    <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-info btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
+                      <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-upload btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
                     {% endfor %}
                   </ul>
                 </li>
@@ -42,120 +42,31 @@
                 {% else %}
                   <div class="tab-pane" id="download_tab2">
                 {% endif %}
-                </br>
-
-                <!-- DOWNLOAD FILTER - START -->
-
-                {% if layer_type == "vector" %}
-                  <button type="button" id="button-toggle" class="btn btn-info btn-circle text-nowrap" data-toggle="button"
-                    data-toggle="tooltip" title="{% trans "Click to filter the layer" %}">
-                    {% trans "Do you want to filter it?" %}
-                  </button>
-                  <img src="{% static 'geonode/img/geonode_icon.png' %}" class="gear float-right loading_msg"
-                    witdth="30" height="30" style="margin-right:10px; display:none" />
-                  <div class="float-right loading_msg" style="margin-right:10px;margin-top:5px;display:none">
-                    {% trans "Loading..." %}</div>
-                  </br></br>
-                {% endif %}
-
-                <ul class="nav nav-tabs" id="tabContent" role="tablist">
-                  <li class="nav-item col"><a class="btn btn_wrapper active" href="#query_builder" data-toggle="tab" role="tab" aria-selected="true" aria-controls="query_builder">{% trans "Filter by attributes" %}</a></li>
-                </ul>
-
-                </br>
-
-                <div class="tab-content query_builder_tab">
-                  <div id="query_builder" class="tab-pane fade show active" role="tabpanel" aria-labelledby="query-builder">
-                    <div class="form-inline">
-                      {% trans "Match" %}
-                      <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" href="#" role="button" id="modal-button-and-or" data-toggle="dropdown" aria-expanded="false" value="AND">
-                          <span class="ml-2"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-and-or" id="and-or_list" data-modal-button-id="and-or">
-                          <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="AND">{% trans "all" %}</a></li>
-                          <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="OR">{% trans "any" %}</a></li>
-                        </ul>
-                      </div>
-                      {% trans "of the following:" %}
-                    </div>
-                    </br></br>
-
-                    <div class="input-group" id="query-filter-tools">
-                      <div class="btn-group">
-                        <div class="btn-group btn-group-sm">
-                          <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" id="modal-button-attributes" type="button" data-toggle="dropdown">{% trans "Attribute" %}<span class="caret"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-attribute" id="attribute_list" data-modal-button-id="attribute">
-                              {% if schema %}
-                              {% for key, values in schema.properties.items %}
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex" href="#" id={{ key }} data-type={{ values }} data-schema='yes'>{{ key }}</a></li>
-                              {% endfor %}
-                              {% elif resource.attributes %}
-                              {% for attribute in resource.attributes %}
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex" href="#" id={{ attribute.attribute }} data-type='string' data-schema='no'>{{ attribute }}</a></li>
-                              {% endfor %}
-                              {% endif %}
-                            </ul>
-                          </div>
-                        </div>
-                        <div class="btn-group btn-group-sm">
-                          <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" id="modal-button-operator" type="button" data-toggle="dropdown">{% trans "Operator" %}<span class="ml-2"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-operator" id="operator_list" data-modal-button-id="operator">
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="=">=</a></li>
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&lt;&gt;">&lt;&gt;</a></li>
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&gt;">&gt;</a></li>
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&lt;">&lt;</a></li>
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&gt;=">&gt;=</a></li>
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id="&lt;=">&lt;=</a></li>
-                              <li class="list-group-item p-0 border-0"><a class="btn_wrapper d-flex justify-content-center" href="#" id=" LIKE ">LIKE</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <select class="form-control js-data-array" id="single_value" placeholder="Input your query here" data-toggle="tooltip" title="Query"></select>
-                      <div class="btn-group" id="button_query">
-                        <a href="#" id="query_part" class="btn btn-primary btn-mg" data-toggle="modal" data-target="#myModal" title=""><i class="fa-solid fa-plus"></i></a>
-                      </div>
-                    </div>
-
-                    </br>
-
-                    <div class="text_area">
-                      <div class="form-group" id="added_rules"></div>
-                      <div><p id="whole_query"></p></div>
-                    </div>
-
-                    <label style="font-weight: normal;">{% trans "Feature limit" %}: </label>
-                    <input type="text" id="max_features" name="filter" />
-                    <a href='#' id="clear_filter" class="btn btn-danger btn-block">{% trans "Clear" %}</a>
-                    </br>
-
-                  </div>
-                  <hr/>
+                <div class="mt-2 mb-2">
+                  <a href="{% url "layer_export" resource.alternate %}" class="btn btn-save btn-block mb-3">{% trans "Advanced Export Filtered Data" %}</a>
+                  <button class="btn btn-upload btn-block" type="button" data-toggle="collapse" data-target="#originalDownload" aria-expanded="false" aria-controls="originalDownload">{% trans "Download Original Dataset" %}</button>
                 </div>
 
-                <!-- DOWNLOAD FILTER - END -->
-
-                <h4>{% trans "Pick your download format:" %}</h4>
-                <ul>
-                  {% for link in links_download %}
-                  {% if link.name == 'Original Dataset' %}
-                  {% original_link_available resource.id link.url as original_dwn_link_available %}
-                  {% if original_dwn_link_available %}
-                  <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
-                      class="urls">{% trans link.name %}</a></li>
-                  {% else %}
-                  <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
-                  <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
-                  {% endif %}
-                  {% else %}
-                  <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}"
-                      class="urls">{% trans link.name %}</a></li>
-                  {% endif %}
-                  {% endfor %}
-                </ul>
+                <div class="collapse" id="originalDownload">
+                  <div class="card card-body">
+                    <h5>{% trans "Pick your download format:" %}</h5>
+                    <ul>
+                      {% for link in links_download %}
+                        {% if link.name == 'Original Dataset' %}
+                          {% original_link_available resource.id link.url as original_dwn_link_available %}
+                          {% if original_dwn_link_available %}
+                          <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
+                          {% else %}
+                          <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
+                          <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
+                          {% endif %}
+                        {% else %}
+                        <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
                 
           </div>
             {% endif %}

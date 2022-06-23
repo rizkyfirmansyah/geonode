@@ -55,6 +55,9 @@ class BaseHookSet:
     def layer_style_edit_template(self, context=None):
         return NotImplemented
 
+    def layer_export_template(self, context=None):
+        return NotImplemented
+
     def layer_list_url(self):
         return resource_list_url('layers')
 

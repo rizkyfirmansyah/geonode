@@ -4068,12 +4068,6 @@ footer form {
     margin-right: 0
 }
 
-.selections {
-    margin-top: 1em;
-    padding-left: 10px;
-    padding-right: 10px
-}
-
 .comment {
     padding-bottom: 11px
 }
@@ -4096,28 +4090,6 @@ footer form {
     height: auto;
     max-height: 200px;
     overflow-x: hidden
-}
-
-.dropdown-menu-operator {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden
-}
-
-.dropdown-menu-and-or {
-    height: auto;
-    max-height: 200px;
-    overflow-x: hidden
-}
-
-#wrong-data-type {
-    color: #bd362f;
-    font-style: italic
-}
-
-#missing-values {
-    color: #bd362f;
-    font-style: italic
 }
 
 #drop-zone {
@@ -4834,6 +4806,10 @@ color: transparent;
 
 #ms-container {
     top: var(--header-height) !important;
+}
+
+.msgapi .btn-group, .msgapi .btn-group-vertical {
+    display: flex !important;
 }
 
 .msgapi .btn {
