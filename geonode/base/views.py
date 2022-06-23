@@ -41,7 +41,7 @@ from geonode.utils import resolve_object
 from geonode.documents.models import Document
 from geonode.groups.models import GroupProfile
 from geonode.tasks.tasks import set_permissions
-from geonode.base.forms import CuratedThumbnailForm
+from geonode.base.forms import BatchEditRegionForm, CuratedThumbnailForm
 from geonode.security.utils import get_visible_resources
 from geonode.notifications_helper import send_notification
 from geonode.base.utils import OwnerRightsRequestViewUtils

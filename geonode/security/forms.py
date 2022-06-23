@@ -37,6 +37,12 @@ def get_groups_choices():
     return get_groups_choices
 
 
+def get_groups_id_choices():
+    get_groups_choices = [(i.group_id, i.title) for i in GroupProfile.objects.all()]
+    
+    return get_groups_choices
+
+
 class PermissionsForm(forms.Form):
     get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
     if settings.DEFAULT_ANONYMOUS_VIEW_PERMISSION:

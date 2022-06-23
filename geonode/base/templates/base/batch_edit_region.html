@@ -1,0 +1,26 @@
+{% extends "geonode_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} {% trans "Batch Edit Region" %} - {{ block.super }} {% endblock %}
+
+{% block body_class %}{% trans "batch edit region" %}{% endblock %}
+
+{% block body %}
+  <form action="." method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-header text-center bg-primary">
+            <h3 class="text-light">{% trans "Batch Edit Region" %}</h3>
+        </div>
+        <div class="card-body">{{ form|crispy }}</div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-6"><a href="#" class="btn btn-secondary btn-block" onclick="history.go(-1)">Go Back</a></div>
+            <div class="col-6"><input class="btn btn-save btn-block" type="submit" value="{% trans "Submit" %}" /></div>
+          </div>
+        </div>
+      </div>
+  </form>
+{% endblock %}

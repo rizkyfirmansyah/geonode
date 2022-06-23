@@ -18,16 +18,19 @@
 #
 #########################################################################
 
+from uuid import uuid4
 from django import forms
 from django.contrib import admin
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import path
+from django.http import HttpResponseRedirect
 from dal import autocomplete
 from taggit.forms import TagField
 from django.core.management import call_command
 from slugify import slugify
 from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 from treebeard.admin import TreeAdmin
 from treebeard.forms import movenodeform_factory
@@ -51,10 +54,18 @@ from geonode.base.models import (
     Configuration,
     Thesaurus, ThesaurusLabel, ThesaurusKeyword, ThesaurusKeywordLabel,
 )
+from django.core.files.base import ContentFile
+from geonode.storage.manager import storage_manager
+import random
+
+import csv
+from django.db import transaction
 
 from geonode.base.forms import (
     BatchEditForm,
-    BatchPermissionsForm, ThesaurusImportForm,
+    BatchEditRegionForm,
+    BatchPermissionsForm,
+    CsvImportForm, ThesaurusImportForm,
     UserAndGroupPermissionsForm
 )
 from geonode.base.widgets import TaggitSelect2Custom
@@ -94,7 +105,7 @@ metadata_batch_edit.short_description = 'Metadata batch edit'
 
 def set_batch_permissions(modeladmin, request, queryset):
     ids = ','.join([str(element.pk) for element in queryset])
-    resource = queryset[0].class_name.lower()
+    resource = queryset[0].name.lower()
     form = BatchPermissionsForm(
         {
             'permission_type': ('r', ),
@@ -219,7 +230,139 @@ class DataTypeAdmin(TabbedTranslationAdmin):
             return True
 
 
+def generate_random_code(string, hash=6):
+    code = ''.join(random.choice(string.replace(" ","")) for _ in range(hash)).upper()
+    return code
+
+
 class RegionAdmin(TabbedTranslationAdmin):
+    change_list_template = "admin/regions/regions_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        new_urls = [path('upload_regions/', self.upload_csv),]
+        return new_urls + urls
+
+    def upload_csv(self, request):
+        toast_title = "Upload Region"
+        
+        if request.method == "POST":
+            # csv_file = csv.reader(csv_file)
+            csv_file = request.FILES["csv_file"]
+
+            if not csv_file.name.endswith('.csv'):
+                msg = f"The wrong file type was uploaded"
+                messages.warning(request, msg, extra_tags=toast_title)
+                return HttpResponseRedirect(request.path_info)
+
+            upload_path = f"tmp/regions-{str(uuid4())}.csv"
+            content = csv_file.read()
+            file_content = ContentFile(content)
+            file_name = storage_manager.save(
+                upload_path, file_content
+            )
+            tmp_file = storage_manager.path(file_name)
+
+            csv_file = open(tmp_file, errors="ignore")
+            reader = csv.reader(csv_file)
+
+            headers = next(reader, None)
+
+            if len(headers) == 1:
+                with transaction.atomic():
+                      with Region.objects.delay_mptt_updates():
+                          for row in reader:
+                              obj = Region(
+                                  code=generate_random_code(row[0], hash=6),
+                                  name=row[0],
+                              )
+                              obj.save()
+
+                      Region.objects.rebuild()
+
+            if len(headers) > 1 and "code" not in headers and "parent" in headers:
+                with transaction.atomic():
+                    with Region.objects.delay_mptt_updates():
+                        for row in reader:
+                            (
+                                name,
+                                bbox_x0,
+                                bbox_x1,
+                                bbox_y0,
+                                bbox_y1,
+                                parent
+                            ) = row
+                            parent_id = Region.objects.filter(name__iexact=parent).values_list('id', flat=True)
+                            obj = Region(
+                                code=generate_random_code(name),
+                                name=name,
+                                bbox_x0=bbox_x0,
+                                bbox_x1=bbox_x1,
+                                bbox_y0=bbox_y0,
+                                bbox_y1=bbox_y1,
+                                parent_id=list(parent_id)[0]
+                            )
+                            obj.save()
+
+                    Region.objects.rebuild()
+
+            if len(headers) > 1 and "code" not in headers and "parent" not in headers:
+                with transaction.atomic():
+                    for row in reader:
+                        (
+                            name,
+                            bbox_x0,
+                            bbox_x1,
+                            bbox_y0,
+                            bbox_y1
+                        ) = row
+                        _code = generate_random_code(name)
+                        if Region.objects.filter(code__contains=_code):
+                            _code = generate_random_code(name)
+                        obj = Region(
+                            code=_code,
+                            name=name,
+                            bbox_x0=bbox_x0,
+                            bbox_x1=bbox_x1,
+                            bbox_y0=bbox_y0,
+                            bbox_y1=bbox_y1
+                        )
+                        obj.save()
+
+            if len(headers) > 1 and "code" in headers and "parent" in headers:
+                with transaction.atomic():
+                    with Region.objects.delay_mptt_updates():
+                        for row in reader:
+                            (
+                                name,
+                                bbox_x0,
+                                bbox_x1,
+                                bbox_y0,
+                                bbox_y1,
+                                parent
+                            ) = row
+                            parent_id = Region.objects.filter(name__iexact=parent).values_list('id', flat=True)
+                            obj = Region(
+                                name=name,
+                                bbox_x0=bbox_x0,
+                                bbox_x1=bbox_x1,
+                                bbox_y0=bbox_y0,
+                                bbox_y1=bbox_y1,
+                                parent_id=list(parent_id)[0]
+                            )
+                            obj.save()
+
+                    Region.objects.rebuild()
+
+            msg = f"Your region has been imported"
+            messages.success(request, msg, extra_tags=toast_title)
+            return redirect("..")
+
+        form = CsvImportForm()
+        context = {"form": form}
+
+        return render(request, "base/upload_regions.html", context)
+
     model = Region
     list_display_links = ('name',)
     list_display = ('code', 'name', 'parent')

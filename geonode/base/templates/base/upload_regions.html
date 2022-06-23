@@ -1,0 +1,160 @@
+{% extends "geonode_base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} {% trans "Upload Regions" %} - {{ block.super }} {% endblock %}
+
+{% block body_class %}{% trans "upload regions" %}{% endblock %}
+
+{% block body %}
+<div>
+  <form action="." method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-header text-center bg-primary">
+            <h3 class="text-light">{% trans "Upload Regions" %}</h3>
+        </div>
+        <div class="card-body">
+          {{ form|crispy }}
+          <div class="">
+            <p>Learn more about format uploader<button type="button" class="btn" data-toggle="modal" data-target="#regions_format_modal">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i></button>
+            </p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-6"><a href="#" class="btn btn-secondary btn-block" onclick="history.go(-1)">Go Back</a></div>
+            <div class="col-6"><input class="btn btn-save btn-block" type="submit" value="{% trans "Submit" %}" /></div>
+          </div>
+        </div>
+      </div>
+  </form>
+</div>
+
+
+{% block modal_format %}
+
+<div class="modal fade" id="regions_format_modal" tabindex="-1" role="dialog" aria-labelledby="regions_format_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h3 class="modal-title">Supported File & Format</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Currently only <strong>csv</strong> file is supported</p>
+        <p class="mb-2 alert-warning p-1">
+          You can provide <strong>1</strong> column only if you don't need filter by bounding box.
+          <a class="text-primary" type="button" data-toggle="collapse" data-target="#simplestForm" aria-expanded="false" aria-controls="simplestForm">Click here for more info</a>
+        </p>
+
+        <div class="collapse" id="simplestForm">
+          <div>
+            <table>
+                <thead class="table">
+                  <tr>
+                    <th class="text-center">name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-center">Aceh</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center">Jakarta</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="mb-2 alert-danger p-1">
+          If you wish the Region can be filtered using bounding box, provide at least <strong>5</strong> columns.
+          <a class="text-primary" type="button" data-toggle="collapse" data-target="#bbTable" aria-expanded="false" aria-controls="bbTable">Click here for more info</a>
+        </p>
+
+        <div class="collapse" id="bbTable">
+          <div class="table-responsive mb-2">
+            <table class="w-auto">
+                <thead class="table">
+                  <tr class="d-flex">
+                    <th class="col">name</th>
+                    <th class="col">bbox_x0</th>
+                    <th class="col">bbox_x1</th>
+                    <th class="col">bbox_y0</th>
+                    <th class="col">bbox_y1</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="d-flex">
+                    <td class="col">Aceh</td>
+                    <td class="col">94.9719518</td>
+                    <td class="col">98.2874409</td>
+                    <td class="col">1.977152</td>
+                    <td class="col">6.0767684</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="alert-info p-1">
+          Best if you can provide the complete list of <strong>7</strong> values.
+          <a class="text-primary" type="button" data-toggle="collapse" data-target="#bbTable2" aria-expanded="false" aria-controls="bbTable2">Click here for more info</a>
+        </p>
+
+        <div class="collapse" id="bbTable2">
+          <div class="table-responsive mb-2">
+            <table class="w-auto">
+                <thead class="table">
+                  <tr class="d-flex">
+                    <th class="col">code</th>
+                    <th class="col">name</th>
+                    <th class="col">bbox_x0</th>
+                    <th class="col">bbox_x1</th>
+                    <th class="col">bbox_y0</th>
+                    <th class="col">bbox_y1</th>
+                    <th class="col">parent</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="d-flex">
+                    <td class="col">SMI</td>
+                    <td class="col">Sumatra Island</td>
+                    <td class="col">92.79</td>
+                    <td class="col">107.80</td>
+                    <td class="col">-8.19</td>
+                    <td class="col">7.07</td>
+                    <td class="col">Indonesia</td>
+                  </tr>
+                  <tr class="d-flex">
+                    <td class="col">ACH</td>
+                    <td class="col">Aceh</td>
+                    <td class="col">94.9719518</td>
+                    <td class="col">98.2874409</td>
+                    <td class="col">1.977152</td>
+                    <td class="col">6.0767684</td>
+                    <td class="col">Sumatra Island</td>
+                  </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="alert-warning p-1 text-center">Note: If you didn't provide <strong>code</strong> value, the system generates 6 random characters from provided name.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modal_format %}
+
+{% endblock %}

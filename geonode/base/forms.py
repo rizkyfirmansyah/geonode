@@ -22,7 +22,7 @@ import html
 import logging
 import json
 from django.db.models.query import QuerySet
-from geonode.security.forms import get_groups_choices
+from geonode.security.forms import get_groups_id_choices
 from tempus_dominus.widgets import DateTimePicker
 from dal import autocomplete
 from django import forms
@@ -39,8 +39,8 @@ from taggit.forms import TagField
 from tinymce.widgets import TinyMCE
 from django.contrib.admin.utils import flatten
 from geonode.base.enumerations import ALL_LANGUAGES
-from geonode.base.models import (CuratedThumbnail, HierarchicalKeyword,
-                                 License, Region, ResourceBase, Thesaurus,
+from geonode.base.models import (CuratedThumbnail, DataType, HierarchicalKeyword,
+                                 License, Region, ResourceBase, RestrictionCodeType, Thesaurus,
                                  ThesaurusKeyword, ThesaurusKeywordLabel, ThesaurusLabel,
                                  TopicCategory)
 from geonode.base.utils import validate_extra_metadata
@@ -546,25 +546,43 @@ class ValuesListField(forms.Field):
 
 class BatchEditForm(forms.Form):
     LANGUAGES = (('', '--------'),) + ALL_LANGUAGES
-    group = GroupsChoiceField(
-        label=_('Group'),
-        choices=get_groups_choices,
-        required=False)
-    owner = forms.ModelChoiceField(
-        label=_("Owner"),
-        required=True,
-        help_text=ResourceBase.owner_help_text,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
-    category = forms.ModelChoiceField(
-        label=_('Category'),
-        help_text=ResourceBase.category_help_text,
-        queryset=TopicCategory.objects.all(),
+    project_information = forms.CharField(
+        label=_('Project Information'),
+        help_text=ResourceBase.project_information_help_text,
         required=False)
     license = forms.ModelChoiceField(
         label=_('License'),
         help_text=ResourceBase.license_help_text,
         queryset=License.objects.all(),
         required=False)
+    data_type = forms.ModelChoiceField(
+        label=_('Data Type'),
+        help_text=ResourceBase.data_type_help_text,
+        required=False,
+        queryset=DataType.objects.all())
+    category = forms.ModelChoiceField(
+        label=_('Category'),
+        help_text=ResourceBase.category_help_text,
+        queryset=TopicCategory.objects.all(),
+        required=False)
+    keywords = forms.CharField(
+        label=_("Free-text Keywords"),
+        required=False,
+        help_text=ResourceBase.keywords_help_text)
+    group = GroupsChoiceField(
+        label=_('Group'),
+        choices=get_groups_id_choices,
+        required=False)
+    restriction_code_type = forms.ModelChoiceField(
+        label=_("Restrictions"),
+        help_text=ResourceBase.restriction_code_type_help_text,
+        queryset=RestrictionCodeType.objects.all(),
+        required=False)
+    owner = forms.ModelChoiceField(
+        label=_("Owner"),
+        required=True,
+        help_text=ResourceBase.owner_help_text,
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
     regions = forms.ModelChoiceField(
         label=_('Regions'),
         help_text=ResourceBase.regions_help_text,
@@ -582,10 +600,6 @@ class BatchEditForm(forms.Form):
         required=False,
         choices=LANGUAGES,
         help_text=ResourceBase.language_help_text)
-    keywords = forms.CharField(
-        label=_("Free-text Keywords"),
-        required=False,
-        help_text=ResourceBase.keywords_help_text)
     ids = forms.CharField(required=False, widget=forms.HiddenInput())
 
 
@@ -675,3 +689,14 @@ class OwnerRightsRequestForm(forms.Form):
 
 class ThesaurusImportForm(forms.Form):
     rdf_file = forms.FileField()
+
+
+class CsvImportForm(forms.Form):
+    csv_file = forms.FileField()
+
+
+class BatchEditRegionForm(forms.Form):
+    parent_id = forms.ModelChoiceField(
+        label=_("Parent"),
+        queryset=Region.objects.all(),
+        required=True)
