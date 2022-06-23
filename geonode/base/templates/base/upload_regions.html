@@ -1,6 +1,6 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block title %} {% trans "Upload Regions" %} - {{ block.super }} {% endblock %}
@@ -114,36 +114,46 @@
                   <tr class="d-flex">
                     <th class="col">code</th>
                     <th class="col">name</th>
+                    <th class="col">level</th>
                     <th class="col">bbox_x0</th>
                     <th class="col">bbox_x1</th>
                     <th class="col">bbox_y0</th>
                     <th class="col">bbox_y1</th>
-                    <th class="col">parent</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr class="d-flex">
+                    <td class="col">IDN</td>
+                    <td class="col">Indonesia</td>
+                    <td class="col">0</td>
+                    <td class="col">94.969833</td>
+                    <td class="col">141.021805</td>
+                    <td class="col">-11.00485</td>
+                    <td class="col">6.07573</td>
+                  </tr>
+                  <tr class="d-flex">
                     <td class="col">SMI</td>
                     <td class="col">Sumatra Island</td>
+                    <td class="col">1</td>
                     <td class="col">92.79</td>
                     <td class="col">107.80</td>
                     <td class="col">-8.19</td>
                     <td class="col">7.07</td>
-                    <td class="col">Indonesia</td>
                   </tr>
                   <tr class="d-flex">
                     <td class="col">ACH</td>
                     <td class="col">Aceh</td>
+                    <td class="col">2</td>
                     <td class="col">94.9719518</td>
                     <td class="col">98.2874409</td>
                     <td class="col">1.977152</td>
                     <td class="col">6.0767684</td>
-                    <td class="col">Sumatra Island</td>
                   </tr>
                 </tbody>
             </table>
           </div>
         </div>
+        <a href="{% static "geonode/csv/sea_regions.csv" %}" type="button" class="float-right text-info">Template download here.</a>
       </div>
       <div class="modal-footer">
         <p class="alert-warning p-1 text-center">Note: If you didn't provide <strong>code</strong> value, the system generates 6 random characters from provided name.</p>

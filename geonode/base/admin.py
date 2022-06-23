@@ -354,6 +354,32 @@ class RegionAdmin(TabbedTranslationAdmin):
 
                     Region.objects.rebuild()
 
+            if len(headers) == 7 and "code" in headers:
+                with transaction.atomic():
+                    with Region.objects.delay_mptt_updates():
+                        for row in reader:
+                            (
+                                code,
+                                name,
+                                level,
+                                bbox_x0,
+                                bbox_x1,
+                                bbox_y0,
+                                bbox_y1,
+                            ) = row
+                            obj = Region(
+                                code=code,
+                                name=name,
+                                level=level,
+                                bbox_x0=bbox_x0,
+                                bbox_x1=bbox_x1,
+                                bbox_y0=bbox_y0,
+                                bbox_y1=bbox_y1
+                            )
+                            obj.save()
+
+                    Region.objects.rebuild()
+
             msg = f"Your region has been imported"
             messages.success(request, msg, extra_tags=toast_title)
             return redirect("..")
