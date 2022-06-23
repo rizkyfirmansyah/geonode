@@ -5216,8 +5216,9 @@ footer li a:hover {
 }
 
 .wrapper nav.filter {
-    max-height: 495px;
+    max-height: 400px;
     max-width: 100%;
+    overflow-y: auto;
 }
 
 .wrapper nav ul {

@@ -20,6 +20,8 @@
 <script src="{% static "geonode/js/search/explore.js" %}"></script>
 <script src="{% static "geonode/js/search/search.js" %}"></script>
 <script src="{% static "geonode/js/search/cart.js" %}"></script>
+<script src="{% static "geonode/js/search/autocomplete_region.js" %}"></script>
+
 {% endblock search_script_loading %}
 <script type="text/javascript">
   $("body").attr('ng-controller', 'geonode_search_controller');
@@ -56,7 +58,7 @@
 
   // Register autocomplete for region filters
   $(document).ready(function() {
-    window.autocomplete = new Autocomplete({
+    window.autocomplete = new AutocompleteRegion({
       form_btn: '#region_search_btn',
       form_submit: null,
       form_selector: '#region-search-autocomplete',

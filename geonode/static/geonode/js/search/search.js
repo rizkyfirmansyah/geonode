@@ -781,6 +781,7 @@
             } else {
                 delete $scope.query['regions__name__in']
             }
+            $scope.infiniteScrollLoaded = true;
             query_api($scope.query);
         });
 
