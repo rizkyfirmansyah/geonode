@@ -22,6 +22,7 @@ import html
 import logging
 import json
 from django.db.models.query import QuerySet
+from geonode.people.forms import ProfileChoiceField
 from geonode.security.forms import get_groups_id_choices
 from tempus_dominus.widgets import DateTimePicker
 from dal import autocomplete
@@ -317,12 +318,6 @@ class ResourceBaseForm(TranslationModelForm):
         required=False,
         help_text=ResourceBase.data_quality_statement_help_text,
         widget=TinyMCE())
-    owner = forms.ModelChoiceField(
-        empty_label=_("Owner"),
-        label=_("Owner"),
-        required=True,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'),
-        widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
 
     date = forms.DateTimeField(
         label=_("Publication Date"),
@@ -346,21 +341,22 @@ class ResourceBaseForm(TranslationModelForm):
         input_formats=['%Y-%m-%d %H:%M %p'],
         widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
 
-    poc = forms.ModelChoiceField(
-        empty_label=_("Person outside SDI (fill form)"),
+    owner = ProfileChoiceField(
+        label=_("Owner"),
+        required=True,
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'),
+        help_text=ResourceBase.owner_help_text)
+
+    poc = ProfileChoiceField(
         label=_("Point of Contact"),
         required=True,
-        queryset=get_user_model().objects.exclude(
-            username='AnonymousUser'),
-        widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'),
+        help_text=ResourceBase.contacts_help_text)
 
-    metadata_author = forms.ModelChoiceField(
-        empty_label=_("Person outside SDI (fill form)"),
+    metadata_author = ProfileChoiceField(
         label=_("Metadata Author"),
         required=True,
-        queryset=get_user_model().objects.exclude(
-            username='AnonymousUser'),
-        widget=autocomplete.ModelSelect2(url='autocomplete_profile'))
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
 
     keywords = TagField(
         label=_("Free-text Keywords"),

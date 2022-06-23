@@ -54,6 +54,29 @@ class MapForm(ResourceBaseForm):
                 self.fields[field].widget.attrs.update(
                   {
                       'class': 'has-external-popover text-truncate w-100'})
+
+            if field == 'owner':
+                self.fields[field].widget.attrs.update({
+                  'class': 'selectpicker',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-actions-box': 'true',
+                  'data-size': '5'})
+            if field == 'poc':
+                self.fields[field].widget.attrs.update({
+                  'class': 'selectpicker',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-actions-box': 'true',
+                  'data-size': '5'})
+            if field == 'metadata_author':
+                self.fields[field].widget.attrs.update({
+                  'class': 'selectpicker',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-actions-box': 'true',
+                  'data-size': '5'})
+
             if field == 'regions':
                 self.fields[field].help_text = ResourceBase.regions_help_text
                 self.fields[field].widget.attrs.update(
