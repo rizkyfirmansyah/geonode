@@ -38,6 +38,7 @@ from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
@@ -57,7 +58,7 @@ from geonode.groups.models import GroupProfile
 from geonode.base.views import batch_modify
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
-from geonode.security.utils import get_visible_resources
+from geonode.security.utils import get_user_visible_groups, get_visible_resources
 from django.contrib import messages
 
 from dal import autocomplete
@@ -519,19 +520,11 @@ def document_metadata(
         author_form = ProfileForm(prefix="author")
         author_form.hidden = True
 
-    metadata_author_groups = []
-    if request.user.is_superuser or request.user.is_staff:
-        metadata_author_groups = GroupProfile.objects.all()
-    else:
-        try:
-            all_metadata_author_groups = chain(
-                request.user.group_list_all(),
-                GroupProfile.objects.exclude(access="private"))
-        except Exception:
-            all_metadata_author_groups = GroupProfile.objects.exclude(
-                access="private")
-        [metadata_author_groups.append(item) for item in all_metadata_author_groups
-            if item not in metadata_author_groups]
+    metadata_profiles = []
+    if request.user.is_authenticated:
+        metadata_profiles = get_user_model().objects.exclude(username='AnonymousUser')
+
+    metadata_author_groups = get_user_visible_groups(request.user)
 
     if settings.ADMIN_MODERATE_UPLOADS:
         if not request.user.is_superuser:
@@ -560,6 +553,7 @@ def document_metadata(
         "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "metadata_author_groups": metadata_author_groups,
+        "metadata_profiles": metadata_profiles,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
         "UI_MANDATORY_FIELDS": list(

@@ -111,12 +111,12 @@
 
     {% if resource.owner %}
     <dt>{% trans "Responsible" %}</dt>
-    <dd><a itemprop="author" href="{{ resource.owner.get_absolute_url }}">{{ resource.owner.username }}</a></dd>
+    <dd><a itemprop="author" href="{{ resource.owner.get_absolute_url }}">{{ resource.owner.full_name_or_nick }}</a></dd>
     {% endif %}
 
-    {% if resource.poc.user %}
+    {% if resource.poc %}
     <dt>{% trans "Point of Contact" %}</dt>
-    <dd><a href="{{ resource.poc.user.get_absolute_url }}">{{ resource.poc.user.username }}</a></dd>
+    <dd><a href="{{ resource.poc.get_absolute_url }}">{{ resource.poc.full_name_or_nick }}</a></dd>
     {% endif %}
 
     {% if resource.group %}

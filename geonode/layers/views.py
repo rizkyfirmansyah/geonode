@@ -94,6 +94,7 @@ from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
 from geonode.documents.models import get_related_documents
 from geonode.security.utils import (
+    get_user_visible_groups,
     get_visible_resources,
     AdvancedSecurityWorkflowManager)
 from geonode.utils import (
@@ -1232,19 +1233,11 @@ def layer_metadata(
     viewer = json.dumps(map_obj.viewer_json(
         request, * (NON_WMS_BASE_LAYERS + [maplayer])))
 
-    metadata_author_groups = []
-    if request.user.is_superuser or request.user.is_staff:
-        metadata_author_groups = GroupProfile.objects.all()
-    else:
-        try:
-            all_metadata_author_groups = chain(
-                request.user.group_list_all().distinct(),
-                GroupProfile.objects.exclude(access="private"))
-        except Exception:
-            all_metadata_author_groups = GroupProfile.objects.exclude(
-                access="private")
-        [metadata_author_groups.append(item) for item in all_metadata_author_groups
-            if item not in metadata_author_groups]
+    metadata_profiles = []
+    if request.user.is_authenticated:
+        metadata_profiles = get_user_model().objects.exclude(username='AnonymousUser')
+
+    metadata_author_groups = get_user_visible_groups(request.user)
 
     register_event(request, 'view_metadata', layer)
     return render(request, template, context={
@@ -1266,6 +1259,7 @@ def layer_metadata(
             'FREETEXT_KEYWORDS_READONLY',
             False),
         "metadata_author_groups": metadata_author_groups,
+        "metadata_profiles": metadata_profiles,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
         "UI_MANDATORY_FIELDS": list(
