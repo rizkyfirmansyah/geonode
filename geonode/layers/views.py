@@ -1233,10 +1233,6 @@ def layer_metadata(
     viewer = json.dumps(map_obj.viewer_json(
         request, * (NON_WMS_BASE_LAYERS + [maplayer])))
 
-    metadata_profiles = []
-    if request.user.is_authenticated:
-        metadata_profiles = get_user_model().objects.exclude(username='AnonymousUser')
-
     metadata_author_groups = get_user_visible_groups(request.user)
 
     register_event(request, 'view_metadata', layer)
@@ -1259,7 +1255,6 @@ def layer_metadata(
             'FREETEXT_KEYWORDS_READONLY',
             False),
         "metadata_author_groups": metadata_author_groups,
-        "metadata_profiles": metadata_profiles,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
         "UI_MANDATORY_FIELDS": list(

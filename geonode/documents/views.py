@@ -38,7 +38,6 @@ from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import get_user_model
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
@@ -520,10 +519,6 @@ def document_metadata(
         author_form = ProfileForm(prefix="author")
         author_form.hidden = True
 
-    metadata_profiles = []
-    if request.user.is_authenticated:
-        metadata_profiles = get_user_model().objects.exclude(username='AnonymousUser')
-
     metadata_author_groups = get_user_visible_groups(request.user)
 
     if settings.ADMIN_MODERATE_UPLOADS:
@@ -553,7 +548,6 @@ def document_metadata(
         "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "metadata_author_groups": metadata_author_groups,
-        "metadata_profiles": metadata_profiles,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
         "UI_MANDATORY_FIELDS": list(

@@ -128,46 +128,39 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
                       'class': 'has-external-popover text-truncate w-100'})
             if field == 'owner':
                 self.fields[field].widget.attrs.update({
-                  'class': 'selectpicker',
+                  'class': 'has-external-popover selectpicker form-control',
                   'data-live-search': 'true',
-                  'data-selected-text-format': 'count > 4',
-                  'data-actions-box': 'true',
                   'data-size': '5'})
             if field == 'poc':
                 self.fields[field].widget.attrs.update({
-                  'class': 'selectpicker',
+                  'class': 'has-external-popover selectpicker form-control',
                   'data-live-search': 'true',
-                  'data-selected-text-format': 'count > 4',
-                  'data-actions-box': 'true',
+                  'data-width': '100%',
                   'data-size': '5'})
             if field == 'metadata_author':
                 self.fields[field].widget.attrs.update({
-                  'class': 'selectpicker',
+                  'class': 'has-external-popover selectpicker form-control',
                   'data-live-search': 'true',
-                  'data-selected-text-format': 'count > 4',
-                  'data-actions-box': 'true',
+                  'data-size': '5'})
+            if field == 'group':
+                self.fields[field].widget.attrs.update({
+                  'class': 'has-external-popover selectpicker form-control',
+                  'data-live-search': 'true',
                   'data-size': '5'})
 
             if field == 'links':
-                self.fields[field].widget.attrs.update(
-                    {
-                        'class': 'has-external-popover selectpicker d-block',
-                        'data-live-search': 'true',
-                        'data-selected-text-format': 'count > 4',
-                        'data-size': '5'})
+                self.fields[field].widget.attrs.update({
+                  'class': 'has-external-popover selectpicker d-block',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-size': '5'})
             if field == 'regions':
                 self.fields[field].help_text = ResourceBase.regions_help_text
-                self.fields[field].widget.attrs.update(
-                    {
-                        'class': 'has-external-popover selectpicker',
-                        'data-live-search': 'true',
-                        'data-size': '10'})
-            if field == 'group':
-                self.fields[field].widget.attrs.update(
-                    {
-                        'class': 'has-external-popover selectpicker',
-                        'data-live-search': 'true',
-                        'data-size': '5'})
+                self.fields[field].widget.attrs.update({
+                  'class': 'has-external-popover selectpicker',
+                  'data-live-search': 'true',
+                  'data-selected-text-format': 'count > 4',
+                  'data-size': '10'})
 
         self.fields['links'].choices = self.generate_link_choices()
         self.fields['links'].initial = self.generate_link_values(

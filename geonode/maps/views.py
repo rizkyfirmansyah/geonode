@@ -71,7 +71,6 @@ from geonode.views import page_not_found_message, unauthorized_message
 from .tasks import delete_map
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
-from django.contrib.auth import get_user_model
 from deprecated import deprecated
 from geonode.security.utils import (
     get_user_visible_groups,
@@ -440,10 +439,6 @@ def map_metadata(
 
     metadata_author_groups = get_user_visible_groups(request.user)
 
-    metadata_profiles = []
-    if request.user.is_authenticated:
-        metadata_profiles = get_user_model().objects.exclude(username='AnonymousUser')
-
     if not AdvancedSecurityWorkflowManager.is_allowed_to_publish(request.user, map_obj):
         map_form.fields['is_published'].widget.attrs.update({'disabled': 'true'})
     if not AdvancedSecurityWorkflowManager.is_allowed_to_approve(request.user, map_obj):
@@ -464,7 +459,6 @@ def map_metadata(
         "preview": getattr(settings, 'GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore'),
         "crs": getattr(settings, 'DEFAULT_MAP_CRS', 'EPSG:3857'),
         "metadata_author_groups": metadata_author_groups,
-        "metadata_profiles": metadata_profiles,
         "TOPICCATEGORY_MANDATORY": getattr(settings, 'TOPICCATEGORY_MANDATORY', False),
         "GROUP_MANDATORY_RESOURCES": getattr(settings, 'GROUP_MANDATORY_RESOURCES', False),
         "UI_MANDATORY_FIELDS": list(
