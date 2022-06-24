@@ -150,8 +150,8 @@
 														<option {% if not category_form.initial %} selected="selected" {% endif %} value="">---</option>
 														{% for choice in category_form.category_choice_field.field.choices %}
 														<option value="{{ choice.0 }}"
-															data-content="<span class='has-popover' data-container='body' data-toggle='popover' data-placement='top'  data-content=' {{ choice.2.description }}' rigger='hover'><i class='fa fa-{{choice.2.fa_class}}'></i> {{ choice.2.gn_description }}<span>">
-															{{ choice.2.gn_description }}</option>
+															data-content="<span class='has-popover' data-container='body' data-toggle='popover' data-placement='top' data-content=' {{ choice.2.title }}' rigger='hover'><i class='fa fa-{{choice.2.fa_class}}'></i> {{ choice.2.title }}<span>">
+															{{ choice.2.title }}</option>
 														{% endfor %}
 													</select>
 												</div>
