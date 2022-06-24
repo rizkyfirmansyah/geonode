@@ -403,14 +403,7 @@ define(function(require, exports) {
         $(this).text(gettext('Finalizing')).attr('disabled', 'disabled').after('\
         <div class="spinner-grow text-info mr-3" role="status"> \
           <span class="sr-only">Loading...</span> \
-        </div> \
-        <div class="spinner-grow text-info mr-3" role="status"> \
-          <span class="sr-only">Loading...</span> \
-        </div> \
-        <div class="spinner-grow text-info mr-3" role="status"> \
-          <span class="sr-only">Loading...</span> \
-        </div> \
-        ');
+        </div>');
         var id = (new Date()).getTime();
         /* ****
          * AF: Switching those two below allows to open a new window instead of redirecting
@@ -522,7 +515,7 @@ define(function(require, exports) {
                 async: true,
                 beforeSend: function() {
                     self.logStatus({
-                        msg: '<p>' + gettext('Performing Final GeoServer Config Step. Check the Upload status above!') + '</p>',
+                        msg: '<p class="text-primary text-center">' + gettext('Performing Final GeoServer Config Step. Check the Upload status above!') + '</p>',
                         level: 'alert-success',
                         empty: 'true'
                     });
@@ -533,7 +526,7 @@ define(function(require, exports) {
                     self.polling = false;
                     if (resp.status === "other") {
                         self.logStatus({
-                            msg: '<p>' + gettext('You need to specify more information in order to complete your upload') + '</p>',
+                            msg: '<p class="text-primary text-center">' + gettext('You need to specify more information in order to complete your upload') + '</p>',
                             level: 'alert-success',
                             empty: 'true'
                         });
@@ -575,7 +568,7 @@ define(function(require, exports) {
             return;
         } else if (resp.status === "other") {
             self.logStatus({
-                msg: '<p>' + gettext('You need to specify more information in order to complete your upload') + '</p>',
+                msg: '<p class="text-center">' + gettext('You need to specify more information in order to complete your upload') + '</p>',
                 level: 'alert-success',
                 empty: 'true'
             });
@@ -595,7 +588,7 @@ define(function(require, exports) {
             self.polling = false;
             resp.errors = 'Unexpected Error';
             self.logStatus({
-                msg: '<p>' + gettext('Unexpected Error') + '</p>',
+                msg: '<p class="text-center">' + gettext('Unexpected Error') + '</p>',
                 level: 'alert-error',
                 empty: 'true'
             });
@@ -613,7 +606,7 @@ define(function(require, exports) {
     LayerInfo.prototype.doStep = function(resp, callback, array) {
         var self = this;
         self.logStatus({
-            msg: '<p>' + gettext('Performing GeoServer Config Step') + '<img class="pull-right" src="../../static/geonode/img/loading.gif"></p>',
+            msg: '<p class="text-center text-primary">' + gettext('Performing GeoServer Config Step') + '<div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>',
             level: 'alert-success',
             empty: 'true'
         });
@@ -736,7 +729,7 @@ define(function(require, exports) {
             },
             success: function(resp, status) {
                 self.logStatus({
-                    msg: '<p>' + gettext('Layer files uploaded, configuring in GeoServer') + '</p>',
+                    msg: '<p class="text-center text-primary">' + gettext('Layer files uploaded, configuring in GeoServer') + '</p>',
                     level: 'alert-success',
                     empty: 'true'
                 });
