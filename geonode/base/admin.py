@@ -247,7 +247,6 @@ class RegionAdmin(TabbedTranslationAdmin):
         toast_title = "Upload Region"
         
         if request.method == "POST":
-            # csv_file = csv.reader(csv_file)
             csv_file = request.FILES["csv_file"]
 
             if not csv_file.name.endswith('.csv'):
