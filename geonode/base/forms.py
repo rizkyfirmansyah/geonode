@@ -579,11 +579,6 @@ class BatchEditForm(forms.Form):
         required=True,
         help_text=ResourceBase.owner_help_text,
         queryset=get_user_model().objects.exclude(username='AnonymousUser'))
-    poc = ProfileChoiceField(
-        label=_("Point of Contact"),
-        required=False,
-        help_text=ResourceBase.contacts_help_text,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
     regions = forms.ModelChoiceField(
         label=_('Regions'),
         help_text=ResourceBase.regions_help_text,
