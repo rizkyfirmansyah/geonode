@@ -26,7 +26,6 @@ docs/i18n/pot/
 
 # Static media handling
 *.jshintrc
-geonode/static/.components/
 geonode/static_root/
 geonode/static/node_modules/
 node_modules/
