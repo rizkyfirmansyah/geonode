@@ -4173,14 +4173,6 @@ footer form {
     overflow: hidden
 }
 
-.documents-actions {
-    margin-bottom: .1em
-}
-
-.documents-actions i {
-    padding-right: 3px
-}
-
 .profile-avatar h5 a {
     color: #c4bab7;
     display: block;
@@ -4589,16 +4581,8 @@ article.tab-pane {
     padding-right: 3px
 }
 
-.layer-actions {
-    margin-top: 20px
-}
-
-.layer-actions i {
-    padding-right: 3px
-}
-
 .nav-tabs li a svg {
-    margin-right: 1rem
+    margin-right: .3rem
 }
 
 .edit-modal {

@@ -1,5 +1,5 @@
 {% load i18n %}
-<ul class="nav nav-tabs m-0 mt-2">
+<ul class="nav nav-tabs mt-2">
   <li><a class="nav-primary active" href="#info" data-toggle="tab"><i class="fa-solid fa-circle-info"></i>{% trans "Info" %}</a></li>
   {% if resource.polymorphic_ctype.name == 'layer' %}
   <li><a class="nav-primary" href="#attributes" data-toggle="tab"><i class="fa-solid fa-bars"></i>{% trans "Fields" %}</a></li>
