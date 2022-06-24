@@ -4,7 +4,7 @@
 {% load groups_tags %}
 {% load user_messages %}
 
-<table class="table table-striped table-bordered table-condensed">
+<table class="table table-striped table-bordered">
     <tbody>
     {% for thread in threads %}
         {% random_uuid as input_id %}
@@ -22,7 +22,7 @@
                             style="font-size:10px;">{{ thread.num_messages }}</span></a>
             </td>
             <td class="col-md-3">
-                <a href="{{ thread.get_absolute_url }}" style="{% if unread_flag %}font-weight:bold{% endif %}">{{ thread.subject }} - {{ thread.latest_message.content|slice:"10"|safe }}...</a>
+                <a href="{{ thread.get_absolute_url }}" style="{% if unread_flag %}font-weight:bold{% endif %}">{{ thread.subject }} - {{ thread.latest_message.content|striptags|slice:"69" }}...</a>
             </td>
             <td class="col-md-2 small">
                 {{ thread.latest_message.sent_at }}
