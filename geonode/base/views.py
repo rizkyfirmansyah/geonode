@@ -41,7 +41,7 @@ from geonode.utils import resolve_object
 from geonode.documents.models import Document
 from geonode.groups.models import GroupProfile
 from geonode.tasks.tasks import set_permissions
-from geonode.base.forms import BatchEditRegionForm, CuratedThumbnailForm
+from geonode.base.forms import CuratedThumbnailForm
 from geonode.security.utils import get_visible_resources
 from geonode.notifications_helper import send_notification
 from geonode.base.utils import OwnerRightsRequestViewUtils
@@ -57,6 +57,7 @@ from geonode.base.models import (
     HierarchicalKeyword, ThesaurusKeyword,
     ThesaurusKeywordLabel
 )
+from django.contrib import messages
 
 
 def get_url_for_app_model(model, model_class):
@@ -141,6 +142,7 @@ def batch_modify(request, model):
         Resource = Map
     template = 'base/batch_edit.html'
     ids = request.POST.get("ids")
+    toast_title = _("Batch Edit")
 
     if "cancel" in request.POST or not ids:
         return HttpResponseRedirect(
@@ -156,12 +158,20 @@ def batch_modify(request, model):
             if not form.cleaned_data.get("date"):
                 form.cleaned_data.pop("date")
 
+            new_categories = [int(c.strip()) for c in request.POST.getlist('category')]
+
             to_update = {}
             for _key, _value in form.cleaned_data.items():
-                if _value:
+                if _value and _key != 'category':
                     to_update[_key] = _value
             resources = Resource.objects.filter(id__in=ids.split(','))
+
+            # update m2m category fields here
+            for resource in resources:
+                resource.category.clear()
+                resource.category.add(*new_categories)
             resources.update(**to_update)
+
             if regions:
                 regions_through = Resource.regions.through
                 new_regions = [regions_through(region=regions, resourcebase=resource) for resource in resources]
@@ -183,6 +193,9 @@ def batch_modify(request, model):
                     new_keywords += [keywords_through(
                         content_object=resource, tag_id=keyword.pk) for resource in resources]
                 keywords_through.objects.bulk_create(new_keywords, ignore_conflicts=True)
+
+            msg = _("You have updated the selected resources metadata")
+            messages.success(request, msg, extra_tags=toast_title)
 
             return HttpResponseRedirect(
                 get_url_for_model(model))

@@ -114,7 +114,7 @@ class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
 
 class RegionsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(RegionsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     region_choice_field = RegionsMultipleChoiceField(
         required=True,
@@ -556,10 +556,10 @@ class BatchEditForm(forms.Form):
         help_text=ResourceBase.data_type_help_text,
         required=False,
         queryset=DataType.objects.all())
-    category = forms.ModelChoiceField(
+    category = forms.ModelMultipleChoiceField(
         label=_('Category'),
         help_text=ResourceBase.category_help_text,
-        queryset=TopicCategory.objects.all(),
+        queryset=TopicCategory.objects.exclude(is_choice=False),
         required=False)
     keywords = forms.CharField(
         label=_("Free-text Keywords"),
@@ -574,10 +574,15 @@ class BatchEditForm(forms.Form):
         help_text=ResourceBase.restriction_code_type_help_text,
         queryset=RestrictionCodeType.objects.all(),
         required=False)
-    owner = forms.ModelChoiceField(
+    owner = ProfileChoiceField(
         label=_("Owner"),
         required=True,
         help_text=ResourceBase.owner_help_text,
+        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
+    poc = ProfileChoiceField(
+        label=_("Point of Contact"),
+        required=False,
+        help_text=ResourceBase.contacts_help_text,
         queryset=get_user_model().objects.exclude(username='AnonymousUser'))
     regions = forms.ModelChoiceField(
         label=_('Regions'),
@@ -597,6 +602,11 @@ class BatchEditForm(forms.Form):
         choices=LANGUAGES,
         help_text=ResourceBase.language_help_text)
     ids = forms.CharField(required=False, widget=forms.HiddenInput())
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
 
 
 class BatchPermissionsForm(forms.Form):
