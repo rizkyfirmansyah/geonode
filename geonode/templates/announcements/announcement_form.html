@@ -6,7 +6,7 @@
 {% block body_class %}announcements{% endblock %}
 
 {% block body %}
-<form action="{{ post_url }}" method="POST" class="form form-horizontal">
+<form action="{{ post_url }}" method="POST" class="form form-horizontal" novalidate>
   <div class="card mb-2 bg-primary text-center">
     <h3 class="text-light p-1">{% if announcement %}{% trans "Edit Announcement" %}{% else %}{% trans "Create Announcement" %}{% endif %}</h3>
   </div>
