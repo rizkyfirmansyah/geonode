@@ -325,21 +325,21 @@ class ResourceBaseForm(TranslationModelForm):
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "1990-01-1", "format": "YYYY-MM-DD HH:mm a"}))
     temporal_extent_start = forms.DateTimeField(
         label=_("Temporal Extent Start"),
         help_text=ResourceBase.temporal_extent_start_help_text,
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "1990-01-1", "format": "YYYY-MM-DD HH:mm a"}))
     temporal_extent_end = forms.DateTimeField(
         label=_("Temporal Extent End"),
         help_text=ResourceBase.temporal_extent_end_help_text,
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "1990-01-1", "format": "YYYY-MM-DD HH:mm a"}))
 
     owner = ProfileChoiceField(
         label=_("Owner"),
@@ -386,17 +386,15 @@ class ResourceBaseForm(TranslationModelForm):
             help_text = self.fields[field].help_text
 
             if help_text != '':
-                self.fields[field].widget.attrs.update(
-                    {
+                self.fields[field].widget.attrs.update({
                         'class': 'has-external-popover',
                         'data-content': help_text,
                         'data-placement': 'right',
                         'data-container': 'body',
                         'data-html': 'true'})
-            # change the style of datetimepicker to work with tempus_dominus style; set the minimum date to Jan 1, 2022
+            # change the style of datetimepicker to work with tempus_dominus style; set the minimum date to Jan 1, 1990
             if self.fields[field].widget.__class__.__name__ == 'ResourceBaseDateTimePicker':
-                self.fields[field].widget.attrs.update(
-                    {
+                self.fields[field].widget.attrs.update({
                         'append': 'fa fa-calendar',
                         'icon_toggle': True})
             # change the style of checkboxinput to toggle instead of boring checkbox. And remove the label!
@@ -590,7 +588,7 @@ class BatchEditForm(forms.Form):
         required=False,
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
-        widget=ResourceBaseDateTimePicker(options={"minDate": "2022-01-1", "format": "YYYY-MM-DD HH:mm a"}))
+        widget=ResourceBaseDateTimePicker(options={"minDate": "1990-01-1", "format": "YYYY-MM-DD HH:mm a"}))
     language = forms.ChoiceField(
         label=_('Language'),
         required=False,

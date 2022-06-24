@@ -391,11 +391,10 @@ define(function(require, exports) {
         }
         this.logStatus({
             msg: 'Your upload has started \
+            <p class="text-center text-primary" id="remaining"></p> \
+            <p class="text-center text-primary">' + greeting.concat(" ", callme) + '! Grab your favourite snack, coffee, or tea while waiting :)</p> \
             <div class="progress" id="prog"> \
-              <div class="progress-bar progress-bar-success" style="width:0%"> \
-                  <p class="text-center p-2 d-block" id="remaining"></p> \
-                  <span class="p-2 text-center">' + greeting.concat(" ", callme) + '! Grab your favourite snack, coffee, or tea while waiting :)</span> \
-              </div>',
+              <div class="progress-bar progress-bar-success" style="width:0%"></div>',
             level: 'alert-success',
             empty: 'true'
         });
