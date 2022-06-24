@@ -402,7 +402,17 @@ define(function(require, exports) {
     };
 
     LayerInfo.prototype.doResume = function(event) {
-        $(this).text(gettext('Finalizing')).attr('disabled', 'disabled').after('<img class="pull-right" src="../../static/geonode/img/loading.gif">');
+        $(this).text(gettext('Finalizing')).attr('disabled', 'disabled').after('\
+        <div class="spinner-grow text-info mr-3" role="status"> \
+          <span class="sr-only">Loading...</span> \
+        </div> \
+        <div class="spinner-grow text-info mr-3" role="status"> \
+          <span class="sr-only">Loading...</span> \
+        </div> \
+        <div class="spinner-grow text-info mr-3" role="status"> \
+          <span class="sr-only">Loading...</span> \
+        </div> \
+        ');
         var id = (new Date()).getTime();
         /* ****
          * AF: Switching those two below allows to open a new window instead of redirecting
