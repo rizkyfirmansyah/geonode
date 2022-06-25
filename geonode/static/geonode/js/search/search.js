@@ -447,8 +447,6 @@
      */
     module.controller('geonode_search_controller', function($injector, $scope, $location, $http, Configs) {
         $scope.query = $location.search();
-        $scope.query.limit = $scope.query.limit || CLIENT_RESULTS_LIMIT;
-        $scope.query.offset = $scope.query.offset || 0;
         $scope.page = Math.round(($scope.query.offset / $scope.query.limit) + 1);
         $scope.infiniteScroll = 0;
         $scope.infiniteScrollLoaded = true;
