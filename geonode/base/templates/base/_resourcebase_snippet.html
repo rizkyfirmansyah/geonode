@@ -66,18 +66,30 @@
           </div>
             <div class="card-footer">
               <div class="row">
-                <div class="col-3 text-center" ng-controller="CartList">
-                  <button
-                    class="btn btn-default btn-xs p-0"
-                    ng-if="cart"
-                    ng-click="cart.toggleItem(item)"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Bulk Select"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
-                </div>
-                  <div class="col-3 text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
-                  <div class="col-3 text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
-                  <div class="col-3 text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
+                {% endverbatim %}
+                {% if request.user.is_authenticated %}
+                  {% verbatim %}
+                    <div class="col-3 text-center" ng-controller="CartList">
+                      <button
+                        class="btn btn-default btn-xs p-0"
+                        ng-if="cart"
+                        ng-click="cart.toggleItem(item)"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="Bulk Select"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
+                    </div>
+                  {% endverbatim %}
+                {% endif %}
+                  {% verbatim %}
+                  <div class="col text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
+                  <div class="col text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
+                  {% endverbatim %}
+                {% if request.user.is_authenticated %}
+                  {% verbatim %}
+                  <div class="col text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
+                  {% endverbatim %}
+                {% endif %}
+                {% verbatim %}
               </div>
             </div>
               <em ng-if="item.resource_type == 'remoteStore'">
@@ -97,11 +109,15 @@
               {% verbatim %}
               <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">PENDING APPROVAL</div>
               <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">UNPUBLISHED</div>
-            <div class="card-footer text-center" ng-if="item.resource_type == 'layer'">
-              <a href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
-              <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
-            </div>
             {% endverbatim %}
+            {% if request.user.is_authenticated %}
+              {% verbatim %}
+                <div class="card-footer text-center" ng-if="item.resource_type == 'layer'">
+                  <a href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+                  <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
+                </div>
+              {% endverbatim %}
+            {% endif %}
         </div>
     </div>
   </div>
