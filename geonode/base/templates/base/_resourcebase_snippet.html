@@ -97,8 +97,8 @@
               {% verbatim %}
               <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">PENDING APPROVAL</div>
               <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">UNPUBLISHED</div>
-            <div class="card-footer" ng-if="item.resource_type == 'layer'">
-              <a class="create_map" href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+            <div class="card-footer text-center" ng-if="item.resource_type == 'layer'">
+              <a href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
               <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
             </div>
             {% endverbatim %}
