@@ -91,24 +91,23 @@
 									<div class="col-12">
 										<div id="basicDescriptiveInfo" class="row row-cols-2">
                       {% block thumbnail %}
-                        <div class="col-3">
-                          <img id="image" style="max-height: 100%; max-width: 100%; min-height: 100%; min-width: 100%">
-                          <script>
-                            const image = document.getElementById('image');
-                            const path = location.pathname.split('/');
-                            const id = path[path.length - 2];
-                            const prefetch_url = "{{ resource.curatedthumbnail.thumbnail_url }}";
-                            const c_widget = new CropWidget(image,
-                              parseInt(
-                                id
-                              ),
-                              '/api/layers/',
-                              prefetch_url
-                            );
-                            c_widget.init();
-                          </script>
-                        </div>
-                      {% endblock %}
+                      <div class="col-lg-3">
+                          <span><label for="{{ layer_form.thumbnail_url|id }}">{% trans "Thumbnail" %}</label></span>
+                          <div id="embedded_map" class="mb-2" style="height:250px;width: 250px;">
+                            <div id="preview_map" style="height: 90%;width: 100%;">
+                            </div>
+                            <div id="preview_image" style="height: 90%;width: 100%;">
+                                <img id="preview_image_src" src="{{ layer_form.thumbnail_url.value }}" height="100%" width="100%"/>
+                            </div>
+                            <div class="mt-2">
+                              <span class="btn-group btn-group-md w-100">
+                                  <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
+                                  <a class="btn btn-primary" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
+                              </span>
+                            </div>
+                          </div>
+                      </div>
+                      {% endblock thumbnail %}
 											<div class="col-4">
 												<div>
 													<span><label for="{{ layer_form.title|id }}">{{ layer_form.title.label }}</label></span>
