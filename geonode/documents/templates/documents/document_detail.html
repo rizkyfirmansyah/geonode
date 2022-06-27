@@ -153,8 +153,7 @@
       {% if not READ_ONLY_MODE %}
       {% if "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}
       <li class="list-group-item">
-        <button class="btn btn-edit btn-md btn-block" data-toggle="modal"
-          data-target="#edit-document">{% trans "Edit Datasets" %}</button>
+        <button class="btn btn-edit btn-md btn-block" data-toggle="modal" data-target="#edit-document">{% trans "Edit Datasets" %}</button>
       </li>
       {% endif %}
       {% endif %}
@@ -168,10 +167,8 @@
       {% endif %}
 
       <li class="list-group-item">
-        <button class="btn btn-download btn-md btn-block" data-toggle="modal"
-          data-target="#download-metadata">{% trans "Download Metadata" %}</button>
+        <button class="btn btn-download btn-md btn-block" data-toggle="modal" data-target="#download-metadata">{% trans "Download Metadata" %}</button>
       </li>
-      
 
       {% if related %}
       <li class="list-group-item">
@@ -198,8 +195,7 @@
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
         <p>{% trans "Click the button below to change the permissions of this Datasets." %}</p>
-        <button class="btn btn-edit btn-block" data-toggle="modal"
-        data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
+        <button class="btn btn-edit btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
       </li>
 
       {% with catalogue='document' %}
@@ -221,9 +217,7 @@
 {% endblock %}
 
 {% block extra_script %}
-{{ block.super }}
-
-  
+{{ block.super }}  
   
   {% if DISPLAY_SOCIAL %}
     {% include 'facebook_sdk.html' %}

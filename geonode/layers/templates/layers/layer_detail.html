@@ -420,7 +420,7 @@
           <h4>{% trans "Add the layer to an existing map" %}</h4>
           <form action="{% url "add_layer" %}" method="GET">
             {% csrf_token %}
-            <select name="map_id">
+            <select name="map_id" class="selectpicker" data-width="100%" data-size="5">
               {% for map in maps %}
               <option value="{{ map.id }}">{{ map.title|truncatechars:40 }}</option>
               {% endfor %}
