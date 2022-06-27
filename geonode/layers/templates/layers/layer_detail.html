@@ -45,7 +45,7 @@
     <div class="row">
       <h3 class="col-8 d-flex text-layer">{{ resource.title|default:resource.alternate }}</h3>
       <div class="col-4 float-right">
-        <a href="{% url "catalogue_browse" %}?limit={{ CLIENT_RESULTS_LIMIT }}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
+        <a href="{% url "catalogue_browse" %}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
       </div>
     </div>
   </div>

@@ -20,7 +20,9 @@
 <script src="{% static "geonode/js/search/explore.js" %}"></script>
 <script src="{% static "geonode/js/search/search.js" %}"></script>
 <script src="{% static "geonode/js/search/cart.js" %}"></script>
-<script src="{% static "geonode/js/search/autocomplete_region.js" %}"></script>
+{% if pathc == "catalogue" or pathc == "search" or pathc == "maps" %}
+  <script src="{% static "geonode/js/search/autocomplete_region.js" %}"></script>
+{% endif %}
 
 {% endblock search_script_loading %}
 <script type="text/javascript">
@@ -43,6 +45,7 @@
   HAYSTACK_SEARCH = "{{ HAYSTACK_SEARCH }}".toLowerCase() === "true";
   HAYSTACK_FACET_COUNTS = "{{ HAYSTACK_FACET_COUNTS }}".toLowerCase() === "true";
   CLIENT_RESULTS_LIMIT = {{ CLIENT_RESULTS_LIMIT }};
+  API_LIMIT_PER_PAGE = {{ API_LIMIT_PER_PAGE }};
  {% endblock %}
   // Register autocomplete for text filters
   $(document).ready(function() {
@@ -56,18 +59,22 @@
     window.autocomplete.setup()
   })
 
-  // Register autocomplete for region filters
-  $(document).ready(function() {
-    window.autocomplete = new AutocompleteRegion({
-      form_btn: '#region_search_btn',
-      form_submit: null,
-      form_selector: '#region-search-autocomplete',
-      input_selector: '#region_search_input',
-      container_selector: '#region-search-container',
-      url: AUTOCOMPLETE_URL_REGION
+  {% if pathc == "catalogue" or pathc == "search" or pathc == "maps" %}
+    // Register autocomplete for region filters
+    $(document).ready(function() {
+      window.autocomplete = new AutocompleteRegion({
+        form_btn: '#region_search_btn',
+        form_submit: null,
+        form_selector: '#region-search-autocomplete',
+        input_selector: '#region_search_input',
+        container_selector: '#region-search-container',
+        url: AUTOCOMPLETE_URL_REGION
+      })
+      window.autocomplete.setup()
     })
-    window.autocomplete.setup()
-  })
+
+    AUTOCOMPLETE_URL_REGION = '{% url "autocomplete_region" %}';
+  {% endif %}
 
   {% get_context_resourcetype as pathc %}
         {% if pathc == "catalogue" %}
@@ -85,7 +92,6 @@
         {% else %}
                 AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
         {% endif %}
-  AUTOCOMPLETE_URL_REGION = '{% url "autocomplete_region" %}';
 
   var module = angular.module('search', ['geonode_main_search', 'cart']);
   module.constant('Configs', {

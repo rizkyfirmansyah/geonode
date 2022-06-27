@@ -285,7 +285,6 @@ class CommonModelApi(ModelResource):
                     # Ignore keywords not actually used?
                     pass
             filtered = queryset.filter(Q(keywords__in=treeqs))
-            print("FILTER MTEDHOD KEY", filtered)
         else:
             filtered = queryset
         return filtered

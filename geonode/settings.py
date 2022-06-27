@@ -1253,7 +1253,7 @@ if HAYSTACK_SEARCH:
         },
     }
     HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-    HAYSTACK_SEARCH_RESULTS_PER_PAGE = int(os.getenv('HAYSTACK_SEARCH_RESULTS_PER_PAGE', '200'))
+    HAYSTACK_SEARCH_RESULTS_PER_PAGE = int(os.getenv('HAYSTACK_SEARCH_RESULTS_PER_PAGE', '50'))
 
 # Available download formats
 DOWNLOAD_FORMATS_METADATA = [
@@ -1309,7 +1309,7 @@ except ValueError:
         else re.split(r' *[,|:|;] *', os.getenv('AVATAR_PROVIDERS'))
 
 # Number of results per page listed in the GeoNode search pages
-CLIENT_RESULTS_LIMIT = int(os.getenv('CLIENT_RESULTS_LIMIT', '5'))
+CLIENT_RESULTS_LIMIT = int(os.getenv('CLIENT_RESULTS_LIMIT', '6'))
 
 # LOCKDOWN API endpoints to prevent unauthenticated access.
 # If set to True, search won't deliver results and filtering ResourceBase-objects is not possible for anonymous users
@@ -1317,7 +1317,7 @@ API_LOCKDOWN = ast.literal_eval(
     os.getenv('API_LOCKDOWN', 'False'))
 
 # Number of items returned by the apis 0 equals no limit
-API_LIMIT_PER_PAGE = int(os.getenv('API_LIMIT_PER_PAGE', '200'))
+API_LIMIT_PER_PAGE = int(os.getenv('API_LIMIT_PER_PAGE', '6'))
 API_INCLUDE_REGIONS_COUNT = ast.literal_eval(
     os.getenv('API_INCLUDE_REGIONS_COUNT', 'False'))
 

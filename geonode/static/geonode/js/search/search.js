@@ -367,13 +367,15 @@
      */
     module.directive("infiniteScrollDirective", function() {
         return function(scope, elm, attr) {
-          var raw = elm[0];
-          $(window).on('scroll', function() {
-            if ($(window).scrollTop() + raw.offsetHeight >= raw.scrollHeight) {
-                scope.$apply(attr.infiniteScrollDirective)
-                scope.infiniteScroll++;
-            }
-          })
+          if (scope.infiniteScrollLoaded)
+              $(window).on('scroll', function() {
+                  if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+                      setTimeout(function() {
+                          scope.$apply(attr.infiniteScrollDirective);
+                          scope.infiniteScroll++;
+                      }, 500);
+                  }
+              })
         }
     })
 
@@ -447,71 +449,88 @@
      */
     module.controller('geonode_search_controller', function($injector, $scope, $location, $http, Configs) {
         $scope.query = $location.search();
-        $scope.page = Math.round(($scope.query.offset / $scope.query.limit) + 1);
         $scope.infiniteScroll = 0;
         $scope.infiniteScrollLoaded = true;
+        $scope.filter = false;
+        $scope.init = true;
         $scope.loadMoreResource = function() {
             const _infinite = new Promise(function(resolve, reject) {
-                if ($scope.infiniteScroll == 0 && $scope.infiniteScrollLoaded) {
-                    $scope.query.limit += $scope.query.limit || CLIENT_RESULTS_LIMIT
+                if ($scope.infiniteScrollLoaded) {
                     query_api($scope.query);
                 }
                 resolve(true);
             });
-            _infinite.then((v) => {
-                $scope.infiniteScroll = 1;
-            })
         };
-
-        // check permission on each resources; display download icon if the user has permission
-        $http.get(siteUrl + 'api/v2/perms')
-        .then(function(response) {
-            var array = [];
-
-            response.data.resources.map(function(value) {
-                array.push({
-                    "pk": value.pk,
-                    "perms": value.perms.includes("download_resourcebase") ? "Available for download" : "Not available for download",
-                    "icon": value.perms.includes("download_resourcebase") ? "download" : "ban",
-                    "color": value.perms.includes("download_resourcebase") ? "#0000FF" : "#D3D3D3"
-                });
-            });
-
-            $scope.resources = function(id) {
-                let _array = array.filter(el => el.pk === id);
-                return _array
-            }
-        });
-
         //Get data from apis and make them available to the page
         function query_api(data) {
-            if ($scope.infiniteScroll == 0 && $scope.infiniteScrollLoaded) {
-                setTimeout(function() {
-                  $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback)
-                }, 1000);
-            };
+            // handling for infinite scroll at the catalogue browse without filtered is true
+            if (jQuery.isEmptyObject(data)) {
+              if (!$scope.results && $scope.init) {
+                  $scope.offset = 0;
+              } else {
+                  if (!$scope.init) {
+                      $scope.offset += API_LIMIT_PER_PAGE;
+                  }
+              }
+              data = { offset: $scope.offset}
+            } else {
+                // handling for filter is true
+                if (!$scope.init) {
+                    $scope.offset += API_LIMIT_PER_PAGE;
+                } else {
+                    $scope.offset = 0;
+                }
+
+                for (var key in data) {
+                  if (!$scope.filter) {
+                      // handling for filter is not available
+                      if (key.includes("_in") && !$scope.offset) {
+                        $scope.offset = 0;
+                        $scope.filter = true;
+                    }
+                  }
+                }
+                data.offset = $scope.offset;
+            }
+
+            $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback)
 
             function successCallback(data) {
                 //success code
                 setTimeout(function() {
                     $('[ng-controller="CartList"] [data-toggle="tooltip"]').tooltip();
                 }, 0);
-                $scope.results = data.data.objects;
+                var result = data.data.objects.length;
+
+                if (result === 0) {
+                    $scope.infiniteScrollLoaded = false;
+                }
+
+                if (!$scope.filter) {
+                    if (!$scope.results && $scope.init) {
+                        // Initialize the data
+                        $scope.results = data.data.objects;
+                        $scope.init = false;
+                    } else if ($scope.init) {
+                        $scope.results = data.data.objects;
+                        $scope.init = false;
+                    } else {
+                        $scope.results.push(...data.data.objects);
+                    }
+                } else {
+                    if ($scope.init) {
+                        $scope.init = false;
+                        $scope.results = data.data.objects;
+                    } else {
+                        $scope.results.push(...data.data.objects);
+                    }
+                }
+
                 $scope.total_counts = data.data.meta.total_count;
                 $scope.$root.query_data = data.data;
                 if (HAYSTACK_SEARCH) {
                     if ($location.search().hasOwnProperty('q')) {
                         $scope.text_query = $location.search()['q'].replace(/\+/g, " ");
-                    }
-                } else {
-                    if ($location.search().hasOwnProperty('title__icontains')) {
-                        $scope.text_query = $location.search()['title__icontains'].replace(/\+/g, " ");
-                    }
-                    if ($location.search().hasOwnProperty('name__icontains')) {
-                        $scope.text_query = $location.search()['name__icontains'].replace(/\+/g, " ");
-                    }
-                    if ($location.search().hasOwnProperty('name')) {
-                        $scope.text_query = $location.search()['name'].replace(/\+/g, " ");
                     }
                 }
 
@@ -532,7 +551,7 @@
                         // console.log(err);
                     }
                 }
-                $scope.infiniteScroll = 0;
+
                 var meta = data.data.meta;
                 if (meta.limit >= meta.total_count) {
                   $scope.infiniteScrollLoaded = false;
@@ -545,50 +564,25 @@
         };
         query_api($scope.query);
 
-        $scope.paginate_down = function() {
-            if ($scope.page > 1) {
-                $scope.page -= 1;
-                $scope.query.offset = $scope.query.limit * ($scope.page - 1);
-                query_api($scope.query);
+        // check permission on each resources; display download icon if the user has permission
+        $http.get(siteUrl + 'api/v2/perms')
+        .then(function(response) {
+            var array = [];
+
+            response.data.resources.map(function(value) {
+                array.push({
+                    "pk": value.pk,
+                    "perms": value.perms.includes("download_resourcebase") ? "Available for download" : "Not available for download",
+                    "icon": value.perms.includes("download_resourcebase") ? "download" : "ban",
+                    "color": value.perms.includes("download_resourcebase") ? "#0000FF" : "#D3D3D3"
+                });
+            });
+
+            $scope.resources = function(id) {
+                let _array = array.filter(el => el.pk === id);
+                return _array
             }
-        }
-
-        $scope.paginate_up = function() {
-            if ($scope.numpages > $scope.page) {
-                $scope.page += 1;
-                $scope.query.offset = $scope.query.limit * ($scope.page - 1);
-                query_api($scope.query);
-            }
-        }
-
-        $scope.scroll_top = function() {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-
-        $scope.sync_pagination_scroll = function(up) {
-                if (up) {
-                    const paginate = new Promise(function(resolve, reject) {
-                        $scope.paginate_up()
-                        resolve(true);
-                    });
-                    paginate.then((v) => {
-                        $scope.scroll_top()
-                    })
-                } else {
-                    const paginate = new Promise(function(resolve, reject) {
-                        $scope.paginate_down()
-                        resolve(true);
-                    });
-                    paginate.then((v) => {
-                        $scope.scroll_top()
-                    })
-                }
-
-            }
-            /*
-             * End pagination
-             */
+        });
 
         if (!Configs.hasOwnProperty("disableQuerySync")) {
             // Keep in sync the page location with the query object
@@ -659,6 +653,10 @@
          */
         $scope.multiple_choice_listener = function($event) {
             $scope.infiniteScrollLoaded = true;
+            $scope.filter = true;
+            $scope.offset = 0;
+            $scope.init = true;
+            $scope.infiniteScroll = 0;
             var element = $($event.currentTarget);
             var query_entry = [];
             var data_filter = element.attr('data-filter');
@@ -676,13 +674,12 @@
                 }
             }
 
-            // If the element is active active then deactivate it
+            // If the element is active then deactivate it
             if (element.hasClass('active')) {
                 // clear the active class from it
                 element.removeClass('active');
-
+                $scope.offset = 0;
                 // Remove the entry from the correct query in scope
-
                 query_entry.splice(query_entry.indexOf(value), 1);
             }
             // if is not active then activate it
@@ -699,7 +696,11 @@
 
             //if the entry is empty then delete the property from the query
             if (query_entry.length == 0) {
-                delete($scope.query[data_filter]);
+                $scope.filter = false;
+                $scope.offset = 0;
+                $scope.infiniteScroll = 0;
+                $scope.init = true;
+                $scope.query = {};
             }
             query_api($scope.query);
         }
@@ -709,9 +710,11 @@
             var query_entry = [];
             var data_filter = element.attr('data-filter');
             var value = element.attr('data-value');
+            $scope.filter = true;
+            $scope.init = true;
             // Type of data being displayed, use 'content' instead of 'all'
             $scope.dataValue = (value == 'all') ? 'content' : value;
-
+            $scope.offset = 0;
             // If the query object has the record then grab it
             if ($scope.query.hasOwnProperty(data_filter)) {
                 query_entry = $scope.query[data_filter];
@@ -736,39 +739,6 @@
         $('#text_search_btn').click(function() {
             if (HAYSTACK_SEARCH) {
                 $scope.query['q'] = $('#text_search_input').val();
-            } else {
-                if (AUTOCOMPLETE_URL_RESOURCEBASE == "/people/autocomplete/") { // updated url to work with new autocomplete backend format
-                    // a user profile has no title; if search was triggered from
-                    // the /people page, filter by username instead
-                    var query_key = 'username__icontains';
-                } else if (AUTOCOMPLETE_URL_RESOURCEBASE == "/groups/autocomplete_category/") {
-                    // Adding in this conditional since both groups autocomplete and searches requests need to search name not title.
-                    var query_key = 'name__icontains';
-                } else if (AUTOCOMPLETE_URL_RESOURCEBASE == "/groups/autocomplete/") {
-                    // Adding in this conditional since both groups autocomplete and searches requests need to search name not title.
-                    var query_key = $('#text_search_input').data('query-key') || 'title';
-                } else {
-                    var query_key = $('#text_search_input').data('query-key') || 'title__icontains';
-                }
-                if ($('#text_search_input').val()) {
-                    $scope.query[query_key] = $('#text_search_input').val();
-                } else {
-                    // Reset query context
-                    var limit = $scope.query['limit'];
-                    var offset = $scope.query['offset'];
-                    var order_by = $scope.query['order_by'];
-                    $scope.query = {};
-                    $scope.query['limit'] = limit;
-                    $scope.query['offset'] = offset;
-                    if (order_by) {
-                        $scope.query['order_by'] = order_by;
-                    }
-                }
-            }
-            if ($('#text_search_input').val() || $('#text_search_input').val()) {
-                $scope.query['abstract__icontains'] = $('#text_search_input').val();
-                $scope.query['title__icontains'] = $('#text_search_input').val();
-                $scope.query['f_method'] = 'or';
             }
             query_api($scope.query);
         });
@@ -785,20 +755,21 @@
 
         function reset_query() {
           if (HAYSTACK_SEARCH) {
-            $scope.query['q'] = $('#text_search_input').val('');
+              $scope.query['q'] = $('#text_search_input').val('');
           } else {
-            // Reset query context
-            var limit = $scope.query['limit'];
-            var offset = $scope.query['offset'];
-            var order_by = $scope.query['order_by'];
-            $scope.query = {};
-            $scope.query['limit'] = limit;
-            $scope.query['offset'] = offset;
-            if (order_by) {
-                $scope.query['order_by'] = order_by;
-            }
+              // Reset query context
+              var order_by = $scope.query['order_by'];
+              $scope.query = {};
+              
+              if (order_by) {
+                  $scope.query['order_by'] = order_by;
+              }
           }
+          $scope.offset = 0;
+          $scope.infiniteScroll = 0;
           $scope.infiniteScrollLoaded = true;
+          $scope.filter = false;
+          $scope.init = true;
           $location.search($scope.query);
 
           return query_api($scope.query);

@@ -450,10 +450,6 @@ button.full-width {
   position: absolute;
 }
 
-.s-header a {
-  color: var(--primary) !important;
-}
-
 .s-header a img:hover {
   box-shadow: none!important
 }

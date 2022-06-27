@@ -35,7 +35,7 @@
               {% for category in categories %}
               <li>
                 <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
-                  title="{{ category.title }}" class="d-flex">
+                  title="{{ category.title }}" class="d-flex text-dark">
                   {{ category.title }}
                 </a>
               </li>

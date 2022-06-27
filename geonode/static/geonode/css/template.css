@@ -797,10 +797,6 @@ button.full-width {
   background-color: var(--primary);
 }
 
-.s-header a {
-  color: var(--primary) !important;
-}
-
 .s-header a img:hover {
   box-shadow: none!important
 }

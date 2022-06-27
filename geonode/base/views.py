@@ -290,8 +290,12 @@ class ResourceBaseAutocomplete(autocomplete.Select2QuerySetView):
         return str(result.title)
 
     def get_detail_url(self, result):
-        """Return the label of a selected result."""
+        """Return the detail url of a selected result."""
         return str(result.detail_url)
+
+    def get_resource_type(self, result):
+        """Return the resources type of a selected result."""
+        return str(result.resource_type)
 
     def get_results(self, context):
         return [
@@ -299,6 +303,7 @@ class ResourceBaseAutocomplete(autocomplete.Select2QuerySetView):
                 'text': self.get_result_label(result),
                 'selected_text': self.get_selected_result_label(result),
                 'detail_url': self.get_detail_url(result),
+                'resource_type': self.get_resource_type(result),
             } for result in context['object_list']
         ]
 
