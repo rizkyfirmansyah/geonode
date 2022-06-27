@@ -25,6 +25,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Subquery
+from django.contrib import messages
 
 from drf_spectacular.utils import extend_schema
 from dynamic_rest.viewsets import DynamicModelViewSet, WithDynamicViewSetMixin
@@ -479,6 +480,8 @@ class ResourceBaseViewSet(DynamicModelViewSet):
     def set_thumbnail_from_bbox(self, request, resource_id):
         import traceback
         from django.utils.datastructures import MultiValueDictKeyError
+        toast_title = f"Update Thumbnail"
+        
         try:
             resource = ResourceBase.objects.get(id=ast.literal_eval(resource_id))
 
@@ -497,23 +500,35 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 zoom = request_body.get("zoom", None)
 
             thumbnail_url = create_thumbnail(resource.get_real_instance(), bbox=bbox, background_zoom=zoom, overwrite=True)
-            return Response({"message": "Thumbnail correctly created.", "success": True, "thumbnail_url": thumbnail_url}, status=200)
+            msg = f"Thumbnail correctly created."
+            messages.success(request, message=msg, extra_tags=toast_title)
+
+            return Response({"message": msg, "success": True, "thumbnail_url": thumbnail_url}, status=200)
         except ResourceBase.DoesNotExist:
             traceback.print_exc()
-            logger.error(f"Resource selected with id {resource_id} does not exists")
+            msg = f"Resource selected with id {resource_id} does not exists"
+            logger.error(msg)
+            messages.error(request, message=msg, extra_tags=toast_title)
+
             return Response(
-                data={"message": f"Resource selected with id {resource_id} does not exists", "success": False}, status=404, exception=True)
+                data={"message": msg, "success": False}, status=404, exception=True)
         except NotImplementedError as e:
             traceback.print_exc()
             logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+
             return Response(data={"message": e.args[0], "success": False}, status=405, exception=True)
         except ThumbnailError as e:
             traceback.print_exc()
             logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+
             return Response(data={"message": e.args[0], "success": False}, status=500, exception=True)
         except Exception as e:
             traceback.print_exc()
             logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+
             return Response(data={"message": e.args[0], "success": False}, status=500, exception=True)
 
     @extend_schema(
