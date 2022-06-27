@@ -178,6 +178,7 @@ class CommonModelApi(ModelResource):
         'metadata_only',
         'link__extension',
         'featured',
+        'perms',
     ]
 
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
@@ -629,7 +630,7 @@ class CommonModelApi(ModelResource):
         return self.create_response(
             request, to_be_serialized, response_objects=objects)
 
-    def format_objects(self, objects):
+    def format_objects(self, objects, request):
         """
         Format the objects for output in a response.
         """
@@ -650,6 +651,8 @@ class CommonModelApi(ModelResource):
 
             formatted_obj['owner__username'] = obj.owner.username
             formatted_obj['owner_name'] = obj.owner.get_full_name() or obj.owner.username
+            formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
+                obj.get_self_resource().get_user_perms(request.user)))
 
             if obj.category:
                 fa_class = {}
@@ -749,9 +752,9 @@ class CommonModelApi(ModelResource):
                 data['objects'] = [
                     x for x in list(
                         self.format_objects(
-                            data['objects'])) if x['id'] in filtered_objects_ids]
+                            data['objects'], request)) if x['id'] in filtered_objects_ids]
             else:
-                data['objects'] = list(self.format_objects(data['objects']))
+                data['objects'] = list(self.format_objects(data['objects'], request))
 
             # give geonode version
             data['geonode_version'] = get_version()

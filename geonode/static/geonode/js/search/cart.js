@@ -15,6 +15,37 @@
         };
     })
 
+    .filter('limitWithEllipsis', function() {
+        return function(input, limit, begin) {
+            var str='';
+              if (Math.abs(Number(limit)) === Infinity) {
+                limit = Number(limit);
+              } else {
+                limit = parseInt(limit);
+              }
+              if (isNaN(limit)) return input;
+
+              if (angular.isNumber(input)) input = input.toString();
+              if (!angular.isArray(input) && !angular.isString(input)) return input;
+              if(input.length<=limit) return input;
+              begin = (!begin || isNaN(begin)) ? 0 : parseInt(begin);
+              begin = (begin < 0) ? Math.max(0, input.length + begin) : begin;
+
+              if (limit >= 0) {
+                str=input.slice(begin, begin + limit);
+                return str.concat('....'); 
+              } else {
+                if (begin === 0) {
+                  str=input.slice(limit, input.length);
+                  return str.concat('....');
+                } else {
+                  str=input.slice(Math.max(0, begin + limit), begin);
+                  return str.concat('....');
+                }
+              }
+          };
+    })
+
     .controller('CartList', function($scope, cart, $http) {
         $scope.cart = cart;
         $scope.layers_params = '';
@@ -82,18 +113,7 @@
             });
         };
 
-        // $http.get(siteUrl + 'api/v2/categories')
-        // .then(function(response) {
-        //     $scope.categories = response.data.categories;
-        // });
     })
-
-    // .controller("CategoryList", function($scope, $http) {
-    //     $http.get(siteUrl + 'api/v2/categories')
-    //         .then(function(response) {
-    //             $scope.categories = response.data.categories;
-    //         });
-    // })
 
     .directive('resourceCart', ['$sce', function($sce) {
         return {

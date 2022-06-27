@@ -6,6 +6,7 @@
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
     <div ng-repeat="item in results | limitTo: limit" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
         <div class="card rounded border-{{ item.resource_type }}">
+          <a href="{{ item.detail_url }}" class="img-card"><img ng-src="{{ item.thumbnail_url }}"/></a>
           <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
             <div class="row">
               <div class="mr-2 h-100">
@@ -34,9 +35,9 @@
               </div>
             </div>
           </div>
-          <div class="card-body pt-2">
-            <div class="row">
-              <div class="avatar ml-2">
+          <div class="card-content p-2">
+            <div class="row ml-1">
+              <div class="avatar">
                 <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar item.owner_name 40 %}</a>
                 {% verbatim %}
               </div>
@@ -52,18 +53,16 @@
                     </span>
                   </div>
                   <span class="col-md-1 m-0">
-                    <i id="download_icon" class="fa fa-{{ resources(item.id)[0].icon }}" aria-hidden="true" style="margin-right: 8px; color:{{ resources(item.id)[0].color }};" title="{{ resources(item.id)[0].perms }}"></i>
+                    <i id="download_icon" class="fa fa-{{ item.perms.includes('download_resourcebase') ? 'download' : 'ban' }}" aria-hidden="true" style="margin-right: 8px; color:{{ item.perms.includes('download_resourcebase') ? '#0000FF' : '#D3D3D3' }};" title="{{ item.perms.includes('download_resourcebase') ? 'Available for download' : 'Not available for download' }}"></i>
                   </span>
                 </div>
-                <div class="row pt-1 w-100">
-                  <div class="ml-3 card-subtitle font-small" title="Published at: {{ item.date|date:'d MMM y' }}"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
-                  <div class="col-7 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
+                <div class="row pt-1 m-0">
+                  <div class="card-subtitle font-small" title="Published at: {{ item.date|date:'d MMM y' }}"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
+                  <div class="col-8 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="card-body pt-0">
-            <p class="card-text text-justify card-content" ng-bind-html="item.abstract">{{ item.abstract | limitTo: 140 }} <span>{{ item.abstract.length > 140 ? '...' : '' }}</span></p>
+            <p class="card-text text-justify" ng-bind-html="item.abstract | limitWithEllipsis: 110"></p>
           </div>
             <div class="card-footer">
               <div class="row">

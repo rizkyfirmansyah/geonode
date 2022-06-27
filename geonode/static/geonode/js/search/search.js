@@ -461,6 +461,7 @@
                 resolve(true);
             });
         };
+
         //Get data from apis and make them available to the page
         function query_api(data) {
             // handling for infinite scroll at the catalogue browse without filtered is true
@@ -563,26 +564,6 @@
             };
         };
         query_api($scope.query);
-
-        // check permission on each resources; display download icon if the user has permission
-        $http.get(siteUrl + 'api/v2/perms')
-        .then(function(response) {
-            var array = [];
-
-            response.data.resources.map(function(value) {
-                array.push({
-                    "pk": value.pk,
-                    "perms": value.perms.includes("download_resourcebase") ? "Available for download" : "Not available for download",
-                    "icon": value.perms.includes("download_resourcebase") ? "download" : "ban",
-                    "color": value.perms.includes("download_resourcebase") ? "#0000FF" : "#D3D3D3"
-                });
-            });
-
-            $scope.resources = function(id) {
-                let _array = array.filter(el => el.pk === id);
-                return _array
-            }
-        });
 
         if (!Configs.hasOwnProperty("disableQuerySync")) {
             // Keep in sync the page location with the query object
