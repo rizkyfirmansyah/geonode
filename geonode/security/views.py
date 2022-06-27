@@ -468,7 +468,6 @@ def set_bulk_permissions(request):
             content_type='text/plain')
 
 
-@login_required
 def request_permissions(request):
     toast_title = _("Request Permission")
     if request.method == 'POST':
