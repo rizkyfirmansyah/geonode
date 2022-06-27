@@ -737,15 +737,8 @@
         function reset_query() {
           if (HAYSTACK_SEARCH) {
               $scope.query['q'] = $('#text_search_input').val('');
-          } else {
-              // Reset query context
-              var order_by = $scope.query['order_by'];
-              $scope.query = {};
-              
-              if (order_by) {
-                  $scope.query['order_by'] = order_by;
-              }
           }
+          $scope.query = {};
           $scope.offset = 0;
           $scope.infiniteScroll = 0;
           $scope.infiniteScrollLoaded = true;
