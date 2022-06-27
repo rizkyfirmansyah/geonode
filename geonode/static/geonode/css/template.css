@@ -2059,6 +2059,10 @@ textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus {
     padding: 4px 8px!important
 }
 
+.msgapi .Select-control {
+    min-width: 320px !important;
+}
+
 #page-geostory .btn {
     padding: .5em!important
 }
