@@ -2055,18 +2055,6 @@ textarea:-webkit-autofill:hover textarea:-webkit-autofill:focus {
     transition: background-color 5000s ease-in-out 0s
 }
 
-.msgapi .btn {
-    padding: 4px 8px!important
-}
-
-.msgapi .Select-control {
-    min-width: 320px !important;
-}
-
-#page-geostory .btn {
-    padding: .5em!important
-}
-
 .btn:focus,
 .btn:hover,
 button:focus,
@@ -4796,8 +4784,46 @@ color: transparent;
     top: var(--header-height) !important;
 }
 
+/* ---------------------------------------------------
+    OVERRIDE MAPSTORE STYLE
+----------------------------------------------------- */
+
+.msgapi .btn {
+    padding: 4px 8px!important
+}
+
+.msgapi .Select-control {
+    min-width: 320px !important;
+}
+
+.msgapi .modal-header {
+    display: block !important;
+}
+
+.msgapi button.close:first-child {
+    margin-right: 1em;
+}
+
+.m-header .row .m-padding-md {
+    left: 2em;
+    position: relative;   
+}
+
+.modal-footer>* {
+    display: contents !important;
+}
+
+#page-geostory .btn {
+    padding: .5em!important
+}
+
 .msgapi .btn-group, .msgapi .btn-group-vertical {
     display: flex !important;
+}
+
+.msgapi .ms-resizable-modal>.modal-content>.modal-header .modal-title .ms-header-btn {
+    position: absolute;
+    right: 1em;
 }
 
 .msgapi .btn {
