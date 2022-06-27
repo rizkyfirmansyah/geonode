@@ -4813,7 +4813,7 @@ color: transparent;
     position: relative;   
 }
 
-.modal-footer>* {
+#ms-container .modal-footer>* {
     display: contents !important;
 }
 

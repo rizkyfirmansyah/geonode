@@ -161,6 +161,10 @@
 
 {% endautoescape %}
 
+$('#upload-button').submit(function () {
+    $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
+});
+
 </script>
 
 {% include "toast/permissions_form.html" %}

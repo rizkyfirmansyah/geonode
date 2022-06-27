@@ -25,6 +25,7 @@ from geonode import geoserver
 from geonode.base.models import ResourceBase
 from geonode.documents.forms import GroupsChoiceField
 from django.contrib.auth.models import Group
+from geonode.security.utils import serialize_resource_permissions
 from geonode.utils import check_ogc_backend
 
 import json

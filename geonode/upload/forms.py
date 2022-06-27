@@ -18,12 +18,14 @@
 #########################################################################
 
 import ast
+import json
 import logging
 
 from django import forms
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext_lazy as _
+from geonode.security.utils import serialize_resource_permissions
 
 from geonode.upload.models import UploadSizeLimit
 from geonode.upload.data_retriever import DataRetriever
@@ -97,6 +99,17 @@ class LayerUploadForm(forms.Form):
         spatial_files.append('sld_file')
 
     spatial_files = tuple(spatial_files)
+
+    def clean_permissions(self):
+        """
+        Ensures the JSON field is JSON.
+        """
+        permissions = json.loads(self.cleaned_data['permissions'])
+        resource_permissions = serialize_resource_permissions(permissions)
+        try:
+            return resource_permissions
+        except ValueError:
+            raise forms.ValidationError(_("Permissions must be valid JSON."))
 
     def clean_store_spatial_files(self):
         store_spatial_files = self.data.get('store_spatial_files')
