@@ -107,9 +107,10 @@
                           {{ map_form.keywords }}
                         </div>
                         {% if THESAURI_FILTERS %}
-                        <div class="mt-2 thesauri_keywords">
-                          {{ tkeywords_form.as_p }}
-                        </div>
+                          <div class="mt-2 thesauri_keywords">
+                            {{ tkeywords_form.as_p }}
+                          </div>
+                        {% endif %}
                         <div class="mt-2">
                           <span><label for="{{ map_form.date_type|id }}">{{ map_form.date_type.label }}</label></span>
                           {{ map_form.date_type }}
@@ -136,7 +137,6 @@
                           <span><label for="{{ map_form.group|id }}">{{ map_form.group.label }}</label></span>
                             {{ map_form.group }}
                         </div>
-                        {% endif %}
                       </div>
                     </div>
                   </div>

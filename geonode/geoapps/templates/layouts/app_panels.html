@@ -91,7 +91,6 @@
                                             <div>
                                                 <span><label
                                                         for="{{ geoapp_form.title|id }}">{{ geoapp_form.title.label }}</label></span>
-                                                <!--<p class="xxs-font-size">(Name by which the cited resource is known)</p>-->
                                                 {{ geoapp_form.title }}
                                             </div>
                                             <div class="mt-2">
@@ -107,9 +106,9 @@
                                                 {{ geoapp_form.keywords }}
                                             </div>
                                             {% if THESAURI_FILTERS %}
-                                            <div class="mt-2 thesauri_keywords">
-                                                {{ tkeywords_form }}
-                                            </div>
+                                              <div class="mt-2 thesauri_keywords">
+                                                  {{ tkeywords_form }}
+                                              </div>
                                             {% endif %}
                                             <div class="mt-2">
                                                 <span><label
@@ -335,13 +334,13 @@
                     <div class="card-body">
                         <div>
                             <span><label
-                                    for="{{ geoapp_form.metadata_uploaded_preserve|id }}">{{ geoapp_form.metadata_uploaded_preserve.label }}</label></span>
-                            {{ geoapp_form.metadata_uploaded_preserve }}
-                        </div>
-                        <div>
-                            <span><label
                                     for="{{ geoapp_form.is_approved|id }}">{{ geoapp_form.is_approved.label }}</label></span>
                             {{ geoapp_form.is_approved }}
+                        </div>  
+                        <div>
+                              <span><label
+                                      for="{{ geoapp_form.metadata_uploaded_preserve|id }}">{{ geoapp_form.metadata_uploaded_preserve.label }}</label></span>
+                              {{ geoapp_form.metadata_uploaded_preserve }}
                         </div>
                         <div>
                             <span><label

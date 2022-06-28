@@ -70,7 +70,7 @@ class GeoAppForm(ResourceBaseForm):
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata'
+          'urlsuffix',
         ]
 
     def __init__(self, *args, **kwargs):
