@@ -1,0 +1,18 @@
+{% load i18n %}
+{% load static %}
+{% block extra_script %}
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+      $("#remove_service").submit(function(t){
+        return t.preventDefault(),
+        $.ajax({
+          type:$(this).attr("method"),method:"POST",url:'{% url "remove_service" service.id %}',headers:{"X-CSRFToken":'{{csrf_token}}'},
+          success:function(data){
+            $(document.body).append(data);
+        }}).done(function(){setInterval(function(){location.href="{% url 'services' %}"},2e3)}),!1})
+
+  });
+</script>
+{% endblock extra_script %}

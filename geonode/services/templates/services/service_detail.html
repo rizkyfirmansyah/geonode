@@ -2,17 +2,42 @@
 {% load i18n %}
 {% load guardian_tags %}
 
-{% block body_inner %}
-<div class="twocol">
-  <h3>{{service.title|default:service.name}}</h3>
+{% block body %}
+<div class="card border-dark rounded bg-light">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{{service.title|default:service.name}}</h3>
+    </div>
+  </div>
+  <div class="card-header">
+        {% get_obj_perms request.user for service as "resource_perms" %}
+
+        {% if can_add_resorces or "add_resourcebase" in resource_perms or "change_resourcebase_metadata" in resource_perms or "change_service_permissions" in resource_perms %}
+        <div class="row">
+            {% if "change_resourcebase_metadata" in resource_perms %}
+                <div class="col"><a class="btn btn-edit btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></div>
+            {% endif %}
+            {% if can_add_resorces %}
+                <div class="col"><a id="harvestResources" class="btn btn-primary btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></div>
+            {% endif %}
+            {% if "remove_service" in permissions_list or "delete_service" in permissions_list or 'delete_resourcebase' in permissions_list %}
+                <div class="col"><a class="btn btn-danger btn-md btn-block" data-toggle="modal" data-target="#removeServicesModal">{% trans "Remove Service" %}</a></div>
+            {% endif %}
+        </div>
+        {% endif %}
+  </div>
+  <div class="card-body">
       <p><strong>{% trans "Type" %}:</strong> {{service.service_type}}</p>
       <p><strong>{% trans "URL" %}:</strong> {{service.base_url}}</p>
       <p><strong>{% trans "Abstract" %}:</strong> {{service.abstract}}</p>
       <p><strong>{% trans "Keywords" %}:</strong> {{ service.keywords.all|join:", " }}</p>
       <p><strong>{% trans "Contact" %}:</strong> <a href="{% url "profile_detail" service.owner.username %}">{{ service.owner }}</a></p>
-
-    {% autoescape off %}
-        <h3>{% trans "Service Resources" %} <span class="badge">{{ total_resources }}</span></h3>
+  </div>
+  {% autoescape off %}
+  <div class="card-header">
+    <h3>{% trans "Service Resources" %} <span class="badge">{{ total_resources }}</span></h3>
+  </div>
+  <div class="card-body">
         {% if total_resources == 0 %}
             <p>{% trans "No resources have been imported yet." %}</p>
         {% else %}
@@ -77,66 +102,36 @@
             </nav>
         </div>
     {% endif %}
-    {% endautoescape %}
-    <div class="modal fade" data-backdrop="static" data-keyboard="false" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    {% trans "Connecting to service..." %}
-                </div>
-                <div class="modal-body">
-                    <div class="progress" id="serviceRegisterProgress">
-                        <div class="progress-bar progress-bar-striped bg-info active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+  </div>
+  {% endautoescape %}
 </div>
-{% endblock %}
-{% block body_sidebar %}
 
-    {% get_obj_perms request.user for service as "resource_perms" %}
-
-    {% if can_add_resorces or "add_resourcebase" in resource_perms or "change_resourcebase_metadata" in resource_perms or "change_service_permissions" in resource_perms %}
-    <ul class="list-group">
-        <li class="list-group-item"><h3>{% trans "Manage" %}</h3></li>
-        {% if "change_resourcebase_metadata" in resource_perms %}
-            <li class="list-group-item"><a class="btn btn-primary btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></li>
-        {% endif %}
-        {% if can_add_resorces %}
-            <li class="list-group-item"><a id="harvestResources" class="btn btn-primary btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></li>
-        {% endif %}
-        {% if "remove_service" in permissions_list or "delete_service" in permissions_list or 'delete_resourcebase' in permissions_list %}
-            <li class="list-group-item"><a class="btn btn-primary btn-md btn-block" href="{% url "remove_service" service.id %}">{% trans "Remove Service" %}</a></li>
-        {% endif %}
-      </ul>
-    {% endif %}
+{% include "modal/manage_service.html" %}
+{% include "modal/remove_service.html" %}
 {% endblock %}
+
 {% block extra_script %}
-    {{ block.super }}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#harvestResources').on("click", function() {
-                $("#progressModal").modal("show");
-            });
-            $('button[name^=retry]').on('click', function () {
-                const resourceId = this.name.replace("retry-", "");
-                const retryUrl = "/services/{{ service.id }}/harvest/" + resourceId;
-                const retryForm = document.createElement('form');
-                retryForm.setAttribute("method", "post");
-                retryForm.setAttribute("action", retryUrl);
-                const csrfInputElem = document.createElement("input");
-                csrfInputElem.type = "hidden";
-                csrfInputElem.name = "csrfmiddlewaretoken";
-                csrfInputElem.value = "{{ csrf_token }}";
-                retryForm.appendChild(csrfInputElem);
-                document.body.appendChild(retryForm);
-                retryForm.submit();
+  {{ block.super }}
+  <script type="text/javascript">
+      $(document).ready(function () {
+          $('#harvestResources').on("click", function() {
+              $("#progressModal").modal("show");
+          });
+          $('button[name^=retry]').on('click', function () {
+              const resourceId = this.name.replace("retry-", "");
+              const retryUrl = "/services/{{ service.id }}/harvest/" + resourceId;
+              const retryForm = document.createElement('form');
+              retryForm.setAttribute("method", "post");
+              retryForm.setAttribute("action", retryUrl);
+              const csrfInputElem = document.createElement("input");
+              csrfInputElem.type = "hidden";
+              csrfInputElem.name = "csrfmiddlewaretoken";
+              csrfInputElem.value = "{{ csrf_token }}";
+              retryForm.appendChild(csrfInputElem);
+              document.body.appendChild(retryForm);
+              retryForm.submit();
 
-            });
-        });
-    </script>
+          });
+      });
+  </script>
 {% endblock extra_script %}

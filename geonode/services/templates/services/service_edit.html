@@ -5,20 +5,29 @@
 {% block head %}
 {{ block.super }}
 
-
 {% endblock %}
 
 {% block title %} {% trans "Edit Service" %} - {{ block.super }} {% endblock %}
 
-{% block body_inner %}
-<div class="row w-100">
-  <h3 class="col-8">{% trans "Edit Service" %}</h3>
-</div>
-<form method="POST" id="service_edit_form">
-  {% csrf_token %}
-  {{ service_form|crispy }}
-  <div class="mt-2">
-    <p><input type="submit" class="btn btn-save" value="{% trans "Save" %}"/></p>
+{% block body %}
+<div class="card border-dark rounded bg-light">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{% trans "Edit Service" %}</h3>
+      <div class="col-4 text-right">
+        <a href="{% url 'services' %}" class="btn btn-secondary btn-block" type="button">{% trans "Explore Remote Service" %}</a>
+      </div>
+    </div>
   </div>
-</form>
+  <form method="POST" id="service_edit_form" action="">
+      <div class="card-body">
+        {% csrf_token %}
+        {{ service_form|crispy }}
+      </div>
+      <div class="card-footer">
+        <p><input type="submit" class="btn btn-save btn-block" value="{% trans "Save" %}"/></p>
+      </div>
+  </form>
+</div>
+
 {% endblock %}

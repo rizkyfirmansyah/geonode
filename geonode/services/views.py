@@ -421,6 +421,7 @@ def remove_service(request, service_id):
         messages.add_message(
             request,
             messages.INFO,
-            _(f"Service {service.name} has been deleted")
+            _(f"Service {service.name} has been deleted"),
+            extra_tags=_(f"Remove Remote Service")
         )
         return HttpResponseRedirect(reverse("services"))
