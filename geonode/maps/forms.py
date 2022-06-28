@@ -115,6 +115,7 @@ class MapForm(ResourceBaseForm):
           'date',
           'date_type',
           'date_distribution',
+          'project_information',
           'edition',
           'maintenance_frequency',
           'temporal_extent_start',
@@ -133,5 +134,8 @@ class MapForm(ResourceBaseForm):
           'was_approved',
           'is_approved',
           'thumbnail_url',
-          'metadata'
+          'sourcetype',
+          'remote_typename',
+          'urlsuffix',
+          'featuredurl',
         ]

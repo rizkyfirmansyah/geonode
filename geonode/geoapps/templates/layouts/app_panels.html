@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load static %}
 {% load floppyforms %}
+{% load crispy_forms_tags %}
 
 <!-- Required to make select2 fields work for autocomplete -->
 <link href="{% static "vendor/select2/dist/css/select2.css" %}" type="text/css" media="screen" rel="stylesheet" />
@@ -182,13 +183,11 @@
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.license|id }}">{{ geoapp_form.license.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(License of the dataset)</p>-->
                                         {{ geoapp_form.license }}
                                     </div>
                                     <div class="mt-2">
                                         <span><label
                                                 for="{{ geoapp_form.restriction_code_type|id }}">{{ geoapp_form.restriction_code_type.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Limitation/s placed upon the access or use of data)</p>-->
                                         {{ geoapp_form.restriction_code_type }}
                                     </div>
                                 </div>
@@ -196,7 +195,6 @@
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.language|id }}">{{ geoapp_form.language.label }}</label></span>
-                                        <!--<p class="xxs-font-size">(Language used within the dataset)</p>-->
                                         {{ geoapp_form.language }}
                                     </div>
                                     <div id="regions_multiselect_container" class="mt-2">

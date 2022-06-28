@@ -1,11 +1,12 @@
 {% load i18n %}
 {% load static %}
 {% load floppyforms %}
+{% load crispy_forms_tags %}
+
 <script type="text/javascript">
   // this is used by thumbnail.js to POST to the thumbnail update view
   window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
 </script>
-<!--<link href="{% static "lib/css/bootstrap-select.css" %}" rel="stylesheet" />-->
 <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
 
 <!-- Required to make select2 fields work for autocomplete -->
@@ -23,12 +24,12 @@
 <link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
 
 {% block body %}
-  <div class="row w-100 m-0 mb-2">
+  <div class="row w-100 mb-2">
     <ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
-      <li id="edit-metadata-tab" class="nav-item" role="presentation">
+      <li id="edit-metadata-tab" class="nav-item col" role="presentation">
         <a class="nav-secondary active" role="tab" aria-controls="edit-metadata" aria-selected="true" data-toggle="tab" href="#edit-metadata"><i class="fa-solid fa-pencil"></i>{% trans "Edit" %}</a>
       </li>
-      <li id="edit-settings-tab" class="nav-item" role="presentation">
+      <li id="edit-settings-tab" class="nav-item col" role="presentation">
         <a class="nav-secondary" role="tab" aria-controls="settings" aria-selected="false" data-toggle="tab" href="#settings"><i class="fa-solid fa-gear"></i>{% trans "Settings" %}</a>
       </li>
     </ul>
@@ -107,7 +108,7 @@
                         </div>
                         {% if THESAURI_FILTERS %}
                         <div class="mt-2 thesauri_keywords">
-                          {{tkeywords_form.as_p}}
+                          {{ tkeywords_form.as_p }}
                         </div>
                         <div class="mt-2">
                           <span><label for="{{ map_form.date_type|id }}">{{ map_form.date_type.label }}</label></span>
@@ -207,10 +208,6 @@
                     </div>
                   </div>
                   <div class="col-4">
-                    <div>
-                      <span><label for="{{ map_form.doi|id }}">{{ map_form.doi.label }}</label></span>
-                      {{ map_form.doi }}
-                    </div>
                     <div class="mt-2">
                       <span><label for="{{ map_form.edition|id }}">{{ map_form.edition.label }}</label></span>
                       {{ map_form.edition }}
@@ -323,13 +320,17 @@
             <div class="card-header bg-dark"><h5 class="text-center text-light">{% trans "Publishing" %}</h5></div>
             <div class="card-body">
               <div>
+                <span><label for="{{ map_form.is_approved|id }}">{{ map_form.is_approved.label }}</label></span>
+                {{ map_form.is_approved }}
+              </div>
+              <div>
+                <span><label for="{{ map_form.metadata_only|id }}">{{ map_form.metadata_only.label }}</label></span>
+                {{ map_form.metadata_only }}
+              </div>
+              <div>
                 <span><label
                     for="{{ map_form.metadata_uploaded_preserve|id }}">{{ map_form.metadata_uploaded_preserve.label }}</label></span>
                 {{ map_form.metadata_uploaded_preserve }}
-              </div>
-              <div>
-                <span><label for="{{ map_form.is_approved|id }}">{{ map_form.is_approved.label }}</label></span>
-                {{ map_form.is_approved }}
               </div>
               <div>
                 <span><label for="{{ map_form.is_published|id }}">{{ map_form.is_published.label }}</label></span>
