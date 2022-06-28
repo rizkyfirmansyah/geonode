@@ -1,14 +1,14 @@
 {% load i18n %}
 {% load base_tags %}
 <nav class="filter">
-  <a href="#types" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">{% trans header %}</a>
+  <a href="#types" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Resource Type</a>
   <ul class="collapse list-unstyled" id="types">
         {% facets as facets %}
 
         {% for facet, count in facets.items %}
         {% if count > 0 %}
         <li>
-            <a id="{{ facet }}" data-value="{{ facet }}" data-filter="{{ filter }}" ng-click="multiple_choice_listener($event)">
+            <a id="{{ facet }}" data-value="{{ facet }}" data-filter="type__in" ng-click="multiple_choice_listener($event)">
                 {{ facet|get_facet_title|title }}
                 <span class="badge float-right">{{ count }}</span>
             </a>

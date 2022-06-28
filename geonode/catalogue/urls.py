@@ -31,7 +31,6 @@ urlpatterns = [
     url(r'^csw_to_extra_format/(?P<layeruuid>[^/]*)/(?P<resname>[^/]*).html$',
         views.csw_render_extra_format_html, name="csw_render_extra_format_html"),
     url(r'^$', registered_users(TemplateView.as_view(template_name='catalogue_list.html')),
-        {'facet_type': 'catalogue'},
         name="catalogue_browse"    
     ),
     url(r'^permissions/batch/$',
