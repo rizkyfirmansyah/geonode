@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div class="modal fade" data-backdrop="static" data-keyboard="false" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title text-center">{% trans "Connecting to service..." %}</h4>
+          </div>
+          <div class="modal-body">
+              <div class="progress" id="serviceRegisterProgress">
+                  <div class="progress-bar progress-bar-striped bg-info active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

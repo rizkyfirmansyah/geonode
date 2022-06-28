@@ -36,7 +36,7 @@
     {% if request.user.is_authenticated %}
       <div role="separator" class="divider"></div>
       <div class="menu_nav">
-        <h3 class="">Create</h3>
+        <h3 class="">Upload</h3>
           <a class="text-white row w-100 mb-2 text-decoration-none" href="{% document_list_url %}" role="button" target="_self" title="Add Dataset">
             <div class="col-3">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -64,8 +64,8 @@
       </div>
 
       <div class="menu_nav">
-        <h3 class="">Visualize</h3>
-          <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "maps_browse" %}" role="button" target="_self" title="Add Map">
+        <h3 class="">Create Visualization</h3>
+          <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "new_map" %}" role="button" target="_self" title="Add a New Map">
             <div class="col-3">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 6V22L8 18L16 22L23 18V2L16 6L8 2L1 6Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -77,6 +77,16 @@
               Maps
             </div>
           </a>
+          {% if user.is_authenticated and not READ_ONLY_MODE %}
+            <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "register_service" %}" role="button" target="_self" title="Add Remote Service">
+              <div class="col-3">
+                <i class="fa-solid fa-layer-group"></i>            
+              </div>
+              <div class="col-9 p-0 navigation_link">
+                Remote Service
+              </div>
+            </a>
+          {% endif %}
         <div role="separator" class="divider"></div>
       </div>
 
