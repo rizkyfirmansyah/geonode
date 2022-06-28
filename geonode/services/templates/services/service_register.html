@@ -9,8 +9,8 @@
 {% block title %} {% trans "Register Service" %} - {{ block.super }} {% endblock %}
 
 {% block body %}
-  <form method="POST" id="service_register_form">
   <div class="card border-dark rounded bg-light">
+    <form method="POST" id="service_register_form" action="">
     <div class="card-header">
       <div class="row">
         <h3 class="col">{% trans "Register New Service" %}</h3>
@@ -28,9 +28,8 @@
     <div class="card-footer">
       <button type="submit" class="btn btn-save btn-block" id="submit_button">{% trans "Create" %}</button>
     </div>
+    </form>
   </div>
-  </form>
-
   {% include "modal/register_service.html" %}
 {% endblock %}
 
