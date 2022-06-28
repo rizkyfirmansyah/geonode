@@ -25,17 +25,17 @@
   </div>
   
   <div class="card">
+    <form action="" method="post">
     <div class="card-body">
-      <form action="" method="post">
         {% csrf_token %}
         <div class="form-controls">
           {{ form|crispy }}
         </div>
-        <div class="form-actions">
-          <input type="submit" class="btn btn-primary w-100 mt-4" value="{% trans "Update profile" %}" />
-        </div>
-      </form>
     </div>
+    <div class="card-footer form-actions">
+      <input type="submit" class="btn btn-save btn-block" value="{% trans "Update profile" %}" />
+    </div>
+    </form>
   </div>
 </div>
 {% endblock %}

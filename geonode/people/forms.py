@@ -225,7 +225,6 @@ class ProfileForm(forms.ModelForm):
             'last_login',
             'groups',
             'user_permissions',
-            'username',
             'is_staff',
             'is_superuser',
             'is_active',
