@@ -19,10 +19,15 @@
 
 from geonode.base.forms import ResourceBaseForm
 from geonode.base.models import ResourceBase
+from geonode.documents.forms import GroupsChoiceField
 from geonode.maps.models import Map
+from django.contrib.auth.models import Group
 
 
 class MapForm(ResourceBaseForm):
+    group = GroupsChoiceField(
+        queryset = Group.objects.exclude(groupprofile=None),
+        required=False)
 
     class Meta(ResourceBaseForm.Meta):
         model = Map
@@ -39,21 +44,18 @@ class MapForm(ResourceBaseForm):
             help_text = self.fields[field].help_text
             self.fields[field].help_text = None
             if help_text != '':
-                self.fields[field].widget.attrs.update(
-                    {
-                        'class': 'has-external-popover text-truncate',
-                        'data-content': help_text,
-                        'placeholder': help_text,
-                        'data-placement': 'right',
-                        'data-container': 'body',
-                        'data-html': 'true',
-                        'data-field': self.fields[field].label
-                    }
-                )
+                self.fields[field].widget.attrs.update({
+                    'class': 'has-external-popover text-truncate',
+                    'data-content': help_text,
+                    'placeholder': help_text,
+                    'data-placement': 'right',
+                    'data-container': 'body',
+                    'data-html': 'true',
+                    'data-field': self.fields[field].label})
+
             if self.fields[field].widget.__class__.__name__ != 'ResourceBaseDateTimePicker':
-                self.fields[field].widget.attrs.update(
-                  {
-                      'class': 'has-external-popover text-truncate w-100'})
+                self.fields[field].widget.attrs.update({
+                  'class': 'has-external-popover text-truncate w-100'})
 
             if field == 'owner':
                 self.fields[field].widget.attrs.update({

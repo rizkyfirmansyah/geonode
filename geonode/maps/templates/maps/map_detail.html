@@ -20,7 +20,7 @@
 {% endif %}
 <script type="text/javascript">
   // this is used by thumbnail.js to POST to the thumbnail update view
-  window.thumbnailUpdateUrl = '{% url 'map_thumbnail' resource.id %}';
+  window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
 </script>
 <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
 {% get_map_detail %}
@@ -252,8 +252,7 @@
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
         <p>{% trans "Specify which users can view or modify this map" %}</p>
-        <button class="btn btn-edit btn-md btn-block" data-toggle="modal"
-          data-target="#_permissions">{% trans "Change Permissions of this Map" %}</button>
+        <button class="btn btn-edit btn-md btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Permissions of this Map" %}</button>
       </li>
       {% endif %}
 
@@ -304,103 +303,92 @@
 {% endblock %}
 
 {% block extra_script %}
-{{ block.super }}
-{% if DISPLAY_SOCIAL %}
-{% include 'facebook_sdk.html' %}
-{% endif %}
-{% if request.user.is_authenticated %}
-{% user_rating_js request.user resource "map" %}
-{% else %}
-{% overall_rating resource "map" as the_map_rating %}
-{% endif %}
-{% include 'rating.html' %}
-<script type="text/javascript">
-  $(function () {
-    {
-      %
-      verbatim %
-    }
-    // Publish layer group
-    // TODO: this should really not be inside a script tag...
-    var $wmsBtn = $("#layer-group"),
-      layerGroupElTpl;
+  {{ block.super }}
+  {% if DISPLAY_SOCIAL %}
+    {% include 'facebook_sdk.html' %}
+  {% endif %}
+  {% if request.user.is_authenticated %}
+    {% user_rating_js request.user resource "map" %}
+  {% else %}
+    {% overall_rating resource "map" as the_map_rating %}
+  {% endif %}
+  {% include 'rating.html' %}
+  <script type="text/javascript">
+    $(function () {
+      {% verbatim %}
+        // Publish layer group
+        // TODO: this should really not be inside a script tag...
+        var $wmsBtn = $("#layer-group"),
+            layerGroupElTpl;
 
-    if ($wmsBtn.length > 0) {
+        if ($wmsBtn.length > 0) {
 
-      $wmsBtn.on("click", function (event) {
-        event.preventDefault();
+          $wmsBtn.on("click", function (event) {
+            event.preventDefault();
 
-        $.ajax({
-            type: "PUT",
-            url: $wmsBtn.attr("href")
-          })
-          .done(function (data) {
-            layerGroupElTpl =
-              "<dt>WMS layer group for local map layers:</dt> \
-                <dd><em>{{layerGroupName}}</em> (on <a href='{{ows}}?service=WMS&request=GetCapabilities'>local OWS</a>)</dd>";
-            $.each(data, function (key, value) {
-              // client-side template hack
-              layerGroupElTpl = layerGroupElTpl.replace("{{" + key + "}}", value);
-            });
-          })
-          .fail(function () {
-            layerGroupElTpl = "<dt>Error:</dt> \
-                <dd>Layer group could not be created.</dd>";
-          })
-          .always(function () {
-            $("#layer-group-dl").html(layerGroupElTpl);
+            $.ajax({
+                type: "PUT",
+                url: $wmsBtn.attr("href")
+              })
+              .done(function (data) {
+                layerGroupElTpl =
+                  "<dt>WMS layer group for local map layers:</dt> \
+                    <dd><em>{{layerGroupName}}</em> (on <a href='{{ows}}?service=WMS&request=GetCapabilities'>local OWS</a>)</dd>";
+                $.each(data, function (key, value) {
+                  // client-side template hack
+                  layerGroupElTpl = layerGroupElTpl.replace("{{" + key + "}}", value);
+                });
+              })
+              .fail(function () {
+                layerGroupElTpl = "<dt>Error:</dt> \
+                    <dd>Layer group could not be created.</dd>";
+              })
+              .always(function () {
+                $("#layer-group-dl").html(layerGroupElTpl);
+              });
+
           });
-
-      });
-    }; {
-      %
-      endverbatim %
-    }
-  });
-  $("#comment_submit_btn").click(function (event) {
-    $.ajax({
-      type: "POST",
-      url: $("#form_post_comment").attr('action'),
-      data: $("#form_post_comment").serialize(),
-      success: function () {
-        $('#form_post_comment_div').modal().find('form')[0].reset();
-        $('#form_post_comment_div').modal('hide');
-        $('#comments_section').load(window.location.pathname + ' #comments_section',
-          function () {
-            $(this).children().unwrap()
-          })
-      }
+        }; 
+      {% endverbatim %}
     });
-    return false;
-  });
-</script>
+    $("#comment_submit_btn").click(function (event) {
+      $.ajax({
+        type: "POST",
+        url: $("#form_post_comment").attr('action'),
+        data: $("#form_post_comment").serialize(),
+        success: function () {
+          $('#form_post_comment_div').modal().find('form')[0].reset();
+          $('#form_post_comment_div').modal('hide');
+          $('#comments_section').load(window.location.pathname + ' #comments_section',
+            function () {
+              $(this).children().unwrap()
+            })
+        }
+      });
+      return false;
+    });
+  </script>
 
-{% block thumbnail_script %}
-<script type="text/javascript">
-  {% if preview == 'react' %}
-  $('#set_thumbnail').click(function () {
-    window.setThumbnail({
-      {
-        resource.id
-      }
-    })
-    $('#edit-layer').modal('toggle');
-  }); {
-    %
-    else %
-  }
-  $('#set_thumbnail').click(function () {
-    createMapThumbnail();
-    $('#edit-layer').modal('toggle');
-  }); {% endif %}
-</script>
-{% endblock thumbnail_script %}
+  {% block thumbnail_script %}
+    <script type="text/javascript">
+      {% if preview == 'react' %}
+        $('#set_thumbnail').click(function () {
+          window.setThumbnail({
+            { resource.id }
+          })
+          $('#edit-layer').modal('toggle');
+        }); 
+      {% else %}
+        $('#set_thumbnail').click(function () {
+          createMapThumbnail();
+          $('#edit-layer').modal('toggle');
+        }); 
+      {% endif %}
+    </script>
+  {% endblock thumbnail_script %}
 
-{% if GEONODE_SECURITY_ENABLED %}
-{% include "modal/permissions.html" %}
-{% endif %}
+  {% if FAVORITE_ENABLED %}
+    {% include "favorite/_favorite_js.html" %}
+  {% endif %}
 
-{% if FAVORITE_ENABLED %}
-{% include "favorite/_favorite_js.html" %}
-{% endif %}
 {% endblock extra_script %}
