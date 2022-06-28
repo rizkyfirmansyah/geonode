@@ -307,6 +307,10 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   color: #ff7c30 !important;
 }
 
+.text-remote {
+  color: #44e4dc !important;
+}
+
 
 /* ---------------------------------------------------
     BORDER STYLE
@@ -325,6 +329,10 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 
 .border-geoapp {
   border-color: #ff7c30 !important;
+}
+
+.border-remote {
+  border-color: #44e4dc !important;
 }
 
 /* ---------------------------------------------------
@@ -348,6 +356,10 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 
 .bg-private {
   background-color: #d3d3d3 !important;
+}
+
+.bg-remote {
+  background-color: #44e4dc !important;
 }
 
 .bg-public {
