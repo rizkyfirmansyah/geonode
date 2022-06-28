@@ -344,19 +344,19 @@ class ResourceBaseForm(TranslationModelForm):
     owner = ProfileChoiceField(
         label=_("Owner"),
         required=True,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'),
+        queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)),
         help_text=ResourceBase.owner_help_text)
 
     poc = ProfileChoiceField(
         label=_("Point of Contact"),
         required=True,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'),
+        queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)),
         help_text=ResourceBase.contacts_help_text)
 
     metadata_author = ProfileChoiceField(
         label=_("Metadata Author"),
         required=True,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
+        queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
 
     keywords = TagField(
         label=_("Free-text Keywords"),
@@ -576,7 +576,7 @@ class BatchEditForm(forms.Form):
         label=_("Owner"),
         required=True,
         help_text=ResourceBase.owner_help_text,
-        queryset=get_user_model().objects.exclude(username='AnonymousUser'))
+        queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
     regions = forms.ModelChoiceField(
         label=_('Regions'),
         help_text=ResourceBase.regions_help_text,
