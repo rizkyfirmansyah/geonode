@@ -44,7 +44,7 @@
               <div class="col-10 pr-0 pl-2">
                 <div class="row w-100 m-0">
                   <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
-                  <div ng-controller="CartList" class="col-1 text-right pr-0" ng-repeat="(key, value) in item.category__icons">
+                  <div ng-controller="CartList" class="text-right" ng-repeat="(key, value) in item.category__icons">
                     <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
                       <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>
                     </span>
@@ -52,7 +52,7 @@
                       <img src="data:image/svg+xml;charset=UTF-8,{{value}}" style="max-width: 16px;">
                     </span>
                   </div>
-                  <span class="col-md-1 m-0">
+                  <span class="m-0">
                     <i id="download_icon" class="fa fa-{{ item.perms.includes('download_resourcebase') ? 'download' : 'ban' }}" aria-hidden="true" style="margin-right: 8px; color:{{ item.perms.includes('download_resourcebase') ? '#0000FF' : '#D3D3D3' }};" title="{{ item.perms.includes('download_resourcebase') ? 'Available for download' : 'Not available for download' }}"></i>
                   </span>
                 </div>
