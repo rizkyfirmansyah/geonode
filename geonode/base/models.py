@@ -2286,12 +2286,21 @@ def resourcebase_post_save(instance, *args, **kwargs):
         if instance.uuid is None or instance.uuid == '':
             instance.uuid = str(uuid.uuid1())
 
-        ResourceBase.objects.filter(id=instance.id).update(
-            thumbnail_url=instance.get_thumbnail_url(),
-            detail_url=instance.get_absolute_url(),
-            csw_insert_date=now(),
-            license=instance.license,
-            uuid=instance.uuid)
+        if instance.storeType == 'remoteStore':
+            ResourceBase.objects.filter(id=instance.id).update(
+                thumbnail_url=instance.get_thumbnail_url(),
+                detail_url=f"/services/{instance.remote_service_id}",
+                resource_type='remote',
+                csw_insert_date=now(),
+                license=instance.license,
+                uuid=instance.uuid)
+        else:
+            ResourceBase.objects.filter(id=instance.id).update(
+                thumbnail_url=instance.get_thumbnail_url(),
+                detail_url=instance.get_absolute_url(),
+                csw_insert_date=now(),
+                license=instance.license,
+                uuid=instance.uuid)
         instance.refresh_from_db()
     except Exception:
         tb = traceback.format_exc()

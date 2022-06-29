@@ -114,6 +114,7 @@ class ArcMapServiceHandler(base.ServiceHandlerBase):
             version=str(self.parsed_service._json_struct.get("currentVersion", 0.0)).encode("utf-8", "ignore").decode('utf-8'),
             name=self.name,
             title=self.title,
+            resource_type='remote',
             abstract=str(self.parsed_service._json_struct.get("serviceDescription")).encode("utf-8", "ignore").decode('utf-8') or _(
                 "Not provided"),
             online_resource=self.parsed_service.url,

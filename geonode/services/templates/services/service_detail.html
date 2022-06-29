@@ -7,6 +7,9 @@
   <div class="card-header">
     <div class="row">
       <h3 class="col text-remote">{{service.title|default:service.name}}</h3>
+      <div class="col-4 text-right">
+        <a href="{% url 'services' %}" class="btn btn-secondary btn-block" type="button">{% trans "Explore Remote Service" %}</a>
+      </div>
     </div>
   </div>
   <div class="card-header">

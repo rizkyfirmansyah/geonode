@@ -223,6 +223,7 @@ class WmsServiceHandler(base.ServiceHandlerBase,
             metadata_only=True,
             version=str(self.parsed_service.identification.version).encode("utf-8", "ignore").decode('utf-8'),
             name=self.name,
+            resource_type='remote',
             title=str(self.parsed_service.identification.title).encode("utf-8", "ignore").decode('utf-8') or self.name,
             abstract=str(self.parsed_service.identification.abstract).encode("utf-8", "ignore").decode('utf-8') or _(
                 "Not provided"),
