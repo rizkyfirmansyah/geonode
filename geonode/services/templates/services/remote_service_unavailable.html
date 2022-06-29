@@ -5,10 +5,10 @@
 {% block title %}{% trans "Remote service unavailable" %}{% endblock %}
 
 {% block body %}
-<div class="card border-dark rounded bg-light">
+<div class="card border-remote rounded bg-light">
   <div class="card-header">
     <div class="row">
-      <h3 class="col">{% trans "Service unavailable" %}<small> {{ service.name }}</small></h3>
+      <h3 class="col text-remote">{% trans "Service unavailable" %}<small> {{ service.name }}</small></h3>
       <div class="col-4 text-right">
         <a href="{% url 'services' %}" class="btn btn-secondary btn-block" type="button">{% trans "Explore Remote Service" %}</a>
       </div>
