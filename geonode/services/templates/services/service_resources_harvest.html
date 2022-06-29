@@ -8,10 +8,10 @@
 
 {% block title %}{% trans "Import resources" %}{% endblock %}
 {% block body %}
-  <div class="card border-dark rounded bg-light">
+  <div class="card border-remoterounded bg-light">
     <div class="card-header">
       <div class="row">
-          <h3 class="col">{% trans "Import resources" %}
+          <h3 class="col text-remote">{% trans "Import resources" %}
               <small> {{ service.name }}</small>
           </h3>
           {% get_obj_perms request.user for service as "resource_perms" %}

@@ -9,11 +9,11 @@
 {% block title %} {% trans "Register Service" %} - {{ block.super }} {% endblock %}
 
 {% block body %}
-  <div class="card border-dark rounded bg-light">
+  <div class="card border-remote rounded bg-light">
     <form method="POST" id="service_register_form" action="">
     <div class="card-header">
       <div class="row">
-        <h3 class="col">{% trans "Register New Service" %}</h3>
+        <h3 class="col text-remote">{% trans "Register New Service" %}</h3>
         <div class="col-4 text-right">
           {% if not READ_ONLY_MODE %}
             <a href="{% url 'catalogue_browse' %}" class="btn btn-secondary btn-block" type="button">{% trans "Return to Home" %}</a>

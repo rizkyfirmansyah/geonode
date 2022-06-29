@@ -3,10 +3,10 @@
 {% load guardian_tags %}
 
 {% block body %}
-<div class="card border-dark rounded bg-light">
+<div class="card border-remote rounded bg-light">
   <div class="card-header">
     <div class="row">
-      <h3 class="col">{{service.title|default:service.name}}</h3>
+      <h3 class="col text-remote">{{service.title|default:service.name}}</h3>
     </div>
   </div>
   <div class="card-header">
@@ -40,7 +40,7 @@
   </div>
   {% autoescape off %}
   <div class="card-header">
-    <h3>{% trans "Service Resources" %} <span class="badge">{{ total_resources }}</span></h3>
+    <h3 class="text-remote">{% trans "Service Resources" %} <sup class="badge badge-info d-inline">{{ total_resources }}</sup></h3>
   </div>
   <div class="card-body">
         {% if total_resources == 0 %}
