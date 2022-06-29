@@ -17,6 +17,7 @@
 #
 #########################################################################
 
+from geonode.settings import REMOTE_SERVICES_ENABLED
 from geonode.utils import get_subclasses_by_model
 import warnings
 from django.conf import settings
@@ -207,5 +208,6 @@ def resource_urls(request):
         PROFILE_EDIT_EXCLUDE_FIELD=getattr(settings, "PROFILE_EDIT_EXCLUDE_FIELD", []),
         GEONODE_APPS_INSTALLED=get_subclasses_by_model('GeoApp'),
         AVAILABLE_SOCIAL_APPS_COUNT=SocialApp.objects.count(),
+        REMOTE_SERVICES_ENABLED=settings.REMOTE_SERVICES_ENABLED,
     )
     return defaults

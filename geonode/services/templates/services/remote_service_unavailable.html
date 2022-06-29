@@ -4,9 +4,18 @@
 
 {% block title %}{% trans "Remote service unavailable" %}{% endblock %}
 
-{% block body_inner %}
-    <div class="row w-100">
-        <h3>{% trans "Service unavailable" %}<small> {{ service.name }}</small></h3>
+{% block body %}
+<div class="card border-dark rounded bg-light">
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{% trans "Service unavailable" %}<small> {{ service.name }}</small></h3>
+      <div class="col-4 text-right">
+        <a href="{% url 'services' %}" class="btn btn-secondary btn-block" type="button">{% trans "Explore Remote Service" %}</a>
+      </div>
     </div>
-    <p>{% trans "Could not contact" %} <a href="{{ service.base_url }}" target="_blank">{{ service.base_url }}</a></p>
+  </div>
+  <div class="card-header alert-danger">
+    <p class="text-center">{% trans "Could not contact" %} <a href="{{ service.base_url }}" target="_blank">{{ service.base_url }}</a></p>
+  </div>
+</div>
 {% endblock %}

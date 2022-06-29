@@ -77,7 +77,7 @@
               Maps
             </div>
           </a>
-          {% if user.is_authenticated and not READ_ONLY_MODE %}
+          {% if REMOTE_SERVICES_ENABLED and user.is_authenticated %}
             <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "register_service" %}" role="button" target="_self" title="Add Remote Service">
               <div class="col-3">
                 <i class="fa-solid fa-layer-group"></i>            

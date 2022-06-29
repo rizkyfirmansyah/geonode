@@ -485,6 +485,8 @@ INSTALLED_APPS = (
     'geonode',
 )
 
+REMOTE_SERVICES_ENABLED = ast.literal_eval(os.environ.get('REMOTE_SERVICES_ENABLED', 'True'))
+
 markdown_white_listed_tags = [
     'a', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'ul', 'li', 'span', 'blockquote', 'strong', 'code'
 ]
