@@ -11,9 +11,10 @@
   <div class="card border-remote rounded bg-light">
     <div class="card-header">
       <div class="row">
-          <h3 class="col text-remote">{% trans "Import resources" %}
-              <small> {{ service.name }}</small>
-          </h3>
+          <div class="col">
+            <h3 class="text-remote">{% trans "Import resources" %}</h3>
+            <h6> {{ service.base_url }}</h6>
+          </div>
           {% get_obj_perms request.user for service as "resource_perms" %}
 
           {% if "change_service" in resource_perms or "remove_service" in resource_perms or "change_service_permissions" in resource_perms %}
