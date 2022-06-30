@@ -394,7 +394,7 @@ define(function(require, exports) {
             <p class="text-center text-primary">' + greeting.concat(" ", callme) + '! Grab your favourite snack, coffee, or tea while waiting :)</p> \
             <div class="progress" id="prog"> \
               <div class="progress-bar progress-bar-success" style="width:0%"></div>',
-            level: 'alert-success',
+            level: 'alert-info',
             empty: 'true'
         });
     };
