@@ -100,7 +100,7 @@
 
     // copy permissions and attributes
     $('#layer-create-form').submit(function(){
-      $('#permissions').val(JSON.stringify(permissionsString($('#permission_form'),'base')));
+      $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
 
       var attrs = {};
       $('.attr-definition').each(function(i, obj) {
