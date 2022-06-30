@@ -606,7 +606,11 @@ define(function(require, exports) {
     LayerInfo.prototype.doStep = function(resp, callback, array) {
         var self = this;
         self.logStatus({
-            msg: '<p class="text-center text-primary">' + gettext('Performing GeoServer Config Step') + '<div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>',
+            msg: '<p class="text-center text-primary">' + gettext('Performing GeoServer Config Step') + '<div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+            <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+            <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+            <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+            <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>',
             level: 'alert-success',
             empty: 'true'
         });
