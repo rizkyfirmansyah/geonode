@@ -608,8 +608,8 @@
           $("#security_refresh").trigger('click');
         }
         
-        const _datasets = {{ attributes|default:" " }};
-        const column_names = {{ column_names }};
+        const _datasets = {{ attributes|safe|default:" " }};
+        const column_names = {{ column_names|safe }};
         let columns = column_names.map((obj) => Object.assign({'data': obj}));
 
         {% if links_download %}
