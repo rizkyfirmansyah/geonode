@@ -97,7 +97,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
   var results_resource_type = [...data.results.map(item => item.resource_type)]
 
   var results_wrapper = $('<div class="ac-results"></div>');
-  var base_elem = $('<div class="result-wrapper"><a href="#" title="Click to jump into resource detail" class="ac-result btn-light btn_wrapper"></a></div>');
+  var base_elem = $('<div class="result-wrapper"><a href="" title="Click to jump into resource detail" class="ac-result btn-light btn_wrapper"></a></div>');
   var container = this.query_container;
 
   function appendElement() {
@@ -107,6 +107,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
               // Adding each query result to the autocomplete element
               // This should use some form of templating instead.
           elem.find('.ac-result').attr('onclick', "location.href='"+results_detail_url[res_offset]+"';")
+          elem.find('.ac-result').attr('href', results_detail_url[res_offset]);
           elem.find('.ac-result').text(results[res_offset])
           elem.find('.ac-result').addClass("text-" + results_resource_type[res_offset])
           results_wrapper.append(elem)
@@ -120,6 +121,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
       if (!newResult.length > 0) return
       for (var res_offset in newResult) {
           var elem = base_elem.clone();
+          elem.find('.ac-result').attr('onclick', "location.href='"+newResult_detail_url[res_offset]+"';")
           elem.find('.ac-result').attr('href', newResult_detail_url[res_offset])
           elem.find('.ac-result').text(newResult[res_offset]);
           elem.find('.ac-result').addClass("text-" + newResult_resource_type[res_offset])
