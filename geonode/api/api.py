@@ -358,26 +358,31 @@ class DataTypeResource(TypeFilteredResource):
         authorization = ApiLockdownAuthorization()
 
 
-class BaseLinkResource(TypeFilteredResource):
+class DocumentExtResource(TypeFilteredResource):
     """Extension api List to filter"""
-    count = fields.CharField(readonly=True, attribute='count', default=0)
+    count = fields.CharField(readonly=True)
 
     def dehydrate_count(self, bundle):
-        return Link.objects.filter(link_type='data', extension=bundle.obj.extension).distinct().count()
+        request = bundle.request
+        obj_with_perms = get_objects_for_user(request.user, 'base.view_resourcebase')
+
+        filter_set = Document.objects.all().filter(id__in=obj_with_perms, extension=bundle.obj.extension)
+        if not settings.SKIP_PERMS_FILTER:
+            filter_set = get_visible_resources(
+                filter_set,
+                request.user if request else None,
+                admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
+                unpublished_not_visible=settings.RESOURCE_PUBLISHING,
+                private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
+        
+        return filter_set.distinct().count()
 
     class Meta:
-        filter_name = ['Hosted Document', 'Zipped Shapefile', 'External Document']
-        results = Link.objects.filter(
-            Q(link_type__exact='data') &
-            Q(name__in=filter_name)
-        )
-        results = results.order_by('extension')
-        results = results.distinct('extension')
-        queryset = results
+        queryset = Document.objects.all().order_by('extension').distinct('extension')
         resource_name = 'dataset_type'
         excludes = ['resource_uri']
         allowed_methods = ['get']
-        fields = ('count', 'extension', 'name',)
+        fields = ('count', 'extension',)
         
         filtering = {
             'extension': ALL,

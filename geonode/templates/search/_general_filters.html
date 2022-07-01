@@ -3,7 +3,7 @@
   <a href="#dataset_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Data Extension</a>
   <ul class="collapse list-unstyled" id="dataset_type">
   {% verbatim %}
-  <li ng-repeat="item in dataset_type">
+  <li ng-repeat="item in dataset_type" ng-if="item.count > 0">
     <a data-value="{{ item.extension }}" data-filter="link__extension__in" title="{{ item.extension }}"ng-click="multiple_choice_listener($event)" class="{{item.extension.active}}">{{ item.extension == 'zip' ? 'shp' : item.extension }}
       <span class="badge float-right">{{ item.count }}</span>
     </a>

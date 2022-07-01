@@ -65,7 +65,7 @@ from .api import (
     TopicCategoryResource,
     DataTypeResource,
     GroupResource,
-    BaseLinkResource,
+    DocumentExtResource,
     FILTER_TYPES)
 from .paginator import CrossSiteXHRPaginator
 
@@ -123,7 +123,7 @@ class CommonModelApi(ModelResource):
     owner = fields.ToOneField(OwnersResource, 'owner', full=True)
     tkeywords = fields.ToManyField(
         ThesaurusKeywordResource, 'tkeywords', null=True)
-    link = fields.ToOneField(BaseLinkResource, 'link', full=True, null=True)
+    link = fields.ToOneField(DocumentExtResource, 'link', full=True, null=True)
 
     VALUES = [
         # fields in the db
