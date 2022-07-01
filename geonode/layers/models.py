@@ -32,7 +32,7 @@ from django.core.files.storage import FileSystemStorage
 from pinax.ratings.models import OverallRating
 from tinymce.models import HTMLField
 
-from geonode.base.models import ResourceBase, ResourceBaseManager, resourcebase_post_save
+from geonode.base.models import ResourceBase, ResourceBaseManager, resourcebase_post_save_layers
 from geonode.people.utils import get_valid_user
 from geonode.utils import check_shp_columnnames
 from geonode.security.utils import ResourceManager
@@ -749,7 +749,7 @@ def post_delete_layer_file(instance, sender, **kwargs):
 
 
 signals.pre_save.connect(pre_save_layer, sender=Layer)
-signals.post_save.connect(resourcebase_post_save, sender=Layer)
+signals.post_save.connect(resourcebase_post_save_layers, sender=Layer)
 signals.pre_delete.connect(pre_delete_layer, sender=Layer)
 signals.post_delete.connect(post_delete_layer, sender=Layer)
 signals.post_delete.connect(post_delete_layer_file, sender=LayerFile)
