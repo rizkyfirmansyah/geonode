@@ -3237,8 +3237,7 @@ form-inline {
 }
 
 #mdeditor_form .tab-content,
-.content_block .tab-content,
-article.tab-pane {
+.content_block .tab-content {
     box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7);
 }
 
