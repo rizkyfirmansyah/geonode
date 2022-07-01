@@ -192,7 +192,7 @@ def get_related_resources(document):
 def pre_save_document(instance, sender, **kwargs):
     if instance.doc_file:
         base_name, extension = os.path.splitext(instance.doc_file.name)
-        instance.extension = extension[1:]
+        instance.extension = extension[1:].lower()
         doc_type_map = DOCUMENT_TYPE_MAP
         doc_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
         if instance.extension == 'py':
@@ -234,7 +234,7 @@ def post_save_document(instance, *args, **kwargs):
     from .tasks import create_document_thumbnail
 
     name = None
-    ext = instance.extension
+    ext = instance.extension.lower()
     mime_type_map = DOCUMENT_MIMETYPE_MAP
     mime_type_map.update(getattr(settings, 'DOCUMENT_MIMETYPE_MAP', {}))
     mime = mime_type_map.get(ext, 'text/plain')
