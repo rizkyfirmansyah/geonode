@@ -11,9 +11,7 @@
             <div class="row">
               <div class="mr-2 h-100">
                 <span class="item-category" ng-if="item.has_time"><i class="fa-solid fa-clock" aria-hidden="true" title="Temporal Serie"></i>Temporal Serie<br></span>
-                <i ng-if="item.store_type == 'remoteStore'" title="Remote Service" class="fa-solid fa-arrow-up-right-from-square p-1"></i>
-                <i ng-if="item.store_type == 'dataStore'" title="Vector Data" class="fa-solid fa-square-pen p-1"></i>
-                <i ng-if="item.store_type == 'coverageStore'" title="Raster Data" class="fa-solid fa-image p-1"></i>
+                <i ng-if="item.resource_type == 'remote'" title="Remote Service" class="fa-solid fa-layer-group p-1"></i>
                 <span ng-if="item.resource_type == 'document'" title="File/Dataset">
                   <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M18.3605 6.20039L13.7371 1.57695C13.6082 1.44805 13.4342 1.375 13.2516 1.375H4.125C3.74473 1.375 3.4375 1.68223 3.4375 2.0625V19.9375C3.4375 20.3178 3.74473 20.625 4.125 20.625H17.875C18.2553 20.625 18.5625 20.3178 18.5625 19.9375V6.68809C18.5625 6.50547 18.4895 6.3293 18.3605 6.20039ZM16.977 7.00391H12.9336V2.96055L16.977 7.00391ZM17.0156 19.0781H4.98438V2.92188H11.4727V7.5625C11.4727 7.80182 11.5677 8.03133 11.7369 8.20055C11.9062 8.36978 12.1357 8.46484 12.375 8.46484H17.0156V19.0781Z"/>
