@@ -145,12 +145,12 @@ var DomBuilder = /*#__PURE__*/function () {
   _createClass(DomBuilder, [{
     key: "_create_flow_buttons",
     value: function _create_flow_buttons() {
-      this.grain_wrapper.append("<input type=file id=".concat(IDS_VALUT.FILE_INPUT_ID, " name=files class=crop-input /> ")), this.grain_wrapper.append("<label id=".concat(IDS_VALUT.FILE_LABEL_ID, " for=").concat(IDS_VALUT.FILE_INPUT_ID, " class=\"btn btn-primary crop-input-label\">Choose file</label>")), this.grain_wrapper.append("<button type=button id=".concat(IDS_VALUT.SEND_B_ID, " class=\"btn btn-primary invisible\">Save</button><button type=button id=").concat(IDS_VALUT.CANCEL_B_ID, " class=\"btn btn-primary invisible\">Cancel</button>"));
+      this.grain_wrapper.append("<input type=file id=".concat(IDS_VALUT.FILE_INPUT_ID, " name=files class=crop-input /> ")), this.grain_wrapper.append("<label id=".concat(IDS_VALUT.FILE_LABEL_ID, " for=").concat(IDS_VALUT.FILE_INPUT_ID, " class=\"btn btn-primary crop-input-label\">Choose file</label>")), this.grain_wrapper.append("<button type=button id=".concat(IDS_VALUT.SEND_B_ID, " class=\"btn btn-save invisible\">Save</button><button type=button id=").concat(IDS_VALUT.CANCEL_B_ID, " class=\"btn btn-secondary invisible\">Cancel</button>"));
     }
   }, {
     key: "create_workspace",
     value: function create_workspace() {
-      var i = "\n                              <div id=".concat(IDS_VALUT.WORKSPACE_CONTAINER_ID, " class=\"crop-modal-container invisible\">                                  \n                                  <img id=").concat(IDS_VALUT.WORKSPACE_ID, " class=\"crop-modal-workspace\">                                      \n                                  <button type=button id=").concat(IDS_VALUT.OK_B_ID, " class=\"btn btn-primary\">OK</button><button type=button id=").concat(IDS_VALUT.DISMISS_B_ID, " class=\"btn btn-primary\">Dismiss</button>                                      \n                              </div>");
+      var i = "\n                              <div id=".concat(IDS_VALUT.WORKSPACE_CONTAINER_ID, " class=\"crop-modal-container invisible\">                                  \n                                  <img id=").concat(IDS_VALUT.WORKSPACE_ID, " class=\"crop-modal-workspace\">                                      \n                                  <button type=button id=").concat(IDS_VALUT.OK_B_ID, " class=\"btn btn-save\">OK</button><button type=button id=").concat(IDS_VALUT.DISMISS_B_ID, " class=\"btn btn-secondary\">Dismiss</button>                                      \n                              </div>");
       $(document.body).append(i), this._create_flow_buttons();
     }
   }]);
