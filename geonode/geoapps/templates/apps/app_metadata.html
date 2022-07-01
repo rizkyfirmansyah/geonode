@@ -12,7 +12,7 @@
 {% block body %}
 
 {{ block.super }}
-<form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST">
+<form id="metadata_update" class="form-horizontal" action="{{ geoapp.get_absolute_url }}/metadata" method="POST" novalidate>
   <div class="card border-info mb-2">
     <div class="card-header">
       <div class="row">

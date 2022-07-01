@@ -17,7 +17,7 @@
 {% block body %}
 
 {{ block.super }}
-<form id="metadata_update" class="form-horizontal" action="{% url 'layer_metadata' layer.service_typename %}" method="POST">
+<form id="metadata_update" class="form-horizontal" action="{% url 'layer_metadata' layer.service_typename %}" method="POST" novalidate>
   <div class="card border-info mb-2">
     <div class="card-header">
       <div class="row">

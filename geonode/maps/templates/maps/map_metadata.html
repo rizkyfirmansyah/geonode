@@ -17,7 +17,7 @@
 {% block body %}
 
 {{ block.super }}
-<form id="metadata_update" class="form-horizontal" action="{{ map.get_absolute_url }}/metadata" method="POST">
+<form id="metadata_update" class="form-horizontal" action="{{ map.get_absolute_url }}/metadata" method="POST" novalidate>
   <div class="card border-info">
     <div class="card-header">
       <div class="row">
