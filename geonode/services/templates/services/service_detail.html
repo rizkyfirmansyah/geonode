@@ -14,25 +14,18 @@
   </div>
   <div class="card-header">
         {% get_obj_perms request.user for service as "resource_perms" %}
-
-        {% if can_add_resorces or "add_resourcebase" in resource_perms or "change_resourcebase_metadata" in resource_perms or "change_service_permissions" in resource_perms %}
-        <div class="row">
-            {% if "change_resourcebase_metadata" in resource_perms %}
-                <div class="col"><a class="btn btn-edit btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></div>
-            {% endif %}
-            {% if can_add_resorces %}
-                <div class="col"><a id="harvestResources" class="btn btn-primary btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></div>
-            {% endif %}
-            {% if "remove_service" in permissions_list or "delete_service" in permissions_list or 'delete_resourcebase' in permissions_list %}
-                <div class="col"><a class="btn btn-danger btn-md btn-block" data-toggle="modal" data-target="#removeServicesModal">{% trans "Remove Service" %}</a></div>
-            {% endif %}
-        </div>
+        {% if service.owner == request.user %}
+          <div class="row">
+              <div class="col"><a class="btn btn-edit btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></div>
+              <div class="col"><a id="harvestResources" class="btn btn-primary btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></div>
+              <div class="col"><a class="btn btn-danger btn-md btn-block" data-toggle="modal" data-target="#removeServicesModal">{% trans "Remove Service" %}</a></div>
+          </div>
         {% endif %}
   </div>
   <div class="card-body">
-      <p><strong>{% trans "Type" %}:</strong> {{service.service_type}}</p>
-      <p><strong>{% trans "URL" %}:</strong> {{service.base_url}}</p>
-      <p><strong>{% trans "Abstract" %}:</strong> {{service.abstract}}</p>
+      <p><strong>{% trans "Type" %}:</strong> {{ service.service_type }}</p>
+      <p><strong>{% trans "URL" %}:</strong> {{ service.base_url|safe }}</p>
+      <p><strong>{% trans "Abstract" %}:</strong> {{ service.abstract|safe }}</p>
       <p>
         <strong>{% trans "Keywords" %}:</strong>
         {% for kwd in service.keywords.all %}

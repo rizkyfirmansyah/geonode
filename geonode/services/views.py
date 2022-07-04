@@ -174,7 +174,7 @@ def harvest_resources_handle_get(request, service, handler):
             "requested": request.GET.getlist("resource_list"),
             "is_sync": is_sync,
             "errored_state": errored_state,
-            "can_add_resources": request.user.has_perm('base.add_resourcebase'),
+            "can_add_resources": request.user.is_authenticated,
             "filter_row": filter_row,
             "permissions_list": perms_list
 
@@ -344,6 +344,8 @@ def service_detail(request, service_id):
     except EmptyPage:
         resources = paginator.page(paginator.num_pages)
 
+    print(perms_list)
+
     # pop the handler out of the session in order to free resources
     # - we had stored the service handler on the session in order to
     # speed up the register/harvest resources flow. However, for services
@@ -364,7 +366,7 @@ def service_detail(request, service_id):
                 r for r in resources if isinstance(r, HarvestJob)),
             "permissions_json": permissions_json,
             "permissions_list": perms_list,
-            "can_add_resorces": request.user.has_perm('base.add_resourcebase'),
+            "can_add_resources": request.user.has_perm('base.add_resourcebase'),
             "resources": resources,
             "total_resources": len(already_imported_layers),
         }
