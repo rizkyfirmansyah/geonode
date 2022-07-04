@@ -344,8 +344,6 @@ def service_detail(request, service_id):
     except EmptyPage:
         resources = paginator.page(paginator.num_pages)
 
-    print(perms_list)
-
     # pop the handler out of the session in order to free resources
     # - we had stored the service handler on the session in order to
     # speed up the register/harvest resources flow. However, for services
