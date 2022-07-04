@@ -16,13 +16,13 @@
         <p class="text-muted small">{% trans "Your current avatar " %}</p>
       </div>
       {% if not avatars %}
-          <p class="text-center alert-warning">{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
+          <p class="text-center alert-warning p-1">{% trans "You haven't uploaded an avatar yet. Please upload one now." %}</p>
       {% else %}
           <form method="POST" action="{% url 'avatar_change' %}">
               <ul>
                   {{ primary_avatar_form.as_ul }}
               </ul>
-              <p>{% csrf_token %}<input type="submit" class="btn btn-primary" value="{% trans "Choose new Default" %}" /></p>
+              <p>{% csrf_token %}<input type="submit" class="btn btn-primary btn-block" value="{% trans "Choose New Default" %}" /></p>
           </form>
       {% endif %}
       <div title="Preview Avatar" class="mt-2 mb-3">
@@ -36,8 +36,8 @@
     </div>
     <div class="card-footer">
         <div class="row">
-          <a class="btn btn-primary btn-danger col" href="{% url 'avatar_delete' %}" id="delete_avatar" style="visibility: hidden">{% trans "Delete Your Avatar" %}</a>
-          <input id="avatar-file" type="submit" class="btn btn-save col" style="visibility: hidden" value="{% trans "Upload New Avatar" %}" />
+          <div class="col"><a class="btn btn-primary btn-danger btn-block" href="{% url 'avatar_delete' %}" id="delete_avatar" style="visibility: hidden">{% trans "Delete Your Avatar" %}</a></div>
+          <div class="col"><input id="avatar-file" type="submit" class="btn btn-save btn-block" style="visibility: hidden" value="{% trans "Upload New Avatar" %}" /></div>
         </div>
     </form>
     </div>

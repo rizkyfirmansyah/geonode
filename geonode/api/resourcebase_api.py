@@ -24,6 +24,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.conf import settings
 from django.templatetags.static import static
+from avatar.templatetags.avatar_tags import avatar_url
 from geonode.thumbs.utils import MISSING_THUMB
 from tastypie.authentication import MultiAuthentication, SessionAuthentication
 from tastypie.bundle import Bundle
@@ -52,7 +53,7 @@ from geonode.base.models import ResourceBase, Link
 from geonode.base.models import HierarchicalKeyword
 from geonode.base.bbox_utils import filter_bbox
 from geonode.groups.models import GroupProfile
-from geonode.utils import check_ogc_backend
+from geonode.utils import build_absolute_uri, check_ogc_backend
 from geonode.security.utils import get_visible_resources
 from .authentication import OAuthAuthentication
 from .authorization import GeoNodeAuthorization, GeonodeApiKeyAuthentication
@@ -179,6 +180,7 @@ class CommonModelApi(ModelResource):
         'link__extension',
         'featured',
         'perms',
+        'avatar',
     ]
 
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
@@ -653,6 +655,8 @@ class CommonModelApi(ModelResource):
             formatted_obj['owner_name'] = obj.owner.get_full_name() or obj.owner.username
             formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
                 obj.get_self_resource().get_user_perms(request.user)))
+
+            formatted_obj['avatar'] = build_absolute_uri(avatar_url(obj.owner, 240))
 
             if obj.category:
                 fa_class = {}

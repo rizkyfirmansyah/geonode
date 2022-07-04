@@ -372,7 +372,8 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 
 
 .bg-layer div p,
-.bg-document div p {
+.bg-document div p,
+.bg-remote div p {
   color: white;
 }
 
@@ -385,6 +386,7 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 .bg-document span svg,
 .bg-maps span svg,
 .bg-geoapp span svg
+.bg-remote span svg
 {
   fill: white;
 }
@@ -2904,7 +2906,7 @@ html {
 }
 
 #catalogueList .svg-inline--fa,
-#sortFilter .svg-inline--fa {
+#sortFilter .svg-inline--fa, #PSCatalogue .svg-inline--fa {
     margin-right: 5px
 }
 

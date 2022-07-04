@@ -3,7 +3,7 @@
 {% load avatar_tags %}
 {% verbatim %}
 
-  <div class="row row-cols-1 row-cols-md-2">
+  <div class="row row-cols-1 row-cols-md-2" id="PSCatalogue">
     <div ng-repeat="item in results" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
         <div class="card rounded border-{{ item.resource_type }}">
           <a href="{{ item.detail_url }}" class="img-card"><img ng-src="{{ item.thumbnail_url }}"/></a>
@@ -36,8 +36,9 @@
           <div class="card-content p-2">
             <div class="row ml-1">
               <div class="avatar">
-                <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar profile 40 %}</a>
-                {% verbatim %}
+                <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">
+                  <img src="{{ item.avatar }}" width="34" alt="{{ item.owner_name }}">
+                </a>
               </div>
               <div class="col-10 pr-0 pl-2">
                 <div class="row w-100 m-0">
@@ -62,7 +63,6 @@
             </div>
             <p class="mt-1 text-justify" ng-bind-html="item.abstract | limitWithEllipsis: 110"></p>
           </div>
-          <!-- <a href="{{ item.detail_url }}"><img class="card-img-top" ng-src="{{ item.thumbnail_url }}"></a> -->
           {% endverbatim %}
                 <div class="card-footer">
                   <div class="row">

@@ -36,8 +36,9 @@
           <div class="card-content p-2">
             <div class="row ml-1">
               <div class="avatar">
-                <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{% endverbatim %}{% avatar item.owner_name 40 %}</a>
-                {% verbatim %}
+                <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">
+                  <img src="{{ item.avatar }}" width="34" alt="{{ item.owner_name }}">
+                </a>
               </div>
               <div class="col-10 pr-0 pl-2">
                 <div class="row w-100 m-0">
