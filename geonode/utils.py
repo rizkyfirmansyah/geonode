@@ -45,6 +45,7 @@ from decimal import Decimal
 from threading import local
 from slugify import slugify
 from contextlib import closing
+from requests.exceptions import RetryError
 from collections import namedtuple, defaultdict
 from math import atan, exp, log, pi, sin, tan, floor
 from zipfile import ZipFile, is_zipfile, ZIP_DEFLATED
@@ -1605,7 +1606,7 @@ class HttpClient:
                     timeout=_req_tout,
                     stream=stream,
                     verify=verify)
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.exceptions.RequestException, ValueError, RetryError) as e:
                 msg = f"Request exception [{e}] - TOUT [{_req_tout}] to URL: {url} - headers: {headers}"
                 logger.exception(Exception(msg))
                 response = None
@@ -2020,11 +2021,15 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
         logger.debug(" -- Resource Links[Thumbnail link]...done!")
 
         logger.debug(" -- Resource Links[OWS Links]...")
-        # ogc_wms_path = '%s/ows' % instance.workspace
-        ogc_wms_path = 'ows'
-        ogc_wms_url = urljoin(ogc_server_settings.public_url, ogc_wms_path)
+        try:
+            ogc_wms_url = instance.ows_url
+        except Exception:
+            ogc_wms_url = None
+        if not ogc_wms_url:
+            ogc_wms_path = 'ows'
+            ogc_wms_url = urljoin(ogc_server_settings.public_url, ogc_wms_path)
         ogc_wms_name = f'OGC WMS: {instance.workspace} Service'
-        if Link.objects.filter(resource=instance.resourcebase_ptr, name=ogc_wms_name, url=ogc_wms_url).count() < 2:
+        if not Link.objects.filter(resource=instance.resourcebase_ptr, link_type='OGC:WMS').exists():
             Link.objects.get_or_create(
                 resource=instance.resourcebase_ptr,
                 url=ogc_wms_url,
@@ -2038,11 +2043,15 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
             )
 
         if instance.storeType == "dataStore":
-            # ogc_wfs_path = '%s/wfs' % instance.workspace
-            ogc_wfs_path = 'ows'
-            ogc_wfs_url = urljoin(ogc_server_settings.public_url, ogc_wfs_path)
+            try:
+                ogc_wfs_url = instance.ows_url
+            except Exception:
+                ogc_wfs_url = None
+            if not ogc_wfs_url:
+                ogc_wfs_path = 'ows'
+                ogc_wfs_url = urljoin(ogc_server_settings.public_url, ogc_wfs_path)
             ogc_wfs_name = f'OGC WFS: {instance.workspace} Service'
-            if Link.objects.filter(resource=instance.resourcebase_ptr, name=ogc_wfs_name, url=ogc_wfs_url).count() < 2:
+            if not Link.objects.filter(resource=instance.resourcebase_ptr, link_type='OGC:WFS').exists():
                 Link.objects.get_or_create(
                     resource=instance.resourcebase_ptr,
                     url=ogc_wfs_url,
@@ -2056,11 +2065,15 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                 )
 
         if instance.storeType == "coverageStore":
-            # ogc_wcs_path = '%s/wcs' % instance.workspace
-            ogc_wcs_path = 'ows'
-            ogc_wcs_url = urljoin(ogc_server_settings.public_url, ogc_wcs_path)
+            try:
+                ogc_wcs_url = instance.ows_url
+            except Exception:
+                ogc_wcs_url = None
+            if not ogc_wcs_url:
+                ogc_wcs_path = 'ows'
+                ogc_wcs_url = urljoin(ogc_server_settings.public_url, ogc_wcs_path)
             ogc_wcs_name = f'OGC WCS: {instance.workspace} Service'
-            if Link.objects.filter(resource=instance.resourcebase_ptr, name=ogc_wcs_name, url=ogc_wcs_url).count() < 2:
+            if not Link.objects.filter(resource=instance.resourcebase_ptr, link_type='OGC:WCS').exists():
                 Link.objects.get_or_create(
                     resource=instance.resourcebase_ptr,
                     url=ogc_wcs_url,
@@ -2170,7 +2183,6 @@ def json_serializer_producer(dictionary):
         'is_staff',
         'is_active',
         'is_superuser',
-        'category',
         'permissions',
         'user_permissions',
     ]
