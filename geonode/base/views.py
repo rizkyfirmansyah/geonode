@@ -18,7 +18,9 @@
 #
 #########################################################################
 
-
+import json
+import logging
+from math import perm
 # Geonode functionality
 from django.shortcuts import render
 from django.conf import settings
@@ -41,11 +43,12 @@ from geonode.utils import resolve_object
 from geonode.documents.models import Document
 from geonode.groups.models import GroupProfile
 from geonode.tasks.tasks import set_permissions
-from geonode.base.forms import CuratedThumbnailForm
-from geonode.security.utils import get_visible_resources
+from geonode.base.forms import BatchPermissionsForm, CuratedThumbnailForm
+from geonode.security.utils import get_visible_resources, serialize_resource_permissions
 from geonode.notifications_helper import send_notification
 from geonode.base.utils import OwnerRightsRequestViewUtils
 from geonode.base.forms import UserAndGroupPermissionsForm
+from geonode.security.views import _perms_info
 
 from geonode.base.forms import (
     BatchEditForm,
@@ -58,7 +61,11 @@ from geonode.base.models import (
     ThesaurusKeywordLabel
 )
 from django.contrib import messages
+from celery.utils.log import get_logger
 
+
+logger = logging.getLogger("geonode.layers.views")
+celery_logger = get_logger(__name__)
 
 def get_url_for_app_model(model, model_class):
     return reverse(f'admin:{model_class._meta.app_label}_{model}_changelist')
@@ -142,11 +149,10 @@ def batch_modify(request, model):
         Resource = Map
     template = 'base/batch_edit.html'
     ids = request.POST.get("ids")
-    toast_title = _("Batch Edit")
+    toast_title = _("Batch Edit Metadata")
 
     if "cancel" in request.POST or not ids:
-        return HttpResponseRedirect(
-            get_url_for_model(model))
+        return HttpResponseRedirect(get_url_for_model(model))
 
     if request.method == 'POST':
         form = BatchEditForm(request.POST)
@@ -197,8 +203,7 @@ def batch_modify(request, model):
             msg = _("You have updated the selected resources metadata")
             messages.success(request, msg, extra_tags=toast_title)
 
-            return HttpResponseRedirect(
-                get_url_for_model(model))
+            return HttpResponseRedirect(get_url_for_model(model))
 
         return render(
             request,
@@ -211,6 +216,53 @@ def batch_modify(request, model):
         )
 
     form = BatchEditForm()
+    return render(
+        request,
+        template,
+        context={
+            'form': form,
+            'ids': ids,
+            'model': model,
+        }
+    )
+
+from django.http import HttpResponse
+
+def batch_permissions(request, model):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    if model == 'Document':
+        Resource = Document
+    if model == 'Layer':
+        Resource = Layer
+    if model == 'Map':
+        Resource = Map
+    if model == 'Layer':
+        Resource = Layer
+
+    template = 'base/batch_permissions.html'
+    ids = request.POST.get("ids")
+    toast_title = _("Batch Edit Permissions")
+
+    if "cancel" in request.POST or not ids:
+        return HttpResponseRedirect(get_url_for_model(model))
+
+    if request.method == 'POST':
+        form = BatchPermissionsForm(request.POST)
+
+        permission_spec = json.loads(request.POST.get("permissions"))
+
+        resource_permissions = serialize_resource_permissions(permission_spec)
+
+        for resource in Resource.objects.filter(id__in=ids.split(',')):
+            resource.set_permissions(resource_permissions)
+
+        msg = _("You have updated the selected resources permissions")
+        messages.success(request, msg, extra_tags=toast_title)
+
+        return HttpResponseRedirect(get_url_for_model(model))
+
+    form = BatchPermissionsForm()
     return render(
         request,
         template,

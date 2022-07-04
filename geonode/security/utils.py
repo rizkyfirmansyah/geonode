@@ -966,15 +966,15 @@ def serialize_resource_permissions(obj):
             if k.startswith('manage_resourcebase'):
                 if isinstance(l, list):
                     for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v).username].extend(perms_manage)
+                        perms_users[get_user_model().objects.get(username=v)].extend(perms_manage)
                 else:
-                    perms_users[get_user_model().objects.get(username=l).username].extend(perms_manage)
+                    perms_users[get_user_model().objects.get(username=l)].extend(perms_manage)
             else:
                 if isinstance(l, list):
                     for i, v in enumerate(l):
-                        perms_users[get_user_model().objects.get(username=v).username].append(k.replace('_users', ''))
+                        perms_users[get_user_model().objects.get(username=v)].append(k.replace('_users', ''))
                 else:
-                    perms_users[get_user_model().objects.get(username=l).username].append(k.replace('_users', ''))
+                    perms_users[get_user_model().objects.get(username=l)].append(k.replace('_users', ''))
 
 
     perms_groups = collections.defaultdict(list)

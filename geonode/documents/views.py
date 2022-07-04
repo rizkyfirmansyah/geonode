@@ -20,7 +20,6 @@
 import json
 import logging
 import traceback
-from itertools import chain
 import warnings
 from geonode.decorators import registered_users
 from geonode.views import page_not_found_message, unauthorized_message
@@ -54,7 +53,7 @@ from geonode.documents.models import Document, get_related_resources
 from geonode.documents.forms import DocumentForm, DocumentCreateForm, DocumentReplaceForm
 from geonode.utils import build_social_links
 from geonode.groups.models import GroupProfile
-from geonode.base.views import batch_modify
+from geonode.base.views import batch_modify, batch_permissions
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_user_visible_groups, get_visible_resources
@@ -652,6 +651,11 @@ def document_metadata_detail(
 @login_required
 def document_batch_metadata(request):
     return batch_modify(request, 'Document')
+
+
+@login_required
+def document_batch_permissions(request):
+    return batch_permissions(request, 'Document')
 
 
 class DocumentAutocomplete(autocomplete.Select2QuerySetView):

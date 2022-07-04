@@ -32,7 +32,5 @@ urlpatterns = [
         views.csw_render_extra_format_html, name="csw_render_extra_format_html"),
     url(r'^$', registered_users(TemplateView.as_view(template_name='catalogue_list.html')),
         name="catalogue_browse"    
-    ),
-    url(r'^permissions/batch/$',
-    views.catalogue_batch_permissions, name='catalogue_batch_permissions'),
+    )
 ]

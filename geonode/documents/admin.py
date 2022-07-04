@@ -24,7 +24,7 @@ from modeltranslation.admin import TabbedTranslationAdmin
 
 from geonode.documents.models import Document
 from geonode.base.admin import ResourceBaseAdminForm
-from geonode.base.admin import metadata_batch_edit
+from geonode.base.admin import metadata_batch_edit, set_batch_permissions
 
 
 class DocumentAdminForm(ResourceBaseAdminForm):
@@ -52,7 +52,7 @@ class DocumentAdmin(TabbedTranslationAdmin):
                      'is_approved', 'is_published',)
     date_hierarchy = 'date'
     form = DocumentAdminForm
-    actions = [metadata_batch_edit]
+    actions = [metadata_batch_edit, set_batch_permissions]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

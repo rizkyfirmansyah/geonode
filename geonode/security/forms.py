@@ -4,6 +4,7 @@ from geonode.groups.models import GroupProfile
 from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 
 from geonode.people.forms import ProfileMultipleChoiceField
 
@@ -41,8 +42,8 @@ class PermissionsForm(forms.Form):
       super().__init__(*args, **kwargs)
 
       for field in self.fields:
-          self.fields[field].widget.attrs.update(
-              {
+          if 'users' in field or 'groups' in field:
+              self.fields[field].widget.attrs.update({
                   'class': 'selectpicker',
                   'data-live-search': 'true',
                   'data-selected-text-format': 'count > 4',
@@ -55,7 +56,7 @@ class PermissionsForm(forms.Form):
       label="The following users",
       queryset=get_users_view,
       to_field_name="username",
-      required=False)
+      required=True)
     view_resourcebase_groups = GroupsMultipleChoiceField(
       label="The following groups",
       choices=get_groups_choices,
@@ -64,7 +65,7 @@ class PermissionsForm(forms.Form):
       label="The following users",
       queryset=get_users_download,
       to_field_name="username",
-      required=False)
+      required=True)
     download_resourcebase_groups = GroupsMultipleChoiceField(
       label="The following groups",
       choices=get_groups_choices,
@@ -73,7 +74,7 @@ class PermissionsForm(forms.Form):
       label="The following users",
       queryset=get_users,
       to_field_name="username",
-      required=False)
+      required=True)
     change_resourcebase_metadata_groups = GroupsMultipleChoiceField(
       label="The following groups",
       choices=get_groups_choices,
@@ -82,7 +83,7 @@ class PermissionsForm(forms.Form):
       label="The following users",
       queryset=get_users,
       to_field_name="username",
-      required=False)
+      required=True)
     change_layer_data_groups = GroupsMultipleChoiceField(
       label="The following groups",
       choices=get_groups_choices,
@@ -91,7 +92,7 @@ class PermissionsForm(forms.Form):
       label="The following users",
       queryset=get_users,
       to_field_name="username",
-      required=False)
+      required=True)
     change_layer_style_groups = GroupsMultipleChoiceField(
       label="The following groups",
       choices=get_groups_choices,
@@ -100,7 +101,7 @@ class PermissionsForm(forms.Form):
       label="The following users",
       queryset=get_users,
       to_field_name="username",
-      required=False)
+      required=True)
     manage_resourcebase_groups = GroupsMultipleChoiceField(
       label="The following groups",
       choices=get_groups_choices,

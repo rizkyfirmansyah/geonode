@@ -25,8 +25,6 @@ import logging
 import warnings
 import traceback
 
-from itertools import chain
-
 import psycopg2
 from dal import autocomplete
 from requests import Request
@@ -37,7 +35,6 @@ from django.conf import settings
 
 from django.db.models import Q
 from django.db.models import F
-from django.http import Http404
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -63,8 +60,8 @@ from geonode.base.auth import get_or_create_token
 from geonode.layers.metadata import parse_metadata
 from geonode.upload.api.views import UploadViewSet
 from geonode.upload.upload import _update_layer_with_xml_info
-from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, BatchPermissionsForm, ThesaurusAvailableForm
-from geonode.base.views import batch_modify, get_url_for_model
+from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
+from geonode.base.views import batch_modify, batch_permissions
 from geonode.base.models import (
     ExtraMetadata,
     Thesaurus)
@@ -111,10 +108,7 @@ from geonode.geoserver.helpers import (
     set_layer_style,
     ogc_server_settings)
 from geonode.geoserver.security import set_geowebcache_invalidate_cache
-from geonode.tasks.tasks import set_permissions
 from geonode.upload.forms import LayerUploadForm as UploadViewsetForm
-
-from celery.utils.log import get_logger
 
 if check_ogc_backend(geoserver.BACKEND_PACKAGE):
     from geonode.geoserver.helpers import gs_catalog
@@ -122,7 +116,6 @@ if check_ogc_backend(geoserver.BACKEND_PACKAGE):
 CONTEXT_LOG_FILE = ogc_server_settings.LOG_FILE
 
 logger = logging.getLogger("geonode.layers.views")
-celery_logger = get_logger(__name__)
 
 DEFAULT_SEARCH_BATCH_SIZE = 10
 MAX_SEARCH_BATCH_SIZE = 25
@@ -1728,81 +1721,6 @@ def layer_embed(
 @login_required
 def layer_batch_metadata(request):
     return batch_modify(request, 'Layer')
-
-
-def batch_permissions(request, model):
-    Resource = None
-    if model == 'Layer':
-        Resource = Layer
-    if not Resource or not request.user.is_superuser:
-        raise PermissionDenied
-
-    template = 'base/batch_permissions.html'
-    ids = request.POST.get("ids")
-
-    if "cancel" in request.POST or not ids:
-        return HttpResponseRedirect(
-            get_url_for_model(model)
-        )
-
-    if request.method == 'POST':
-        form = BatchPermissionsForm(request.POST)
-        if form.is_valid():
-            _data = form.cleaned_data
-            resources_names = []
-            for resource in Resource.objects.filter(id__in=ids.split(',')):
-                resources_names.append(resource.name)
-            users_usernames = [_data['user'].username, ] if _data['user'] else None
-            groups_names = [_data['group'].name, ] if _data['group'] else None
-            if users_usernames and 'AnonymousUser' in users_usernames and \
-                    (not groups_names or 'anonymous' not in groups_names):
-                if not groups_names:
-                    groups_names = []
-                groups_names.append('anonymous')
-            if groups_names and 'anonymous' in groups_names and \
-                    (not users_usernames or 'AnonymousUser' not in users_usernames):
-                if not users_usernames:
-                    users_usernames = []
-                users_usernames.append('AnonymousUser')
-            delete_flag = _data['mode'] == 'unset'
-            permissions_names = _data['permission_type']
-            if permissions_names:
-                try:
-                    set_permissions.apply_async((
-                        permissions_names,
-                        resources_names,
-                        users_usernames,
-                        groups_names,
-                        delete_flag))
-                except set_permissions.OperationalError as exc:
-                    celery_logger.exception('Sending task raised: %r', exc)
-            return HttpResponseRedirect(
-                get_url_for_model(model)
-            )
-        return render(
-            request,
-            template,
-            context={
-                'form': form,
-                'ids': ids,
-                'model': model,
-            }
-        )
-
-    form = BatchPermissionsForm(
-        {
-            'permission_type': ('r', ),
-            'mode': 'set'
-        })
-    return render(
-        request,
-        template,
-        context={
-            'form': form,
-            'ids': ids,
-            'model': model,
-        }
-    )
 
 
 @login_required

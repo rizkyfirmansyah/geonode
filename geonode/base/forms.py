@@ -23,7 +23,7 @@ import logging
 import json
 from django.db.models.query import QuerySet
 from geonode.people.forms import ProfileChoiceField
-from geonode.security.forms import get_groups_id_choices
+from geonode.security.forms import PermissionsForm, get_groups_id_choices
 from tempus_dominus.widgets import DateTimePicker
 from dal import autocomplete
 from django import forms
@@ -602,35 +602,13 @@ class BatchEditForm(forms.Form):
         self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
 
 
-class BatchPermissionsForm(forms.Form):
-    group = forms.ModelChoiceField(
-        label=_('Group'),
-        queryset=Group.objects.all(),
-        required=False)
-    user = forms.ModelChoiceField(
-        label=_('User'),
-        queryset=get_user_model().objects.all(),
-        required=False)
-    permission_type = forms.MultipleChoiceField(
-        label=_('Permission Type'),
-        required=True,
-        widget=forms.CheckboxSelectMultiple,
-        choices=(
-            ('r', 'Read'),
-            ('w', 'Write'),
-            ('d', 'Download'),
-        ),
-    )
-    mode = forms.ChoiceField(
-        label=_('Mode'),
-        required=True,
-        widget=forms.RadioSelect,
-        choices=(
-            ('set', 'Set'),
-            ('unset', 'Unset'),
-        ),
-    )
+class BatchPermissionsForm(PermissionsForm):
+  
     ids = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def __init__(self, data, **kwargs):
+        super().__init__(data, **kwargs)
+        self.fields['ids'].initial = data.get('ids')
 
 
 class UserAndGroupPermissionsForm(forms.Form):

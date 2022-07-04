@@ -8,13 +8,58 @@
 {% block body_class %}{% trans "set permissions" %}{% endblock %}
 
 {% block body %}
-  <form action="/{{ model|lower }}s/permissions/batch/" method="post">
+  <form action={% url name_space %} method="post" class="batch_form">
     {% csrf_token %}
     <div class="card">
-      <div class="card-header text-center bg-primary">
-          <h3 class="text-light">{% trans "Set Permissions" %}</h3>
+      <div class="card-header text-center">
+          <h3>{% trans "Set Permissions" %}</h3>
       </div>
-      <div class="card-body">{{ form|crispy }}</div>
+      <h6 class="card-header text-center bg-dark text-light">
+        {% trans "Who can view it?" %}
+      </h6>
+      <div class="card-body">
+        {{ form.view_resourcebase_users|as_crispy_field }}
+        {{ form.view_resourcebase_groups|as_crispy_field }}
+      </div>
+      <h6 class="card-header text-center bg-dark text-light">
+        {% trans "Who can download it?" %}
+      </h6>
+      <div class="card-body">
+        {{ form.download_resourcebase_users|as_crispy_field }}
+        {{ form.download_resourcebase_groups|as_crispy_field }}
+      </div>
+      <h6 class="card-header text-center bg-dark text-light">
+        {% trans "Who can change metadata for it?" %}
+      </h6>
+      <div class="card-body">
+        {{ form.change_resourcebase_metadata_users|as_crispy_field }}
+        {{ form.change_resourcebase_metadata_groups|as_crispy_field }}
+      </div>
+      {% if model == 'layer' %}
+        <h6 class="card-header text-center bg-dark text-light">
+          {% trans "Who can edit data for this Dataset?" %}
+        </h6>
+        <div class="card-body">
+            {{ form.change_layer_data_users|as_crispy_field }}
+            {{ form.change_layer_data_groups|as_crispy_field }}
+        </div>
+      {% endif %}
+      {% if model == 'layer' %}
+        <h6 class="card-header text-center bg-dark text-light">
+          {% trans "Who can edit styles for this Dataset?" %}
+        </h6>
+        <div class="card-body">
+            {{ form.change_layer_style_users|as_crispy_field }}
+            {{ form.change_layer_style_groups|as_crispy_field }}
+        </div>
+      {% endif %}
+      <h6 class="card-header text-center bg-dark text-light">
+        {% trans "Who can manage it? (update, delete, change permissions, publish/unpublish it)" %}
+      </h6>
+      <div class="card-body">
+        {{ form.manage_resourcebase_users|as_crispy_field }}
+        {{ form.manage_resourcebase_groups|as_crispy_field }}
+      </div>
       <div class="card-footer">
         <div class="row">
           <div class="col-6"><a href="#" class="btn btn-secondary btn-block" onclick="history.go(-1)">Go Back</a></div>
@@ -24,3 +69,32 @@
     </div>
   </form>
 {% endblock %}
+
+{% block extra_script %}
+
+<script type="text/javascript">
+
+  $(function() {
+
+    $(".batch_form").submit(function(t) {
+        var form = $(this);
+        var action = form.attr("action");
+        var permissions = form.serializeObject();
+        delete permissions['csrfmiddlewaretoken'];
+
+        $.ajax(
+          {
+            type:$(this).attr('method'),
+            headers:{"X-CSRFToken":'{{csrf_token}}'},
+            url: action,
+            data: {
+              'ids': '{{ ids }}',
+              'permissions': JSON.stringify(permissions)
+            },
+            cache: false
+          }
+        );
+    });
+  });
+</script>
+{% endblock extra_script %}
