@@ -298,7 +298,6 @@ def rescan_service(request, service_id):
         reverse("harvest_resources", kwargs={"service_id": service_id}))
 
 
-@login_required
 def service_detail(request, service_id):
     """This view shows the details of a service"""
 

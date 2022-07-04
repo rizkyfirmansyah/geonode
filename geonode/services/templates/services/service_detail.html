@@ -12,16 +12,16 @@
       </div>
     </div>
   </div>
-  <div class="card-header">
+  {% if service.owner == request.user %}
+    <div class="card-header">
         {% get_obj_perms request.user for service as "resource_perms" %}
-        {% if service.owner == request.user %}
           <div class="row">
               <div class="col"><a class="btn btn-edit btn-md btn-block" href="{% url "edit_service" service.id %}">{% trans "Edit Service Metadata" %}</a></div>
               <div class="col"><a id="harvestResources" class="btn btn-primary btn-md btn-block" href="{% url "harvest_resources" service.id %}">{% trans "Import Service Resources" %}</a></div>
               <div class="col"><a class="btn btn-danger btn-md btn-block" data-toggle="modal" data-target="#removeServicesModal">{% trans "Remove Service" %}</a></div>
           </div>
-        {% endif %}
-  </div>
+    </div>
+  {% endif %}
   <div class="card-body">
       <p><strong>{% trans "Type" %}:</strong> {{ service.service_type }}</p>
       <p><strong>{% trans "URL" %}:</strong> {{ service.base_url|safe }}</p>
@@ -32,7 +32,7 @@
         <span class="badge badge-secondary d-inline">{{ kwd }}</span>
         {% endfor %}
       </p>
-      <p><strong>{% trans "Contact" %}:</strong> <a href="{% url "profile_detail" service.owner.username %}">{{ service.owner }}</a></p>
+      <p><strong>{% trans "Contact" %}:</strong> {% if request.user.is_authenticated %}<a href="{% url "profile_detail" service.owner.username %}">{{ service.owner }}</a></p> {% else %} {{ service.owner }} {% endif %}
   </div>
   {% autoescape off %}
   <div class="card-header">
@@ -58,7 +58,7 @@
                                         {{job.status}} - {{ job.details }}
                                     </div>
                                     <div class="btn-group float-right">
-                                       {% if job.status == 'FAILED' %}
+                                       {% if job.status == 'FAILED' and request.user.is_authenticated %}
                                         <button title="{% trans "Retry job" %}" class="btn" name="retry-{{ job.resource_id }}"><i
                                                 class="fa-solid fa-refresh fa-fw" aria-hidden="true"></i></button>
                                        {% endif %}
