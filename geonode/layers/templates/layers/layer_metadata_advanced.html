@@ -42,24 +42,24 @@
       </div>
       {% block metadata_uploaded_check %}
         {% if layer.metadata_uploaded_preserve %}
-          <div class="card-footer">
-            <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a metadata XML file.
-              This metadata cannot be edited.{% endblocktrans %}</p>
+          <div class="card-footer bg-warning">
+            <div class="text-center">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a metadata XML file.
+              This metadata cannot be edited.{% endblocktrans %}</div>
           </div>
         {% elif layer.metadata_uploaded %}
-          <div class="card-footer">
-            <p class="bg-warning">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML file.
+          <div class="card-footer bg-warning">
+            <div class="text-center">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML file.
               SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-              Some of your original metadata may have been lost.{% endblocktrans %}</p>
+              Some of your original metadata may have been lost.{% endblocktrans %}</div>
           </div>
         {% endif %}
       {% endblock metadata_uploaded_check %}
 
       {% block layer_form_errors %}
         {% if layer_form.errors or attribute_form.errors or category_form.errors or author_form.errors or poc.errors %}
-          <div class="card-footer">
-            <p class="bg-danger">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}</p>
-            <ul class="bg-danger">
+          <div class="card-footer bg-danger">
+            <p class="font-weight-bold">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}</p>
+            <ul class="">
             {% if author_form.errors %}
               <li>{% trans "Metadata Author" %}</li>
               {{ author_form.errors }}

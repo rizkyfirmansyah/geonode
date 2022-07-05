@@ -3439,8 +3439,8 @@ form#text-search-autocomplete .ac-results {
     font-size: 1.3em;
 }
 
-#metadata_update .external-popover {
-    margin-left: .9em;
+span.external-popover {
+    margin-left: .5em;
 }
 
 #id_resource-regions {

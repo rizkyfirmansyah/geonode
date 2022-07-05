@@ -40,20 +40,20 @@
     </div>
 
     {% if map.metadata_uploaded %}
-      <div class="card-footer">
-        <p class="bg-warning">
+      <div class="card-footer bg-warning">
+        <div class="text-center">
           {% blocktrans %}Note: this map's orginal metadata was populated by importing a metadata XML file.
           GeoNode's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
           Some of your original metadata may have been lost.
           {% endblocktrans %}
-        </p>
+        </div>
       </div>
     {% endif %}
 
     {% if map_form.errors or category_form.errors %}
-      <div class="card-footer">
-        <p class="bg-danger">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}</p>
-        <ul class="bg-danger">
+      <div class="card-footer bg-danger">
+        <div class="text-center">{% blocktrans %}Error updating metadata.  Please check the following fields: {% endblocktrans %}</div>
+        <ul class="">
         {% for field in map_form %}
             {% if field.errors %}
                 <li>{{ field.label }}</li>
