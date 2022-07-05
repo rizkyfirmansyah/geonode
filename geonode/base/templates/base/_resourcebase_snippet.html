@@ -27,9 +27,9 @@
                 <i ng-if="item.resource_type == 'map'" title="Map" class="fa-solid fa-map p-1"></i>
                 <i ng-if="item.resource_type == 'geoapp'" title="App" class="fa-solid fa-gears p-1"></i>
               </div>
-              <div class="col-md-9 p-0">
-                <a href="{{ item.detail_url }}" class="stretched-link" title="See {{ item.resource_type }} details"></a>
-                <p>{{ item.title | limitTo: 30 }}{{ item.title.length > 30 ? '...' : '' }}</p>
+              <div>
+                <a href="{{ item.detail_url }}" class="stretched-link" title="{{ item.title }}"></a>
+                <p>{{ item.title | limitTo: 40 }}{{ item.title.length > 40 ? '...' : '' }}</p>
               </div>
             </div>
           </div>
