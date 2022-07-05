@@ -344,29 +344,6 @@ class ContactRoleField(DynamicComputedField):
         return UserSerializer(embed=True, many=False).to_representation(value)
 
 
-class DataBlobField(DynamicRelationField):
-    
-    def value_to_string(self, obj):
-        value = self.value_from_object(obj)
-        return self.get_prep_value(value)
-
-
-class DataBlobSerializer(DynamicModelSerializer):
-
-    class Meta:
-        model = ResourceBase
-        fields = ('pk', 'blob')
-    
-    def to_internal_value(self, data):
-        return data
-
-    def to_representation(self, value):
-        data = ResourceBase.objects.filter(id=value)
-        if data.exists() and data.count() == 1:
-            return data.get().blob
-        return {}
-
-
 class ResourceBaseSerializer(
     ResourceBaseToRepresentationSerializerMixin,
     BaseDynamicModelSerializer

@@ -2135,7 +2135,8 @@ json_serializer_k_map = {
     'owner': settings.AUTH_USER_MODEL,
     'restriction_code_type': 'base.RestrictionCodeType',
     'license': 'base.License',
-    'category': 'base.TopicCategory',
+    # Omit the category since it requires single entity, not a m2m model. Need further enhancement
+    # 'category': 'base.TopicCategory',
     'spatial_representation_type': 'base.SpatialRepresentationType',
     'group': 'auth.Group',
     'default_style': 'layers.Style',
