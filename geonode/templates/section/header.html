@@ -15,7 +15,7 @@
             alt="Homepage">
         </a>
       </div>
-      <div class="col pt-2">
+      <div class="col-md pt-2">
         {% if request.user.is_authenticated or access_token %}
           {% get_search_container as search %}
             {% if search != '/' and search != '' %}

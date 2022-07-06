@@ -18,7 +18,7 @@
               {% endfor %}
             </div>
           {% endif %}
-          <div class="col-4 text-right">
+          <div class="col-sm-4 text-right">
             {% if not READ_ONLY_MODE %}
               <a href="{% url 'group_category_list' %}" class="btn btn-primary w-100" type="button">{% trans "Explore Group Category" %}</a>
             {% endif %}

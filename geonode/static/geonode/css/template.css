@@ -2615,6 +2615,10 @@ color: #491217;
     footer .logo {
         transform: translate(20%, -20%)
     }
+
+    .app-sidebar {
+        z-index: 999 !important;
+    }
 }
 
 #slide-pane {

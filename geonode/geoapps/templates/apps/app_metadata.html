@@ -19,7 +19,7 @@
         <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with geoapp.title as map_title %}for
           {{ map_title }}{% endblocktrans %}
         </h2>
-        <div class="col-4 text-right">
+        <div class="col-sm-4 text-right">
           <a href="{% url 'geoapp_detail' geoappid=resource.id %}" class="btn btn-primary btn-block">{% trans "Return to Apps" %}</a>
         </div>
       </div>

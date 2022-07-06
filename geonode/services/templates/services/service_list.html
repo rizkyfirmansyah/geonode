@@ -10,7 +10,7 @@
       <div class="row">
         <h3 class="col text-remote">{% trans "Remote Service" %}</h3>
         {% if user.is_authenticated and not READ_ONLY_MODE and can_add_resources %}
-          <div class="col-4 text-right">
+          <div class="col-sm-4 text-right">
             <a href="{% url "register_service" %}" class="btn btn-upload btn-block">{% trans "Add Remote Service" %}</a>
           </div>
         {% endif %}
