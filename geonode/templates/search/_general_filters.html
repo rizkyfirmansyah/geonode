@@ -55,7 +55,7 @@
 {% endif %}
 {% if SEARCH_FILTERS.GROUPS_ENABLED %}
 {% verbatim %}
-<nav class="filter" ng-cloak ng-repeat="group in groups" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0">
+<nav class="filter" ng-cloak ng-repeat="group in groups">
     <a href="#groups" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Groups</a>
     <ul class="collapse list-unstyled" id="groups">
         <li>

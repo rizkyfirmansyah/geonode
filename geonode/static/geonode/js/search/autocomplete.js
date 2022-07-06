@@ -50,7 +50,7 @@ Autocomplete.prototype.setup = function() {
 
   // On selecting a result, populate the search field.
   this.form_elem.on('click', '.ac-result', function(ev) {
-      self.query_box.val($(this).text())
+      self.query_box.val($(this).find('.result-autocomplete').text())
       $('.ac-results').remove()
       if (typeof self.form_btn !== 'undefined') {
           $(self.form_btn).click();
@@ -66,7 +66,7 @@ Autocomplete.prototype.fetch = function(query, page, remove, appendNew) {
   var self = this
       // Fetching the autocomplete data from the autocomplete light urls set up on backend
       // Filtered based on the current input
-  var end_search = '<div class="result-wrapper bg-dark"><p class="text-center text-light">-- end of search -- </p></div>'
+  var end_search = '<div class="result-wrapper bg-secondary"><p class="text-center text-light small">-- end of search -- </p></div>'
 
   if (self.status)
       $.ajax({
@@ -100,17 +100,45 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
   var base_elem = $('<div class="result-wrapper"><a href="" title="Click to jump into resource detail" class="ac-result btn-light btn_wrapper"></a></div>');
   var container = this.query_container;
 
+  function constructSearch(detail, data, resource, init=true) {
+      var elem = base_elem.clone()
+      // Adding each query result to the autocomplete element
+      // This should use some form of templating instead.
+      var icon;
+      if (resource == 'layer') {
+          icon = '\
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="float-right"> \
+            <path d="M17.4167 2.75H4.58333C3.57081 2.75 2.75 3.57081 2.75 4.58333V17.4167C2.75 18.4292 3.57081 19.25 4.58333 19.25H17.4167C18.4292 19.25 19.25 18.4292 19.25 17.4167V4.58333C19.25 3.57081 18.4292 2.75 17.4167 2.75Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> \
+            <path d="M7.7915 9.16675C8.55089 9.16675 9.1665 8.55114 9.1665 7.79175C9.1665 7.03236 8.55089 6.41675 7.7915 6.41675C7.03211 6.41675 6.4165 7.03236 6.4165 7.79175C6.4165 8.55114 7.03211 9.16675 7.7915 9.16675Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> \
+            <path d="M19.2502 13.7501L14.6668 9.16675L4.5835 19.2501" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> \
+          </svg>'          
+      } else if (resource == 'document') {
+          icon = '<i title="'+ resource +'" class="fa-solid fa-file float-right"></i>'
+      } else if (resource == 'remote') {
+          icon = '<i title="'+ resource +'" class="fa-solid fa-layer-group float-right"></i>'
+      } else if (resource == 'geoapp') {
+          icon = '<i title="'+ resource +'" class="fa-solid fa-gears float-right"></i>'
+      } else {
+          icon = '<i title="'+ resource +'" class="fa-solid fa-asterisk float-right"></i>'
+      }
+
+      elem.find('.ac-result').attr('onclick', "location.href='" + detail + "';");
+      elem.find('.ac-result').attr('href', detail);
+      elem.find('.ac-result').append('<span class="result-autocomplete">' + data + '</span>');
+      elem.find('.ac-result').append(icon);
+      elem.find('.ac-result').addClass("text-" + resource);
+
+      if (init) {
+          results_wrapper.append(elem)
+      } else {
+          container.find('.result-wrapper').last().after(elem);
+      }
+  }
+
   function appendElement() {
       if (!results.length > 0) return
       for (var res_offset in results) {
-          var elem = base_elem.clone()
-              // Adding each query result to the autocomplete element
-              // This should use some form of templating instead.
-          elem.find('.ac-result').attr('onclick', "location.href='"+results_detail_url[res_offset]+"';")
-          elem.find('.ac-result').attr('href', results_detail_url[res_offset]);
-          elem.find('.ac-result').text(results[res_offset])
-          elem.find('.ac-result').addClass("text-" + results_resource_type[res_offset])
-          results_wrapper.append(elem)
+          constructSearch(results_detail_url[res_offset], results[res_offset], results_resource_type[res_offset]);
       }
   }
 
@@ -120,12 +148,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
       var newResult_resource_type = [...data.results.map(item => item.resource_type)]
       if (!newResult.length > 0) return
       for (var res_offset in newResult) {
-          var elem = base_elem.clone();
-          elem.find('.ac-result').attr('onclick', "location.href='"+newResult_detail_url[res_offset]+"';")
-          elem.find('.ac-result').attr('href', newResult_detail_url[res_offset])
-          elem.find('.ac-result').text(newResult[res_offset]);
-          elem.find('.ac-result').addClass("text-" + newResult_resource_type[res_offset])
-          container.find('.result-wrapper').last().after(elem);
+          constructSearch(newResult_detail_url[res_offset], newResult[res_offset], newResult_resource_type[res_offset], false);
       }
   }
 
