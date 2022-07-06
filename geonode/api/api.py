@@ -469,11 +469,25 @@ class GroupProfileResource(ModelResource):
         allowed_methods = ['get']
         filtering = {
             'title': ALL,
+            'description': ALL,
             'slug': ALL,
             'categories': ALL_WITH_RELATIONS,
         }
         ordering = ['title', 'last_modified']
         authorization = GroupProfileAuthorization()
+
+    def apply_filters(self, request, applicable_filters):
+        filtering_method = applicable_filters.pop('f_method', 'or')
+
+        if filtering_method == 'or':
+            filters = Q()
+            for f in applicable_filters.items():
+                filters |= Q(f)
+            semi_filtered = self.get_object_list(request).filter(filters)
+        else:
+            semi_filtered = super().apply_filters(request, applicable_filters)
+
+        return semi_filtered
 
     def dehydrate_member_count(self, bundle):
         """Provide relative URL to the geonode UI's page on the group"""

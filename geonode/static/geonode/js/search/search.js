@@ -2,6 +2,12 @@
 
 (function() {
 
+
+    // hide the autocomplete div results whenever the users click on container
+    $('.container').on('click', function(){
+        $('.ac-results').addClass("d-none");
+    });
+
     var module = angular.module('geonode_main_search', ['ngCookies', 'ngSanitize'], function($locationProvider) {
         if (window.navigator.userAgent.indexOf("MSIE") == -1) {
             $locationProvider.html5Mode({
@@ -717,22 +723,65 @@
             }
         }
 
-        $('#text_search_btn').click(function() {
+        $('#text_search_btn').on('click', function(e) {
             if (HAYSTACK_SEARCH) {
                 $scope.query['q'] = $('#text_search_input').val();
             }
-            query_api($scope.query);
+            fetch_results();
         });
 
-        $('#region_search_btn').click(function() {
+        $('#text_search_input').on('keypress', function(e) {
+            if (e.which == 13) {
+                fetch_results();
+            }
+        })
+
+        $('#region_search_btn').on('click', function(e) {
             if ($('#region_search_input').val()) {
                 $scope.query['regions__name__in'] = $('#region_search_input').val();
             } else {
                 delete $scope.query['regions__name__in']
             }
             $scope.infiniteScrollLoaded = true;
+            $scope.init = true;
             query_api($scope.query);
         });
+
+        function fetch_results() {
+            if (HAYSTACK_SEARCH) {
+              $scope.query['q'] = $('#text_search_input').val();
+            }
+            if ($('#text_search_input').val()) {
+              if (SEARCH_URL == "/api/profiles/") {
+                  // updated url to work with new autocomplete backend format
+                  // a user profile has no title; if search was triggered from
+                  // the /people page, filter by username instead
+                  var query_key = 'username__icontains';
+                  $scope.query[query_key] = $('#text_search_input').val();
+              } else if (SEARCH_URL == "/api/groupcategory/") {
+                  // Adding in this conditional since both groups autocomplete and searches requests need to search name not title.
+                  var query_key = 'name__icontains';
+                  $scope.query[query_key] = $('#text_search_input').val();
+              } else if (SEARCH_URL == "/api/group_profile/") {
+                  // Adding in this conditional since both groups autocomplete and searches requests need to search name not title.
+                  $scope.query['title__icontains'] = $('#text_search_input').val();
+                  $scope.query['description__icontains'] = $('#text_search_input').val();
+                  $scope.query['f_method'] = 'or';
+              } else if (SEARCH_URL == "/api/base/") {
+                  $scope.query['title__icontains'] = $('#text_search_input').val();
+                  $scope.query['abstract__icontains'] = $('#text_search_input').val();
+                  // $scope.query['keywords__slug__in'] = $('#text_search_input').val();
+                  $scope.query['purpose__icontains'] = $('#text_search_input').val();
+                  $scope.query['data_description__icontains'] = $('#text_search_input').val();
+                  $scope.query['f_method'] = 'or';
+              }
+            } else {
+                reset_query();
+            }
+            $scope.infiniteScrollLoaded = true;
+            $scope.init = true;
+            query_api($scope.query);
+        }
 
         function reset_query() {
           if (HAYSTACK_SEARCH) {
@@ -749,7 +798,7 @@
           return query_api($scope.query);
         }
 
-        $('.delete_search_query').click(function() {
+        $('.delete_search_query').on('click', function(e) {
             reset_query();
             // remove active class elements from sidebar
             $(".scrollbar-sidebar a").removeClass("active");
@@ -758,12 +807,12 @@
             $(".input-highlight").css("width", '0em');
         });
 
-        $("#dltDate1").click(function () {
+        $("#dltDate1").on('click', function (e) {
             reset_query();
             $("#inpDate1").val('');
         });
 
-        $("#dltDate2").click(function () {
+        $("#dltDate2").on('click', function (e) {
             reset_query();
             $("#inpDate2").val('');
         });
@@ -813,6 +862,7 @@
             }
             if (!init_date) {
                 $scope.infiniteScrollLoaded = true;
+                $scope.init = true;
                 query_api($scope.query);
             } else {
                 init_date = false;

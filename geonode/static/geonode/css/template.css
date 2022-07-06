@@ -221,6 +221,7 @@
   margin-right: .5em !important;
   font-size: .8.8em;
   width: unset !important;
+  display: contents;
 }
 
 nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicker-widget.dropdown-menu {

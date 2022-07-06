@@ -98,6 +98,7 @@ class CommonMetaApi:
         'data_type': ALL_WITH_RELATIONS,
         'resource_type': ALL_WITH_RELATIONS,
         'link': ALL_WITH_RELATIONS,
+        'data_description': ALL,
         'date': ALL,
         'purpose': ALL,
         'uuid': ALL_WITH_RELATIONS,
@@ -205,6 +206,8 @@ class CommonModelApi(ModelResource):
     def _remove_additional_filters(self, orm_filters):
         orm_filters.pop('title__icontains', None)
         orm_filters.pop('abstract__icontains', None)
+        orm_filters.pop('keywords__slug__in', None)
+        orm_filters.pop('data_description__icontains', None)
         orm_filters.pop('purpose__icontains', None)
         orm_filters.pop('f_method', None)
         return orm_filters
