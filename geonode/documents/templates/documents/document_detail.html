@@ -29,16 +29,16 @@
 <div class="card mb-2 border-document">
   <div class="card-header">
     <div class="row">
-      <div class="col-8 d-flex">
+      <div class="col-md-8 d-flex">
         <h3 class="text-document">{{ resource.title }}</h3>
         <span class="badge badge-secondary rounded-pill ml-2 p-1" style="width: auto;" *ngIf="{{ resource.extension }}">{{ resource.extension }}</span>
       </div>
-      <div class="col-4 float-right"><a href="{% url "catalogue_browse" %}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a></div>
+      <div class="col-md-4 float-right"><a href="{% url "catalogue_browse" %}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a></div>
     </div>
   </div>
 </div>
 <div class="row">
-  <div class="col-8 content_block">
+  <div class="col-md-8">
     {% if "download_resourcebase" in perms_list %}
     {% if resource.extension|lower in audiotypes and resource.doc_file %}
     {% get_mime_type mimetypemap resource.extension as mimetype %}
@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <div class="col-4">
+  <div class="col-md-4">
 
     <ul class="list-group">
       <li class="list-group-item">

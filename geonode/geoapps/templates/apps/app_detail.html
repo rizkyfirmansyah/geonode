@@ -30,14 +30,14 @@
 <div class="card rounded bg-light mb-2">
 	<div class="card-body">
 		<div class="row">
-      <h3 class="col-8">{{ resource.title }}</h3>
-			<div class="col-4"><a href="{% url "catalogue_browse" %}" class="btn btn-primary float-right">{% trans "Explore Catalogue" %}</a></div>
+      <h3 class="col-md-8">{{ resource.title }}</h3>
+			<div class="col-md-4"><a href="{% url "catalogue_browse" %}" class="btn btn-primary float-right">{% trans "Explore Catalogue" %}</a></div>
 		</div>
 	</div>
 </div>
 
 <div class="row w-100">
-  <div class="col-md-8 content_block">
+  <div class="col-md-8">
 
     <div id="embedded_map">
       <img src="{{ resource.curatedthumbnail.thumbnail_url|default:resource.thumbnail_url }}" width='500'
