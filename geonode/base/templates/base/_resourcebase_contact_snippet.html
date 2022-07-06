@@ -2,20 +2,20 @@
 <li class="list-group-item">
   <h4>{% trans "About" %}</h4>
   {% if resource.owner == resource.poc and resource.owner == resource.metadata_author %}
-  <p>{% trans "Responsible, Point of Contact, Metadata Author" %}</p>
+  <p class="mb-0">{% trans "Responsible, Point of Contact, Metadata Author" %}</p>
     {% with resource.owner as profile %}
       {% include "people/_profile_about_item.html" %}
     {% endwith %}
   {% else %}
-  <p>{% trans "Responsible" %}</p>
+  <p class="mb-0">{% trans "Responsible" %}</p>
     {% with resource.owner as profile %}
       {% include "people/_profile_about_item.html" %}
     {% endwith %}
-  <p>{% trans "Point of Contact" %}</p>
+  <p class="mb-0">{% trans "Point of Contact" %}</p>
     {% with resource.poc as profile %}
       {% include "people/_profile_about_item.html" %}
     {% endwith %}
-  <p>{% trans "Metadata Author" %}</p>
+  <p class="mb-0">{% trans "Metadata Author" %}</p>
     {% with resource.metadata_author as profile %}
       {% include "people/_profile_about_item.html" %}
     {% endwith %}

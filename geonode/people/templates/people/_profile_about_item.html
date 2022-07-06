@@ -1,27 +1,23 @@
 {% load avatar_tags %}
 {% load i18n %}
 
-<section class="last">
-  <div class="row w-100">
+<section class="card-footer mb-2">
+  <div class="row">
     <div class="col-2">
       {% with 240 as avatar_size %}
         <div class="avatar"><a href="{% url "profile_detail" profile.username %}">{% autoescape off %}{% avatar profile avatar_size %}{% endautoescape %}</a></div>
       {% endwith %}
     </div>
     <div class="col-10">
-    <a href="{{ profile.get_absolute_url }}" class="btn_wrapper">{{ profile.username }}</a>
-      {{ username }}
-    </div>
-  </div>
-  <div class="col-12 pl-0">
-    <div class="details">
-      <div class="mt-2">
-        <p>
-          <i class="fa-solid fa-building-ngo" title="Organization"></i>
-          {% if profile.organization %}{{ profile.organization }}
-            {% else %}{% trans "No Group" %}
-          {% endif %}</p>
-      </div>
+    <a href="{{ profile.get_absolute_url }}" class="btn_wrapper p-0">
+      <p class="m-0">{{ profile.username }}</p>
+      <i class="fa-solid fa-building-ngo" title="Organization"></i>
+      <span class="small">
+        {% if profile.organization %}{{ profile.organization }}
+          {% else %}{% trans "No Organization Info Provided" %}
+        {% endif %}
+      </span>
+    </a>
     </div>
   </div>
 </section>
