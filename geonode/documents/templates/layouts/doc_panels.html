@@ -65,9 +65,9 @@
             <div class="card">
                 <div class="card-body">
                   <div class="row">
-                      <div id="basicDescriptiveInfo" class="row row-cols-2">
-                        <div class="col-3">
-                          <img id="image" style="max-height: 100%; max-width: 100%; min-height: 100%; min-width: 100%">
+                      <div id="basicDescriptiveInfo" class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+                        <div class="col-md-3">
+                          <img id="image" style="">
                           <script>
                             const image = document.getElementById('image');
                             const path = location.pathname.split('/');
@@ -83,7 +83,7 @@
                             c_widget.init();
                           </script>
                         </div>
-                        <div class="col-4">
+                        <div class="col-md-4">
                           <div>
                             <span><label for="{{ document_form.title|id }}"
                                 class="control-label required-field">{{ document_form.title.label }}</label></span>
@@ -99,7 +99,7 @@
                             {{ document_form.abstract }}
                           </div>
                         </div>
-                        <div class="col-5">
+                        <div class="col-md-5">
                           <div>
                             <span><label for="{{ document_form.keywords|id }}"
                                 class="control-label required-field">{{ document_form.keywords.label }}</label></span>
@@ -180,7 +180,7 @@
             <div class="card">
                 <div class="card-body">
                   <div class="row" id="mdinfo">
-                    <div class="col-4 pr-1">
+                    <div class="col-md-4 pr-1">
                       <div>
                         <span><label for="{{ document_form.license|id }}"
                             class="control-label required-field">{{ document_form.license.label }}</label></span>
@@ -192,7 +192,7 @@
                         {{ document_form.restriction_code_type }}
                       </div>
                     </div>
-                    <div class="col-4 pr-1">
+                    <div class="col-md-4 pr-1">
                       <div>
                         <span><label for="{{ document_form.language|id }}">{{ document_form.language.label }}</label></span>
                         {{ document_form.language }}
@@ -213,7 +213,7 @@
                         </select>
                       </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4">
                       <div>
                         <span><label for="{{ document_form.doi|id }}">{{ document_form.doi.label }}</label></span>
                         {{ document_form.doi }}
@@ -223,7 +223,7 @@
                         {{ document_form.edition }}
                       </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-md-12">
                       <div class="mb-4 mt-2">
                         <div>
                           <span><label for="{{ document_form.author|id }}">{{ document_form.author.label }}</label></span>
@@ -247,13 +247,13 @@
               <div class="card-body">
                 <div id="cdinfo">
                   <div class="row">
-                    <div class="col-6 pr-1">
+                    <div class="col-md-6 pr-1">
                       <div>
                         <span><label for="{{ document_form.data_type|id }}">{{ document_form.data_type.label }}</label></span>
                         {{ document_form.data_type }}
                       </div>
                     </div>
-                    <div class="col-6 pl-1">
+                    <div class="col-md-6 pl-1">
                       <div>
                         <span><label
                             for="{{ document_form.maintenance_frequency|id }}">{{ document_form.maintenance_frequency.label }}</label></span>
@@ -303,17 +303,17 @@
             <div class="card">
               <div class="card-body">
                 <div class="row">
-                  <div class="col-6 pr-1">
+                  <div class="col-md-6 pr-1">
                       <span><label
                           for="{{ document_form.distributor|id }}">{{ document_form.distributor.label }}</label></span>
                       {{ document_form.distributor }}
                   </div>
-                  <div class="col-6 pl-1">
+                  <div class="col-md-6 pl-1">
                     <span><label
                         for="{{ document_form.project_information|id }}">{{ document_form.project_information.label }}</label></span>
                     {{ document_form.project_information }}
                   </div>
-                  <div class="col-12">
+                  <div class="col-md-12">
                     <div class="mt-2">
                       <span><label
                           for="{{ document_form.supplemental_information|id }}">{{ document_form.supplemental_information.label }}</label></span>

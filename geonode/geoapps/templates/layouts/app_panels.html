@@ -67,9 +67,9 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-12">
-                                    <div id="basicDescriptiveInfo" class="row row-cols-2">
-                                        <div class="col-3">
+                                <div class="col-md-12">
+                                    <div id="basicDescriptiveInfo" class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+                                        <div class="col-md-3">
                                             <img id="image"
                                                 style="max-height: 100%; max-width: 100%; min-height: 100%; min-width: 100%">
                                             <script>
@@ -87,7 +87,7 @@
                                                 c_widget.init();
                                             </script>
                                         </div>
-                                        <div class="col-4">
+                                        <div class="col-md-4">
                                             <div>
                                                 <span><label
                                                         for="{{ geoapp_form.title|id }}">{{ geoapp_form.title.label }}</label></span>
@@ -99,7 +99,7 @@
                                                 {{ geoapp_form.abstract }}
                                             </div>
                                         </div>
-                                        <div class="col-5">
+                                        <div class="col-md-5">
                                             <div>
                                                 <span><label
                                                         for="{{ geoapp_form.date_type|id }}">{{ geoapp_form.keywords.label }}</label></span>
@@ -178,7 +178,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row" id="mdinfo">
-                                <div class="col-4 pr-1">
+                                <div class="col-md-4 pr-1">
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.license|id }}">{{ geoapp_form.license.label }}</label></span>
@@ -190,7 +190,7 @@
                                         {{ geoapp_form.restriction_code_type }}
                                     </div>
                                 </div>
-                                <div class="col-4 pr-1">
+                                <div class="col-md-4 pr-1">
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.language|id }}">{{ geoapp_form.language.label }}</label></span>
@@ -214,7 +214,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-md-4">
                                   <div>
                                       <span><label
                                               for="{{ geoapp_form.doi|id }}">{{ geoapp_form.doi.label }}</label></span>
@@ -226,7 +226,7 @@
                                     {{ geoapp_form.edition }}
                                   </div>
                                 </div>
-                                <div class="col-12 mb-4 mt-2">
+                                <div class="col-md-12 mb-4 mt-2">
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.author|id }}">{{ geoapp_form.author.label }}</label></span>
@@ -244,14 +244,14 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row" id="cdinfo">
-                                <div class="col-6 pr-1">
+                                <div class="col-md-6 pr-1">
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.data_type|id }}">{{ geoapp_form.data_type.label }}</label></span>
                                         {{ geoapp_form.data_type }}
                                     </div>
                                 </div>
-                                <div class="col-6 pl-1">
+                                <div class="col-md-6 pl-1">
                                     <div>
                                         <span><label
                                                 for="{{ geoapp_form.maintenance_frequency|id }}">{{ geoapp_form.maintenance_frequency.label }}</label></span>
@@ -296,7 +296,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                              <div class="col-6 pr-1">
+                              <div class="col-md-6 pr-1">
                                   <div class="input-group date">
                                       <span><label
                                               for="{{ geoapp_form.temporal_extent_start|id }}">{{ geoapp_form.temporal_extent_start.label }}</label></span>
@@ -308,7 +308,7 @@
                                       {{ geoapp_form.spatial_resolution }}
                                   </div>
                               </div>
-                              <div class="col-6 pl-1">
+                              <div class="col-md-6 pl-1">
                                   <div class="input-group date">
                                       <span><label
                                               for="{{ geoapp_form.temporal_extent_end|id }}">{{ geoapp_form.temporal_extent_end.label }}</label></span>
