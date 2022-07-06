@@ -309,6 +309,7 @@ class TopicCategoryResource(TypeFilteredResource):
         allowed_methods = ['get']
         filtering = {
             'identifier': ALL,
+            'title': ALL,
         }
         serializer = CountJSONSerializer()
         authorization = ApiLockdownAuthorization()

@@ -770,7 +770,7 @@
               } else if (SEARCH_URL == "/api/base/") {
                   $scope.query['title__icontains'] = $('#text_search_input').val();
                   $scope.query['abstract__icontains'] = $('#text_search_input').val();
-                  // $scope.query['keywords__slug__in'] = $('#text_search_input').val();
+                  $scope.query['keywords__slug__in'] = $('#text_search_input').val();
                   $scope.query['purpose__icontains'] = $('#text_search_input').val();
                   $scope.query['data_description__icontains'] = $('#text_search_input').val();
                   $scope.query['f_method'] = 'or';

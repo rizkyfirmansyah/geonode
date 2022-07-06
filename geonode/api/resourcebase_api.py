@@ -219,17 +219,18 @@ class CommonModelApi(ModelResource):
         metadata_only = applicable_filters.pop('metadata_only', False)
         link = applicable_filters.pop('link__extension__in', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
+
         if filtering_method == 'or':
             filters = Q()
             for f in applicable_filters.items():
                 filters |= Q(f)
-            semi_filtered = self.get_object_list(request).filter(filters)
+            if (keywords):
+                kws = HierarchicalKeyword.objects.filter(name__iexact=keywords[0])
+                semi_filtered = self.get_object_list(request).filter(filters | Q(keywords__in=kws))
+            else:
+                semi_filtered = self.get_object_list(request).filter(filters)
         else:
-            semi_filtered = super(
-                CommonModelApi,
-                self).apply_filters(
-                request,
-                applicable_filters)
+            semi_filtered = super(CommonModelApi, self).apply_filters(request, applicable_filters)
         filtered = None
         if types:
             for the_type in types:

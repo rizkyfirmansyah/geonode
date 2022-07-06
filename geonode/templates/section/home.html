@@ -37,7 +37,7 @@
       
       {% if request.user.is_authenticated %}
         <div class="search-field mt-4">
-          <form id="main_search" action="{% url "catalogue_browse" %}" class="row p-0 m-0">
+          <form id="main_search" class="row p-0 m-0">
               <div class="col-1">
                 <button class="btn-search btn-block h-100" type="submit">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
                       <input type="hidden" name="purpose__icontains" id="main_search_purpose_input" placeholder="{% trans 'Search' %}" >
                       <input type="hidden" name="f_method" id="main_filtering_type" value="or" >
                 {% else %}
-                      <input name="title__icontains" id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control pb-4" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
+                      <input id="main_search_input" type="text" placeholder="What are you looking for?" class="form-control pb-4" autocomplete="off" data-com.bitwarden.browser.user-edited="yes">
                 {% endif %}
               </div>
           </form>
@@ -105,6 +105,19 @@
         setTimeout(function() {
           searchIt([" ....", "forest", "peat", "concession", "oil palm", "type me!"]);
         }, 4000);
+
+        $('#main_search').submit(function(e) {
+            e.preventDefault();
+            var data = $('#main_search_input').val();
+            var params = { 
+                title__icontains: data, keywords__slug__in: data,
+                abstract__icontains: data, purpose__icontains: data,
+                data_description__icontains: data, f_method: 'or'
+            };
+            const submit_url = '{% url "catalogue_browse" %}';
+            
+            window.location.href = siteUrl + 'catalogue/?' + jQuery.param(params)
+        });
       });
 
   </script>
