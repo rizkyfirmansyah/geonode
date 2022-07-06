@@ -1921,7 +1921,7 @@ input::-moz-focus-inner {
     width: 100%;
     height: 100vh;
     background-color: transparent;
-    display: flex
+    display: grid;
 }
 
 .s-home .shadow-overlay {

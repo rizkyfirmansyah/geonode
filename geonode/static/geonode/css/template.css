@@ -4986,6 +4986,10 @@ color: transparent;
     .pace .pace-progress {
         position: relative;
     }
+
+    .s-header {
+        display: inline-table !important;
+    }
 }
 
 @media only screen and (max-width:400px) {
@@ -5072,6 +5076,14 @@ color: transparent;
     .auto-margin .row {
         width: auto;
         max-width: none
+    }
+
+    .s-header {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
     }
 }
 
