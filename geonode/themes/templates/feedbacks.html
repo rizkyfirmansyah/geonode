@@ -22,7 +22,7 @@
         <table class="table table-borderless">
           <thead>
             <tr>
-              <th scope="col">#</th>
+              <th scope="col" style="width: 25px;">#</th>
               <th scope="col">Title</th>
               <th scope="col">Details</th>
               <th scope="col">Feedback File</th>
@@ -43,7 +43,7 @@
                   <i class="fa-solid fa-ban" title="No feedback media provided" style="color: red;"></i>
                 {% endif %}
               </td>
-              <td>{{ feedback.user }}</td>
+              <td><a href="{{ item.site_url }}/people/profile/{{ feedback.user }}">{{ feedback.user }}</a></td>
               <td>{{ feedback.created_at }}</td>
             </tr>
             {% endfor %}
