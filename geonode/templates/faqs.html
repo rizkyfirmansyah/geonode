@@ -8,17 +8,19 @@
 {% block body %}
 <div class="card">
   <div class="card-header">
-    <h3>
-      {% if auth_faqs.header_title or anon_faqs.header_title %}
+    {% if auth_faqs.header_title or anon_faqs.header_title %}
         {% if user.is_authenticated %}
-          {{ auth_faqs.header_title }}
+          <h3 {% if auth_faqs.header_title_color %} style="color: {{ auth_faqs.header_title_color }};" {% endif %}>
+            {{ auth_faqs.header_title }}
+          </h3>
         {% else %}
-          {{ anon_faqs.header_title|safe }}
+          <h3 {% if anon_faqs.header_title_color %} style="color: {{ anon_faqs.header_title_color }}" {% endif %}>
+            {{ anon_faqs.header_title|safe }}
+          </h3>
         {% endif %}  
-      {% else %}
-        {% trans "Frequently Asked Questions" %}
-      {% endif %}
-    </h3>
+    {% else %}
+        <h3>{% trans "Frequently Asked Questions" %}</h3>
+    {% endif %}
   </div>
 
   <div class="card-body">
