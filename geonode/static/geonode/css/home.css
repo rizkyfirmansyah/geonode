@@ -80,6 +80,10 @@
     min-width: 10em;
 }
 
+#user_menu_card a {
+  color: #343a40 !important;
+}
+
 @media (min-width: 1200px) {
   #user_menu_card {
     right: 1em;
@@ -2058,7 +2062,6 @@ input::-moz-focus-inner {
     border: none!important;
     display: block;
     font-size: 2em!important;
-    color: #fff!important;
     transition: all .2s ease-out, color .2s ease-out;
     border-bottom: 1px solid gray !important;
 }
@@ -3686,15 +3689,8 @@ article.tab-pane {
 }
 
 .jumbotron {
-    background: #fdba12;
     color: var(--secondary);
-    padding: 40px 0 60px;
     text-shadow: 2px 2px 2px rgba(0, 0, 0, .4);
-    margin-top: -10px
-}
-
-.jumbotron a {
-    color: #ff8f31
 }
 
 .jumbotron p {

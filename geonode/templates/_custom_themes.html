@@ -127,19 +127,34 @@
   {% endif %}
 
   {% if custom_theme.jumbotron_title_color %}
-  .home .jumbotron h1,
-  .home .jumbotron h2,
-  .home .jumbotron h3 {
+  .home-content__main h3 {
     color: {{ custom_theme.jumbotron_title_color }}
+  }
+  .home-title__line {
+    background-color: {{ custom_theme.jumbotron_title_color }} !important;
   }
   {% endif %}
 
-  {% if custom_theme.jumbotron_text_color %}
-  .home .jumbotron p {
-    color: {{ custom_theme.jumbotron_text_color }};
-    font-weight: normal;
-    font-size: xx-large;
-    font-family: Solanel-Light, serif !important;
+  {% if custom_theme.jumbotron_description_color %}
+  .home-content__main h1 {
+    color: {{ custom_theme.jumbotron_description_color }} !important;
+  }
+  .jumbotron p,
+  .jumbotron a {
+    color: {{ custom_theme.jumbotron_description_color }} !important;
+  }
+  .search-field form input::placeholder,
+  .search-field form input:-moz-placeholder,
+  .search-field form input::-moz-placeholder,
+  .search-field form input::-ms-input-placeholder,
+  .search-field form input:-ms-input-placeholder {
+    color: {{ custom_theme.jumbotron_description_color }} !important;
+  }
+  .search-field form input::placeholder {
+    color: {{ custom_theme.jumbotron_description_color }} !important;
+  }
+  .btn-search>svg {
+    fill: {{ custom_theme.jumbotron_description_color }} !important;
   }
   {% endif %}
 

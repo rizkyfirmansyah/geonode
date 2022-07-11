@@ -98,18 +98,31 @@ class GeoNodeThemeCustomization(models.Model):
     logo = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at the navigation header"))
     logo_footer = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display logo at the footer"))
     jumbotron_bg = models.ImageField(
+        _("Landing page background image"),
         upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display background image at the landing page"))
+    jumbotron_welcome_title = models.CharField(
+        _("Landing page title"),
+        max_length=255, null=True, blank=True, help_text=_("Landing page welcome title, i.e.: Information Sharing Platform"))
+    jumbotron_welcome_content = models.TextField(
+        _("Landing page description"),
+        null=True, blank=True, help_text=_("Landing page long description, i.e.: Welcome to the Spatial Data Infrastructure"))
+    jumbotron_title_color = ColorField(
+        _("Landing page title color"),
+        default="#ffffff", help_text=_("Landing page welcome title color, default to white"))
+    jumbotron_description_color = ColorField(
+        _("Landing page description color"),
+        default="#ffffff", help_text=_("Landing page long description color, default to white"))
     jumbotron_welcome_hide = models.BooleanField(
         default=False,
         verbose_name="Hide text in the jumbotron",
         help_text="Check this if the jumbotron backgroud image already contains text")
-    modal_login_bg = models.ImageField(upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display image at the login window"))
+    jumbotron_slide_show = models.ManyToManyField(JumbotronThemeSlide, blank=True)
+    modal_login_bg = models.ImageField(
+      _("Modal login background image"),
+      upload_to='img/%Y/%m', null=True, blank=True, help_text=_("Display image at the login window"))
     welcome_theme = models.CharField(max_length=255, default="JUMBOTRON_BG",
                                      choices=(("JUMBOTRON_BG", "jumbotron background"), ("SLIDE_SHOW", "slide show"),),
                                      help_text=_("Choose between using jumbotron background and slide show"))
-    jumbotron_slide_show = models.ManyToManyField(JumbotronThemeSlide, blank=True)
-    jumbotron_welcome_title = models.CharField(max_length=255, null=True, blank=True, help_text=_("Landing page title"))
-    jumbotron_welcome_content = models.TextField(null=True, blank=True, help_text=_("Landing page welcome title"))
     header_bg_color = ColorField(
       _("Header background color"),
       default="#1C463F", help_text=_("Background color of the header pages, default to green"))
@@ -127,16 +140,15 @@ class GeoNodeThemeCustomization(models.Model):
     navbar_dropdown_menu_text = ColorField(default="#ffffff")
     navbar_dropdown_menu_hover = ColorField(default="#eea200")
     navbar_dropdown_menu_divider = ColorField(default="#eea200")
-    jumbotron_color = ColorField(default="#F39F1E")
-    jumbotron_title_color = ColorField(default="#ffffff")
-    jumbotron_text_color = ColorField(default="#ffffff")
     search_bg_color = ColorField(
       _("Search background color"),
       default="#000000")
     search_title_color = ColorField(default="#ffffff")
     search_link_color = ColorField(default="#ff8f31")
     textbox_input_color = ColorField(default="#000000", help_text=_("Text color of textbox input, default to white"))
-    textbox_bg_color = ColorField(default="#F0F2F5", help_text=_("Background color of textbox input, default to green"))
+    textbox_bg_color = ColorField(
+        _("Textbox background color"),
+        default="#F0F2F5", help_text=_("Background color of textbox input, default to green"))
     contactus = models.BooleanField(default=False, verbose_name="Enable contact us box")
     contact_name = models.CharField(max_length=255, null=True, blank=True)
     contact_position = models.CharField(max_length=255, null=True, blank=True)
@@ -152,7 +164,9 @@ class GeoNodeThemeCustomization(models.Model):
     copyright = models.TextField(null=True, blank=True)
     copyright_color = ColorField(default="#F39F1E")
     footer_copyright = models.CharField(max_length=255, null=True, blank=True)
-    footer_bg_color = ColorField(default="#000000", help_text=_("Background color of the footer, default to black"))
+    footer_bg_color = ColorField(
+      _("Footer background color"),
+      default="#000000", help_text=_("Background color of the footer at the landing page, default to black"))
     footer_text_color = ColorField(default="#ffffff")
     footer_href_color = ColorField(default="#ff8f31")
 
