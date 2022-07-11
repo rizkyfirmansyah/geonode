@@ -126,7 +126,7 @@
             "is_choice": true,
             "gn_description": "vector data is used to represent geographic data",
             "identifier": "vector",
-            "description": "vector data is used to represent geographic data"
+            "title": "Vector"
         }
     },
     {
@@ -136,7 +136,7 @@
             "is_choice": true,
             "gn_description": "grid data is used to represent geographic data",
             "identifier": "grid",
-            "description": "grid data is used to represent geographic data"
+            "title": "Grid"
         }
     },
     {
@@ -146,7 +146,7 @@
             "is_choice": true,
             "gn_description": "textual or tabular data is used to represent geographic data",
             "identifier": "textTable",
-            "description": "textual or tabular data is used to represent geographic data"
+            "title": "Text Table"
         }
     },
     {
@@ -156,7 +156,7 @@
             "is_choice": true,
             "gn_description": "scene from a video recording",
             "identifier": "video",
-            "description": "scene from a video recording"
+            "title": "Video"
         }
     },
     {
@@ -264,9 +264,9 @@
         "model": "base.restrictioncodetype",
         "fields": {
             "is_choice": true,
-            "gn_description": "you must give appropriate credit, provide a link to the license, and indicate if changes were made",
+            "gn_description": "you must give appropriate credit, provide a link to the license, and indicate if changes were made. you may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.",
             "identifier": "copyright",
-            "description": "you must give appropriate credit, provide a link to the license, and indicate if changes were made. you may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use."
+            "title": "Copyright"
         }
     },
     {
@@ -276,7 +276,7 @@
             "is_choice": true,
             "gn_description": "formal permission to do something",
             "identifier": "license",
-            "description": "formal permission to do something"
+            "title": "license"
         }
     },
     {
@@ -286,7 +286,37 @@
             "is_choice": true,
             "gn_description": "withheld from general circulation or disclosure",
             "identifier": "restricted",
-            "description": "withheld from general circulation or disclosure"
+            "title": "Restricted"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "base.restrictioncodetype",
+        "fields": {
+            "is_choice": true,
+            "gn_description": "rights to financial benefit from and control of distribution of non-tangible property that is a result of creativity",
+            "identifier": "intellectualPropertyRights",
+            "title": "Intellectual Property Rights"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "base.restrictioncodetype",
+        "fields": {
+            "is_choice": true,
+            "gn_description": "government has granted exclusive right to make, sell, use or license an invention or discovery",
+            "identifier": "patent",
+            "title": "Patent"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "base.restrictioncodetype",
+        "fields": {
+            "is_choice": true,
+            "gn_description": "produced or sold information awaiting a patent",
+            "identifier": "patentPending",
+            "title": "Patent Pending"
         }
     },
     {

@@ -32,7 +32,7 @@ class DataTypeTranslationOptions(TranslationOptions):
 
 
 class SpatialRepresentationTypeTranslationOptions(TranslationOptions):
-    fields = ('description', 'gn_description',)
+    fields = ('title', 'gn_description',)
 
 
 class RegionTranslationOptions(TranslationOptions):
@@ -40,7 +40,7 @@ class RegionTranslationOptions(TranslationOptions):
 
 
 class RestrictionCodeTypeTranslationOptions(TranslationOptions):
-    fields = ('description', 'gn_description',)
+    fields = ('title', 'gn_description',)
 
 
 class LicenseTranslationOptions(TranslationOptions):

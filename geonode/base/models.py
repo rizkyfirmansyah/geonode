@@ -156,8 +156,8 @@ class TopicCategory(models.Model):
     <CodeListDictionary gml:id="MD_MD_TopicCategoryCode">
     """
     identifier_help_text = _("identifier database field. write the convention using CamelCase style, i.e.: GreenEconomy, SustainabilityPractice")
-    title_help_text = _("one or more words used to represent the classification scheme for grouping the Dataset.")
-    gn_description_help_text = _("high-level description of classification scheme to assist in the grouping and topic-based search of available Dataset.")
+    title_help_text = _("one or more words used to represent the Topic/Information Categories for grouping the Dataset.")
+    gn_description_help_text = _("high-level description of Topic/Information Categories to assist in the grouping and topic-based search of available Dataset.")
     help_choice_help_text = _("should be available to choose for grouping the Dataset.")
     fa_class_choice_help_text = _("font awesome v6 icon name. See more <a href='https://fontawesome.com/search?m=free&s=solid%2Cbrands' target='_blank'>here</a>. Provide only the name, i.e: home, database")
     svg_help_text = _("SVG element tag wrapped in < svg viewBox='0 0 24 24' >...< /svg >. Copy paste the icon from Figma, Sketch, AI and other Vector Graphics Software.")
@@ -168,11 +168,11 @@ class TopicCategory(models.Model):
         default='',
         help_text=title_help_text)
     gn_description = models.TextField(
-        _('High-level description of Classification Scheme'),
+        _('High-level description of Topic/Information categories'),
         default='', null=True,
         help_text=gn_description_help_text)
     is_choice = models.BooleanField(
-        _('Classification Schemes available to choose?'),
+        _('Topic/Information Categoriess available to choose?'),
         default=True,
         choices=enumerations.IS_CHOICES,
         help_text=help_choice_help_text)
@@ -198,7 +198,7 @@ class DataType(models.Model):
 
     """
     identifier_help_text = _("identifier database field. write the convention using CamelCase style, i.e.: DerivedData, ObservationalData")
-    title_help_text = _("one or more words used to represent the data type for grouping the Dataset.")
+    title_help_text = _("one or more words used to represent the Data Type for grouping the Dataset.")
     help_choice_help_text = _("should be available to choose for grouping the Dataset.")
     gn_description_help_text = _("high-level description of data type to assist in the grouping of available Dataset.")
     
@@ -233,9 +233,19 @@ class SpatialRepresentationType(models.Model):
     See: http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
     <CodeListDictionary gml:id="MD_SpatialRepresentationTypeCode">
     """
-    identifier = models.CharField(max_length=255)
-    description = models.CharField(max_length=255, editable=False)
-    gn_description = models.CharField('SDI description', max_length=255)
+    identifier_help_text = _("identifier database field. write the convention using CamelCase style, i.e.: vector, grid, textTable")
+    title_help_text = _("one or more words used to represent the Spatial Representation type for grouping the Dataset.")
+    gn_description_help_text = _("high-level description of Spatial Representation to assist in the grouping of available Dataset.")
+
+    identifier = models.CharField(max_length=255, help_text=identifier_help_text)
+    title = models.CharField(
+      _('Spatial Representation Title'),
+      default='',
+      max_length=255, editable=False,
+      help_text=title_help_text)
+    gn_description = models.CharField(
+      _('High-level description of Spatial Representation'),
+      max_length=255, help_text=gn_description_help_text)
     is_choice = models.BooleanField(default=True)
 
     def __str__(self):
@@ -329,9 +339,19 @@ class RestrictionCodeType(models.Model):
     See: http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml
     <CodeListDictionary gml:id="MD_RestrictionCode">
     """
-    identifier = models.CharField(max_length=255)
-    description = models.TextField(max_length=255, editable=False)
-    gn_description = models.TextField('SDI description', max_length=255)
+    identifier_help_text = _("identifier database field. write the convention using CamelCase style, i.e.: intellectualPropertyRights, patentPending, restricted")
+    title_help_text = _("one or more words used to represent the Restriction type for grouping the Dataset.")
+    gn_description_help_text = _("high-level description of data type to assist in the grouping of available Dataset.")
+
+    identifier = models.CharField(max_length=255, help_text=identifier_help_text)
+    title = models.TextField(
+        _('Restriction Title'),
+        default='',
+        max_length=255, editable=False,
+        help_text=title_help_text)
+    gn_description = models.TextField(
+      _('High-level description of Restriction'),
+      max_length=255, help_text=gn_description_help_text)
     is_choice = models.BooleanField(default=True)
 
     def __str__(self):

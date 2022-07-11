@@ -415,7 +415,7 @@ class RegionAdmin(TabbedTranslationAdmin):
 class SpatialRepresentationTypeAdmin(TabbedTranslationAdmin):
     model = SpatialRepresentationType
     list_display_links = ('identifier',)
-    list_display = ('identifier', 'description', 'gn_description', 'is_choice')
+    list_display = ('identifier', 'title', 'gn_description', 'is_choice')
 
     def has_add_permission(self, request):
         # the records are from the standard TC 211 list, so no way to add
@@ -429,7 +429,7 @@ class SpatialRepresentationTypeAdmin(TabbedTranslationAdmin):
 class RestrictionCodeTypeAdmin(TabbedTranslationAdmin):
     model = RestrictionCodeType
     list_display_links = ('identifier',)
-    list_display = ('identifier', 'description', 'gn_description', 'is_choice')
+    list_display = ('identifier', 'title', 'gn_description', 'is_choice')
 
     def has_add_permission(self, request):
         # the records are from the standard TC 211 list, so no way to add
