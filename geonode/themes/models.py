@@ -110,7 +110,12 @@ class GeoNodeThemeCustomization(models.Model):
     jumbotron_slide_show = models.ManyToManyField(JumbotronThemeSlide, blank=True)
     jumbotron_welcome_title = models.CharField(max_length=255, null=True, blank=True, help_text=_("Landing page title"))
     jumbotron_welcome_content = models.TextField(null=True, blank=True, help_text=_("Landing page welcome title"))
-    showcase_bg_color = ColorField(default="#1C463F", help_text=_("Background color of the showcase landing page, default to green"))
+    header_bg_color = ColorField(
+      _("Header background color"),
+      default="#1C463F", help_text=_("Background color of the header pages, default to green"))
+    showcase_bg_color = ColorField(
+      _("Showcase background color"),
+      default="#1C463F", help_text=_("Background color of the showcase landing page, default to green"))
     showcase_text_color = ColorField(default="#ffffff", help_text=_("Text color of the showcase landing page, default to white"))
     showcase_text_link_color = ColorField(default="#fdba12", help_text=_("Text link color of the showcase landing page, default to marigold"))
     body_text_color = ColorField(default="#3a3a3a")
@@ -125,7 +130,9 @@ class GeoNodeThemeCustomization(models.Model):
     jumbotron_color = ColorField(default="#F39F1E")
     jumbotron_title_color = ColorField(default="#ffffff")
     jumbotron_text_color = ColorField(default="#ffffff")
-    search_bg_color = ColorField(default="#000000")
+    search_bg_color = ColorField(
+      _("Search background color"),
+      default="#000000")
     search_title_color = ColorField(default="#ffffff")
     search_link_color = ColorField(default="#ff8f31")
     textbox_input_color = ColorField(default="#000000", help_text=_("Text color of textbox input, default to white"))

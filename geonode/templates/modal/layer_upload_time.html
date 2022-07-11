@@ -1,0 +1,39 @@
+{% load i18n %}
+
+<div id="timeMsgBoxModalWarning" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-0 bg-warning">
+      <div class="modal-header">
+          <h4 class="modal-title">{% trans "Modal Header" %}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+          </button>
+      </div>
+      <div class="modal-body text-center">
+        <p>{% trans "Some text in the modal" %}.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="timeMsgBoxModalOK" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-0 bg-success">
+      <div class="modal-header">
+          <h4 class="modal-title">{% trans "Modal Header" %}</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+          </button>
+      </div>
+      <div class="modal-body text-center">
+        <p>{% trans "Some text in the modal" %}.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

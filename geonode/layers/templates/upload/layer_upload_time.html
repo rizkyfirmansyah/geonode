@@ -11,14 +11,17 @@
 {{ block.super }}
 {% endblock %}
 
-{% block body_inner %}
-<div class="span7">
-  <h2> {% trans "Inspect data for " %} "{{ layer_name }}" </h2>
+{% block body %}
+<div class="card rounded bg-light mb-2">
+  <div class="card-header bg-layer">
+    <div class="row">
+      <h3 class="text-light"> {% trans "Inspect data for " %} "{{ layer_name }}" </h3>
+    </div>
+  </div>
 
   <form method="POST" id="timeForm" role="form" class="form-horizontal">
-
-        {% csrf_token %}
-
+    {% csrf_token %}
+    <div class="card-body">
         <div class="row">
           <div class="col-md-12">
             <div class="well inline-headers">
@@ -63,23 +66,23 @@
             <div class="form-group" style="padding-left: 45px;">
                 <div class="radio" title="{% trans "Convert data to a timestamp using standard date/time representation or a custom format" %}">
                     <table id="bootstrap-text-att-table"
-                           data-toggle="table"
-                           data-toolbar="#toolbar"
-                           data-pagination="true"
-                           data-side-pagination="client"
-                           data-page-list="[5, 10, 20, 50, 100, 200]"
-                           data-search="true"
-                           data-height="500"
-                           data-classes="table table-hover table-condensed"
-                           data-striped="true"
-                           data-hover="true"
-                           data-click-to-select="true"
-                           data-single-select="true"
-                           data-sort-order="asc"
-                           data-show-export="false"
-                           data-show-refresh="true"
-                           data-show-toggle="false"
-                           data-show-columns="false">
+                          data-toggle="table"
+                          data-toolbar="#toolbar"
+                          data-pagination="true"
+                          data-side-pagination="client"
+                          data-page-list="[5, 10, 20, 50, 100, 200]"
+                          data-search="true"
+                          data-height="500"
+                          data-classes="table table-hover table-condensed"
+                          data-striped="true"
+                          data-hover="true"
+                          data-click-to-select="true"
+                          data-single-select="true"
+                          data-sort-order="asc"
+                          data-show-export="false"
+                          data-show-refresh="true"
+                          data-show-toggle="false"
+                          data-show-columns="false">
                         <thead>
                         <tr>
                             {% for att in layer_attributes %}
@@ -116,25 +119,20 @@
             </div>
             {% endif %}
 
-            <a href="{% url "layer_upload" %}" class="btn btn-primary pull-left">{% trans "Cancel" %}</a> &nbsp;
-            <button id='next' class="btn btn-primary button-tip" type="submit" value="{% trans 'Next' %}"> Next
-                <i id="next-spinner" class="fa-solid fa-spinner fa-spin hide"></i>
-                <p id="next-tooltip" style="height: 150px;">{% trans "Start Importer" %}</p>
-            </button>
-            <div id="upload-status"></div>
+            <div id="upload-status" class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;"></div>
 
         <div class="panel-group" id="accordion">
             <div class="faqHeader"><h5>{% trans "Advanced Options" %}</h5></div>
 
-            <div class="panel panel-default">
+            <div class="card">
                 {% if time_form.text_attribute %}
-                <div class="panel-heading">
-                    <h4 class="panel-title" style="font-size:16px">
+                <div class="card-header">
+                    <h4 class="card-title">
                         <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_id_date_format">{% trans "Date Format" %}</a>
                     </h4>
                 </div>
-                <div id="collapse_id_date_format" class="panel-collapse collapse">
-                    <div class="panel-body formSection left">
+                <div id="collapse_id_date_format" class="collapse">
+                    <div class="card-body formSection left">
                         <div class="form-group" style="padding-left: 45px;">
                             <label for="format_select">{% trans "Text Attribute Date Format" %}  :</label>
                             {{ time_form.text_attribute_format }}
@@ -147,13 +145,13 @@
                 </div>
                 {% endif %}
 
-                <div class="panel-heading">
-                    <h4 class="panel-title" style="font-size:16px">
+                <div class="card-header">
+                    <h4 class="card-title" style="font-size:16px">
                         <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_id_end_time">{% trans "Optional End-Time attribute" %}</a>
                     </h4>
                 </div>
-                <div id="collapse_id_end_time" class="panel-collapse collapse">
-                    <div class="panel-body formSection left">
+                <div id="collapse_id_end_time" class="collapse">
+                    <div class="card-body formSection left">
                         {% if time_form.time_attribute %}
                         <div class="form-group" style="padding-left: 45px;">
                             <div class="radio" title="{% trans "Use an existing timestamp attribute in the data" %}">
@@ -188,13 +186,13 @@
                     </div>
                 </div>
 
-                <div class="panel-heading">
-                    <h4 class="panel-title" style="font-size:16px">
+                <div class="card-header">
+                    <h4 class="card-title" style="font-size:16px">
                         <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_id_presentation">{% trans "Time attribute Presentation" %}</a>
                     </h4>
                 </div>
-                <div id="collapse_id_presentation" class="panel-collapse collapse">
-                    <div id="presentation" class="panel-body formSection left">
+                <div id="collapse_id_presentation" class="collapse">
+                    <div id="presentation" class="card-body formSection left">
                         <div class="form-group" style="padding-left: 45px;">
                             <div class="radio">
                                 <input id="LIST" type='radio' value='LIST' checked='checked' name='presentation_strategy'/>
@@ -220,13 +218,13 @@
                     </div>
                 </div>
 
-                <div class="panel-heading">
-                    <h4 class="panel-title" style="font-size:16px">
+                <div class="card-header">
+                    <h4 class="card-title" style="font-size:16px">
                         <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_id_help">{% trans "Additional Help" %}</a>
                     </h4>
                 </div>
-                <div id="collapse_id_help" class="panel-collapse collapse">
-                    <div id="timehelp" class="panel-body">
+                <div id="collapse_id_help" class="collapse">
+                    <div id="timehelp" class="card-body">
                         <h4>{% trans "Enabling Time" %}</h4>
                         <p>{% blocktrans %}A layer can support one or two time attributes. If a single
                         attribute is used, the layer is considered to contain data that is valid at single points in time. If two
@@ -259,52 +257,25 @@
                         </pre>
                     </div>
                 </div>
-
             </div>
         </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="row">
+        <div class="col"><a href="{% url "layer_upload" %}" class="btn btn-primary btn-block">{% trans "Cancel" %}</a> &nbsp;</div>
+        <div class="col">
+          <button id='next' class="btn btn-primary button-block" type="submit" value="{% trans 'Next' %}"> Next
+              <i id="next-spinner" class="fa-solid fa-spinner fa-spin hide"></i>
+              <p id="next-tooltip" style="height: 150px;">{% trans "Start Importer" %}</p>
+          </button>
+        </div>
+      </div>
+    </div>
   </form>
 </div>
 
-<!-- Modal -->
-<div id="timeMsgBoxModalWarning" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content panel-warning">
-      <div class="modal-header panel-heading">
-          <h4 class="modal-title">{% trans "Modal Header" %}</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
-          </button>
-      </div>
-      <div class="modal-body text-center">
-        <p>{% trans "Some text in the modal" %}.</p>
-      </div>
-      <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
-    </div>
-
-  </div>
-</div>
-
-<div id="timeMsgBoxModalOK" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content panel-success">
-      <div class="modal-header panel-heading">
-          <h4 class="modal-title">{% trans "Modal Header" %}</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
-          </button>
-      </div>
-      <div class="modal-body text-center">
-        <p>{% trans "Some text in the modal" %}.</p>
-      </div>
-      <button type="button" class="btn btn-primary col-md-12" data-dismiss="modal">Close</button>
-    </div>
-
-  </div>
-</div>
+{% include "modal/layer_upload_time.html" %}
 
 {% endblock %}
 
