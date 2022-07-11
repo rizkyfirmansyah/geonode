@@ -1,33 +1,27 @@
 {% load i18n %}
 
-<div class="col-1 mr-2 dropdown p-0 d-inline-flex ml-3" id="sortFilter">
-  <button type="button" class="btn btn-primary btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class="col-sm-2 d-inline-flex" id="sortFilter">
+  <button type="button" class="btn btn-primary btn-block" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Order by">
     <div ng-if="dataValue == 'title' || dataValue == 'username' || dataValue == 'name'" ng-cloak>
       <i class="fa-solid fa-sort-alpha-asc fa-lg"></i>
-      <i class="fa-solid fa-angle-down fa-lg"></i>
     </div>
     <div ng-if="dataValue == '-title' || dataValue == '-username' || dataValue == '-name'" ng-cloak>
       <i class="fa-solid fa-sort-alpha-desc fa-lg"></i>
-      <i class="fa-solid fa-angle-down fa-lg"></i>
     </div>
     <div ng-if="dataValue == 'date' || dataValue == 'last_modified' || dataValue == 'date_joined'" ng-cloak>
       <i class="fa-solid fa-clock"></i>
       <i class="fa-solid fa-clock fa-level-up"></i>
-      <i class="fa-solid fa-angle-down fa-lg"></i>
     </div>
     <div ng-if="dataValue == '-date' || dataValue == '-last_modified' || dataValue == '-date_joined'" ng-cloak>
       <i class="fa-solid fa-clock"></i>
       <i class="fa-solid fa-clock fa-level-down"></i>
-      <i class="fa-solid fa-angle-down fa-lg"></i>
     </div>
     <div ng-if="dataValue == '-popular_count'" ng-cloak>
       <i class="fa-solid fa-fire fa-lg"></i>
-      <i class="fa-solid fa-angle-down fa-lg"></i>
     </div>
     <div ng-if="dataValue == null" ng-cloak>
       <i class="fa-solid fa-clock"></i>
       <i class="fa-solid fa-clock fa-level-down"></i>
-      <i class="fa-solid fa-angle-down fa-lg"></i>
     </div>
   </button>
   <ul class="dropdown-menu dropdown-menu-right" id="sort">

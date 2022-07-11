@@ -2915,6 +2915,10 @@ html {
     margin-right: 5px
 }
 
+#sortFilter, #sidebarFilter {
+    max-width: 100px;
+}
+
 .fa-remove {
     color: #c4bab7
 }
@@ -4185,6 +4189,10 @@ footer form {
 .group-image {
     height: 120px;
     overflow: hidden
+}
+
+div#file-queue svg {
+    font-size: .7em;
 }
 
 .profile-avatar h5 a {
