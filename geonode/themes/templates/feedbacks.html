@@ -36,7 +36,13 @@
               <th scope="row">{{ forloop.counter }}</th>
               <td>{{ feedback.title|truncatewords:15 }}</td>
               <td>{{ feedback.details|truncatewords:50 }}</td>
-              <td><img src="/uploaded/{{ feedback.feedback_file }}" id="{{ feedback.uuid }}"/></td>
+              <td>
+                {% if feedback.feedback_file %}
+                  <img src="/uploaded/{{ feedback.feedback_file }}" id="{{ feedback.uuid }}"/>
+                {% else %}
+                  <i class="fa-solid fa-ban" title="No feedback media provided" style="color: red;"></i>
+                {% endif %}
+              </td>
               <td>{{ feedback.user }}</td>
               <td>{{ feedback.created_at }}</td>
             </tr>
