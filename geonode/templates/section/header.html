@@ -6,8 +6,8 @@
 
 {% block header %}
   
-    <div class="container-fluid row p-2">
-      <div class="header-logo pt-2 pl-4">
+    <div class="container-fluid row p-2 mx-auto">
+      <div class="header-logo pt-2">
         <a href="{{ SITEURL }}">
           <img
             class="w-auto h-auto"
@@ -26,7 +26,7 @@
         {% endif %}
       </div>
       <div class="col p-0" id="header-main-menu">
-        <ul class="list-inline pt-2 mr-4">
+        <ul class="list-inline pt-2 mx-auto">
           {% if request.user.is_authenticated or access_token %}
           <li class="list-inline-item mr-2" id="information_categories">
             <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>
@@ -164,8 +164,7 @@
               </div>
             </ul>
             {% else %}
-          <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal"
-              role="button">{% trans "Sign in" %} </a></li>
+          <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Sign in" %} </a></li>
           {% endif %}
           </li>
           {% if BILINGUAL %}
@@ -185,16 +184,13 @@
             {% endif %}
           </li>
           {% endif %}
-          <li class="list-inline-item m-0">
-            <a class="header-menu-toggle" href="#0">
-              {% get_current_path as path %}
-                {% if path == '/' %}
-                  <span class="header-menu-text" style="display: none;">Menu</span>
-                {% endif %}
-              <span class="header-menu-icon"></span>
-            </a>
-          </li>
         </ul>
+      </div>
+      <div class="pt-2 d-flex">
+        {% get_current_path as path %}
+          <button type="button" class="btn menu_navigation" aria-label="Toggle Navigation">
+            <svg width="28px" viewBox="0 0 22 19"><path fill="transparent" stroke-width="2" stroke="#fff" stroke-linecap="round" d="M 2 2.5 L 20 2.5"></path><path fill="transparent" stroke-width="2" stroke="#fff" stroke-linecap="round" d="M 2 9.423 L 20 9.423" opacity="1"></path><path fill="transparent" stroke-width="2" stroke="#fff" stroke-linecap="round" d="M 2 16.346 L 20 16.346"></path></svg>
+          </button>
       </div>
     </div>
   
@@ -212,6 +208,19 @@
     $('#information_categories').click(function() {
       $('#information_categories_card').fadeToggle();
     });
+
+    $('.menu_navigation').on('click', function() {
+      $("body").toggleClass('menu-is-open');
+    })
+    $('.header-nav__close').on('click', function() {
+      $("body").toggleClass('menu-is-open');
+    })
+
+    $('.header-nav').on('dblclick', function() {
+      if ($('body').hasClass('menu-is-open'))
+          $("body").removeClass('menu-is-open');
+    })
+    
   });
 
 </script>
