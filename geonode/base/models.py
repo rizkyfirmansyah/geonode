@@ -241,7 +241,7 @@ class SpatialRepresentationType(models.Model):
     title = models.CharField(
       _('Spatial Representation Title'),
       default='',
-      max_length=255, editable=False,
+      max_length=255,
       help_text=title_help_text)
     gn_description = models.CharField(
       _('High-level description of Spatial Representation'),
@@ -347,7 +347,7 @@ class RestrictionCodeType(models.Model):
     title = models.TextField(
         _('Restriction Title'),
         default='',
-        max_length=255, editable=False,
+        max_length=255,
         help_text=title_help_text)
     gn_description = models.TextField(
       _('High-level description of Restriction'),
