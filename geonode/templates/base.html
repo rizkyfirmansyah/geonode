@@ -165,6 +165,15 @@
     {% block navigation %}
       {% include 'section/navigation.html' %}
     {% endblock navigation %}
+
+    {% if request.user_agent.is_mobile %}
+      {% block navigation_mobile %}
+        {% include 'section/categories_mobile.html' %}
+        {% if user.is_authenticated %}
+          {% include 'section/profile_mobile.html' %}
+        {% endif %}
+      {% endblock navigation_mobile %}
+    {% endif %}
       
     <div class="alert alert-danger alert-dismissible" role="alert" id="ieflag" style="display:none">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -173,7 +182,7 @@
     </div>
 
     <div class="container" id="wrap">
-        <div class="row mt-4 pt-3">
+        <div class="row {% if not request.user_agent.is_mobile %}pt-3{% else %}p-0{% endif %}">
           <div class="col-12 mb-4 p-0">
             {% include "_status_message.html" %}
             {% include "_announcements.html" %}

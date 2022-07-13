@@ -3,7 +3,7 @@
 
 <section class="card-footer mb-2">
   <div class="row">
-    <div class="col-2">
+    <div class="col-2 p-0">
       {% with 240 as avatar_size %}
         <div class="avatar"><a href="{% url "profile_detail" profile.username %}">{% autoescape off %}{% avatar profile avatar_size %}{% endautoescape %}</a></div>
       {% endwith %}

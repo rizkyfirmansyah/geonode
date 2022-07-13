@@ -155,12 +155,23 @@
       {% include 'section/navigation.html' %}
     {% endblock navigation %}
 
+    {% if request.user_agent.is_mobile %}
+      {% block navigation_mobile %}
+        {% include 'section/categories_mobile.html' %}
+        {% if user.is_authenticated %}
+          {% include 'section/profile_mobile.html' %}
+        {% endif %}
+      {% endblock navigation_mobile %}
+    {% endif %}
+
     {% block home %}
       {% include 'section/home.html' %}
     {% endblock home %}
+
     {% block showcase %}
       {% include 'section/showcase.html' %}
     {% endblock showcase %}
+
     {% block datasets %}
       {% include 'section/datasets.html' %}
     {% endblock datasets %}

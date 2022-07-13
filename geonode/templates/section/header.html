@@ -6,7 +6,7 @@
 
 {% block header %}
   
-    <div class="container-fluid row p-2 mx-auto">
+    <div class="container-fluid row mx-auto {% if not request.user_agent.is_mobile %}p-2{% endif %}">
       <div class="header-logo pt-2">
         <a href="{{ SITEURL }}">
           <img
@@ -15,7 +15,7 @@
             alt="Homepage">
         </a>
       </div>
-      <div class="col-md pt-2">
+      <div class="col-md {% if not request.user_agent.is_mobile %}pt-2{% else %} p-1 mt-1{% endif %}">
         {% if request.user.is_authenticated or access_token %}
           {% get_search_container as search %}
             {% if search != '/' and search != '' %}
@@ -28,141 +28,163 @@
       <div class="col p-0" id="header-main-menu">
         <ul class="list-inline pt-2 mx-auto">
           {% if request.user.is_authenticated or access_token %}
-          <li class="list-inline-item mr-2" id="information_categories">
-            <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>
-            {% get_categories as categories %}
-            <ul class="collapse list-unstyled m-0" id="information_categories_card" style="display: none;">
-              {% for category in categories %}
-              <li>
-                <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
-                  title="{{ category.title }}" class="d-flex text-dark">
-                  {{ category.title }}
-                </a>
+            {% if not request.user_agent.is_mobile %}
+              <li class="list-inline-item mr-2" id="information_categories">
+                <a class="btn btn-light rounded-pill p-link-header">Information Categories</a>
+                {% get_categories as categories %}
+                <ul class="collapse list-unstyled m-0" id="information_categories_card" style="display: none;">
+                  {% for category in categories %}
+                  <li>
+                    <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
+                      title="{{ category.title }}" class="d-flex text-dark">
+                      {{ category.title }}
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
               </li>
-              {% endfor %}
-            </ul>
-          </li>
+            {% else %}
+                <button type="button" class="btn menu_categories" aria-label="Toggle Information Categories">
+                  <i class="fa-solid fa-cube fa-3x" style="color: white;"></i>
+                </button>
+            {% endif %}
           {% endif %}
           <li class="list-inline-item mr-2" id="user_menu">
             {% if not user.is_authenticated and ACCOUNT_OPEN_SIGNUP and not READ_ONLY_MODE %}
-            <a class="btn btn-light rounded-pill p-link-header" href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
+              {% if not request.user_agent.is_mobile %}
+                  <a class="btn btn-light rounded-pill p-link-header" href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Login / Register" %} </a>
+              {% else %}
+                  <a class="btn" id="login_mobile" href="#" data-toggle="modal" data-target="#SigninModal" role="button">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+                      <metadata> Svg Vector Icons : http://www.onlinewebfonts.com/icon </metadata>
+                      <g><g transform="translate(0.000000,511.000000) scale(0.100000,-0.100000)"><path d="M829.9,4939.3c-108.6-55.6-149-96-204.6-204.6l-70.7-133.9V110v-4490.8l70.7-133.8c55.6-108.6,96-149,204.6-204.6l133.9-70.7h2649.5c1967.6,0,2664.7,7.6,2717.7,30.3c37.9,15.1,396.6,353.6,798.1,750.2l724.9,722.4v2235.3v2235.3l-227.3-227.3l-227.3-227.3v-1919.6v-1919.6l-628.9-613.8l-628.9-611.2l-2561.1,5l-2558.6,7.6V110v4432.7h3182.5h3182.5l7.6-1262.9l5-1260.4l227.3,224.8l227.3,227.3v1035.6c0,644.1-10.1,1070.9-27.8,1131.5c-32.9,123.8-159.1,265.2-288,323.3c-96,45.5-262.7,48-3336.5,48h-3238L829.9,4939.3z"/><path d="M2431.3,3923.9c-131.3-30.3-308.1-149-389-260.1c-358.7-495.1,15.2-1172,618.8-1124c184.4,15.1,323.3,80.8,447.1,214.7c154.1,161.6,186.9,245,186.9,487.5c0,189.4-7.6,229.8-68.2,333.4C3057.7,3863.3,2744.5,3999.7,2431.3,3923.9z M2752.1,3507.2c93.5-48,151.5-156.6,151.5-282.9c0-308.1-437-394-570.8-113.7C2209,3373.3,2491.9,3641,2752.1,3507.2z"/><path d="M9142.3,3403.6c-20.2-10.1-828.4-805.7-1795.8-1770.6L5591-119.8l-404.1,500.1l-401.6,500.1l-111.1,7.6c-85.9,7.6-123.8-5-169.2-48c-73.2-68.2-80.8-209.6-17.7-300.6c131.3-189.4,944.6-1182.1,980-1197.2c22.7-7.6,78.3-15.1,121.2-15.1c73.3,0,260.1,179.3,1970.1,1889.3C9266,2923.7,9445.4,3110.6,9445.4,3183.9C9445.4,3327.8,9273.6,3451.6,9142.3,3403.6z"/><path d="M4436.8,3148.5c-10.1-7.6-17.7-98.5-17.7-202.1v-184.4H5682h1262.9v202.1v202.1H5699.6C5012.6,3166.2,4444.3,3158.6,4436.8,3148.5z"/><path d="M2087.8,2398.4c-250.1-103.6-391.5-240-502.6-485c-48-106.1-58.1-176.8-65.7-507.7l-10.1-386.4H2598h1088.6v373.8c-2.5,285.4-12.6,399.1-45.5,490c-93.5,257.6-295.5,449.6-563.3,538l-123.8,42.9l-103.6-80.8c-65.7-53-138.9-85.9-207.1-93.5c-90.9-10.1-123.8,0-237.4,78.3c-73.2,50.5-141.4,90.9-151.5,90.9C2241.8,2459,2168.6,2431.2,2087.8,2398.4z M2312.6,1948.8c171.7-75.8,431.9-75.8,603.7,0c121.2,55.6,126.3,55.6,186.9,10.1c35.4-25.3,83.4-73.3,108.6-108.6c48-65.7,108.6-333.4,85.9-391.5c-10.1-30.3-133.9-35.4-697.1-35.4h-682v123.8c0,68.2,12.6,156.6,27.8,197c25.3,68.2,192,260.1,227.3,260.1C2181.2,2004.3,2244.4,1979.1,2312.6,1948.8z"/><path d="M1463.9-1607.5v-202.1l2735.4,5.1l2732.9,7.6l7.6,197l7.6,194.5h-2743H1463.9V-1607.5z"/><path d="M1463.9-2971.5v-202.1h2740.5h2740.5v202.1v202.1H4204.4H1463.9V-2971.5z"/></g></g>
+                    </svg>
+                  </a>
+              {% endif %}
             {% elif user.is_authenticated %}
-            <div id="nav_avatar" class="">
-              <a class="btn btn-light rounded-pill p-link-header{% unread_messages request.user as messages %}{% if messages %} border-danger{% endif %}">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
-                {% with full_name=user.first_name|add:' '|add:user.last_name %}
-                {% if full_name.strip %}
-                {{ full_name | truncatechars:20 }}
-                {% else %}
-                {{ user.username | truncatechars:20 }}
-                {% endif %}
-                {% endwith %}
-              </a>
-            </div>
-            <ul id="user_menu_card" style="display: none;" class="m-0">
-              <div class="card">
-                <div class="card-body p-1">
-                  <div class="">
-                    <ul class="list-group m-0">
-                      <li class="list-group-item p-0 border-0">
-                        <a class="btn_wrapper d-flex p-2" href="{% url "profile_detail" user.username %}"
-                            role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                              <rect width="24" height="24" fill="url(#patternProfile)"/>
-                              <defs>
-                              <pattern id="patternProfile" patternContentUnits="objectBoundingBox" width="1" height="1">
-                              <use xlink:href="#image0_13_533" transform="scale(0.0104167)"/>
-                              </pattern>
-                              <image id="image0_13_533" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADjElEQVR4nO3cy2sdVRgA8J+KJta06EJIEYyvVLG09bHS+sAsdSu60H+giBb3vtqFQunGjaLYrbgRV7rSioIVRLDixgeYWBW1q2pvqkmxdXFuMA0YMzN35pzJ/X7wrcLkO+f7cm/uzDnnEkIIIYQQQgghhBDGxUW5B1DBNjyEOezBdbhy+LNTWMBxHMW7OJ1hjJvSDhzBIs5vMBbxBmYzjHfTuByHcdbGC782lnEIkx2Pvfdm8ZX6hV8bn2J7pzPosdtx0uiKvxI/YneH8+ilWe0Uf3UTpjubTc9MSp9i2ir+Snwu/X8JaxzWfvFX4kBHc+qNHZp92qkap8Vb0QWO6K74K/FKJzPrgW2q3WSNKgbY2sH81nVx7gFIjxe2ZMh7BR7MkPcCJTRgbkxzo4wG7MmYO/uNWQkNuD5j7hsy5kYZj6OXcFnG3Fkf1JXwChhrJTTgj4y5f8+YG2U0YD5j7u8z5kYZDTieMfeXGXOjjAYczZj7g4y5izElPRbI8ShiqoP5rauEV8AAb2XI++Ywd5BWwpZ199e/pICbsNIc0l0DXupoTr0yKe1eaLv4xzDR0Zx6ZxontFf8n3FNZ7Ppqd3S7oVRF/8EdnU4j167Gh8Z7dtOrAFXNCHtXmhyj7CEF8V7fiPT0gJ6lUYM8JoefNQsYT1go6ak9eMHcJu0kLN6e/o8vsCHeE/cZIUQQgghhBBCCCGEEFa7JPcAhiawVzoydLLlXLtwM37D3y3nKtqdeFbanXZGeo7/C65tMecMfh3mOoP38QzuaDFnUXbiBXzjvxdT5nFjC7ln8N06eRfwMu7Rr3WS/3UVnsa3Nr6i9RPuHuEY9g5/50bzf439/l3w6aVbpO/sqXsEdVlaE27ytQJbcFD9Q+ADvC4dJO+N7dJ67KhOvi/gSdU20m7FU/hhRGM4i1cVvrPiUjyvvZ3OA7yNfbhLKsbkMKalt6x9eEd7B78HeG4416LM4BPtTLrE+Aw3jaRyI/CodNYqd1G6jlN4eAT1a2Q/zslfjFxxDk80rmJNjxjv4q9uwuMNa1nZTvzVcOCbKf7ErY0qWtGxFibR9/i4UUUrmOtoQn2M+6sWs84hvcdqXDMuKtemTgPurXHNuLiv6gV1nvotyvMNV32wqOLZ4zoNOF/jmnFSqaYlHNQea9GAzKIBmUUDMosGZBYNyCwakFk0ILNoQAghhBBCCCGEEEIIHfkHy+tVDYIG0t4AAAAASUVORK5CYII="/>
-                              </defs>
-                              </svg> {% trans " Profile" %} </a>
-                      </li>
-                    </ul>
+              {% if not request.user_agent.is_mobile %}
+                  <div id="nav_avatar" class="">
+                    <a class="btn btn-light rounded-pill p-link-header{% unread_messages request.user as messages %}{% if messages %} border-danger{% endif %}">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
+                      {% with full_name=user.first_name|add:' '|add:user.last_name %}
+                      {% if full_name.strip %}
+                      {{ full_name | truncatechars:20 }}
+                      {% else %}
+                      {{ user.username | truncatechars:20 }}
+                      {% endif %}
+                      {% endwith %}
+                    </a>
                   </div>
-                  <div class="">
-                    <ul class="list-group m-0">
-                      <li class="list-group-item p-0 border-0">
-                        <a class="btn_wrapper d-flex p-2" href="{% url "recent-activity" %}" role="tab" class="p-2">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M17.7 13.5L15 4.5H13.5L10.737 14.46L8.985 7.035H7.53L5.775 13.5H1.5V14.985H6.345L7.08 14.43L8.19 10.38L9.885 18H11.43L14.235 7.44L16.425 14.46L17.145 15H22.5V13.5H17.7Z" fill="black"/>
-                            </svg>
-                            <span class="d-inline-flex">{% trans "Recent Activity" %}</span>
-                        </a>
-                      </li>
-                    </ul>
+                  <ul id="user_menu_card" style="display: none;" class="m-0">
+                    <div class="card">
+                      <div class="card-body p-1">
+                        <div class="">
+                          <ul class="list-group m-0">
+                            <li class="list-group-item p-0 border-0">
+                              <a class="btn_wrapper d-flex p-2" href="{% url "profile_detail" user.username %}"
+                                  role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <rect width="24" height="24" fill="url(#patternProfile)"/>
+                                    <defs>
+                                    <pattern id="patternProfile" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                    <use xlink:href="#image0_13_533" transform="scale(0.0104167)"/>
+                                    </pattern>
+                                    <image id="image0_13_533" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADjElEQVR4nO3cy2sdVRgA8J+KJta06EJIEYyvVLG09bHS+sAsdSu60H+giBb3vtqFQunGjaLYrbgRV7rSioIVRLDixgeYWBW1q2pvqkmxdXFuMA0YMzN35pzJ/X7wrcLkO+f7cm/uzDnnEkIIIYQQQgghhBDGxUW5B1DBNjyEOezBdbhy+LNTWMBxHMW7OJ1hjJvSDhzBIs5vMBbxBmYzjHfTuByHcdbGC782lnEIkx2Pvfdm8ZX6hV8bn2J7pzPosdtx0uiKvxI/YneH8+ilWe0Uf3UTpjubTc9MSp9i2ir+Snwu/X8JaxzWfvFX4kBHc+qNHZp92qkap8Vb0QWO6K74K/FKJzPrgW2q3WSNKgbY2sH81nVx7gFIjxe2ZMh7BR7MkPcCJTRgbkxzo4wG7MmYO/uNWQkNuD5j7hsy5kYZj6OXcFnG3Fkf1JXwChhrJTTgj4y5f8+YG2U0YD5j7u8z5kYZDTieMfeXGXOjjAYczZj7g4y5izElPRbI8ShiqoP5rauEV8AAb2XI++Ywd5BWwpZ199e/pICbsNIc0l0DXupoTr0yKe1eaLv4xzDR0Zx6ZxontFf8n3FNZ7Ppqd3S7oVRF/8EdnU4j167Gh8Z7dtOrAFXNCHtXmhyj7CEF8V7fiPT0gJ6lUYM8JoefNQsYT1go6ak9eMHcJu0kLN6e/o8vsCHeE/cZIUQQgghhBBCCCGEEFa7JPcAhiawVzoydLLlXLtwM37D3y3nKtqdeFbanXZGeo7/C65tMecMfh3mOoP38QzuaDFnUXbiBXzjvxdT5nFjC7ln8N06eRfwMu7Rr3WS/3UVnsa3Nr6i9RPuHuEY9g5/50bzf439/l3w6aVbpO/sqXsEdVlaE27ytQJbcFD9Q+ADvC4dJO+N7dJ67KhOvi/gSdU20m7FU/hhRGM4i1cVvrPiUjyvvZ3OA7yNfbhLKsbkMKalt6x9eEd7B78HeG4416LM4BPtTLrE+Aw3jaRyI/CodNYqd1G6jlN4eAT1a2Q/zslfjFxxDk80rmJNjxjv4q9uwuMNa1nZTvzVcOCbKf7ErY0qWtGxFibR9/i4UUUrmOtoQn2M+6sWs84hvcdqXDMuKtemTgPurXHNuLiv6gV1nvotyvMNV32wqOLZ4zoNOF/jmnFSqaYlHNQea9GAzKIBmUUDMosGZBYNyCwakFk0ILNoQAghhBBCCCGEEEIIHfkHy+tVDYIG0t4AAAAASUVORK5CYII="/>
+                                    </defs>
+                                    </svg> {% trans " Profile" %} </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="">
+                          <ul class="list-group m-0">
+                            <li class="list-group-item p-0 border-0">
+                              <a class="btn_wrapper d-flex p-2" href="{% url "recent-activity" %}" role="tab" class="p-2">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M17.7 13.5L15 4.5H13.5L10.737 14.46L8.985 7.035H7.53L5.775 13.5H1.5V14.985H6.345L7.08 14.43L8.19 10.38L9.885 18H11.43L14.235 7.44L16.425 14.46L17.145 15H22.5V13.5H17.7Z" fill="black"/>
+                                  </svg>
+                                  <span class="d-inline-flex">{% trans "Recent Activity" %}</span>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="">
+                          <ul class="list-group m-0">
+                            <li class="list-group-item p-0 border-0">
+                              <a class="btn_wrapper d-flex p-2" href="{% url "favorite_list" %}"
+                                  role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <rect width="24" height="24" fill="url(#pattern0)"/>
+                                    <defs>
+                                    <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                    <use xlink:href="#image0_13_535" transform="scale(0.0104167)"/>
+                                    </pattern>
+                                    <image id="image0_13_535" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAAEfklEQVR4nO2dW4hVVRzGf7txMpkLjU75IEpoTuA0EJEQoYOieSMEUyHBB6OHCAKFniKKHoKIIOghe5AeSsQblheEENQ0UlAfRPChIs0oImrKy+AMMWoPax8ahjmutfe67X3W/wffy2HNOd//W3uf2WuvtdcBQRAEQRAEQRAEQRAEIRUyz+/fCQzm6gfmA4/mr2fALWAIuAJcBs4CJ4G/PPl5BFgKPJv7mQvMALqAe8Aw8AfwY+7nNPBt/nptyIDVwD5gFFVYEY0B3wCbgHYHftrz9zqVv3dRPyPAXmAV/g9YazYClyheZDP9CrwJdJTw0gG8Bfzm0M9F4MUSXrzTBxzHXaETdQ1YX8DPBuAXj36OAY8X8OOVzajvcl/FjtdBoOc+XqYDhwJ5uYn6aotGBrxPmGLH6yrw9CR+ngF+juDnPSL8b8iATy2N2x59y8b5eZ5wZ+Fk2k7gTohx5E/UCLAEdVlZ5mrLx5kQhM2BCjLR9VyxfTT0kkWuRvQR91Svum4A80qna4DPS81W0bHS6WrYWIHi6qJ1JTNuSobbEW6r6yKOr4rWVKCoummlSbAPmDQCXjZsJ/zPFpNGJqdJF/AnMNXKTnqMAL3A7fs1MjkDFiPhl2EasEjXyKQDBu29JMsSXQOTDuh3YCRVFugamHRAnwMjqfKEroFJB/Q6MJIq2uxMOqDTgZFU6dI1MOmAOw6MpIo2O5MO+NuBkVQZ0jWQDvCLNjuTDrjmwEiqaLMz6YALDoykynldA+kAv2izM7kZ14NaL+limWBK/AvMRM1ZN8XkDPgHtWBWKMZxNOGD+XzAATsvSWKUmem0WS9qreW00nbS4jYwG0eXoaDW6++ycZQYO/EwfuoH7hJ/rrUOGiiZsZajFSiu6jpcOl0DBlA3mGIXWVWNAU+WTteQnRUotKr6zCJXY+Yg60Mn0w1gVtEw24r+Qf5BoxguPEqIN1CDryC0oe5zxD7qqqJzlDuYrViAGnDELj62RvB42anjdQODra5XrVO0IAOOTGIqFX1lH6E9PahH+2OHEVo/AA87yM8JA6j9FGKHEkrDBBhwFWUDaYyS7+S1VpLXiB+Qb21zlpYnPiR+SL70gcOcvJEBnxM/LNfajfn8SXTaUY9rxg7NlU5Qw4dUuoEzxA/PVt9hsMi2qnSgdqqKHaJN+N3OUwlMXTvhDC0QfoO6dUJLhd+gG7UZX+xwdTpJjb/zdUwF9hM/5GY6TAJrn9qAHcQPe6K+AKZ4rLtSZKhRZezQG/qYGuwJ6oOtxF3sdRd413uVFecVyu1oa6ux/LMFYC1h55dHURtQCeMYJMwGfLeA5YFqqh39qP2ifYX/O/BUsGpqymPA97gP/ycqtN9z1ZmB+i0BV+FfQP1ugVCATuBr7MM/QQve1wnFg8Aeyof/JfBQcNctRgZ8RPHwP6FGU4h14B3Mw387kseWZwvqAehmwY8Rea1mCqxA/X7AxPCHgRci+kqKhajtExrhDwHPRXWUIHNRC2SvYLA5nuCHmbkEQRAEQRAEQRAEQagF/wGocKkH6fhM+gAAAABJRU5ErkJggg=="/>
+                                    </defs>
+                                    </svg> {% trans " Favorites" %} </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="">
+                          <ul class="list-group m-0">
+                              <a class="btn_wrapper d-flex p-2" href="{% url "messages_inbox" %}"
+                                role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                  <rect width="24" height="24" fill="url(#patternInbox)"/>
+                                  <defs>
+                                  <pattern id="patternInbox" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                  <use xlink:href="#image0_13_542" transform="scale(0.0104167)"/>
+                                  </pattern>
+                                  <image id="image0_13_542" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADEElEQVR4nO2dvW7UQBRGT0iyEhKhBlFAQ8O+BihUFEh5A3gCkCgRJQUEJQ0UPARltG8BCPHTBfECbDoimcIuCErWs54Zf2P7O9KVosQa37lnd3ZmvLHBGGOMMcYYY9qZA/vAZ+AEqCYeJ00t9pvaZGMGHAKnBXS61DgFDppaJWUGLAro4FBiQWIJhwV0amhx0KnS5zDHw06XOAXutBX3UtsBwGNgM+A4c5ZN4FHbQSEC7sXnMllaa7cR0MgSuBKfyyRZAldXHRAioGr5e0gbYyaqPiFDkMmIBYixADEWIMYCxFiAGAsQs6VOIIC2eXYbRa9T/A4QYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYixADEWIMYCxCgEPGO971jGss65nic4X3JyFGhdCX1E1+LnfgFlO0FJEmJe+YMVAGVIiB12Bi0AtBJSjPmDFwAaCak+cEchAPqVkHK2MxoB0I+E1FPNUQmAvBJyzPNHJwDySMi1yBqlAEgrIecKd7QCII2E3NsLoxYAcRL62NsZvQDoJqGvjbVJCID1JPS5qzkZARAmoe8t5UkJgNUSFPv5kxMA50tQXUyZpAA4K0F5JSuqPkP4F6WLeAlcbn5+oUwkBt8rIp6o+vhbEWIsQIwFiEnxIZx6JrRDfS/OHOwAvzO13YkS3wHXMrZ9PWPbnShRwK2Mbd/M2HYnShSwm7Ht+xnbzkboDmSq+EaetcUG8F3Qn2j6TrgCHqZI/D/2RH2JRpH0F2A7RfINM+CrqC/RKJKugPcpkm94K+xHNKrEK+BJgvyfivsQjTL5CnhHt1vBb1HfwVydfzTqDlTU4/ce4bOju8DHAvJuFZBiO7pPfgAfgCPgGPjV/P4G9SJrF3gA3JZkdz4razw0AUPE1wNKxgLEWICYEAHL7FmMl9ZrDyECfiZIZKoctx0QIuAoQSJTJUnt/BirbhH0GKtQSljSDy3edKr0BWzjRxmuEwvSbqcD9YbYAR6OVsUf6ld+8uL/yxx4DXyinqKqO62OZVOLVyQc840xxhhjjDHj5S+3x01jKGtNPgAAAABJRU5ErkJggg=="/>
+                                  </defs>
+                                  </svg> {% trans " Inbox" %}
+                                    {% unread_messages request.user as messages %}
+                                    {% if messages %}
+                                    <span onclick="location='{% url "messages_inbox" %}'" class="badge badge-danger rounded-pill ml-1 p-1">{{ messages }}+</span>
+                                    {% endif %}
+                              </a>
+                            </ul>
+                        </div>
+                        <div class="">
+                          <ul class="list-group m-0">
+                            <li class="list-group-item p-0 border-0">
+                              <a class="btn_wrapper d-flex p-2" href="{% url "group_list" %}"
+                                  role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 12.75C13.63 12.75 15.07 13.14 16.24 13.65C17.32 14.13 18 15.21 18 16.38V18H6V16.39C6 15.21 6.68 14.13 7.76 13.66C8.93 13.14 10.37 12.75 12 12.75ZM4 13C5.1 13 6 12.1 6 11C6 9.9 5.1 9 4 9C2.9 9 2 9.9 2 11C2 12.1 2.9 13 4 13ZM5.13 14.1C4.76 14.04 4.39 14 4 14C3.01 14 2.07 14.21 1.22 14.58C0.48 14.9 0 15.62 0 16.43V18H4.5V16.39C4.5 15.56 4.73 14.78 5.13 14.1ZM20 13C21.1 13 22 12.1 22 11C22 9.9 21.1 9 20 9C18.9 9 18 9.9 18 11C18 12.1 18.9 13 20 13ZM24 16.43C24 15.62 23.52 14.9 22.78 14.58C21.93 14.21 20.99 14 20 14C19.61 14 19.24 14.04 18.87 14.1C19.27 14.78 19.5 15.56 19.5 16.39V18H24V16.43ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6Z" fill="black"/>
+                                    </svg> {% trans " Groups" %} </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="">
+                          <ul class="list-group m-0">
+                            <li class="list-group-item p-0 border-0">
+                              <a class="btn_wrapper d-flex p-2" href="{% url "group_category_list" %}"
+                                  role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M32 40H20V28H12V40H0V48H12V60H20V48H32V40ZM72 44C78.64 44 83.96 38.64 83.96 32C83.96 25.36 78.64 20 72 20C70.72 20 69.48 20.2 68.36 20.56C70.64 23.8 71.96 27.72 71.96 32C71.96 36.28 70.6 40.16 68.36 43.44C69.48 43.8 70.72 44 72 44ZM52 44C58.64 44 63.96 38.64 63.96 32C63.96 25.36 58.64 20 52 20C45.36 20 40 25.36 40 32C40 38.64 45.36 44 52 44ZM78.48 52.64C81.8 55.56 84 59.28 84 64V72H96V64C96 57.84 86.52 54.04 78.48 52.64ZM52 52C44 52 28 56 28 64V72H76V64C76 56 60 52 52 52Z" fill="black"/>
+                                    </svg>{% trans " Group Category" %} </a>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="">
+                          <ul class="list-group m-0">
+                            <li class="list-group-item p-0 border-0">
+                              <a class="btn_wrapper d-flex p-2" id="logged-out"
+                                  role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <rect width="24" height="24" fill="url(#patternLogOut)"/>
+                                    <defs>
+                                    <pattern id="patternLogOut" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                    <use xlink:href="#image0_13_554" transform="scale(0.0104167)"/>
+                                    </pattern>
+                                    <image id="image0_13_554" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAACkklEQVR4nO2dS24TURBFDwQsRQHWgfLZBWwDBgh2A7KIMmAUKbvgtwk+Yg47wIEJiZpB21J4ErbaXe77PvdINYpcea9O+sZyt7vBGGOMMcYYY8ZzDMyBL8Al0BVel8u9zJd7y5YZcAZcox/aruoKOF3uNStmwEf0A5qqPpCZhDP0Q5m6XodMLoBj+kNTPZCp6wo4Gju822MbAM+BvYA+pbEHPBvbJELAo4AepfJ4bINbAYtYAPcC+pTIAngwpkGEgG6C36Fkp/uLiCAzAgsQYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBWzmKfBLvYh1bDpzVAMPgU9kur8WBADsA2/IcH+tCFjxhH+vd5JTuoAL4GDga25GkpzSBXTAV+Bw4OsOgPP45QynBgEd8Bt4IV7LVtQiYFXbRJKU2gR0wDfgRLmoIdQooKhIqlVAMZFUu4DsI6kFAVlHUisCso2k1gRkF0lTC9hmYLuobCKpVQHZRFLrAjrEkWQBfW0VST4lWQE+AhxB0vI/YVE1+zY0muIiJ6U1AfLISWlFQDaRk9KCgKwiJ6V2AdlFTkqtArKNnJQaBWQdOSm1Ccg+clJqEVBM5KTUIGCbyFldLS2ndAHnDI+cQ/rrSbPYX+kChuLL00X4CxpC/BUlIWnkhO7PtyzbzDXrT936lmUlYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYi5E9BjAdxf8/MaPhH9Hz/HNog4An4E9CiV72MbRAh4F9CjVN6qFwD9o5xafYzV0Js87YxT9AOZuuYhkwtiRv94P/VQpqr3wN2QyQUyo3+8X81x9If+Lz+74d/kCHgFfKZ/i6oe2thaLPfykowy3xhjjDHGGFMufwEixkJAg5MdigAAAABJRU5ErkJggg=="/>
+                                    </defs>
+                                    </svg> {% trans " Log Out" %} </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </ul>
+              {% else %}
+                  <div id="nav_avatar" class="avatar_mobile">
+                    <a class="btn">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
+                    </a>
                   </div>
-                  <div class="">
-                    <ul class="list-group m-0">
-                      <li class="list-group-item p-0 border-0">
-                        <a class="btn_wrapper d-flex p-2" href="{% url "favorite_list" %}"
-                            role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                              <rect width="24" height="24" fill="url(#pattern0)"/>
-                              <defs>
-                              <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
-                              <use xlink:href="#image0_13_535" transform="scale(0.0104167)"/>
-                              </pattern>
-                              <image id="image0_13_535" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAAEfklEQVR4nO2dW4hVVRzGf7txMpkLjU75IEpoTuA0EJEQoYOieSMEUyHBB6OHCAKFniKKHoKIIOghe5AeSsQblheEENQ0UlAfRPChIs0oImrKy+AMMWoPax8ahjmutfe67X3W/wffy2HNOd//W3uf2WuvtdcBQRAEQRAEQRAEQRAEIRUyz+/fCQzm6gfmA4/mr2fALWAIuAJcBs4CJ4G/PPl5BFgKPJv7mQvMALqAe8Aw8AfwY+7nNPBt/nptyIDVwD5gFFVYEY0B3wCbgHYHftrz9zqVv3dRPyPAXmAV/g9YazYClyheZDP9CrwJdJTw0gG8Bfzm0M9F4MUSXrzTBxzHXaETdQ1YX8DPBuAXj36OAY8X8OOVzajvcl/FjtdBoOc+XqYDhwJ5uYn6aotGBrxPmGLH6yrw9CR+ngF+juDnPSL8b8iATy2N2x59y8b5eZ5wZ+Fk2k7gTohx5E/UCLAEdVlZ5mrLx5kQhM2BCjLR9VyxfTT0kkWuRvQR91Svum4A80qna4DPS81W0bHS6WrYWIHi6qJ1JTNuSobbEW6r6yKOr4rWVKCoummlSbAPmDQCXjZsJ/zPFpNGJqdJF/AnMNXKTnqMAL3A7fs1MjkDFiPhl2EasEjXyKQDBu29JMsSXQOTDuh3YCRVFugamHRAnwMjqfKEroFJB/Q6MJIq2uxMOqDTgZFU6dI1MOmAOw6MpIo2O5MO+NuBkVQZ0jWQDvCLNjuTDrjmwEiqaLMz6YALDoykynldA+kAv2izM7kZ14NaL+limWBK/AvMRM1ZN8XkDPgHtWBWKMZxNOGD+XzAATsvSWKUmem0WS9qreW00nbS4jYwG0eXoaDW6++ycZQYO/EwfuoH7hJ/rrUOGiiZsZajFSiu6jpcOl0DBlA3mGIXWVWNAU+WTteQnRUotKr6zCJXY+Yg60Mn0w1gVtEw24r+Qf5BoxguPEqIN1CDryC0oe5zxD7qqqJzlDuYrViAGnDELj62RvB42anjdQODra5XrVO0IAOOTGIqFX1lH6E9PahH+2OHEVo/AA87yM8JA6j9FGKHEkrDBBhwFWUDaYyS7+S1VpLXiB+Qb21zlpYnPiR+SL70gcOcvJEBnxM/LNfajfn8SXTaUY9rxg7NlU5Qw4dUuoEzxA/PVt9hsMi2qnSgdqqKHaJN+N3OUwlMXTvhDC0QfoO6dUJLhd+gG7UZX+xwdTpJjb/zdUwF9hM/5GY6TAJrn9qAHcQPe6K+AKZ4rLtSZKhRZezQG/qYGuwJ6oOtxF3sdRd413uVFecVyu1oa6ux/LMFYC1h55dHURtQCeMYJMwGfLeA5YFqqh39qP2ifYX/O/BUsGpqymPA97gP/ycqtN9z1ZmB+i0BV+FfQP1ugVCATuBr7MM/QQve1wnFg8Aeyof/JfBQcNctRgZ8RPHwP6FGU4h14B3Mw387kseWZwvqAehmwY8Rea1mCqxA/X7AxPCHgRci+kqKhajtExrhDwHPRXWUIHNRC2SvYLA5nuCHmbkEQRAEQRAEQRAEQagF/wGocKkH6fhM+gAAAABJRU5ErkJggg=="/>
-                              </defs>
-                              </svg> {% trans " Favorites" %} </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="">
-                    <ul class="list-group m-0">
-                        <a class="btn_wrapper d-flex p-2" href="{% url "messages_inbox" %}"
-                          role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <rect width="24" height="24" fill="url(#patternInbox)"/>
-                            <defs>
-                            <pattern id="patternInbox" patternContentUnits="objectBoundingBox" width="1" height="1">
-                            <use xlink:href="#image0_13_542" transform="scale(0.0104167)"/>
-                            </pattern>
-                            <image id="image0_13_542" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAADEElEQVR4nO2dvW7UQBRGT0iyEhKhBlFAQ8O+BihUFEh5A3gCkCgRJQUEJQ0UPARltG8BCPHTBfECbDoimcIuCErWs54Zf2P7O9KVosQa37lnd3ZmvLHBGGOMMcYYY9qZA/vAZ+AEqCYeJ00t9pvaZGMGHAKnBXS61DgFDppaJWUGLAro4FBiQWIJhwV0amhx0KnS5zDHw06XOAXutBX3UtsBwGNgM+A4c5ZN4FHbQSEC7sXnMllaa7cR0MgSuBKfyyRZAldXHRAioGr5e0gbYyaqPiFDkMmIBYixADEWIMYCxFiAGAsQs6VOIIC2eXYbRa9T/A4QYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYixADEWIMYCxCgEPGO971jGss65nic4X3JyFGhdCX1E1+LnfgFlO0FJEmJe+YMVAGVIiB12Bi0AtBJSjPmDFwAaCak+cEchAPqVkHK2MxoB0I+E1FPNUQmAvBJyzPNHJwDySMi1yBqlAEgrIecKd7QCII2E3NsLoxYAcRL62NsZvQDoJqGvjbVJCID1JPS5qzkZARAmoe8t5UkJgNUSFPv5kxMA50tQXUyZpAA4K0F5JSuqPkP4F6WLeAlcbn5+oUwkBt8rIp6o+vhbEWIsQIwFiEnxIZx6JrRDfS/OHOwAvzO13YkS3wHXMrZ9PWPbnShRwK2Mbd/M2HYnShSwm7Ht+xnbzkboDmSq+EaetcUG8F3Qn2j6TrgCHqZI/D/2RH2JRpH0F2A7RfINM+CrqC/RKJKugPcpkm94K+xHNKrEK+BJgvyfivsQjTL5CnhHt1vBb1HfwVydfzTqDlTU4/ce4bOju8DHAvJuFZBiO7pPfgAfgCPgGPjV/P4G9SJrF3gA3JZkdz4razw0AUPE1wNKxgLEWICYEAHL7FmMl9ZrDyECfiZIZKoctx0QIuAoQSJTJUnt/BirbhH0GKtQSljSDy3edKr0BWzjRxmuEwvSbqcD9YbYAR6OVsUf6ld+8uL/yxx4DXyinqKqO62OZVOLVyQc840xxhhjjDHj5S+3x01jKGtNPgAAAABJRU5ErkJggg=="/>
-                            </defs>
-                            </svg> {% trans " Inbox" %}
-                              {% unread_messages request.user as messages %}
-                              {% if messages %}
-                              <span onclick="location='{% url "messages_inbox" %}'" class="badge badge-danger rounded-pill ml-1 p-1">{{ messages }}+</span>
-                              {% endif %}
-                        </a>
-                      </ul>
-                  </div>
-                  <div class="">
-                    <ul class="list-group m-0">
-                      <li class="list-group-item p-0 border-0">
-                        <a class="btn_wrapper d-flex p-2" href="{% url "group_list" %}"
-                            role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 12.75C13.63 12.75 15.07 13.14 16.24 13.65C17.32 14.13 18 15.21 18 16.38V18H6V16.39C6 15.21 6.68 14.13 7.76 13.66C8.93 13.14 10.37 12.75 12 12.75ZM4 13C5.1 13 6 12.1 6 11C6 9.9 5.1 9 4 9C2.9 9 2 9.9 2 11C2 12.1 2.9 13 4 13ZM5.13 14.1C4.76 14.04 4.39 14 4 14C3.01 14 2.07 14.21 1.22 14.58C0.48 14.9 0 15.62 0 16.43V18H4.5V16.39C4.5 15.56 4.73 14.78 5.13 14.1ZM20 13C21.1 13 22 12.1 22 11C22 9.9 21.1 9 20 9C18.9 9 18 9.9 18 11C18 12.1 18.9 13 20 13ZM24 16.43C24 15.62 23.52 14.9 22.78 14.58C21.93 14.21 20.99 14 20 14C19.61 14 19.24 14.04 18.87 14.1C19.27 14.78 19.5 15.56 19.5 16.39V18H24V16.43ZM12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6Z" fill="black"/>
-                              </svg> {% trans " Groups" %} </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="">
-                    <ul class="list-group m-0">
-                      <li class="list-group-item p-0 border-0">
-                        <a class="btn_wrapper d-flex p-2" href="{% url "group_category_list" %}"
-                            role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M32 40H20V28H12V40H0V48H12V60H20V48H32V40ZM72 44C78.64 44 83.96 38.64 83.96 32C83.96 25.36 78.64 20 72 20C70.72 20 69.48 20.2 68.36 20.56C70.64 23.8 71.96 27.72 71.96 32C71.96 36.28 70.6 40.16 68.36 43.44C69.48 43.8 70.72 44 72 44ZM52 44C58.64 44 63.96 38.64 63.96 32C63.96 25.36 58.64 20 52 20C45.36 20 40 25.36 40 32C40 38.64 45.36 44 52 44ZM78.48 52.64C81.8 55.56 84 59.28 84 64V72H96V64C96 57.84 86.52 54.04 78.48 52.64ZM52 52C44 52 28 56 28 64V72H76V64C76 56 60 52 52 52Z" fill="black"/>
-                              </svg>{% trans " Group Category" %} </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="">
-                    <ul class="list-group m-0">
-                      <li class="list-group-item p-0 border-0">
-                        <a class="btn_wrapper d-flex p-2" id="logged-out"
-                            role="tab" class="p-2"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                              <rect width="24" height="24" fill="url(#patternLogOut)"/>
-                              <defs>
-                              <pattern id="patternLogOut" patternContentUnits="objectBoundingBox" width="1" height="1">
-                              <use xlink:href="#image0_13_554" transform="scale(0.0104167)"/>
-                              </pattern>
-                              <image id="image0_13_554" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABmJLR0QA/wD/AP+gvaeTAAACkklEQVR4nO2dS24TURBFDwQsRQHWgfLZBWwDBgh2A7KIMmAUKbvgtwk+Yg47wIEJiZpB21J4ErbaXe77PvdINYpcea9O+sZyt7vBGGOMMcYYY8ZzDMyBL8Al0BVel8u9zJd7y5YZcAZcox/aruoKOF3uNStmwEf0A5qqPpCZhDP0Q5m6XodMLoBj+kNTPZCp6wo4Gju822MbAM+BvYA+pbEHPBvbJELAo4AepfJ4bINbAYtYAPcC+pTIAngwpkGEgG6C36Fkp/uLiCAzAgsQYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBWzmKfBLvYh1bDpzVAMPgU9kur8WBADsA2/IcH+tCFjxhH+vd5JTuoAL4GDga25GkpzSBXTAV+Bw4OsOgPP45QynBgEd8Bt4IV7LVtQiYFXbRJKU2gR0wDfgRLmoIdQooKhIqlVAMZFUu4DsI6kFAVlHUisCso2k1gRkF0lTC9hmYLuobCKpVQHZRFLrAjrEkWQBfW0VST4lWQE+AhxB0vI/YVE1+zY0muIiJ6U1AfLISWlFQDaRk9KCgKwiJ6V2AdlFTkqtArKNnJQaBWQdOSm1Ccg+clJqEVBM5KTUIGCbyFldLS2ndAHnDI+cQ/rrSbPYX+kChuLL00X4CxpC/BUlIWnkhO7PtyzbzDXrT936lmUlYwFiLECMBYixADEWIMYCxFiAGAsQYwFiLECMBYi5E9BjAdxf8/MaPhH9Hz/HNog4An4E9CiV72MbRAh4F9CjVN6qFwD9o5xafYzV0Js87YxT9AOZuuYhkwtiRv94P/VQpqr3wN2QyQUyo3+8X81x9If+Lz+74d/kCHgFfKZ/i6oe2thaLPfykowy3xhjjDHGGFMufwEixkJAg5MdigAAAABJRU5ErkJggg=="/>
-                              </defs>
-                              </svg> {% trans " Log Out" %} </a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </ul>
+              {% endif %}
             {% else %}
           <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Sign in" %} </a></li>
           {% endif %}
@@ -213,7 +235,9 @@
       $("body").toggleClass('menu-is-open');
     })
     $('.header-nav__close').on('click', function() {
-      $("body").toggleClass('menu-is-open');
+      $("body").removeClass('menu-is-open');
+      $("body").removeClass('mobilemenu-is-open');
+      $("body").removeClass('avatarmenu-is-open');
     })
 
     $('.header-nav').on('dblclick', function() {

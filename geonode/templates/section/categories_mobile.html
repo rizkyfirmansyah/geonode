@@ -1,0 +1,37 @@
+{% load i18n %}
+{% load base_tags %}
+
+<nav class="header-nav__menu">
+
+  <a href="#" class="header-nav__close" title="close"><span>Close</span></a>
+  <div class="header-nav__content">
+    <div class="menu_nav">
+      <h3>Information Categories</h3>
+      {% get_categories as categories %}
+      <ul class="" id="">
+        {% for category in categories %}
+        <li>
+          <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"
+            title="{{ category.title }}" class="btn btn_wrapper text-light text-left mb-2">
+            {{ category.title }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+</nav>
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(function() {
+
+    $('.menu_categories').on('click', function() {
+        $("body").toggleClass('mobilemenu-is-open');
+    })
+    
+  });
+
+</script>
+{% endblock extra_script %}

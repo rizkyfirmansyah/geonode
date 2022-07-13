@@ -38,7 +38,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
     {% if "download_resourcebase" in perms_list %}
     {% if resource.extension|lower in audiotypes and resource.doc_file %}
     {% get_mime_type mimetypemap resource.extension as mimetype %}
@@ -128,7 +128,7 @@
     </div>
   </div>
 
-  <div class="col-md-4">
+  <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0{% endif %}">
 
     <ul class="list-group">
       <li class="list-group-item">
