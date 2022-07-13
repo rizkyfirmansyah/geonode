@@ -1548,8 +1548,8 @@ class HttpClient:
         self.password = 'admin'
         if check_ogc_backend(geoserver.BACKEND_PACKAGE):
             ogc_server_settings = settings.OGC_SERVER['default']
-            self.timeout = ogc_server_settings.get('TIMEOUT', 5)
-            self.retries = ogc_server_settings.get('MAX_RETRIES', 1)
+            self.timeout = ogc_server_settings.get('TIMEOUT', 30)
+            self.retries = ogc_server_settings.get('MAX_RETRIES', 5)
             self.backoff_factor = ogc_server_settings.get('BACKOFF_FACTOR', 0.3)
             self.pool_maxsize = ogc_server_settings.get('POOL_MAXSIZE', 10)
             self.pool_connections = ogc_server_settings.get('POOL_CONNECTIONS', 10)
