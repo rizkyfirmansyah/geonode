@@ -367,7 +367,7 @@ class DocumentExtResource(TypeFilteredResource):
         request = bundle.request
         obj_with_perms = get_objects_for_user(request.user, 'base.view_resourcebase')
 
-        filter_set = Document.objects.all().filter(id__in=obj_with_perms, extension=bundle.obj.extension)
+        filter_set = Document.objects.all().filter(id__in=obj_with_perms, extension=bundle.obj.extension).exclude(extension='')
         if not settings.SKIP_PERMS_FILTER:
             filter_set = get_visible_resources(
                 filter_set,

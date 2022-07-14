@@ -699,30 +699,6 @@ class CommonModelApi(ModelResource):
                 _links = Document.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
                 formatted_obj['link__extension'] = _links[0].get('extension')
 
-            elif obj.resource_type == 'layer':
-                _links = Link.objects.filter(resource_id=obj.id, link_type='original').values('extension', 'name')
-                extension = ''
-                _name = list(_links)[0]['name']
-
-                if "Original Dataset" in _name:
-                    extension = 'shp'
-                else:
-                    extension = list(_links)[0]['extension']
-
-                formatted_obj['link__extension'] = extension
-
-            elif obj.resource_type == 'remoteStore':
-                formatted_obj['link__extension'] = 'Web Map Service'
-
-            elif obj.resource_type == 'map':
-                formatted_obj['link__extension'] = 'Maps'
-
-            elif obj.resource_type == 'geoapp':
-                formatted_obj['link__extension'] = 'GeoApp'
-
-            else:
-                formatted_obj['link__extension'] = 'Uncategorized'
-
             formatted_objects.append(formatted_obj)
 
         return formatted_objects
