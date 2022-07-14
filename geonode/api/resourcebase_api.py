@@ -159,7 +159,7 @@ class CommonModelApi(ModelResource):
         'data_description',
         'csw_wkt_geometry',
         'csw_type',
-        'owner__username',
+        'owner__full_name',
         'share_count',
         'popular_count',
         'srid',
@@ -348,7 +348,7 @@ class CommonModelApi(ModelResource):
         regions = parameters.getlist("regions__name__in")
 
         # Owner filters
-        owner = parameters.getlist("owner__username__in")
+        owner = parameters.getlist("owner__full_name__in")
 
         # Sort order
         sort = parameters.get("order_by", "relevance")
@@ -466,7 +466,7 @@ class CommonModelApi(ModelResource):
         if owner:
             sqs = (
                 SearchQuerySet() if sqs is None else sqs).narrow(
-                    f"owner__username:{','.join(map(str, owner))}")
+                    f"owner__full_name:{','.join(map(str, owner))}")
 
         # filter by date
         if date_start:
@@ -656,7 +656,7 @@ class CommonModelApi(ModelResource):
                 formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_obj['owner__username'] = obj.owner.username
-            formatted_obj['owner_name'] = obj.owner.get_full_name() or obj.owner.username
+            formatted_obj['owner__full_name'] = obj.owner.get_full_name() or obj.owner.username
             formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
                 obj.get_self_resource().get_user_perms(request.user)))
 

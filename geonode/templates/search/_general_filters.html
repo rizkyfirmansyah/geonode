@@ -37,22 +37,6 @@
     </ul>
 </nav>
 {% endif %}
-{% if SEARCH_FILTERS.OWNERS_ENABLED %}
-<nav class="filter" ng-cloak>
-    <a href="#owners" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Responsibles</a>
-    <ul class="collapse list-unstyled" id="owners">
-        {% verbatim %}
-        <li ng-repeat="owner in owners" ng-if="owner.count > 0">
-            <a data-value="{{ owner.username }}" data-filter="owner__username__in"
-                ng-click="multiple_choice_listener($event)"
-                class="{{ owner.active }}">{{ owner.full_name ? owner.full_name : owner.username }}
-                <span class="badge float-right">{{ owner.count }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-    </ul>
-</nav>
-{% endif %}
 {% if SEARCH_FILTERS.GROUPS_ENABLED %}
 {% verbatim %}
 <nav class="filter" ng-cloak>

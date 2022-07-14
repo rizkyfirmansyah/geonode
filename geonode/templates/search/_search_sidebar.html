@@ -35,6 +35,7 @@
           {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
             {% include "search/_keywords_filter.html" %}
           {% endif %}
+          {% include "search/_owners_filter.html" %}
           {% if SEARCH_FILTERS.REGION_ENABLED %}
             {% include "search/_region_filter.html" %}
           {% endif %}

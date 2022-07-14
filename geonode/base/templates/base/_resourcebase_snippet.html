@@ -33,12 +33,12 @@
             <div class="row ml-1">
               <div class="avatar">
                 <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">
-                  <img src="{{ item.avatar }}" width="34" alt="{{ item.owner_name }}">
+                  <img src="{{ item.avatar }}" width="34" alt="{{ item.owner__full_name }}">
                 </a>
               </div>
               <div class="col-10 pr-0 pl-2">
                 <div class="row w-100 m-0">
-                  <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner_name }}</a></div>
+                  <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner__full_name }}</a></div>
                   <div ng-controller="CartList" class="text-right" ng-repeat="(key, value) in item.category__icons">
                     <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
                       <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>

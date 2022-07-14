@@ -35,6 +35,7 @@ class DocumentIndex(indexes.SearchIndex, indexes.Indexable):
     csw_wkt_geometry = indexes.CharField(model_attr="csw_wkt_geometry")
     detail_url = indexes.CharField(model_attr="get_absolute_url")
     owner__username = indexes.CharField(model_attr="owner", faceted=True, null=True)
+    owner__full_name = indexes.CharField(model_attr="owner", faceted=True, null=True)
     srid = indexes.CharField(model_attr="srid")
     supplemental_information = indexes.CharField(model_attr="supplemental_information", null=True)
     thumbnail_url = indexes.CharField(model_attr="thumbnail_url", null=True)

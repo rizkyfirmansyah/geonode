@@ -729,18 +729,18 @@ class OwnersResource(TypeFilteredResource):
             options = {}
         options['count_type'] = 'owner'
 
-        return super(OwnersResource, self).serialize(request, data, format, options)
+        return super().serialize(request, data, format, options)
 
     class Meta:
         queryset = get_user_model().objects.exclude(username='AnonymousUser')
         resource_name = 'owners'
         allowed_methods = ['get']
-        ordering = ['username', 'date_joined']
-        excludes = ['is_staff', 'password', 'is_superuser',
+        ordering = ['full_name', 'date_joined']
+        excludes = ['is_staff', 'password', 'is_superuser', 'area', 'city', 'country', 'email', 'position', 'date_joined',
                     'is_active', 'last_login']
 
         filtering = {
-            'username': ALL,
+            'username': ALL
         }
         serializer = CountJSONSerializer()
         authorization = ApiLockdownAuthorization()

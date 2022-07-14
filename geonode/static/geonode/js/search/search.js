@@ -251,6 +251,7 @@
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
+        params['limit'] = 0;
         $http.get(OWNERS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
@@ -685,6 +686,8 @@
             if (type === 'select-multiple') {
                 if (type_id === 'keywords') {
                     data_filter = 'keywords__slug__in'
+                } else if (type_id === 'owners') {
+                    data_filter = 'owner__username__in'
                 }
                 if (selected.length != 0) {
                     value = selected;
