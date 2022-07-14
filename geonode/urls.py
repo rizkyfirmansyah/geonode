@@ -60,7 +60,7 @@ sitemaps = {
     "map": MapSitemap
 }
 
-homepage = register_url_event()(TemplateView.as_view(template_name='landing_page.html'))
+homepage = register_url_event()(TemplateView.as_view(template_name='index.html'))
 
 urlpatterns = [
     url(r'^$',

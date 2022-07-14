@@ -3,12 +3,13 @@
 {% load user_messages %}
 
 <nav class="header-nav__avatar">
-
-  <a href="#" class="header-nav__close" title="close"><span>Close</span></a>
+  <div class="row align-items-center">
+    <h3>Profile Menu</h3>
+    <a href="#" class="header-nav__close" title="Close"><span>Close</span></a>
+  </div>
   <div class="header-nav__content">
     <div class="menu_nav">
-      <h3>Profile Menu</h3>
-      <ul class="" id="">
+      <ul class="list-unstyled">
         <li>
           <a class="btn_wrapper mb-2 text-light" href="{% url "profile_detail" user.username %}"
               role="tab" class="p-2">

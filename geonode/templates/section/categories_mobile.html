@@ -2,13 +2,14 @@
 {% load base_tags %}
 
 <nav class="header-nav__menu">
-
-  <a href="#" class="header-nav__close" title="close"><span>Close</span></a>
+  <div class="row align-items-center">
+    <h3>Information Categories</h3>
+    <a href="#" class="header-nav__close" title="Close"><span>Close</span></a>
+  </div>
   <div class="header-nav__content">
-    <div class="menu_nav">
-      <h3>Information Categories</h3>
+    <div>
       {% get_categories as categories %}
-      <ul class="" id="">
+      <ul class="list-unstyled">
         {% for category in categories %}
         <li>
           <a data-value="{{ category.identifier }}" href="/catalogue?category__identifier__in={{ category.identifier }}"

@@ -15,8 +15,9 @@
       
         <div class="auto-margin home-content__main">
           <div class="row m-1">
-            <div class="col home-title__line">
-            </div>
+            {% if not request.user_agent.is_mobile %}
+              <div class="col home-title__line"></div>
+            {% endif %}
             <div class="col">
               <h3 class="{% if not custom_theme.jumbotron_title_color %} text-light {% endif %}">
                 {% if custom_theme.jumbotron_welcome_title %}

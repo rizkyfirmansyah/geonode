@@ -43,10 +43,6 @@
                   {% endfor %}
                 </ul>
               </li>
-            {% else %}
-                <button type="button" class="btn menu_categories" aria-label="Toggle Information Categories">
-                  <i class="fa-solid fa-cube fa-3x" style="color: white;"></i>
-                </button>
             {% endif %}
           {% endif %}
           <li class="list-inline-item mr-2" id="user_menu">
@@ -179,11 +175,6 @@
                       </div>
                     </div>
                   </ul>
-              {% else %}
-                  <div id="nav_avatar" class="avatar_mobile">
-                    <a class="btn">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
-                    </a>
-                  </div>
               {% endif %}
             {% else %}
           <li class="d-inline"><a href="#" data-toggle="modal" data-target="#SigninModal" role="button">{% trans "Sign in" %} </a></li>
@@ -208,7 +199,17 @@
           {% endif %}
         </ul>
       </div>
-      <div class="pt-2 d-flex">
+      <div class="pt-2 d-flex" id="navigation_mobile">
+        {% if request.user_agent.is_mobile %}
+          <button type="button" class="btn menu_categories" aria-label="Toggle Information Categories">
+            <i class="fa-solid fa-cube" style="color: white;"></i>
+          </button>
+          
+          <div id="nav_avatar" class="avatar_mobile">
+            <a class="btn">{% autoescape off %}{% avatar request.user 34 %}{% endautoescape %}
+            </a>
+          </div>
+        {% endif %}
         {% get_current_path as path %}
           <button type="button" class="btn menu_navigation" aria-label="Toggle Navigation">
             <svg width="28px" viewBox="0 0 22 19"><path fill="transparent" stroke-width="2" stroke="#fff" stroke-linecap="round" d="M 2 2.5 L 20 2.5"></path><path fill="transparent" stroke-width="2" stroke="#fff" stroke-linecap="round" d="M 2 9.423 L 20 9.423" opacity="1"></path><path fill="transparent" stroke-width="2" stroke="#fff" stroke-linecap="round" d="M 2 16.346 L 20 16.346"></path></svg>

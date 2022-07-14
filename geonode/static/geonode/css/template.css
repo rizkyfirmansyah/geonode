@@ -751,6 +751,11 @@ button.full-width {
 ----------------------------------------------------- */
 
 @media (max-width: 600px) {
+  
+  #navigation_mobile {
+    position: absolute;
+    right: 0;
+  }
 
   .mobilemenu-is-open .header-nav__menu,
   .avatarmenu-is-open .header-nav__avatar {
@@ -796,23 +801,6 @@ button.full-width {
     width: 100%;
   }
 
-  .menu_navigation {
-    position: absolute;
-    right: 0.5em;
-    top: 1em;
-  }
-
-  .avatar_mobile {
-    position: absolute;
-    right: 4em;
-    top: 0.5em;
-  }
-
-  .menu_categories {
-    position: absolute;
-    right: 10em;
-    top: 1em;
-  }
 }
 
 @media (min-width: 1200px) {
@@ -1114,17 +1102,13 @@ button.full-width {
 }
 
 .header-nav__close {
-  display: block;
-  height: 30px;
   width: 30px;
-  border-radius: 3px;
   position: absolute;
-  top: 50px;
   right: 30px;
   font: 0/0 a;
   text-shadow: none;
   color: transparent;
-  z-index: 800
+  z-index: 800;
 }
 
 .header-nav__close span::after,

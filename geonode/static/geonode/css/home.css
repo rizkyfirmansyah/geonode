@@ -362,7 +362,16 @@ border-color: var(--upload) !important
     color: #343a40 !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1200px) {
+  .home-content h1 {
+    font-size: 2.5rem;
+  }
+
+  #navigation_mobile {
+    position: absolute;
+    right: 0;
+  }
+
   #login_mobile {
     position: absolute;
     top: 1em;
@@ -421,27 +430,25 @@ border-color: var(--upload) !important
     width: 100%;
   }
 
-  .menu_navigation {
-    position: absolute;
-    right: 0.5em;
-    top: 1em;
-  }
-
-  .avatar_mobile {
-    position: absolute;
-    right: 4em;
-    top: 0.5em;
-  }
-
-  .menu_categories {
-    position: absolute;
-    right: 10em;
-    top: 1em;
+  .menu_categories>svg {
+    width: 32px;
+    height: 32px;
   }
 }
 
 @media (min-width: 1200px) {
-
+  .btn-search>svg {
+    width: 2em;
+    height: 2em;
+  }
+  .home-content h1 {
+    font-size: 3.3rem;
+  }
+  
+  .search-field form input {
+      font-size: 2em;
+  }
+  
   .s-header {
       position: fixed;
       top: 0;
@@ -736,17 +743,13 @@ margin: 0
 }
 
 .header-nav__close {
-display: block;
-height: 30px;
-width: 30px;
-border-radius: 3px;
-position: absolute;
-top: 50px;
-right: 30px;
-font: 0/0 a;
-text-shadow: none;
-color: transparent;
-z-index: 800
+  width: 30px;
+  position: absolute;
+  right: 30px;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+  z-index: 800;
 }
 
 .header-nav__close span::after,
@@ -2007,7 +2010,6 @@ input::-moz-focus-inner {
 
 .home-content h1 {
   font-family: Solanel-Medium, sans-serif;
-  font-size: 3.3rem;
   line-height: 1.333;
   margin-top: 0;
   color: #fff!important
@@ -2078,8 +2080,6 @@ input::-moz-focus-inner {
 
 .btn-search>svg {
   fill: var(--secondary);
-  width: 2em;
-  height: 2em;
 }
 
 #datasets .buttons-html5 {
@@ -2100,7 +2100,6 @@ input::-moz-focus-inner {
   background: 0 0;
   border: none!important;
   display: block;
-  font-size: 2em!important;
   transition: all .2s ease-out, color .2s ease-out;
   border-bottom: 1px solid gray !important;
 }
@@ -3824,15 +3823,9 @@ article.tab-pane {
   }
 }
 
-@media only screen and (max-width:1500px) {
-  .home-content__main {
-      max-width: 1000px
-  }
-}
-
 @media only screen and (max-width:1200px) {
   .home-content__main {
-      max-width: 800px
+      padding-top: 7.7rem;
   }
 }
 
@@ -3841,9 +3834,7 @@ article.tab-pane {
       display: none
   }
   .home-content__main {
-      padding-top: 21rem;
-      padding-right: 80px;
-      max-width: 680px
+      padding-top: 7.5rem;
   }
 }
 
@@ -3852,15 +3843,11 @@ article.tab-pane {
       font-size: 1.5rem
   }
   .home-content__main {
-      padding-right: 70px;
-      max-width: 550px
+      padding-top: 7.3rem;
   }
 }
 
 @media only screen and (max-width:700px) {
-  .home-content__main {
-      max-width: 490px
-  }
   .home-content__buttons {
       padding-top: 1.2rem;
       text-align: center
@@ -3874,10 +3861,10 @@ article.tab-pane {
       right: 4rem
   }
   .home-content__scroll {
-      right: 7.5rem
+      right: 6.5rem
   }
   .home-content__line {
-      right: 5.5rem
+      right: 4.1rem
   }
 }
 
@@ -3896,10 +3883,10 @@ article.tab-pane {
       display: none
   }
   .home-content__scroll {
-      bottom: 5.4rem
+      bottom: 2rem
   }
   .home-content__line {
-      height: 7.2rem
+      height: 4rem
   }
 }
 
@@ -3908,9 +3895,7 @@ article.tab-pane {
       min-height: 642px
   }
   .home-content__main {
-      max-width: none;
-      padding-top: 15rem;
-      padding-right: 1em;
+      padding-top: 7rem;
   }
   .home-content__buttons {
       padding-top: 1.2rem
