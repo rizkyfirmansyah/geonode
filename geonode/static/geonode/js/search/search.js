@@ -77,6 +77,7 @@
 
     module.load_keywords = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
+        params['limit'] = 0;
         $http.get(KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
@@ -638,20 +639,22 @@
          * Add the selection behavior to the element, it adds/removes the 'active' class
          * and pushes/removes the value of the element from the query object
          */
-        $scope.multiple_choice_listener = function($event) {
+        $scope.multiple_choice_listener = function($event, selected) {
             $scope.infiniteScrollLoaded = true;
             $scope.filter = true;
             $scope.offset = 0;
             $scope.init = true;
             $scope.infiniteScroll = 0;
+            
             var element = $($event.currentTarget);
+            var type = $event.currentTarget.type;
+            var type_id = $event.currentTarget.id;
             var query_entry = [];
             var data_filter = element.attr('data-filter');
             var value = element.attr('data-value');
 
             // If the query object has the record then grab it
-            if ($scope.query.hasOwnProperty(data_filter)) {
-
+            if ($scope.query.hasOwnProperty(data_filter) && type != 'select-multiple') {
                 // When in the location are passed two filters of the same
                 // type then they are put in an array otherwise is a single string
                 if ($scope.query[data_filter] instanceof Array) {
@@ -662,7 +665,7 @@
             }
 
             // If the element is active then deactivate it
-            if (element.hasClass('active')) {
+            if (element.hasClass('active') && type != 'select-multiple') {
                 // clear the active class from it
                 element.removeClass('active');
                 $scope.offset = 0;
@@ -670,7 +673,7 @@
                 query_entry.splice(query_entry.indexOf(value), 1);
             }
             // if is not active then activate it
-            else if (!element.hasClass('active')) {
+            else if (!element.hasClass('active') && type != 'select-multiple') {
                 // Add the entry in the correct query
                 if (query_entry.indexOf(value) == -1) {
                     query_entry.push(value);
@@ -678,17 +681,23 @@
                 element.addClass('active');
             }
 
-            //save back the new query entry to the scope query
-            $scope.query[data_filter] = query_entry;
+            if (type === 'select-multiple') {
+                if (type_id === 'keywords') {
+                    data_filter = 'keywords__slug__in'
+                }
+                if (selected.length != 0) {
+                    value = selected;
+                    query_entry = selected;
 
-            //if the entry is empty then delete the property from the query
-            if (query_entry.length == 0) {
-                $scope.filter = false;
-                $scope.offset = 0;
-                $scope.infiniteScroll = 0;
-                $scope.init = true;
-                $scope.query = {};
+                }
+                $scope.query[data_filter] = query_entry;
+                if (selected.length == 0)
+                    delete $scope.query['keywords__slug__in']
+            } else {
+                //save back the new query entry to the scope query
+                $scope.query[data_filter] = query_entry;
             }
+            
             query_api($scope.query);
         }
 
@@ -787,6 +796,9 @@
           if (HAYSTACK_SEARCH) {
               $scope.query['q'] = $('#text_search_input').val('');
           }
+          $('.selectpicker').selectpicker('val', '');
+          $('.selectpicker').selectpicker('refresh');
+          
           $scope.query = {};
           $scope.offset = 0;
           $scope.infiniteScroll = 0;
