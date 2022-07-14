@@ -159,6 +159,19 @@
     OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
 
+/* remove bs select all btn */
+select[data-max-options="1"] ~ .dropdown-menu .bs-actionsbox .bs-select-all {
+  display: none;
+}
+
+.remove-select .dropdown-menu .bs-actionsbox .bs-select-all {
+  display: none !important;
+}
+
+select[data-max-options="1"] ~ .dropdown-menu .bs-actionsbox .bs-deselect-all {
+  width: 100%;
+}
+
 .form-control:focus {
     border-color: var(--primary) !important;
     box-shadow: 0 0 0 .2rem var(--primary) !important;
@@ -5273,18 +5286,11 @@ footer li a:hover {
     padding: 10px;
     display: block;
     min-height: 40px;
-    color: var(--secondary);
 }
 
 #sidebar ul li a:hover,
 #sidebarGroup ul li a:hover {
-    background: var(--secondary);
-}
-
-#sidebar ul li.active>a,
-#sidebarGroup ul li.active>a,
-a[aria-expanded="true"] {
-    color: var(--secondary);
+    background: var(--link);
 }
 
 a[data-toggle="collapse"] {

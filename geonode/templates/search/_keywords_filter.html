@@ -3,7 +3,7 @@
 
 {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
   {% verbatim %}
-  <select title="Select Keywords" class="form-select selectpicker mb-2" id="keywords" multiple data-live-search="true" data-size="10" data-width="100%" data-container="body" data-actions-box="true">
+  <select title="Select Keywords" class="form-select selectpicker mb-2 remove-select" id="keywords" multiple data-live-search="true" data-size="10" data-width="100%" data-container="body" data-actions-box="true" data-deselect-all-text="Deselect">
     <option ng-repeat="keyword in keywords" data-content="<span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>{{ keyword.name }}</span>">{{ keyword.name }}</option>
   </select>
   {% endverbatim %}

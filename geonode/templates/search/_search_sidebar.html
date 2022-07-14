@@ -35,6 +35,9 @@
           {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
             {% include "search/_keywords_filter.html" %}
           {% endif %}
+          {% if SEARCH_FILTERS.REGION_ENABLED %}
+            {% include "search/_region_filter.html" %}
+          {% endif %}
           {% include "search/_datatype_filter.html" %}
           {% if SEARCH_FILTERS.T_KEYWORDS_ENABLED %}
             {% include "search/_t_keywords_filter.html" %}

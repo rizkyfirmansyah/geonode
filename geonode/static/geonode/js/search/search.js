@@ -167,6 +167,7 @@
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
+        params['limit'] = 0;
         $http.get(REGIONS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
@@ -688,7 +689,6 @@
                 if (selected.length != 0) {
                     value = selected;
                     query_entry = selected;
-
                 }
                 $scope.query[data_filter] = query_entry;
                 if (selected.length == 0)
@@ -701,11 +701,14 @@
             query_api($scope.query);
         }
 
-        $scope.single_choice_listener = function($event) {
+        $scope.single_choice_listener = function($event, selected) {
             var element = $($event.currentTarget);
             var query_entry = [];
             var data_filter = element.attr('data-filter');
             var value = element.attr('data-value');
+            var type = $event.currentTarget.type;
+            var type_id = $event.currentTarget.id;
+
             $scope.filter = true;
             $scope.init = true;
             // Type of data being displayed, use 'content' instead of 'all'
@@ -714,6 +717,18 @@
             // If the query object has the record then grab it
             if ($scope.query.hasOwnProperty(data_filter)) {
                 query_entry = $scope.query[data_filter];
+            }
+
+            if (type === 'select-one') {
+                if (type_id === 'regions') {
+                    data_filter = 'regions__name__in';
+                }
+                if (selected) {
+                    value = selected;
+                }
+                $scope.query[data_filter] = selected;
+
+                query_api($scope.query);
             }
 
             if (!element.hasClass('selected')) {
