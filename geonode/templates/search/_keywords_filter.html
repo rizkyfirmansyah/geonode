@@ -4,7 +4,10 @@
 {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
   {% verbatim %}
   <select title="Select Keywords" class="form-select selectpicker mb-2 remove-select" id="keywords" multiple data-live-search="true" data-size="10" data-width="100%" data-container="body" data-actions-box="true" data-deselect-all-text="Deselect">
-    <option ng-repeat="keyword in keywords" data-content="<span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>{{ keyword.name }}</span>">{{ keyword.name }}</option>
+    <option ng-repeat="keyword in keywords" data-content="
+        <span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>{{ keyword.name }}</span><span class='small span_count float-right'>{{ keyword.count }}</span>">
+        {{ keyword.name }}
+    </option>
   </select>
   {% endverbatim %}
 {% endif %}
@@ -14,11 +17,14 @@
   $(function() {
     setTimeout(function () {
         $('.selectpicker').selectpicker('refresh');
+        $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
     }, 1000)
 
     $("#keywords").on("changed.bs.select", function(e, clickedIndex, previousValue) {
+        $('.filter-option-inner-inner .span_count').remove();
+
         var selected = [];
-        $(".filter-option-inner-inner span" ).each(function() {
+        $(".filter-option-inner-inner span.badge" ).each(function() {
             selected.push($( this ).text())
         });
         

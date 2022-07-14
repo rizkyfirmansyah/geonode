@@ -158,6 +158,17 @@
 /* ---------------------------------------------------
     OVERRIDE BOOTSTRAP STYLE
 ----------------------------------------------------- */
+span.small.span_count {
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: antiquewhite;
+  border-radius: 10em;
+}
 
 /* remove bs select all btn */
 select[data-max-options="1"] ~ .dropdown-menu .bs-actionsbox .bs-select-all {
