@@ -38,6 +38,7 @@
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
+        params['limit'] = 0;
         $http.get(CATEGORIES_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
@@ -189,6 +190,7 @@
 
     module.load_groups = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
+        params['limit'] = 0;
         $http.get(GROUPS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
