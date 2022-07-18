@@ -12,7 +12,7 @@
       <div class="row">
         <h3 class="col-8">{% trans "Announcements" %}</h3>
         {% if not READ_ONLY_MODE %}
-          <div class="col-4 float-right"><a href="{% url "announcements_create" %}" class="btn btn-save btn-block">{% trans "New Announcement" %}</a></div>
+          <div class="col-md-4 float-right"><a href="{% url "announcements_create" %}" class="btn btn-save btn-block">{% trans "New Announcement" %}</a></div>
         {% endif %}
       </div>
   </div>

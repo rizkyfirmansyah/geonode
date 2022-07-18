@@ -18,7 +18,7 @@
           {% get_obj_perms request.user for service as "resource_perms" %}
 
           {% if "change_service" in resource_perms or "remove_service" in resource_perms or "change_service_permissions" in resource_perms %}
-              <div class="col-4 float-right">
+              <div class="col-md-4 float-right">
                   <form method="POST" action="{% url "rescan_service" service.id %}">
                     {% if "change_service" in resource_perms %}
                         {% csrf_token %}
