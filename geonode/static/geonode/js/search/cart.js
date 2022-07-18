@@ -201,7 +201,7 @@
 
         this.toggleItem = function(item) {
             if (!$("#sidebar").hasClass('active')) {
-              if (Modernizr.mq('(max-width: 1368px)')) {
+              if (Modernizr.mq('(min-width: 600px) and (max-width: 1368px)')) {
                 $("#catalogueList").removeClass('col-md-12').addClass('col-md-10 pl-5');
                 $('#sidebar').toggleClass('active');
               } else {

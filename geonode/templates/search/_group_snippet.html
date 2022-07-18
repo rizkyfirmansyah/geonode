@@ -1,5 +1,5 @@
+<div class="row row-cols-md-2 row-cols-1 {% if not request.user_agent.is_mobile %} ml-1 mr-1 {% endif %}">
 {% verbatim %}
-<div class="row row-cols-md-2 row-cols-1 ml-1 mr-1">
     <article ng-repeat="group_profile in results" resource_id="{{ id }}" ng-cloak class="ng-cloak p-2">
         <div class="card">
             <a href="{{ group_profile.detail_url }}" class="card-link"><img class="card-img-top" ng-src="{{ group_profile.logo_url }}" alt="{{ group_profile.title }}"></a>

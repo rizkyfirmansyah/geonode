@@ -181,7 +181,7 @@
       <p>{% trans "Please use a <strong>modern browser</strong> like Mozilla Firefox, Google Chrome or Safari." %}</p>
     </div>
 
-    <div class="container" id="wrap">
+    <div class="container-lg" id="wrap">
         <div class="row {% if not request.user_agent.is_mobile %}pt-3{% else %}p-0{% endif %}">
           <div class="col-md-12 mb-4 p-0">
             {% include "_status_message.html" %}
