@@ -1,7 +1,8 @@
 {% load i18n %}
+{% load guardian_tags %}
 
 {% verbatim %}
-<div class="row row-cols-3">
+<div class="row row-cols-md-3 row-cols-1">
   <article ng-repeat="groupcategory in results" resource_id="{{ groupcategory.id }}" ng-cloak class="ng-cloak p-2">
     <div class="card">
       <div class="card-body">
@@ -16,11 +17,11 @@
             <li class="">
               <a href="{{ groupcategory.detail_url }}">
                 <strong>{{ groupcategory.member_count }}</strong>
-                <ng-pluralize count="groupcategory.member_count" when="{'1': 'Member', 'other': 'Members'}">
+                <ng-pluralize count="groupcategory.member_count" when="{'1': 'Group', 'other': 'Groups'}">
                 </ng-pluralize>
               </a>
             </li>
-            <li class="col text-right text-muted p-0"><i class="fa-solid fa-person-chalkboard" title="Owner"></i> <a href="{{ groupcategory.profile_url }}" class="card-link">{{ groupcategory.created_by }}</a></li>
+            <li class="col text-right text-muted p-0"><i class="fa-solid fa-person-chalkboard" title="Group Category Creator"></i> <a href="{{ groupcategory.profile_url }}" class="card-link">{{ groupcategory.created_by }}</a></li>
           </ul>
       </div>
     </div>

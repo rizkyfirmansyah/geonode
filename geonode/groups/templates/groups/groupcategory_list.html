@@ -1,0 +1,144 @@
+{% extends "groups/group_base.html" %}
+{% load i18n %}
+
+{% block title %}{{ object.title|default:object.slug }} — {{ block.super }}{% endblock %}
+
+{% block head %}
+  {% if TWITTER_CARD %}
+    {% include "groups/_group_twittercard.html" %}
+  {% endif %}
+  {% if OPENGRAPH_ENABLED %}
+    {% include "groups/_group_opengraph.html" %}
+  {% endif %}
+  {{ block.super }}
+{% endblock %}
+
+{% block body_class %}{% trans "groups" %}{% endblock %}
+
+{% block body %}
+
+<div class="row mb-4">
+  <div class="col p-0">
+    <div class="card border-dark rounded">
+      <div class="card-header"><h3 class="text-center">{{ object.title|default:object.slug }}</h3></div>
+      <div class="card-body">
+        {% if object.logo_url %}
+          <img class="card-img-top" src="{{ object.logo_url }}" alt="{{ object.title }}" />
+        {% else %}
+          <!-- <p>{% trans "This group has not created a logo." %}</p> -->
+        {% endif %}
+        <div class="card-text">
+          <p class="card-body">{{ object.description }}</p>
+          {% if object.keyword_list %}
+          <p>
+            {% for keyword in object.keyword_list %}
+              <span class="badge badge-primary d-inline">{{ keyword }}</span>
+            {% endfor %}
+          </p>
+          {% else %}
+          {% endif %}
+          {% if object.categories.exists %}
+          <p>
+            {% for category in object.categories.all %}
+              <a href="{{ category.get_absolute_url }}"><span class="label label-info">{{ category.name }}</span></a>
+            {% endfor %}
+          </p>
+          {% endif %}
+    
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="row">
+          <small class="col text-muted">{% trans "Last Modified" %}: {{ object.last_modified }}</small>
+          {% if object.email %}
+          <p class="col text-right"><i class="fa-regular fa-envelope"></i>
+            <a href="mailto:{{ object.email }}">{{ object.email }}</a>
+            {% comment %} need to create inbox modal form to send through inbox {% endcomment %}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <ul class="card border-secondary">
+      {% if is_manager %}
+      <li class="list-group-item border-0"><a href="{% url "group_update" object.slug %}" class="btn_wrapper">{% trans "Edit Group Details" %}</a></li>
+      <li class="list-group-item border-0"><a href="{% url "group_members" object.slug %}" class="btn_wrapper">{% trans "Manage Group Members" %}</a></li>
+      <li class="list-group-item border-0"><a data-toggle="modal" data-target="#remove_group_modal" class="btn_wrapper" data-id="{{ object.title|default:object.slug }}">{% trans "Delete this Group" %}</a></li>
+
+      {% endif %}
+      {% if can_view %}
+      <li class="list-group-item border-0"><a href="{% url "group_activity" object.slug %}" class="btn_wrapper">{% trans "Group Activities" %}</a></li>
+      {% endif %}
+      <li class="list-group-item border-0">
+        <h4>{% trans "Permissions" %}</h4>
+        <p>
+          {% blocktrans with object.get_access_display as access %}
+            This group is <strong>{{ access }}</strong>.
+          {% endblocktrans %}
+        </p>
+        <p>
+          {% if object.access == "public" %}
+            {% if not is_member %}
+            {% trans "Anyone may join this group." %}
+            <form method="POST" action="{% url "group_join" object.slug %}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-md btn-block" value="{% trans "Join Group" %}" />
+            </form>
+            {% endif %}
+          {% else %}
+          {% if object.access == "private" %}
+              {% trans "Membership is by invitation only." %}
+          {% endif %}
+          {% endif %}
+        <p>
+        {% if object.access == "public-invite" and not is_member %}
+          {% trans "Anyone may view this group but membership is by invitation only." %}
+          {% if was_requested %}
+            <li class="list-group-item border-0 pt-0">
+              <button class="btn btn-info btn-block disabled">Waiting for Confirmation</button>
+            </li>
+          {% else %}
+            <li class="list-group-item border-0 pt-0">
+              <form method="POST" action="{% url "group_join_request" object.slug %}" id="request_join">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-save btn-md btn-block" value="{% trans "Request Join" %}" />
+              </form>
+            </li>
+          {% endif %}
+        {% endif %}
+      </li>
+      <li class="list-group-item border-0">
+        <h4>{% trans "Managers" %}</h4>
+        {% for manager in object.get_managers %}
+        {% with manager as profile %}
+          {% include "people/_profile_about_item.html" %}
+        {% endwith %}
+        {% endfor %}
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row w-100">
+  <div class="card w-100 border-info rounded">
+    <div class="card-header"><h4 class="text-center">Members</h4></div>
+    <div class="tab-content paginate paginate-auto" id="search-content">
+    {% include 'people/_profile_list_item.html' %}
+    </div>
+  </div>
+</div>
+
+{% include "modal/remove_group.html" %}
+
+{% endblock %}
+
+{% block extra_script %}
+{{ block.super }}
+  <script type="text/javascript">
+    SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='groups' %}'+ '?group_profile__categories__slug='+ '{{ object.slug }}';
+  </script>
+
+  {% include 'search/search_scripts.html' %}
+
+{% endblock extra_script %}
