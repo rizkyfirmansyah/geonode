@@ -176,7 +176,7 @@ urlpatterns += [
 urlpatterns += i18n_patterns(
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include('admin_honeypot.urls', namespace="admin_honeypot")),
-    url(r'^lakers/', admin.site.urls, name="admin"),
+    url(r'^'+settings.HONEYPOT_ADMIN+'/', admin.site.urls, name="admin"),
 )
 
 # Internationalization Javascript
