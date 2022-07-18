@@ -189,7 +189,7 @@
             {% include "toast/_toast.html" %}
             {% include "toast/_toast_form.html" %}
             {% block body %}{% endblock body %}
-            <div class="row d-flex" id="body_inner">
+            <div class="row d-flex {% if request.user_agent.is_mobile %}p-0{% endif %}" id="body_inner">
               {% block body_inner %}{% endblock body_inner %}
               {% block body_sidebar %}{% endblock body_sidebar %}
             </div>

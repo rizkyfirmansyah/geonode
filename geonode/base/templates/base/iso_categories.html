@@ -15,7 +15,7 @@
                           {% if iso_format.category__svg %}
                             <img src="data:image/svg+xml;charset=UTF-8,{{ iso_format.category__svg }}" style="width: 80px;">
                           {% else %}
-                            <i class="text-dark fa-solid fa-{{ iso_format.category__fa_class }} fa-5x"></i>
+                            <i class="text-dark fa-solid fa-{{ iso_format.category__fa_class }} {% if not request.user_agent.is_mobile %}fa-5x{% else %}fa-3x{% endif %}"></i>
                           {% endif %}
                           <span class="badge badge-info p-2 rounded-pill btn">{{ iso_format.count }}</span>
                         </div>

@@ -1,9 +1,9 @@
 {% load i18n %}
 
-<div class="wrapper app-sidebar" ng-controller="CartList">
+<div class="wrapper app-sidebar d-none" ng-controller="CartList">
   <div class="scrollbar-sidebar" id="ps_sidebar" data-mdb-perfect-scrollbar='true'>
     <div id="sidebar" class="bg-white">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and not request.user_agent.is_mobile %}
           <resource-cart data-facet-type="{{ facet_type }}" selectedString='{% trans "Bulk Selection" %}'
             emptyString="{% trans "No list items selected. Use the + button to add." %}">
           </resource-cart>
@@ -23,11 +23,16 @@
         <div class="row justify-content-between mb-2 pt-2">
           <div class="col-4 ml-2">{% trans "Filters" %}</div>
           <button type="button" id="clear-search" class="col-4 text-center delete_search_query">{% trans "Clear" %}</button>
+          {% if request.user_agent.is_mobile %}
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close-sidebar">
+              <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+            </button>
+          {% endif %}
         </div>
         {% comment %} {% if SEARCH_FILTERS.TEXT_ENABLED %}
         {% include "search/_text_filter.html" %}
         {% endif  %} {% endcomment %}
-        <div id="">
+        <div id="filter-sidebar-content">
           {% block search_facet_lists %}
           {% if SEARCH_FILTERS.H_KEYWORDS_ENABLED %}
             {% include "search/_h_keywords_filter.html" %}
@@ -55,11 +60,17 @@
 </div>
 
 {% block extra_script %}
-<script>
+<script type="text/javascript">
 const ps = new PerfectScrollbar("#ps_sidebar", {
     wheelSpeed: 1,
     wheelPropagation: true,
     minScrollbarLength: 20
 });
+$(function() {
+  $('#close-sidebar').on('click', function() {
+      $('#sidebar').toggleClass('active');
+      $('.app-sidebar').toggleClass('d-none');
+  })
+})
 </script>
 {% endblock extra_script %}

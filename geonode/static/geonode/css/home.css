@@ -429,11 +429,6 @@ border-color: var(--upload) !important
   .header-nav__avatar {
     width: 100%;
   }
-
-  .menu_categories>svg {
-    width: 32px;
-    height: 32px;
-  }
 }
 
 @media (min-width: 1200px) {
@@ -450,7 +445,7 @@ border-color: var(--upload) !important
   }
   
   .s-header {
-      position: fixed;
+      position: absolute;
       top: 0;
       right: 0;
       left: 0;
@@ -514,6 +509,11 @@ border-color: var(--upload) !important
     box-shadow: none !important;
   }
 
+}
+
+.menu_categories>svg {
+  width: 32px;
+  height: 32px;
 }
 
 .section-header {

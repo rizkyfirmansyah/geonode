@@ -900,6 +900,11 @@ button.full-width {
 
 }
 
+.menu_categories>svg {
+  width: 32px;
+  height: 32px;
+}
+
 .section-header {
   text-align: center;
   position: relative;
@@ -5222,14 +5227,57 @@ footer li a:hover {
     SIDEBAR STYLE
 ----------------------------------------------------- */
 
+@media (max-width: 600px) {
+  #filter-sidebar-content {
+    padding: 0 1em 0 0.5em;
+  }
+  .app-sidebar {
+      width: 98%;
+      position: fixed;
+      top: 0;
+      background-color: white;
+  }
+
+  #sidebar.active,
+  #sidebarGroup.active {
+      display: block;
+  }
+
+  #sidebar:not(.active),
+  #sidebarGroup:not(.active) {
+      display: none;
+  }
+}
+
 @media (min-width:1200px) {
+    .app-sidebar {
+        width: 290px;
+        min-width: 290px;
+    }
+
+    #sidebar.active,
+    #sidebarGroup.active {
+        width: 290px;
+        position: relative;
+    }
+
+    #sidebar:not(.active),
+    #sidebarGroup:not(.active) {
+        left: -290px;
+        position: relative;
+    }
+
+    .wrapper {
+      position: fixed;
+      left: 0;
+      top: var(--header-height);
+      height: 100vh;
+    }
 
 }
 
 .wrapper {
-    position: fixed;
     left: 0;
-    top: var(--header-height);
     height: 100vh;
 }
 
@@ -5237,8 +5285,6 @@ footer li a:hover {
     display: flex;
     z-index: inherit;
     overflow: hidden;
-    width: 290px;
-    min-width: 290px;
     flex: 0 0 290px;
     transition: all .2s;
     font-size: .88em;
@@ -5270,18 +5316,6 @@ footer li a:hover {
 
 .wrapper nav ul {
     margin-left: 0;
-}
-
-#sidebar.active,
-#sidebarGroup.active {
-    width: 290px;
-    position: relative;
-}
-
-#sidebar:not(.active),
-#sidebarGroup:not(.active) {
-    left: -290px;
-    position: relative;
 }
 
 #sidebar .sidebar-header {
