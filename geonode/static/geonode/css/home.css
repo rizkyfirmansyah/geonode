@@ -875,34 +875,37 @@ color: var(--primary)
 }
 
 #SigninModal .modal-dialog {
-width: 100%;
-margin: 0 auto;
+  width: 100%;
+  margin: 0 auto;
 }
 
 @media (min-width:576px) {
-#SigninModal .modal-dialog {
-    max-width: 540px
-}
+  #SigninModal .modal-dialog {
+      max-width: 540px
+  }
 }
 
 @media (min-width:768px) {
-#SigninModal .modal-dialog {
-    max-width: 720px
-}
+  #SigninModal .modal-dialog {
+      max-width: 720px
+  }
+  footer .logo {
+    padding-left: 1em !important;
+  }
 }
 
 @media (min-width:992px) {
-#SigninModal .modal-dialog {
-    max-width: 960px
-}
+  #SigninModal .modal-dialog {
+      max-width: 960px
+  }
 }
 
 @media (min-width:1024px) {
-#aSignIn input, #aSignIn button,
-#aSignUp input,
-#aSignUp button {
-  height: 3.5em;
-}
+  #aSignIn input, #aSignIn button,
+  #aSignUp input,
+  #aSignUp button {
+    height: 3.5em;
+  }
 }
 
 
@@ -2431,30 +2434,6 @@ html.no-csstransitions .home-content__main {
   align-items: center!important
 }
 
-@media (min-width:600px) and (max-width:760px) {
-  .logo-footer {
-      min-width: 240px
-  }
-  footer .logo {
-      transform: translate(30%, -20%)
-  }
-}
-
-@media (min-width:760px) and (max-width:992px) {
-  .logo-footer {
-      min-width: 240px
-  }
-  footer .logo {
-      transform: translate(30%, -20%)
-  }
-}
-
-@media (min-width:992px) and (max-width:1199px) {
-  footer figure {
-      padding-bottom: 7.5%
-  }
-}
-
 @media (max-width:600px) {
   footer div a,
   footer div select,
@@ -2681,9 +2660,6 @@ html {
 }
 
 @media (max-width:428px) {
-  .logo-footer {
-      width: 150px!important
-  }
   #category_dataset .fa {
       font-size: 4em!important
   }
@@ -4021,6 +3997,9 @@ article.tab-pane {
   .pace .pace-progress {
       position: relative;
   }
+  .logo-footer {
+      max-width: 120px!important
+  }
 }
 
 @media only screen and (max-width:400px) {
@@ -4122,6 +4101,10 @@ footer li a:hover {
   color: var(--yellow)!important;
 }
 
+footer .logo {
+    padding: 0;
+}
+
 @media (min-width:1200px) {
   footer h4 {
       color: var(--secondary);
@@ -4129,9 +4112,6 @@ footer li a:hover {
       line-height: 1.313;
       margin-top: 0;
       margin-bottom: 3.6rem
-  }
-  footer .logo {
-      bottom: 50%;
   }
   footer figure {
       max-width: 40%!important
