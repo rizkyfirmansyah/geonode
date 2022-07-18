@@ -15,8 +15,8 @@
                 {% blocktrans count counter=facets.document %}Catalogue{% plural %}Catalogues{% endblocktrans %}</a></h2>
         </div>
         <div class="col-4">
-          <p><a {% if request.user.is_authenticated %} href="{% url "maps_browse" %}" {% endif %}><i class="text-white fa-solid fa-map-location-dot fa-4x"></i></a></p>
-          <h2><a class="text-white" {% if request.user.is_authenticated %} href="{% url "maps_browse" %}" {% endif %}>{{ facets.map|default:_("No") }}
+          <p><a {% if request.user.is_authenticated %} href="{% url "catalogue_browse" %}?type__in=map" {% endif %}><i class="text-white fa-solid fa-map-location-dot fa-4x"></i></a></p>
+          <h2><a class="text-white" {% if request.user.is_authenticated %} href="{% url "catalogue_browse" %}?type__in=map" {% endif %}>{{ facets.map|default:_("No") }}
               {% blocktrans count counter=facets.map %}Visualization{% plural %}Visualizations{% endblocktrans %}</a></h2>
         </div>
         <div class="col-4">

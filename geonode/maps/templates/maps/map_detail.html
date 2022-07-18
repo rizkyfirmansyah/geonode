@@ -36,7 +36,7 @@
 	<div class="card-body">
 		<div class="row">
       <h3 class="col-md-8">{{ resource.title }}</h3>
-			<div class="col-md-4"><a href="{% url "maps_browse" %}" class="btn btn-primary float-right">{% trans "Explore Visualization" %}</a></div>
+			<div class="col-md-4"><a href="{% url "catalogue_browse" %}?type__in=map" class="btn btn-primary float-right">{% trans "Explore Maps" %}</a></div>
 		</div>
 	</div>
 </div>
