@@ -66,6 +66,8 @@
         </video>
       </a>
     </div>
+    {% elif resource.extension == 'pptx' and resource.doc_file %}
+        <iframe src="https://docs.google.com/gview?url={{ SITEURL }}{% url "document_download" resource.id %}&embedded=true" width="100%" height="480px" frameborder="0"></iframe>
     {% elif resource.extension == 'pdf' and resource.doc_file %}
         {% include "documents/pdf_renderer.html" %}
     {% elif resource.doc_file %}
