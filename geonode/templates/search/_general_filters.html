@@ -37,21 +37,6 @@
     </ul>
 </nav>
 {% endif %}
-{% if SEARCH_FILTERS.GROUPS_ENABLED %}
-{% verbatim %}
-<nav class="filter" ng-cloak>
-    <a href="#groups" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Groups</a>
-    <ul class="collapse list-unstyled" id="groups">
-        <li ng-repeat="group in groups" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0">
-            <a data-value="{{ group.name }}" data-filter="group__group_profile__slug__in"
-                ng-click="multiple_choice_listener($event)" class="{{ group.active }}">{{ group.group_profile.title }}
-                <span class="badge float-right">{{ group.resource_counts.all.total }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-    </ul>
-</nav>
-{% endif %}
 {% if SEARCH_FILTERS.GROUP_CATEGORIES_ENABLED %}
 {% verbatim %}
 <nav class="filter" ng-cloak ng-repeat="groupCategory in groupCategories" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0">

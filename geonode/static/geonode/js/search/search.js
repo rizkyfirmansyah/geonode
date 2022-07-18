@@ -690,6 +690,8 @@
                     data_filter = 'keywords__slug__in'
                 } else if (type_id === 'owners') {
                     data_filter = 'owner__username__in'
+                }  else if (type_id === 'groups') {
+                    data_filter = 'group__group_profile__slug__in'
                 }
                 if (selected.length != 0) {
                     value = selected;
