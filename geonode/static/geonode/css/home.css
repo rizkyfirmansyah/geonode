@@ -2462,9 +2462,6 @@ html.no-csstransitions .home-content__main {
       font-size: 14px!important;
       padding: 0!important
   }
-  footer .logo {
-      transform: translate(20%, -20%)
-  }
 }
 
 #slide-pane {
@@ -2686,9 +2683,6 @@ html {
 @media (max-width:428px) {
   .logo-footer {
       width: 150px!important
-  }
-  footer .logo {
-      transform: translate(30%, 0)
   }
   #category_dataset .fa {
       font-size: 4em!important
@@ -3427,7 +3421,7 @@ label[for=id_doc_file] {
 
 footer {
   color: var(--secondary);
-  padding: 1.5em;
+  padding: .5em;
   font-family: Solanel-Light, sans-serif;
   background-color: var(--primary);
 }

@@ -1,10 +1,10 @@
 {% load i18n %}
 {% load static %}
 
-<footer class="w-100 p-3">
+<footer>
     <div class="row">
       <div class="logo col-md-6">
-        <figure class="logo-image">
+        <figure>
           <img src="{% if custom_theme.logo_footer %}{{SITEURL}}/uploaded/{{ custom_theme.logo_footer }} {% else %} {% static "geonode/img/logo-footer.png" %} {% endif %}" class="logo-footer">
         </figure>
       </div>
