@@ -2,15 +2,15 @@
 {% load static %}
 
   {% if facet_type == 'groups' %}
-  <div class="col-md-12 m-0 p-0 float-right groupsList">
+  <div class="col-md-12 m-0 p-0 float-right groupsList" infinite-scroll-directive="loadMoreResource()">
         {% include 'search/_group_snippet.html' %}
   </div>
   {% elif facet_type == 'groupcategories' %}
-  <div class="clearfix">
+  <div class="clearfix" infinite-scroll-directive="loadMoreResource()">
       {% include 'search/_groupcategory_snippet.html' %}
   </div>
     {% elif facet_type == 'people' %}
-  <div class="row">
+  <div class="row" infinite-scroll-directive="loadMoreResource()">
     <div class="col-md-12 mt-2 p-0"></div>
         {% include "people/_profile_list_item.html" %}
     </div>
