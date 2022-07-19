@@ -136,7 +136,7 @@
 
     {% if resource.source %}
     <dt>{% trans "Source" %}</dt>
-    <dd>{{ resource.source|safe|urlize }}</dd>
+    <dd>{{ resource.source|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.related_publication %}
@@ -146,7 +146,7 @@
 
     {% if resource.data_citation %}
     <dt>{% trans "Cite" %}</dt>
-    <dd>{{ resource.data_citation|safe|urlize }}</dd>
+    <dd>{{ resource.data_citation|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.date_distribution %}
