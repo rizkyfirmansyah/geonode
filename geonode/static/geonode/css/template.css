@@ -4840,6 +4840,14 @@ color: transparent;
     margin-right: 1em;
 }
 
+.msgapi #mapstore-navbar #mapstore-burger-menu {
+    position: absolute !important;
+}
+
+.ms-content-toolbar .btn-group {
+    display: inline;
+}
+
 .m-header .row .m-padding-md {
     left: 2em;
     position: relative;   
