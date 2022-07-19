@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<div class="modal fade removeMapsModal" id="removeMapsModal" tabindex="-1" role="dialog" aria-labelledby="removeMapsModalTitle" aria-hidden="true">
+  <form id="remove_map" method="POST">{% csrf_token %}
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h3 class="modal-title">Delete Confirmation</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" data-dismiss="modal" title="Close Panel"></i>
+        </button>
+      </div>
+      <div class="modal-body text-center alert-danger">
+        Are you sure you want to remove <strong>{{map.title}}</strong>?
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn btn-secondary">Maybe later</a>
+        <button type="submit" class="btn btn-danger">Yes, I am sure</button>
+      </div>
+    </div>
+  </div>
+  </form>
+</div>
+
+{% include 'toast/remove_map.html' %}

@@ -178,7 +178,7 @@
                   <i class="fa-solid fa-map-location-dot fa-3x"></i>
                   <h5>{% trans "Map" %}</h5>
                   <a class="btn btn-edit btn-block btn-md" href="{% url "map_edit" resource.id %}">{% trans "Edit" %}</a>
-                  <a class="btn btn-danger btn-block btn-md" href="{% url "map_remove" resource.id %}">{% trans "Remove" %}</a>
+                  <a class="btn btn-danger btn-block btn-md" data-toggle="modal" data-target="#removeMapsModal" style="cursor: pointer;">{% trans "Remove" %}</a>
                 </div>
                 {% endif %}
               </div>

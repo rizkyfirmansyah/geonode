@@ -25,7 +25,7 @@ import warnings
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import (
@@ -34,6 +34,7 @@ from django.http import (
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_POST
 
 import json
 from django.db.models import F
@@ -478,31 +479,32 @@ def map_metadata_advanced(request, mapid):
 
 
 @login_required
-def map_remove(request, mapid, template='maps/map_remove.html'):
+@require_POST
+def map_remove(request):
     ''' Delete a map, and its constituent layers. '''
+
+    mapid = request.POST['mapid']
+    toast_title = _("Delete Map")
+
     try:
         map_obj = _resolve_map(
             request,
             mapid,
             'base.delete_resourcebase',
             _PERMISSION_MSG_VIEW)
+
+        message = _("Map: {} has been deleted".format(map_obj.title))
+        messages.warning(request, message, extra_tags=toast_title)
+
+        delete_map.apply_async((map_obj.id, ))
+        register_event(request, EventType.EVENT_REMOVE, map_obj)
+        return redirect('catalogue_browse')
+
     except PermissionDenied:
         return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
         return page_not_found_message(request)
-
-    if not map_obj:
-        return page_not_found_message(request)
-
-    if request.method == 'GET':
-        return render(request, template, context={
-            "map": map_obj
-        })
-    elif request.method == 'POST':
-        delete_map.apply_async((map_obj.id, ))
-        register_event(request, EventType.EVENT_REMOVE, map_obj)
-        return HttpResponseRedirect(reverse("maps_browse"))
 
 
 @xframe_options_exempt
