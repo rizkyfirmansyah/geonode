@@ -1,0 +1,21 @@
+<geoNodeOauth2Authentication>
+  <id>-313f4319:15766e137c9:-8000</id>
+  <name>geonode-oauth2</name>
+  <className>org.geoserver.security.oauth2.GeoNodeOAuthAuthenticationFilter</className>
+  <roleSource class="org.geoserver.security.config.PreAuthenticatedUserNameFilterConfig$PreAuthenticatedUserNameRoleSource">RoleService</roleSource>
+  <userGroupServiceName>default</userGroupServiceName>
+  <roleServiceName>geonode REST role service</roleServiceName>
+  <cliendId>{OAUTH2_CLIENT_ID}</cliendId>
+  <clientSecret>{OAUTH2_CLIENT_SECRET}</clientSecret>
+  <accessTokenUri>{HTTP_HOST}/o/token/</accessTokenUri>
+  <userAuthorizationUri>{HTTP_HOST}/o/authorize/</userAuthorizationUri>
+  <redirectUri>{HTTP_HOST}/geoserver</redirectUri>
+  <checkTokenEndpointUrl>{HTTP_HOST}/api/o/v4/tokeninfo/</checkTokenEndpointUrl>
+  <logoutUri>{HTTP_HOST}/account/logout/</logoutUri>
+  <scopes>write,read,groups</scopes>
+  <enableRedirectAuthenticationEntryPoint>false</enableRedirectAuthenticationEntryPoint>
+  <forceAccessTokenUriHttps>true</forceAccessTokenUriHttps>
+  <forceUserAuthorizationUriHttps>true</forceUserAuthorizationUriHttps>
+  <loginEndpoint>/j_spring_oauth2_geonode_login</loginEndpoint>
+  <logoutEndpoint>/j_spring_oauth2_geonode_logout</logoutEndpoint>
+</geoNodeOauth2Authentication>

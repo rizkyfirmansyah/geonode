@@ -26,9 +26,23 @@ services:
       - rabbitmq:/var/lib/rabbitmq
       - ./rabbitmq.sh:/docker-entrypoint-initdb.d/init.sh
     restart: on-failure
-    # ports:
-    #   - "127.0.0.1:5672:5672"
-    #   - "127.0.0.1:15672:15672"
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    networks:
+      - geonode
+
+  elasticsearch:
+    image: elasticsearch:5.6.16
+    restart: unless-stopped
+    container_name: elasticsearch4${COMPOSE_PROJECT_NAME}
+    stdin_open: true
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    networks:
+      - geonode
 
   # Our custom django application. It includes Geonode.
   django:
@@ -47,8 +61,12 @@ services:
       - IS_CELERY=False
     entrypoint: ["/usr/src/geonode/entrypoint.sh"]
     command: "uwsgi --ini /usr/src/geonode/uwsgi.ini"
-    # ports:
-    #   - "127.0.0.1:8000:8000"
+    ports:
+      - "127.0.0.1:8000:8000"
+    links:
+      - elasticsearch
+    networks:
+      - geonode
 
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -63,6 +81,8 @@ services:
     command: "celery-cmd"
     links:
       - rabbitmq
+    networks:
+      - geonode
 
   geoserver:
     image: geonode/geoserver:2.19.x
@@ -83,7 +103,9 @@ services:
       - tmp:/tmp
     restart: on-failure
     ports:
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:9080:8080"
+    networks:
+      - geonode
 
   data-dir-conf:
     image: geonode/geoserver_data:2.19.x
@@ -93,18 +115,35 @@ services:
       - geoserver-data-dir:/geoserver_data/data
     restart: on-failure
 
-  db:
+  db-cms:
     image: kartoza/postgis:13-3.1
-    container_name: dbspatial4${COMPOSE_PROJECT_NAME}
+    container_name: dbcms4${COMPOSE_PROJECT_NAME}
     env_file: 
       - ./scripts/docker/env/${DOCKER_ENV}/db.env
     volumes:
-      - dbspatial:/var/lib/postgresql/data
+      - dbcms:/var/lib/postgresql/data
       - dbbackups:/pg_backups
     restart: on-failure
-    # uncomment to enable remote connections to postgres
-    # ports:
-    #   - "35432:5432"
+    ports:
+      - "25432:5432"
+    networks:
+      - geonode
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins4${COMPOSE_PROJECT_NAME}
+    user: jenkins
+    ports:
+      - '${JENKINS_HTTP_PORT}:${JENKINS_HTTP_PORT}'
+      - '${JENKINS_HTTPS_PORT}:${JENKINS_HTTPS_PORT}'
+      - '50000:50000'
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - backup-restore:/backup_restore
+      - data:/data
+    environment:
+      - 'JENKINS_OPTS=--httpPort=${JENKINS_HTTP_PORT} --httpsPort=${JENKINS_HTTPS_PORT} --prefix=/jenkins'
+    restart: unless-stopped
 
 volumes:
   statics:
@@ -123,7 +162,11 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}-gsdatadir
   backup-restore:
     name: ${COMPOSE_PROJECT_NAME}-backup-restore
-  dbspatial:
-    name: ${COMPOSE_PROJECT_NAME}-dbspatial
+  dbcms:
+    name: ${COMPOSE_PROJECT_NAME}-dbcms
   dbbackups:
     name: ${COMPOSE_PROJECT_NAME}-dbbackups
+
+networks:
+  geonode:
+    name: sdi-enterprise
