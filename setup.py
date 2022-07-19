@@ -35,5 +35,8 @@ setup(
         "static": ["*.*"],
         "": ["templates/*.*"],  # noqa
         "templates": ["*.*"],
-    }
+    },
+    dependency_links=[
+        'git+https://github.com/rizkyfirmansyah/geonode-user-messages@master#egg=geonode-user-messages'
+    ]
 )
