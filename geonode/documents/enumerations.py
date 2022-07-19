@@ -24,14 +24,10 @@
 DOCUMENT_TYPE_MAP = {
     'txt': 'text',
     'log': 'text',
-    'doc': 'text',
-    'docx': 'text',
     'ods': 'text',
     'odt': 'text',
     'sld': 'text',
     'qml': 'text',
-    'xls': 'text',
-    'xlsx': 'text',
     'xml': 'text',
 
     'py': 'text',
@@ -61,9 +57,14 @@ DOCUMENT_TYPE_MAP = {
     'tiff': 'archive',
     'pbm': 'archive',
 
+    'doc': 'word',
+    'docx': 'word',
+    'xls': 'excel',
+    'xlsx': 'excel',
+    'ppt': 'powerpoint',
+    'pptx': 'powerpoint',
+
     'odp': 'presentation',
-    'ppt': 'presentation',
-    'pptx': 'presentation',
     'pdf': 'presentation',
 
     'tar': 'archive',

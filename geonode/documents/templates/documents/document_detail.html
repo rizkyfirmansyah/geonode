@@ -42,7 +42,7 @@
     {% if "download_resourcebase" in perms_list %}
     {% if resource.extension|lower in audiotypes and resource.doc_file %}
     {% get_mime_type mimetypemap resource.extension as mimetype %}
-    <div id="embedded_map" width="500px">
+    <div id="embedded_map" width="100%">
       <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
         <audio controls width="100%">
           <source src="{% url "document_download" resource.id %}" type="{{ mimetype }}">
@@ -51,14 +51,14 @@
       </a>
     </div>
     {% elif resource.extension|lower in imgtypes and resource.doc_file %}
-    <div id="embedded_map" width="500px">
+    <div id="embedded_map" width="100%">
       <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
         <img src="{% url "document_download" resource.id %}" width='100%' class="img-responsive" />
       </a>
     </div>
     {% elif resource.extension|lower in videotypes and resource.doc_file %}
     {% get_mime_type mimetypemap resource.extension as mimetype %}
-    <div id="embedded_map" width="500px">
+    <div id="embedded_map" width="100%">
       <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
         <video width="500" controls>
           <source src="{% url "document_download" resource.id %}" type="{{ mimetype }}">
@@ -66,7 +66,7 @@
         </video>
       </a>
     </div>
-    {% elif resource.extension == 'pptx' and resource.doc_file %}
+    {% elif resource.extension|lower in wordtypes or resource.extension|lower in exceltypes or resource.extension|lower in ppttypes and resource.doc_file %}
         <iframe src="https://docs.google.com/gview?url={{ SITEURL }}{% url "document_download" resource.id %}&embedded=true" width="100%" height="480px" frameborder="0"></iframe>
     {% elif resource.extension == 'pdf' and resource.doc_file %}
         {% include "documents/pdf_renderer.html" %}

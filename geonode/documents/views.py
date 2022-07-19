@@ -145,6 +145,9 @@ def document_detail(request, docid):
     AUDIOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'audio']
     IMGTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'image']
     VIDEOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'video']
+    WORDTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'word']
+    EXCELTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'excel']
+    PPTTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'powerpoint']
 
     context_dict = {
         'access_token': access_token,
@@ -156,6 +159,9 @@ def document_detail(request, docid):
         'audiotypes': AUDIOTYPES,
         'imgtypes': IMGTYPES,
         'videotypes': VIDEOTYPES,
+        'wordtypes': WORDTYPES,
+        'exceltypes': EXCELTYPES,
+        'ppttypes': PPTTYPES,
         'mimetypemap': DOCUMENT_MIMETYPE_MAP,
         'related': related}
 
