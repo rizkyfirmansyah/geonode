@@ -131,7 +131,7 @@
 
     {% if resource.author %}
     <dt>{% trans "Author" %}</dt>
-    <dd>{{ resource.author }}</dd>
+    <dd>{{ resource.author|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.source %}
@@ -205,7 +205,7 @@
     {% if resource.restriction_code_type or resource.constraints_other %}
     <dt>{% trans "Restrictions" %}</dt>
     <dd>{% if resource.constraints_other %}
-            {{ resource.constraints_other }}
+            {{ resource.constraints_other|safe|escape }}
         {% else %}
             {{ resource.restriction_code_type|safe }}
         {% endif %}

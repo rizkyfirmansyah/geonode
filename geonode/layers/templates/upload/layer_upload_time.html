@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="card rounded bg-light mb-2">
+<div class="card rounded bg-light">
   <div class="card-header bg-layer">
     <div class="row">
       <h3 class="text-light"> {% trans "Inspect data for " %} "{{ layer_name }}" </h3>
@@ -24,7 +24,7 @@
     <div class="card-body">
         <div class="row">
           <div class="col-md-12">
-            <div class="well inline-headers">
+            <div class="card-header">
               <h4>{% trans "Configure as Time-Series" %}</h4>
               <input type="checkbox" id="time-series-toggle-choice" data-toggle="toggle">
               <span class="help-tip">
@@ -63,7 +63,7 @@
             {% endif %}
         </div>
             {% if time_form.time_attribute or time_form.text_attribute or time_form.year_attribute %}
-            <div class="form-group" style="padding-left: 45px;">
+            <div class="form-group">
                 <div class="radio" title="{% trans "Convert data to a timestamp using standard date/time representation or a custom format" %}">
                     <table id="bootstrap-text-att-table"
                           data-toggle="table"
@@ -263,11 +263,11 @@
 
     <div class="card-footer">
       <div class="row">
-        <div class="col"><a href="{% url "layer_upload" %}" class="btn btn-primary btn-block">{% trans "Cancel" %}</a> &nbsp;</div>
+        <div class="col"><a href="{% url "layer_upload" %}" class="btn btn-secondary btn-block">{% trans "Cancel" %}</a> &nbsp;</div>
         <div class="col">
-          <button id='next' class="btn btn-primary button-block" type="submit" value="{% trans 'Next' %}"> Next
+          <button id='next' class="btn btn-primary btn-block" type="submit" value="{% trans 'Next' %}"  data-toggle="tooltip" data-placement="bottom" id="next-tooltip" title="Start Importer"> Next
               <i id="next-spinner" class="fa-solid fa-spinner fa-spin hide"></i>
-              <p id="next-tooltip" style="height: 150px;">{% trans "Start Importer" %}</p>
+              <span id="next-tooltip">{% trans "Start Importer" %}</span>
           </button>
         </div>
       </div>

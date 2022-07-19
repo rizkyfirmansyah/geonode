@@ -5252,5 +5252,23 @@ ul ul a {
 
 .dl-horizontal dt {
     float: left;
-    width: 160px;
+    width: 190px;
+    clear: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dl-horizontal dd {
+  margin-left: 190px;
+}
+
+.dl-horizontal dd:before,
+.dl-horizontal dd:after {
+  display: table;
+  content: " ";
+}
+
+
+.dl-horizontal dd:after {
+  clear: both;
 }
