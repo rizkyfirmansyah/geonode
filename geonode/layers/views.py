@@ -1151,7 +1151,9 @@ def layer_metadata(
             )
             layer.metadata.add(new_m)
 
-        up_sessions = UploadSession.objects.filter(layer=layer)
+        from geonode.upload.models import Upload
+
+        up_sessions = Upload.objects.filter(resource_id=layer.resourcebase_ptr_id)
         if up_sessions.exists() and up_sessions[0].user != layer.owner:
             up_sessions.update(user=layer.owner)
 
