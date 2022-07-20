@@ -69,19 +69,19 @@ class GeoNodeResourceType(enum.Enum):
 
 class GeoNodeResourceTypeCurrent(enum.Enum):
     DOCUMENT = "document"
-    DATASET = "dataset"
+    DATASET = "layer"
 
 
 class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
     """A harvester for modern (v3.2+) GeoNode versions.
 
-    GeoNode versions above 3.2 introduced the concept of `datasets` to replace the older
+    GeoNode versions above 3.2 introduced the concept of `layers` to replace the older
     `layers` concept. The API also has some significative differences.
 
     """
 
     harvest_documents: bool
-    harvest_datasets: bool
+    harvest_layers: bool
 
     # harvesting of maps is explicitly disabled - the GeoNode API does not
     # really allow reconstructing a Map via API, as there is no information
@@ -90,7 +90,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
     harvest_maps: bool = False
 
     copy_documents: bool
-    copy_datasets: bool
+    copy_layers: bool
     resource_title_filter: typing.Optional[str]
     start_date_filter: typing.Optional[str]
     end_date_filter: typing.Optional[str]
@@ -103,8 +103,8 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
             self,
             *args,
             harvest_documents: typing.Optional[bool] = True,
-            harvest_datasets: typing.Optional[bool] = True,
-            copy_datasets: typing.Optional[bool] = False,
+            harvest_layers: typing.Optional[bool] = True,
+            copy_layers: typing.Optional[bool] = False,
             copy_documents: typing.Optional[bool] = False,
             resource_title_filter: typing.Optional[str] = None,
             start_date_filter: typing.Optional[str] = None,
@@ -118,8 +118,8 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
         self.remote_url = self.remote_url.rstrip("/")
         self.http_session = requests.Session()
         self.harvest_documents = bool(harvest_documents)
-        self.harvest_datasets = bool(harvest_datasets)
-        self.copy_datasets = bool(copy_datasets)
+        self.harvest_layers = bool(harvest_layers)
+        self.copy_layers = bool(copy_layers)
         self.copy_documents = bool(copy_documents)
         self.resource_title_filter = resource_title_filter
         self.start_date_filter = start_date_filter
@@ -189,7 +189,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
 
     def check_availability(self, timeout_seconds: typing.Optional[int] = 5) -> bool:
         return _check_availability(
-            self.http_session, f"{self.base_api_url}/datasets", "datasets", timeout_seconds)
+            self.http_session, f"{self.base_api_url}/layers", "layers", timeout_seconds)
 
     def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Document]]:
         return {
@@ -202,7 +202,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
             harvestable_resource: models.HarvestableResource,
     ) -> typing.Optional[base.HarvestedResourceInfo]:
         url_fragment = {
-            GeoNodeResourceTypeCurrent.DATASET.value: "/datasets/",
+            GeoNodeResourceTypeCurrent.DATASET.value: "/layers/",
             GeoNodeResourceTypeCurrent.DOCUMENT.value: "/documents/"
         }[harvestable_resource.remote_resource_type]
         url = f"{self.base_api_url}{url_fragment}{harvestable_resource.unique_identifier}/"
@@ -232,7 +232,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
             harvestable_resource: models.HarvestableResource,
     ) -> bool:
         return {
-            GeoNodeResourceTypeCurrent.DATASET.value: self.copy_datasets,
+            GeoNodeResourceTypeCurrent.DATASET.value: self.copy_layers,
             GeoNodeResourceTypeCurrent.DOCUMENT.value: self.copy_documents,
         }.get(harvestable_resource.remote_resource_type, False)
 
@@ -289,7 +289,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
         download_url = resource["href"]
         return native_format, download_url
 
-    def _get_dataset_link_info(self, resource: typing.Dict, spatial_extent: geos.Polygon):
+    def _get_layer_link_info(self, resource: typing.Dict, spatial_extent: geos.Polygon):
         wms_url = None
         wfs_url = None
         wcs_url = None
@@ -349,7 +349,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
         embed_url = resource["embed_url"]
         thumbnail_url = resource["thumbnail_url"]
         if remote_resource_type == GeoNodeResourceTypeCurrent.DATASET.value:
-            native_format, download_url, wms_url, wfs_url, wcs_url = self._get_dataset_link_info(
+            native_format, download_url, wms_url, wfs_url, wcs_url = self._get_layer_link_info(
                 resource, spatial_extent)
         else:
             wms_url = None
@@ -377,7 +377,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
         link_info = self._get_resource_link_info(resource, remote_resource_type, spatial_extent)
         native_format, download_url, embed_url, thumbnail_url, wms_url, wfs_url, wcs_url = link_info
         descriptor = resourcedescriptor.RecordDescription(
-            # these work for both datasets and documents
+            # these work for both layers and documents
             uuid=resource["uuid"],
             language=resource["language"],
             point_of_contact=self._get_contact_descriptor("pointOfContact", resource["poc"]),
@@ -435,7 +435,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
             "page": current_page,
         }
         resource_filter = []
-        if self.harvest_datasets:
+        if self.harvest_layers:
             resource_filter.append(GeoNodeResourceTypeCurrent.DATASET.value)
         if self.harvest_documents:
             resource_filter.append(GeoNodeResourceTypeCurrent.DOCUMENT.value)
@@ -458,7 +458,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
 class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
     """A harvester for older (v <= 3.2) GeoNode versions"""
     harvest_documents: bool
-    harvest_datasets: bool
+    harvest_layers: bool
 
     # harvesting of maps is explicitly disabled - the GeoNode API does not
     # really allow reconstructing a Map via API, as there is no information
@@ -467,7 +467,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
     harvest_maps: bool = False
 
     copy_documents: bool
-    copy_datasets: bool
+    copy_layers: bool
     resource_title_filter: typing.Optional[str]
     http_session: requests.Session
     page_size: int = 10
@@ -476,8 +476,8 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
             self,
             *args,
             harvest_documents: typing.Optional[bool] = True,
-            harvest_datasets: typing.Optional[bool] = True,
-            copy_datasets: typing.Optional[bool] = False,
+            harvest_layers: typing.Optional[bool] = True,
+            copy_layers: typing.Optional[bool] = False,
             copy_documents: typing.Optional[bool] = False,
             resource_title_filter: typing.Optional[str] = None,
             start_date_filter: typing.Optional[str] = None,
@@ -492,8 +492,8 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         self.http_session = requests.Session()
         self.harvest_documents = (
             harvest_documents if harvest_documents is not None else True)
-        self.harvest_datasets = harvest_datasets if harvest_datasets is not None else True
-        self.copy_datasets = copy_datasets
+        self.harvest_layers = harvest_layers if harvest_layers is not None else True
+        self.copy_layers = copy_layers
         self.copy_documents = copy_documents
         self.resource_title_filter = resource_title_filter
         self.start_date_filter = start_date_filter
@@ -519,7 +519,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
 
     def get_num_available_resources(self) -> int:
         result = 0
-        if self.harvest_datasets:
+        if self.harvest_layers:
             result += self._get_total_records(GeoNodeResourceType.DATASET)
         if self.harvest_documents:
             result += self._get_total_records(GeoNodeResourceType.DOCUMENT)
@@ -539,7 +539,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         if offset < total_resources[GeoNodeResourceType.DOCUMENT]:
             document_list = self._list_document_resources(offset)
             if len(document_list) < self.page_size:
-                layer_list = self._list_dataset_resources(0)
+                layer_list = self._list_layer_resources(0)
                 added = document_list + layer_list
                 if len(added) < self.page_size:
                     map_list = self._list_map_resources(0)
@@ -552,8 +552,8 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
                 total_resources[GeoNodeResourceType.DOCUMENT] +
                 total_resources[GeoNodeResourceType.DATASET]
         ):
-            dataset_offset = offset - total_resources[GeoNodeResourceType.DOCUMENT]
-            layer_list = self._list_dataset_resources(dataset_offset)
+            layer_offset = offset - total_resources[GeoNodeResourceType.DOCUMENT]
+            layer_list = self._list_layer_resources(layer_offset)
             if len(layer_list) < self.page_size:
                 map_list = self._list_map_resources(0)
                 result = (layer_list + map_list)[:self.page_size]
@@ -615,7 +615,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
     ) -> bool:
         return {
             GeoNodeResourceType.DOCUMENT.value: self.copy_documents,
-            GeoNodeResourceType.DATASET.value: self.copy_datasets,
+            GeoNodeResourceType.DATASET.value: self.copy_layers,
             GeoNodeResourceType.MAP.value: False,
         }[harvestable_resource.remote_resource_type]
 
@@ -662,7 +662,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         if self.harvest_documents:
             result[GeoNodeResourceType.DOCUMENT] = self._get_total_records(
                 GeoNodeResourceType.DOCUMENT)
-        if self.harvest_datasets:
+        if self.harvest_layers:
             result[GeoNodeResourceType.DATASET] = self._get_total_records(
                 GeoNodeResourceType.DATASET)
         if self.harvest_maps:
@@ -677,10 +677,10 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
             result = self._list_resources_by_type(GeoNodeResourceType.DOCUMENT, offset)
         return result
 
-    def _list_dataset_resources(
+    def _list_layer_resources(
             self, offset: int) -> typing.List[base.BriefRemoteResource]:
         result = []
-        if self.harvest_datasets:
+        if self.harvest_layers:
             result = self._list_resources_by_type(GeoNodeResourceType.DATASET, offset)
         return result
 
@@ -845,7 +845,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
             data_quality=get_xpath_value(csw_record, ".//gmd:dataQualityInfo//gmd:lineage"),
         )
         additional_params_handler = {
-            GeoNodeResourceType.DATASET.value: self._get_dataset_additional_parameters,
+            GeoNodeResourceType.DATASET.value: self._get_layer_additional_parameters,
             GeoNodeResourceType.DOCUMENT.value: self._get_document_additional_parameters,
             GeoNodeResourceType.MAP.value: self._get_map_additional_parameters,
         }[harvestable_resource.remote_resource_type]
@@ -853,7 +853,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         descriptor.additional_parameters.update(additional_params)
         return descriptor
 
-    def _get_dataset_additional_parameters(
+    def _get_layer_additional_parameters(
             self,
             descriptor: resourcedescriptor.RecordDescription,
             api_record: typing.Dict
@@ -861,7 +861,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         result = {
             "name": descriptor.identification.name,
             "charset": descriptor.character_set,
-            "resource_type": "dataset",
+            "resource_type": "layer",
             "alternate": api_record.get("alternate", descriptor.identification.name),
             "workspace": api_record.get("workspace")
         }
@@ -1035,8 +1035,8 @@ class GeonodeUnifiedHarvesterWorker(base.BaseHarvesterWorker):
             self,
             *args,
             harvest_documents: typing.Optional[bool] = True,
-            harvest_datasets: typing.Optional[bool] = True,
-            copy_datasets: typing.Optional[bool] = False,
+            harvest_layers: typing.Optional[bool] = True,
+            copy_layers: typing.Optional[bool] = False,
             copy_documents: typing.Optional[bool] = False,
             resource_title_filter: typing.Optional[str] = None,
             start_date_filter: typing.Optional[str] = None,
@@ -1051,8 +1051,8 @@ class GeonodeUnifiedHarvesterWorker(base.BaseHarvesterWorker):
         self.remote_url = self.remote_url.rstrip("/")
         self.http_session = requests.Session()
         self.harvest_documents = bool(harvest_documents)
-        self.harvest_datasets = bool(harvest_datasets)
-        self.copy_datasets = bool(copy_datasets)
+        self.harvest_layers = bool(harvest_layers)
+        self.copy_layers = bool(copy_layers)
         self.copy_documents = bool(copy_documents)
         self.resource_title_filter = resource_title_filter
         self.start_date_filter = start_date_filter
@@ -1118,9 +1118,9 @@ class GeonodeUnifiedHarvesterWorker(base.BaseHarvesterWorker):
             "remote_url": self.remote_url,
             "harvester_id": self.harvester_id,
             "harvest_documents": self.harvest_documents,
-            "harvest_datasets": self.harvest_datasets,
+            "harvest_layers": self.harvest_layers,
             "copy_documents": self.copy_documents,
-            "copy_datasets": self.copy_datasets,
+            "copy_layers": self.copy_layers,
             "resource_title_filter": self.resource_title_filter,
             "start_date_filter": self.start_date_filter,
             "end_date_filter": self.end_date_filter,
@@ -1329,11 +1329,11 @@ def _get_extra_config_schema() -> typing.Dict:
                 "type": "boolean",
                 "default": False
             },
-            "harvest_datasets": {
+            "harvest_layers": {
                 "type": "boolean",
                 "default": True
             },
-            "copy_datasets": {
+            "copy_layers": {
                 "type": "boolean",
                 "default": False
             },
@@ -1371,10 +1371,10 @@ def _from_django_record(target_class: typing.Type, record: models.Harvester):
         record.id,
         harvest_documents=record.harvester_type_specific_configuration.get(
             "harvest_documents", True),
-        harvest_datasets=record.harvester_type_specific_configuration.get(
-            "harvest_datasets", True),
-        copy_datasets=record.harvester_type_specific_configuration.get(
-            "copy_datasets", False),
+        harvest_layers=record.harvester_type_specific_configuration.get(
+            "harvest_layers", True),
+        copy_layers=record.harvester_type_specific_configuration.get(
+            "copy_layers", False),
         copy_documents=record.harvester_type_specific_configuration.get(
             "copy_documents", False),
         resource_title_filter=record.harvester_type_specific_configuration.get(

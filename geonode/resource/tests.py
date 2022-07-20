@@ -52,7 +52,7 @@ class ResourceManagerClassTest:
 class TestResourceManager(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        create_models(b'dataset')
+        create_models(b'layer')
         create_models(b'map')
         create_models(b'document')
         User = get_user_model()
@@ -96,35 +96,35 @@ class TestResourceManager(GeoNodeBaseTestSupport):
             base_url="http://fake_test",
             owner=self.user)
 
-        # Add dataset to a map
+        # Add layer to a map
         MapLayer.objects.create(map=map, name=dt.alternate).save()
-        # Create the rating for dataset
+        # Create the rating for layer
         OverallRating.objects.create(
             category=2,
             object_id=dt.id,
-            content_type=ContentType.objects.get(model='dataset'),
+            content_type=ContentType.objects.get(model='layer'),
             rating=3)
         create_layer_data(dt.resourcebase_ptr_id)
         res = self.rm.delete(doc.uuid, instance=doc)
         self.assertTrue(res)
         res = self.rm.delete(dt.uuid, instance=dt)
         self.assertTrue(res)
-        # After dataset delete
+        # After layer delete
         self.assertEqual(MapLayer.objects.filter(name='geonode:test_delete_layer').count(), 0)
         self.assertEqual(OverallRating.objects.filter(object_id=dt.id).count(), 0)
 
     def test_create(self):
         dt = Layer.objects.filter(uuid__isnull=False).exclude(uuid='').first()
-        dataset_defaults = {"owner": self.user, "title": "test_create_dataset"}
+        layer_defaults = {"owner": self.user, "title": "test_create_layer"}
         res = self.rm.create(dt.uuid, resource_type=Layer)
         new_uuid = str(uuid4())
-        res = self.rm.create(new_uuid, resource_type=Layer, defaults=dataset_defaults)
+        res = self.rm.create(new_uuid, resource_type=Layer, defaults=layer_defaults)
         self.assertEqual(res, Layer.objects.get(uuid=new_uuid))
 
     def test_update(self):
-        dt = create_single_layer("test_update_dataset")
+        dt = create_single_layer("test_update_layer")
         vals = {
-            "name": "new_name_test_update_dataset"
+            "name": "new_name_test_update_layer"
         }
         res = self.rm.update(dt.uuid, vals=vals, keywords=["testing"], regions=["not_known", "Africa"])
         self.assertIn("Africa", res.regions.values_list("name", flat=True))
@@ -141,27 +141,27 @@ class TestResourceManager(GeoNodeBaseTestSupport):
         res = self.rm.ingest(dt_files, resource_type=Document, defaults=defaults)
         self.assertTrue(isinstance(res, Document))
         res.delete()
-        # ingest with datasets
+        # ingest with layers
         res = self.rm.ingest(dt_files, resource_type=Layer, defaults=defaults)
         self.assertTrue(isinstance(res, Layer))
         res.delete()
 
-    def test_dataset_copy(self):
+    def test_layer_copy(self):
 
         def _copy_assert_resource(res, title):
-            dataset_copy = None
+            layer_copy = None
             try:
-                dataset_copy = self.rm.copy(
+                layer_copy = self.rm.copy(
                     res,
                     defaults=dict(
                         title=title
                     )
                 )
-                self.assertIsNotNone(dataset_copy)
-                self.assertEqual(dataset_copy.title, title)
+                self.assertIsNotNone(layer_copy)
+                self.assertEqual(layer_copy.title, title)
             finally:
-                if dataset_copy:
-                    dataset_copy.delete()
+                if layer_copy:
+                    layer_copy.delete()
                 self.assertIsNotNone(res)
                 res.delete()
 
@@ -179,7 +179,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
         self.assertTrue(isinstance(res, Document))
         _copy_assert_resource(res, "Testing Document 2")
 
-        # copy with datasets
+        # copy with layers
         res = self.rm.ingest(
             dt_files,
             resource_type=Layer,
@@ -199,34 +199,34 @@ class TestResourceManager(GeoNodeBaseTestSupport):
     @patch.object(ResourceManager, '_validate_resource')
     def test_append(self, mock_validator):
         mock_validator.return_value = True
-        dt = create_single_layer("test_append_dataset")
+        dt = create_single_layer("test_append_layer")
         # Before append
-        self.assertEqual(dt.name, "test_append_dataset")
+        self.assertEqual(dt.name, "test_append_layer")
         # After append
-        self.rm.append(dt, vals={"name": "new_name_test_append_dataset"})
-        self.assertEqual(dt.name, "new_name_test_append_dataset")
+        self.rm.append(dt, vals={"name": "new_name_test_append_layer"})
+        self.assertEqual(dt.name, "new_name_test_append_layer")
         # test with failing validator
         mock_validator.return_value = False
         self.rm.append(dt, vals={"name": "new_name2"})
-        self.assertEqual(dt.name, "new_name_test_append_dataset")
+        self.assertEqual(dt.name, "new_name_test_append_layer")
 
     @patch.object(ResourceManager, '_validate_resource')
     def test_replace(self, mock_validator):
-        dt = create_single_layer("test_replace_dataset")
+        dt = create_single_layer("test_replace_layer")
         mock_validator.return_value = True
-        self.rm.replace(dt, vals={"name": "new_name_test_replace_dataset"})
-        self.assertEqual(dt.name, "new_name_test_replace_dataset")
+        self.rm.replace(dt, vals={"name": "new_name_test_replace_layer"})
+        self.assertEqual(dt.name, "new_name_test_replace_layer")
         # test with failing validator
         mock_validator.return_value = False
         self.rm.replace(dt, vals={"name": "new_name2"})
-        self.assertEqual(dt.name, "new_name_test_replace_dataset")
+        self.assertEqual(dt.name, "new_name_test_replace_layer")
 
     def test_validate_resource(self):
         doc = create_single_doc("test_delete_doc")
         dt = create_single_layer("test_delete_layer")
         map = create_single_map("test_delete_layer")
         with self.assertRaises(Exception):
-            # append is for only datasets
+            # append is for only layers
             self.rm._validate_resource(doc, action_type="append")
         self.assertTrue(self.rm._validate_resource(doc, action_type="replace"))
         self.assertTrue(self.rm._validate_resource(dt, action_type="replace"))
@@ -242,7 +242,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
 
     def test_remove_permissions(self):
         with self.settings(DEFAULT_ANONYMOUS_VIEW_PERMISSION=True):
-            dt = create_single_layer("test_dataset")
+            dt = create_single_layer("test_layer")
             map = create_single_map("test_exec_map")
             self.assertFalse(self.rm.remove_permissions("invalid", instance=None))
             self.assertTrue(self.rm.remove_permissions(map.uuid, instance=map))
@@ -265,8 +265,8 @@ class TestResourceManager(GeoNodeBaseTestSupport):
 
         perm_spec = {
             "users": {
-                "AnonymousUser": ['change_dataset_style', 'view_resourcebase'],
-                "norman": ['view_resourcebase', 'change_dataset_style'],
+                "AnonymousUser": ['change_layer_style', 'view_resourcebase'],
+                "norman": ['view_resourcebase', 'change_layer_style'],
             },
             "groups": {
                 "public_group": ['view_resourcebase'],
@@ -276,7 +276,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
         self.assertTrue(self.rm.set_permissions(dt.uuid, instance=dt, permissions=perm_spec))
         self.assertFalse(self.rm.set_permissions("invalid_uuid", instance=None, permissions=perm_spec))
         # Test permissions assigned
-        self.assertTrue(norman.has_perm('change_dataset_style', dt))
+        self.assertTrue(norman.has_perm('change_layer_style', dt))
         self.assertFalse(norman.has_perm('change_resourcebase', dt.get_self_resource()))
         # Test with no specified permissions
         with patch('geonode.security.utils.skip_registered_members_common_group') as mock_v:
@@ -296,7 +296,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
                 "private_group": ['view_resourcebase', 'download_resourcebase', 'change_resourcebase']
             }
         }
-        # 1. "download" permissions are allowed on "Datasets"
+        # 1. "download" permissions are allowed on "layers"
         self.assertTrue(self.rm.set_permissions(dt.uuid, instance=dt, permissions=perm_spec))
         self.assertTrue(norman.has_perm('download_resourcebase', dt.get_self_resource()))
         # 2. "download" permissions are allowed on "Documents"
@@ -308,7 +308,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
 
     def test_set_thumbnail(self):
         doc = create_single_doc("test_thumb_doc")
-        dt = create_single_layer("test_thumb_dataset")
+        dt = create_single_layer("test_thumb_layer")
         self.assertFalse(self.rm.set_thumbnail("invalid_uuid"))
         self.assertTrue(self.rm.set_thumbnail(dt.uuid, instance=dt))
         self.assertTrue(self.rm.set_thumbnail(doc.uuid, instance=doc))

@@ -244,7 +244,7 @@ class ResourceManager(ResourceManagerInterface):
                 try:
                     if isinstance(_resource.get_real_instance(), Layer):
                         """
-                        - Remove any associated style to the layer, if it is not used by other datasets.
+                        - Remove any associated style to the layer, if it is not used by other layers.
                         - Default style will be deleted in post_delete_layer.
                         - Remove the layer from any associated map, if any.
                         - Remove the layer default style.
@@ -590,19 +590,19 @@ class ResourceManager(ResourceManagerInterface):
                 with transaction.atomic():
                     logger.debug(f'Removing all permissions on {_resource}')
                     from geonode.layers.models import Layer
-                    _dataset = _resource.get_real_instance() if isinstance(_resource.get_real_instance(), Layer) else None
-                    if not _dataset:
+                    _layer = _resource.get_real_instance() if isinstance(_resource.get_real_instance(), Layer) else None
+                    if not _layer:
                         try:
-                            _dataset = _resource.layer if hasattr(_resource, "layer") else None
+                            _layer = _resource.layer if hasattr(_resource, "layer") else None
                         except Exception:
-                            _dataset = None
-                    if _dataset:
+                            _layer = None
+                    if _layer:
                         UserObjectPermission.objects.filter(
-                            content_type=ContentType.objects.get_for_model(_dataset),
+                            content_type=ContentType.objects.get_for_model(_layer),
                             object_pk=_resource.id
                         ).delete()
                         GroupObjectPermission.objects.filter(
-                            content_type=ContentType.objects.get_for_model(_dataset),
+                            content_type=ContentType.objects.get_for_model(_layer),
                             object_pk=_resource.id
                         ).delete()
                     UserObjectPermission.objects.filter(
@@ -704,7 +704,7 @@ class ResourceManager(ResourceManagerInterface):
                             for perm in _perm_spec["groups"][anonymous_group]:
                                 if _resource_type == 'layer' and perm in (
                                         'change_layer_data', 'change_layer_style',
-                                        'add_layer', 'change_dataset', 'delete_layer'):
+                                        'add_layer', 'change_layer', 'delete_layer'):
                                     if perm == 'change_layer_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
                                         pass
                                     else:
@@ -720,7 +720,7 @@ class ResourceManager(ResourceManagerInterface):
                                     for perm in perms:
                                         if _resource_type == 'layer' and perm in (
                                                 'change_layer_data', 'change_layer_style',
-                                                'add_layer', 'change_dataset', 'delete_layer'):
+                                                'add_layer', 'change_layer', 'delete_layer'):
                                             if perm == 'change_layer_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
                                                 pass
                                             else:
@@ -735,7 +735,7 @@ class ResourceManager(ResourceManagerInterface):
                                 for perm in perms:
                                     if _resource_type == 'layer' and perm in (
                                             'change_layer_data', 'change_layer_style',
-                                            'add_layer', 'change_dataset', 'delete_layer'):
+                                            'add_layer', 'change_layer', 'delete_layer'):
                                         if perm == 'change_layer_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
                                             pass
                                         else:
@@ -752,7 +752,7 @@ class ResourceManager(ResourceManagerInterface):
                                 for perm in perms:
                                     if _resource_type == 'layer' and perm in (
                                             'change_layer_data', 'change_layer_style',
-                                            'add_layer', 'change_dataset', 'delete_layer'):
+                                            'add_layer', 'change_layer', 'delete_layer'):
                                         if perm == 'change_layer_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
                                             pass
                                         else:
@@ -796,7 +796,7 @@ class ResourceManager(ResourceManagerInterface):
                     # Fixup GIS Backend Security Rules Accordingly
                     if not self._concrete_resource_manager.set_permissions(
                             uuid, instance=_resource, owner=owner, permissions=_resource.get_all_level_info(), created=created):
-                        # This might not be a severe error. E.g. for datasets outside of local GeoServer
+                        # This might not be a severe error. E.g. for layers outside of local GeoServer
                         logger.error(Exception("Could not complete concrete manager operation successfully!"))
                 _resource.set_processing_state(enumerations.STATE_PROCESSED)
                 return True

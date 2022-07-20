@@ -215,7 +215,7 @@ class UploadSerializer(BaseDynamicModelSerializer):
         request = self.context.get('request', None)
         if request and request.query_params.get('full'):
             self.fields['resource'] = DynamicRelationField(
-                DatasetSerializer,
+                LayerSerializer,
                 embed=True,
                 many=False,
                 read_only=True)

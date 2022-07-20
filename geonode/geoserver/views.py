@@ -509,7 +509,7 @@ def geoserver_proxy(request,
                     not re.match(temp_style_name_regex, _style_name):
                 affected_layers = style_update(request, raw_url, workspace)
         elif re.match(r'^.*(?<!/rest/)/rest/.*/?layers.*', url.path):
-            logger.debug(f"[geoserver_proxy] Updating Dataset ---> url {url.geturl()}")
+            logger.debug(f"[geoserver_proxy] Updating Layer ---> url {url.geturl()}")
             try:
                 _layer_name = os.path.splitext(os.path.basename(request.path))[0]
                 _layer = Layer.objects.get(name=_layer_name)

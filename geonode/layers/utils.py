@@ -267,7 +267,7 @@ def get_valid_layer_name(layer, overwrite):
     elif isinstance(layer, str):
         layer_name = str(layer)
     else:
-        msg = ('You must pass either a filename or a GeoNode dataset object')
+        msg = ('You must pass either a filename or a GeoNode layer object')
         raise GeoNodeException(msg)
 
     if overwrite:
@@ -352,7 +352,7 @@ def get_bbox(filename):
             elif epsg_code is None:
                 # otherwise, stop the upload process
                 raise GeoNodeException(
-                    "Invalid    Datasets. "
+                    "Invalid Datasets. "
                     "Needs an authoritative SRID in its CRS to be accepted")
 
             # eliminate default EPSG srid as it will be added when this function returned
@@ -391,20 +391,20 @@ def get_bbox(filename):
     return [bbox_x0, bbox_x1, bbox_y0, bbox_y1, f"EPSG:{str(srid)}"]
 
 
-def delete_orphaned_datasets():
+def delete_orphaned_layers():
     """Delete orphaned layer files."""
     deleted = []
     _, files = storage_manager.listdir("layers")
 
     for filename in files:
         if Layer.objects.filter(file__icontains=filename).count() == 0:
-            logger.debug(f"Deleting orphaned dataset file {filename}")
+            logger.debug(f"Deleting orphaned layer file {filename}")
             try:
                 storage_manager.delete(os.path.join("layers", filename))
                 deleted.append(filename)
             except NotImplementedError as e:
                 logger.error(
-                    f"Failed to delete orphaned dataset file '{filename}': {e}")
+                    f"Failed to delete orphaned layer file '{filename}': {e}")
 
     return deleted
 
@@ -418,7 +418,7 @@ def surrogate_escape_string(input_string, source_character_set):
     return input_string.encode(source_character_set, "surrogateescape").decode("utf-8", "surrogateescape")
 
 
-def set_datasets_permissions(permissions_name, resources_names=None, users_usernames=None, groups_names=None, delete_flag=False, verbose=False):
+def set_layers_permissions(permissions_name, resources_names=None, users_usernames=None, groups_names=None, delete_flag=False, verbose=False):
     # Processing information
     if not resources_names:
         # If resources is None we consider all the existing layer
@@ -549,7 +549,7 @@ def set_datasets_permissions(permissions_name, resources_names=None, users_usern
                                         else:
                                             logger.warning(
                                                 f"The user {_user.username} does not have "
-                                                f"any permission on the dataset {resource.title}. "
+                                                f"any permission on the layer {resource.title}. "
                                                 "It has been skipped."
                                             )
                                     else:
@@ -591,7 +591,7 @@ def set_datasets_permissions(permissions_name, resources_names=None, users_usern
                                     else:
                                         logger.warning(
                                             f"The group {g.name} does not have any permission "
-                                            f"on the dataset {resource.title}. "
+                                            f"on the layer {resource.title}. "
                                             "It has been skipped."
                                         )
                             # Set final permissions
@@ -618,10 +618,10 @@ def get_uuid_handler():
 def validate_input_source(layer, filename, files, gtype=None, action_type='replace', storage_manager=storage_manager):
     if layer.is_vector() and is_raster(filename):
         raise InvalidDatasetException(_(
-            f"You are attempting to {action_type} a vector dataset with a raster."))
+            f"You are attempting to {action_type} a vector layer with a raster."))
     elif (not layer.is_vector()) and is_vector(filename):
         raise InvalidDatasetException(_(
-            f"You are attempting to {action_type} a raster dataset with a vector."))
+            f"You are attempting to {action_type} a raster layer with a vector."))
 
     if layer.is_vector():
         absolute_base_file = None
@@ -635,7 +635,7 @@ def validate_input_source(layer, filename, files, gtype=None, action_type='repla
         if not absolute_base_file or \
                 os.path.splitext(absolute_base_file)[1].lower() != '.shp':
             raise InvalidDatasetException(
-                _(f"You are attempting to {action_type} a vector dataset with an unknown format."))
+                _(f"You are attempting to {action_type} a vector layer with an unknown format."))
         else:
             try:
                 gtype = layer.gtype if not gtype else gtype
@@ -651,7 +651,7 @@ def validate_input_source(layer, filename, files, gtype=None, action_type='repla
                 _ff = json.loads(lyr.GetFeature(0).ExportToJson())
                 if gtype:
                     logger.warning(
-                        _("Local GeoNode dataset has no geometry type."))
+                        _("Local GeoNode layer has no geometry type."))
                     if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
                         schema_is_compliant = True
                 elif "geometry" in _ff and _ff["geometry"]["type"]:
@@ -674,7 +674,7 @@ def validate_input_source(layer, filename, files, gtype=None, action_type='repla
 
                 if not schema_is_compliant:
                     raise InvalidDatasetException(
-                        _("Please ensure that the dataset structure is consistent "
+                        _("Please ensure that the layer structure is consistent "
                           f"with the file you are trying to {action_type}."))
                 return True
             except Exception as e:

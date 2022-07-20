@@ -463,7 +463,7 @@ def check_import_session_is_valid(request, upload_session, import_session):
             return layer
         except Exception as e:
             return render(request,
-                          'upload/dataset_upload_error.html', context={'error_msg': str(e)})
+                          'upload/layer_upload_error.html', context={'error_msg': str(e)})
     elif store_type == 'coverageStore':
         return True
 

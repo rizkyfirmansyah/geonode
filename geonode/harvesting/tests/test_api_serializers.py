@@ -217,7 +217,7 @@ class HarvesterSerializerTestCase(GeoNodeBaseTestSupport):
         serializer = serializers.HarvesterSerializer(
             self.harvester,
             data={
-                "harvester_type_specific_configuration": {"harvest_datasets": False}
+                "harvester_type_specific_configuration": {"harvest_layers": False}
             },
             context={"request": request},
             partial=True,

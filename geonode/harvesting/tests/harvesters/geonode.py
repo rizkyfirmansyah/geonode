@@ -130,7 +130,7 @@ class TestGeonodeHarvester(GeoNodeBaseTestSupport):
         # test worker with skip layer
         worker = GeonodeLegacyHarvester(
             **params,
-            harvest_datasets=False
+            harvest_layers=False
         )
         self.assertEqual(worker.get_num_available_resources(), 5)
 
@@ -188,7 +188,7 @@ class TestGeonodeHarvester(GeoNodeBaseTestSupport):
             harvester_type=self.harvester_type,
             harvester_type_specific_configuration={
                 'harvest_documents': False,
-                'harvest_datasets': True,
+                'harvest_layers': True,
                 'resource_title_filter': ''
             }
         )
@@ -198,6 +198,6 @@ class TestGeonodeHarvester(GeoNodeBaseTestSupport):
         self.assertEqual(harvester.default_owner, self.user)
 
         self.assertFalse(worker.harvest_documents)
-        self.assertTrue(worker.harvest_datasets)
+        self.assertTrue(worker.harvest_layers)
         self.assertTrue(worker.harvest_maps)
         self.assertEqual(worker.resource_name_filter, '')

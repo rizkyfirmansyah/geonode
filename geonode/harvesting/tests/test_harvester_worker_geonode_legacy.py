@@ -49,7 +49,7 @@ class GeoNodeHarvesterWorkerTestCase(GeoNodeBaseSimpleTestSupport):
         categories = ["category1", "category2"]
         combinations = [
             {
-                "harvest_documents": True, "harvest_datasets": True, "copy_datasets": True, "copy_documents": True,
+                "harvest_documents": True, "harvest_layers": True, "copy_layers": True, "copy_documents": True,
                 "resource_title_filter": "something", "start_date_filter": now, "end_date_filter": now,
                 "keywords_filter": keywords, "categories_filter": categories
             },

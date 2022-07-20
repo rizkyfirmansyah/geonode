@@ -341,7 +341,7 @@ def get_related_resources(document):
         return []
 
 
-def dataset_post_save(instance, *args, **kwargs):
+def layer_post_save(instance, *args, **kwargs):
     base_file, info = instance.get_base_file()
 
     if info:
@@ -372,10 +372,10 @@ def dataset_post_save(instance, *args, **kwargs):
 
 
 def metadata_post_save(instance, *args, **kwargs):
-    logger.debug("handling UUID In pre_save_dataset")
+    logger.debug("handling UUID In pre_save_layer")
     defaults = {}
     if isinstance(instance, Layer) and hasattr(settings, 'LAYER_UUID_HANDLER') and settings.LAYER_UUID_HANDLER != '':
-        logger.debug("using custom uuid handler In pre_save_dataset")
+        logger.debug("using custom uuid handler In pre_save_layer")
         from ..layers.utils import get_uuid_handler
         _uuid = get_uuid_handler()(instance).create_uuid()
         if _uuid != instance.uuid:
@@ -496,6 +496,6 @@ def resourcebase_post_save(instance, *args, **kwargs):
             instance.alternate = get_alternate_name(instance)
 
         if isinstance(instance, Layer):
-            dataset_post_save(instance, *args, **kwargs)
+            layer_post_save(instance, *args, **kwargs)
 
         metadata_post_save(instance, *args, **kwargs)

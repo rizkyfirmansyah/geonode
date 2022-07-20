@@ -245,7 +245,7 @@ def _get_next_id():
     return next_id
 
 
-def _check_geoserver_store(store_name, dataset_type, overwrite):
+def _check_geoserver_store(store_name, layer_type, overwrite):
     """Check if the store exists in geoserver"""
     try:
         store = gs_catalog.get_store(store_name)
@@ -267,8 +267,8 @@ def _check_geoserver_store(store_name, dataset_type, overwrite):
                             raise GeoNodeException(
                                 _("Name already in use and overwrite is False"))
                         existing_type = resource.resource_type or resource.polymorphic_ctype.name
-                        if existing_type != dataset_type:
-                            msg = (f"Type of uploaded file {store_name} ({dataset_type}) does not "
+                        if existing_type != layer_type:
+                            msg = (f"Type of uploaded file {store_name} ({layer_type}) does not "
                                    "match type of existing resource type "
                                    f"{existing_type}")
                             _log(msg)
@@ -289,7 +289,7 @@ def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=Tr
             if len(spatial_files) > 1:
                 # we only support more than one file if they're rasters for mosaicing
                 if not all(
-                        [f.file_type.dataset_type == 'coverage' for f in spatial_files]):
+                        [f.file_type.layer_type == 'coverage' for f in spatial_files]):
                     msg = "Please upload only one type of file at a time"
                     logger.exception(Exception(msg))
                     raise GeneralUploadException(detail=msg)
@@ -299,17 +299,17 @@ def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=Tr
                 msg = "Unable to recognize the uploaded file(s)"
                 logger.exception(Exception(msg))
                 raise GeneralUploadException(detail=msg)
-            the_dataset_type = get_layer_type(spatial_files)
-            _check_geoserver_store(name, the_dataset_type, overwrite)
-            if the_dataset_type not in (
+            the_layer_type = get_layer_type(spatial_files)
+            _check_geoserver_store(name, the_layer_type, overwrite)
+            if the_layer_type not in (
                     FeatureType.resource_type,
                     Coverage.resource_type):
-                msg = f"Expected layer type to FeatureType or Coverage, not {the_dataset_type}"
+                msg = f"Expected layer type to FeatureType or Coverage, not {the_layer_type}"
                 logger.exception(Exception(msg))
                 raise GeneralUploadException(msg)
             files_to_upload = preprocess_files(spatial_files)
             _log(f"files_to_upload: {files_to_upload}")
-            _log(f'Uploading {the_dataset_type}')
+            _log(f'Uploading {the_layer_type}')
             error_msg = None
             try:
                 upload = None
@@ -603,7 +603,7 @@ def srs_step(upload_session, source, target):
     upload_session = Upload.objects.update_from_session(upload_session)
 
 
-def final_step(upload_session, user, charset="UTF-8", dataset_id=None):
+def final_step(upload_session, user, charset="UTF-8", layer_id=None):
     import_session = upload_session.import_session
     if import_session:
         import_id = import_session.id
@@ -719,7 +719,7 @@ def final_step(upload_session, user, charset="UTF-8", dataset_id=None):
                         raise GeneralUploadException(detail=f"Import Session failed.{str(_cause)}")
                     saved_layer = Upload.objects.filter(import_id=import_id).get().resource
 
-                dataset_uuid = None
+                layer_uuid = None
 
                 if saved_layer:
                     _vals['name'] = saved_layer.get_real_instance().name
@@ -754,7 +754,7 @@ def final_step(upload_session, user, charset="UTF-8", dataset_id=None):
                             xml_file = None
 
                         if xml_file and os.path.exists(xml_file[0]) and os.access(xml_file, os.R_OK):
-                            dataset_uuid, vals, regions, keywords, custom = parse_metadata(
+                            layer_uuid, vals, regions, keywords, custom = parse_metadata(
                                 open(xml_file).read())
                             metadata_uploaded = True
                     except Exception as e:
@@ -798,7 +798,7 @@ def final_step(upload_session, user, charset="UTF-8", dataset_id=None):
                 _log(f'[sld_uploaded: {sld_uploaded}] sld_file: {sld_file}')
 
                 # Make sure the layer does not exists already
-                if dataset_uuid and Layer.objects.filter(uuid=dataset_uuid).count():
+                if layer_uuid and Layer.objects.filter(uuid=layer_uuid).count():
                     Upload.objects.invalidate_from_session(upload_session)
                     _log("The UUID identifier from the XML Metadata is already in use in this system.")
                     raise GeneralUploadException(detail=_("The UUID identifier from the XML Metadata is already in use in this system."))
@@ -824,7 +824,7 @@ def final_step(upload_session, user, charset="UTF-8", dataset_id=None):
                     if not saved_layer_filter.exists():
                         try:
                             saved_layer = resource_manager.create(
-                                dataset_uuid,
+                                layer_uuid,
                                 resource_type=Layer,
                                 defaults=dict(
                                     dirty_state=True,
@@ -870,7 +870,7 @@ def final_step(upload_session, user, charset="UTF-8", dataset_id=None):
                                 files_list.extend(upload_session.base_file.data[0].sld_files)
                                 files_list.extend(upload_session.base_file.data[0].xml_files)
                             saved_layer = resource_manager.create(
-                                dataset_uuid,
+                                layer_uuid,
                                 resource_type=Layer,
                                 defaults=dict(
                                     store=_vals.get('store'),
