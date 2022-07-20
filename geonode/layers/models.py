@@ -723,18 +723,6 @@ def post_delete_layer(instance, sender, **kwargs):
     - Remove the layer from any associated map, if any.
     - Remove the layer default style.
     """
-    try:
-        if instance.get_real_instance().remote_service is not None:
-            from geonode.services.models import HarvestJob
-            _resource_id = instance.get_real_instance().alternate
-            HarvestJob.objects.filter(
-                service=instance.get_real_instance().remote_service, resource_id=_resource_id).delete()
-            _resource_id = instance.get_real_instance().alternate.split(":")[-1] if len(instance.get_real_instance().alternate.split(":")) else None
-            if _resource_id:
-                HarvestJob.objects.filter(
-                    service=instance.get_real_instance().remote_service, resource_id=_resource_id).delete()
-    except Exception as e:
-        logger.exception(e)
 
     from geonode.maps.models import MapLayer
     logger.debug(

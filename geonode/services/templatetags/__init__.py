@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -17,16 +16,3 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
-from django.core.management.base import BaseCommand
-import unittest
-from geonode.services.tests import ServicesTests
-
-
-class Command(BaseCommand):
-    help = """
-    """
-
-    def handle(self, *args, **options):
-        suite = unittest.TestLoader().loadTestsFromTestCase(ServicesTests)
-        unittest.TextTestRunner().run(suite)

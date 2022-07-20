@@ -37,7 +37,6 @@ from geonode.base.models import ResourceBase
 from geonode.maps.signals import map_changed_signal
 from geonode.client.hooks import hookset
 from geonode.utils import (
-    GXPMapBase,
     GXPLayerBase,
     layer_from_viewer_config,
     default_map_config)
@@ -52,7 +51,7 @@ from pinax.ratings.models import OverallRating
 logger = logging.getLogger(__name__)
 
 
-class Map(ResourceBase, GXPMapBase):
+class Map(ResourceBase):
 
     """
     A Map aggregates several layers together and annotates them with a viewport
@@ -140,7 +139,7 @@ class Map(ResourceBase, GXPMapBase):
                 readme += f" ({self.license.url})"
             readme += "\n"
         if self.constraints_other:
-            readme += f"Additional constraints: {self.constraints_other}\n"
+            readme += f"Additional constraints: a{self.constraints_other}\n"
 
         def layer_json(lyr):
             return {

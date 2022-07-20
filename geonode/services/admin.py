@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -25,18 +24,6 @@ from geonode.base.admin import ResourceBaseAdminForm
 from . import models
 
 
-class HarvestJobAdminInline(admin.StackedInline):
-    model = models.HarvestJob
-    extra = 0
-
-
-class HarvestJobAdminForm(ResourceBaseAdminForm):
-
-    class Meta(ResourceBaseAdminForm.Meta):
-        model = models.HarvestJob
-        fields = '__all__'
-
-
 class ServiceAdminForm(ResourceBaseAdminForm):
 
     class Meta(ResourceBaseAdminForm.Meta):
@@ -44,36 +31,11 @@ class ServiceAdminForm(ResourceBaseAdminForm):
         fields = '__all__'
 
 
-class HarvestJobAdmin(admin.ModelAdmin):
-    list_display = ('id', 'service', 'resource_id', 'status', 'details')
-    list_display_links = ('id', 'service')
-    list_filter = ('id', 'service', 'status')
-    form = HarvestJobAdminForm
-
-
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'base_url', 'type', 'method')
     list_display_links = ('id', 'name')
     list_filter = ('id', 'name', 'type', 'method')
     form = ServiceAdminForm
-    inlines = (
-        HarvestJobAdminInline,
-    )
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        return qs.filter(owner=request.user)
-
-    def has_module_permission(self, request):
-        if request.user.is_staff:
-            return True
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.is_staff:
-            return True
 
 
 admin.site.register(models.Service, ServiceAdmin)
-admin.site.register(models.HarvestJob, HarvestJobAdmin)

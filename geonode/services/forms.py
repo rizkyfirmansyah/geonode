@@ -26,10 +26,8 @@ import taggit
 
 from . import enumerations
 from .models import Service
-from .serviceprocessors import (
-    get_service_handler,
-    get_available_service_types
-)
+from .serviceprocessors import get_service_handler
+from geonode.services.serviceprocessors import get_available_service_types
 
 logger = logging.getLogger(__name__)
 
@@ -79,10 +77,9 @@ class CreateServiceForm(forms.Form):
                     _("Could not connect to the service at %(url)s"),
                     params={"url": url}
                 )
-            if not service_handler.has_resources():
+            if not service_handler.probe():
                 raise ValidationError(
-                    _("Could not find importable resources for the service "
-                      "at %(url)s"),
+                    _("Could not connect to the service at %(url)s"),
                     params={"url": url}
                 )
             elif service_type not in (enumerations.AUTO, enumerations.OWS):
