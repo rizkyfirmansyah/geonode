@@ -34,7 +34,7 @@ from tinymce.models import HTMLField
 
 from geonode.base.models import ResourceBase, ResourceBaseManager, resourcebase_post_save_layers
 from geonode.people.utils import get_valid_user
-from geonode.utils import check_shp_columnnames
+from geonode.utils import build_absolute_uri, check_shp_columnnames
 from geonode.security.utils import ResourceManager
 from geonode.security.models import PermissionLevelMixin
 from geonode.notifications_helper import (
@@ -207,7 +207,20 @@ class Layer(ResourceBase):
         null=True)
 
     def is_vector(self):
-        return self.storeType == 'dataStore'
+        return self.subtype == 'vector'
+
+    @property
+    def is_raster(self):
+        return self.subtype == 'raster'
+
+    @property
+    def display_type(self):
+        if self.subtype == "vector":
+            return "Vector Data"
+        elif self.subtype == "raster":
+            return "Raster Data"
+        else:
+            return "Data"
 
     def get_upload_session(self):
         return self.upload_session
@@ -315,7 +328,7 @@ class Layer(ResourceBase):
 
         # we need to check, for shapefile, if column names are valid
         list_col = None
-        if self.storeType == 'dataStore':
+        if self.subtype == 'vector':
             valid_shp, wrong_column_name, list_col = check_shp_columnnames(
                 self)
             if wrong_column_name:
@@ -375,6 +388,13 @@ class Layer(ResourceBase):
     def maps(self):
         from geonode.maps.models import MapLayer
         return MapLayer.objects.filter(name=self.alternate)
+
+    @property
+    def download_url(self):
+        if self.subtype not in ['vector', 'raster']:
+            logger.error("Download URL is available only for datasets that have been harvested and copied locally")
+            return None
+        return build_absolute_uri(reverse('dataset_download', args=(self.alternate,)))
 
     @property
     def class_name(self):

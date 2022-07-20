@@ -2402,7 +2402,7 @@ def resourcebase_post_save_layers(instance, *args, **kwargs):
         if instance.uuid is None or instance.uuid == '':
             instance.uuid = str(uuid.uuid1())
 
-        if instance.storeType == 'remoteStore':
+        if instance.subtype == 'remote':
             ResourceBase.objects.filter(id=instance.id).update(
                 thumbnail_url=instance.get_thumbnail_url(),
                 detail_url=f"/services/{instance.remote_service_id}",

@@ -354,7 +354,7 @@ def dataset_post_save(instance, *args, **kwargs):
             instance.subtype = 'vector'
         elif extension in cov_exts:
             instance.subtype = 'raster'
-    if instance.storeType == 'remoteStore':
+    if instance.subtype == 'remote':
         ResourceBase.objects.filter(id=instance.id).update(
             thumbnail_url=instance.get_thumbnail_url(),
             detail_url=f"/services/{instance.remote_service_id}",

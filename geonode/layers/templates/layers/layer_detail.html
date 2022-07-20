@@ -49,7 +49,7 @@
       </div>
     </div>
   </div>
-  {% if storeType == 'remoteStore' %}
+  {% if subtype == 'remote' %}
   <div class="card-footer">
     <em>
       <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
@@ -301,7 +301,7 @@
   <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
 
     <ul class="list-group">
-      {% if resource.storeType != "remoteStore" %}
+      {% if resource.subtype != "remote" %}
         {% if link_geotiff_io %}
           <li class="list-group-item">
             <a href="{{link_geotiff_io}}" class="btn btn-primary btn-block" target="_blank">{% trans "Analyze with" %}
@@ -445,7 +445,7 @@
       {% endif %}
 
       {% if not request.user_agent.is_mobile %}
-        {% if OGC_SERVER.default.BACKEND == 'geonode.geoserver' and resource.storeType != "remoteStore" %}
+        {% if OGC_SERVER.default.BACKEND == 'geonode.geoserver' and resource.subtype != "remote" %}
           <li class="list-group-item">
             <h4>{% trans "Styles" %}</h4>
             <p>
@@ -474,7 +474,7 @@
         {% endif %}
       {% endif %}
 
-      {% if resource.storeType == "remoteStore" %}
+      {% if resource.subtype == "remote" %}
         <li class="list-group-item">
           <h4>{% trans "External service layer" %}</h4>
           <div>{% trans "Source" %}: <a
@@ -485,7 +485,7 @@
       {% endif %}
 
       {% if OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
-        {% if "change_resourcebase" in perms_list and resource.storeType != "remoteStore" %}
+        {% if "change_resourcebase" in perms_list and resource.subtype != "remote" %}
           {% if not READ_ONLY_MODE %}
             <li class="list-group-item">
               <h4>{% trans "Refresh Attributes and Statistics of this layer" %}</h4>

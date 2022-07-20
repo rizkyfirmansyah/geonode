@@ -69,7 +69,7 @@ class LayerAdmin(TabbedTranslationAdmin):
         'metadata_completeness')
     list_display_links = ('id',)
     list_editable = ('title', 'group', 'is_approved', 'is_published')
-    list_filter = ('storeType', 'owner', 'group',
+    list_filter = ('subtype', 'owner', 'group',
                    'restriction_code_type__identifier', 'date', 'date_type',
                    'is_approved', 'is_published')
     search_fields = ('alternate', 'title', 'abstract', 'purpose',

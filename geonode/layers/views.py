@@ -729,7 +729,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
     context_dict["layer_name"] = json.dumps(layers_names)
     try:
         # get type of layer (raster or vector)
-        if layer.storeType == 'coverageStore':
+        if layer.subtype == 'raster':
             context_dict["layer_type"] = "raster"
         elif layer.storeType == 'dataStore':
             if layer.has_time:
@@ -832,7 +832,7 @@ def layer_feature_catalogue(
     if not layer:
         return page_not_found_message(request)
 
-    if layer.storeType != 'dataStore':
+    if layer.subtype != 'vector':
         out = {
             'success': False,
             'errors': 'layer is not a feature type'
