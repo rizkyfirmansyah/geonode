@@ -169,12 +169,12 @@ def update_resource(instance: ResourceBase, xml_file: str = None, regions: list 
                 elif value is not None and not spatial_repr.exists():
                     value = None
                 defaults[key] = value
-            elif key == 'topic_category':
-                value, created = TopicCategory.objects.get_or_create(
-                    identifier=value,
-                    defaults={'description': '', 'gn_description': value})
-                key = 'category'
-                defaults[key] = value
+            # elif key == 'topic_category':
+            #     value, created = TopicCategory.objects.get_or_create(
+            #         identifier=value,
+            #         defaults={'description': '', 'gn_description': value})
+            #     key = 'category'
+            #     defaults[key] = value
             else:
                 defaults[key] = value
 
@@ -341,6 +341,66 @@ def get_related_resources(document):
         return []
 
 
+def document_post_save(instance, *args, **kwargs):
+    instance.csw_type = 'document'
+
+    if instance.files:
+        _, extension = os.path.splitext(os.path.basename(instance.files[0]))
+        instance.extension = extension[1:]
+        doc_type_map = DOCUMENT_TYPE_MAP
+        doc_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
+        if doc_type_map is None:
+            subtype = 'other'
+        else:
+            subtype = doc_type_map.get(
+                instance.extension.lower(), 'other')
+        instance.subtype = subtype
+    elif instance.doc_url:
+        if '.' in urlparse(instance.doc_url).path:
+            instance.extension = urlparse(instance.doc_url).path.rsplit('.')[-1]
+
+    name = None
+    ext = instance.extension
+    mime_type_map = DOCUMENT_MIMETYPE_MAP
+    mime_type_map.update(getattr(settings, 'DOCUMENT_MIMETYPE_MAP', {}))
+    mime = mime_type_map.get(ext, 'text/plain')
+    url = None
+
+    if instance.id and instance.files:
+        name = "Hosted Document"
+        site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
+        url = f"{site_url}{reverse('document_download', args=(instance.id,))}"
+    elif instance.doc_url:
+        name = "External Document"
+        url = instance.doc_url
+
+    Document.objects.filter(id=instance.id).update(
+        extension=instance.extension,
+        subtype=instance.subtype,
+        doc_url=instance.doc_url,
+        csw_type=instance.csw_type)
+
+    if name and url and ext:
+        Link.objects.get_or_create(
+            resource=instance.resourcebase_ptr,
+            url=url,
+            defaults=dict(
+                extension=ext,
+                name=name,
+                mime=mime,
+                url=url,
+                link_type='data',))
+
+    resources = get_related_resources(instance)
+
+    # if there are (new) linked resources update the bbox computed by their bboxes
+    if resources:
+        bbox = MultiPolygon([r.bbox_polygon for r in resources])
+        instance.set_bbox_polygon(bbox.extent, instance.srid)
+    elif not instance.bbox_polygon:
+        instance.set_bbox_polygon((-180, -90, 180, 90), 'EPSG:4326')
+
+
 def layer_post_save(instance, *args, **kwargs):
     base_file, info = instance.get_base_file()
 
@@ -495,6 +555,8 @@ def resourcebase_post_save(instance, *args, **kwargs):
         if hasattr(instance, 'alternate') and not getattr(instance, 'alternate', None) or getattr(instance, 'alternate', '') == '':
             instance.alternate = get_alternate_name(instance)
 
+        # if isinstance(instance, Document):
+        #     document_post_save(instance, *args, **kwargs)
         if isinstance(instance, Layer):
             layer_post_save(instance, *args, **kwargs)
 
