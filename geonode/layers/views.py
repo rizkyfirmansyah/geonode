@@ -19,7 +19,6 @@
 import re
 import os
 import json
-import shutil
 import decimal
 import logging
 import warnings
@@ -47,19 +46,23 @@ from django.core.exceptions import PermissionDenied
 from django.forms.models import inlineformset_factory
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
 from geonode.views import page_not_found_message, unauthorized_message
 from geonode.notifications_helper import toast_unauthorized
+from django.template.loader import get_template
 
 from guardian.shortcuts import get_objects_for_user
+from geonode.proxy.views import fetch_response_headers
+from django.views.decorators.csrf import csrf_exempt
 
 from geonode import geoserver
 from geonode.base.auth import get_or_create_token
 from geonode.layers.metadata import parse_metadata
-from geonode.upload.api.views import UploadViewSet
-from geonode.upload.upload import _update_layer_with_xml_info
+from geonode.resource.manager import resource_manager
+
+from geonode.resource.utils import update_resource
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.views import batch_modify, batch_permissions
 from geonode.base.models import (
@@ -77,11 +80,8 @@ from geonode.layers.models import (
     Attribute,
     UploadSession)
 from geonode.layers.utils import (
-    get_files, gs_append_data_to_layer,
-    is_raster, is_sld_upload_only,
-    is_vector, is_xml_upload_only,
+    is_sld_upload_only, is_xml_upload_only,
     validate_input_source)
-from geonode.upload.views import _select_relevant_files, _write_uploaded_files_to_disk
 from geonode.maps.models import Map
 from geonode.services.models import Service
 from geonode.base import register_event
@@ -101,12 +101,13 @@ from geonode.utils import (
     llbbox_to_mercator,
     bbox_to_projection,
     build_social_links,
+    HttpClient,
     GXPLayer,
     GXPMap,
     mkdtemp)
 from geonode.geoserver.helpers import (
-    set_layer_style,
-    ogc_server_settings)
+    set_layer_style, wps_format_is_supported,
+    ogc_server_settings, select_relevant_files, write_uploaded_files_to_disk)
 from geonode.geoserver.security import set_geowebcache_invalidate_cache
 from geonode.upload.forms import LayerUploadForm as UploadViewsetForm
 
@@ -218,14 +219,14 @@ def layer_upload_metadata(request):
 
     if form.is_valid():
         tempdir = mkdtemp()
-        relevant_files = _select_relevant_files(
+        relevant_files = select_relevant_files(
             ['xml'],
             iter(request.FILES.values())
         )
 
         logger.debug(f"relevant_files: {relevant_files}")
 
-        _write_uploaded_files_to_disk(tempdir, relevant_files)
+        write_uploaded_files_to_disk(tempdir, relevant_files)
 
         base_file = os.path.join(tempdir, form.cleaned_data["base_file"].name)
 
@@ -242,7 +243,8 @@ def layer_upload_metadata(request):
                     content_type='application/json',
                     status=404)
 
-            updated_layer = _update_layer_with_xml_info(layer.first(), base_file, regions, keywords, vals)
+            updated_layer = update_resource(layer, base_file, regions, keywords, vals)
+            # _update_layer_with_xml_info(layer.first(), base_file, regions, keywords, vals)
             updated_layer.save()
             out['status'] = ['finished']
             out['url'] = updated_layer.get_absolute_url()
@@ -1266,124 +1268,107 @@ def layer_metadata_advanced(request, layername):
         template='layers/layer_metadata_advanced.html')
 
 
-@login_required
-def layer_replace(request, layername, template='layers/layer_replace.html'):
+@csrf_exempt
+def layer_download(request, layername):
     try:
         layer = _resolve_layer(
             request,
             layername,
-            'base.change_resourcebase',
-            _PERMISSION_MSG_MODIFY)
-    except PermissionDenied:
-        return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
+            'base.download_resourcebase',
+            _PERMISSION_MSG_GENERIC)
+    except Exception as e:
+        raise page_not_found_message(request)
 
-    except Exception:
-        return page_not_found_message(request)
+    if not settings.USE_GEOSERVER:
+        # if GeoServer is not used, we redirect to the proxy download
+        return HttpResponseRedirect(reverse('download', args=[layer.id]))
 
-    if not layer:
-        return page_not_found_message(request)
+    download_format = request.GET.get('export_format')
 
-    if request.method == 'GET':
-        ctx = {
-            'charsets': CHARSETS,
-            'resource': layer,
-            'is_featuretype': layer.is_vector(),
-            'is_layer': True,
-        }
-        return render(request, template, context=ctx)
-    elif request.method in ['POST', 'PUT']:
-        form = UploadViewsetForm(request.POST, request.FILES)
+    if download_format and not wps_format_is_supported(download_format, layer.subtype):
+        logger.error("The format provided is not valid for the selected resource")
+        return JsonResponse({"error": "The format provided is not valid for the selected resource"}, status=500)
 
-        _tmpdir = None
-        out = {}
-        if form.is_valid():
-            try:
-                data_retriever = form.cleaned_data["data_retriever"]
-                base_file = data_retriever.get("base_file").get_path(allow_transfer=False)
-                files = {_file.split('.')[1]: _file for _file in data_retriever.file_paths.values()}
-                if '.zip' in base_file:
-                    files, _tmpdir = get_files(base_file)
+    _format = 'application/zip' if layer.is_vector() else 'image/tiff'
+    # getting default payload
+    tpl = get_template("geoserver/layer_download.xml")
+    ctx = {
+        "alternate": layer.alternate,
+        "download_format": download_format or _format
+    }
+    # applying context for the payload
+    payload = tpl.render(ctx)
 
-                if layer.is_vector() and is_raster(base_file):
-                    out['success'] = False
-                    out['errors'] = _(
-                        "You are attempting to replace a vector layer with a raster.")
-                elif (not layer.is_vector()) and is_vector(base_file):
-                    out['success'] = False
-                    out['errors'] = _(
-                        "You are attempting to replace a raster layer with a vector.")
-                else:
-                    if check_ogc_backend(geoserver.BACKEND_PACKAGE):
-                        out['ogc_backend'] = geoserver.BACKEND_PACKAGE
-                resource_is_valid = validate_input_source(
-                    layer=layer, filename=base_file, files=files, action_type="replace"
-                )
-                data_retriever.delete_files()
-                if resource_is_valid:
-                    # Create a new upload session
-                    request.GET = {"layer_id": layer.id}
-                    steps = [None, "check", "final"] if layer.is_vector() else [None, "final"]
-                    for _step in steps:
-                        if _step != 'final':
-                            response, cat, valid = UploadViewSet()._emulate_client_upload_step(
-                                request,
-                                _step
-                            )
-                            if response.status_code != 200:
-                                raise Exception(response.content)
-                        else:
-                            logger.error("starting final step for Replace Layer")
-                            from geonode.upload.tasks import finalize_incomplete_session_uploads
-                            if settings.ASYNC_SIGNALS:
-                                logger.error("async starting")
-                                finalize_incomplete_session_uploads.apply_async()
-                            else:
-                                finalize_incomplete_session_uploads.apply()
+    # init of Client
+    client = HttpClient()
 
-                    set_geowebcache_invalidate_cache(layer.typename)
+    headers = {
+        "Content-type": "application/xml",
+        "Accept": "application/xml"
+    }
 
-                    out['success'] = True
-                    out['url'] = reverse(
-                        'layer_detail', args=[
-                            layer.service_typename])
-            except Exception as e:
-                logger.exception(e)
-                out['success'] = False
-                out['errors'] = str(e)
-            finally:
-                if _tmpdir is not None:
-                    shutil.rmtree(_tmpdir, ignore_errors=True)
-        else:
-            errormsgs = []
-            for e in form.errors.values():
-                errormsgs.append([escape(v) for v in e])
-            out['success'] = False
-            out['errors'] = form.errors
-            out['errormsgs'] = errormsgs
+    # defining the URL needed fr the download
+    url = f"{settings.OGC_SERVER['default']['LOCATION']}ows?service=WPS&version=1.0.0&REQUEST=Execute"
+    if not request.user.is_anonymous:
+        # define access token for the user
+        access_token = get_or_create_token(request.user)
+        url += f"&access_token={access_token}"
 
-        if out['success']:
-            status_code = 200
-            register_event(request, 'change', layer)
-        else:
-            status_code = 400
+    # request to geoserver
+    response, content = client.request(
+        url=url,
+        data=payload,
+        method="post",
+        headers=headers
+    )
 
-        if _tmpdir is not None:
-            shutil.rmtree(_tmpdir, ignore_errors=True)
+    if response.status_code != 200:
+        logger.error(f"Download layer exception: error during call with GeoServer: {response.content}")
+        return JsonResponse(
+            {"error": f"Download layer exception: error during call with GeoServer: {response.content}"},
+            status=500
+        )
 
-        return HttpResponse(
-            json.dumps(out),
-            content_type='application/json',
-            status=status_code)
+    # error handling
+    namespaces = {"ows": "http://www.opengis.net/ows/1.1", "wps": "http://www.opengis.net/wps/1.0.0"}
+    response_type = response.headers.get('Content-Type')
+    if response_type == 'text/xml':
+        # parsing XML for get exception
+        content = ET.fromstring(response.text)
+        exc = content.find('*//ows:Exception', namespaces=namespaces) or content.find('ows:Exception', namespaces=namespaces)
+        if exc:
+            exc_text = exc.find('ows:ExceptionText', namespaces=namespaces)
+            logger.error(f"{exc.attrib.get('exceptionCode')} {exc_text.text}")
+            return JsonResponse({"error": f"{exc.attrib.get('exceptionCode')}: {exc_text.text}"}, status=500)
+
+    return_response = fetch_response_headers(
+        HttpResponse(
+            content=response.content,
+            status=response.status_code,
+            content_type=download_format
+        ), response.headers)
+    return_response.headers['Content-Type'] = download_format or _format
+    return return_response
+
+
+@login_required
+def layer_replace(request, layername, template='layers/layer_replace.html'):
+    return layer_append_replace_view(request, layername, template, action_type='replace')
 
 
 @login_required
 def layer_append(request, layername, template='layers/layer_append.html'):
+    return layer_append_replace_view(request, layername, template, action_type='append')
+
+
+@login_required
+def layer_append_replace_view(request, layername, template, action_type):
     try:
-        layer = _resolve_layer(
-            request,
-            layername,
-            'base.change_resourcebase',
-            _PERMISSION_MSG_MODIFY)
+          layer = _resolve_layer(
+              request,
+              layername,
+              'base.change_resourcebase',
+              _PERMISSION_MSG_MODIFY)
     except PermissionDenied:
         return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
 
@@ -1391,7 +1376,7 @@ def layer_append(request, layername, template='layers/layer_append.html'):
         return page_not_found_message(request)
 
     if not layer:
-        return page_not_found_message(request)
+        raise page_not_found_message(request)
 
     if request.method == 'GET':
         ctx = {
@@ -1402,45 +1387,48 @@ def layer_append(request, layername, template='layers/layer_append.html'):
         }
         return render(request, template, context=ctx)
     elif request.method == 'POST':
-        form = LayerUploadForm(request.POST, request.FILES)
+        from geonode.upload.forms import LayerUploadForm as UploadForm
+        form = UploadForm(request.POST, request.FILES, user=request.user)
         out = {}
         if form.is_valid():
+            storage_manager = form.cleaned_data.get('storage_manager')
             try:
-                tempdir, base_file = form.write_files()
-                files, _tmpdir = get_files(base_file)
-                #  validate input source
+                store_spatial_files = form.cleaned_data.get('store_spatial_files', True)
+
+                file_paths = storage_manager.get_retrieved_paths()
+                base_file = file_paths.get('base_file')
+                files = {_file.split(".")[1]: _file for _file in file_paths.values()}
+
                 resource_is_valid = validate_input_source(
-                    layer=layer, filename=base_file, files=files, action_type="append"
+                    layer=layer, filename=base_file, files=files, action_type=action_type
                 )
                 out = {}
-                if (
-                    os.getenv("DEFAULT_BACKEND_DATASTORE", None) == "datastore"
-                    and os.getenv("DEFAULT_BACKEND_UPLOADER", None) == "geonode.importer"
-                    and resource_is_valid
-                ):
-                    upload_session = gs_append_data_to_layer(layer, list(files.values()), request.user)
-                    upload_session.processed = True
-                    upload_session.save()
+                if resource_is_valid:
+                    xml_file = file_paths.pop('xml_file', None)
+                    sld_file = file_paths.pop('sld_file', None)
+
+                    call_kwargs = {
+                        "instance": layer,
+                        "vals": {'files': list(files.values()), 'user': request.user},
+                        "store_spatial_files": store_spatial_files,
+                        "xml_file": xml_file,
+                        "metadata_uploaded": True if xml_file is not None else False,
+                        "sld_file": sld_file,
+                        "sld_uploaded": True if sld_file is not None else False
+                    }
+
+                    getattr(resource_manager, action_type)(**call_kwargs)
+
                     out['success'] = True
-                    out['url'] = reverse(
-                        'layer_detail', args=[
-                            layer.service_typename])
+                    out['url'] = layer.get_absolute_url()
                     #  invalidating resource chache
                     set_geowebcache_invalidate_cache(layer.typename)
-                    #  updating layer
-                    layer.save()
-                else:
-                    out['success'] = False
-                    out['errors'] = "Please select a valid Geoserver backend"
             except Exception as e:
                 logger.exception(e)
-                out['success'] = False
-                out['errors'] = str(e)
+                raise e
             finally:
-                if tempdir is not None:
-                    shutil.rmtree(tempdir, ignore_errors=True)
-                if _tmpdir is not None:
-                    shutil.rmtree(_tmpdir, ignore_errors=True)
+                if not store_spatial_files:
+                    storage_manager.delete_retrieved_paths(force=True)
         else:
             errormsgs = []
             for e in form.errors.values():

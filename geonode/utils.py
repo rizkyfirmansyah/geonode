@@ -20,8 +20,6 @@
 import os
 import gc
 import re
-import ast
-import copy
 import json
 import time
 import base64
@@ -40,6 +38,7 @@ import subprocess
 from lxml import etree
 from osgeo import ogr
 from PIL import Image
+from urllib3 import Retry
 from io import BytesIO, StringIO
 from decimal import Decimal
 from threading import local
@@ -47,12 +46,12 @@ from slugify import slugify
 from contextlib import closing
 from requests.exceptions import RetryError
 from collections import namedtuple, defaultdict
+from rest_framework.exceptions import APIException
 from math import atan, exp, log, pi, sin, tan, floor
 from zipfile import ZipFile, is_zipfile, ZIP_DEFLATED
-from requests.packages.urllib3.util.retry import Retry
+from geonode.upload.api.exceptions import GeneralUploadException
 
 from django.conf import settings
-from django.core.cache import cache
 from django.db.models import signals
 from django.utils.http import is_safe_url
 from django.apps import apps as django_apps
@@ -64,12 +63,14 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import ImproperlyConfigured
 from django.core.serializers.json import DjangoJSONEncoder
-from geonode.storage.manager import storage_manager
 from django.db import models, connection, transaction
 from django.utils.translation import ugettext_lazy as _
 
 from geonode import geoserver, GeoNodeException  # noqa
 from geonode.compat import ensure_string
+from geonode.layers.enumerations import GXP_PTYPES
+from geonode.storage.manager import storage_manager
+from geonode.services.serviceprocessors import get_available_service_types
 from geonode.base.auth import (
     extend_token,
     get_or_create_token,
@@ -82,10 +83,8 @@ from urllib.parse import (
     urlparse,
     urlsplit,
     urlencode,
-    parse_qs,
     parse_qsl,
     ParseResult,
-    SplitResult
 )
 
 MAX_EXTENT = 20037508.34
@@ -1136,6 +1135,8 @@ def json_response(body=None, errors=None, url=None, redirect_to=None, exception=
             'url': url
         }
     elif exception:
+        if isinstance(exception, APIException):
+            raise exception
         if body is None:
             body = f"Unexpected exception {exception}"
         else:
@@ -1144,6 +1145,7 @@ def json_response(body=None, errors=None, url=None, redirect_to=None, exception=
             'success': False,
             'errors': [body]
         }
+        raise GeneralUploadException(detail=body)
     elif body:
         pass
     else:
@@ -1281,91 +1283,83 @@ def fixup_shp_columnnames(inShapefile, charset, tempdir=None):
     """ Try to fix column names and warn the user
     """
     charset = charset if charset and 'undefined' not in charset else 'UTF-8'
-    tempdir_was_created = False
+    if not tempdir:
+        tempdir = mkdtemp()
+
+    if is_zipfile(inShapefile):
+        inShapefile = unzip_file(inShapefile, '.shp', tempdir=tempdir)
+
+    inDriver = ogr.GetDriverByName('ESRI Shapefile')
     try:
-        if not tempdir:
-            tempdir = mkdtemp()
-            tempdir_was_created = True
+        inDataSource = inDriver.Open(inShapefile, 1)
+    except Exception:
+        tb = traceback.format_exc()
+        logger.debug(tb)
+        inDataSource = None
 
-        if is_zipfile(inShapefile):
-            inShapefile = unzip_file(inShapefile, '.shp', tempdir=tempdir)
+    if inDataSource is None:
+        logger.debug(f"Could not open {inShapefile}")
+        return False, None, None
+    else:
+        inLayer = inDataSource.GetLayer()
 
-        inDriver = ogr.GetDriverByName('ESRI Shapefile')
+    # TODO we may need to improve this regexp
+    # first character must be any letter or "_"
+    # following characters can be any letter, number, "#", ":"
+    regex = r'^[a-zA-Z,_][a-zA-Z,_#:\d]*$'
+    a = re.compile(regex)
+    regex_first_char = r'[a-zA-Z,_]{1}'
+    b = re.compile(regex_first_char)
+    inLayerDefn = inLayer.GetLayerDefn()
+
+    list_col_original = []
+    list_col = {}
+
+    for i in range(inLayerDefn.GetFieldCount()):
         try:
-            inDataSource = inDriver.Open(inShapefile, 1)
-        except Exception:
-            tb = traceback.format_exc()
-            logger.debug(tb)
-            inDataSource = None
-
-        if inDataSource is None:
-            logger.debug(f"Could not open {inShapefile}")
-            return False, None, None
-        else:
-            inLayer = inDataSource.GetLayer()
-
-        # TODO we may need to improve this regexp
-        # first character must be any letter or "_"
-        # following characters can be any letter, number, "#", ":"
-        regex = r'^[a-zA-Z,_][a-zA-Z,_#:\d]*$'
-        a = re.compile(regex)
-        regex_first_char = r'[a-zA-Z,_]{1}'
-        b = re.compile(regex_first_char)
-        inLayerDefn = inLayer.GetLayerDefn()
-
-        list_col_original = []
-        list_col = {}
-
-        for i in range(inLayerDefn.GetFieldCount()):
-            try:
-                field_name = inLayerDefn.GetFieldDefn(i).GetName()
-                if a.match(field_name):
-                    list_col_original.append(field_name)
-            except Exception as e:
-                logger.exception(e)
-                return True, None, None
-
-        for i in range(inLayerDefn.GetFieldCount()):
-            try:
-                field_name = inLayerDefn.GetFieldDefn(i).GetName()
-                if not a.match(field_name):
-                    # once the field_name contains Chinese, to use slugify_zh
-                    if any('\u4e00' <= ch <= '\u9fff' for ch in field_name):
-                        new_field_name = slugify_zh(field_name, separator='_')
-                    else:
-                        new_field_name = slugify(field_name)
-                    if not b.match(new_field_name):
-                        new_field_name = f"_{new_field_name}"
-                    j = 0
-                    while new_field_name in list_col_original or new_field_name in list_col.values():
-                        if j == 0:
-                            new_field_name += '_0'
-                        if new_field_name.endswith(f"_{str(j)}"):
-                            j += 1
-                            new_field_name = f"{new_field_name[:-2]}_{str(j)}"
-                    if field_name != new_field_name:
-                        list_col[field_name] = new_field_name
-            except Exception as e:
-                logger.exception(e)
-                return True, None, None
-
-        if len(list_col) == 0:
+            field_name = inLayerDefn.GetFieldDefn(i).GetName()
+            if a.match(field_name):
+                list_col_original.append(field_name)
+        except Exception as e:
+            logger.exception(e)
             return True, None, None
-        else:
-            try:
-                rename_shp_columnnames(inLayer, list_col)
-                inDataSource.SyncToDisk()
-                inDataSource.Destroy()
-            except Exception as e:
-                logger.exception(e)
-                raise GeoNodeException(
-                    f"Could not decode SHAPEFILE attributes by using the specified charset '{charset}'.")
-        return True, None, list_col
-    finally:
-        if tempdir_was_created and tempdir:
-            # Get rid if temporary files that have been uploaded via Upload form
-            logger.debug(f"... Cleaning up the temporary folders {tempdir}")
-            shutil.rmtree(tempdir, ignore_errors=True)
+
+    for i in range(inLayerDefn.GetFieldCount()):
+        try:
+            field_name = inLayerDefn.GetFieldDefn(i).GetName()
+            if not a.match(field_name):
+                # once the field_name contains Chinese, to use slugify_zh
+                if any('\u4e00' <= ch <= '\u9fff' for ch in field_name):
+                    new_field_name = slugify_zh(field_name, separator='_')
+                else:
+                    new_field_name = slugify(field_name)
+                if not b.match(new_field_name):
+                    new_field_name = f"_{new_field_name}"
+                j = 0
+                while new_field_name in list_col_original or new_field_name in list_col.values():
+                    if j == 0:
+                        new_field_name += '_0'
+                    if new_field_name.endswith(f"_{str(j)}"):
+                        j += 1
+                        new_field_name = f"{new_field_name[:-2]}_{str(j)}"
+                if field_name != new_field_name:
+                    list_col[field_name] = new_field_name
+        except Exception as e:
+            logger.exception(e)
+            return True, None, None
+
+    if len(list_col) == 0:
+        return True, None, None
+    else:
+        try:
+            rename_shp_columnnames(inLayer, list_col)
+            inDataSource.SyncToDisk()
+            inDataSource.Destroy()
+        except Exception as e:
+            logger.exception(e)
+            raise GeoNodeException(
+                f"Could not decode SHAPEFILE attributes by using the specified charset '{charset}'.")
+    return True, None, list_col
 
 
 def id_to_obj(id_):
@@ -1548,8 +1542,8 @@ class HttpClient:
         self.password = 'admin'
         if check_ogc_backend(geoserver.BACKEND_PACKAGE):
             ogc_server_settings = settings.OGC_SERVER['default']
-            self.timeout = ogc_server_settings.get('TIMEOUT', 30)
-            self.retries = ogc_server_settings.get('MAX_RETRIES', 5)
+            self.timeout = ogc_server_settings.get('TIMEOUT', 5)
+            self.retries = ogc_server_settings.get('MAX_RETRIES', 1)
             self.backoff_factor = ogc_server_settings.get('BACKOFF_FACTOR', 0.3)
             self.pool_maxsize = ogc_server_settings.get('POOL_MAXSIZE', 10)
             self.pool_connections = ogc_server_settings.get('POOL_CONNECTIONS', 10)
@@ -1847,7 +1841,7 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                 bbox = instance.bbox_string
 
         # Create Raw Data download link
-        if settings.DISPLAY_ORIGINAL_DATASET_LINK:
+        if settings.DISPLAY_ORIGINAL_LAYER_LINK:
             logger.debug(" -- Resource Links[Create Raw Data download link]...")
             download_url = urljoin(settings.SITEURL,
                                    reverse('download', args=[instance.id]))
@@ -1874,7 +1868,8 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
 
         # Set download links for WMS, WCS or WFS and KML
         logger.debug(" -- Resource Links[Set download links for WMS, WCS or WFS and KML]...")
-        links = wms_links(f"{ogc_server_settings.public_url}ows?",
+        instance_ows_url = f"{instance.ows_url}?" if instance.ows_url else f"{ogc_server_settings.public_url}ows?"
+        links = wms_links(instance_ows_url,
                           instance.alternate,
                           bbox,
                           srid,
@@ -1902,8 +1897,8 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                                     name=ugettext(name),
                                     link_type='image').update(**_d)
 
-        if instance.storeType == "dataStore":
-            links = wfs_links(f"{ogc_server_settings.public_url}ows?",
+        if instance.subtype == "vector":
+            links = wfs_links(instance_ows_url,
                               instance.alternate,
                               bbox=None,  # bbox filter should be set at runtime otherwise conflicting with CQL
                               srid=srid)
@@ -1925,7 +1920,7 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                         )
                     )
 
-        elif instance.storeType == 'coverageStore':
+        elif instance.subtype == 'raster':
             """
             Going to create the WCS GetCoverage Default download links.
             By providing 'None' bbox and srid, we are going to ask to the WCS to
@@ -1934,23 +1929,23 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
             Notice that the "wcs_links" method also generates 1 default "outputFormat":
              - "geotiff"; GeoTIFF which will be compressed and tiled by passing to the WCS the default query params compression='DEFLATE' and tile_size=512
             """
-            links = wcs_links(f"{ogc_server_settings.public_url}ows?",
+            links = wcs_links(instance_ows_url,
                               instance.alternate)
-        for ext, name, mime, wcs_url in links:
-            if (Link.objects.filter(resource=instance.resourcebase_ptr,
-                                    url=wcs_url,
-                                    name=name,
-                                    link_type='data').count() < 2):
-                Link.objects.update_or_create(
-                    resource=instance.resourcebase_ptr,
-                    url=wcs_url,
-                    name=name,
-                    link_type='data',
-                    defaults=dict(
-                        extension=ext,
-                        mime=mime,
+            for ext, name, mime, wcs_url in links:
+                if (Link.objects.filter(resource=instance.resourcebase_ptr,
+                                        url=wcs_url,
+                                        name=name,
+                                        link_type='data').count() < 2):
+                    Link.objects.update_or_create(
+                        resource=instance.resourcebase_ptr,
+                        url=wcs_url,
+                        name=name,
+                        link_type='data',
+                        defaults=dict(
+                            extension=ext,
+                            mime=mime,
+                        )
                     )
-                )
 
         site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
         html_link_url = f'{site_url}{instance.get_absolute_url()}'
@@ -1974,7 +1969,7 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
         # Legend link
         logger.debug(" -- Resource Links[Legend link]...")
         try:
-            if instance.storeType != 'remoteStore':
+            if instance.subtype not in ['tileStore', 'remote']:
                 for style in set(list(instance.styles.all()) + [instance.default_style, ]):
                     if style:
                         style_name = os.path.basename(
@@ -1993,10 +1988,10 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
                                 )
                             )
             else:
-                from geonode.services.serviceprocessors.handler import get_service_handler
+                from geonode.services.serviceprocessors import get_service_handler
                 handler = get_service_handler(
                     instance.remote_service.service_url, service_type=instance.remote_service.type)
-                if hasattr(handler, '_create_layer_legend_link'):
+                if handler and hasattr(handler, '_create_layer_legend_link'):
                     handler._create_layer_legend_link(instance)
 
             logger.debug(" -- Resource Links[Legend link]...done!")
@@ -2022,70 +2017,74 @@ def set_resource_default_links(instance, layer, prune=False, **kwargs):
 
         logger.debug(" -- Resource Links[OWS Links]...")
         try:
-            ogc_wms_url = instance.ows_url
-        except Exception:
-            ogc_wms_url = None
-        if not ogc_wms_url:
-            ogc_wms_path = 'ows'
-            ogc_wms_url = urljoin(ogc_server_settings.public_url, ogc_wms_path)
-        ogc_wms_name = f'OGC WMS: {instance.workspace} Service'
-        if not Link.objects.filter(resource=instance.resourcebase_ptr, link_type='OGC:WMS').exists():
-            Link.objects.get_or_create(
-                resource=instance.resourcebase_ptr,
-                url=ogc_wms_url,
-                name=ogc_wms_name,
-                defaults=dict(
-                    extension='html',
-                    url=ogc_wms_url,
-                    mime='text/html',
-                    link_type='OGC:WMS',
-                )
-            )
-
-        if instance.storeType == "dataStore":
-            try:
-                ogc_wfs_url = instance.ows_url
-            except Exception:
-                ogc_wfs_url = None
-            if not ogc_wfs_url:
-                ogc_wfs_path = 'ows'
-                ogc_wfs_url = urljoin(ogc_server_settings.public_url, ogc_wfs_path)
-            ogc_wfs_name = f'OGC WFS: {instance.workspace} Service'
-            if not Link.objects.filter(resource=instance.resourcebase_ptr, link_type='OGC:WFS').exists():
-                Link.objects.get_or_create(
-                    resource=instance.resourcebase_ptr,
-                    url=ogc_wfs_url,
-                    name=ogc_wfs_name,
-                    defaults=dict(
-                        extension='html',
-                        url=ogc_wfs_url,
-                        mime='text/html',
-                        link_type='OGC:WFS',
+            if not hasattr(instance.get_real_instance(), 'ptype') or instance.get_real_instance().ptype == GXP_PTYPES["WMS"]:
+                ogc_wms_url = instance.ows_url or urljoin(ogc_server_settings.public_url, 'ows')
+                ogc_wms_name = f'OGC WMS: {instance.workspace} Service'
+                if Link.objects.filter(resource=instance.resourcebase_ptr, name=ogc_wms_name, url=ogc_wms_url).count() < 2:
+                    Link.objects.get_or_create(
+                        resource=instance.resourcebase_ptr,
+                        url=ogc_wms_url,
+                        name=ogc_wms_name,
+                        defaults=dict(
+                            extension='html',
+                            url=ogc_wms_url,
+                            mime='text/html',
+                            link_type='OGC:WMS',
+                        )
                     )
-                )
 
-        if instance.storeType == "coverageStore":
-            try:
-                ogc_wcs_url = instance.ows_url
-            except Exception:
-                ogc_wcs_url = None
-            if not ogc_wcs_url:
-                ogc_wcs_path = 'ows'
-                ogc_wcs_url = urljoin(ogc_server_settings.public_url, ogc_wcs_path)
-            ogc_wcs_name = f'OGC WCS: {instance.workspace} Service'
-            if not Link.objects.filter(resource=instance.resourcebase_ptr, link_type='OGC:WCS').exists():
-                Link.objects.get_or_create(
-                    resource=instance.resourcebase_ptr,
-                    url=ogc_wcs_url,
-                    name=ogc_wcs_name,
-                    defaults=dict(
-                        extension='html',
-                        url=ogc_wcs_url,
-                        mime='text/html',
-                        link_type='OGC:WCS',
+                if instance.subtype == "vector":
+                    ogc_wfs_url = instance.ows_url or urljoin(ogc_server_settings.public_url, 'ows')
+                    ogc_wfs_name = f'OGC WFS: {instance.workspace} Service'
+                    if Link.objects.filter(resource=instance.resourcebase_ptr, name=ogc_wfs_name, url=ogc_wfs_url).count() < 2:
+                        Link.objects.get_or_create(
+                            resource=instance.resourcebase_ptr,
+                            url=ogc_wfs_url,
+                            name=ogc_wfs_name,
+                            defaults=dict(
+                                extension='html',
+                                url=ogc_wfs_url,
+                                mime='text/html',
+                                link_type='OGC:WFS',
+                            )
+                        )
+
+                if instance.subtype == "raster":
+                    ogc_wcs_url = instance.ows_url or urljoin(ogc_server_settings.public_url, 'ows')
+                    ogc_wcs_name = f'OGC WCS: {instance.workspace} Service'
+                    if Link.objects.filter(resource=instance.resourcebase_ptr, name=ogc_wcs_name, url=ogc_wcs_url).count() < 2:
+                        Link.objects.get_or_create(
+                            resource=instance.resourcebase_ptr,
+                            url=ogc_wcs_url,
+                            name=ogc_wcs_name,
+                            defaults=dict(
+                                extension='html',
+                                url=ogc_wcs_url,
+                                mime='text/html',
+                                link_type='OGC:WCS',
+                            )
+                        )
+
+            elif hasattr(instance.get_real_instance(), 'ptype') and instance.get_real_instance().ptype:
+                ptype_link = dict((v, k) for k, v in GXP_PTYPES.items()).get(instance.get_real_instance().ptype)
+                ptype_link_name = get_available_service_types().get(ptype_link)
+                ptype_link_url = instance.ows_url
+                if Link.objects.filter(resource=instance.resourcebase_ptr, name=ptype_link_name, url=ptype_link_url).count() < 2:
+                    Link.objects.get_or_create(
+                        resource=instance.resourcebase_ptr,
+                        url=ptype_link_url,
+                        name=ptype_link_name,
+                        defaults=dict(
+                            extension='html',
+                            url=ptype_link_url,
+                            mime='text/html',
+                            link_type='image',
+                        )
                     )
-                )
-        logger.debug(" -- Resource Links[OWS Links]...done!")
+            logger.debug(" -- Resource Links[OWS Links]...done!")
+        except Exception as e:
+            logger.error(" -- Resource Links[OWS Links]...error!")
+            logger.exception(e)
 
 
 def add_url_params(url, params):
@@ -2139,8 +2138,7 @@ json_serializer_k_map = {
     # 'category': 'base.TopicCategory',
     'spatial_representation_type': 'base.SpatialRepresentationType',
     'group': 'auth.Group',
-    'default_style': 'layers.Style',
-    'upload_session': 'layers.UploadSession'
+    'default_style': 'layers.Style'
 }
 
 
@@ -2253,30 +2251,6 @@ def is_monochromatic_image(image_url, image_data=None):
         return False
 
 
-def get_subclasses_by_model(model: str):
-    if not settings.GEONODE_APPS_ENABLE:
-        return []
-    from django.apps import apps
-    _app_subclasses = []
-    for _model in apps.get_models():
-        if _model.__name__ == model:
-            models = [(y.name, y.default_model) for x, y in apps.app_configs.items() if hasattr(y, 'default_model')]
-            for m in models:
-                if m[0] in settings.INSTALLED_APPS:
-                    _app_subclasses.append(m[1])
-    return _app_subclasses
-
-
-def get_geoapps_models():
-    # Get models which are of subclass 'GeoApp'
-    models = []
-    for x, y in django_apps.app_configs.items():
-        if hasattr(y, 'type') and y.type == 'GEONODE_APP' and hasattr(y, 'default_model'):
-            if y.name in settings.INSTALLED_APPS:
-                models.append(y)
-    return models
-
-
 def find_by_attr(lst, val, attr="id"):
     """ Returns an object if the id matches in any list of objects """
     for item in lst:
@@ -2301,3 +2275,31 @@ def get_xpath_value(
         nsmap = element.nsmap
     values = element.xpath(f"{xpath_expression}//text()", namespaces=nsmap)
     return "".join(values).strip() or None
+
+
+def get_geonode_app_types():
+    from geonode.geoapps.models import GeoApp
+    return list(set(GeoApp.objects.values_list('resource_type', flat=True)))
+
+
+def get_supported_layers_file_types():
+    from django.conf import settings as gn_settings
+    '''
+    Return a list of all supported file type in geonode
+    If one of the type provided in the custom type exists in the default
+    is going to override it
+    '''
+    default_types = settings.SUPPORTED_LAYER_FILE_TYPES
+    types_module = (
+        gn_settings.ADDITIONAL_LAYER_FILE_TYPES
+        if hasattr(gn_settings, "ADDITIONAL_LAYER_FILE_TYPES")
+        else []
+    )
+    supported_types = default_types.copy()
+    default_types_id = [t.get('id') for t in default_types]
+    for _type in types_module:
+        if _type.get("id") in default_types_id:
+            supported_types[default_types_id.index(_type.get("id"))] = _type
+        else:
+            supported_types.extend([_type])
+    return supported_types

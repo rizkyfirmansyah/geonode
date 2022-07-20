@@ -16,6 +16,9 @@ auto-up:
 up:
 	docker-compose up -d
 
+geoserver:
+	docker-compose -f docker-compose-geoserver-server.yml up --build -d
+
 build:
 	docker-compose build django
 	docker-compose build celery

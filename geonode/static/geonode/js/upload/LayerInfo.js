@@ -390,8 +390,8 @@ define(function(require, exports) {
             greeting = 'Good night';
         }
         this.logStatus({
-            msg: '<p class="text-center text-primary" id="remaining"></p> \
-            <p class="text-center text-primary">' + greeting.concat(" ", callme) + '! Grab your favourite snack, coffee, or tea while waiting :)</p> \
+            msg: '<p class="text-center text-primary" id="remaining"></span> \
+            <p class="text-center text-primary">' + greeting.concat(" ", callme) + '! Grab your favourite snack, coffee, or tea while waiting :)</span> \
             <div class="progress" id="prog"> \
               <div class="progress-bar progress-bar-success" style="width:0%"></div>',
             level: 'alert-info',
@@ -479,7 +479,7 @@ define(function(require, exports) {
             }
         }
         self.logStatus({
-            msg: '<p>' + gettext('Your ' + resourceType + ' was successfully updated') + '<br/>' + msg_col + '<br/>' + a + '&nbsp;&nbsp;&nbsp;' + b + '&nbsp;&nbsp;&nbsp;' + c + '&nbsp;&nbsp;&nbsp;' + d + '&nbsp;&nbsp;&nbsp;' + e + '</p>',
+            msg: '<span>' + gettext('Your ' + resourceType + ' was successfully updated') + '<br/>' + msg_col + '<br/>' + a + '&nbsp;&nbsp;&nbsp;' + b + '&nbsp;&nbsp;&nbsp;' + c + '&nbsp;&nbsp;&nbsp;' + d + '&nbsp;&nbsp;&nbsp;' + e + '</span>',
             level: 'alert-success',
             empty: 'true'
         });
@@ -515,7 +515,7 @@ define(function(require, exports) {
                 async: true,
                 beforeSend: function() {
                     self.logStatus({
-                        msg: '<p class="text-primary text-center">' + gettext('Performing Final GeoServer Config Step. Check the Upload status above!') + '</p>',
+                        msg: '<p class="text-primary text-center">' + gettext('Performing Final GeoServer Config Step. Check the Upload status above!') + '</span>',
                         level: 'alert-success',
                         empty: 'true'
                     });
@@ -526,7 +526,7 @@ define(function(require, exports) {
                     self.polling = false;
                     if (resp.status === "other") {
                         self.logStatus({
-                            msg: '<p class="text-primary text-center">' + gettext('You need to specify more information in order to complete your upload') + '</p>',
+                            msg: '<p class="text-primary text-center">' + gettext('You need to specify more information in order to complete your upload') + '</span>',
                             level: 'alert-success',
                             empty: 'true'
                         });
@@ -548,12 +548,12 @@ define(function(require, exports) {
             var id = common.parseQueryString(resp.url).id;
             var element = 'next_step_' + id
             var a = '<a id="' + element + '" class="btn btn-primary" target="_blank">Continue</a>';
-            var msg = '<p>' + gettext('Files are ready to be ingested!')
+            var msg = '<span>' + gettext('Files are ready to be ingested!')
 
             if (resp.redirect_to.indexOf('time') !== -1 || resp.url.indexOf('time') !== -1) {
-                msg += '&nbsp;' + gettext('A temporal dimension may be added to this Layer.') + '&nbsp;' + a + '</p>'
+                msg += '&nbsp;' + gettext('A temporal dimension may be added to this Layer.') + '&nbsp;' + a + '</span>'
             } else {
-                msg += '&nbsp;' + a + '</p>'
+                msg += '&nbsp;' + a + '</span>'
             }
 
             self.logStatus({
@@ -568,7 +568,7 @@ define(function(require, exports) {
             return;
         } else if (resp.status === "other") {
             self.logStatus({
-                msg: '<p class="text-center">' + gettext('You need to specify more information in order to complete your upload') + '</p>',
+                msg: '<p class="text-center">' + gettext('You need to specify more information in order to complete your upload') + '</span>',
                 level: 'alert-success',
                 empty: 'true'
             });
@@ -588,7 +588,7 @@ define(function(require, exports) {
             self.polling = false;
             resp.errors = 'Unexpected Error';
             self.logStatus({
-                msg: '<p class="text-center">' + gettext('Unexpected Error') + '</p>',
+                msg: '<p class="text-center">' + gettext('Unexpected Error') + '</span>',
                 level: 'alert-error',
                 empty: 'true'
             });
@@ -706,7 +706,13 @@ define(function(require, exports) {
             error: function(jqXHR) {
                 self.polling = false;
                 if (jqXHR.status === 500 || jqXHR.status === 0 || jqXHR.readyState === 0) {
-                    self.markError('Server Error: ' + jqXHR.statusText + gettext('<br>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.'));
+                  var error = 'Server Error: ' + jqXHR.statusText + gettext('<br>Please check your network connection. In case of Layer Upload make sure GeoServer is running and accepting connections.');
+                  if (jqXHR.responseJSON !== undefined && jqXHR.responseJSON !== null) {
+                      if (jqXHR.responseJSON.errors !== undefined || jqXHR.responseJSON.error_msg !== undefined) {
+                          error = jqXHR.responseJSON.errors !== undefined ? jqXHR.responseJSON.errors : jqXHR.responseJSON.error_msg;
+                      }
+                  }
+                  self.markError(error);
                 } else if (jqXHR.status === 400 || jqXHR.status === 404) {
                     if (jqXHR.responseJSON !== undefined && jqXHR.responseJSON !== null) {
                         if (jqXHR.responseJSON.errors !== undefined) {
@@ -733,7 +739,7 @@ define(function(require, exports) {
             },
             success: function(resp, status) {
                 self.logStatus({
-                    msg: '<p class="text-center text-primary">' + gettext('Layer files uploaded, configuring in GeoServer') + '</p>',
+                    msg: '<p class="text-center text-primary">' + gettext('Layer files uploaded, configuring in GeoServer') + '</span>',
                     level: 'alert-success',
                     empty: 'true'
                 });

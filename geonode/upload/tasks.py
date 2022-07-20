@@ -27,11 +27,13 @@ from django.conf import settings
 from django.utils.timezone import timedelta, now
 
 from geonode.celery_app import app
+from geonode.base import enumerations
 from geonode.geoserver.helpers import gs_uploader
 
 from geonode.upload.models import Upload
 from geonode.upload.views import final_step_view
 from geonode.upload.utils import next_step_response
+from geonode.resource.manager import resource_manager
 
 from geonode.tasks.tasks import (
     AcquireLock,
@@ -63,8 +65,8 @@ def finalize_incomplete_session_uploads(self, *args, **kwargs):
 
     # Check first if we need to delete stale sessions
     expiry_time = now() - timedelta(hours=UPLOAD_SESSION_EXPIRY_HOURS)
-    for _upload in Upload.objects.exclude(state=Upload.STATE_PROCESSED).exclude(date__gt=expiry_time):
-        _upload.set_processing_state(Upload.STATE_INVALID)
+    for _upload in Upload.objects.exclude(state=enumerations.STATE_PROCESSED).exclude(date__gt=expiry_time):
+        _upload.set_processing_state(enumerations.STATE_INVALID)
         _upload_ids_expired.append(_upload.id)
         _upload_tasks.append(
             _upload_session_cleanup.signature(
@@ -86,12 +88,12 @@ def finalize_incomplete_session_uploads(self, *args, **kwargs):
 
     # Let's finish the valid ones
     session = None
-    for _upload in Upload.objects.exclude(state__in=[Upload.STATE_PROCESSED, Upload.STATE_INVALID]).exclude(id__in=_upload_ids_expired):
+    for _upload in Upload.objects.exclude(state__in=[enumerations.STATE_PROCESSED, enumerations.STATE_INVALID]).exclude(id__in=_upload_ids_expired):
         try:
             if not _upload.import_id:
                 raise NotFound
             session = _upload.get_session.import_session if _upload.get_session else None
-            if not session or session.state != Upload.STATE_COMPLETE:
+            if not session or session.state != enumerations.STATE_COMPLETE:
                 session = gs_uploader.get_session(_upload.import_id)
         except (NotFound, Exception) as e:
             logger.exception(e)
@@ -104,9 +106,9 @@ def finalize_incomplete_session_uploads(self, *args, **kwargs):
                     args=(_upload.id,)
                 )
             )
-        elif _upload.state not in (Upload.STATE_READY, Upload.STATE_COMPLETE, Upload.STATE_RUNNING):
-            if session and session.state == Upload.STATE_COMPLETE and _upload.layer and _upload.layer.processed:
-                _upload.set_processing_state(Upload.STATE_PROCESSED)
+        elif _upload.state not in (enumerations.STATE_READY, enumerations.STATE_COMPLETE, enumerations.STATE_RUNNING):
+            if session and session.state == enumerations.STATE_COMPLETE and _upload.resource and _upload.resource.processed:
+                _upload.set_processing_state(enumerations.STATE_PROCESSED)
 
     upload_workflow_finalizer = _upload_workflow_finalizer.signature(
         args=('_update_upload_session_state', _upload_ids,),
@@ -151,7 +153,7 @@ def _upload_workflow_error(self, task_name: str, upload_ids: list):
     """
     logger.error(f"Task {task_name} upload ids: {upload_ids} did not finish correctly!")
     for _upload in Upload.objects.filter(id__in=upload_ids):
-        _upload.set_processing_state(Upload.STATE_INVALID)
+        _upload.set_processing_state(enumerations.STATE_INVALID)
 
 
 @app.task(
@@ -167,7 +169,7 @@ def _update_upload_session_state(self, upload_session_id: int):
         if lock.acquire() is True:
             _upload = Upload.objects.get(id=upload_session_id)
             session = _upload.get_session.import_session
-            if not session or session.state != Upload.STATE_COMPLETE:
+            if not session or session.state != enumerations.STATE_COMPLETE:
                 session = gs_uploader.get_session(_upload.import_id)
 
             if session:
@@ -188,35 +190,35 @@ def _update_upload_session_state(self, upload_session_id: int):
                     if _success:
                         if _tasks_failed:
                             # GeoNode Layer creation errored!
-                            _upload.set_processing_state(Upload.STATE_INVALID)
+                            _upload.set_processing_state(enumerations.STATE_INVALID)
                         elif 'upload/final' not in _redirect_to and 'upload/check' not in _redirect_to and (_tasks_waiting or _upload.get_session.time):
                             _upload.set_resume_url(_redirect_to)
-                            _upload.set_processing_state(Upload.STATE_WAITING)
-                        elif session.state in (Upload.STATE_PENDING, Upload.STATE_RUNNING) and not (_tasks_waiting or _tasks_ready):
-                            if _upload.layer and not _upload.layer.processed:
+                            _upload.set_processing_state(enumerations.STATE_WAITING)
+                        elif session.state in (enumerations.STATE_PENDING, enumerations.STATE_RUNNING) and not (_tasks_waiting or _tasks_ready):
+                            if _upload.resource and not _upload.resource.processed:
                                 # GeoNode Layer updating...
-                                _upload.set_processing_state(Upload.STATE_RUNNING)
-                            elif session.state == Upload.STATE_RUNNING and _upload.layer and _upload.layer.processed:
+                                _upload.set_processing_state(enumerations.STATE_RUNNING)
+                            elif session.state == enumerations.STATE_RUNNING and _upload.resource and _upload.resource.processed:
                                 # GeoNode Layer successfully processed...
-                                _upload.set_processing_state(Upload.STATE_PROCESSED)
-                        elif (session.state == Upload.STATE_COMPLETE and _upload.state in (
-                                Upload.STATE_COMPLETE, Upload.STATE_PENDING) and not _tasks_waiting) or (
-                                session.state == Upload.STATE_PENDING and _tasks_ready):
-                            if not _upload.layer:
+                                _upload.set_processing_state(enumerations.STATE_PROCESSED)
+                        elif (session.state == enumerations.STATE_COMPLETE and _upload.state in (
+                                enumerations.STATE_COMPLETE, enumerations.STATE_PENDING) and not _tasks_waiting) or (
+                                session.state == enumerations.STATE_PENDING and _tasks_ready):
+                            if not _upload.resource:
                                 _response = final_step_view(None, _upload.get_session)
                                 if _response:
                                     _upload.refresh_from_db()
-                                    if _upload.state not in (Upload.STATE_PROCESSED, Upload.STATE_RUNNING) and not _upload.layer:
+                                    if _upload.state not in (enumerations.STATE_PROCESSED, enumerations.STATE_RUNNING) and not _upload.resource:
                                         # GeoNode Layer still updating...
-                                        _upload.set_processing_state(Upload.STATE_RUNNING)
+                                        _upload.set_processing_state(enumerations.STATE_RUNNING)
                         logger.debug(f"Upload {upload_session_id} updated with state {_upload.state}.")
                 except (NotFound, Exception) as e:
                     logger.exception(e)
-                    if _upload.state not in (Upload.STATE_COMPLETE, Upload.STATE_PROCESSED):
-                        _upload.set_processing_state(Upload.STATE_INVALID)
+                    if _upload.state not in (enumerations.STATE_COMPLETE, enumerations.STATE_PROCESSED):
+                        _upload.set_processing_state(enumerations.STATE_INVALID)
                         logger.error(f"Upload {upload_session_id} deleted with state {_upload.state}.")
-            elif _upload.state != Upload.STATE_PROCESSED:
-                _upload.set_processing_state(Upload.STATE_INVALID)
+            elif _upload.state != enumerations.STATE_PROCESSED:
+                _upload.set_processing_state(enumerations.STATE_INVALID)
                 logger.error(f"Unable to find the Importer Session - Upload {upload_session_id} deleted with state {_upload.state}.")
 
 
@@ -230,8 +232,8 @@ def _upload_session_cleanup(self, upload_session_id: int):
     """Task invoked by 'upload_workflow.chord' in order to remove and cleanup all the 'INVALID' stale Upload tasks."""
     try:
         _upload = Upload.objects.get(id=upload_session_id)
-        if _upload.layer:
-            _upload.layer.delete()
+        if _upload.resource:
+            resource_manager.delete(_upload.resource.uuid)
         _upload.delete()
         logger.debug(f"Upload {upload_session_id} deleted with state {_upload.state}.")
     except Exception as e:

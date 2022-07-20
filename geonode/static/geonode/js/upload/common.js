@@ -102,7 +102,7 @@ define(function (require, exports) {
             }
             error = error_message;
         }
-        logStatus({msg: error, level: 'alert-warning', empty:true, element:element});
+        logStatus({msg: error, level: 'alert-danger', empty:true, element:element});
     };
 
     parseQueryString = function (url){

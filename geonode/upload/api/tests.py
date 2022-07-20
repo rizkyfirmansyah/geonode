@@ -640,7 +640,7 @@ class UploadApiTests(GeoNodeLiveTestSupport, APITestCase):
         self.assertEqual(data['status'], 'finished')
         self.assertTrue(data['success'])
 
-        def assert_processed_or_failed(total_uploads, upload_index, dataset_name, state):
+        def assert_processed_or_failed(total_uploads, upload_index, layer_name, state):
             url = reverse('uploads-list')
             # Admin
             self.assertTrue(self.client.login(username=GEONODE_USER, password=GEONODE_PASSWD))
@@ -654,7 +654,7 @@ class UploadApiTests(GeoNodeLiveTestSupport, APITestCase):
 
             upload_data = response.data['uploads'][upload_index]
             self.assertIsNotNone(upload_data)
-            self.assertEqual(upload_data['name'], dataset_name, upload_data['name'])
+            self.assertEqual(upload_data['name'], layer_name, upload_data['name'])
             if upload_data['state'] != state:
                 for _cnt in range(0, 10):
                     response = self.client.get(url, format='json')
@@ -662,11 +662,11 @@ class UploadApiTests(GeoNodeLiveTestSupport, APITestCase):
                     logger.error(f"[{_cnt + 1}] ... {response.data}")
                     upload_data = response.data['uploads'][upload_index]
                     self.assertIsNotNone(upload_data)
-                    self.assertEqual(upload_data['name'], dataset_name, upload_data['name'])
+                    self.assertEqual(upload_data['name'], layer_name, upload_data['name'])
                     if upload_data['state'] == state:
                         break
                     else:
-                        for _upload in Upload.objects.filter(name=dataset_name):
+                        for _upload in Upload.objects.filter(name=layer_name):
                             _update_upload_session_state.apply((_upload.id,))
                         sleep(3.0)
             self.assertEqual(upload_data['state'], state, upload_data['state'])

@@ -27,7 +27,7 @@ from django_jsonfield_backport.models import JSONField
 
 from guardian.shortcuts import get_anonymous_user
 
-from geonode.base.models import ResourceBase, resourcebase_post_save
+from geonode.base.models import ResourceBase
 
 logger = logging.getLogger("geonode.geoapps.models")
 
@@ -152,4 +152,3 @@ class GeoAppData(models.Model):
 
 
 # signals.pre_delete.connect(pre_delete_app, sender=GeoApp)
-signals.post_save.connect(resourcebase_post_save, sender=GeoApp)

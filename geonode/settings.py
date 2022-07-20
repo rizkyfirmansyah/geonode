@@ -374,7 +374,8 @@ GEONODE_CORE_APPS = (
     'geonode.documents',
     'geonode.security',
     'geonode.catalogue',
-    'geonode.catalogue.metadataxsl'
+    'geonode.catalogue.metadataxsl',
+    'geonode.harvesting',
 )
 
 # GeoNode Apps
@@ -392,6 +393,9 @@ GEONODE_INTERNAL_APPS = (
     'geonode.groups',
     'geonode.services',
     'geonode.management_commands_http',
+
+    'geonode.resource',
+    'geonode.resource.processing',
 
     'geonode.datasets',
     'geonode.storage',
@@ -1203,7 +1207,7 @@ try:
     ALLOWED_HOSTS = ast.literal_eval(os.getenv('ALLOWED_HOSTS'))
 except ValueError:
     # fallback to regular list of values separated with misc chars
-    ALLOWED_HOSTS = [HOSTNAME, 'localhost', 'django', 'geonode'] if os.getenv('ALLOWED_HOSTS') is None \
+    ALLOWED_HOSTS = [HOSTNAME, 'localhost', 'django', '*'] if os.getenv('ALLOWED_HOSTS') is None \
         else re.split(r' *[,|:|;] *', os.getenv('ALLOWED_HOSTS'))
 
 # AUTH_IP_WHITELIST property limits access to users/groups REST endpoints
@@ -1282,8 +1286,8 @@ DOWNLOAD_FORMATS_RASTER = [
 ]
 
 
-DISPLAY_ORIGINAL_DATASET_LINK = ast.literal_eval(
-    os.getenv('DISPLAY_ORIGINAL_DATASET_LINK', 'True'))
+DISPLAY_ORIGINAL_LAYER_LINK = ast.literal_eval(
+    os.getenv('DISPLAY_ORIGINAL_LAYER_LINK', 'True'))
 
 ACCOUNT_NOTIFY_ON_PASSWORD_CHANGE = ast.literal_eval(
     os.getenv('ACCOUNT_NOTIFY_ON_PASSWORD_CHANGE', 'False'))
@@ -2158,7 +2162,7 @@ SEARCH_RESOURCES_EXTENDED = strtobool(os.getenv('SEARCH_RESOURCES_EXTENDED', 'Tr
 CATALOG_METADATA_TEMPLATE = os.getenv("CATALOG_METADATA_TEMPLATE", "catalogue/full_metadata.xml")
 UI_DEFAULT_MANDATORY_FIELDS = [
     'id_resource-title',
-    'id_resource-abstract',
+    # 'id_resource-abstract',
     'id_resource-language',
     'id_resource-license',
     'region_form',
@@ -2193,7 +2197,7 @@ FILE_UPLOAD_HANDLERS = [
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 ]
 
-DEFAULT_MAX_UPLOAD_SIZE = int(os.getenv('DEFAULT_MAX_UPLOAD_SIZE', 2848576000))  # 3 GB
+DEFAULT_MAX_UPLOAD_SIZE = int(os.getenv('DEFAULT_MAX_UPLOAD_SIZE', 5368709120))  # 5 GB
 DEFAULT_BUFFER_CHUNK_SIZE = int(os.getenv('DEFAULT_BUFFER_CHUNK_SIZE', 64 * 1024))
 DEFAULT_MAX_PARALLEL_UPLOADS_PER_USER = int(os.getenv('DEFAULT_MAX_PARALLEL_UPLOADS_PER_USER', 5))
 
@@ -2229,3 +2233,61 @@ EXTRA_METADATA_SCHEMA = {**{
 }, **CUSTOM_METADATA_SCHEMA}
 
 HONEYPOT_ADMIN = os.getenv('HONEYPOT_ADMIN', 'lakers')
+
+'''
+Define the URLs patterns used by the SizeRestrictedFileUploadHandler
+to evaluate if the file is greater than the limit size defined
+'''
+
+SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES = ("data_upload", "uploads-upload", "document_upload",)
+
+SUPPORTED_LAYER_FILE_TYPES = [
+        {
+            "id": "shp",
+            "label": "ESRI Shapefile",
+            "format": "vector",
+            "ext": ["shp"],
+            "requires": ["shp", "prj", "dbf", "shx"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "tiff",
+            "label": "GeoTIFF",
+            "format": "raster",
+            "ext": ["tiff", "tif"],
+            "mimeType": ["image/tiff"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "csv",
+            "label": "Comma Separated Value (CSV)",
+            "format": "vector",
+            "ext": ["csv"],
+            "mimeType": ["text/csv"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "zip",
+            "label": "Zip Archive",
+            "format": "archive",
+            "ext": ["zip"],
+            "mimeType": ["application/zip"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "xml",
+            "label": "XML Metadata File",
+            "format": "metadata",
+            "ext": ["xml"],
+            "mimeType": ["application/json"],
+            "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "sld"]
+        },
+        {
+            "id": "sld",
+            "label": "Styled Layer Descriptor (SLD)",
+            "format": "metadata",
+            "ext": ["sld"],
+            "mimeType": ["application/json"],
+            "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "xml"]
+        }
+    ]

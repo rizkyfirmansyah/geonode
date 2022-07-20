@@ -448,7 +448,7 @@ class ResourceBaseSerializer(
             'detail_url', 'embed_url', 'created', 'last_updated', 'date_distribution',
             'raw_abstract', 'raw_purpose', 'raw_constraints_other', 'raw_source', 'raw_data_citation', 'raw_related_publication',
             'raw_supplemental_information', 'raw_data_quality_statement', 'metadata_only', 'processed', 'state',
-            'data_description', 'author', 'source', 'data_type', 'sourcetype', 'blob', 'metadata'
+            'data_description', 'author', 'source', 'data_type', 'subtype', 'sourcetype', 'blob', 'metadata'
             # TODO
             # csw_typename, csw_schema, csw_mdsource, csw_insert_date, csw_type, csw_anytext, csw_wkt_geometry,
             # metadata_uploaded, metadata_uploaded_preserve, metadata_xml,

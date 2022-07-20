@@ -19,6 +19,7 @@
 #########################################################################
 import re
 import logging
+from geonode.base.enumerations import LAYER_TYPES
 
 from django.db.models import Q
 from django.http import HttpResponse
@@ -74,14 +75,6 @@ if settings.HAYSTACK_SEARCH:
     from haystack.query import SearchQuerySet  # noqa
 
 logger = logging.getLogger(__name__)
-
-LAYER_SUBTYPES = {
-    'vector': 'dataStore',
-    'raster': 'coverageStore',
-    'remote': 'remoteStore',
-    'vector_time': 'vectorTimeSeries',
-}
-FILTER_TYPES.update(LAYER_SUBTYPES)
 
 
 class CommonMetaApi:
@@ -189,7 +182,7 @@ class CommonModelApi(ModelResource):
             filters = {}
         orm_filters = super(CommonModelApi, self).build_filters(
             filters=filters, ignore_bad_filters=ignore_bad_filters, **kwargs)
-        if 'type__in' in filters and filters['type__in'] in FILTER_TYPES.keys():
+        if 'type__in' in filters and (filters['type__in'] in FILTER_TYPES.keys() or filters['type__in'] in LAYER_TYPES):
             orm_filters.update({'type': filters.getlist('type__in')})
         if 'app_type__in' in filters:
             orm_filters.update({'polymorphic_ctype__model': filters['app_type__in'].lower()})
@@ -234,24 +227,24 @@ class CommonModelApi(ModelResource):
         filtered = None
         if types:
             for the_type in types:
-                if the_type in LAYER_SUBTYPES.keys():
+                if the_type in LAYER_TYPES:
                     super_type = the_type
                     if 'vector_time' == the_type:
                         super_type = 'vector'
                     if filtered:
                         if 'time' in the_type:
                             filtered = filtered | semi_filtered.filter(
-                                Layer___storeType=LAYER_SUBTYPES[super_type]).exclude(Layer___has_time=False)
+                                Layer___subtype=super_type).exclude(Layer___has_time=False)
                         else:
                             filtered = filtered | semi_filtered.filter(
-                                Layer___storeType=LAYER_SUBTYPES[super_type])
+                                Layer___subtype=super_type)
                     else:
                         if 'time' in the_type:
                             filtered = semi_filtered.filter(
-                                Layer___storeType=LAYER_SUBTYPES[super_type]).exclude(Layer___has_time=False)
+                                Layer___subtype=super_type).exclude(Layer___has_time=False)
                         else:
                             filtered = semi_filtered.filter(
-                                Layer___storeType=LAYER_SUBTYPES[super_type])
+                                Layer___subtype=super_type)
                 else:
                     _type_filter = FILTER_TYPES[the_type].__name__.lower()
                     if filtered:
@@ -371,7 +364,7 @@ class CommonModelApi(ModelResource):
                 if type in {"map", "layer", "document", "user"}:
                     # Type is one of our Major Types (not a sub type)
                     types.append(type)
-                elif type in LAYER_SUBTYPES.keys():
+                elif type in LAYER_TYPES:
                     subtypes.append(type)
 
             if 'vector' in subtypes and 'vector_time' not in subtypes:
@@ -878,9 +871,9 @@ class LayerResource(CommonModelApi):
             # Probe Remote Services
             formatted_obj['store_type'] = 'dataset'
             formatted_obj['online'] = True
-            if hasattr(obj, 'storeType'):
-                formatted_obj['store_type'] = obj.storeType
-                if obj.storeType == 'remoteStore' and hasattr(obj, 'remote_service'):
+            if hasattr(obj, 'subtype'):
+                formatted_obj['store_type'] = obj.subtype
+                if obj.subtype in ['tileStore', 'remote'] and hasattr(obj, 'remote_service'):
                     if obj.remote_service:
                         formatted_obj['online'] = (obj.remote_service.probe == 200)
                     else:
@@ -1217,7 +1210,7 @@ class DocumentResource(CommonModelApi):
     class Meta(CommonMetaApi):
         paginator_class = CrossSiteXHRPaginator
         filtering = CommonMetaApi.filtering
-        filtering.update({'doc_type': ALL})
+        filtering.update({'subtype': ALL})
         queryset = Document.objects.distinct().order_by('-date')
         resource_name = 'documents'
         authentication = MultiAuthentication(SessionAuthentication(),

@@ -315,7 +315,7 @@ def dump_models(path=None):
         f.write(result)
 
 
-def create_single_layer(name, keywords=None):
+def create_single_layer(name, keywords=None, owner=None, group=None, **kwargs):
     admin, created = get_user_model().objects.get_or_create(username='admin')
     if created:
         admin.is_superuser = True
@@ -340,9 +340,12 @@ def create_single_layer(name, keywords=None):
         temporal_extent_start=test_datetime,
         temporal_extent_end=test_datetime,
         date=start,
+        subtype="vector",
         storeType="dataStore",
         resource_type="layer",
-        typename=f"geonode:{title}"
+        typename=f"geonode:{title}",
+        group=group,
+        **kwargs
     )
 
     layer.save()

@@ -24,14 +24,11 @@
 import re
 import os
 import glob
-import string
-import sys
 import json
+import string
 import logging
 import tarfile
 
-from uuid import uuid4
-from datetime import datetime
 from osgeo import gdal, osr, ogr
 from zipfile import ZipFile, is_zipfile
 from random import choice
@@ -39,29 +36,18 @@ from random import choice
 # Django functionality
 from django.conf import settings
 from django.db.models import Q
-from django.db import IntegrityError, transaction
-from django.core.files import File
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
-from django.template.defaultfilters import slugify
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
+from django.core.exceptions import ObjectDoesNotExist, SuspiciousFileOperation
+from geonode.layers.api.exceptions import InvalidDatasetException
 from geonode.storage.manager import storage_manager
-
 # Geonode functionality
-from geonode.base.bbox_utils import BBOXHelper
+from geonode.base.models import Region
+from geonode.utils import check_ogc_backend
 from geonode import GeoNodeException, geoserver
-from geonode.people.utils import get_valid_user
-from geonode.layers.models import UploadSession, LayerFile
-from geonode.base.models import SpatialRepresentationType,  \
-    TopicCategory, Region, License, ResourceBase
+from geonode.geoserver.helpers import gs_catalog
 from geonode.layers.models import shp_exts, csv_exts, vec_exts, cov_exts, Layer
-from geonode.layers.metadata import convert_keyword, parse_metadata
-from geonode.upload.utils import KeywordHandler, _fixup_base_file
-from geonode.utils import (check_ogc_backend,
-                           unzip_file,
-                           extract_tarfile)
-from geonode.geoserver.helpers import gs_catalog, gs_uploader
 
 READ_PERMISSIONS = [
     'view_resourcebase'
@@ -117,22 +103,6 @@ def resolve_regions(regions):
                 regions_unresolved.append(region)
 
     return regions_resolved, regions_unresolved
-
-
-def resolve_categories(categories):
-    categories_resolved = []
-    categories_unresolved = []
-    if categories:
-        if len(categories) > 0:
-            for category in categories:
-                try:
-                    category_resolved = TopicCategory.objects.get(
-                        Q(name__iexact=category) | Q(code__iexact=category))
-                    categories_resolved.append(category_resolved)
-                except ObjectDoesNotExist:
-                    categories_unresolved.append(category)
-
-    return categories_resolved, categories_unresolved
 
 
 def get_files(filename):
@@ -297,7 +267,7 @@ def get_valid_layer_name(layer, overwrite):
     elif isinstance(layer, str):
         layer_name = str(layer)
     else:
-        msg = ('You must pass either a filename or a GeoNode layer object')
+        msg = ('You must pass either a filename or a GeoNode dataset object')
         raise GeoNodeException(msg)
 
     if overwrite:
@@ -382,7 +352,7 @@ def get_bbox(filename):
             elif epsg_code is None:
                 # otherwise, stop the upload process
                 raise GeoNodeException(
-                    "Invalid Layers. "
+                    "Invalid    Datasets. "
                     "Needs an authoritative SRID in its CRS to be accepted")
 
             # eliminate default EPSG srid as it will be added when this function returned
@@ -421,482 +391,20 @@ def get_bbox(filename):
     return [bbox_x0, bbox_x1, bbox_y0, bbox_y1, f"EPSG:{str(srid)}"]
 
 
-@transaction.atomic
-def file_upload(filename,
-                layer=None,
-                gtype=None,
-                name=None,
-                user=None,
-                title=None,
-                abstract=None,
-                license=None,
-                category=None,
-                keywords=None,
-                regions=None,
-                date=None,
-                skip=True,
-                overwrite=False,
-                charset='UTF-8',
-                is_approved=True,
-                is_published=True,
-                metadata_uploaded_preserve=False,
-                metadata_upload_form=False):
-    """Saves a layer in GeoNode asking as little information as possible.
-       Only filename is required, user and title are optional.
-
-    :return: Uploaded layer
-    :rtype: Layer
-    """
-    if keywords is None:
-        keywords = []
-    if regions is None:
-        regions = []
-    if category is None:
-        category = []
-
-    # Get a valid user
-    theuser = get_valid_user(user)
-
-    # Create a new upload session
-    if layer:
-        latest_uploads = UploadSession.objects.filter(resource=layer).order_by('-date')
-        if len(latest_uploads) >= 1:
-            upload_session = latest_uploads.first()
-            upload_session.user = theuser
-        else:
-            upload_session = UploadSession.objects.create(resource=layer, user=theuser)
-        upload_session.layerfile_set.all().delete()
-    else:
-        upload_session = UploadSession.objects.create(user=theuser)
-
-    # Get all the files uploaded with the layer
-    if os.path.exists(filename):
-        files, _ = get_files(filename)
-    else:
-        raise Exception(
-            _("You are attempting to replace a vector layer with an unknown format."))
-
-    # We are going to replace an existing Layer...
-    if layer and overwrite:
-        validate_input_source(layer, filename, files, gtype, action_type='replace')
-
-    # Set a default title that looks nice ...
-    if title is None:
-        basename = os.path.splitext(os.path.basename(filename))[0]
-        title = basename.title().replace('_', ' ')
-
-    # Create a name from the title if it is not passed.
-    if name is None:
-        name = slugify(title).replace('-', '_')
-    elif not overwrite:
-        name = slugify(name)  # assert that name is slugified
-
-    if license is not None:
-        licenses = License.objects.filter(
-            Q(name__iexact=license) |
-            Q(abbreviation__iexact=license) |
-            Q(url__iexact=license) |
-            Q(description__iexact=license))
-        if len(licenses) == 1:
-            license = licenses[0]
-        else:
-            license = None
-
-    if category is not None:
-        try:
-            categories = TopicCategory.objects.filter(
-                Q(identifier__iexact=category) |
-                Q(gn_description__iexact=category))
-            if len(categories) == 1:
-                category = categories[0]
-            else:
-                category = None
-        except Exception:
-            pass
-
-    # Generate a name that is not taken if overwrite is False.
-    valid_name = get_valid_layer_name(name, overwrite)
-
-    # Add them to the upload session (new file fields are created).
-    assigned_name = None
-    for type_name, fn in files.items():
-        with open(fn, 'rb') as f:
-            upload_session.layerfile_set.create(
-                name=type_name, file=File(
-                    f, name=f'{assigned_name or valid_name}.{type_name}'))
-            # save the system assigned name for the remaining files
-            if not assigned_name:
-                the_file = upload_session.layerfile_set.first().file.name
-                assigned_name = os.path.splitext(os.path.basename(the_file))[0]
-
-    # Getting a bounding box
-    if layer and layer.bbox_polygon:
-        bbox_polygon = layer.bbox_polygon
-    else:
-        *bbox, srid = get_bbox(filename)
-        bbox_polygon = BBOXHelper.from_xy(bbox).as_polygon()
-        if srid:
-            srid_url = f"http://www.spatialreference.org/ref/{srid.replace(':', '/').lower()}/"  # noqa
-            bbox_polygon.srid = int(srid.split(':')[1])
-
-    defaults = {
-        'upload_session': upload_session,
-        'title': title,
-        'abstract': abstract,
-        'owner': user,
-        'charset': charset,
-        'bbox_polygon': bbox_polygon,
-        'srid': 'EPSG:4326',
-        'is_approved': is_approved,
-        'is_published': is_published,
-        'license': license
-    }
-
-    # by default, if RESOURCE_PUBLISHING=True then layer.is_published
-    # must be set to False
-    if not overwrite:
-        if settings.ADMIN_MODERATE_UPLOADS or settings.RESOURCE_PUBLISHING:
-            is_approved = False
-            is_published = False
-            defaults['is_approved'] = defaults['was_approved'] = is_approved
-            defaults['is_published'] = defaults['was_published'] = is_published
-
-    # set metadata
-    if 'xml' in files:
-        with open(files['xml']) as f:
-            xml_file = f.read()
-
-        defaults['metadata_uploaded'] = True
-        defaults['metadata_uploaded_preserve'] = metadata_uploaded_preserve
-
-        # get model properties from XML
-        identifier, vals, regions, keywords, custom = parse_metadata(xml_file)
-
-        if defaults['metadata_uploaded_preserve']:
-            defaults['metadata_xml'] = xml_file
-
-        if identifier:
-            if ResourceBase.objects.filter(uuid=identifier).count():
-                logger.error("The UUID identifier from the XML Metadata is already in use in this system.")
-                raise GeoNodeException(
-                    _("The UUID identifier from the XML Metadata is already in use in this system."))
-            else:
-                defaults['uuid'] = identifier
-
-        for key, value in vals.items():
-            if key == 'spatial_representation_type':
-                value = SpatialRepresentationType(identifier=value)
-            defaults[key] = value
-
-    regions_resolved, regions_unresolved = resolve_regions(regions)
-    categories_resolved, categories_unresolved = resolve_categories(category)
-
-    if keywords and regions_unresolved:
-        keywords.extend(convert_keyword(regions_unresolved))
-
-    # If it is a vector file, create the layer in postgis.
-    if is_vector(filename):
-        defaults['storeType'] = 'dataStore'
-
-    # If it is a raster file, get the resolution.
-    if is_raster(filename):
-        defaults['storeType'] = 'coverageStore'
-
-    # Create a Django object.
-    created = False
-    layer = None
-    try:
-        with transaction.atomic():
-            if overwrite:
-                try:
-                    layer = Layer.objects.get(name=valid_name)
-                except Layer.DoesNotExist:
-                    layer = None
-            if not layer:
-                if not metadata_upload_form:
-                    layer = Layer.objects.filter(name=valid_name, workspace=settings.DEFAULT_WORKSPACE).first()
-                    if not layer:
-                        layer = Layer.objects.create(
-                            uuid=str(uuid4()),
-                            name=valid_name,
-                            owner=user,
-                            workspace=settings.DEFAULT_WORKSPACE)
-                        created = True
-                elif identifier:
-                    layer = Layer.objects.filter(uuid=identifier).first()
-                    if not layer:
-                        layer = Layer.objects.create(uuid=identifier, owner=user)
-                        created = True
-    except IntegrityError:
-        raise
-
-    # Delete the old layers if overwrite is true
-    # and the layer was not just created
-    # process the layer again after that by
-    # doing a layer.save()
-    if not created and overwrite:
-        # update with new information
-        defaults['owner'] = defaults.get('owner', None) or layer.owner
-        defaults['title'] = defaults.get('title', None) or layer.title
-        defaults['abstract'] = defaults.get('abstract', None) or layer.abstract
-        defaults['bbox_polygon'] = defaults.get('bbox_polygon', None) or layer.bbox_polygon
-        defaults['ll_bbox_polygon'] = defaults.get('ll_bbox_polygon', None) or layer.ll_bbox_polygon
-        defaults['is_approved'] = defaults.get(
-            'is_approved', is_approved) or layer.is_approved
-        defaults['is_published'] = defaults.get(
-            'is_published', is_published) or layer.is_published
-        defaults['license'] = defaults.get('license', None) or layer.license
-
-        if upload_session:
-            if layer.upload_session:
-                layer.upload_session.date = upload_session.date
-                layer.upload_session.user = upload_session.user
-                layer.upload_session.error = upload_session.error
-                layer.upload_session.traceback = upload_session.traceback
-                layer.upload_session.context = upload_session.context
-                upload_session = layer.upload_session
-            else:
-                layer.upload_session = upload_session
-    if upload_session:
-        defaults['upload_session'] = upload_session
-        upload_session.resource = layer
-        upload_session.processed = False
-        upload_session.save()
-
-    layer = KeywordHandler(layer, keywords).set_keywords()
-
-    # Assign the regions (needs to be done after saving)
-    regions_resolved = list(set(regions_resolved))
-    if regions_resolved:
-        if len(regions_resolved) > 0:
-            if not layer.regions:
-                layer.regions = regions_resolved
-            else:
-                layer.regions.clear()
-                layer.regions.add(*regions_resolved)
-
-    # Assign the categories (needs to be done after saving)
-    categories_resolved = list(set(categories_resolved))
-    if categories_resolved:
-        if len(categories_resolved) > 0:
-            if not layer.category:
-                layer.category = categories_resolved
-            else:
-                layer.category.clear()
-                layer.category.add(*categories_resolved)
-
-    # Assign and save the charset using the Layer class' object (layer)
-    if charset != 'UTF-8':
-        layer.charset = charset
-
-    if not defaults.get('title', title):
-        defaults['title'] = layer.title or layer.name
-    if not defaults.get('abstract', abstract):
-        defaults['abstract'] = layer.abstract or ''
-
-    to_update = {}
-    to_update['upload_session'] = defaults.pop('upload_session', layer.upload_session)
-    to_update['storeType'] = defaults.pop('storeType', layer.storeType)
-    to_update['charset'] = defaults.pop('charset', layer.charset)
-    to_update.update(defaults)
-    if defaults.get('date', date) is not None:
-        to_update['date'] = defaults.get('date',
-                                         datetime.strptime(date, '%Y-%m-%d %H:%M:%S') if date else None)
-
-    # Update ResourceBase
-    if not to_update:
-        pass
-    else:
-        try:
-            with transaction.atomic():
-                if 'spatial_representation_type' in defaults:
-                    _spatial_ref_type = defaults.pop('spatial_representation_type')
-                    _spatial_ref_type.save()
-                    defaults['spatial_representation_type'] = _spatial_ref_type
-                ResourceBase.objects.filter(
-                    id=layer.resourcebase_ptr.id).update(
-                    **defaults)
-                Layer.objects.filter(id=layer.id).update(**to_update)
-
-                # Refresh from DB
-                layer.refresh_from_db()
-
-                # Pass the parameter overwrite to tell whether the
-                # geoserver_post_save_signal should upload the new file or not
-                layer.overwrite = overwrite
-
-                # Blank out the store if overwrite is true.
-                # geoserver_post_save_signal should upload the new file if needed
-                layer.store = '' if overwrite else layer.store
-        except IntegrityError:
-            raise
-    try:
-        with transaction.atomic():
-            layer.save(notify=True)
-    except IntegrityError:
-        raise
-    return layer
-
-
-def upload(incoming, user=None, overwrite=False,
-           name=None, title=None, abstract=None, date=None,
-           license=None,
-           category=None, keywords=None, regions=None,
-           skip=True, ignore_errors=True,
-           verbosity=1, console=None,
-           private=False, metadata_uploaded_preserve=False,
-           charset='UTF-8'):
-    """Upload a directory of spatial data files to GeoNode
-
-       This function also verifies that each layer is in GeoServer.
-
-       Supported extensions are: .shp, .tif, .tar, .tar.gz, and .zip (of a shapefile).
-       It catches GeoNodeExceptions and gives a report per file
-    """
-    if verbosity > 1:
-        print("Verifying that GeoNode is running ...", file=console)
-
-    if console is None:
-        console = open(os.devnull, 'w')
-
-    potential_files = []
-    if os.path.isfile(incoming):
-        ___, short_filename = os.path.split(incoming)
-        basename, extension = os.path.splitext(short_filename)
-        filename = incoming
-
-        if extension in {'.tif', '.shp', '.tar', '.zip'}:
-            potential_files.append((basename, filename))
-        elif short_filename.endswith('.tar.gz'):
-            potential_files.append((basename, filename))
-
-    elif not os.path.isdir(incoming):
-        msg = ('Please pass a filename or a directory name as the "incoming" '
-               f'parameter, instead of {incoming}: {type(incoming)}')
-        logger.exception(msg)
-        raise GeoNodeException(msg)
-    else:
-        datadir = incoming
-        for root, dirs, files in os.walk(datadir):
-            for short_filename in files:
-                basename, extension = os.path.splitext(short_filename)
-                filename = os.path.join(root, short_filename)
-                if extension in {'.tif', '.shp', '.tar', '.zip'}:
-                    potential_files.append((basename, filename))
-                elif short_filename.endswith('.tar.gz'):
-                    potential_files.append((basename, filename))
-
-    # After gathering the list of potential files,
-    # let's process them one by one.
-    number = len(potential_files)
-    if verbosity > 1:
-        msg = "Found %d potential layers." % number
-        print(msg, file=console)
-
-    if (number > 1) and (name is not None):
-        msg = 'Failed to process.  Cannot specify name with multiple imports.'
-        raise Exception(msg)
-
-    output = []
-    for i, file_pair in enumerate(potential_files):
-        basename, filename = file_pair
-        existing_layers = Layer.objects.filter(name=basename)
-
-        existed = existing_layers.exists()
-
-        if existed and skip:
-            save_it = False
-            status = 'skipped'
-            layer = existing_layers[0]
-            if verbosity > 0:
-                msg = ('Stopping process because '
-                       '--overwrite was not set '
-                       'and a layer with this name already exists.')
-                print(msg, file=sys.stderr)
-        else:
-            save_it = True
-
-        if save_it:
-            try:
-                if is_zipfile(filename):
-                    filename = unzip_file(filename)
-
-                if tarfile.is_tarfile(filename):
-                    filename = extract_tarfile(filename)
-
-                layer = file_upload(
-                    filename,
-                    name=name,
-                    title=title,
-                    abstract=abstract,
-                    date=date,
-                    user=user,
-                    overwrite=overwrite,
-                    license=license,
-                    category=category,
-                    keywords=keywords,
-                    regions=regions,
-                    metadata_uploaded_preserve=metadata_uploaded_preserve,
-                    charset=charset)
-                if not existed:
-                    status = 'created'
-                else:
-                    status = 'updated'
-                if private and user:
-                    perm_spec = {
-                        "users": {
-                            "AnonymousUser": [],
-                            user.username: [
-                                "change_resourcebase_metadata",
-                                "change_layer_data",
-                                "change_layer_style",
-                                "change_resourcebase",
-                                "delete_resourcebase",
-                                "change_resourcebase_permissions",
-                                "publish_resourcebase"]},
-                        "groups": {}}
-                    layer.set_permissions(perm_spec)
-            except Exception as e:
-                if ignore_errors:
-                    status = 'failed'
-                    exception_type, error, traceback = sys.exc_info()
-                else:
-                    if verbosity > 0:
-                        msg = ('Stopping process because '
-                               '--ignore-errors was not set '
-                               'and an error was found.')
-                        print(msg, file=sys.stderr)
-                        raise Exception from e
-
-        msg = f"[{status}] Layer for '{filename}' ({i + 1}/{number})"
-        info = {'file': filename, 'status': status}
-        if status == 'failed':
-            info['traceback'] = traceback
-            info['exception_type'] = exception_type
-            info['error'] = error
-        else:
-            info['name'] = layer.name
-
-        output.append(info)
-        if verbosity > 0:
-            print(msg, file=console)
-    return output
-
-
-def delete_orphaned_layers():
+def delete_orphaned_datasets():
     """Delete orphaned layer files."""
     deleted = []
     _, files = storage_manager.listdir("layers")
 
     for filename in files:
-        if LayerFile.objects.filter(file__icontains=filename).count() == 0:
-            logger.debug(f"Deleting orphaned layer file {filename}")
+        if Layer.objects.filter(file__icontains=filename).count() == 0:
+            logger.debug(f"Deleting orphaned dataset file {filename}")
             try:
                 storage_manager.delete(os.path.join("layers", filename))
                 deleted.append(filename)
             except NotImplementedError as e:
                 logger.error(
-                    f"Failed to delete orphaned layer file '{filename}': {e}")
+                    f"Failed to delete orphaned dataset file '{filename}': {e}")
 
     return deleted
 
@@ -910,7 +418,7 @@ def surrogate_escape_string(input_string, source_character_set):
     return input_string.encode(source_character_set, "surrogateescape").decode("utf-8", "surrogateescape")
 
 
-def set_layers_permissions(permissions_name, resources_names=None, users_usernames=None, groups_names=None, delete_flag=None, verbose=False):
+def set_datasets_permissions(permissions_name, resources_names=None, users_usernames=None, groups_names=None, delete_flag=False, verbose=False):
     # Processing information
     if not resources_names:
         # If resources is None we consider all the existing layer
@@ -1041,7 +549,7 @@ def set_layers_permissions(permissions_name, resources_names=None, users_usernam
                                         else:
                                             logger.warning(
                                                 f"The user {_user.username} does not have "
-                                                f"any permission on the layer {resource.title}. "
+                                                f"any permission on the dataset {resource.title}. "
                                                 "It has been skipped."
                                             )
                                     else:
@@ -1083,11 +591,13 @@ def set_layers_permissions(permissions_name, resources_names=None, users_usernam
                                     else:
                                         logger.warning(
                                             f"The group {g.name} does not have any permission "
-                                            f"on the layer {resource.title}. "
+                                            f"on the dataset {resource.title}. "
                                             "It has been skipped."
                                         )
                             # Set final permissions
-                            resource.set_permissions(perm_spec)
+                            from geonode.resource.manager import resource_manager
+                            resource_manager.set_permissions(resource.uuid, instance=resource, permissions=perm_spec)
+
                             if verbose:
                                 logger.info(
                                     f"Final permissions info for the resource {resource.title}: {perm_spec}"
@@ -1105,101 +615,71 @@ def get_uuid_handler():
     return import_string(settings.LAYER_UUID_HANDLER)
 
 
-def gs_append_data_to_layer(layer, base_files, user):
-    gs_layer = gs_catalog.get_layer(layer.name)
-    if gs_layer and gs_layer.type == 'VECTOR':
-        #  opening upload session for the selected layer
-        upload_session, created = UploadSession.objects.get_or_create(resource=layer, user=user)
-        upload_session.resource = layer
-        upload_session.processed = False
-        upload_session.save()
-
-        #  opening Import session for the selected layer
-        import_session = gs_uploader.start_import(
-            import_id=upload_session.id, name=layer.name, target_store=gs_layer.resource.store.name
-        )
-
-        import_session.upload_task(base_files)
-        task = import_session.tasks[0]
-        #  Changing layer name, mode and target
-        task.layer.set_target_layer_name(layer.name)
-        task.set_update_mode("APPEND")
-        task.set_target(store_name=gs_layer.resource.store.name, workspace=gs_layer.resource.workspace.name)
-        #  Starting import process
-        import_session.commit()
-        return upload_session
-
-
-def validate_input_source(layer, filename, files, gtype=None, action_type='replace'):
+def validate_input_source(layer, filename, files, gtype=None, action_type='replace', storage_manager=storage_manager):
     if layer.is_vector() and is_raster(filename):
-        raise Exception(_(
-            f"You are attempting to {action_type} a vector layer with a raster."))
+        raise InvalidDatasetException(_(
+            f"You are attempting to {action_type} a vector dataset with a raster."))
     elif (not layer.is_vector()) and is_vector(filename):
-        raise Exception(_(
-            f"You are attempting to {action_type} a raster layer with a vector."))
+        raise InvalidDatasetException(_(
+            f"You are attempting to {action_type} a raster dataset with a vector."))
 
-    if not layer.is_vector():
-        return True
-    absolute_base_file = None
-    try:
-        if 'shp' in files and os.path.exists(files['shp']):
-            absolute_base_file = (
-                _fixup_base_file(files['shp'])
-                if not action_type == 'replace'
-                else files['shp']
-            )
-        elif 'zip' in files and os.path.exists(files['zip']):
-            absolute_base_file = (
-                _fixup_base_file(files['zip'])
-            )
-    except Exception:
+    if layer.is_vector():
         absolute_base_file = None
-
-    if not absolute_base_file or \
-            os.path.splitext(absolute_base_file)[1].lower() != '.shp':
-        raise Exception(
-            _(f"You are attempting to {action_type} a vector layer with an unknown format."))
-    else:
         try:
-            gtype = layer.gtype if not gtype else gtype
-            inDataSource = ogr.Open(absolute_base_file)
-            lyr = inDataSource.GetLayer(str(layer.name))
-            if not lyr:
-                raise Exception(
-                    _(f"Please ensure the name is consistent with the file you are trying to {action_type}."))
-            schema_is_compliant = False
-            _ff = json.loads(lyr.GetFeature(0).ExportToJson())
-            if gtype:
-                logger.info(
-                    _("Local GeoNode layer has geometry type."))
-                if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
+            absolute_base_file = storage_manager.path(files['shp'])
+        except SuspiciousFileOperation:
+            absolute_base_file = files['shp']
+        except InvalidDatasetException:
+            absolute_base_file = None
+
+        if not absolute_base_file or \
+                os.path.splitext(absolute_base_file)[1].lower() != '.shp':
+            raise InvalidDatasetException(
+                _(f"You are attempting to {action_type} a vector dataset with an unknown format."))
+        else:
+            try:
+                gtype = layer.gtype if not gtype else gtype
+                inDataSource = ogr.Open(absolute_base_file)
+                if inDataSource is None:
+                    raise InvalidDatasetException(
+                        _(f"Please ensure that the base_file {absolute_base_file} is not empty"))
+                lyr = inDataSource.GetLayer(str(layer.name))
+                if not lyr:
+                    raise InvalidDatasetException(
+                        _(f"Please ensure the name is consistent with the file you are trying to {action_type}."))
+                schema_is_compliant = False
+                _ff = json.loads(lyr.GetFeature(0).ExportToJson())
+                if gtype:
+                    logger.warning(
+                        _("Local GeoNode dataset has no geometry type."))
+                    if _ff["geometry"]["type"] in gtype or gtype in _ff["geometry"]["type"]:
+                        schema_is_compliant = True
+                elif "geometry" in _ff and _ff["geometry"]["type"]:
                     schema_is_compliant = True
-            elif "geometry" in _ff and _ff["geometry"]["type"]:
-                schema_is_compliant = True
 
-            if not schema_is_compliant:
-                raise Exception(
-                    _(f"Please ensure that the geometry type \
-                        is consistent with the file you are trying to {action_type}."))
+                if not schema_is_compliant:
+                    raise InvalidDatasetException(
+                        _(f"Please ensure there is at least one geometry type \
+                            that is consistent with the file you are trying to {action_type}."))
 
-            new_schema_fields = [field.name for field in lyr.schema]
-            gs_layer = gs_catalog.get_layer(layer.name)
+                new_schema_fields = [field.name for field in lyr.schema]
+                gs_layer = gs_catalog.get_layer(layer.name)
 
-            if not gs_layer:
-                raise Exception(
-                    _("The selected Layer does not exists in the catalog."))
+                if not gs_layer:
+                    raise InvalidDatasetException(
+                        _("The selected Layer does not exists in the catalog."))
 
-            gs_layer = gs_layer.resource.attributes
-            schema_is_compliant = all([x.replace("-", '_') in gs_layer for x in new_schema_fields])
+                gs_layer = gs_layer.resource.attributes
+                schema_is_compliant = all([x.replace("-", '_') in gs_layer for x in new_schema_fields])
 
-            if not schema_is_compliant:
-                raise Exception(
-                    _("Please ensure that the layer structure is consistent "
-                        f"with the file you are trying to {action_type}."))
-            return True
-        except Exception as e:
-            raise Exception(
-                _(f"Some error occurred while trying to access the uploaded schema: {str(e)}"))
+                if not schema_is_compliant:
+                    raise InvalidDatasetException(
+                        _("Please ensure that the dataset structure is consistent "
+                          f"with the file you are trying to {action_type}."))
+                return True
+            except Exception as e:
+                raise InvalidDatasetException(
+                    _(f"Some error occurred while trying to access the uploaded schema: {str(e)}"))
 
 
 def is_xml_upload_only(request):

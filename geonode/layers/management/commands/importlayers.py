@@ -107,7 +107,7 @@ class GeoNodeUploader:
                     # make public since wms client doesn't do authentication
                     "permissions": '{ "users": {"AnonymousUser": ["view_resourcebase"]} , "groups":{}}',  # to be decided
                     "time": "false",
-                    "dataset_title": file,
+                    "layer_title": file,
                     "charset": "UTF-8",
                 }
 

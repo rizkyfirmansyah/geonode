@@ -16,14 +16,23 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+import os
+
 from rest_framework import serializers
 
-from dynamic_rest.serializers import DynamicModelSerializer
-from dynamic_rest.fields.fields import DynamicRelationField, DynamicComputedField
+from dynamic_rest.fields.fields import (
+    DynamicRelationField,
+    DynamicComputedField,
+)
 
-from geonode.upload.models import Upload, UploadFile, UploadSizeLimit
+from geonode.upload.models import (
+    Upload,
+    UploadParallelismLimit,
+    UploadSizeLimit,
+)
+from geonode.base.models import ResourceBase
+from geonode.utils import build_absolute_uri
 from geonode.layers.api.serializers import LayerSerializer
-
 from geonode.base.api.serializers import BaseDynamicModelSerializer
 
 import logging
@@ -31,17 +40,26 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class UploadFileSerializer(DynamicModelSerializer):
-
+class UploadFileField(serializers.RelatedField):
     class Meta:
-        model = UploadFile
-        name = 'upload_file'
-        fields = (
-            'pk', 'name', 'slug', 'base', 'file'
-        )
+        model = ResourceBase
+        name = 'resource-files'
 
-    name = serializers.CharField(read_only=True)
-    slug = serializers.CharField(read_only=True)
+    def to_representation(self, obj):
+        files = []
+        for file in obj.files:
+            name, _ = os.path.splitext(os.path.basename(file))
+            files.append(
+                {
+                    "name": name,
+                    "slug": os.path.basename(file),
+                    "file": file
+                }
+            )
+        return {
+            'name': obj.title,
+            'files': files,
+        }
 
 
 class SessionSerializer(serializers.Field):
@@ -182,7 +200,7 @@ class ProgressUrlField(DynamicComputedField):
     def get_attribute(self, instance):
         try:
             func = getattr(instance, f"get_{self.type}_url")
-            return func()
+            return build_absolute_uri(func())
         except AttributeError as e:
             logger.exception(e)
             return None
@@ -194,10 +212,10 @@ class UploadSerializer(BaseDynamicModelSerializer):
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
 
-        if 'request' in self.context and \
-                self.context['request'].query_params.get('full'):
-            self.fields['layer'] = DynamicRelationField(
-                LayerSerializer,
+        request = self.context.get('request', None)
+        if request and request.query_params.get('full'):
+            self.fields['resource'] = DynamicRelationField(
+                DatasetSerializer,
                 embed=True,
                 many=False,
                 read_only=True)
@@ -212,7 +230,7 @@ class UploadSerializer(BaseDynamicModelSerializer):
         fields = (
             'id', 'name', 'date', 'create_date', 'user',
             'state', 'progress', 'complete', 'import_id',
-            'uploadfile_set', 'resume_url', 'delete_url', 'import_url', 'detail_url'
+            'resume_url', 'delete_url', 'import_url', 'detail_url', "uploadfile_set"
         )
 
     progress = ProgressField(read_only=True)
@@ -220,7 +238,7 @@ class UploadSerializer(BaseDynamicModelSerializer):
     delete_url = ProgressUrlField('delete', read_only=True)
     import_url = ProgressUrlField('import', read_only=True)
     detail_url = ProgressUrlField('detail', read_only=True)
-    uploadfile_set = DynamicRelationField(UploadFileSerializer, embed=True, many=True, read_only=True)
+    uploadfile_set = UploadFileField(source='resource', read_only=True)
 
 
 class UploadSizeLimitSerializer(BaseDynamicModelSerializer):
@@ -233,4 +251,19 @@ class UploadSizeLimitSerializer(BaseDynamicModelSerializer):
             'description',
             'max_size',
             'max_size_label',
+        )
+
+
+class UploadParallelismLimitSerializer(BaseDynamicModelSerializer):
+    class Meta:
+        model = UploadParallelismLimit
+        name = 'upload-parallelism-limit'
+        view_name = 'upload-parallelism-limits-list'
+        fields = (
+            'slug',
+            'description',
+            'max_number',
+        )
+        read_only_fields = (
+            'slug',
         )

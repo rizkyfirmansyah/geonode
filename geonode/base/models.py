@@ -750,6 +750,24 @@ class ResourceBaseManager(PolymorphicManager):
         """Remove uploaded files, if any"""
         if ResourceBase.objects.filter(id=resource_id).exists():
             _resource = ResourceBase.objects.filter(id=resource_id).get()
+            _uploaded_folder = None
+            if _resource.files:
+                for _file in _resource.files:
+                    try:
+                        if storage_manager.exists(_file):
+                            if not _uploaded_folder:
+                                _uploaded_folder = os.path.split(storage_manager.path(_file))[0]
+                            storage_manager.delete(_file)
+                    except Exception as e:
+                        logger.warning(e)
+                try:
+                    if _uploaded_folder and storage_manager.exists(_uploaded_folder):
+                        storage_manager.delete(_uploaded_folder)
+                except Exception as e:
+                    logger.warning(e)
+
+                # Do we want to delete the files also from the resource?
+                ResourceBase.objects.filter(id=resource_id).update(files={})
 
             # Remove generated thumbnails, if any
             filename = f"{_resource.get_real_instance().resource_type}-{_resource.get_real_instance().uuid}"
@@ -760,7 +778,7 @@ class ResourceBaseManager(PolymorphicManager):
                 from geonode.upload.models import Upload
                 # Need to call delete one by one in order to invoke the
                 #  'delete' overridden method
-                for upload in Upload.objects.filter(layer_id=_resource.get_real_instance().id):
+                for upload in Upload.objects.filter(resource_id=_resource.get_real_instance().id):
                     upload.delete()
 
 class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
@@ -1194,6 +1212,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     blob = JSONField(null=True, default=dict, blank=True)
 
+    subtype = models.CharField(max_length=128, null=True, blank=True)
+
     metadata = models.ManyToManyField(
         "ExtraMetadata",
         verbose_name=_('Extra Metadata'),
@@ -1578,8 +1598,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         if hasattr(self.spatial_representation_type, 'identifier'):
             return self.spatial_representation_type.identifier
         else:
-            if hasattr(self, 'storeType'):
-                if self.storeType == 'coverageStore':
+            if hasattr(self, 'subtype'):
+                if self.subtype == 'raster':
                     return 'grid'
                 return 'vector'
             else:
@@ -1765,8 +1785,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             else:
                 _link_type = 'WWW:DOWNLOAD-1.0-http--download'
                 try:
-                    _store_type = getattr(self.get_real_instance(), 'storeType', None)
-                    if _store_type and _store_type == 'remoteStore' and link.extension in ('html'):
+                    _store_type = getattr(self.get_real_instance(), 'subtype', None)
+                    if _store_type and _store_type in ['tileStore', 'remote'] and link.extension in ('html'):
                         _remote_service = getattr(self.get_real_instance(), '_remote_service', None)
                         if _remote_service:
                             _link_type = f'WWW:DOWNLOAD-{_remote_service.type}'

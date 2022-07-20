@@ -175,7 +175,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
             'doc_file',
             'extension',
             'alternate',
-            'doc_type',
+            'subtype',
             'spatial_representation_type',
             'resource_type',
             'spatial_resolution'

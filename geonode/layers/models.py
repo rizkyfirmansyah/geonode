@@ -699,7 +699,7 @@ def pre_delete_layer(instance, sender, **kwargs):
 def post_delete_layer(instance, sender, **kwargs):
     """
     - Remove any associated style to the layer, if it is not used by other layers.
-    - Default style will be deleted in post_delete_dataset.
+    - Default style will be deleted in post_delete_layer.
     - Remove the layer from any associated map, if any.
     - Remove the layer default style.
     """

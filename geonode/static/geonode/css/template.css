@@ -271,6 +271,11 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   }
 }
 
+#status .alert p {
+  margin-bottom: 0.5em;
+  color: inherit;
+}
+
 /* ---------------------------------------------------
     TEXT STYLE
 ----------------------------------------------------- */

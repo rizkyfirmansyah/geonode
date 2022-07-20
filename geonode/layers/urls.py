@@ -75,6 +75,8 @@ urlpatterns = [
         views.layer_feature_catalogue, name='layer_feature_catalogue'),
     url(r'^metadata/batch/$',
         views.layer_batch_metadata, name='layer_batch_metadata'),
+    url(r'^(?P<layername>[^/]*)/layer_download$',
+        views.layer_download, name="layer_download"),
     url(r'^permissions/batch/$',
         views.layer_batch_permissions, name='layer_batch_permissions'),
     url(r'^autocomplete/$',
