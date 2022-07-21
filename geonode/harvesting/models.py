@@ -30,7 +30,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
-from django_jsonfield_backport.models import JSONField
+from django.db.models.fields.json import JSONField
 
 from geonode import celery_app
 

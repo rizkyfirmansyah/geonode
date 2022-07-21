@@ -37,6 +37,7 @@ setup(
         "templates": ["*.*"],
     },
     dependency_links=[
-        'git+https://github.com/rizkyfirmansyah/geonode-user-messages@master#egg=geonode-user-messages'
+        'git+https://github.com/rizkyfirmansyah/geonode-user-messages@master#egg=geonode-user-messages',
+        'git+https://github.com/rizkyfirmansyah/geonode-mapstore-client@3.3.x#egg=django_geonode_mapstore_client'
     ]
 )

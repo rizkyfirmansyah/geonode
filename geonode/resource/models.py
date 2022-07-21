@@ -21,7 +21,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from django_jsonfield_backport.models import JSONField
+from django.db.models.fields.json import JSONField
 
 class ExecutionRequest(models.Model):
     STATUS_READY = "ready"

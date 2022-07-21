@@ -31,7 +31,7 @@ from geonode.harvesting.models import Harvester
 from geonode.layers.enumerations import GXP_PTYPES
 from geonode.people.enumerations import ROLE_VALUES
 from geonode.services.serviceprocessors import get_available_service_types
-from django_jsonfield_backport.models  import JSONField
+from django.db.models.fields.json import JSONField
 
 from . import enumerations
 

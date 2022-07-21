@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2018 OSGeo
@@ -51,8 +50,7 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.db.utils import IntegrityError
-from django_jsonfield_backport.features import extend_features
-from django.db import connection
+
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +160,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, **options):
-        extend_features(connection)
         skip_read_only = options.get('skip_read_only')
         config = Configuration.load()
 
@@ -243,7 +240,7 @@ class Command(BaseCommand):
 
             restore_folder = os.path.join(temp_dir_path, f'tmp{str(uuid.uuid4())[:4]}')
             try:
-                os.makedirs(restore_folder)
+                os.makedirs(restore_folder, exist_ok=True)
             except Exception as e:
                 raise e
             try:
@@ -270,20 +267,20 @@ class Command(BaseCommand):
                 locale_files_folders = os.path.join(target_folder, utils.LOCALE_PATHS)
 
                 try:
-                    print((f"[Sanity Check] Full Write Access to '{restore_folder}' ..."))
+                    print(f"[Sanity Check] Full Write Access to '{restore_folder}' ...")
                     chmod_tree(restore_folder)
-                    print((f"[Sanity Check] Full Write Access to '{media_root}' ..."))
+                    print(f"[Sanity Check] Full Write Access to '{media_root}' ...")
                     chmod_tree(media_root)
-                    print((f"[Sanity Check] Full Write Access to '{static_root}' ..."))
+                    print(f"[Sanity Check] Full Write Access to '{static_root}' ...")
                     chmod_tree(static_root)
                     for static_files_folder in static_folders:
-                        print((f"[Sanity Check] Full Write Access to '{static_files_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{static_files_folder}' ...")
                         chmod_tree(static_files_folder)
                     for template_files_folder in template_folders:
-                        print((f"[Sanity Check] Full Write Access to '{template_files_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{template_files_folder}' ...")
                         chmod_tree(template_files_folder)
                     for locale_files_folder in locale_folders:
-                        print((f"[Sanity Check] Full Write Access to '{locale_files_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{locale_files_folder}' ...")
                         chmod_tree(locale_files_folder)
                 except Exception as exception:
                     if notify:
@@ -296,7 +293,7 @@ class Command(BaseCommand):
 
                 if not skip_geoserver:
                     try:
-                        print((f"[Sanity Check] Full Write Access to '{target_folder}' ..."))
+                        print(f"[Sanity Check] Full Write Access to '{target_folder}' ...")
                         chmod_tree(target_folder)
                         self.restore_geoserver_backup(config, settings, target_folder,
                                                       skip_geoserver_info, skip_geoserver_security,
@@ -326,7 +323,7 @@ class Command(BaseCommand):
                 # Prepare Target DB
                 try:
                     call_command('makemigrations', interactive=False)
-                    call_command('migrate', interactive=False, load_initial_data=False)
+                    call_command('migrate', interactive=False)
 
                     db_name = settings.DATABASES['default']['NAME']
                     db_user = settings.DATABASES['default']['USER']
@@ -383,7 +380,7 @@ class Command(BaseCommand):
                             shutil.rmtree(media_root, ignore_errors=True)
 
                         if not os.path.exists(media_root):
-                            os.makedirs(media_root)
+                            os.makedirs(media_root, exist_ok=True)
 
                         copy_tree(media_folder, media_root)
                         chmod_tree(media_root)
@@ -394,7 +391,7 @@ class Command(BaseCommand):
                             shutil.rmtree(static_root, ignore_errors=True)
 
                         if not os.path.exists(static_root):
-                            os.makedirs(static_root)
+                            os.makedirs(static_root, exist_ok=True)
 
                         copy_tree(static_folder, static_root)
                         chmod_tree(static_root)
@@ -417,7 +414,7 @@ class Command(BaseCommand):
                                 shutil.rmtree(static_files_folder, ignore_errors=True)
 
                             if not os.path.exists(static_files_folder):
-                                os.makedirs(static_files_folder)
+                                os.makedirs(static_files_folder, exist_ok=True)
 
                             copy_tree(os.path.join(static_files_folders,
                                                    os.path.basename(os.path.normpath(static_files_folder))),
@@ -442,7 +439,7 @@ class Command(BaseCommand):
                                 shutil.rmtree(template_files_folder, ignore_errors=True)
 
                             if not os.path.exists(template_files_folder):
-                                os.makedirs(template_files_folder)
+                                os.makedirs(template_files_folder, exist_ok=True)
 
                             copy_tree(os.path.join(template_files_folders,
                                                    os.path.basename(os.path.normpath(template_files_folder))),
@@ -467,7 +464,7 @@ class Command(BaseCommand):
                                 shutil.rmtree(locale_files_folder, ignore_errors=True)
 
                             if not os.path.exists(locale_files_folder):
-                                os.makedirs(locale_files_folder)
+                                os.makedirs(locale_files_folder, exist_ok=True)
 
                             copy_tree(os.path.join(locale_files_folders,
                                                    os.path.basename(os.path.normpath(locale_files_folder))),
@@ -505,7 +502,7 @@ class Command(BaseCommand):
                 finally:
                     call_command('makemigrations', interactive=False)
                     call_command('migrate', interactive=False, fake=True)
-                    call_command('sync_geonode_layers', updatepermissions=True, ignore_errors=True)
+                    call_command('sync_geonode_datasets', updatepermissions=True, ignore_errors=True)
 
                 if notify:
                     restore_notification.apply_async(
@@ -601,7 +598,7 @@ class Command(BaseCommand):
         archive_md5_file = f"{backup_file.rsplit('.', 1)[0]}.md5"
 
         if os.path.exists(archive_md5_file):
-            with open(archive_md5_file, 'r') as md5_file:
+            with open(archive_md5_file) as md5_file:
                 original_backup_md5 = md5_file.readline().strip().split(" ")[0]
 
             if original_backup_md5 != backup_hash:
@@ -644,7 +641,7 @@ class Command(BaseCommand):
         geoserver_bk_file = os.path.join(target_folder, 'geoserver_catalog.zip')
 
         if not os.path.exists(geoserver_bk_file) or not os.access(geoserver_bk_file, os.R_OK):
-            raise Exception((f'ERROR: geoserver restore: file "{geoserver_bk_file}" not found.'))
+            raise Exception(f'ERROR: geoserver restore: file "{geoserver_bk_file}" not found.')
 
         print(f"Restoring 'GeoServer Catalog [{url}]' from '{geoserver_bk_file}'.")
 
@@ -735,21 +732,21 @@ class Command(BaseCommand):
     def prepare_geoserver_gwc_config(self, config, settings):
         if (config.gs_data_dir):
             # Cleanup '$config.gs_data_dir/gwc-layers'
-            gwc_layers_root = os.path.join(config.gs_data_dir, 'gwc-layers')
-            if not os.path.isabs(gwc_layers_root):
-                gwc_layers_root = os.path.join(settings.PROJECT_ROOT, '..', gwc_layers_root)
+            gwc_datasets_root = os.path.join(config.gs_data_dir, 'gwc-layers')
+            if not os.path.isabs(gwc_datasets_root):
+                gwc_datasets_root = os.path.join(settings.PROJECT_ROOT, '..', gwc_datasets_root)
             try:
-                shutil.rmtree(gwc_layers_root)
-                print(f'Cleaned out old GeoServer GWC Layers Config: {gwc_layers_root}')
+                shutil.rmtree(gwc_datasets_root)
+                print(f'Cleaned out old GeoServer GWC Layers Config: {gwc_datasets_root}')
             except Exception:
                 pass
-            if not os.path.exists(gwc_layers_root):
-                os.makedirs(gwc_layers_root)
+            if not os.path.exists(gwc_datasets_root):
+                os.makedirs(gwc_datasets_root, exist_ok=True)
 
     def restore_geoserver_raster_data(self, config, settings, target_folder):
         if (config.gs_data_dir):
             if (config.gs_dump_raster_data):
-                # Restore '$config.gs_data_dir/geonode'
+                # Restore '$config.gs_data_dir/sdi'
                 gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'sdi')
                 if os.path.exists(gs_data_folder):
                     gs_data_root = os.path.join(config.gs_data_dir, 'sdi')
@@ -757,14 +754,14 @@ class Command(BaseCommand):
                         gs_data_root = os.path.join(settings.PROJECT_ROOT, '..', gs_data_root)
 
                     if not os.path.exists(gs_data_root):
-                        os.makedirs(gs_data_root)
+                        os.makedirs(gs_data_root, exist_ok=True)
 
                     copy_tree(gs_data_folder, gs_data_root)
                     print(f"GeoServer Uploaded Raster Data Restored to '{gs_data_root}'.")
                 else:
                     print(f"Skipping geoserver raster data restore: directory \"{gs_data_folder}\" not found.")
 
-                # Restore '$config.gs_data_dir/data/geonode'
+                # Restore '$config.gs_data_dir/data/sdi'
                 gs_data_folder = os.path.join(target_folder, 'gs_data_dir', 'data', 'sdi')
                 if os.path.exists(gs_data_folder):
                     gs_data_root = os.path.join(config.gs_data_dir, 'data', 'sdi')
@@ -772,7 +769,7 @@ class Command(BaseCommand):
                         gs_data_root = os.path.join(settings.PROJECT_ROOT, '..', gs_data_root)
 
                     if not os.path.exists(gs_data_root):
-                        os.makedirs(gs_data_root)
+                        os.makedirs(gs_data_root, exist_ok=True)
 
                     copy_tree(gs_data_folder, gs_data_root)
                     print(f"GeoServer Uploaded Data Restored to '{gs_data_root}'.")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import migrations, models
-from django_jsonfield_backport.models import JSONField
+from django.db.models.fields.json import JSONField
 import datetime
 
 
