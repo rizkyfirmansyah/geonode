@@ -719,6 +719,9 @@ TEMPLATES = [
             #      'django.template.loaders.filesystem.Loader',
             #      'django.template.loaders.app_directories.Loader',
             # ],
+            'libraries' : {
+                'staticfiles': 'django.templatetags.static', 
+            },
             'debug': DEBUG,
         },
     },
