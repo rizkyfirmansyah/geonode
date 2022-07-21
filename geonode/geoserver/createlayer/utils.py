@@ -21,6 +21,7 @@ import uuid
 import logging
 import requests
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.gis.geos import Polygon
 from django.template.defaultfilters import slugify
@@ -28,6 +29,7 @@ from django.template.defaultfilters import slugify
 from geonode import GeoNodeException
 from geonode.layers.models import Layer
 from geonode.layers.utils import get_valid_name
+from geonode.resource.manager import resource_manager
 from geonode.geoserver.helpers import (
     gs_catalog,
     ogc_server_settings,
@@ -36,7 +38,7 @@ from geonode.geoserver.helpers import (
 
 logger = logging.getLogger(__name__)
 
-BBOX = [-180, 180, -90, 90]
+BBOX = [-180, -90, 180, 90]
 DATA_QUALITY_MESSAGE = "Created with GeoNode"
 
 
@@ -63,21 +65,31 @@ def create_gn_layer(workspace, datastore, name, title, owner_name):
     """
     owner = get_user_model().objects.get(username=owner_name)
 
-    layer = Layer.objects.create(
-        name=name,
-        workspace=workspace.name,
-        store=datastore.name,
-        subtype='vector',
-        alternate=f'{workspace.name}:{name}',
-        title=title,
-        owner=owner,
-        uuid=str(uuid.uuid4()),
-        bbox_polygon=Polygon.from_bbox(BBOX),
-        data_quality_statement=DATA_QUALITY_MESSAGE,
-    )
+    layer = resource_manager.create(
+        str(uuid.uuid4()),
+        resource_type=Layer,
+        defaults=dict(
+            name=name,
+            workspace=workspace.name,
+            store=datastore.name,
+            subtype='vector',
+            alternate=f'{workspace.name}:{name}',
+            title=title,
+            owner=owner,
+            srid='EPSG:4326',
+            bbox_polygon=Polygon.from_bbox(BBOX),
+            ll_bbox_polygon=Polygon.from_bbox(BBOX),
+            data_quality_statement=DATA_QUALITY_MESSAGE
+        ))
 
-    layer.handle_moderated_uploads()
-    layer.save()
+    to_update = {}
+    if settings.ADMIN_MODERATE_UPLOADS:
+        to_update['is_approved'] = to_update['was_approved'] = False
+    if settings.RESOURCE_PUBLISHING:
+        to_update['is_published'] = to_update['was_published'] = False
+
+    resource_manager.update(layer.uuid, instance=layer, vals=to_update)
+    resource_manager.set_thumbnail(None, instance=layer)
     return layer
 
 
@@ -196,7 +208,7 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
         f"<nativeName>{native_name}</nativeName>"
         f"<title>{title}</title>"
         "<srs>EPSG:4326</srs>"
-        f"<latLonBoundingBox><minx>{BBOX[0]}</minx><maxx>{BBOX[1]}</maxx><miny>{BBOX[2]}</miny><maxy>{BBOX[3]}</maxy>"
+        f"<latLonBoundingBox><minx>{BBOX[0]}</minx><maxx>{BBOX[2]}</maxx><miny>{BBOX[1]}</miny><maxy>{BBOX[3]}</maxy>"
         f"<crs>EPSG:4326</crs></latLonBoundingBox>"
         f"{attributes_block}"
         "</featureType>")
@@ -212,4 +224,5 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
         logger.error(f'Response was: {req.text}')
         raise Exception(f"Layer could not be created in GeoServer {req.text}")
 
+    cat.reload()
     return workspace, datastore
