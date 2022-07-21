@@ -3,7 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import uuid
-import django_jsonfield_backport
+
 
 class Migration(migrations.Migration):
 
