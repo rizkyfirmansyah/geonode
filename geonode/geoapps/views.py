@@ -24,7 +24,7 @@ import warnings
 from django.conf import settings
 from django.db.models import F
 from django.urls import reverse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.forms.utils import ErrorList
 from django.utils.translation import ugettext as _
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
@@ -39,6 +39,7 @@ from geonode.geoapps.models import GeoApp, GeoAppData
 from geonode.decorators import check_keyword_write_perms
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
+from django.views.decorators.http import require_POST
 
 from geonode.people.forms import ProfileForm
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
@@ -258,32 +259,31 @@ def geoapp_edit(request, geoappid, template='apps/app_edit.html'):
 
 
 @login_required
-def geoapp_remove(request, geoappid, template='apps/app_remove.html'):
+@require_POST
+def geoapp_remove(request):
+
+    geoappid = request.POST['geoappid']
+    toast_title = _("Delete GeoApps")
+
     try:
         geoapp_obj = _resolve_geoapp(
             request,
             geoappid,
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
+
+        message = _("GeoApp: {} has been deleted".format(geoapp_obj.title))
+        messages.warning(request, message, extra_tags=toast_title)
+        geoapp_obj.delete()
+        register_event(request, EventType.EVENT_REMOVE, geoapp_obj)
+
+        return redirect('catalogue_browse')
+
     except PermissionDenied:
         return unauthorized_message(request, _PERMISSION_MSG_DELETE)
 
     except Exception:
         return page_not_found_message(request)
-
-    if not geoapp_obj:
-        return page_not_found_message(request)
-
-    if request.method == 'GET':
-        return render(request, template, context={
-            "resource": geoapp_obj
-        })
-    elif request.method == 'POST':
-        geoapp_obj.delete()
-        register_event(request, EventType.EVENT_REMOVE, geoapp_obj)
-        return HttpResponseRedirect(reverse("apps_browse"))
-    else:
-        return HttpResponse("Not allowed", status=403)
 
 
 def geoapp_metadata_detail(request, geoappid, template='apps/app_metadata_detail.html'):
