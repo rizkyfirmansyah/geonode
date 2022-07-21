@@ -526,6 +526,7 @@
     {% endwith %}
 
     {% include "modal/manage_layers.html" %}
+    {% include "modal/progress.html" %}
 
   </div>
 </div>
@@ -534,8 +535,7 @@
 
 {% block extra_script %}
 {{ block.super }}
-
-  
+  {% include "toast/configure_layers.html" %}
 
   {% if request.user.is_authenticated %}
     {% user_rating_js request.user resource "layer" %}
@@ -600,7 +600,6 @@
   {% endblock thumbnail_script %}
 
   {% if GEONODE_SECURITY_ENABLED %}
-    {% include "toast/configure_layers.html" %}
     <script type='text/javascript'>
       $(function () {
         if (sessionStorage.getItem("security_refresh_trigger")) {
