@@ -28,6 +28,8 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
+from django.utils.functional import classproperty
+from geonode.groups.conf import settings as groups_settings
 
 from pinax.ratings.models import OverallRating
 from tinymce.models import HTMLField
@@ -40,6 +42,12 @@ from geonode.security.models import PermissionLevelMixin
 from geonode.notifications_helper import (
     send_notification,
     get_notification_recipients)
+
+from geonode.security.permissions import (
+    VIEW_PERMISSIONS,
+    OWNER_PERMISSIONS,
+    DOWNLOAD_PERMISSIONS,
+    LAYER_ADMIN_PERMISSIONS)
 
 from ..services.enumerations import CASCADED
 from ..services.enumerations import INDEXED
@@ -167,6 +175,11 @@ class Layer(ResourceBase):
     storeType = models.CharField(_('Storetype'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
     typename = models.CharField(_('Typename'), max_length=255, null=True, blank=True)
+    ows_url = models.URLField(
+        _('ows URL'),
+        null=True,
+        blank=True,
+        help_text=_('The URL of the OWS service providing this layer, if any exists.'))
 
     is_mosaic = models.BooleanField(_('Is mosaic?'), default=False)
     has_time = models.BooleanField(_('Has time?'), default=False)
@@ -178,6 +191,13 @@ class Layer(ResourceBase):
         blank=True,
         choices=TIME_REGEX)
     elevation_regex = models.CharField(_('Elevation regex'), max_length=128, null=True, blank=True)
+
+    ptype = models.CharField(
+        _('P-Type'),
+        null=False,
+        blank=False,
+        max_length=255,
+        default="gxp_wmscsource")
 
     default_style = models.ForeignKey(
         Style,
@@ -276,10 +296,7 @@ class Layer(ResourceBase):
 
     @property
     def service_typename(self):
-        if self.remote_service is not None:
-            return f"{self.remote_service.name}:{self.alternate}"
-        else:
-            return self.alternate
+        return f"{self.remote_typename}:{self.alternate}" if self.remote_typename else self.alternate
 
     @property
     def attributes(self):
@@ -385,6 +402,7 @@ class Layer(ResourceBase):
     LEVEL_WRITE = 'layer_readwrite'
     LEVEL_ADMIN = 'layer_admin'
 
+    @property
     def maps(self):
         from geonode.maps.models import MapLayer
         return MapLayer.objects.filter(name=self.alternate)
@@ -395,6 +413,14 @@ class Layer(ResourceBase):
             logger.error("Download URL is available only for datasets that have been harvested and copied locally")
             return None
         return build_absolute_uri(reverse('dataset_download', args=(self.alternate,)))
+
+    @classproperty
+    def allowed_permissions(cls):
+        return {
+            "anonymous": VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS,
+            "default": OWNER_PERMISSIONS + DOWNLOAD_PERMISSIONS + LAYER_ADMIN_PERMISSIONS,
+            groups_settings.REGISTERED_MEMBERS_GROUP_NAME: OWNER_PERMISSIONS + DOWNLOAD_PERMISSIONS + LAYER_ADMIN_PERMISSIONS
+        }
 
     @property
     def class_name(self):
