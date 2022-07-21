@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='executionrequest',
             name='input_params',
-            field=django_jsonfield_backport.models.JSONField(blank=True, default=dict),
+            field=models.JSONField(blank=True, default=dict),
         ),
         migrations.AlterField(
             model_name='executionrequest',
             name='output_params',
-            field=django_jsonfield_backport.models.JSONField(blank=True, default=dict),
+            field=models.JSONField(blank=True, default=dict),
         ),
     ]

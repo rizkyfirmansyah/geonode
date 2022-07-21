@@ -4,7 +4,7 @@ import datetime
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import django_jsonfield_backport.models
+
 
 
 class Migration(migrations.Migration):
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True)),
                 ('description', models.CharField(help_text='Description of the alert', max_length=255)),
-                ('user_threshold', django_jsonfield_backport.models.JSONField(default=dict, help_text='Expected min/max values for user configuration')),
+                ('user_threshold', models.JSONField(default=dict, help_text='Expected min/max values for user configuration')),
                 ('last_send', models.DateTimeField(blank=True, help_text='Marker of last delivery', null=True)),
                 ('grace_period', models.DurationField(choices=[(datetime.timedelta(seconds=60), '1 minute'), (datetime.timedelta(seconds=300), '5 minutes'), (datetime.timedelta(seconds=600), '10 minutes'), (datetime.timedelta(seconds=1800), '30 minutes'), (datetime.timedelta(seconds=3600), '1 hour')], default=datetime.timedelta(seconds=600), help_text='Minimum time between subsequent notifications')),
                 ('severity', models.CharField(choices=[('warning', 'Warning'), ('error', 'Error'), ('fatal', 'Fatal')], default='error', help_text='How severe would be error from this notification', max_length=32)),

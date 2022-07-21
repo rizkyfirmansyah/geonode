@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import django_jsonfield_backport.models
+
 
 
 class Migration(migrations.Migration):
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='service',
             name='operations',
-            field=django_jsonfield_backport.models.JSONField(blank=True, default=dict, null=True),
+            field=models.JSONField(blank=True, default=dict, null=True),
         ),
         migrations.AddField(
             model_name='service',

@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import django_jsonfield_backport.models
+
 
 
 class Migration(migrations.Migration):
@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='harvester',
             name='harvester_type_specific_configuration',
-            field=django_jsonfield_backport.models.JSONField(blank=True, default=dict, help_text='Configuration specific to each harvester type. Please consult GeoNode documentation on harvesting for more info. This field is mandatory, so at the very least an empty object (i.e. {}) must be supplied.'),
+            field=models.JSONField(blank=True, default=dict, help_text='Configuration specific to each harvester type. Please consult GeoNode documentation on harvesting for more info. This field is mandatory, so at the very least an empty object (i.e. {}) must be supplied.'),
         ),
         migrations.AlterField(
             model_name='harvester',

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import django_jsonfield_backport.models
+
 import taggit.managers
 
 
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='resourcebase',
             name='blob',
-            field=django_jsonfield_backport.models.JSONField(blank=True, default=dict, null=True),
+            field=models.JSONField(blank=True, default=dict, null=True),
         ),
         migrations.AddField(
             model_name='resourcebase',
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='resourcebase',
             name='files',
-            field=django_jsonfield_backport.models.JSONField(blank=True, default=list, null=True),
+            field=models.JSONField(blank=True, default=list, null=True),
         ),
         migrations.AddField(
             model_name='resourcebase',
