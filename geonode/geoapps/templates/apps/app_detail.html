@@ -31,7 +31,7 @@
 	<div class="card-body">
 		<div class="row">
       <h3 class="col-md-8">{{ resource.title }}</h3>
-			<div class="col-md-4"><a href="{% url "catalogue_browse" %}" class="btn btn-primary float-right">{% trans "Explore Catalogue" %}</a></div>
+			<div class="col-md-4"><a href="{% url "catalogue_browse" %}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a></div>
 		</div>
 	</div>
 </div>
@@ -111,7 +111,7 @@
           <a href="{% url "geoapp_view" resource.id %}" class="btn btn-primary btn-md btn-block">{% trans "View" %}
             {{ resource.type }}</a>
         {% else %}
-          <a href="{% url "geoapp_edit" resource.id %}" class="btn btn-edit btn-md btn-block">{% trans "View" %}
+          <a href="{% url "geoapp_edit" resource.id %}" class="btn btn-primary btn-md btn-block">{% trans "View" %}
             {{ resource.type }}</a>
         {% endif %}
       </li>

@@ -207,5 +207,6 @@ def resource_urls(request):
         PROFILE_EDIT_EXCLUDE_FIELD=getattr(settings, "PROFILE_EDIT_EXCLUDE_FIELD", []),
         AVAILABLE_SOCIAL_APPS_COUNT=SocialApp.objects.count(),
         REMOTE_SERVICES_ENABLED=settings.REMOTE_SERVICES_ENABLED,
+        GEONODE_APPS_ENABLED=settings.GEONODE_APPS_ENABLED
     )
     return defaults

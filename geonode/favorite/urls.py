@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -36,6 +35,11 @@ urlpatterns = [
         r'^layer/(?P<id>\d+)$',
         views.favorite, {'subject': 'layer'},
         name='add_favorite_layer'
+    ),
+    url(
+        r'^app/(?P<id>\d+)$',
+        views.favorite, {'subject': 'geoapp'},
+        name='add_favorite_geoapp'
     ),
     url(
         r'^user/(?P<id>\d+)$',

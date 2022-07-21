@@ -291,8 +291,12 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   color: #ffcc35 !important;
 }
 
-.text-geoapp {
+.text-geostory {
   color: #ff7c30 !important;
+}
+
+.text-dashboard {
+  color: #ff30b0 !important;
 }
 
 .text-remote {
@@ -315,8 +319,12 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   border-color: #ffcc35 !important;
 }
 
-.border-geoapp {
+.border-geostory {
   border-color: #ff7c30 !important;
+}
+
+.border-dashboard {
+  border-color: #ff30b0 !important;
 }
 
 .border-remote {
@@ -338,8 +346,12 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   background-color: #ffcc35 !important;
 }
 
-.bg-geoapp {
+.bg-geostory {
   background-color: #ff7c30 !important;
+}
+
+.bg-dashboard {
+  background-color: #ff30b0 !important;
 }
 
 .bg-private {
@@ -361,19 +373,20 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 
 .bg-layer div p,
 .bg-document div p,
+.bg-dashboard div p,
+.bg-geostory div p,
 .bg-remote div p {
   color: white;
 }
 
-.bg-maps div p,
-.bg-geoapp div p {
+.bg-maps div p {
   color: black;
 }
 
 .bg-layer span svg,
 .bg-document span svg,
 .bg-maps span svg,
-.bg-geoapp span svg
+.bg-geostory span svg
 .bg-remote span svg
 {
   fill: white;
