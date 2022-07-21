@@ -1,0 +1,23 @@
+{% load i18n %}
+
+{% verbatim %}
+<div id="featured_filter" class="btn_wrapper" data-value="true" data-filter="featured" title="Featured Datasets" class="{{item.active}}" ng-click="single_choice_listener($event)">
+  <input id="featured_input" type="checkbox" value="true" class="mr-2">
+  <span class="font-weight-bold">Featured</span>
+</div>
+{% endverbatim %}
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(function() {
+
+    $("#featured_filter").on("click", function(e) {
+        $(this).toggleClass('active selected');
+        $('#featured_filter').attr('data-value',$(this).attr('data-value')==='true'?'false':'true' );
+        var checkBoxes = $("input[type='checkbox']");
+        (checkBoxes.prop("checked")==true)?checkBoxes.prop("checked", false):checkBoxes.prop("checked", true);
+    });
+
+  })
+</script>
+{% endblock extra_script %}

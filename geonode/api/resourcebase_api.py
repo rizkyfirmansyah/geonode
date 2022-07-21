@@ -95,6 +95,7 @@ class CommonMetaApi:
         'date': ALL,
         'purpose': ALL,
         'uuid': ALL_WITH_RELATIONS,
+        'featured': ALL_WITH_RELATIONS,
         'abstract': ALL
     }
     ordering = ['date', 'title', 'popular_count']
