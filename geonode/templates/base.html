@@ -204,9 +204,11 @@
       {% include "modal/login.html" %}
     {% endif %}
     {% include "modal/forgot_password.html" %}
-    {% include "modal/remove_layers.html" %}
-    {% include "modal/remove_maps.html" %}
-    {% include "modal/remove_documents.html" %}
+    {% if user.is_authenticated %}
+        {% include "modal/remove_layers.html" %}
+        {% include "modal/remove_maps.html" %}
+        {% include "modal/remove_documents.html" %}
+    {% endif %}
     {% include "modal/custom_confirmation.html" %}
     <!-- End of Modal -->
 

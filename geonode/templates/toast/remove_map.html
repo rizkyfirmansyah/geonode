@@ -1,15 +1,19 @@
 {% load i18n %}
 {% load static %}
 {% load base_tags %}
-{% load layer_tags %}
 {% block extra_script %}
-    <script type="text/javascript">
-      $(document).ready(function(){
+  <script type="text/javascript">
+    $(document).ready(function(){
       $("#remove_map").submit(function(t){
-        return mapid="{{map.id}}",t.preventDefault(),
+        return t.preventDefault(),
           $.ajax({
-            data:{mapid:mapid},type:$(this).attr("method"),method:"POST",url:'{% url "map_remove" %}',headers:{"X-CSRFToken":'{{csrftoken}}'},
+            data:{mapid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "map_remove" %}',headers:{"X-CSRFToken":'{{csrftoken}}'},
             success:function(data){
               $(document.body).append(data);
-            }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},2e3)}),!1})});</script>
+            }
+          }).done(function(){
+              setInterval(function(){location.href="{% url 'catalogue_browse' %}"},2e3)})
+      ,!1})
+    });
+  </script>
 {% endblock extra_script %}
