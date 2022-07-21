@@ -491,7 +491,7 @@ def map_remove(request):
             request,
             mapid,
             'base.delete_resourcebase',
-            _PERMISSION_MSG_VIEW)
+            _PERMISSION_MSG_DELETE)
 
         message = _("Map: {} has been deleted".format(map_obj.title))
         messages.warning(request, message, extra_tags=toast_title)
@@ -501,7 +501,7 @@ def map_remove(request):
         return redirect('catalogue_browse')
 
     except PermissionDenied:
-        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
+        return unauthorized_message(request, _PERMISSION_MSG_DELETE)
 
     except Exception:
         return page_not_found_message(request)
@@ -1126,7 +1126,7 @@ def map_download(request, mapid, template='maps/map_download.html'):
             request,
             mapid,
             'base.download_resourcebase',
-            _PERMISSION_MSG_VIEW)
+            _PERMISSION_MSG_DOWNLOAD)
     except PermissionDenied:
         return unauthorized_message(request, _PERMISSION_MSG_DOWNLOAD)
 
