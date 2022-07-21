@@ -96,7 +96,8 @@ class CommonMetaApi:
         'purpose': ALL,
         'uuid': ALL_WITH_RELATIONS,
         'featured': ALL_WITH_RELATIONS,
-        'abstract': ALL
+        'abstract': ALL,
+        'metadata': ALL_WITH_RELATIONS
     }
     ordering = ['date', 'title', 'popular_count']
     max_limit = None
@@ -653,6 +654,9 @@ class CommonModelApi(ModelResource):
             formatted_obj['owner__full_name'] = obj.owner.get_full_name() or obj.owner.username
             formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
                 obj.get_self_resource().get_user_perms(request.user)))
+
+            if formatted_obj.get('metadata', None):
+                formatted_obj['metadata'] = [model_to_dict(_m) for _m in formatted_obj['metadata']]
 
             formatted_obj['avatar'] = build_absolute_uri(avatar_url(obj.owner, 240))
 
