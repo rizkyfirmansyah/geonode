@@ -37,7 +37,7 @@ from avatar.templatetags.avatar_tags import avatar_url
 
 from geonode import geoserver
 from geonode.api.paginator import CrossSiteXHRPaginator
-from geonode.api.authorization import GeoNodeStyleAuthorization, ApiLockdownAuthorization, \
+from geonode.api.authorization import GeoNodePeopleAuthorization, GeoNodeStyleAuthorization, ApiLockdownAuthorization, \
     GroupAuthorization, GroupProfileAuthorization
 from guardian.shortcuts import get_objects_for_user
 from tastypie.bundle import Bundle
@@ -698,7 +698,7 @@ class ProfileResource(TypeFilteredResource):
             'username': ALL,
         }
         serializer = CountJSONSerializer()
-        authorization = ApiLockdownAuthorization()
+        authorization = GeoNodePeopleAuthorization()
 
 
 class OwnersResource(TypeFilteredResource):
