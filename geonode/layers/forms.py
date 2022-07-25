@@ -64,7 +64,8 @@ class LayerForm(ResourceBaseForm):
             'default_style',
             'styles',
             'upload_session',
-            'remote_service',)
+            'remote_service',
+            'ows_url')
 
         fields = [
           'title',
@@ -105,7 +106,6 @@ class LayerForm(ResourceBaseForm):
           'metadata_only',
           'is_published',
           'is_approved',
-          'thumbnail_url',
           'is_mosaic',
           'has_time',
           'has_elevation',

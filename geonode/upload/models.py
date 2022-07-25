@@ -278,7 +278,7 @@ class UploadSizeLimit(models.Model):
         null=True,
         blank=True,
     )
-    max_size = models.BigIntegerField(
+    max_size = models.PositiveBigIntegerField(
         help_text=_("The maximum file size allowed for upload (bytes)."),
         default=settings.DEFAULT_MAX_UPLOAD_SIZE,
     )

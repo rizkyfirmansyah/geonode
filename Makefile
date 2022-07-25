@@ -19,6 +19,9 @@ up:
 geoserver:
 	docker-compose -f docker-compose-geoserver-server.yml up --build -d
 
+geoserverdown:
+	docker-compose -f docker-compose-geoserver-server.yml down
+
 build:
 	docker-compose build django
 	docker-compose build celery

@@ -128,33 +128,6 @@ class LayerManager(ResourceBaseManager):
         models.Manager.__init__(self)
 
 
-class UploadSession(models.Model):
-
-    """Helper class to keep track of uploads.
-    """
-    resource = models.ForeignKey(ResourceBase, blank=True, null=True, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    processed = models.BooleanField(default=False)
-    error = models.TextField(blank=True, null=True)
-    traceback = models.TextField(blank=True, null=True)
-    context = models.TextField(blank=True, null=True)
-
-    def successful(self):
-        return self.processed and self.errors is None
-
-    def __str__(self):
-        _s = f"[Upload session-id: {self.id}]"
-        try:
-            _s += f" - {self.resource.title}"
-        except Exception:
-            pass
-        return str(_s)
-
-    def __unicode__(self):
-        return str(self.__str__())
-
-
 class Layer(ResourceBase):
 
     """
@@ -212,8 +185,6 @@ class Layer(ResourceBase):
 
     charset = models.CharField(max_length=255, default='UTF-8')
 
-    upload_session = models.ForeignKey(UploadSession, blank=True, null=True, on_delete=models.CASCADE)
-
     use_featureinfo_custom_template = models.BooleanField(
         _('use featureinfo custom template?'),
         help_text=_('specifies wether or not use a custom GetFeatureInfo template.'),
@@ -242,26 +213,11 @@ class Layer(ResourceBase):
         else:
             return "Data"
 
-    def get_upload_session(self):
-        return self.upload_session
-
-    @property
-    def processed(self):
-        self.upload_session = UploadSession.objects.filter(resource=self).first()
-        if self.upload_session:
-            if self.upload_session.processed:
-                self.clear_dirty_state()
-            else:
-                self.set_dirty_state()
-        else:
-            self.clear_dirty_state()
-        return not self.dirty_state
-
     @property
     def display_type(self):
-        if self.storeType == "dataStore":
+        if self.subtype == "vector":
             return "Vector Data"
-        elif self.storeType == "coverageStore":
+        elif self.subtype == "raster":
             return "Raster Data"
         else:
             return "Data"
@@ -281,14 +237,6 @@ class Layer(ResourceBase):
             return self.data_model.objects.using('datastore')
 
         return None
-
-    @property
-    def ows_url(self):
-        if self.remote_service is not None and self.remote_service.method == INDEXED:
-            result = self.remote_service.service_url
-        else:
-            result = f"{(settings.OGC_SERVER['default']['PUBLIC_LOCATION'])}ows"
-        return result
 
     @property
     def ptype(self):
@@ -367,7 +315,12 @@ class Layer(ResourceBase):
 
     @property
     def embed_url(self):
-        return reverse('layer_embed', kwargs={'layername': self.service_typename})
+        try:
+            if self.service_typename:
+                return reverse('layer_embed', kwargs={'layername': self.service_typename})
+        except Exception as e:
+            logger.exception(e)
+            return None
 
     def attribute_config(self):
         # Get custom attribute sort order and labels if any
@@ -395,6 +348,7 @@ class Layer(ResourceBase):
             ('change_layer_data', 'Can edit layer data'),
             ('change_layer_style', 'Can change layer style'),
         )
+        unique_together = ('store', 'workspace', 'name')
 
     # Permission Level Constants
     # LEVEL_NONE inherited
@@ -404,15 +358,21 @@ class Layer(ResourceBase):
 
     @property
     def maps(self):
-        from geonode.maps.models import MapLayer
-        return MapLayer.objects.filter(name=self.alternate)
+        from geonode.maps.models import Map
+        map_ids = list(self.maplayers.values_list('map__id', flat=True))
+        return Map.objects.filter(id__in=map_ids)
 
     @property
     def download_url(self):
         if self.subtype not in ['vector', 'raster']:
             logger.error("Download URL is available only for datasets that have been harvested and copied locally")
             return None
-        return build_absolute_uri(reverse('dataset_download', args=(self.alternate,)))
+        return build_absolute_uri(reverse('layer_download', args=(self.alternate,)))
+
+    @property
+    def maplayers(self):
+        from geonode.maps.models import MapLayer
+        return MapLayer.objects.filter(name=self.alternate)
 
     @classproperty
     def allowed_permissions(cls):
@@ -444,20 +404,6 @@ class Layer(ResourceBase):
         else:
             Layer.objects.filter(id=self.id)\
                          .update(popular_count=models.F('popular_count') + 1)
-
-
-class LayerFile(models.Model):
-
-    """Helper class to store original files.
-    """
-    upload_session = models.ForeignKey(UploadSession, on_delete=models.CASCADE)
-    name = models.CharField(max_length=4096)
-    base = models.BooleanField(default=False)
-    file = models.FileField(
-        upload_to='layers/%Y/%m/%d',
-        storage=FileSystemStorage(
-            base_url=settings.LOCAL_MEDIA_URL),
-        max_length=4096)
 
 
 class AttributeManager(models.Manager):
@@ -764,26 +710,7 @@ def post_delete_layer(instance, sender, **kwargs):
             default_style__id=instance.default_style.id).count() == 0:
         instance.default_style.delete()
 
-    try:
-        if instance.upload_session:
-            for lf in instance.upload_session.layerfile_set.all():
-                lf.file.delete()
-            instance.upload_session.delete()
-    except UploadSession.DoesNotExist:
-        pass
-
-
-def post_delete_layer_file(instance, sender, **kwargs):
-    """Delete associated file.
-
-    :param instance: LayerFile instance
-    :type instance: LayerFile
-    """
-    instance.file.delete(save=False)
-
 
 signals.pre_save.connect(pre_save_layer, sender=Layer)
 signals.post_save.connect(resourcebase_post_save_layers, sender=Layer)
-signals.pre_delete.connect(pre_delete_layer, sender=Layer)
 signals.post_delete.connect(post_delete_layer, sender=Layer)
-signals.post_delete.connect(post_delete_layer_file, sender=LayerFile)

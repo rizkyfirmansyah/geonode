@@ -43,7 +43,7 @@ from geonode import geoserver  # noqa
 from geonode.base import register_event
 from geonode.base.enumerations import LINK_TYPES as _LT
 from geonode.base.models import Link
-from geonode.layers.models import Layer, LayerFile
+from geonode.layers.models import Layer
 from geonode.utils import (
     check_ogc_backend,
     get_headers,
@@ -279,29 +279,25 @@ def download(request, resourceid, sender=Layer):
         layer_files = []
         file_list = []  # Store file info to be returned
         try:
-            upload_session = instance.get_upload_session()
-            if upload_session:
-                layer_files = [
-                    item for idx, item in enumerate(LayerFile.objects.filter(upload_session=upload_session))]
-                if layer_files:
-                    # Copy all Layer related files into a temporary folder
-                    for lyr in layer_files:
-                        if storage_manager.exists(str(lyr.file)):
-                            geonode_layer_path = storage_manager.path(str(lyr.file))
-                            file_list.append({
-                                "zip_folder": "",
-                                "name": lyr.file.name.split('/')[-1],
-                                "data_src_file": geonode_layer_path,
-                            })
-                        else:
-                            return HttpResponse(
-                                loader.render_to_string(
-                                    'error/401.html',
-                                    context={
-                                        'error_title': _("No files found."),
-                                        'error_message': _no_files_found
-                                    },
-                                    request=request), status=404)
+            files = instance.resourcebase_ptr.files
+            # Copy all Layer related files into a temporary folder
+            for file_path in files:
+                if storage_manager.exists(file_path):
+                    layer_files.append(file_path)
+                    filename = os.path.basename(file_path)
+                    file_list.append({
+                        "name": filename,
+                        "data_iter": storage_manager.open(file_path),
+                    })
+                else:
+                    return HttpResponse(
+                        loader.render_to_string(
+                            'error/401.html',
+                            context={
+                                'error_title': _("No files found."),
+                                'error_message': _no_files_found
+                            },
+                            request=request), status=404)
 
             # Check we can access the original files
             if not layer_files:
@@ -419,14 +415,7 @@ def download(request, resourceid, sender=Layer):
 
             # Add files to zip
             for file_info in file_list:
-                zip_file_name = "".join([file_info['zip_folder'], file_info['name']])
-                # The zip can be built from 3 data sources: str, iterable or a file path
-                if 'data_str' in file_info and file_info['data_str'] is not None:
-                    target_zip.writestr(arcname=zip_file_name, data=bytes(file_info['data_str'], 'utf-8'))
-                elif 'data_iter' in file_info and file_info['data_iter'] is not None:
-                    target_zip.write_iter(arcname=zip_file_name, iterable=_iterable(file_info['data_iter']))
-                elif 'data_src_file' in file_info and file_info['data_src_file'] is not None:
-                    target_zip.write(filename=file_info['data_src_file'], arcname=zip_file_name)
+                target_zip.write_iter(arcname=file_info['name'], iterable=_iterable(file_info['data_iter']))
 
             register_event(request, 'download', instance)
 

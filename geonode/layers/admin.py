@@ -26,7 +26,6 @@ from modeltranslation.admin import TabbedTranslationAdmin
 from geonode.base.admin import ResourceBaseAdminForm
 from geonode.base.admin import metadata_batch_edit, set_batch_permissions
 from geonode.layers.models import Layer, Attribute, Style
-from geonode.layers.models import LayerFile, UploadSession
 
 from geonode.base.fields import MultiThesauriField
 from geonode.base.models import ThesaurusKeyword, ThesaurusKeywordLabel
@@ -147,31 +146,6 @@ class StyleAdmin(admin.ModelAdmin):
             return True
 
 
-class LayerFileInline(admin.TabularInline):
-    model = LayerFile
-
-
-class UploadSessionAdmin(admin.ModelAdmin):
-    model = UploadSession
-    list_display = ('resource', 'date', 'user', 'processed')
-    inlines = [LayerFileInline]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        return qs.filter(owner=request.user)
-
-    def has_module_permission(self, request):
-        if request.user.is_staff:
-            return True
-
-    def has_change_permission(self, request, obj=None):
-        if request.user.is_staff:
-            return True
-
-
 admin.site.register(Layer, LayerAdmin)
 admin.site.register(Attribute, AttributeAdmin)
 admin.site.register(Style, StyleAdmin)
-admin.site.register(UploadSession, UploadSessionAdmin)

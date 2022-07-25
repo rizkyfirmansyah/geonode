@@ -87,7 +87,7 @@ class LayerSerializer(ResourceBaseSerializer):
             'is_mosaic', 'has_time', 'has_elevation', 'time_regex', 'elevation_regex',
             'use_featureinfo_custom_template', 'featureinfo_custom_template',
             'default_style', 'styles', 'attribute_set',
-            'ptype', 'ows_url', 'upload_session'
+            'ptype', 'ows_url'
         )
 
     name = serializers.CharField(read_only=True)

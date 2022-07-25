@@ -77,8 +77,7 @@ from geonode.layers.forms import (
     LayerAttributeForm)
 from geonode.layers.models import (
     Layer,
-    Attribute,
-    UploadSession)
+    Attribute)
 from geonode.layers.utils import (
     is_sld_upload_only, is_xml_upload_only,
     validate_input_source)
@@ -176,9 +175,9 @@ def _resolve_layer(request, alternate, permission='base.view_resourcebase', msg=
         else:
             query = {'alternate': alternate}
         test_query = Layer.objects.filter(**query)
-        if test_query.count() > 1 and test_query.exclude(storeType='remoteStore').count() == 1:
+        if test_query.count() > 1 and test_query.exclude(subtype='remote').count() == 1:
             query = {
-                'id': test_query.exclude(storeType='remoteStore').last().id
+                'id': test_query.exclude(subtype='remote').last().id
             }
         elif test_query.count() > 1:
             query = {
@@ -617,7 +616,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
     if 'show_popup' in request.GET and request.GET["show_popup"]:
         show_popup = True
 
-    if layer.storeType == "remoteStore":
+    if layer.subtype == "remote":
         service = layer.remote_service
         source_params = {}
         if service.type in ('REST_MAP', 'REST_IMG'):
@@ -684,7 +683,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "all_times": all_times,
         "show_popup": show_popup,
         "filter": filter,
-        "storeType": layer.storeType,
+        "subtype": layer.subtype,
         "online": (layer.remote_service.probe == 200) if layer.storeType == "remoteStore" else True,
         "processed": layer.processed
     }
@@ -700,7 +699,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         'DEFAULT_MAP_CRS',
         'EPSG:3857')
 
-    if layer.storeType == 'dataStore':
+    if layer.subtype == 'vector':
         links = layer.link_set.download().filter(
             Q(name__in=settings.DOWNLOAD_FORMATS_VECTOR) |
             Q(link_type='original'))
@@ -731,7 +730,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         # get type of layer (raster or vector)
         if layer.subtype == 'raster':
             context_dict["layer_type"] = "raster"
-        elif layer.storeType == 'dataStore':
+        elif layer.subtype == 'vector':
             if layer.has_time:
                 context_dict["layer_type"] = "vector_time"
             else:
@@ -917,7 +916,7 @@ def layer_metadata(
     config["title"] = layer.title
     config["queryable"] = True
 
-    if layer.storeType == "remoteStore":
+    if layer.subtype == "remote":
         service = layer.remote_service
         source_params = {}
         if service.type in ('REST_MAP', 'REST_IMG'):
