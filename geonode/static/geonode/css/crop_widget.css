@@ -2,9 +2,11 @@
   display: inline-block;
 }
 .crop-widget .thumbnail-title {
-  text-align: left;
-  margin-bottom: 5px;
+  font-family: Solanel-Regular, sans-serif;
+  font-size: 0.9em;
   font-weight: 700;
+  line-height: 1.714;
+  color: #000;
 }
 .crop-widget button {
   width: 50%;

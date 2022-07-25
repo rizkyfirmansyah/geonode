@@ -5,6 +5,17 @@
 {% load crispy_forms_tags %}
 {% load guardian_tags %}
 
+{% block head %}
+  <script type="text/javascript">
+    // this is used by thumbnail.js to POST to the thumbnail update view
+    window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
+  </script>
+  <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
+  {% include "ol/layers/layer_ol2_map.html" %}
+
+  {{ block.super }}
+{% endblock %}
+
 {% block title %}{{ map.title }} — {{ block.super }}{% endblock %}
 
 {% block body_class %}{% trans "data" %}{% endblock %}
@@ -77,27 +88,55 @@
               Unfortunately this needs to appear at the top (or the bottom) of the form since tkeywords_form is a complete other django form. 
               There might be a better way to solve this. -->
             <div class="col-md-12 form-controls">
-              {% block category %}
-              <div class="p-3">
-                <label class="control-label required-field">{% trans "Category" %}</label>
-                <fieldset id="category_form">
-                  {% autoescape off %}
-                    <div class="row mt-2">
-                      {% for choice in category_form.category_choice_field.field.choices %}
-                      <div class="col-4 text-center p-3">
-                        <label class="fancy-checkbox">
-                            <input type="radio" name="category_choice_field" value="{{ choice.0 }}"
-                              {% ifequal category_form.initial choice.0 %} checked="checked" {% endifequal %} />
-                            {{ choice.1 }}
-                        </label>
+              <div class="row">
+                {% block category %}
+                <div class="col-md-6">
+                  <label class="control-label required-field">{% trans "Category" %}</label>
+                  <fieldset id="category_form">
+                    {% autoescape off %}
+                      <div class="row mt-2">
+                        {% for choice in category_form.category_choice_field.field.choices %}
+                        <div class="col-4 text-center p-3">
+                          <label class="fancy-checkbox">
+                              <input type="radio" name="category_choice_field" value="{{ choice.0 }}"
+                                {% ifequal category_form.initial choice.0 %} checked="checked" {% endifequal %} />
+                              {{ choice.1 }}
+                          </label>
+                        </div>
+                        {% endfor %}
                       </div>
-                      {% endfor %}
+                    {% endautoescape %}
+                  </fieldset>
+                </div>
+                {% endblock category %}
+                {% block thumbnail %}
+                  <div id="embedded_map" class="col-md-6">
+                    <span><label>{% trans "Thumbnail" %}</label></span>
+                    <div id="preview_map" style="height: 90%;width: 100%;">
                     </div>
-                  {% endautoescape %}
-                </fieldset>
+                    <div id="preview_image" style="height: 90%;width: 100%;">
+                        <img id="preview_image_src" src="{{ map_form.thumbnail_url.value }}" height="100%" width="100%"/>
+                    </div>
+                    <div class="mt-2">
+                      <span class="btn-group btn-group-md btn-block">
+                          <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
+                          <a class="btn btn-primary" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
+                      </span>
+                    </div>
+                  </div>
+                {% endblock thumbnail %}
               </div>
-              {% endblock category %}
-              {{ map_form|crispy }}
+              {% block map_fields %}
+                {% for field in map_form %}
+                  {% if field.name != 'thumbnail_url' %}
+                  <div class="mb-2">
+                    <span><label for="{{ field.id }}">{{ field.label }}</label></span>
+                    {{ field }}
+                  </div>
+                  {% endif %}
+                {% endfor %}
+              {% endblock map_fields %}
+
               {% if THESAURI_FILTERS %}
                   {{ tkeywords_form }}
               {% endif %}

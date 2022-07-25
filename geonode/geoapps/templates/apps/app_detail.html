@@ -40,7 +40,7 @@
   <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
 
     <div id="embedded_map">
-      <img src="{{ resource.curatedthumbnail.thumbnail_url|default:resource.thumbnail_url }}" width='500'
+      <img src="{{ resource.thumbnail_url|default:resource.thumbnail_url }}" width='500'
         class="img-responsive" />
     </div>
 

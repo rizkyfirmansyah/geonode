@@ -63,7 +63,6 @@ class LayerForm(ResourceBaseForm):
             'alternate',
             'default_style',
             'styles',
-            'upload_session',
             'remote_service',
             'ows_url')
 
@@ -111,6 +110,7 @@ class LayerForm(ResourceBaseForm):
           'has_elevation',
           'time_regex',
           'elevation_regex',
+          'thumbnail_url'
         ]
 
     def __init__(self, *args, **kwargs):

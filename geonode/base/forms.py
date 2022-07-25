@@ -410,8 +410,8 @@ class ResourceBaseForm(TranslationModelForm):
                       (True, "Publish and make the Dataset available from search results"))
                 elif field == 'featured':
                     choices=(
-                      (False, "Don't advertise to homepage"),
-                      (True, "Advertise the Dataset to homepage"))
+                      (False, "No need to be categorized as Featured"),
+                      (True, "Consider the dataset as Featured"))
                 elif field == 'metadata_uploaded_preserve':
                     choices=(
                       (False, "Metadata can be edited for anyone with permission"),

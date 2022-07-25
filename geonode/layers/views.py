@@ -253,7 +253,7 @@ def layer_upload_metadata(request):
                 'properties': updated_layer.srid
             }
             out['ogc_backend'] = settings.OGC_SERVER['default']['BACKEND']
-            if hasattr(updated_layer, 'upload_session') and updated_layer.upload_session:
+            if hasattr(updated_layer, 'upload_session'):
                 upload_session = updated_layer.upload_session
                 upload_session.processed = True
                 upload_session.save()
@@ -965,6 +965,7 @@ def layer_metadata(
                 content_type='application/json',
                 status=400)
 
+        thumbnail_url = layer.thumbnail_url
         layer_form = LayerForm(request.POST, instance=layer, prefix="resource")
         if not layer_form.is_valid():
             logger.error(f"Layer Metadata form is not valid: {layer_form.errors}")
@@ -976,6 +977,8 @@ def layer_metadata(
                 json.dumps(out),
                 content_type='application/json',
                 status=400)
+        if not layer.thumbnail_url:
+            layer.thumbnail_url = thumbnail_url
         attribute_form = layer_attribute_set(
             request.POST,
             instance=layer,

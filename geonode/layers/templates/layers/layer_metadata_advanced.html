@@ -5,6 +5,17 @@
 {% load crispy_forms_tags %}
 {% load guardian_tags %}
 
+{% block head %}
+  <script type="text/javascript">
+    // this is used by thumbnail.js to POST to the thumbnail update view
+    window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
+  </script>
+  <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
+  {% include "ol/layers/layer_ol2_map.html" %}
+
+  {{ block.super }}
+{% endblock %}
+
 {% block title %}{{ layer.title }} — {{ block.super }}{% endblock %}
 
 {% block body_class %}{% trans "data" %}{% endblock %}
@@ -98,35 +109,53 @@
                 Unfortunately this needs to appear at the bottom of the form since tkeywords_form is a complete other django form. 
                 There might be a better way to solve this. -->
             <div class="col-md-12 form-controls" id="layer_metadata_advanced">
-                {% block category %}
-                  <div class="p-3">
-                    <label class="control-label required-field">{% trans "Category" %}</label>
-                    <fieldset id="category_form">
-                      {% autoescape off %}
-                        <div class="row mt-2">
-                          {% for choice in category_form.category_choice_field.field.choices %}
-                          <div class="col-4 text-center p-3">
-                            <label class="fancy-checkbox">
-                                <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
-                                  {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
-                                {{ choice.1 }}
-                            </label>
+                <div class="row">
+                  {% block category %}
+                    <div class="col-md-6">
+                      <label class="control-label required-field">{% trans "Category" %}</label>
+                      <fieldset id="category_form">
+                        {% autoescape off %}
+                          <div class="row mt-2">
+                            {% for choice in category_form.category_choice_field.field.choices %}
+                            <div class="col-4 text-center p-3">
+                              <label class="fancy-checkbox">
+                                  <input type="checkbox" name="category_choice_field" value="{{ choice.0 }}"
+                                    {% if choice.0 in category_form.initial %} checked="checked" {% endif %} />
+                                  {{ choice.1 }}
+                              </label>
+                            </div>
+                            {% endfor %}
                           </div>
-                          {% endfor %}
-                        </div>
-                      {% endautoescape %}
-                    </fieldset>
-                  </div>
-                {% endblock category %}
+                        {% endautoescape %}
+                      </fieldset>
+                    </div>
+                  {% endblock category %}
+                  {% block thumbnail %}
+                  <div id="embedded_map" class="col-md-6">
+                      <span><label>{% trans "Thumbnail" %}</label></span>
+                      <div id="preview_map" style="height: 90%;width: 100%;">
+                      </div>
+                      <div id="preview_image" style="height: 90%;width: 100%;">
+                          <img id="preview_image_src" src="{{ layer_form.thumbnail_url.value }}" height="100%" width="100%"/>
+                      </div>
+                      <div>
+                        <span class="btn-group btn-group-md btn-block">
+                            <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
+                            <a class="btn btn-primary" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
+                        </span>
+                      </div>
+                    </div>
+                  {% endblock thumbnail %}
+                </div>
                 {% block layer_fields %}
-                {% for field in layer_form %}
-                  {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' %}
-                  <div class="mb-2">
-                    <span><label for="{{ field.id }}">{{ field.label }}</label></span>
-                    {{ field }}
-                  </div>
-                  {% endif %}
-                {% endfor %}
+                  {% for field in layer_form %}
+                    {% if field.name != 'use_featureinfo_custom_template' and field.name != 'featureinfo_custom_template' and field.name != 'thumbnail_url' %}
+                    <div class="mb-2">
+                      <span><label for="{{ field.id }}">{{ field.label }}</label></span>
+                      {{ field }}
+                    </div>
+                    {% endif %}
+                  {% endfor %}
                 {% endblock layer_fields %}
 
                 {% block thesauri %}

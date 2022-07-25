@@ -20,9 +20,6 @@
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
-<script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
-<link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
-
 {% block body %}
   <div class="row w-100 mb-2">
     <ul id="md_tabs" class="nav nav-tabs w-100" role="tablist">
@@ -83,7 +80,7 @@
                                 <img id="preview_image_src" src="{{ map_form.thumbnail_url.value }}" height="100%" width="100%"/>
                             </div>
                             <div class="mt-2">
-                              <span class="btn-group btn-group-md w-100">
+                              <span class="btn-group btn-group-md btn-block">
                                   <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
                                   <a class="btn btn-primary" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
                               </span>

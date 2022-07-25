@@ -27,14 +27,15 @@
       <div class="card-body">
           <div class="card-img-top mb-2">
               <!-- current uploaded thumb -->
-              {% if resource.curatedthumbnail %}
-              <img src='{{ resource.curatedthumbnail.thumbnail_url }}'></img>
-              <p class="text-muted">Current thumbnail</p>
-              <form method="POST" class="post-form">
-                {% csrf_token %}
-                  <button type="submit" class="save btn btn-primary" name="remove-thumb">
-                    {% trans "Remove (and use auto generated thumbnail)" %}</button>
-              </form>
+              {% if resource.thumbnail_url %}
+                <h5>Current thumbnail</h5>
+                <img src='{{ resource.thumbnail_url }}'></img>
+                <p class="text-muted">Current thumbnail</p>
+                <form method="POST" class="post-form">
+                  {% csrf_token %}
+                    <button type="submit" class="save btn btn-primary" name="remove-thumb">
+                      {% trans "Remove (and use auto generated thumbnail)" %}</button>
+                </form>
               {% else %}
                 <img style="max-height: 20em;" title="Auto generated thumbnail" src='{{ resource.thumbnail_url }}'></img>
                 <p class="text-muted">Auto generated thumbnail</p>

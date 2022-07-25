@@ -822,7 +822,7 @@ class LayerResource(CommonModelApi):
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 
-    def format_objects(self, objects):
+    def format_objects(self, objects, request):
         """
         Formats the object.
         """
@@ -990,7 +990,7 @@ class MapResource(CommonModelApi):
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 
-    def format_objects(self, objects):
+    def format_objects(self, objects, request):
         """
         Formats the objects and provides reference to list of layers in map
         resources.
@@ -1081,7 +1081,7 @@ class GeoAppResource(CommonModelApi):
 
     """GeoApps API"""
 
-    def format_objects(self, objects):
+    def format_objects(self, objects, request):
         """
         Formats the objects and provides reference to list of layers in GeoApp
         resources.
@@ -1158,7 +1158,7 @@ class DocumentResource(CommonModelApi):
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 
-    def format_objects(self, objects):
+    def format_objects(self, objects, request):
         """
         Formats the objects and provides reference to list of layers in map
         resources.
@@ -1173,6 +1173,10 @@ class DocumentResource(CommonModelApi):
             full_name = (obj.owner.get_full_name() or username)
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
+
+            if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
+
             if obj.category:
                 fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]

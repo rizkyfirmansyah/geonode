@@ -3476,7 +3476,6 @@ form#text-search-autocomplete .ac-results {
     width: 100% !important;
 }
 
-#doc_metadata_advanced .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn),
 #edit-metadata .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
     width: unset !important;
 }
@@ -3533,6 +3532,10 @@ span.external-popover {
 #regions_multiselect_container .fstChoiceItem {
     padding: 5px!important;
     margin: 5px!important
+}
+
+#doc_metadata_advanced .bootstrap-select {
+    width: 100% !important;
 }
 
 #metadata_update .select2-container {
