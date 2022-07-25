@@ -6,7 +6,7 @@
   <div class="row row-cols-1 row-cols-md-2" id="PSCatalogue">
     <div ng-repeat="item in results" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
         <div class="card rounded border-{{ item.resource_type }}">
-          <a href="{{ item.detail_url }}" class="img-card"><img ng-src="{{ item.thumbnail_url }}"/></a>
+          <a href="{{ item.detail_url }}" class="img-card"><img ng-src="{{ item.thumbnail_url ? item.thumbnail_url : '/uploaded/' + item.thumbnail_path }}"/></a>
           <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
             <div class="row">
               <div class="mr-2 h-100">

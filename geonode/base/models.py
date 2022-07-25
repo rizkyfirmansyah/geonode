@@ -1882,6 +1882,21 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             _thumbnail_url = remote_thumbnails.first().url
         return _thumbnail_url
 
+    def get_thumbnail_path(self):
+        """Return a thumbnail path.
+
+           It could be a local one if it exists, a remote one (WMS GetImage) for example
+           or a 'Missing Thumbnail' one.
+        """
+        _thumbnail_path = self.thumbnail_path or static(MISSING_THUMB)
+        local_thumbnails = self.link_set.filter(name='Thumbnail')
+        remote_thumbnails = self.link_set.filter(name='Remote Thumbnail')
+        if local_thumbnails.exists():
+            _thumbnail_path = local_thumbnails.first().url
+        elif remote_thumbnails.exists():
+            _thumbnail_path = remote_thumbnails.first().url
+        return _thumbnail_path
+
     def has_thumbnail(self):
         """Determine if the thumbnail object exists and an image exists"""
         return self.link_set.filter(name='Thumbnail').exists()

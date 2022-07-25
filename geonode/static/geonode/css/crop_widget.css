@@ -1,6 +1,12 @@
 .crop-widget {
   display: inline-block;
+  width: 100%;
 }
+
+.crop-widget img {
+  width: 100%;
+}
+
 .crop-widget .thumbnail-title {
   font-family: Solanel-Regular, sans-serif;
   font-size: 0.9em;
