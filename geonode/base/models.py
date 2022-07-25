@@ -1149,6 +1149,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     # fields necessary for the apis
     thumbnail_url = models.TextField(_("Thumbnail url"), null=True, blank=True)
+    thumbnail_path = models.TextField(_("Thumbnail path"), null=True, blank=True)
     detail_url = models.CharField(max_length=255, null=True, blank=True)
     rating = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -1299,11 +1300,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     @property
     def raw_data_quality_statement(self):
         return self._remove_html_tags(self.data_quality_statement)
-
-    def clean(self):
-        if self.title:
-            self.title = self.title.replace(",", "_")
-        return super().clean()
 
     def save(self, notify=False, *args, **kwargs):
         """
@@ -1610,18 +1606,22 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             self.dirty_state = True
             ResourceBase.objects.filter(id=self.id).update(dirty_state=True)
 
-    def set_processing_state(self, state):
-        if state == "PROCESSED":
-            self.clear_dirty_state()
-
     def clear_dirty_state(self):
         if self.dirty_state:
             self.dirty_state = False
             ResourceBase.objects.filter(id=self.id).update(dirty_state=False)
 
+    def set_processing_state(self, state):
+        self.state = state
+        ResourceBase.objects.filter(id=self.id).update(state=state)
+        if state == enumerations.STATE_PROCESSED:
+            self.clear_dirty_state()
+        elif state == enumerations.STATE_INVALID:
+            self.set_dirty_state()
+
     @property
     def processed(self):
-        return not self.dirty_state
+        return self.state == enumerations.STATE_PROCESSED and not self.dirty_state
 
     @property
     def keyword_csv(self):
@@ -1633,6 +1633,13 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 return ''
         except Exception:
             return ''
+
+    def get_absolute_url(self):
+        try:
+            return self.get_real_instance().get_absolute_url()
+        except Exception as e:
+            logger.exception(e)
+            return None
 
     def set_bbox_polygon(self, bbox, srid):
         """
@@ -1802,7 +1809,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     @property
     def embed_url(self):
-        return NotImplemented
+        return self.get_real_instance().embed_url
 
     def get_tiles_url(self):
         """Return URL for Z/Y/X mapping clients or None if it does not exist.
@@ -1869,12 +1876,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         _thumbnail_url = self.thumbnail_url or static(MISSING_THUMB)
         local_thumbnails = self.link_set.filter(name='Thumbnail')
         remote_thumbnails = self.link_set.filter(name='Remote Thumbnail')
-        if local_thumbnails.count() > 0:
-            _thumbnail_url = add_url_params(
-                local_thumbnails[0].url, {'v': str(uuid.uuid4())[:8]})
-        elif remote_thumbnails.count() > 0:
-            _thumbnail_url = add_url_params(
-                remote_thumbnails[0].url, {'v': str(uuid.uuid4())[:8]})
+        if local_thumbnails.exists():
+            _thumbnail_url = local_thumbnails.first().url
+        elif remote_thumbnails.exists():
+            _thumbnail_url = remote_thumbnails.first().url
         return _thumbnail_url
 
     def has_thumbnail(self):
@@ -1884,8 +1889,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     # Note - you should probably broadcast layer#post_save() events to ensure
     # that indexing (or other listeners) are notified
     def save_thumbnail(self, filename, image):
-        upload_path = get_unique_upload_path(self, filename)
-
+        upload_path = get_unique_upload_path(filename)
         try:
             # Check that the image is valid
             if is_monochromatic_image(None, image):
@@ -1898,10 +1902,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             if upload_path and image:
                 actual_name = storage_manager.save(upload_path, ContentFile(image))
                 actual_file_name = os.path.basename(actual_name)
+
                 if filename != actual_file_name:
                     upload_path = upload_path.replace(filename, actual_file_name)
                 url = storage_manager.url(upload_path)
-
                 try:
                     # Optimize the Thumbnail size and resolution
                     _default_thumb_size = getattr(
@@ -1948,12 +1952,17 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                         link_type='image',
                     )
                 )
+                # Cleaning up the old stuff
+                if self.thumbnail_path and MISSING_THUMB not in self.thumbnail_path and storage_manager.exists(self.thumbnail_path):
+                    storage_manager.delete(self.thumbnail_path)
                 # Store the new url and path
                 self.thumbnail_url = url
+                self.thumbnail_path = upload_path
                 obj.url = url
                 obj.save()
                 ResourceBase.objects.filter(id=self.id).update(
-                    thumbnail_url=url
+                    thumbnail_url=url,
+                    thumbnail_path=upload_path
                 )
         except Exception as e:
             logger.error(

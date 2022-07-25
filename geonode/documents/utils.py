@@ -23,7 +23,7 @@
 # Standard Modules
 import os
 import logging
-
+from geonode.storage.manager import storage_manager
 # Django functionality
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -31,7 +31,6 @@ from django.template import loader
 from django.utils.translation import ugettext as _
 from django.utils.text import slugify
 from django_downloadview.response import DownloadResponse
-from geonode.storage.manager import storage_manager
 
 # Geonode functionality
 from geonode.documents.models import Document
@@ -79,8 +78,14 @@ def get_download_response(request, docid, attachment=False):
     if attachment:
         register_event(request, EventType.EVENT_DOWNLOAD, document)
     filename = slugify(os.path.splitext(os.path.basename(document.title))[0])
-    return DownloadResponse(
-        document.doc_file,
-        basename=f'{filename}.{document.extension}',
-        attachment=attachment
+
+    if document.files and storage_manager.exists(document.files[0]):
+        return DownloadResponse(
+            storage_manager.open(document.files[0]).file,
+            basename=f'{filename}.{document.extension}',
+            attachment=attachment
+        )
+    return HttpResponse(
+        "File is not available",
+        status=404
     )

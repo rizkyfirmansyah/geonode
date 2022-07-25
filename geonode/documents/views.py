@@ -17,15 +17,18 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+import os
 import json
 import logging
 import traceback
+import shutil
 import warnings
 from geonode.decorators import registered_users
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
@@ -37,10 +40,11 @@ from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
+from geonode.base.api.exceptions import geonode_exception_handler
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
-from geonode.utils import resolve_object
+from geonode.utils import mkdtemp, resolve_object
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
 from geonode.base.auth import get_or_create_token
@@ -58,6 +62,9 @@ from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_user_visible_groups, get_visible_resources
 from django.contrib import messages
+from geonode.resource.manager import resource_manager
+from geonode.storage.manager import storage_manager
+from geonode.client.hooks import hookset
 
 from dal import autocomplete
 
@@ -200,20 +207,73 @@ def document_link(request, docid):
     response = get_download_response(request, docid)
     return response
 
+def document_embed(request, docid):
+    from django.http.response import HttpResponseRedirect
+    document = get_object_or_404(Document, pk=docid)
+
+    if not request.user.has_perm(
+            'base.download_resourcebase',
+            obj=document.get_self_resource()):
+        return HttpResponse(
+            loader.render_to_string(
+                'error/401.html', context={
+                    'error_message': _("You are not allowed to view this document.")}, request=request), status=401)
+    if document.is_image:
+        if document.doc_url:
+            imageurl = document.doc_url
+        else:
+            imageurl = reverse('document_link', args=(document.id,))
+        context_dict = {
+            "image_url": imageurl,
+            "resource": document.get_self_resource(),
+        }
+        return render(
+            request,
+            "documents/document_embed.html",
+            context_dict
+        )
+    if document.doc_url:
+        return HttpResponseRedirect(document.doc_url)
+    else:
+        context_dict = {
+            "document_link": reverse('document_link', args=(document.id,)),
+            "resource": document.get_self_resource(),
+        }
+        return render(
+            request,
+            "documents/document_embed.html",
+            context_dict
+        )
+
 
 class DocumentUploadView(LoginRequiredMixin, CreateView):
     template_name = 'documents/document_upload.html'
     form_class = DocumentCreateForm
 
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        try:
+            return super().post(request, *args, **kwargs)
+        except Exception as e:
+            exception_response = geonode_exception_handler(e, {})
+            return HttpResponse(
+                json.dumps(exception_response.data),
+                content_type='application/json',
+                status=exception_response.status_code)
+
     def get_context_data(self, **kwargs):
-        context = super(DocumentUploadView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['ALLOWED_DOC_TYPES'] = ALLOWED_DOC_TYPES
         return context
 
     def form_invalid(self, form):
+        messages.error(self.request, f"{form.errors}")
         if self.request.GET.get('no__redirect', False):
+            plaintext_errors = []
+            for field in form.errors.values():
+                plaintext_errors.append(field.data[0].message)
             out = {'success': False}
-            out['message'] = ""
+            out['message'] = '.'.join(plaintext_errors)
             status_code = 400
             return HttpResponse(
                 json.dumps(out),
@@ -224,28 +284,52 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
             form.title = None
             form.doc_file = None
             form.doc_url = None
-            return self.render_to_response(self.get_context_data(form=form))
+            return self.render_to_response(self.get_context_data(request=self.request, form=form))
 
     def form_valid(self, form):
         """
         If the form is valid, save the associated model.
         """
-        self.object = form.save(commit=False)
-        self.object.owner = self.request.user
+        doc_form = form.cleaned_data
 
-        if settings.ADMIN_MODERATE_UPLOADS:
-            self.object.is_approved = False
-        if settings.RESOURCE_PUBLISHING:
-            self.object.is_published = False
-        self.object.save()
-        form.save_many2many()
-        self.object.set_permissions(form.cleaned_data['permissions'])
+        file = doc_form.pop('doc_file', None)
+        if file:
+            tempdir = mkdtemp()
+            dirname = os.path.basename(tempdir)
+            filepath = storage_manager.save(f"{dirname}/{file.name}", file)
+            storage_path = storage_manager.path(filepath)
+            self.object = resource_manager.create(
+                None,
+                resource_type=Document,
+                defaults=dict(
+                    owner=self.request.user,
+                    doc_url=doc_form.pop('doc_url', None),
+                    title=doc_form.pop('title', file.name),
+                    files=[storage_path])
+            )
+            if tempdir != os.path.dirname(storage_path):
+                shutil.rmtree(tempdir, ignore_errors=True)
+        else:
+            self.object = resource_manager.create(
+                None,
+                resource_type=Document,
+                defaults=dict(
+                    owner=self.request.user,
+                    doc_url=doc_form.pop('doc_url', None),
+                    title=doc_form.pop('title', None))
+            )
+
+        self.object.handle_moderated_uploads()
+        resource_manager.set_permissions(
+            None, instance=self.object, permissions=form.cleaned_data["permissions"], created=True
+        )
 
         abstract = None
         date = None
         regions = []
         keywords = []
         bbox = None
+        url = hookset.document_detail_url(self.object)
 
         out = {'success': False}
 
@@ -259,35 +343,27 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
                     bbox = exif_metadata.get('bbox', None)
                     abstract = exif_metadata.get('abstract', None)
             except Exception:
-                logger.error("Exif extraction failed.")
+                logger.debug("Exif extraction failed.")
 
-        if abstract:
-            self.object.abstract = abstract
+        resource_manager.update(
+            self.object.uuid,
+            instance=self.object,
+            keywords=keywords,
+            regions=regions,
+            vals=dict(
+                abstract=abstract,
+                date=date,
+                date_type="Creation",
+                bbox_polygon=BBOXHelper.from_xy(bbox).as_polygon() if bbox else None
+            ),
+            notify=True)
+        resource_manager.set_thumbnail(self.object.uuid, instance=self.object, overwrite=False)
 
-        if date:
-            self.object.date = date
-            self.object.date_type = "Creation"
-
-        if len(regions) > 0:
-            self.object.regions.add(*regions)
-
-        if len(keywords) > 0:
-            self.object.keywords.add(*keywords)
-
-        if bbox:
-            bbox = BBOXHelper.from_xy(bbox)
-            self.object.bbox_polygon = bbox.as_polygon()
-
-        self.object.save(notify=True)
         register_event(self.request, EventType.EVENT_UPLOAD, self.object)
 
         if self.request.GET.get('no__redirect', False):
             out['success'] = True
-            out['url'] = reverse(
-                'document_metadata',
-                args=(
-                    self.object.id,
-                ))
+            out['url'] = url
             if out['success']:
                 status_code = 200
             else:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #########################################################################
 #
 # Copyright (C) 2016 OSGeo
@@ -18,34 +17,77 @@
 #
 #########################################################################
 
-from geonode.base.forms import ResourceBaseForm
 import os
 import re
 import json
 import logging
 
-from django import forms
-from django.utils.translation import ugettext as _
-from django.contrib.contenttypes.models import ContentType
-from django.conf import settings
-from django.forms import HiddenInput
-from geonode.base.models import ResourceBase
-from geonode.security.utils import serialize_resource_permissions
 from modeltranslation.forms import TranslationModelForm
 
-from geonode.documents.models import (
-    Document,
-    DocumentResourceLink,
-    get_related_resources,
-)
+from django import forms
+from django.conf import settings
+from django.forms import HiddenInput
+from django.utils.translation import ugettext as _
+from django.contrib.contenttypes.models import ContentType
+from django.template.defaultfilters import filesizeformat
+from django.contrib.auth.models import Group
+
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from django.contrib.auth.models import Group
+from geonode.base.models import ResourceBase
+
+from geonode.base.forms import ResourceBaseForm, get_tree_data
+from geonode.resource.utils import get_related_resources
+from geonode.documents.models import (
+    Document,
+    DocumentResourceLink)
+from geonode.upload.models import UploadSizeLimit
+from geonode.upload.api.exceptions import FileUploadLimitException
 
 logger = logging.getLogger(__name__)
 
 
-class DocumentFormMixin(object):
+class SizeRestrictedFileField(forms.FileField):
+    """
+    Same as FileField, but checks file max_size based on the value stored on `field_slug`.
+        * field_slug - a slug indicating the database object from where the max_size will be retrieved.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.field_slug = kwargs.pop("field_slug")
+        super(SizeRestrictedFileField, self).__init__(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        data = super(SizeRestrictedFileField, self).clean(*args, **kwargs)
+        if data is None:
+            return data
+        file_size = self._get_file_size(data)
+        if file_size is not None:
+            # Only query the DB for a max_size when there is a file_size
+            max_size = self._get_max_size()
+            # Validate
+            if file_size is not None and file_size > max_size:
+                raise FileUploadLimitException(_(
+                    f'File size size exceeds {filesizeformat(max_size)}. Please try again with a smaller file.'
+                ))
+        return data
+
+    def _get_file_size(self, data):
+        try:
+            file_size = data.size
+        except AttributeError:
+            file_size = None
+        return file_size
+
+    def _get_max_size(self):
+        try:
+            max_size_db_obj = UploadSizeLimit.objects.get(slug=self.field_slug)
+        except UploadSizeLimit.DoesNotExist:
+            max_size_db_obj = UploadSizeLimit.objects.create_default_limit_with_slug(slug=self.field_slug)
+        return max_size_db_obj.max_size
+
+
+class DocumentFormMixin:
 
     def generate_link_choices(self, resources=None):
 
@@ -95,9 +137,12 @@ class GroupsChoiceField(forms.ModelChoiceField):
 
 
 class DocumentForm(ResourceBaseForm, DocumentFormMixin):
+
+    title = forms.CharField(required=False)
+
     links = forms.MultipleChoiceField(
         label=_("Link to"),
-        help_text=_("Set a link to datasets if any"),
+        help_text=_("Set a link to other resources if any"),
         required=False)
 
     group = GroupsChoiceField(
@@ -220,49 +265,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
 class DocumentDescriptionForm(forms.Form):
     title = forms.CharField(max_length=300)
     abstract = forms.CharField(max_length=2000, widget=forms.Textarea, required=False)
-    purpose = forms.CharField(max_length=500, required=False)
     keywords = forms.CharField(max_length=500, required=False)
-
-
-class DocumentReplaceForm(forms.ModelForm):
-
-    """
-    The form used to replace a document.
-    """
-
-    class Meta:
-        model = Document
-        fields = ['doc_file', 'doc_url']
-
-    def clean(self):
-        """
-        Ensures the doc_file or the doc_url field is populated.
-        """
-        cleaned_data = super(DocumentReplaceForm, self).clean()
-        doc_file = self.cleaned_data.get('doc_file')
-        doc_url = self.cleaned_data.get('doc_url')
-
-        if not doc_file and not doc_url:
-            raise forms.ValidationError(_("Document must be a file or url."))
-
-        if doc_file and doc_url:
-            raise forms.ValidationError(
-                _("A document cannot have both a file and a url."))
-
-        return cleaned_data
-
-    def clean_doc_file(self):
-        """
-        Ensures the doc_file is valid.
-        """
-        doc_file = self.cleaned_data.get('doc_file')
-
-        if doc_file and not os.path.splitext(
-                doc_file.name)[1].lower()[
-                1:] in settings.ALLOWED_DOCUMENT_TYPES:
-            raise forms.ValidationError(_("This file type is not allowed"))
-
-        return doc_file
 
 
 class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
@@ -275,11 +278,18 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
             attrs={
                 'name': 'permissions',
                 'id': 'permissions'}),
-        required=True)
+        required=False)
 
     links = forms.MultipleChoiceField(
         label=_("Link to"),
+        help_text=_("Set a link to datasets if any"),
         required=False)
+
+    doc_file = SizeRestrictedFileField(
+        label=_("File"),
+        required=False,
+        field_slug="document_upload_size"
+    )
 
     class Meta:
         model = Document
@@ -289,7 +299,7 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
         }
 
     def __init__(self, *args, **kwargs):
-        super(DocumentCreateForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['links'].choices = self.generate_link_choices()
         self.fields['links'].widget.attrs.update(
             {
@@ -302,10 +312,13 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
         """
         Ensures the JSON field is JSON.
         """
-        permissions = json.loads(self.cleaned_data['permissions'])
-        resource_permissions = serialize_resource_permissions(permissions)
+        permissions = self.cleaned_data['permissions']
+
+        if not self.fields['permissions'].required and (permissions is None or permissions == ''):
+            return None
+
         try:
-            return resource_permissions
+            return json.loads(permissions)
         except ValueError:
             raise forms.ValidationError(_("Permissions must be valid JSON."))
 
@@ -313,16 +326,16 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
         """
         Ensures the doc_file or the doc_url field is populated.
         """
-        cleaned_data = super(DocumentCreateForm, self).clean()
+        cleaned_data = super().clean()
         doc_file = self.cleaned_data.get('doc_file')
         doc_url = self.cleaned_data.get('doc_url')
 
-        if not doc_file and not doc_url:
-            logger.debug("Document must be a file or url.")
+        if not doc_file and not doc_url and "doc_file" not in self.errors and "doc_url" not in self.errors:
+            logger.error("Document must be a file or url.")
             raise forms.ValidationError(_("Document must be a file or url."))
 
         if doc_file and doc_url:
-            logger.debug("A document cannot have both a file and a url.")
+            logger.error("A document cannot have both a file and a url.")
             raise forms.ValidationError(
                 _("A document cannot have both a file and a url."))
 
@@ -338,6 +351,46 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
                 doc_file.name)[1].lower()[
                 1:] in settings.ALLOWED_DOCUMENT_TYPES:
             logger.debug("This file type is not allowed")
+            raise forms.ValidationError(_("This file type is not allowed"))
+
+        return doc_file
+
+
+class DocumentReplaceForm(forms.ModelForm):
+    """
+    The form used to replace a document.
+    """
+    doc_file = SizeRestrictedFileField(
+        label=_("File"),
+        required=True,
+        field_slug="document_upload_size"
+    )
+
+    class Meta:
+        model = Document
+        fields = ['doc_file']
+
+    def clean(self):
+        """
+        Ensures the doc_file field is populated.
+        """
+        cleaned_data = super().clean()
+        doc_file = self.cleaned_data.get('doc_file')
+
+        if not doc_file:
+            raise forms.ValidationError(_("Document must be a file."))
+
+        return cleaned_data
+
+    def clean_doc_file(self):
+        """
+        Ensures the doc_file is valid.
+        """
+        doc_file = self.cleaned_data.get('doc_file')
+
+        if doc_file and not os.path.splitext(
+                doc_file.name)[1].lower()[
+                1:] in settings.ALLOWED_DOCUMENT_TYPES:
             raise forms.ValidationError(_("This file type is not allowed"))
 
         return doc_file

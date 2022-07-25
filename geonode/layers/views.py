@@ -1197,8 +1197,13 @@ def layer_metadata(
             _approval_status_changed = True
             vals['is_approved'] = layer_form.cleaned_data.get('is_approved', layer.is_approved)
             vals['is_published'] = layer_form.cleaned_data.get('is_published', layer.is_published)
-        layer.save(notify=True)
-        layer.set_permissions(approval_status_changed=_approval_status_changed, group_status_changed=_group_status_changed)
+        resource_manager.update(
+            layer.uuid,
+            instance=layer,
+            notify=True,
+            vals=vals,
+            extra_metadata=json.loads(layer_form.cleaned_data['extra_metadata'])
+        )
 
         toast_title = _("Update Metadata")
         message = _("Metadata {} has been updated".format(layer.title))

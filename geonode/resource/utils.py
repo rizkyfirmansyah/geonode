@@ -355,10 +355,11 @@ def document_post_save(instance, *args, **kwargs):
             subtype = doc_type_map.get(
                 instance.extension.lower(), 'other')
         instance.subtype = subtype
+        instance.doc_type = subtype
+
     elif instance.doc_url:
         if '.' in urlparse(instance.doc_url).path:
             instance.extension = urlparse(instance.doc_url).path.rsplit('.')[-1]
-
     name = None
     ext = instance.extension
     mime_type_map = DOCUMENT_MIMETYPE_MAP
@@ -377,7 +378,9 @@ def document_post_save(instance, *args, **kwargs):
     Document.objects.filter(id=instance.id).update(
         extension=instance.extension,
         subtype=instance.subtype,
+        detail_url=instance.get_absolute_url(),
         doc_url=instance.doc_url,
+        doc_file=instance.files,
         csw_type=instance.csw_type)
 
     if name and url and ext:
@@ -415,20 +418,14 @@ def layer_post_save(instance, *args, **kwargs):
         elif extension in cov_exts:
             instance.subtype = 'raster'
     if instance.subtype == 'remote':
-        ResourceBase.objects.filter(id=instance.id).update(
-            thumbnail_url=instance.get_thumbnail_url(),
-            detail_url=f"/services/{instance.remote_service_id}",
-            subtype='remote',
-            resource_type='remote',
-            csw_insert_date=now())
-    else:
-        ResourceBase.objects.filter(id=instance.id).update(
-            thumbnail_url=instance.get_thumbnail_url(),
-            detail_url=instance.get_absolute_url(),
+        Layer.objects.filter(id=instance.id).update(
             subtype=instance.subtype,
-            csw_insert_date=now())
-
-    Layer.objects.filter(id=instance.id).update(subtype=instance.subtype)
+            detail_url=f"/services/{instance.remote_service_id}",
+            resource_type='remote')
+    else:
+        Layer.objects.filter(id=instance.id).update(
+            subtype=instance.subtype,
+            detail_url=instance.get_absolute_url())
 
 
 def metadata_post_save(instance, *args, **kwargs):
@@ -547,17 +544,14 @@ def resourcebase_post_save(instance, *args, **kwargs):
     if instance:
         if hasattr(instance, 'abstract') and not getattr(instance, 'abstract', None):
             instance.abstract = _('No abstract provided')
-        if hasattr(instance, 'title') and not getattr(instance, 'title', None) or getattr(instance, 'title', '') == '':
-            if isinstance(instance, Document) and instance.files:
-                instance.title = os.path.basename(instance.files[0])
+
+        if isinstance(instance, Document):
+            document_post_save(instance, *args, **kwargs)
+        if isinstance(instance, Layer):
             if hasattr(instance, 'name') and getattr(instance, 'name', None):
                 instance.title = instance.name
-        if hasattr(instance, 'alternate') and not getattr(instance, 'alternate', None) or getattr(instance, 'alternate', '') == '':
-            instance.alternate = get_alternate_name(instance)
-
-        # if isinstance(instance, Document):
-        #     document_post_save(instance, *args, **kwargs)
-        if isinstance(instance, Layer):
+            if hasattr(instance, 'alternate') and not getattr(instance, 'alternate', None) or getattr(instance, 'alternate', '') == '':
+                instance.alternate = get_alternate_name(instance)
             layer_post_save(instance, *args, **kwargs)
 
         metadata_post_save(instance, *args, **kwargs)

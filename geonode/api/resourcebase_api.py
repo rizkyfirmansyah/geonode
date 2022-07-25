@@ -165,6 +165,7 @@ class CommonModelApi(ModelResource):
         'resource_type',
         'site_url',
         'thumbnail_url',
+        'thumbnail_path',
         'detail_url',
         'rating',
         'group__name',

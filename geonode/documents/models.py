@@ -26,6 +26,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.db.models import signals
+from django.utils.functional import classproperty
 from django.contrib.staticfiles import finders
 from django.contrib.gis.geos import MultiPolygon
 from django.utils.translation import ugettext_lazy as _
@@ -37,9 +38,15 @@ from uuid_upload_path import upload_to
 from geonode.layers.models import Layer
 from geonode.base.models import ResourceBase, resourcebase_post_save, Link
 from geonode.documents.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
+from geonode.security.permissions import (
+    VIEW_PERMISSIONS,
+    OWNER_PERMISSIONS,
+    DOWNLOAD_PERMISSIONS)
 from geonode.maps.signals import map_changed_signal
+from geonode.groups.conf import settings as groups_settings
 from geonode.maps.models import Map
 from geonode.security.utils import ResourceManager
+from geonode.utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +81,25 @@ class Document(ResourceBase):
     def get_absolute_url(self):
         return reverse('document_detail', args=(self.id,))
 
+    @classproperty
+    def allowed_permissions(cls):
+        return {
+            "anonymous": VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS,
+            "default": OWNER_PERMISSIONS + DOWNLOAD_PERMISSIONS,
+            groups_settings.REGISTERED_MEMBERS_GROUP_NAME: OWNER_PERMISSIONS + DOWNLOAD_PERMISSIONS
+        }
+
+    @classproperty
+    def compact_permission_labels(cls):
+        return {
+            "none": _("None"),
+            "view": _("View Metadata"),
+            "download": _("View and Download"),
+            "edit": _("Edit"),
+            "manage": _("Manage"),
+            "owner": _("Owner")
+        }
+
     @property
     def name(self):
         if not self.title:
@@ -104,15 +130,15 @@ class Document(ResourceBase):
     def href(self):
         if self.doc_url:
             return self.doc_url
-        elif self.doc_file:
+        elif self.files:
             return urljoin(
                 settings.SITEURL,
-                reverse('document_download', args=(self.id,))
+                reverse('document_link', args=(self.id,))
             )
 
     @property
     def is_file(self):
-        return self.doc_file and self.extension
+        return self.files and self.extension
 
     @property
     def mime_type(self):
@@ -141,7 +167,11 @@ class Document(ResourceBase):
 
     @property
     def embed_url(self):
-        return reverse('document_link', args=(self.id,))
+        return reverse('document_embed', args=(self.id,))
+
+    @property
+    def download_url(self):
+        return build_absolute_uri(reverse('document_download', args=(self.id,)))
 
     class Meta(ResourceBase.Meta):
         pass
@@ -187,93 +217,3 @@ def get_related_resources(document):
             return []
     else:
         return []
-
-
-def pre_save_document(instance, sender, **kwargs):
-    if instance.doc_file:
-        base_name, extension = os.path.splitext(instance.doc_file.name)
-        instance.extension = extension[1:].lower()
-        doc_type_map = DOCUMENT_TYPE_MAP
-        doc_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
-        if instance.extension == 'py':
-            doc_type = 'python'
-        elif instance.extension == 'tif' or instance.extension == 'tiff':
-            doc_type = 'raster'
-        elif doc_type_map is None:
-            doc_type = 'other'
-        else:
-            doc_type = doc_type_map.get(
-                instance.extension.lower(), 'other')
-        instance.doc_type = doc_type
-
-    elif instance.doc_url:
-        if '.' in urlparse(instance.doc_url).path:
-            instance.extension = urlparse(instance.doc_url).path.rsplit('.')[-1]
-
-    if not instance.uuid:
-        instance.uuid = str(uuid.uuid4())
-    instance.csw_type = 'document'
-
-    if instance.abstract == '' or instance.abstract is None:
-        instance.abstract = 'No abstract provided'
-
-    if instance.title == '' or instance.title is None:
-        instance.title = instance.doc_file.name
-
-    resources = get_related_resources(instance)
-
-    # if there are (new) linked resources update the bbox computed by their bboxes
-    if resources:
-        bbox = MultiPolygon([r.bbox_polygon for r in resources])
-        instance.set_bbox_polygon(bbox.extent, instance.srid)
-    elif not instance.bbox_polygon:
-        instance.set_bbox_polygon((-180, -90, 180, 90), '4326')
-
-
-def post_save_document(instance, *args, **kwargs):
-    from .tasks import create_document_thumbnail
-
-    name = None
-    ext = instance.extension.lower()
-    mime_type_map = DOCUMENT_MIMETYPE_MAP
-    mime_type_map.update(getattr(settings, 'DOCUMENT_MIMETYPE_MAP', {}))
-    mime = mime_type_map.get(ext, 'text/plain')
-    url = None
-
-    if instance.id and instance.doc_file:
-        name = "Hosted Document"
-        site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
-        url = f"{site_url}{reverse('document_download', args=(instance.id,))}"
-        create_document_thumbnail.apply_async((instance.id,))
-    elif instance.doc_url:
-        name = "External Document"
-        url = instance.doc_url
-
-    if name and url and ext:
-        Link.objects.get_or_create(
-            resource=instance.resourcebase_ptr,
-            url=url,
-            defaults=dict(
-                extension=ext,
-                name=name,
-                mime=mime,
-                url=url,
-                link_type='data',))
-
-
-def update_documents_extent(sender, **kwargs):
-    documents = get_related_documents(sender)
-    if documents:
-        for document in documents:
-            document.save()
-
-
-def pre_delete_document(instance, sender, **kwargs):
-    ResourceManager.remove_permissions(instance.uuid, instance=instance.get_self_resource())
-
-
-signals.pre_save.connect(pre_save_document, sender=Document)
-signals.post_save.connect(post_save_document, sender=Document)
-signals.post_save.connect(resourcebase_post_save, sender=Document)
-signals.pre_delete.connect(pre_delete_document, sender=Document)
-map_changed_signal.connect(update_documents_extent)
