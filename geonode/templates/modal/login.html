@@ -14,7 +14,7 @@
                       </div>
                   </div>
                 {% endif %}
-                <div class="col d-flex pr-0">
+                <div class="col-md d-flex">
                     <div class="modal-body align-items-center p-0">
                         <ul class="nav" id="loginTab" role="tablist">
                           <li class="nav-item col-5 text-left pl-0" role="presentation">
@@ -29,31 +29,27 @@
                         </ul>
                         <div class="tab-content" id="loginTabContent">
                           <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
-                            <div class="text w-100">
-                              <form class="form-signin" role="form" method="POST" id="form-signin" action='{% url "account_login" %}?next={{request.path}}'>
-                                  {% include "toast/_toast_form.html" %}
-                                  {% crispy login_form %}
-                                  <div class="row w-100 mt-4">
-                                    <p class="col-7 pr-0">
-                                        Not a member?&nbsp&nbsp<a data-toggle="tab" href="#signup" class="light" id="aSignUp" role="tab" aria-controls="signup">Sign Up</a>
-                                    </p>
-                                    <p class="col-5 p-0">
-                                      <a data-toggle="modal" data-target="#forgotPassModal" style="cursor: pointer;" class="light">Forgotten Password?</a>
-                                    </p>
-                                  </div>
-                              </form>
-                            </div>
+                            <form class="form-signin" role="form" method="POST" id="form-signin" action='{% url "account_login" %}?next={{request.path}}'>
+                                {% include "toast/_toast_form.html" %}
+                                {% crispy login_form %}
+                                <div class="row w-100 mt-4">
+                                  <p class="col-7 pr-0">
+                                      Not a member?&nbsp&nbsp<a data-toggle="tab" href="#signup" class="light" id="aSignUp" role="tab" aria-controls="signup">Sign Up</a>
+                                  </p>
+                                  <p class="col-5 p-0">
+                                    <a data-toggle="modal" data-target="#forgotPassModal" style="cursor: pointer;" class="light">Forgotten Password?</a>
+                                  </p>
+                                </div>
+                            </form>
                           </div>
                           <div class="tab-pane fade" id="signup" role="tabpanel" aria-labelledby="signup-tab">
-                              <div class="text w-100">
-                                  <form class="signup_form" method="post" id="signup_form" action='{% url "account_signup" %}'>
-                                      {% include "toast/_toast_form.html" %}
-                                      <fieldset>
-                                        {% crispy signup_form %}
-                                      </fieldset>
-                                  </form>
-                                  <span class="d-flex align-items-center">I'm already a member! <a data-toggle="tab" href="#signin" class="nav-link light" id="aSignIn" role="tab" aria-controls="signin">Sign In</a></span>
-                              </div>
+                            <form class="signup_form" method="post" id="signup_form" action='{% url "account_signup" %}'>
+                                {% include "toast/_toast_form.html" %}
+                                <fieldset>
+                                  {% crispy signup_form %}
+                                </fieldset>
+                            </form>
+                            <span class="col-md d-flex align-items-center">I'm already a member! <a data-toggle="tab" href="#signin" class="nav-link light" id="aSignIn" role="tab" aria-controls="signin">Sign In</a></span>
                           </div>
                         </div>
                     </div>

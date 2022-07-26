@@ -374,7 +374,7 @@ border-color: var(--upload) !important
 
   #login_mobile {
     position: absolute;
-    top: 1em;
+    top: 0.5em;
     right: 5em;
   }
   #login_mobile svg {
@@ -1947,12 +1947,6 @@ input::-moz-focus-inner {
   max-height: 340px;
   overflow-y: auto;
   display: contents;
-}
-
-.nav {
-  padding-left: 0;
-  margin-bottom: 0;
-  list-style: none
 }
 
 .nav .nav-divider {
@@ -3902,11 +3896,6 @@ article.tab-pane {
 }
 
 @media only screen and (max-width:600px) {
-  .row {
-      width: auto;
-      padding-left: 25px;
-      padding-right: 25px
-  }
   .row .row {
       margin-left: -10px;
       margin-right: -10px
