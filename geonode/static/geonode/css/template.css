@@ -853,6 +853,19 @@ button.full-width {
 }
 
 @media (min-width: 1200px) {
+
+  .dl-horizontal dt {
+    float: left;
+    width: 190px;
+    clear: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dl-horizontal dd {
+  margin-left: 190px;
+  }
+
   .s-header {
     position: fixed;
     top: 0;
@@ -3405,7 +3418,6 @@ dl a img {
 form#text-search-autocomplete .ac-results {
     position: absolute;
     display: block;
-    width: 90%!important
 }
 
 .autocomplete-input .ac-results {
@@ -5283,18 +5295,6 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-}
-
-.dl-horizontal dt {
-    float: left;
-    width: 190px;
-    clear: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.dl-horizontal dd {
-  margin-left: 190px;
 }
 
 .dl-horizontal dd:before,
