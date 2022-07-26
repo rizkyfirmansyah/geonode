@@ -72,9 +72,9 @@
             <div class="card-footer">
               <div class="row">
                 {% endverbatim %}
-                {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated and not request.user_agent.is_mobile %}
                   {% verbatim %}
-                    <div class="col-3 text-center" ng-controller="CartList">
+                    <div class="col-md-3 text-center" ng-controller="CartList">
                       <button
                         class="btn btn-default btn-xs p-0"
                         ng-if="cart"

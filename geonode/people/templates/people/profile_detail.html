@@ -26,8 +26,8 @@
     <div class="card-header text-center"><h3>{{ profile.first_name|default:profile.name_long }}</h3></div>
     <div class="card-body">
       <div class="row">
-        <div class="col-3">{% autoescape off %}{% avatar profile 240 %}{% endautoescape %}</div>
-        <div class="col">
+        <div class="col-md-3">{% autoescape off %}{% avatar profile 240 %}{% endautoescape %}</div>
+        <div class="col-md-9">
           <table class="table table-user-profile">
             <tbody>
               {% if SHOW_PROFILE_EMAIL %}
