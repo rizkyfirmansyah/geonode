@@ -257,6 +257,7 @@ MEDIAFILES_LOCATION = 'uploaded'
 THUMBNAIL_LOCATION = 'thumbs'
 FEEDBACK_LOCATION = 'feedbacks'
 DOCUMENT_LOCATION = 'documents'
+SPATIAL_LOCATION = 'layers'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

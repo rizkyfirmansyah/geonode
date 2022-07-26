@@ -40,7 +40,7 @@ from geoserver.catalog import FailedRequestError, ConflictingDataError
 
 from geonode.upload.api.exceptions import FileUploadLimitException, GeneralUploadException, UploadParallelismLimitException
 from geonode.upload.models import Upload, UploadSizeLimit, UploadParallelismLimit
-from geonode.utils import json_response as do_json_response, unzip_file, mkdtemp
+from geonode.utils import json_response as do_json_response, unzip_file, layer_path
 from geonode.geoserver.helpers import (
     gs_catalog,
     gs_uploader,
@@ -517,7 +517,7 @@ def _get_time_dimensions(layer, upload_session, values=None):
 
 def _fixup_base_file(absolute_base_file, tempdir=None):
     if not tempdir or not os.path.exists(tempdir):
-        tempdir = mkdtemp()
+        tempdir = layer_path()
     if not os.path.isfile(absolute_base_file):
         tmp_files = [f for f in os.listdir(tempdir) if os.path.isfile(os.path.join(tempdir, f))]
         for f in tmp_files:

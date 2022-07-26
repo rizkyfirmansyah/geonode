@@ -44,7 +44,7 @@ from geonode.layers.api.exceptions import InvalidDatasetException
 from geonode.storage.manager import storage_manager
 # Geonode functionality
 from geonode.base.models import Region
-from geonode.utils import check_ogc_backend
+from geonode.utils import check_ogc_backend, layer_path
 from geonode import GeoNodeException, geoserver
 from geonode.geoserver.helpers import gs_catalog
 from geonode.layers.models import shp_exts, csv_exts, vec_exts, cov_exts, Layer
@@ -119,10 +119,10 @@ def get_files(filename):
         raise GeoNodeException(msg)
 
     # Let's unzip the filname in case it is a ZIP file
-    from geonode.utils import unzip_file, mkdtemp
+    from geonode.utils import unzip_file
     tempdir = None
     if is_zipfile(filename):
-        tempdir = mkdtemp()
+        tempdir = layer_path()
         _filename = unzip_file(filename,
                                '.shp', tempdir=tempdir)
         if not _filename:

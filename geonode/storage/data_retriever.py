@@ -80,7 +80,7 @@ class DataItemRetriever(object):
         return self.file_path
 
     def transfer_remote_file(self, temporary_folder=None):
-        from geonode.utils import mkdtemp
+        from geonode.utils import layer_path
 
         def file_chunks_iterable(file, chunk_size=None):
             """
@@ -100,7 +100,7 @@ class DataItemRetriever(object):
                 yield data
 
         try:
-            self.temporary_folder = temporary_folder or mkdtemp()
+            self.temporary_folder = temporary_folder or layer_path()
             self.file_path = os.path.join(self.temporary_folder, self.name)
 
             if self._is_django_form_file:
@@ -152,9 +152,9 @@ class DataRetriever(object):
             self.transfer_remote_files()
 
     def transfer_remote_files(self):
-        from geonode.utils import mkdtemp
+        from geonode.utils import layer_path
 
-        self.temporary_folder = mkdtemp()
+        self.temporary_folder = layer_path()
         for name, data_item_retriever in self.data_items.items():
             file_path = data_item_retriever.transfer_remote_file(self.temporary_folder)
             self.file_paths[name] = Path(file_path)

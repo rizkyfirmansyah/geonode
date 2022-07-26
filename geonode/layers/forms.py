@@ -26,10 +26,10 @@ from geonode.base.models import ResourceBase
 from geonode.documents.forms import GroupsChoiceField
 from django.contrib.auth.models import Group
 from geonode.security.utils import serialize_resource_permissions
-from geonode.utils import check_ogc_backend
+from geonode.utils import check_ogc_backend, layer_path
 
 import json
-from geonode.utils import unzip_file, mkdtemp
+from geonode.utils import unzip_file
 from geonode.base.forms import ResourceBaseForm
 from geonode.layers.models import Layer, Attribute
 
@@ -280,7 +280,7 @@ class LayerUploadForm(forms.Form):
 
     def write_files(self):
         absolute_base_file = None
-        tempdir = mkdtemp()
+        tempdir = layer_path()
         if zipfile.is_zipfile(self.cleaned_data['base_file']):
             absolute_base_file = unzip_file(self.cleaned_data['base_file'],
                                             '.shp', tempdir=tempdir)

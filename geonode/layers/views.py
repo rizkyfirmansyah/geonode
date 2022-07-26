@@ -103,7 +103,7 @@ from geonode.utils import (
     HttpClient,
     GXPLayer,
     GXPMap,
-    mkdtemp)
+    layer_path)
 from geonode.geoserver.helpers import (
     set_layer_style, wps_format_is_supported,
     ogc_server_settings, select_relevant_files, write_uploaded_files_to_disk)
@@ -217,7 +217,7 @@ def layer_upload_metadata(request):
     form = NewLayerUploadForm(request.POST, request.FILES)
 
     if form.is_valid():
-        tempdir = mkdtemp()
+        tempdir = layer_path()
         relevant_files = select_relevant_files(
             ['xml'],
             iter(request.FILES.values())

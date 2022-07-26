@@ -303,6 +303,14 @@ def doc_path():
     return os.path.join(date_time_dir)
 
 
+def layer_path():
+    dir = settings.MEDIA_ROOT + "/" + settings.SPATIAL_LOCATION
+    date_time_dir = f'{dir}/{time.strftime("/%Y/%m/%d")}'
+    if not os.path.exists(dir):
+        os.makedirs(date_time_dir, exist_ok=True)
+    return os.path.join(date_time_dir)
+
+
 def unzip_file(upload_file, extension='.shp', tempdir=None):
     """
     Unzips a zipfile into a temporary directory and returns the full path of the .shp file inside (if any)
