@@ -20,7 +20,7 @@
 
 import json
 import logging
-from math import perm
+import os
 # Geonode functionality
 from django.shortcuts import render
 from django.conf import settings
@@ -33,6 +33,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
 from dal import views, autocomplete
+from geonode.storage.manager import storage_manager
+from geonode.thumbs.utils import remove_cur_thumb
 from geonode.views import unauthorized_message
 from user_messages.models import Message
 from guardian.shortcuts import get_objects_for_user
@@ -48,7 +50,6 @@ from geonode.security.utils import get_visible_resources, serialize_resource_per
 from geonode.notifications_helper import send_notification
 from geonode.base.utils import OwnerRightsRequestViewUtils
 from geonode.base.forms import UserAndGroupPermissionsForm
-from geonode.security.views import _perms_info
 
 from geonode.base.forms import (
     BatchEditForm,
@@ -297,6 +298,8 @@ def thumbnail_upload(
                 ct = form.save(commit=False)
                 # remove existing thumbnail if any
                 if hasattr(res, 'curatedthumbnail'):
+                    _file = str(res.curatedthumbnail.img)
+                    remove_cur_thumb(_file)
                     res.curatedthumbnail.delete()
                 ct.resource = res
                 ct.save()
