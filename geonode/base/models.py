@@ -46,6 +46,7 @@ from geonode.thumbs.utils import MISSING_THUMB
 from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
+from geonode.upload.files import ALLOWED_EXTENSIONS
 
 from PIL import Image, ImageOps
 
@@ -1577,6 +1578,14 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             return False
         except Exception:
             return False
+
+    @property
+    def is_copyable(self):
+        from geonode.geoserver.helpers import select_relevant_files
+        if self.resource_type == 'dataset':
+            allowed_file = select_relevant_files(ALLOWED_EXTENSIONS, self.files)
+            return len(allowed_file) != 0
+        return True
 
     def category_list(self):
         return [c.identifier for c in self.category.all()]

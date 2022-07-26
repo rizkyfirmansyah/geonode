@@ -307,6 +307,19 @@ class ThumbnailUrlField(DynamicComputedField):
         return build_absolute_uri(thumbnail_url)
 
 
+class DownloadLinkField(DynamicComputedField):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def get_attribute(self, instance):
+        try:
+            _instance = instance.get_real_instance()
+            return _instance.download_url if hasattr(_instance, "download_url") else None
+        except Exception as e:
+            logger.exception(e)
+            return None
+
+
 class UserSerializer(BaseDynamicModelSerializer):
 
     class Meta:
@@ -322,6 +335,19 @@ class UserSerializer(BaseDynamicModelSerializer):
         queryset = queryset.prefetch_related()
         return queryset
 
+    def to_representation(self, instance):
+        # Dehydrate users private fields
+        request = self.context.get('request')
+        data = super().to_representation(instance)
+        if not request or not request.user or not request.user.is_authenticated:
+            if 'perms' in data:
+                del data['perms']
+        elif not request.user.is_superuser and not request.user.is_staff:
+            if data['username'] != request.user.username:
+                if 'perms' in data:
+                    del data['perms']
+        return data
+
     avatar = AvatarUrlField(240, read_only=True)
 
 
@@ -336,6 +362,69 @@ class ContactRoleField(DynamicComputedField):
 
     def to_representation(self, value):
         return UserSerializer(embed=True, many=False).to_representation(value)
+
+
+class DataBlobField(DynamicRelationField):
+
+    def value_to_string(self, obj):
+        value = self.value_from_object(obj)
+        return self.get_prep_value(value)
+
+
+class DataBlobSerializer(DynamicModelSerializer):
+
+    class Meta:
+        model = ResourceBase
+        fields = ('pk', 'blob')
+
+    def to_internal_value(self, data):
+        return data
+
+    def to_representation(self, value):
+        data = ResourceBase.objects.filter(id=value)
+        if data.exists() and data.count() == 1:
+            return data.get().blob
+        return {}
+
+
+class ResourceExecutionRequestSerializer(DynamicModelSerializer):
+
+    class Meta:
+        model = ResourceBase
+        fields = ('pk',)
+
+    def to_representation(self, instance):
+        data = []
+        request = self.context.get('request', None)
+        if request and request.user and not request.user.is_anonymous and ResourceBase.objects.filter(pk=instance).count() == 1:
+            _resource = ResourceBase.objects.get(pk=instance)
+            executions = ExecutionRequest.objects.filter(
+                Q(user=request.user) &
+                ~Q(status=ExecutionRequest.STATUS_FINISHED) & (
+                    (Q(input_params__uuid=_resource.uuid) |
+                     Q(output_params__output__uuid=_resource.uuid) |
+                     Q(geonode_resource=_resource))
+                )
+            ).order_by('-last_updated')
+
+            for execution in executions:
+                data.append({
+                    'exec_id': execution.exec_id,
+                    'user': execution.user.username,
+                    'status': execution.status,
+                    'func_name': execution.func_name,
+                    'created': execution.created,
+                    'finished': execution.finished,
+                    'last_updated': execution.last_updated,
+                    'input_params': execution.input_params,
+                    'output_params': execution.output_params,
+                    'status_url': urljoin(
+                        settings.SITEURL,
+                        reverse('rs-execution-status', kwargs={'execution_id': execution.exec_id})
+                    )
+                },
+                )
+        return data
 
 
 class ResourceBaseSerializer(
@@ -422,6 +511,8 @@ class ResourceBaseSerializer(
         self.fields['spatial_representation_type'] = DynamicRelationField(
             SpatialRepresentationTypeSerializer, embed=True, many=False)
         self.fields['blob'] = serializers.JSONField(required=False, write_only=True)
+        self.fields['is_copyable'] = serializers.BooleanField(read_only=True)
+        self.fields['download_url'] = DownloadLinkField(read_only=True)
 
     metadata = DynamicRelationField(ExtraMetadataSerializer, embed=False, many=True, deferred=True)
 
@@ -442,7 +533,7 @@ class ResourceBaseSerializer(
             'detail_url', 'embed_url', 'created', 'last_updated', 'date_distribution',
             'raw_abstract', 'raw_purpose', 'raw_constraints_other', 'raw_source', 'raw_data_citation', 'raw_related_publication',
             'raw_supplemental_information', 'raw_data_quality_statement', 'metadata_only', 'processed', 'state',
-            'data_description', 'author', 'source', 'data_type', 'subtype', 'sourcetype', 'blob', 'metadata'
+            'data_description', 'author', 'source', 'data_type', 'subtype', 'sourcetype', 'blob', 'metadata', 'data', 'executions', 'is_copyable'
             # TODO
             # csw_typename, csw_schema, csw_mdsource, csw_insert_date, csw_type, csw_anytext, csw_wkt_geometry,
             # metadata_uploaded, metadata_uploaded_preserve, metadata_xml,
@@ -480,9 +571,11 @@ class ResourceBaseSerializer(
             "embed_url": {"required": False},
             "thumbnail_url": {"required": False},
             "blob": {"required": False, "write_only": True},
+            "executions": {"required": False, "embed": False, "deferred": True, "read_only": True},
             "owner": {"required": False},
             "resource_type": {"required": False},
             "download_url": {"required": False},
+            "is_copyable": {"required": False},
         }
 
     def to_internal_value(self, data):
@@ -492,6 +585,30 @@ class ResourceBaseSerializer(
             data['blob'] = data.pop('data')
         data = super(ResourceBaseSerializer, self).to_internal_value(data)
         return data
+
+    """
+     - Deferred / not Embedded --> ?include[]=data
+    """
+    data = DataBlobField(
+        DataBlobSerializer,
+        source='id',
+        many=False,
+        embed=False,
+        deferred=True,
+        required=False,
+    )
+
+    """
+     - Deferred / not Embedded --> ?include[]=executions
+    """
+    executions = DynamicRelationField(
+        ResourceExecutionRequestSerializer,
+        source='id',
+        embed=False,
+        deferred=True,
+        required=False,
+        read_only=True,
+    )
 
 
 class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, BaseDynamicModelSerializer):
