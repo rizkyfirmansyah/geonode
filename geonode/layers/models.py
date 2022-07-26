@@ -27,7 +27,6 @@ from django.conf import settings
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
-from django.core.files.storage import FileSystemStorage
 from django.utils.functional import classproperty
 from geonode.groups.conf import settings as groups_settings
 

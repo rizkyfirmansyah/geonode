@@ -256,6 +256,7 @@ STATICFILES_LOCATION = 'static'
 MEDIAFILES_LOCATION = 'uploaded'
 THUMBNAIL_LOCATION = 'thumbs'
 FEEDBACK_LOCATION = 'feedbacks'
+DOCUMENT_LOCATION = 'documents'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -275,7 +276,7 @@ STATIC_ROOT = os.getenv('STATIC_ROOT',
 
 # Cache Bustin Settings: enable WhiteNoise compression and caching support
 # ref: http://whitenoise.evans.io/en/stable/django.html#add-compression-and-caching-support
-CACHE_BUSTING_STATIC_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_STATIC_ENABLED', 'False'))
+CACHE_BUSTING_STATIC_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_STATIC_ENABLED', 'True'))
 
 if not DEBUG and CACHE_BUSTING_STATIC_ENABLED:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

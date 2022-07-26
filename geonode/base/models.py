@@ -25,6 +25,7 @@ import math
 import uuid
 import logging
 import traceback
+from uuid import uuid4
 
 from django.db import models, transaction
 from django.conf import settings
@@ -42,16 +43,13 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
-from geonode.thumbs.utils import MISSING_THUMB
+from geonode.thumbs.utils import MISSING_THUMB, remove_cur_thumb, remove_thumb, thumb_exists, thumb_path
 from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
 from geonode.upload.files import ALLOWED_EXTENSIONS
 
 from PIL import Image, ImageOps
-
-from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFill
 
 from polymorphic.models import PolymorphicModel
 from polymorphic.managers import PolymorphicManager
@@ -89,8 +87,7 @@ from geonode.people.enumerations import ROLE_VALUES
 
 from pyproj import transform, Proj
 
-from urllib.parse import urlsplit, urljoin
-from imagekit.cachefiles.backends import Simple
+from urllib.parse import urlparse, urlsplit, urljoin
 
 logger = logging.getLogger(__name__)
 
@@ -761,18 +758,17 @@ class ResourceBaseManager(PolymorphicManager):
                             storage_manager.delete(_file)
                     except Exception as e:
                         logger.warning(e)
-                try:
-                    if _uploaded_folder and storage_manager.exists(_uploaded_folder):
-                        storage_manager.delete(_uploaded_folder)
-                except Exception as e:
-                    logger.warning(e)
 
                 # Do we want to delete the files also from the resource?
                 ResourceBase.objects.filter(id=resource_id).update(files={})
 
             # Remove generated thumbnails, if any
-            filename = f"{_resource.get_real_instance().resource_type}-{_resource.get_real_instance().uuid}"
-            remove_thumbs(filename)
+            if hasattr(_resource, 'curatedthumbnail'):
+                try:
+                    filename = _resource.curatedthumbnail
+                except Exception as e:
+                    logger.exception(e)
+            remove_cur_thumb(str(filename.img))
 
             # Remove the uploaded sessions, if any
             if 'geonode.upload' in settings.INSTALLED_APPS:
@@ -1886,25 +1882,13 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         local_thumbnails = self.link_set.filter(name='Thumbnail')
         remote_thumbnails = self.link_set.filter(name='Remote Thumbnail')
         if local_thumbnails.exists():
-            _thumbnail_url = local_thumbnails.first().url
+            _thumbnail_url = add_url_params(
+                local_thumbnails[0].url, {'v': str(uuid4())[:8]})
         elif remote_thumbnails.exists():
-            _thumbnail_url = remote_thumbnails.first().url
+            _thumbnail_url = add_url_params(
+                remote_thumbnails[0].url, {'v': str(uuid4())[:8]})
         return _thumbnail_url
 
-    def get_thumbnail_path(self):
-        """Return a thumbnail path.
-
-           It could be a local one if it exists, a remote one (WMS GetImage) for example
-           or a 'Missing Thumbnail' one.
-        """
-        _thumbnail_path = self.thumbnail_path or static(MISSING_THUMB)
-        local_thumbnails = self.link_set.filter(name='Thumbnail')
-        remote_thumbnails = self.link_set.filter(name='Remote Thumbnail')
-        if local_thumbnails.exists():
-            _thumbnail_path = local_thumbnails.first().url
-        elif remote_thumbnails.exists():
-            _thumbnail_path = remote_thumbnails.first().url
-        return _thumbnail_path
 
     def has_thumbnail(self):
         """Determine if the thumbnail object exists and an image exists"""
@@ -2269,28 +2253,22 @@ class MenuItem(models.Model):
 
 class CuratedThumbnail(models.Model):
     resource = models.OneToOneField(ResourceBase, on_delete=models.CASCADE)
-    img = models.ImageField(upload_to='curated_thumbs')
-    # TOD read thumb size from settings
-    img_thumbnail = ImageSpecField(source='img',
-                                   processors=[ResizeToFill(240, 180)],
-                                   format='PNG',
-                                   options={'quality': 60})
+    img = models.ImageField(upload_to=settings.THUMBNAIL_LOCATION)
 
     @property
     def thumbnail_url(self):
         try:
-            if not Simple()._exists(self.img_thumbnail):
-                Simple().generate(self.img_thumbnail, force=True)
-            upload_path = storage_manager.path(self.img_thumbnail.name)
-            actual_name = os.path.basename(storage_manager.url(upload_path))
-            _upload_path = os.path.join(os.path.dirname(upload_path), actual_name)
-            if not os.path.exists(_upload_path):
-                os.rename(upload_path, _upload_path)
-            return self.img_thumbnail.url
+            dirname = os.path.join(settings.THUMBNAIL_LOCATION)
+            if not thumb_exists(self.img_thumbnail):
+                os.makedirs(dirname, exist_ok=True)
+            filepath = storage_manager.save(f"{dirname}/{self.img_thumbnail.name}", self.img_thumbnail)
+            return filepath
         except Exception as e:
             logger.exception(e)
         return ''
 
+    def __str__(self):
+        return f'{settings.MEDIA_URL}{self.img}'
 
 class Configuration(SingletonModel):
     """

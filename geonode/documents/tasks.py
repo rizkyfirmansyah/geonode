@@ -18,15 +18,16 @@
 #########################################################################
 import os
 
-from geonode.storage.manager import storage_manager
-
-from geonode.celery_app import app
 from celery.utils.log import get_task_logger
 
-from geonode.documents.models import Document
-from geonode.documents.renderers import render_document
-from geonode.documents.renderers import generate_thumbnail_content
-from geonode.documents.renderers import ConversionError
+from geonode.celery_app import app
+from geonode.storage.manager import storage_manager
+
+from .models import Document
+from .renderers import (
+    render_document,
+    generate_thumbnail_content,
+    ConversionError)
 
 logger = get_task_logger(__name__)
 
@@ -59,22 +60,19 @@ def create_document_thumbnail(self, object_id):
     image_file = None
 
     if document.is_image:
-        if not os.path.exists(storage_manager.path(document.doc_file.name)):
-            from shutil import copyfile
-            copyfile(
-                document.doc_file.path,
-                storage_manager.path(document.doc_file.name)
-            )
-        image_file = storage_manager.open(document.doc_file.name, 'rb')
+        dname = storage_manager.path(document.files[0])
+        if storage_manager.exists(dname):
+            image_file = storage_manager.open(dname, 'rb')
     elif document.is_video or document.is_audio:
         image_file = open(document.find_placeholder(), 'rb')
     elif document.is_file:
+        dname = storage_manager.path(document.files[0])
         try:
-            document_location = storage_manager.path(document.doc_file.name)
+            document_location = storage_manager.path(dname)
         except NotImplementedError as e:
             logger.debug(e)
 
-            document_location = storage_manager.url(document.doc_file.name)
+            document_location = storage_manager.url(dname)
 
         try:
             image_path = render_document(document_location)

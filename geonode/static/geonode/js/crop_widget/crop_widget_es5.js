@@ -25,12 +25,17 @@ var ThumbnailService = /*#__PURE__*/function () {
 
     this.document_id = i, this.get_path = e;
   }
+  function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
 
   _createClass(ThumbnailService, [{
     key: "postThumbnail",
     value: function postThumbnail(i) {
       var e = new FormData();
-      e.append("img", this._b64toBlob(i), "blob.png");
+      e.append("img", this._b64toBlob(i), "thumbs-"+uuidv4()+".png");
       var t = location.origin + "/base/" + String(this.document_id) + "/thumbnail_upload";
       $.ajax({
         url: t,

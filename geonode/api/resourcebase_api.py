@@ -648,9 +648,6 @@ class CommonModelApi(ModelResource):
             if 'site_url' not in formatted_obj or len(formatted_obj['site_url']) == 0:
                 formatted_obj['site_url'] = settings.SITEURL
 
-            if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
-                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
-
             formatted_obj['owner__username'] = obj.owner.username
             formatted_obj['owner__full_name'] = obj.owner.get_full_name() or obj.owner.username
             formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
@@ -688,11 +685,9 @@ class CommonModelApi(ModelResource):
 
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):
-                try:
-                    if hasattr(obj.curatedthumbnail.img_thumbnail, 'url'):
-                        formatted_obj['thumbnail_url'] = obj.curatedthumbnail.thumbnail_url
-                except Exception as e:
-                    logger.exception(e)
+                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
+            else:
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             if obj.resource_type == 'document':
                 _links = Document.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
@@ -889,11 +884,9 @@ class LayerResource(CommonModelApi):
 
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):
-                try:
-                    if hasattr(obj.curatedthumbnail.img_thumbnail, 'url'):
-                        formatted_obj['thumbnail_url'] = obj.curatedthumbnail.thumbnail_url
-                except Exception as e:
-                    logger.exception(e)
+                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
+            else:
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_obj['processed'] = obj.instance_is_processed
             # put the object on the response stack
@@ -1059,11 +1052,9 @@ class MapResource(CommonModelApi):
 
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):
-                try:
-                    if hasattr(obj.curatedthumbnail.img_thumbnail, 'url'):
-                        formatted_obj['thumbnail_url'] = obj.curatedthumbnail.thumbnail_url
-                except Exception as e:
-                    logger.exception(e)
+                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
+            else:
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_objects.append(formatted_obj)
         return formatted_objects
@@ -1127,11 +1118,9 @@ class GeoAppResource(CommonModelApi):
 
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):
-                try:
-                    if hasattr(obj.curatedthumbnail.img_thumbnail, 'url'):
-                        formatted_obj['thumbnail_url'] = obj.curatedthumbnail.thumbnail_url
-                except Exception as e:
-                    logger.exception(e)
+                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
+            else:
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_objects.append(formatted_obj)
         return formatted_objects
@@ -1174,9 +1163,6 @@ class DocumentResource(CommonModelApi):
             formatted_obj['owner__username'] = username
             formatted_obj['owner_name'] = full_name
 
-            if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
-                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
-
             if obj.category:
                 fa_class = {}
                 c_fa = [c.fa_class for c in obj.category.all()]
@@ -1208,11 +1194,9 @@ class DocumentResource(CommonModelApi):
 
             # replace thumbnail_url with curated_thumbs
             if hasattr(obj, 'curatedthumbnail'):
-                try:
-                    if hasattr(obj.curatedthumbnail.img_thumbnail, 'url'):
-                        formatted_obj['thumbnail_url'] = obj.curatedthumbnail.thumbnail_url
-                except Exception as e:
-                    logger.exception(e)
+                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
+            else:
+                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_objects.append(formatted_obj)
         return formatted_objects

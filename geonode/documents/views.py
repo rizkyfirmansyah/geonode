@@ -44,7 +44,7 @@ from geonode.base.api.exceptions import geonode_exception_handler
 
 from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.documents.utils import get_download_response
-from geonode.utils import mkdtemp, resolve_object
+from geonode.utils import doc_path, resolve_object
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
 from geonode.base.auth import get_or_create_token
@@ -294,8 +294,7 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
 
         file = doc_form.pop('doc_file', None)
         if file:
-            tempdir = mkdtemp()
-            dirname = os.path.basename(tempdir)
+            dirname = doc_path()
             filepath = storage_manager.save(f"{dirname}/{file.name}", file)
             storage_path = storage_manager.path(filepath)
             self.object = resource_manager.create(
@@ -307,8 +306,6 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
                     title=doc_form.pop('title', file.name),
                     files=[storage_path])
             )
-            if tempdir != os.path.dirname(storage_path):
-                shutil.rmtree(tempdir, ignore_errors=True)
         else:
             self.object = resource_manager.create(
                 None,

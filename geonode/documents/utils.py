@@ -36,6 +36,7 @@ from django_downloadview.response import DownloadResponse
 from geonode.documents.models import Document
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -89,3 +90,6 @@ def get_download_response(request, docid, attachment=False):
         "File is not available",
         status=404
     )
+
+def document_path(filename):
+    return os.path.join(settings.DOCUMENT_LOCATION, filename)

@@ -16,7 +16,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-import json
 import logging
 
 from io import BytesIO
@@ -24,12 +23,13 @@ from PIL import Image, UnidentifiedImageError
 from typing import List, Union, Optional, Tuple
 
 from django.conf import settings
+from django.templatetags.static import static
 from django.utils.module_loading import import_string
 
-from geonode.maps.models import Map, MapLayer
-from geonode.layers.models import Layer
 from geonode.documents.models import Document
 from geonode.geoapps.models import GeoApp
+from geonode.maps.models import Map, MapLayer
+from geonode.layers.models import Layer
 from geonode.geoserver.helpers import ogc_server_settings
 from geonode.utils import get_layer_name, get_layer_workspace
 from geonode.thumbs import utils
@@ -83,6 +83,9 @@ def create_thumbnail(
     instance.refresh_from_db()
 
     default_thumbnail_name = _generate_thumbnail_name(instance)
+    mime_type = "image/png"
+    width = settings.THUMBNAIL_SIZE["width"]
+    height = settings.THUMBNAIL_SIZE["height"]
 
     if default_thumbnail_name is None:
         # instance is Map and has no layers defined
@@ -91,7 +94,7 @@ def create_thumbnail(
 
     # handle custom, uploaded thumbnails, which may have different extensions from the default thumbnail
     thumbnail_exists = False
-    if instance.thumbnail_url and instance.thumbnail_url != settings.MISSING_THUMBNAIL:
+    if instance.thumbnail_url and instance.thumbnail_url != static(utils.MISSING_THUMB):
         thumbnail_exists = utils.thumb_exists(instance.thumbnail_url.rsplit('/')[-1])
 
     if (thumbnail_exists or utils.thumb_exists(default_thumbnail_name)) and not overwrite:
@@ -101,45 +104,26 @@ def create_thumbnail(
     # --- determine target CRS and bbox ---
     target_crs = forced_crs.upper() if forced_crs is not None else "EPSG:3857"
 
-    compute_bbox_from_layers = False
+    compute_bbox_from_datasets = False
     is_map_with_datasets = False
 
     if isinstance(instance, Map):
-        is_map_with_datasets = MapLayer.objects.filter(map=instance, visibility=True, local=True).exclude(ows_url__isnull=True).exclude(ows_url__exact='').exists()
+        is_map_with_datasets = MapLayer.objects.filter(map=instance, local=True).exclude(layer=None).exists()
     if bbox:
         bbox = utils.clean_bbox(bbox, target_crs)
     elif instance.ll_bbox_polygon:
         bbox = utils.clean_bbox(instance.ll_bbox, target_crs)
     else:
-        compute_bbox_from_layers = True
+        compute_bbox_from_datasets = True
 
     # --- define layer locations ---
-    locations, layers_bbox = _layers_locations(instance, compute_bbox=compute_bbox_from_layers, target_crs=target_crs)
+    locations, datasets_bbox = _datasets_locations(instance, compute_bbox=compute_bbox_from_datasets, target_crs=target_crs)
 
-    return create_thumbnail_from_locations(instance, locations, layers_bbox, default_thumbnail_name, compute_bbox_from_layers, is_map_with_datasets, bbox, wms_version, styles, background_zoom)
-
-
-def create_thumbnail_from_locations(
-        instance,
-        locations,
-        layers_bbox,
-        default_thumbnail_name,
-        compute_bbox_from_layers,
-        is_map_with_datasets,
-        bbox,
-        wms_version=settings.OGC_SERVER["default"].get("WMS_VERSION", "1.1.1"),
-        styles=None,
-        background_zoom=None
-):
-
-    mime_type = "image/png"
-    width = settings.THUMBNAIL_SIZE["width"]
-    height = settings.THUMBNAIL_SIZE["height"]
-    if compute_bbox_from_layers and is_map_with_datasets:
-        if not layers_bbox:
+    if compute_bbox_from_datasets and is_map_with_datasets:
+        if not datasets_bbox:
             raise ThumbnailError(f"Thumbnail generation couldn't determine a BBOX for: {instance}.")
         else:
-            bbox = layers_bbox
+            bbox = datasets_bbox
 
     # --- expand the BBOX to match the set thumbnail's ratio (prevent thumbnail's distortions) ---
     bbox = utils.expand_bbox_to_ratio(bbox) if bbox else None
@@ -218,7 +202,7 @@ def create_thumbnail_from_locations(
     return instance.thumbnail_url
 
 
-def _generate_thumbnail_name(instance: Union[Layer, Map]) -> Optional[str]:
+def _generate_thumbnail_name(instance: Union[Layer, Map, Document, GeoApp]) -> Optional[str]:
     """
     Method returning file name for the thumbnail.
     If provided instance is a Map, and doesn't have any defined layers, None is returned.
@@ -233,7 +217,7 @@ def _generate_thumbnail_name(instance: Union[Layer, Map]) -> Optional[str]:
 
     elif isinstance(instance, Map):
         # if a Map is empty - nothing to do here
-        if not instance.layers:
+        if not instance.maplayers:
             logger.debug(f"Thumbnail generation skipped - Map {instance.title} has no defined layers")
             return None
 
@@ -252,7 +236,7 @@ def _generate_thumbnail_name(instance: Union[Layer, Map]) -> Optional[str]:
     return file_name
 
 
-def _layers_locations(
+def _datasets_locations(
     instance: Union[Layer, Map], compute_bbox: bool = False, target_crs: str = "EPSG:3857"
 ) -> Tuple[List[List], List]:
     """
@@ -274,12 +258,13 @@ def _layers_locations(
     locations = []
     bbox = []
     if isinstance(instance, Layer):
-        # for local layers
-        if instance.remote_service is None:
-            locations.append([ogc_server_settings.LOCATION, [instance.alternate], []])
-        # for remote layers
-        else:
-            locations.append([instance.remote_service.service_url, [instance.alternate], []])
+        locations.append(
+            [
+                instance.ows_url or ogc_server_settings.LOCATION,
+                [instance.alternate],
+                []
+            ]
+        )
         if compute_bbox:
             if instance.ll_bbox_polygon:
                 bbox = utils.clean_bbox(instance.ll_bbox, target_crs)
@@ -293,57 +278,43 @@ def _layers_locations(
             else:
                 bbox = utils.transform_bbox(instance.bbox, target_crs)
     elif isinstance(instance, Map):
+        for map_dataset in instance.maplayers.iterator():
 
-        map_layers = instance.layers.copy()
-        # ensure correct order of layers in the map (higher stack_order are printed on top of lower)
-        map_layers.sort(key=lambda l: l.stack_order)
-
-        for map_layer in map_layers:
-
-            if not map_layer.visibility:
-                logger.debug("Skipping not visible layer in the thumbnail generation.")
-                continue
-
-            if not map_layer.local and not map_layer.ows_url:
+            if not map_dataset.local and not map_dataset.ows_url:
                 logger.warning(
                     "Incorrectly defined remote layer encountered (no OWS URL defined)."
                     "Skipping it in the thumbnail generation."
                 )
                 continue
 
-            name = get_layer_name(map_layer)
-            store = map_layer.store
-            workspace = get_layer_workspace(map_layer)
-            try:
-                map_layer_style = json.loads(map_layer.layer_params).get('style')
-            except json.decoder.JSONDecodeError:
-                map_layer_style = None
+            name = get_layer_name(map_dataset)
+            store = map_dataset.store
+            workspace = get_layer_workspace(map_dataset)
+            map_dataset_style = map_dataset.current_style
 
             if store and Layer.objects.filter(store=store, workspace=workspace, name=name).exists():
                 layer = Layer.objects.filter(store=store, workspace=workspace, name=name).first()
-
             elif workspace and Layer.objects.filter(workspace=workspace, name=name).exists():
                 layer = Layer.objects.filter(workspace=workspace, name=name).first()
-
-            elif Layer.objects.filter(alternate=map_layer.name).exists():
-                layer = Layer.objects.filter(alternate=map_layer.name).first()
+            elif Layer.objects.filter(alternate=map_dataset.name).exists():
+                layer = Layer.objects.filter(alternate=map_dataset.name).first()
             else:
                 logger.warning(f"Layer for MapLayer {name} was not found. Skipping it in the thumbnail.")
                 continue
 
-            if layer.storeType == "remoteStore":
+            if layer.subtype in ['tileStore', 'remote']:
                 # limit number of locations, ensuring layer order
                 if len(locations) and locations[-1][0] == layer.remote_service.service_url:
                     # if previous layer's location is the same as the current one - append current layer there
                     locations[-1][1].append(layer.alternate)
                     # update the styles too
-                    if map_layer_style:
-                        locations[-1][2].append(map_layer_style)
+                    if map_dataset_style:
+                        locations[-1][2].append(map_dataset_style)
                 else:
                     locations.append([
                         layer.remote_service.service_url,
                         [layer.alternate],
-                        [map_layer_style] if map_layer_style else []
+                        [map_dataset_style] if map_dataset_style else []
                     ])
             else:
                 # limit number of locations, ensuring layer order
@@ -351,37 +322,37 @@ def _layers_locations(
                     # if previous layer's location is the same as the current one - append current layer there
                     locations[-1][1].append(layer.alternate)
                     # update the styles too
-                    if map_layer_style:
-                        locations[-1][2].append(map_layer_style)
+                    if map_dataset_style:
+                        locations[-1][2].append(map_dataset_style)
                 else:
                     locations.append([
                         settings.OGC_SERVER["default"]["LOCATION"],
                         [layer.alternate],
-                        [map_layer_style] if map_layer_style else []
+                        [map_dataset_style] if map_dataset_style else []
                     ])
 
             if compute_bbox:
                 if layer.ll_bbox_polygon:
-                    layer_bbox = utils.clean_bbox(layer.ll_bbox, target_crs)
+                    dataset_bbox = utils.clean_bbox(layer.ll_bbox, target_crs)
                 elif (
                         layer.bbox[-1].upper() != 'EPSG:3857'
                         and target_crs.upper() == 'EPSG:3857'
                         and utils.exceeds_epsg3857_area_of_use(layer.bbox)
                 ):
                     # handle exceeding the area of use of the default thumb's CRS
-                    layer_bbox = utils.transform_bbox(utils.crop_to_3857_area_of_use(layer.bbox), target_crs)
+                    dataset_bbox = utils.transform_bbox(utils.crop_to_3857_area_of_use(layer.bbox), target_crs)
                 else:
-                    layer_bbox = utils.transform_bbox(layer.bbox, target_crs)
+                    dataset_bbox = utils.transform_bbox(layer.bbox, target_crs)
 
                 if not bbox:
-                    bbox = layer_bbox
+                    bbox = dataset_bbox
                 else:
                     # layer's BBOX: (left, right, bottom, top)
                     bbox = [
-                        min(bbox[0], layer_bbox[0]),
-                        max(bbox[1], layer_bbox[1]),
-                        min(bbox[2], layer_bbox[2]),
-                        max(bbox[3], layer_bbox[3]),
+                        min(bbox[0], dataset_bbox[0]),
+                        max(bbox[1], dataset_bbox[1]),
+                        min(bbox[2], dataset_bbox[2]),
+                        max(bbox[3], dataset_bbox[3]),
                     ]
 
     if bbox and len(bbox) < 5:
