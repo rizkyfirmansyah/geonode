@@ -305,12 +305,11 @@ class ThumbnailUrlField(DynamicComputedField):
         thumbnail_url = instance.thumbnail_url
         if hasattr(instance, 'curatedthumbnail'):
             try:
-                if hasattr(instance.curatedthumbnail.img_thumbnail, 'url'):
-                    thumbnail_url = instance.curatedthumbnail.thumbnail_url
+                thumbnail_url = instance.curatedthumbnail
             except Exception as e:
                 logger.exception(e)
 
-        return build_absolute_uri(thumbnail_url)
+        return build_absolute_uri(str(thumbnail_url))
 
 
 class DownloadLinkField(DynamicComputedField):

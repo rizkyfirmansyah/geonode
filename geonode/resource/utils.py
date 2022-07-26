@@ -24,7 +24,6 @@ import datetime
 import traceback
 
 from urllib.parse import urlparse, urljoin
-from django.utils.timezone import now
 
 from django.urls import reverse
 from django.conf import settings

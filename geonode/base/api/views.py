@@ -18,6 +18,7 @@
 #
 #########################################################################
 import ast
+import re
 from geonode.thumbs.exceptions import ThumbnailError
 from geonode.thumbs.thumbnails import create_thumbnail
 import json
@@ -49,10 +50,24 @@ from geonode.security.utils import (
     get_geoapp_subtypes,
     get_visible_resources,
     get_resources_with_perms)
-from geonode.security.permissions import (
-    PermSpec,
-    PermSpecCompact,
-    get_compact_perms_list)
+from geonode.security.permissions import get_compact_perms_list
+
+from geonode.resource.manager import resource_manager
+from PIL import Image
+from django.core.validators import URLValidator
+from rest_framework import status
+from geonode.thumbs.utils import _decode_base64, BASE64_PATTERN
+from rest_framework.parsers import JSONParser, MultiPartParser
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from pinax.ratings.categories import category_value
+from pinax.ratings.models import OverallRating, Rating
+from pinax.ratings.views import NUM_OF_RATINGS
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseForbidden
+from django.db import models
+from decimal import Decimal
+from urllib.parse import urljoin, urlparse
 
 from guardian.shortcuts import get_objects_for_user
 
@@ -583,6 +598,128 @@ class ResourceBaseViewSet(DynamicModelViewSet):
             messages.error(request, message=e.args[0], extra_tags=toast_title)
 
             return Response(data={"message": e.args[0], "success": False}, status=500, exception=True)
+
+    @extend_schema(
+        methods=['post', 'get'],
+        responses={200},
+        description="API endpoint allowing to rate and get overall rating of the Resource.")
+    @action(
+        detail=True,
+        url_path="ratings",
+        url_name="ratings",
+        methods=['post', 'get'],
+        permission_classes=[
+            IsAuthenticatedOrReadOnly,
+        ])
+    def ratings(self, request, pk=None):
+        resource = self.get_object()
+        resource = resource.get_real_instance()
+        ct = ContentType.objects.get_for_model(resource)
+        if request.method == 'POST':
+            rating_input = int(request.data.get("rating"))
+            category = resource._meta.object_name.lower()
+            # check if category is configured in settings.PINAX_RATINGS_CATEGORY_CHOICES
+            cat_choice = category_value(resource, category)
+
+            # Check for errors and bail early
+            if category and cat_choice is None:
+                return HttpResponseForbidden(
+                    "Invalid category. It must match a preconfigured setting"
+                )
+            if rating_input not in range(NUM_OF_RATINGS + 1):
+                return HttpResponseForbidden(
+                    f"Invalid rating. It must be a value between 0 and {NUM_OF_RATINGS}"
+                )
+            Rating.update(
+                rating_object=resource,
+                user=request.user,
+                category=cat_choice,
+                rating=rating_input
+            )
+        user_rating = None
+        if request.user.is_authenticated:
+            user_rating = Rating.objects.filter(
+                object_id=resource.pk,
+                content_type=ct,
+                user=request.user
+            ).first()
+        overall_rating = OverallRating.objects.filter(
+            object_id=resource.pk,
+            content_type=ct
+        ).aggregate(r=models.Avg("rating"))["r"]
+        overall_rating = Decimal(str(overall_rating or "0"))
+
+        return Response(
+            {
+                "rating": user_rating.rating if user_rating else 0,
+                "overall_rating": overall_rating
+            }
+        )
+
+    @extend_schema(
+        methods=['put'],
+        responses={200},
+        description="API endpoint allowing to set thumbnail of the Resource.")
+    @action(
+        detail=True,
+        url_path="set_thumbnail",
+        url_name="set_thumbnail",
+        methods=['put'],
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        parser_classes=[JSONParser, MultiPartParser]
+    )
+    def set_thumbnail(self, request, pk=None):
+        resource = get_object_or_404(ResourceBase, pk=pk)
+
+        if not request.data.get('file'):
+            raise ValidationError("Field file is required")
+
+        file_data = request.data['file']
+
+        if isinstance(file_data, str):
+            if re.match(BASE64_PATTERN, file_data):
+                try:
+                    thumbnail, _thumbnail_format = _decode_base64(file_data)
+                except Exception:
+                    return Response(
+                        'The request body is not a valid base64 string or the image format is not PNG or JPEG',
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:
+                try:
+                    # Check if file_data is a valid url and set it as thumbail_url
+                    validate = URLValidator()
+                    validate(file_data)
+                    if urlparse(file_data).path.rsplit('.')[-1] not in ['png', 'jpeg', 'jpg']:
+                        return Response(
+                            'The url must be of an image with format (png, jpeg or jpg)',
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                    resource.thumbnail_url = file_data
+                    resource.save()
+                    return Response({"thumbnail_url": resource.thumbnail_url})
+                except Exception:
+                    raise ValidationError(detail='file is either a file upload, ASCII byte string or a valid image url string')
+        else:
+            # Validate size
+            if file_data.size > 1000000:
+                raise ValidationError(detail='File must not exceed 1MB')
+
+            thumbnail = file_data.read()
+            try:
+                file_data.seek(0)
+                Image.open(file_data)
+            except Exception:
+                raise ValidationError(detail='Invalid data provided')
+        if thumbnail:
+            resource_manager.set_thumbnail(resource.uuid, instance=resource, thumbnail=thumbnail)
+            return Response({"thumbnail_url": resource.thumbnail_url})
+        return Response(
+            'Unable to set thumbnail',
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     @extend_schema(
         methods=["get", "put", "delete", "post"], description="Get/Update/Delete/Add extra metadata for resource"
