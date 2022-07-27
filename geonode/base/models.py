@@ -763,9 +763,9 @@ class ResourceBaseManager(PolymorphicManager):
             if hasattr(_resource, 'curatedthumbnail'):
                 try:
                     filename = _resource.curatedthumbnail
+                    remove_cur_thumb(str(filename.img))
                 except Exception as e:
                     logger.exception(e)
-            remove_cur_thumb(str(filename.img))
 
             # Remove the uploaded sessions, if any
             if 'geonode.upload' in settings.INSTALLED_APPS:
@@ -1959,9 +1959,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 if hasattr(self, 'curatedthumbnail'):
                     try:
                         filename = self.curatedthumbnail
+                        remove_cur_thumb(str(filename.img))
                     except Exception as e:
                         logger.exception(e)
-                remove_cur_thumb(str(filename.img))
 
                 # Store the new url and path
                 self.thumbnail_url = url

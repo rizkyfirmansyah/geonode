@@ -73,9 +73,10 @@ def delete_orphaned_thumbs():
     db_uuids = ResourceBase.objects.filter(uuid__in=thumb_uuids.keys()).values_list("uuid", flat=True)
     orphaned_uuids = set(thumb_uuids.keys()) - set(db_uuids)
     orphaned_thumbs = (thumb_uuids[uuid] for uuid in orphaned_uuids if uuid is not None)
-
+    print("DELETE ORPHANED ", thumb_uuids, orphaned_uuids, orphaned_thumbs)
     for filename in orphaned_thumbs:
         try:
+            print("FILENAME ", filename)
             remove_thumb(filename)
             deleted.append(filename)
         except NotImplementedError as e:

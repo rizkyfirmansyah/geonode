@@ -17,13 +17,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-import os
 import json
 import logging
 import traceback
-import shutil
 import warnings
 from geonode.decorators import registered_users
+from geonode.documents.tasks import delete_orphaned_thumbnails
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -672,7 +671,6 @@ def document_remove(request):
             _PERMISSION_MSG_DELETE)
         logger.debug(f'Deleting Document {document}')
         document.delete()
-
         message = _("Document: {} has been deleted".format(document.title))
         register_event(request, EventType.EVENT_REMOVE, document)
         messages.error(request, message, extra_tags=_PERMISSION_MSG_DELETE)
