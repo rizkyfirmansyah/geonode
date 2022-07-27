@@ -14,9 +14,6 @@
 <script type="text/javascript" src="{% static "autocomplete_light/select2.js" %}"></script>
 <script type="text/javascript" src="{% static "autocomplete_light/jquery.post-setup.js" %}"></script>
 
-<script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
-<link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
-
 {% block body %}
 
 	  <div class="row w-100 mb-2">
@@ -69,25 +66,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="basicDescriptiveInfo" class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
-                                        <div class="col-md-3">
-                                            <img id="image"
-                                                style="max-height: 100%; max-width: 100%; min-height: 100%; min-width: 100%">
-                                            <script>
-                                                const image = document.getElementById('image');
-                                                const path = location.pathname.split('/');
-                                                const id = path[path.length - 2];
-                                                const prefetch_url = "{{ resource.thumbnail_url }}";
-                                                const c_widget = new CropWidget(image,
-                                                    parseInt(
-                                                        id
-                                                    ),
-                                                    '/api/documents/',
-                                                    prefetch_url
-                                                );
-                                                c_widget.init();
-                                            </script>
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div>
                                                 <span><label
                                                         for="{{ geoapp_form.title|id }}">{{ geoapp_form.title.label }}</label></span>
@@ -99,7 +78,7 @@
                                                 {{ geoapp_form.abstract }}
                                             </div>
                                         </div>
-                                        <div class="col-md-5">
+                                        <div class="col-md-6">
                                             <div>
                                                 <span><label
                                                         for="{{ geoapp_form.date_type|id }}">{{ geoapp_form.keywords.label }}</label></span>

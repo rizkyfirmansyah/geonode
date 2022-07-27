@@ -165,7 +165,6 @@ class CommonModelApi(ModelResource):
         'resource_type',
         'site_url',
         'thumbnail_url',
-        'thumbnail_path',
         'detail_url',
         'rating',
         'group__name',
@@ -684,10 +683,13 @@ class CommonModelApi(ModelResource):
                 formatted_obj['category__icons'] = icons
 
             # replace thumbnail_url with curated_thumbs
-            if hasattr(obj, 'curatedthumbnail'):
-                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
-            else:
+            # if hasattr(obj, 'curatedthumbnail'):
+            #     formatted_obj['thumbnail_url'] = obj.curatedthumbnail
+            # else:
+            #     formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
+            if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
                 formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
+
 
             if obj.resource_type == 'document':
                 _links = Document.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')

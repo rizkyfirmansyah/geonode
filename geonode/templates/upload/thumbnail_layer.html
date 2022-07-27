@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+  <script type="text/javascript">
+    // this is used by thumbnail.js to POST to the thumbnail update view
+    window.thumbnailUpdateUrl = '{% url 'base-resources-set-thumb-from-bbox' resource.id %}';
+  </script>
+  <script type="text/javascript" src="{% static "geonode/js/utils/thumbnail.js" %}"></script>
+  {% include "ol/layers/layer_ol2_map.html" %}
+
+  {{ block.super }}
+{% endblock %}
+
+{% block thumbnail %}
+<div id="embedded_map">
+    <span><label>{% trans "Thumbnail" %}</label></span>
+    <div id="preview_map" style="height: 90%;width: 100%;">
+    </div>
+    <div id="preview_image" style="height: 90%;width: 100%;">
+        <img id="preview_image_src" src="{{ layer_form.thumbnail_url.value }}" height="100%" width="100%"/>
+    </div>
+    <div>
+      <span class="btn-group btn-group-md btn-block">
+          <a class="btn btn-save" href="#" id="set_thumbnail">{% trans "Save" %}</a>
+          <a class="btn btn-primary" href="#" id="change_thumbnail">{% trans "Edit" %}</a>
+      </span>
+    </div>
+  </div>
+{% endblock thumbnail %}

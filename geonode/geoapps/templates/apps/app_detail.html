@@ -85,7 +85,11 @@
 
   <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0{% endif %}">
     <ul class="list-group">
-
+      {% if not request.user_agent.is_mobile %}
+        <li class="list-group-item">
+            {% include "upload/thumbnail.html" %}
+        </li>
+      {% endif %}
       <li class="list-group-item">
         <a class="btn btn-primary btn-md btn-block" href="{% url "geoapp_metadata_detail" resource.id %}">{% trans "Metadata Detail" %}</a>
       </li>

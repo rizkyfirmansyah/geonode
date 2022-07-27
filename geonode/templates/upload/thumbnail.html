@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load static %}
+
+<script src="{% static "geonode/js/crop_widget/crop_widget_es5.js" %}"></script>
+<link rel="stylesheet" href="{% static "geonode/css/crop_widget.css" %}">
+
+<img id="image" style="">
+<script>
+  const image = document.getElementById('image');
+  const path = location.pathname.split('/');
+  const id = path[path.length - 1];
+  const prefetch_url = "{{ resource.thumbnail_url }}";
+  const c_widget = new CropWidget(image,
+    parseInt(
+      id
+    ),
+    '/api/documents/',
+    prefetch_url
+  );
+  c_widget.init();
+</script>

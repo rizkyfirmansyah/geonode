@@ -500,7 +500,7 @@ def clean_bbox(bbox, target_crs):
 def thumb_path(filename):
     """Return the complete path of the provided thumbnail file accessible
     via Django storage API"""
-    return os.path.join(settings.MEDIAFILES_LOCATION, filename)
+    return os.path.join(settings.THUMBNAIL_LOCATION, filename)
 
 
 def thumb_exists(filename):

@@ -258,8 +258,7 @@ class DocumentForm(ResourceBaseForm, DocumentFormMixin):
           'featured',
           'metadata_only',
           'is_published',
-          'is_approved',
-          'thumbnail_url'
+          'is_approved'
         ]
 
 class DocumentDescriptionForm(forms.Form):

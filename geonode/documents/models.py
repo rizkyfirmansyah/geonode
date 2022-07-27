@@ -17,18 +17,14 @@
 #
 #########################################################################
 
-import os
-import uuid
 import logging
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.db.models import signals
 from django.utils.functional import classproperty
 from django.contrib.staticfiles import finders
-from django.contrib.gis.geos import MultiPolygon
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -36,16 +32,14 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from uuid_upload_path import upload_to
 
 from geonode.layers.models import Layer
-from geonode.base.models import ResourceBase, resourcebase_post_save, Link
+from geonode.base.models import ResourceBase
 from geonode.documents.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.security.permissions import (
     VIEW_PERMISSIONS,
     OWNER_PERMISSIONS,
     DOWNLOAD_PERMISSIONS)
-from geonode.maps.signals import map_changed_signal
 from geonode.groups.conf import settings as groups_settings
 from geonode.maps.models import Map
-from geonode.security.utils import ResourceManager
 from geonode.utils import build_absolute_uri
 
 logger = logging.getLogger(__name__)

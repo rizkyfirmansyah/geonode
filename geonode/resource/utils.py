@@ -373,7 +373,8 @@ def document_post_save(instance, *args, **kwargs):
     elif instance.doc_url:
         name = "External Document"
         url = instance.doc_url
-
+    instance.thumbnail_url = instance.get_real_instance().get_thumbnail_url()
+    print("DOCUMENT POST SAVE ", instance.thumbnail_url)
     Document.objects.filter(id=instance.id).update(
         extension=instance.extension,
         subtype=instance.subtype,
@@ -454,7 +455,7 @@ def metadata_post_save(instance, *args, **kwargs):
     instance.thumbnail_url = instance.get_real_instance().get_thumbnail_url()
     instance.csw_insert_date = datetime.datetime.now(timezone.get_current_timezone())
     instance.set_missing_info()
-
+    print("THUMBNAIL URL ", instance.thumbnail_url)
     defaults = dict(
         uuid=instance.uuid,
         owner=instance.owner,

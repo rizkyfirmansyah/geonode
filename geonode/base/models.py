@@ -18,7 +18,6 @@
 #
 #########################################################################
 
-from distutils.command.upload import upload
 import os
 import re
 import html
@@ -26,7 +25,6 @@ import math
 import uuid
 import logging
 import traceback
-from uuid import uuid4
 
 from django.db import models, transaction
 from django.conf import settings
@@ -44,7 +42,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
-from geonode.thumbs.utils import MISSING_THUMB, remove_cur_thumb, remove_thumb, thumb_exists, thumb_path
+from geonode.thumbs.utils import MISSING_THUMB, remove_cur_thumb, thumb_exists
 from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
@@ -68,12 +66,10 @@ from geonode.base import enumerations
 from geonode.base.bbox_utils import BBOXHelper, polygon_from_bbox
 from geonode.thumbs.utils import (
     get_unique_upload_path,
-    thumb_size,
-    remove_thumbs)
+    thumb_size)
 from geonode.utils import (
     bbox_to_wkt,
     find_by_attr,
-    add_url_params,
     bbox_to_projection,
     is_monochromatic_image
 )
@@ -88,7 +84,7 @@ from geonode.people.enumerations import ROLE_VALUES
 
 from pyproj import transform, Proj
 
-from urllib.parse import urlparse, urlsplit, urljoin
+from urllib.parse import urlsplit, urljoin
 
 logger = logging.getLogger(__name__)
 
@@ -1883,11 +1879,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         local_thumbnails = self.link_set.filter(name='Thumbnail')
         remote_thumbnails = self.link_set.filter(name='Remote Thumbnail')
         if local_thumbnails.exists():
-            _thumbnail_url = add_url_params(
-                local_thumbnails[0].url, {'v': str(uuid4())[:8]})
+            _thumbnail_url = local_thumbnails.first().url
         elif remote_thumbnails.exists():
-            _thumbnail_url = add_url_params(
-                remote_thumbnails[0].url, {'v': str(uuid4())[:8]})
+            _thumbnail_url = remote_thumbnails.first().url
         return _thumbnail_url
 
 
@@ -1929,10 +1923,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     tmp_location = os.path.abspath(f"{settings.MEDIA_ROOT}/{upload_path}")
                     cover.save(tmp_location, format='PNG')
 
-                    with open(tmp_location, 'rb+') as img:
-                        # Saving the img via storage manager
-                        storage_manager.save(storage_manager.path(upload_path), img)
-
                     # If we use a remote storage, the local img is deleted
                     if tmp_location != storage_manager.path(upload_path):
                         os.remove(tmp_location)
@@ -1964,6 +1954,15 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 # Cleaning up the old stuff
                 if self.thumbnail_path and MISSING_THUMB not in self.thumbnail_path and storage_manager.exists(self.thumbnail_path):
                     storage_manager.delete(self.thumbnail_path)
+
+                # Remove generated thumbnails, if any
+                if hasattr(self, 'curatedthumbnail'):
+                    try:
+                        filename = self.curatedthumbnail
+                    except Exception as e:
+                        logger.exception(e)
+                remove_cur_thumb(str(filename.img))
+
                 # Store the new url and path
                 self.thumbnail_url = url
                 self.thumbnail_path = upload_path

@@ -35,12 +35,12 @@ var ThumbnailService = /*#__PURE__*/function () {
     key: "postThumbnail",
     value: function postThumbnail(i) {
       var e = new FormData();
-      e.append("img", this._b64toBlob(i), "thumbs-"+uuidv4()+".png");
-      var t = location.origin + "/base/" + String(this.document_id) + "/thumbnail_upload";
+      e.append("file", this._b64toBlob(i), "thumbs-"+uuidv4()+".png");
+      var t = location.origin + "/api/v2/resources/" + String(this.document_id) + "/set_thumbnail";
       $.ajax({
         url: t,
         data: e,
-        type: "POST",
+        type: "PUT",
         contentType: !1,
         processData: !1,
         headers: {
@@ -150,7 +150,7 @@ var DomBuilder = /*#__PURE__*/function () {
   _createClass(DomBuilder, [{
     key: "_create_flow_buttons",
     value: function _create_flow_buttons() {
-      this.grain_wrapper.append("<input type=file id=".concat(IDS_VALUT.FILE_INPUT_ID, " name=files class=crop-input /> ")), this.grain_wrapper.append("<label id=".concat(IDS_VALUT.FILE_LABEL_ID, " for=").concat(IDS_VALUT.FILE_INPUT_ID, " class=\"btn btn-primary crop-input-label\">Choose file</label>")), this.grain_wrapper.append("<button type=button id=".concat(IDS_VALUT.SEND_B_ID, " class=\"btn btn-save invisible\">Save</button><button type=button id=").concat(IDS_VALUT.CANCEL_B_ID, " class=\"btn btn-secondary invisible\">Cancel</button>"));
+      this.grain_wrapper.append("<input type=file id=".concat(IDS_VALUT.FILE_INPUT_ID, " name=files class=crop-input /> ")), this.grain_wrapper.append("<label id=".concat(IDS_VALUT.FILE_LABEL_ID, " for=").concat(IDS_VALUT.FILE_INPUT_ID, " class=\"btn btn-primary crop-input-label\">Change Thumbnail</label>")), this.grain_wrapper.append("<button type=button id=".concat(IDS_VALUT.SEND_B_ID, " class=\"btn btn-save invisible\">Save</button><button type=button id=").concat(IDS_VALUT.CANCEL_B_ID, " class=\"btn btn-secondary invisible\">Cancel</button>"));
     }
   }, {
     key: "create_workspace",
