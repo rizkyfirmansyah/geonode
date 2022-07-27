@@ -22,7 +22,7 @@ import logging
 import traceback
 import warnings
 from geonode.decorators import registered_users
-from geonode.documents.tasks import delete_orphaned_thumbnails
+from geonode.documents.tasks import delete_orphaned_thumbnail
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -670,6 +670,7 @@ def document_remove(request):
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
         logger.debug(f'Deleting Document {document}')
+        delete_orphaned_thumbnail.apply((document.thumbnail_path,))
         document.delete()
         message = _("Document: {} has been deleted".format(document.title))
         register_event(request, EventType.EVENT_REMOVE, document)

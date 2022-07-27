@@ -64,6 +64,17 @@ def get_thumb_uuid(filename):
     return uuid
 
 
+def delete_orphaned_thumb(thumbnail_path):
+    """
+    Deletes orphaned thumbnail.
+    """
+    try:
+        remove_thumb(thumbnail_path)
+    except NotImplementedError as e:
+        logger.error(f"Failed to delete orphaned thumbnail '{thumbnail_path}': {e}")
+    return thumbnail_path
+
+
 def delete_orphaned_thumbs():
     """
     Deletes orphaned thumbnails.
@@ -73,10 +84,8 @@ def delete_orphaned_thumbs():
     db_uuids = ResourceBase.objects.filter(uuid__in=thumb_uuids.keys()).values_list("uuid", flat=True)
     orphaned_uuids = set(thumb_uuids.keys()) - set(db_uuids)
     orphaned_thumbs = (thumb_uuids[uuid] for uuid in orphaned_uuids if uuid is not None)
-    print("DELETE ORPHANED ", thumb_uuids, orphaned_uuids, orphaned_thumbs)
     for filename in orphaned_thumbs:
         try:
-            print("FILENAME ", filename)
             remove_thumb(filename)
             deleted.append(filename)
         except NotImplementedError as e:

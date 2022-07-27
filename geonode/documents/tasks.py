@@ -131,7 +131,7 @@ def delete_orphaned_document_files(self):
 
 @app.task(
     bind=True,
-    name='geonode.documents.tasks.delete_orphaned_thumbnails',
+    name='geonode.documents.tasks.delete_orphaned_thumbnail',
     queue='cleanup',
     expires=600,
     time_limit=600,
@@ -141,6 +141,6 @@ def delete_orphaned_document_files(self):
     retry_backoff=3,
     retry_backoff_max=30,
     retry_jitter=False)
-def delete_orphaned_thumbnails(self):
-    from geonode.base.utils import delete_orphaned_thumbs
-    delete_orphaned_thumbs()
+def delete_orphaned_thumbnail(self, thumbnail_path):
+    from geonode.base.utils import delete_orphaned_thumb
+    delete_orphaned_thumb(thumbnail_path)
