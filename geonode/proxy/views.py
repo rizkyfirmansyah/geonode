@@ -43,7 +43,7 @@ from slugify import slugify
 from geonode import geoserver  # noqa
 from geonode.base import register_event
 from geonode.base.enumerations import LINK_TYPES as _LT
-from geonode.base.models import Link
+from geonode.base.models import Link, ResourceBase
 from geonode.layers.models import Layer
 from geonode.utils import (
     check_ogc_backend,
@@ -53,6 +53,7 @@ from geonode.utils import (
     json_serializer_producer,
     resolve_object,
 )
+from geonode.upload.models import Upload
 
 BUFFER_CHUNK_SIZE = 64 * 1024
 
@@ -276,7 +277,7 @@ def download(request, resourceid, sender=Layer):
                               permission='base.download_resourcebase',
                               permission_msg=_not_permitted)
 
-    if isinstance(instance, Layer):
+    if isinstance(instance, ResourceBase):
         layer_files = []
         file_list = []  # Store file info to be returned
         try:
@@ -311,96 +312,6 @@ def download(request, resourceid, sender=Layer):
                         },
                         request=request), status=404)
 
-            # Let's check for associated SLD files (if any)
-            try:
-                for s in instance.styles.all():
-                    sld_file_name = "".join([s.name, ".sld"])
-                    file_list.append({
-                        "zip_folder": "",
-                        "name": sld_file_name,
-                        "data_str": s.sld_body.strip(),
-                    })
-                    try:
-                        # Collecting headers and cookies
-                        headers, access_token = get_headers(request, urlsplit(s.sld_url), s.sld_url)
-
-                        response, content = http_client.get(
-                            s.sld_url,
-                            headers=headers,
-                            timeout=TIMEOUT,
-                            user=request.user)
-                        sld_remote_content = response.text
-                        remote_sld_file_name = "".join([s.name, "_remote.sld"])
-                        file_list.append({
-                            "zip_folder": "",
-                            "name": remote_sld_file_name,
-                            "data_str": sld_remote_content,
-                        })
-                    except Exception:
-                        traceback.print_exc()
-                        tb = traceback.format_exc()
-                        logger.debug(tb)
-            except Exception:
-                traceback.print_exc()
-                tb = traceback.format_exc()
-                logger.debug(tb)
-
-            # Let's dump metadata
-            try:
-                dump_file_name = "".join([instance.name, ".dump"])
-                serialized_obj = json_serializer_producer(model_to_dict(instance))
-                file_list.append({
-                    "zip_folder": ".metadata/",
-                    "name": dump_file_name,
-                    "data_str": json.dumps(serialized_obj),
-                })
-                links = Link.objects.filter(resource=instance.resourcebase_ptr)
-                for link in links:
-                    link_name = slugify(link.name)
-                    link_file_name = "".join([link_name, f".{link.extension}"])
-                    link_file_obj = None
-
-                    if link.link_type in ('data'):
-                        # Skipping 'data' download links
-                        continue
-                    elif link.link_type in ('metadata', 'image'):
-                        # Dumping metadata files and images
-                        try:
-                            # Collecting headers and cookies
-                            headers, access_token = get_headers(request, urlsplit(link.url), link.url)
-
-                            response, raw = http_client.get(
-                                link.url,
-                                stream=True,
-                                headers=headers,
-                                timeout=TIMEOUT,
-                                user=request.user)
-                            raw.decode_content = True
-                            if raw and raw is not None:
-                                link_file_obj = {
-                                    "zip_folder": ".metadata/",
-                                    "name": link_file_name,
-                                    "data_iter": raw,
-                                }
-                        except Exception:
-                            traceback.print_exc()
-                            tb = traceback.format_exc()
-                            logger.debug(tb)
-                    elif link.link_type.startswith('OGC'):
-                        # Dumping OGC/OWS links
-                        link_file_obj = {
-                            "zip_folder": ".metadata/",
-                            "name": link_file_name,
-                            "data_str": link.url.strip(),
-                        }
-                    # Add file_info to the file list
-                    if link_file_obj is not None:
-                        file_list.append(link_file_obj)
-            except Exception:
-                traceback.print_exc()
-                tb = traceback.format_exc()
-                logger.debug(tb)
-
             # ZIP everything and return
             target_file_name = "".join([instance.name, ".zip"])
 
@@ -424,13 +335,13 @@ def download(request, resourceid, sender=Layer):
             response = StreamingHttpResponse(target_zip, content_type='application/zip')
             response['Content-Disposition'] = f'attachment; filename="{target_file_name}"'
             return response
-        except NotImplementedError:
+        except (NotImplementedError, Upload.DoesNotExist):
             traceback.print_exc()
             tb = traceback.format_exc()
             logger.debug(tb)
             return HttpResponse(
                 loader.render_to_string(
-                    'error/401.html',
+                    '401.html',
                     context={
                         'error_title': _("No files found."),
                         'error_message': _no_files_found
@@ -438,7 +349,7 @@ def download(request, resourceid, sender=Layer):
                     request=request), status=404)
     return HttpResponse(
         loader.render_to_string(
-            'error/401.html',
+            '401.html',
             context={
                 'error_title': _("Not Authorized"),
                 'error_message': _not_authorized
