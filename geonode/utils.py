@@ -296,17 +296,17 @@ def mkdtemp(dir=settings.MEDIA_ROOT):
     return tempdir
 
 def doc_path():
-    dir = settings.MEDIA_ROOT + "/" + settings.DOCUMENT_LOCATION
-    date_time_dir = f'{dir}/{time.strftime("/%Y/%m/%d")}'
-    if not os.path.exists(dir):
+    dir = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION)
+    date_time_dir = f'{dir}{time.strftime("/%Y/%m/%d")}'
+    if os.path.exists(dir):
         os.makedirs(date_time_dir, exist_ok=True)
     return os.path.join(date_time_dir)
 
 
 def layer_path():
-    dir = settings.MEDIA_ROOT + "/" + settings.SPATIAL_LOCATION
-    date_time_dir = f'{dir}/{time.strftime("/%Y/%m/%d")}'
-    if not os.path.exists(dir):
+    dir = os.path.join(settings.MEDIA_ROOT, settings.SPATIAL_LOCATION)
+    date_time_dir = f'{dir}{time.strftime("/%Y/%m/%d")}'
+    if os.path.exists(dir):
         os.makedirs(date_time_dir, exist_ok=True)
     return os.path.join(date_time_dir)
 
