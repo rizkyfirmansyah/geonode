@@ -15,33 +15,26 @@
       </div>
       <div class="modal-body text-center">
           <ul class="nav nav-tabs" role="tablist">
-            {% if links %}
-              <li class="nav-item col"><a class="nav-primary active" role="tab" aria-controls="download_tab1" aria-selected="true" href="#download_tab1" data-toggle="tab">{% trans "Images" %}</a></li>
-            {% endif %}
             {% if links_download %}
-              <li class="nav-item col"><a class="nav-primary" href="#download_tab2" role="tab" aria-controls="download_tab2" aria-selected="false" data-toggle="tab">{% trans "Data" %}</a></li>
+              <li class="nav-item col"><a class="nav-primary active" href="#download_original_data" role="tab" aria-controls="download_original_data" aria-selected="true" data-toggle="tab">{% trans "Data" %}</a></li>
+            {% endif %}
+            {% if links %}
+              <li class="nav-item col"><a class="nav-primary" role="tab" aria-controls="download_image_data" aria-selected="false" href="#download_image_data" data-toggle="tab">{% trans "Images" %}</a></li>
             {% endif %}
           </ul>
           <div class="tab-content bg-light">
             {% if links %}
-              <div class="tab-pane active" id="download_tab1">
-                <li class="active">
-                  <ul class="mt-2">
-                    {% for link in links %}
-                      <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-upload btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
-                    {% endfor %}
-                  </ul>
-                </li>
+              <div class="tab-pane" id="download_image_data">
+                <ul class="mt-2">
+                  {% for link in links %}
+                    <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-upload btn-block" href="{{ link.url }}" target="_blank">{% trans link.name %}</a></li>
+                  {% endfor %}
+                </ul>
               </div>
             {% endif %}
 
             {% if links_download %}
-                {% if not links %}
-                  {#  if links doesn't exist, make this tab active by default #}
-                  <div class="tab-pane active" id="download_tab2">
-                {% else %}
-                  <div class="tab-pane" id="download_tab2">
-                {% endif %}
+              <div class="tab-pane active" id="download_original_data">
                 <div class="mt-2 mb-2">
                   <a href="{% url "layer_export" resource.alternate %}" class="btn btn-save btn-block mb-3">{% trans "Advanced Export Filtered Data" %}</a>
                   <button class="btn btn-upload btn-block" type="button" data-toggle="collapse" data-target="#originalDownload" aria-expanded="false" aria-controls="originalDownload">{% trans "Download Original Dataset" %}</button>
@@ -68,7 +61,7 @@
                   </div>
                 </div>
                 
-          </div>
+              </div>
             {% endif %}
           </div>
       </div>
@@ -112,7 +105,7 @@
             {% endfor %}
             <ul>
         </div>
-        {% if resource.storeType == 'dataStore' %}
+        {% if resource.subtype == 'vector' %}
           <h5 class="modal-title text-center" id="downloadModalLayer">{% trans "Attribute Information" %}</h5>
           <ul>
             <li><a class="btn btn-light btn-block" href="{{ resource.get_absolute_url }}/feature_catalogue"
