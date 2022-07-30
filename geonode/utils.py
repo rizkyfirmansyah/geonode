@@ -298,7 +298,7 @@ def mkdtemp(dir=settings.MEDIA_ROOT):
 def doc_path():
     dir = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION)
     date_time_dir = f'{dir}{time.strftime("/%Y/%m/%d")}'
-    if os.path.exists(dir):
+    if not os.path.exists(date_time_dir):
         os.makedirs(date_time_dir, exist_ok=True)
     return os.path.join(date_time_dir)
 
@@ -306,7 +306,7 @@ def doc_path():
 def layer_path():
     dir = os.path.join(settings.MEDIA_ROOT, settings.SPATIAL_LOCATION)
     date_time_dir = f'{dir}{time.strftime("/%Y/%m/%d")}'
-    if os.path.exists(dir):
+    if not os.path.exists(date_time_dir):
         os.makedirs(date_time_dir, exist_ok=True)
     return os.path.join(date_time_dir)
 
@@ -316,8 +316,6 @@ def unzip_file(upload_file, extension='.shp', tempdir=None):
     Unzips a zipfile into a temporary directory and returns the full path of the .shp file inside (if any)
     """
     absolute_base_file = None
-    if tempdir is None:
-        tempdir = layer_path()
 
     the_zip = ZipFile(upload_file, allowZip64=True)
     the_zip.extractall(tempdir)
@@ -376,7 +374,7 @@ def get_layer_workspace(layer):
     if not workspace and alternate and ':' in alternate:
         workspace = alternate.split(":")[1]
     if not workspace:
-        default_workspace = getattr(settings, "DEFAULT_WORKSPACE", "geonode")
+        default_workspace = getattr(settings, "DEFAULT_WORKSPACE", "sdi")
         try:
             from geonode.services.enumerations import CASCADED
             if layer.remote_service.method == CASCADED:

@@ -21,6 +21,7 @@ import os
 import base64
 import pickle
 import logging
+import re
 
 from gsimporter.api import NotFound
 from django.utils.timezone import now
@@ -247,7 +248,10 @@ class Upload(models.Model):
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
-        storage_manager.rmtree(self.upload_dir, ignore_errors=True)
+        for file in os.listdir(self.upload_dir):
+            match = re.search(self.name, file)
+            if match:
+                storage_manager.delete(file, ignore_errors=True)
 
     def set_processing_state(self, state):
         if self.state != state:

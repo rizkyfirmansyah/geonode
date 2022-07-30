@@ -1435,9 +1435,6 @@ def layer_append_replace_view(request, layername, template, action_type):
             except Exception as e:
                 logger.exception(e)
                 raise e
-            finally:
-                if not store_spatial_files:
-                    storage_manager.delete_retrieved_paths(force=True)
         else:
             errormsgs = []
             for e in form.errors.values():

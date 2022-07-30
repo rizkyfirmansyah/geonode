@@ -456,10 +456,10 @@ define(function(require, exports) {
         } catch (err) {
             // pass
         }
-        var a = '<a href="' + resp.url + '" class="btn btn-upload">' + gettext(resourceType.capitalize() + ' Info') + '</a>';
-        var b = '<a href="' + resp.url + '/metadata" class="btn btn-warning">' + gettext('Edit Metadata') + '</a>';
-        var c = '<a href="' + resp.url + '/metadata_upload" class="btn btn-warning">' + gettext('Upload Metadata') + '</a>';
-        var d = '<a href="' + resp.url + '/style_upload" class="btn btn-warning">' + gettext('Upload SLD') + '</a>';
+        var a = '<a href="' + resp.url + '" class="btn btn-primary col">' + gettext(resourceType.capitalize() + ' Info') + '</a>';
+        var b = '<a href="' + resp.url + '/metadata" class="btn btn-edit col">' + gettext('Edit Metadata') + '</a>';
+        var c = '<a href="' + resp.url + '/metadata_upload" class="btn btn-warning col">' + gettext('Upload Metadata') + '</a>';
+        var d = '<a href="' + resp.url + '/style_upload" class="btn btn-upload col">' + gettext('Upload SLD') + '</a>';
         var e = '<a href="' + resp.url.replace(/^\/layers/, '/gs') + '/style/manage" class="btn btn-warning">' + gettext('Manage Styles') + '</a>';
         if (resourceType != 'layer') {
             // Only Layers have Metadata and SLD Upload features for the moment

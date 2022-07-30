@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
+{% if is_layer and subtype != "remote" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
   {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
     <div class="tab-pane" id="permissions_tab2">
       <div class="col" id="gis_limits_map" style="height: 344px;width: 544px;"></div>

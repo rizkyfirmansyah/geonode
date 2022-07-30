@@ -144,9 +144,6 @@
   {% endautoescape %}
 </script>
 
-{% if GEONODE_SECURITY_ENABLED %}
-  {% with catalogue='layer' %}
-    {% include "modal/permissions.html" %}
-  {% endwith %}
-{% endif %}
+{% include "toast/permissions_form.html" %}
+
 {% endblock extra_script %}
