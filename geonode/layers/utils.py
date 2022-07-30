@@ -400,7 +400,7 @@ def delete_orphaned_layers(resource_id):
             match = re.search(_upload.name, filename)
             logger.debug(f"Deleting orphaned layer file {filename}")
             if match:
-                storage_manager.delete(filename)
+                storage_manager.delete(os.path.join(_upload.upload_dir, filename))
 
         for upload in Upload.objects.filter(resource_id=resource_id):
             upload.delete()

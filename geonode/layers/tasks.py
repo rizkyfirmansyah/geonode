@@ -21,14 +21,12 @@
 from geonode.celery_app import app
 from celery.utils.log import get_task_logger
 from geonode.layers.utils import delete_orphaned_layers
-from geonode.tasks.tasks import FaultTolerantTask
 
 logger = get_task_logger(__name__)
 
 
 @app.task(
     bind=True,
-    base=FaultTolerantTask,
     name='geonode.layers.tasks.delete_shapefile_data',
     queue='cleanup',
     expires=600,

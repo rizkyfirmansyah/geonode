@@ -685,7 +685,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "show_popup": show_popup,
         "filter": filter,
         "subtype": layer.subtype,
-        "online": (layer.remote_service.probe == 200) if layer.storeType == "remoteStore" else True,
+        "online": (layer.remote_service.probe == 200) if layer.subtype == "remote" else True,
         "processed": layer.processed
     }
 
@@ -1471,9 +1471,13 @@ def layer_remove(request):
         logger.debug(f'Deleting Layer {layer}')
         try:
             logger.debug(f'Deleting Layer {layer}')
+            delete_shapefile_data.apply((layer.id,))
             with transaction.atomic():
-                delete_shapefile_data.apply((layer.id,))
                 Layer.objects.filter(id=layer.id).delete()
+            register_event(request, EventType.EVENT_REMOVE, layer)
+            message = _("Spatial data: {} has been deleted".format(layer.alternate))
+
+            messages.warning(request, message, extra_tags=toast_title)
 
         except IntegrityError:
             raise
@@ -1488,10 +1492,6 @@ def layer_remove(request):
             toast_unauthorized(request, message, toast_title)
             return HttpResponseRedirect(request.path_info)
 
-        register_event(request, 'remove', layer)
-        message = _("Spatial data: {} has been deleted".format(layer.alternate))
-
-        messages.warning(request, message, extra_tags=toast_title)
         return redirect('catalogue_browse')
 
     except PermissionDenied:
