@@ -39,10 +39,11 @@ from django.db.models import Q
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
-from django.core.exceptions import SuspiciousFileOperation
+from django.core.exceptions import ObjectDoesNotExist, SuspiciousFileOperation
 from geonode.layers.api.exceptions import InvalidDatasetException
 from geonode.storage.manager import storage_manager
 # Geonode functionality
+from geonode.base.models import Region
 from geonode.upload.models import Upload
 from geonode.utils import check_ogc_backend, layer_path
 from geonode import GeoNodeException, geoserver
@@ -85,6 +86,24 @@ def _clean_string(
         str = replace + str
 
     return regex.sub(replace, str)
+
+
+def resolve_regions(regions):
+    regions_resolved = []
+    regions_unresolved = []
+    if regions and len(regions) > 0:
+        for region in regions:
+            try:
+                if region.isnumeric():
+                    region_resolved = Region.objects.get(id=int(region))
+                else:
+                    region_resolved = Region.objects.get(
+                        Q(name__iexact=region) | Q(code__iexact=region))
+                regions_resolved.append(region_resolved)
+            except ObjectDoesNotExist:
+                regions_unresolved.append(region)
+
+    return regions_resolved, regions_unresolved
 
 
 def get_files(filename):
@@ -372,29 +391,21 @@ def get_bbox(filename):
 
     return [bbox_x0, bbox_x1, bbox_y0, bbox_y1, f"EPSG:{str(srid)}"]
 
-@staticmethod
+
 def delete_orphaned_layers(resource_id):
     """Delete orphaned layer files."""
-    deleted = []
     _upload = Upload.objects.filter(resource_id=resource_id).get()
     try:
         for filename in os.listdir(_upload.upload_dir):
             match = re.search(_upload.name, filename)
             logger.debug(f"Deleting orphaned layer file {filename}")
-            try:
-                if match:
-                    storage_manager.delete(filename)
-                    deleted.append(filename)
-            except NotImplementedError as e:
-                logger.error(
-                    f"Failed to delete orphaned layer file '{filename}': {e}")
+            if match:
+                storage_manager.delete(filename)
 
-            for upload in Upload.objects.filter(resource_id=resource_id):
-                upload.delete()
+        for upload in Upload.objects.filter(resource_id=resource_id):
+            upload.delete()
     except Exception as e:
         logger.error(f"Failed to delete layer file from storage '{_upload.name}': {e}")
-
-    return deleted
 
 
 def surrogate_escape_string(input_string, source_character_set):

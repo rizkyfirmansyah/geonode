@@ -54,7 +54,7 @@ from ..documents.enumerations import (
     DOCUMENT_TYPE_MAP,
     DOCUMENT_MIMETYPE_MAP)
 from ..people.utils import get_valid_user
-from ..base.models import resolve_regions
+from ..layers.utils import resolve_regions
 from ..layers.metadata import convert_keyword
 
 logger = logging.getLogger(__name__)

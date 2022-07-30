@@ -21,7 +21,7 @@
 from geonode.celery_app import app
 from celery.utils.log import get_task_logger
 from geonode.layers.utils import delete_orphaned_layers
-from geonode.tasks.tasks import AcquireLock, FaultTolerantTask
+from geonode.tasks.tasks import FaultTolerantTask
 
 logger = get_task_logger(__name__)
 
@@ -43,10 +43,4 @@ def delete_shapefile_data(self, resource_id):
     """
     Deletes all relevant shapefile.
     """
-    lock_id = f'{resource_id}'
-    with AcquireLock(lock_id) as lock:
-        if lock.acquire() is True:
-            try:
-                return delete_orphaned_layers(resource_id)
-            finally:
-                lock.release()
+    delete_orphaned_layers(resource_id)

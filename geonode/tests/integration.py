@@ -433,7 +433,7 @@ class GeoNodeMapTest(GeoNodeLiveTestSupport):
                                  'Expected specific date from uploaded layer XML metadata')
 
                 # Set
-                from geonode.base.models import resolve_regions
+                from geonode.layers.utils import resolve_regions
 
                 thelayer_metadata = os.path.join(
                     gisdata.PROJECT_ROOT,
@@ -524,7 +524,7 @@ class GeoNodeMapTest(GeoNodeLiveTestSupport):
                                      "Expected specific date from uploaded layer XML metadata")
 
                     # Set
-                    from geonode.base.models import resolve_regions
+                    from geonode.layers.utils import resolve_regions
 
                     thelayer_metadata = os.path.join(
                         gisdata.PROJECT_ROOT,

@@ -38,11 +38,10 @@ from django.contrib.auth import get_user_model
 from django.db.models.fields.json import JSONField
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 from django.contrib.gis.db.models import PolygonField
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
-from geonode.layers.tasks import delete_shapefile_data
 from geonode.thumbs.utils import MISSING_THUMB, remove_cur_thumb, thumb_exists
 from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
@@ -747,21 +746,18 @@ class ResourceBaseManager(PolymorphicManager):
         if ResourceBase.objects.filter(id=resource_id).exists():
             _resource = ResourceBase.objects.filter(id=resource_id).get()
             _uploaded_folder = None
-            if _resource.subtype == 'vector':
-                delete_shapefile_data.apply((resource_id,))
-            else:
-                if _resource.files:
-                    for _file in _resource.files:
-                        try:
-                            if storage_manager.exists(_file):
-                                if not _uploaded_folder:
-                                    _uploaded_folder = os.path.split(storage_manager.path(_file))[0]
-                                storage_manager.delete(_file)
-                        except Exception as e:
-                            logger.warning(e)
+            if _resource.files:
+                for _file in _resource.files:
+                    try:
+                        if storage_manager.exists(_file):
+                            if not _uploaded_folder:
+                                _uploaded_folder = os.path.split(storage_manager.path(_file))[0]
+                            storage_manager.delete(_file)
+                    except Exception as e:
+                        logger.warning(e)
 
-                    # Do we want to delete the files also from the resource?
-                    ResourceBase.objects.filter(id=resource_id).update(files={})
+                # Do we want to delete the files also from the resource?
+                ResourceBase.objects.filter(id=resource_id).update(files={})
 
             # Remove generated thumbnails, if any
             if hasattr(_resource, 'curatedthumbnail'):
@@ -2492,23 +2488,6 @@ def rating_post_save(instance, *args, **kwargs):
     ResourceBase.objects.filter(
         id=instance.object_id).update(
         rating=instance.rating)
-
-def resolve_regions(regions):
-    regions_resolved = []
-    regions_unresolved = []
-    if regions and len(regions) > 0:
-        for region in regions:
-            try:
-                if region.isnumeric():
-                    region_resolved = Region.objects.get(id=int(region))
-                else:
-                    region_resolved = Region.objects.get(
-                        Q(name__iexact=region) | Q(code__iexact=region))
-                regions_resolved.append(region_resolved)
-            except ObjectDoesNotExist:
-                regions_unresolved.append(region)
-
-    return regions_resolved, regions_unresolved
 
 
 signals.post_save.connect(rating_post_save, sender=OverallRating)
