@@ -344,7 +344,7 @@ def get_data_tables(table):
                 select to_jsonb(sq) - 'the_geom' - 'fid'::text data
                 from (
                 select * from
-                """ + table + """
+                \"""" + table + """\"
                 ) sq
             ) as data;
         """
