@@ -26,6 +26,7 @@ import re
 import logging
 from urllib.parse import urljoin
 from schema import Schema
+from django.db.models import Q
 
 from dateutil.parser import isoparse
 from datetime import datetime, timedelta
