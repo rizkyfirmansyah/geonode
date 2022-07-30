@@ -145,7 +145,8 @@ def save_step_view(req, session):
         spatial_files = scan_file(
             base_file,
             scan_hint=scan_hint,
-            charset=form.cleaned_data["charset"]
+            charset=form.cleaned_data["charset"],
+            regex_name=name
         )
         logger.debug(f"spatial_files: {spatial_files}")
 

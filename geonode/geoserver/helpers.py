@@ -2242,7 +2242,7 @@ class SpatialFilesLayerType:
 
 
 def get_spatial_files_layer_type(allowed_extensions, files, charset='UTF-8') -> SpatialFilesLayerType:
-    """Reutnrs 'vector' or 'raster' whether a file from the allowed extensins has been identified.
+    """Returns 'vector' or 'raster' whether a file from the allowed extensins has been identified.
     """
     from geonode.upload.files import get_scan_hint, scan_file
 
@@ -2250,11 +2250,13 @@ def get_spatial_files_layer_type(allowed_extensions, files, charset='UTF-8') -> 
     if not allowed_file or len(allowed_file) != 1:
         return None
     base_file = allowed_file[0]
+    name, ext = os.path.splitext(os.path.basename(base_file))
     scan_hint = get_scan_hint(allowed_extensions)
     spatial_files = scan_file(
         base_file,
         scan_hint=scan_hint,
-        charset=charset
+        charset=charset,
+        regex_name=name
     )
     the_layer_type = get_layer_type(spatial_files)
     if the_layer_type not in (FeatureType.resource_type, Coverage.resource_type):

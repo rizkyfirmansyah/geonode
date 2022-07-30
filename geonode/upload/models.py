@@ -251,7 +251,7 @@ class Upload(models.Model):
         for file in os.listdir(self.upload_dir):
             match = re.search(self.name, file)
             if match:
-                storage_manager.delete(file)
+                storage_manager.delete(os.path.join(self.upload_dir, file))
 
     def set_processing_state(self, state):
         if self.state != state:

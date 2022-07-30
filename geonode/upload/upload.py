@@ -285,14 +285,14 @@ def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=Tr
     lock_id = 'upload_workflow_save_step'
     with AcquireLock(lock_id, blocking=True) as lock:
         if lock.acquire() is True:
-            _log(f'Uploading layer: {layer}')
-            # if len(spatial_files) > 1:
-            #     # we only support more than one file if they're rasters for mosaicing
-            #     if not all(
-            #             [f.file_type.layer_type == 'coverage' for f in spatial_files]):
-            #         msg = "Please upload only one type of file at a time"
-            #         logger.exception(Exception(msg))
-            #         raise GeneralUploadException(detail=msg)
+            _log(f'Uploading layer: {layer}, files {spatial_files}')
+            if len(spatial_files) > 1:
+                # we only support more than one file if they're rasters for mosaicing
+                if not all(
+                        [f.file_type.layer_type == 'coverage' for f in spatial_files]):
+                    msg = "Please upload only one type of file at a time"
+                    logger.exception(Exception(msg))
+                    raise GeneralUploadException(detail=msg)
             name = get_valid_layer_name(layer, overwrite)
             _log(f'Name for layer: {name}')
             if not any(spatial_files.all_files()):

@@ -257,7 +257,7 @@ def get_scan_hint(valid_extensions):
     return result
 
 
-def scan_file(file_name, scan_hint=None, charset=None):
+def scan_file(file_name, scan_hint=None, charset=None, regex_name=None):
     '''get a list of SpatialFiles for the provided file'''
     if not os.path.exists(file_name):
         try:
@@ -281,12 +281,14 @@ def scan_file(file_name, scan_hint=None, charset=None):
             archive = file_name
     else:
         for p in os.listdir(dirname):
-            _f = os.path.join(dirname, p)
-            try:
-                fixup_shp_columnnames(_f, charset)
-            except Exception as e:
-                logger.debug(e)
-            paths.append(_f)
+            match = re.search(regex_name, p)
+            if match:
+                _f = os.path.join(dirname, p)
+                try:
+                    fixup_shp_columnnames(_f, charset)
+                except Exception as e:
+                    logger.debug(e)
+                paths.append(_f)
         archive = None
     if paths is not None:
         safe_paths = _rename_files(paths)
