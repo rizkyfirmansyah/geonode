@@ -43,7 +43,6 @@ from django.core.exceptions import SuspiciousFileOperation
 from geonode.layers.api.exceptions import InvalidDatasetException
 from geonode.storage.manager import storage_manager
 # Geonode functionality
-from geonode.base.models import Region
 from geonode.upload.models import Upload
 from geonode.utils import check_ogc_backend, layer_path
 from geonode import GeoNodeException, geoserver
