@@ -33,13 +33,13 @@ from datetime import datetime, timedelta
 # Django functionality
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 # Geonode functionality
 from guardian.shortcuts import get_perms, remove_perm, assign_perm
 
 from geonode.layers.models import Layer
-from geonode.base.models import ResourceBase, Link, Configuration
+from geonode.base.models import Region, ResourceBase, Link, Configuration
 from geonode.thumbs.utils import (
     get_thumbs,
     remove_thumb)
@@ -253,3 +253,20 @@ def validate_extra_metadata(data, instance):
             raise ValidationError(f"{e} at index {_index} for input json: {json.dumps(_metadata)}")
     # conerted because in this case, we can store a well formated json instead of the user input
     return data
+
+def resolve_regions(regions):
+    regions_resolved = []
+    regions_unresolved = []
+    if regions and len(regions) > 0:
+        for region in regions:
+            try:
+                if region.isnumeric():
+                    region_resolved = Region.objects.get(id=int(region))
+                else:
+                    region_resolved = Region.objects.get(
+                        Q(name__iexact=region) | Q(code__iexact=region))
+                regions_resolved.append(region_resolved)
+            except ObjectDoesNotExist:
+                regions_unresolved.append(region)
+
+    return regions_resolved, regions_unresolved

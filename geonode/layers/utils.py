@@ -39,7 +39,7 @@ from django.db.models import Q
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ObjectDoesNotExist, SuspiciousFileOperation
+from django.core.exceptions import SuspiciousFileOperation
 from geonode.layers.api.exceptions import InvalidDatasetException
 from geonode.storage.manager import storage_manager
 # Geonode functionality
@@ -86,24 +86,6 @@ def _clean_string(
         str = replace + str
 
     return regex.sub(replace, str)
-
-
-def resolve_regions(regions):
-    regions_resolved = []
-    regions_unresolved = []
-    if regions and len(regions) > 0:
-        for region in regions:
-            try:
-                if region.isnumeric():
-                    region_resolved = Region.objects.get(id=int(region))
-                else:
-                    region_resolved = Region.objects.get(
-                        Q(name__iexact=region) | Q(code__iexact=region))
-                regions_resolved.append(region_resolved)
-            except ObjectDoesNotExist:
-                regions_unresolved.append(region)
-
-    return regions_resolved, regions_unresolved
 
 
 def get_files(filename):
