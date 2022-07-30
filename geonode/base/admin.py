@@ -262,7 +262,7 @@ class RegionAdmin(TabbedTranslationAdmin):
                 messages.warning(request, msg, extra_tags=toast_title)
                 return HttpResponseRedirect(request.path_info)
 
-            upload_path = f"tmp/regions-{str(uuid4())}.csv"
+            upload_path = f"base/regions-{str(uuid4())}.csv"
             content = csv_file.read()
             file_content = ContentFile(content)
             file_name = storage_manager.save(
