@@ -38,7 +38,7 @@ from django.contrib.auth import get_user_model
 from django.db.models.fields.json import JSONField
 from django.contrib.gis.geos import GEOSGeometry, Polygon, Point
 from django.contrib.gis.db.models import PolygonField
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
@@ -2492,6 +2492,23 @@ def rating_post_save(instance, *args, **kwargs):
     ResourceBase.objects.filter(
         id=instance.object_id).update(
         rating=instance.rating)
+
+def resolve_regions(regions):
+    regions_resolved = []
+    regions_unresolved = []
+    if regions and len(regions) > 0:
+        for region in regions:
+            try:
+                if region.isnumeric():
+                    region_resolved = Region.objects.get(id=int(region))
+                else:
+                    region_resolved = Region.objects.get(
+                        Q(name__iexact=region) | Q(code__iexact=region))
+                regions_resolved.append(region_resolved)
+            except ObjectDoesNotExist:
+                regions_unresolved.append(region)
+
+    return regions_resolved, regions_unresolved
 
 
 signals.post_save.connect(rating_post_save, sender=OverallRating)
