@@ -44,6 +44,7 @@ from geonode.layers.api.exceptions import InvalidDatasetException
 from geonode.storage.manager import storage_manager
 # Geonode functionality
 from geonode.base.models import Region
+from geonode.upload.models import Upload
 from geonode.utils import check_ogc_backend, layer_path
 from geonode import GeoNodeException, geoserver
 from geonode.geoserver.helpers import gs_catalog
@@ -390,21 +391,27 @@ def get_bbox(filename):
 
     return [bbox_x0, bbox_x1, bbox_y0, bbox_y1, f"EPSG:{str(srid)}"]
 
-
-def delete_orphaned_layers():
+@staticmethod
+def delete_orphaned_layers(resource_id):
     """Delete orphaned layer files."""
     deleted = []
-    _, files = storage_manager.listdir("layers")
-
-    for filename in files:
-        if Layer.objects.filter(file__icontains=filename).count() == 0:
+    _upload = Upload.objects.filter(resource_id=resource_id).get()
+    try:
+        for filename in os.listdir(_upload.upload_dir):
+            match = re.search(_upload.name, filename)
             logger.debug(f"Deleting orphaned layer file {filename}")
             try:
-                storage_manager.delete(os.path.join("layers", filename))
-                deleted.append(filename)
+                if match:
+                    storage_manager.delete(filename)
+                    deleted.append(filename)
             except NotImplementedError as e:
                 logger.error(
                     f"Failed to delete orphaned layer file '{filename}': {e}")
+
+            for upload in Upload.objects.filter(resource_id=resource_id):
+                upload.delete()
+    except Exception as e:
+        logger.error(f"Failed to delete layer file from storage '{_upload.name}': {e}")
 
     return deleted
 

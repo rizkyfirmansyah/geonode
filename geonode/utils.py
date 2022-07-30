@@ -316,6 +316,8 @@ def unzip_file(upload_file, extension='.shp', tempdir=None):
     Unzips a zipfile into a temporary directory and returns the full path of the .shp file inside (if any)
     """
     absolute_base_file = None
+    if tempdir is None:
+        tempdir = layer_path()
 
     the_zip = ZipFile(upload_file, allowZip64=True)
     the_zip.extractall(tempdir)

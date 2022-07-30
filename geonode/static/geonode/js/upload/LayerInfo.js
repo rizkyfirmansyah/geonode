@@ -460,7 +460,7 @@ define(function(require, exports) {
         var b = '<a href="' + resp.url + '/metadata" class="btn btn-edit col">' + gettext('Edit Metadata') + '</a>';
         var c = '<a href="' + resp.url + '/metadata_upload" class="btn btn-warning col">' + gettext('Upload Metadata') + '</a>';
         var d = '<a href="' + resp.url + '/style_upload" class="btn btn-upload col">' + gettext('Upload SLD') + '</a>';
-        var e = '<a href="' + resp.url.replace(/^\/layers/, '/gs') + '/style/manage" class="btn btn-warning">' + gettext('Manage Styles') + '</a>';
+        var e = '<a href="' + resp.url.replace(/^\/layers/, '/gs') + '/style/manage" class="btn btn-upload col">' + gettext('Manage Styles') + '</a>';
         if (resourceType != 'layer') {
             // Only Layers have Metadata and SLD Upload features for the moment
             c = '';
@@ -479,7 +479,7 @@ define(function(require, exports) {
             }
         }
         self.logStatus({
-            msg: '<span>' + gettext('Your ' + resourceType + ' was successfully updated') + '<br/>' + msg_col + '<br/>' + a + '&nbsp;&nbsp;&nbsp;' + b + '&nbsp;&nbsp;&nbsp;' + c + '&nbsp;&nbsp;&nbsp;' + d + '&nbsp;&nbsp;&nbsp;' + e + '</span>',
+            msg: '<span class="h6">' + gettext('Your ' + resourceType + ' was successfully updated') + '<br/>' + msg_col + '<br/>' + a + '&nbsp;&nbsp;&nbsp;' + b + '&nbsp;&nbsp;&nbsp;' + c + '&nbsp;&nbsp;&nbsp;' + d + '&nbsp;&nbsp;&nbsp;' + e + '</span>',
             level: 'alert-success',
             empty: 'true'
         });

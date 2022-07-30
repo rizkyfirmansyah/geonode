@@ -285,8 +285,7 @@ def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=Tr
     lock_id = 'upload_workflow_save_step'
     with AcquireLock(lock_id, blocking=True) as lock:
         if lock.acquire() is True:
-            _log(f'Uploading layer: {layer}, files {spatial_files}')
-            print(len(spatial_files), spatial_files)
+            _log(f'Uploading layer: {layer}')
             # if len(spatial_files) > 1:
             #     # we only support more than one file if they're rasters for mosaicing
             #     if not all(
@@ -309,7 +308,6 @@ def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=Tr
                 logger.exception(Exception(msg))
                 raise GeneralUploadException(msg)
             files_to_upload = preprocess_files(spatial_files)
-            _log(f"files_to_upload: {files_to_upload}")
             _log(f'Uploading {the_layer_type}')
             error_msg = None
             try:
@@ -414,8 +412,8 @@ def save_step(user, layer, spatial_files, overwrite=True, store_spatial_files=Tr
                         error_msg = "Unexpected error durng the GeoServer upload" \
                             "please check GeoServer logs for more information"
 
-                if not mosaic and len(import_session.tasks) > 1:
-                    error_msg = "Only a single upload is supported at the moment"
+                # if not mosaic and len(import_session.tasks) > 1:
+                #     error_msg = "Only a single upload is supported at the moment"
 
                 if not error_msg and import_session.tasks:
                     task = import_session.tasks[0]

@@ -645,48 +645,6 @@ def pre_save_layer(instance, sender, **kwargs):
         send_notification(recipients, notice_type_label, {'resource': instance})
 
 
-def pre_delete_layer(instance, sender, **kwargs):
-    """
-    Remove any associated style to the layer, if it is not used by other layers.
-    Default style will be deleted in post_delete_layer
-    """
-    if instance.remote_service is not None and instance.remote_service.method == INDEXED:
-        # we need to delete the maplayers here because in the post save layer.remote_service is not available anymore
-        # REFACTOR
-        from geonode.maps.models import MapLayer
-        logger.debug(
-            "Going to delete associated maplayers for [%s]",
-            instance.alternate)
-        MapLayer.objects.filter(
-            name=instance.alternate,
-            ows_url=instance.ows_url).delete()
-
-    logger.debug(
-        "Going to delete the styles associated for [%s]",
-        instance.alternate)
-    ct = ContentType.objects.get_for_model(instance)
-    OverallRating.objects.filter(
-        content_type=ct,
-        object_id=instance.id).delete()
-
-    default_style = instance.default_style
-    for style in instance.styles.all():
-        if style.layer_styles.all().count() == 1:
-            if style != default_style:
-                style.delete()
-
-    if 'geonode.upload' in settings.INSTALLED_APPS and \
-            settings.UPLOADER['BACKEND'] == 'geonode.importer':
-        from geonode.upload.models import Upload
-        # Need to call delete one by one in ordee to invoke the
-        #  'delete' overridden method
-        for upload in Upload.objects.filter(layer_id=instance.id):
-            upload.delete()
-
-    # Delete object permissions
-    ResourceManager.remove_permissions(instance.uuid, instance=instance.get_self_resource())
-
-
 def post_delete_layer(instance, sender, **kwargs):
     """
     - Remove any associated style to the layer, if it is not used by other layers.
@@ -708,6 +666,11 @@ def post_delete_layer(instance, sender, **kwargs):
     if instance.default_style and Layer.objects.filter(
             default_style__id=instance.default_style.id).count() == 0:
         instance.default_style.delete()
+
+    ct = ContentType.objects.get_for_model(instance)
+    OverallRating.objects.filter(
+        content_type=ct,
+        object_id=instance.id).delete()
 
 
 signals.pre_save.connect(pre_save_layer, sender=Layer)

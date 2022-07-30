@@ -20,16 +20,16 @@
 """celery tasks for geonode.layers."""
 from geonode.celery_app import app
 from celery.utils.log import get_task_logger
-from geonode.resource.manager import resource_manager
-
-from geonode.layers.models import Layer
+from geonode.layers.utils import delete_orphaned_layers
+from geonode.tasks.tasks import AcquireLock, FaultTolerantTask
 
 logger = get_task_logger(__name__)
 
 
 @app.task(
     bind=True,
-    name='geonode.layers.tasks.delete_layer',
+    base=FaultTolerantTask,
+    name='geonode.layers.tasks.delete_shapefile_data',
     queue='cleanup',
     expires=600,
     time_limit=600,
@@ -39,14 +39,14 @@ logger = get_task_logger(__name__)
     retry_backoff=3,
     retry_backoff_max=30,
     retry_jitter=False)
-def delete_layer(self, layer_id):
+def delete_shapefile_data(self, resource_id):
     """
-    Deletes a layer.
+    Deletes all relevant shapefile.
     """
-    try:
-        layer = Layer.objects.get(id=layer_id)
-    except Layer.DoesNotExist:
-        logger.warning(f"Layers {layer_id} does not exist!")
-        return
-    logger.debug(f'Deleting Layer {layer}')
-    resource_manager.delete(uuid=layer.uuid, instance=layer)
+    lock_id = f'{resource_id}'
+    with AcquireLock(lock_id) as lock:
+        if lock.acquire() is True:
+            try:
+                return delete_orphaned_layers(resource_id)
+            finally:
+                lock.release()

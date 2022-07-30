@@ -49,6 +49,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
+from geonode.layers.tasks import delete_shapefile_data
 from geonode.views import page_not_found_message, unauthorized_message
 from geonode.notifications_helper import toast_unauthorized
 from django.template.loader import get_template
@@ -1471,6 +1472,7 @@ def layer_remove(request):
         try:
             logger.debug(f'Deleting Layer {layer}')
             with transaction.atomic():
+                delete_shapefile_data.apply((layer.id,))
                 Layer.objects.filter(id=layer.id).delete()
 
         except IntegrityError:
