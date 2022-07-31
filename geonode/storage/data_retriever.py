@@ -19,6 +19,7 @@
 
 import io
 import os
+import re
 import shutil
 import logging
 import zipfile
@@ -176,10 +177,18 @@ class DataRetriever(object):
 
     def delete_files(self, force=False):
         _folder_exists = self.temporary_folder and os.path.exists(self.temporary_folder)
+        name, ext = os.path.splitext(os.path.basename(self.file_paths.get('base_file')))
+        def _remove_files():
+            # remove the associated files instead of delete directory
+            for file in os.listdir(self.temporary_folder):
+              match = re.search(name, file)
+              if match:
+                  os.remove(os.path.join(self.temporary_folder, file))
+
         if _folder_exists and settings.MEDIA_ROOT != os.path.dirname(os.path.abspath(self.temporary_folder)):
-            shutil.rmtree(self.temporary_folder, ignore_errors=True)
+            _remove_files()
         elif force:
-            shutil.rmtree(self.temporary_folder, ignore_errors=True)
+            _remove_files()
 
         self.temporary_folder = None
         self.file_paths = {}
@@ -199,12 +208,15 @@ class DataRetriever(object):
         zip_file = self.file_paths['base_file']
         the_zip = zipfile.ZipFile(zip_file, allowZip64=True)
         the_zip.extractall(self.temporary_folder)
+        name, ext = os.path.splitext(os.path.basename(self.file_paths.get('base_file')))
         for _file in Path(self.temporary_folder).iterdir():
-            if _file.name.endswith('.shp') or _file.name.endswith('.tif'):
-                self.file_paths['base_file'] = Path(str(_file))
-            elif not zipfile.is_zipfile(str(_file)):
-                ext = _file.name.split(".")[-1]
-                self.file_paths[f"{ext}_file"] = Path(str(_file))
+            match = re.search(name, str(_file))
+            if match:
+                if _file.name.endswith('.shp') or _file.name.endswith('.tif'):
+                    self.file_paths['base_file'] = Path(str(_file))
+                elif not zipfile.is_zipfile(str(_file)):
+                    ext = _file.name.split(".")[-1]
+                    self.file_paths[f"{ext}_file"] = Path(str(_file))
 
         # remiving the zip file
         os.remove(zip_name)
