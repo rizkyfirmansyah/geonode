@@ -31,7 +31,7 @@
     <div class="row">
       <div class="col-md-8 d-flex">
         <h3 class="text-document">{{ resource.title }}</h3>
-        <span class="badge badge-secondary rounded-pill ml-2 p-1" style="width: auto;" *ngIf="{{ resource.extension }}">{{ resource.extension }}</span>
+        <span class="badge badge-secondary rounded-pill ml-2 p-1" style="width: auto">{% if resource.extension %}{{ resource.extension }}{% else %}{% trans "External" %}{% endif %}</span>
       </div>
       <div class="col-md-4 float-right"><a href="{% url "catalogue_browse" %}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a></div>
     </div>
@@ -40,42 +40,42 @@
 <div class="row">
   <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
     {% if "download_resourcebase" in perms_list %}
-    {% if resource.extension|lower in audiotypes and resource.doc_file %}
-    {% get_mime_type mimetypemap resource.extension as mimetype %}
-    <div id="embedded_map" width="100%">
-      <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
-        <audio controls width="100%">
-          <source src="{% url "document_download" resource.id %}" type="{{ mimetype }}">
-          {% trans "Your browser does not support the audio element." %}
-        </audio>
-      </a>
-    </div>
-    {% elif resource.extension|lower in imgtypes and resource.doc_file %}
-    <div id="embedded_map" width="100%">
-      <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
-        <img src="{% url "document_download" resource.id %}" width='100%' class="img-responsive" />
-      </a>
-    </div>
-    {% elif resource.extension|lower in videotypes and resource.doc_file %}
-    {% get_mime_type mimetypemap resource.extension as mimetype %}
-    <div id="embedded_map" width="100%">
-      <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
-        <video width="500" controls>
-          <source src="{% url "document_download" resource.id %}" type="{{ mimetype }}">
-          {% trans "Your browser does not support the video tag." %}
-        </video>
-      </a>
-    </div>
-    {% elif resource.extension|lower in wordtypes or resource.extension|lower in exceltypes or resource.extension|lower in ppttypes and resource.doc_file %}
-        <iframe src="https://docs.google.com/gview?url={{ SITEURL }}{% url "document_download" resource.id %}&embedded=true" width="100%" height="480px" frameborder="0"></iframe>
-    {% elif resource.extension == 'pdf' and resource.doc_file %}
-        {% include "documents/pdf_renderer.html" %}
-    {% elif resource.doc_file %}
-    <p><a href="{% url "document_link" resource.id %}" target="_blank">{% trans "Download the" %} {{ resource }}</a></p>
-    {% elif  resource.doc_url %}
-    <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }}.</a>
-      <small>({% trans 'External Resource' %})</small></p>
-    {%  endif %}
+      {% if resource.extension|lower in audiotypes and resource.doc_file %}
+      {% get_mime_type mimetypemap resource.extension as mimetype %}
+      <div id="embedded_map" width="100%">
+        <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
+          <audio controls width="100%">
+            <source src="{% url "document_download" resource.id %}" type="{{ mimetype }}">
+            {% trans "Your browser does not support the audio element." %}
+          </audio>
+        </a>
+      </div>
+      {% elif resource.extension|lower in imgtypes and resource.doc_file %}
+      <div id="embedded_map" width="100%">
+        <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
+          <img src="{% url "document_download" resource.id %}" width='100%' class="img-responsive" />
+        </a>
+      </div>
+      {% elif resource.extension|lower in videotypes and resource.doc_file %}
+      {% get_mime_type mimetypemap resource.extension as mimetype %}
+      <div id="embedded_map" width="100%">
+        <a style="text-decoration:none;" href="{% url "document_link" resource.id %}" target="_blank">
+          <video width="500" controls>
+            <source src="{% url "document_download" resource.id %}" type="{{ mimetype }}">
+            {% trans "Your browser does not support the video tag." %}
+          </video>
+        </a>
+      </div>
+      {% elif resource.extension|lower in wordtypes or resource.extension|lower in exceltypes or resource.extension|lower in ppttypes and resource.doc_file %}
+          <iframe src="https://docs.google.com/gview?url={{ SITEURL }}{% url "document_download" resource.id %}&embedded=true" width="100%" height="480px" frameborder="0"></iframe>
+      {% elif resource.extension == 'pdf' and resource.doc_file %}
+          {% include "documents/pdf_renderer.html" %}
+      {% elif not resource.doc_file %}
+        <p><a href="{% url "document_link" resource.id %}" target="_blank">{% trans "Download the" %} {{ resource }}</a></p>
+      {% elif resource.doc_url %}
+        <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }}.</a>
+          <small>({% trans 'External Resource' %})</small></p>
+      {%  endif %}
     {%  endif %}
 
     <div class="row d-flex">
@@ -143,16 +143,16 @@
       </li>
       <li class="list-group-item">
         {% if "download_resourcebase" in perms_list %}
-        {% if resource.extension|lower in imgtypes and resource.doc_file %}
-        <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
-            class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
-        {% elif resource.doc_file %}
-        <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
-            class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
-        {% elif  resource.doc_url %}
-        <a style="text-decoration:none;" target="_blank" href="{{ resource.doc_url }}"><button
-            class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
-        {%  endif %}
+          {% if resource.extension|lower in imgtypes and resource.doc_file %}
+            <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
+              class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+          {% elif not resource.doc_file %}
+            <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
+              class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+          {% elif  resource.doc_url %}
+            <a style="text-decoration:none;" target="_blank" href="{{ resource.doc_url }}"><button
+              class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+          {%  endif %}
         {% else %}
           <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
         {%  endif %}

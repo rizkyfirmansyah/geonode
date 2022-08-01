@@ -367,7 +367,7 @@ class DocumentReplaceForm(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = ['doc_file']
+        fields = ['doc_file', 'doc_url']
 
     def clean(self):
         """
@@ -375,9 +375,14 @@ class DocumentReplaceForm(forms.ModelForm):
         """
         cleaned_data = super().clean()
         doc_file = self.cleaned_data.get('doc_file')
+        doc_url = self.cleaned_data.get('doc_url')
 
-        if not doc_file:
-            raise forms.ValidationError(_("Document must be a file."))
+        if not doc_file and not doc_url:
+            raise forms.ValidationError(_("Document must be a file or url."))
+
+        if doc_file and doc_url:
+            raise forms.ValidationError(
+                _("A document cannot have both a file and a url."))
 
         return cleaned_data
 

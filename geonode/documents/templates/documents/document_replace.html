@@ -14,39 +14,41 @@
 {% block body %}
 <form method="post" enctype="multipart/form-data" action="{% url "document_replace" document.id %}">
   {% csrf_token %}
-  <div class="card-header bg-warning">
-    <div class="row">
-      <h3 class="col">{% trans "Replace " %}{{ document.title }}</h3>
-      <div class="col-sm-4 text-right"><a href="{% url 'document_detail' docid=document.id %}" class="btn btn-light w-100">{% trans "Return to Datasets" %}</a></div>
-    </div>
-  </div>
-  <div class="card-body">
-    <div id="upload_form">
-      {{ form.errors }}
-      {% if document.doc_file %}
-        {{ form.doc_file|as_crispy_field }}
-      {% elif document.doc_url %}
-        {{ form.doc_url|as_crispy_field }}
-      {% endif %}
-    </div>
-    <div title="Preview Image" id="previewImageDiv" class="d-none">
-      <div id="divPreview"><span><label id="doc_change_to"></label></span></div>
-      <img id="previewImage" src="" class="mx-auto d-block" />
-    </div>
-    <div class="d-none" id="previewPdf">
-      <canvas id="pdfRendererReplace" class="w-100"></canvas>
-      <div class="row justify-content-center mt-2">
-          <div>
-            <input id="current_page_replace" value="1" type="text" disabled class="btn btn-light text-center mr-3" style="width: 60px; border: 1px solid var(--shadow-1) !important;">
-            <span> / <span id="pageCountReplace"></span> </span>
-          </div>
+  <div class="card">
+    <div class="card-header bg-warning">
+      <div class="row">
+        <h3 class="col">{% trans "Replace " %}{{ document.title }}</h3>
+        <div class="col-sm-4 text-right"><a href="{% url 'document_detail' docid=document.id %}" class="btn btn-light w-100">{% trans "Return to Datasets" %}</a></div>
       </div>
     </div>
-  </div>
-  <div class="card-footer bg-transparent">
-    <div class="row">
-      <button id="clear-button" type="reset" class="btn btn-info col m-3">{% trans "Clear" %}</button>
-      <button id="upload-button" type="submit" class="btn btn-save col m-3" value="Update">{% trans "Replace Datasets" %}</button>
+    <div class="card-body">
+      <div id="upload_form">
+        {{ form.errors }}
+        {% if document.doc_file != '[]' %}
+          {{ form.doc_file|as_crispy_field }}
+        {% elif document.doc_url %}
+          {{ form.doc_url|as_crispy_field }}
+        {% endif %}
+      </div>
+      <div title="Preview Image" id="previewImageDiv" class="d-none">
+        <div id="divPreview"><span><label id="doc_change_to"></label></span></div>
+        <img id="previewImage" src="" class="mx-auto d-block" />
+      </div>
+      <div class="d-none" id="previewPdf">
+        <canvas id="pdfRendererReplace" class="w-100"></canvas>
+        <div class="row justify-content-center mt-2">
+            <div>
+              <input id="current_page_replace" value="1" type="text" disabled class="btn btn-light text-center mr-3" style="width: 60px; border: 1px solid var(--shadow-1) !important;">
+              <span> / <span id="pageCountReplace"></span> </span>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-transparent">
+      <div class="row">
+        <button id="clear-button" type="reset" class="btn btn-info col m-3">{% trans "Clear" %}</button>
+        <button id="upload-button" type="submit" class="btn btn-save col m-3" value="Update">{% trans "Replace Datasets" %}</button>
+      </div>
     </div>
   </div>
 </form>
