@@ -854,6 +854,11 @@ button.full-width {
 
 @media (min-width: 1200px) {
 
+  .cite-card {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
   .dl-horizontal dt {
     float: left;
     width: 190px;

@@ -144,11 +144,6 @@
     <dd>{{ resource.related_publication|safe }}</dd>
     {% endif %}
 
-    {% if resource.data_citation %}
-    <dt>{% trans "Cite" %}</dt>
-    <dd>{{ resource.data_citation|safe|escape }}</dd>
-    {% endif %}
-
     {% if resource.date_distribution %}
     <dt>{% trans "Distribution Date" %}</dt>
     <dd>{{ resource.date_distribution }}</dd>
@@ -257,4 +252,4 @@
 
   </dl>
 
-  {% endblock %}
+{% endblock %}

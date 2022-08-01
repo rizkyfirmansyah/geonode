@@ -1,4 +1,25 @@
 {% load i18n %}
+{% load static %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+{% if resource.data_citation %}
+  <div class="card alert alert-info mt-2 cite-card">
+    <div class="row">
+        <div class="col-sm-12 small" id="citation">
+          <span class="mb-0">{{ resource.raw_data_citation|safe|escape }}</span>
+        </div>
+        <div class="col-sm-6 col-2">
+          <button class="btn" data-clipboard-target="#citation">
+            <i class="fa-solid fa-copy" title="Copy to clipboard"></i>
+          </button>
+        </div>
+        <div class="col-sm-6 col-10 text-muted small align-self-center text-right">
+          Learn about <a href="https://dataverse.org/best-practices/data-citation" title="Data Citation - Dataverse.org" target="_blank">Data Citation Standards.</a>
+        </div>
+    </div>
+  </div>
+{% endif %}
+
 <ul class="nav nav-tabs mt-2">
   <li><a class="nav-primary active" href="#info" data-toggle="tab"><i class="fa-solid fa-circle-info"></i>{% trans "Info" %}</a></li>
   {% if resource.polymorphic_ctype.name == 'layer' %}
@@ -26,3 +47,9 @@
   <li><a class="nav-primary" href="#favorite" data-toggle="tab"><i class="fa-solid fa-heart"></i>{% trans "Favorite" %}</a></li>
   {% endif %}
 </ul>
+
+{% block extra_script %}
+  <script type="text/javascript">
+    new ClipboardJS('.btn');
+  </script>
+{% endblock extra_script %}
