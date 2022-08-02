@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+import hashlib
 import os
 import re
 import html
@@ -721,6 +722,9 @@ class ResourceBaseManager(PolymorphicManager):
     @staticmethod
     def upload_files(resource_id, files, force=False):
         """Update the ResourceBase model"""
+        h = hashlib.sha256()
+        b = bytearray(128*1024)
+        mv = memoryview(b)
         try:
             out = []
             for f in files:
@@ -732,10 +736,14 @@ class ResourceBaseManager(PolymorphicManager):
                         filename = os.path.basename(f)
                         file_uploaded_path = storage_manager.save(f'{folder}/{filename}', ff)
                         out.append(storage_manager.path(file_uploaded_path))
+                        for n in iter(lambda : ff.readinto(mv), 0):
+                            h.update(mv[:n])
+                        hash = h.hexdigest()
 
             # making an update instead of save in order to avoid others
             # signal like post_save and commiunication with geoserver
-            ResourceBase.objects.filter(id=resource_id).update(files=out)
+            print("HASHHH ", hash, h.hexdigest())
+            ResourceBase.objects.filter(id=resource_id).update(files=out, hash=h.hexdigest())
             return out
         except Exception as e:
             logger.exception(e)
@@ -1217,6 +1225,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         help_text=extra_metadata_help_text)
 
     objects = ResourceBaseManager()
+
+    hash = models.CharField(max_length=255, null=True, blank=True)
+    file_size = models.IntegerField(default=0)
 
     class Meta:
         # custom permissions,

@@ -177,6 +177,7 @@ class CommonModelApi(ModelResource):
         'featured',
         'perms',
         'avatar',
+        'subtype',
     ]
 
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
