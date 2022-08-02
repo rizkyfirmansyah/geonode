@@ -476,12 +476,6 @@ class ResourceBaseForm(TranslationModelForm):
                     _unsescaped_kwds.append(str(_k))
         return _unsescaped_kwds
 
-    def clean_title(self):
-        title = self.cleaned_data.get("title", None)
-        if title:
-            title = title.replace(",", "_")
-        return title
-
     def clean_extra_metadata(self):
         cleaned_data = self.cleaned_data.get('extra_metadata', [])
         return json.dumps(validate_extra_metadata(cleaned_data, self.instance), indent=4)

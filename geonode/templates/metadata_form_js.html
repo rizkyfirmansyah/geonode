@@ -677,26 +677,12 @@
             $('#metadata_update').submit(function(e) {
                 e.preventDefault();
 
-                var formData = $(this).serializeArray();
-                formData.forEach(function(entry) {
-                    try {
-                        if((typeof entry["name"]) === "string" &&
-                            entry["name"].includes("keywords")) {
-                            entry["value"] = escape(entry["value"]);
-                        }
-                        else if((typeof entry["name"]) !== "string" &&
-                            entry["name"].contains("keywords")) {
-                            entry["value"] = escape(entry["value"]);
-                        }
-                    } catch(err){
-                        console.log(err);
-                    }
-                });
+                var formData = $(this).serialize();
 
                 $.ajax({
                     url: "metadata",
                     type: "POST",
-                    data: $.param(formData)
+                    data: formData
                 }).done(function(data){
                     // Do something more fancy with your response
                     // $('.message').html(data.message);
@@ -738,15 +724,14 @@
                     $('#preview_errorDialog').modal();
                     metadata_update_done = false;
                 }).always(function (a, textStatus, b) {
-                    $('#preview_pleaseWaitDialog').modal('hide');
-                    if(textStatus === 'success' && metadata_update_done && !metadata_preview) {
-                        if (new RegExp(".*/metadata$").test(e.target.action)) {
-                            window.location.replace(e.target.action.replace('/metadata',''));
-                        } else if(new RegExp(".*/"+metadata_uri+"$").test(e.target.action)) {
-                            window.location.replace(e.target.action.replace('/'+metadata_uri,''));
-                        }
-                    }
-                    
+                  $('#preview_pleaseWaitDialog').modal('hide');
+                  if(textStatus === 'success' && metadata_update_done && !metadata_preview) {
+                      if (new RegExp(".*/metadata$").test(e.target.action)) {
+                          window.location.replace(e.target.action.replace('/metadata',''));
+                      } else if(new RegExp(".*/"+metadata_uri+"$").test(e.target.action)) {
+                          window.location.replace(e.target.action.replace('/'+metadata_uri,''));
+                      }
+                  } 
                 });
     
             });
