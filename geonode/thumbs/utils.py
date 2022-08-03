@@ -539,7 +539,7 @@ def remove_cur_thumb(filename):
 
 def remove_thumb(filename):
     """Delete a thumbnail from storage"""
-    path = thumb_path(filename)
+    path = os.path.join(settings.MEDIA_ROOT, filename)
     if storage_manager.exists(path):
         storage_manager.delete(path)
 

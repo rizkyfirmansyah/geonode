@@ -114,23 +114,6 @@ def create_document_thumbnail(self, object_id):
 
 @app.task(
     bind=True,
-    name='geonode.documents.tasks.delete_orphaned_document_files',
-    queue='cleanup',
-    expires=600,
-    time_limit=600,
-    acks_late=False,
-    autoretry_for=(Exception, ),
-    retry_kwargs={'max_retries': 5},
-    retry_backoff=3,
-    retry_backoff_max=30,
-    retry_jitter=False)
-def delete_orphaned_document_files(self):
-    from geonode.documents.utils import delete_orphaned_document_files
-    delete_orphaned_document_files()
-
-
-@app.task(
-    bind=True,
     name='geonode.documents.tasks.delete_orphaned_thumbnail',
     queue='cleanup',
     expires=600,

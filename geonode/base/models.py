@@ -43,7 +43,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
-from geonode.thumbs.utils import MISSING_THUMB, remove_cur_thumb, thumb_exists
+from geonode.security.utils import sha256sum
+from geonode.thumbs.utils import MISSING_THUMB
 from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
 from mptt.models import MPTTModel, TreeForeignKey
@@ -722,11 +723,9 @@ class ResourceBaseManager(PolymorphicManager):
     @staticmethod
     def upload_files(resource_id, files, force=False):
         """Update the ResourceBase model"""
-        h = hashlib.sha256()
-        b = bytearray(128*1024)
-        mv = memoryview(b)
         try:
             out = []
+            hashes = []
             for f in files:
                 if force:
                     out.append(f)
@@ -736,14 +735,11 @@ class ResourceBaseManager(PolymorphicManager):
                         filename = os.path.basename(f)
                         file_uploaded_path = storage_manager.save(f'{folder}/{filename}', ff)
                         out.append(storage_manager.path(file_uploaded_path))
-                        for n in iter(lambda : ff.readinto(mv), 0):
-                            h.update(mv[:n])
-                        hash = h.hexdigest()
+                        hashes.append(sha256sum(file_uploaded_path))
 
             # making an update instead of save in order to avoid others
             # signal like post_save and commiunication with geoserver
-            print("HASHHH ", hash, h.hexdigest())
-            ResourceBase.objects.filter(id=resource_id).update(files=out, hash=h.hexdigest())
+            ResourceBase.objects.filter(id=resource_id).update(files=out, hash=hashes)
             return out
         except Exception as e:
             logger.exception(e)
@@ -766,14 +762,6 @@ class ResourceBaseManager(PolymorphicManager):
 
                 # Do we want to delete the files also from the resource?
                 ResourceBase.objects.filter(id=resource_id).update(files={})
-
-            # Remove generated thumbnails, if any
-            if hasattr(_resource, 'curatedthumbnail'):
-                try:
-                    filename = _resource.curatedthumbnail
-                    remove_cur_thumb(str(filename.img))
-                except Exception as e:
-                    logger.exception(e)
 
             # Remove the uploaded sessions, if any
             if 'geonode.upload' in settings.INSTALLED_APPS:
@@ -1226,7 +1214,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     objects = ResourceBaseManager()
 
-    hash = models.CharField(max_length=255, null=True, blank=True)
+    hash = JSONField(null=True, default=list, blank=True)
     file_size = models.IntegerField(default=0)
 
     class Meta:
@@ -1905,14 +1893,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     def save_thumbnail(self, filename, image):
         upload_path = get_unique_upload_path(filename)
         try:
-            # Check that the image is valid
-            if is_monochromatic_image(None, image):
-                if not self.thumbnail_url and not image:
-                    raise Exception("Generated thumbnail image is blank")
-                else:
-                    # Skip Image creation
-                    image = None
-
             if upload_path and image:
                 actual_name = storage_manager.save(upload_path, ContentFile(image))
                 actual_file_name = os.path.basename(actual_name)
@@ -1965,14 +1945,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 # Cleaning up the old stuff
                 if self.thumbnail_path and MISSING_THUMB not in self.thumbnail_path and storage_manager.exists(self.thumbnail_path):
                     storage_manager.delete(self.thumbnail_path)
-
-                # Remove generated thumbnails, if any
-                if hasattr(self, 'curatedthumbnail'):
-                    try:
-                        filename = self.curatedthumbnail
-                        remove_cur_thumb(str(filename.img))
-                    except Exception as e:
-                        logger.exception(e)
 
                 # Store the new url and path
                 self.thumbnail_url = url
@@ -2260,26 +2232,6 @@ class MenuItem(models.Model):
             ('menu', 'title'),
         )
         ordering = ['order']
-
-
-class CuratedThumbnail(models.Model):
-    resource = models.OneToOneField(ResourceBase, on_delete=models.CASCADE)
-    img = models.ImageField(upload_to=settings.THUMBNAIL_LOCATION)
-
-    @property
-    def thumbnail_url(self):
-        try:
-            dirname = os.path.join(settings.THUMBNAIL_LOCATION)
-            if not thumb_exists(self.img_thumbnail):
-                os.makedirs(dirname, exist_ok=True)
-            filepath = storage_manager.save(f"{dirname}/{self.img_thumbnail.name}", self.img_thumbnail)
-            return filepath
-        except Exception as e:
-            logger.exception(e)
-        return ''
-
-    def __str__(self):
-        return f'{settings.MEDIA_URL}{self.img}'
 
 class Configuration(SingletonModel):
     """

@@ -35,7 +35,6 @@ from rest_framework.test import APITestCase, URLPatternsTestCase
 from guardian.shortcuts import get_anonymous_user
 
 from geonode.base.models import (
-    CuratedThumbnail,
     HierarchicalKeyword,
     Region,
     ResourceBase,
@@ -647,14 +646,12 @@ class BaseApiTests(APITestCase, URLPatternsTestCase):
 
         f = BytesIO(test_image.tobytes())
         f.name = 'test_image.jpeg'
-        curated_thumbnail = CuratedThumbnail.objects.create(resource=resource, img=File(f))
 
         url = reverse('base-resources-detail', kwargs={'pk': resource.pk})
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(int(response.data['resource']['pk']), int(resource.pk))
         thumbnail_url = response.data['resource']['thumbnail_url']
-        self.assertTrue(curated_thumbnail.thumbnail_url in thumbnail_url)
 
     def test_embed_urls(self):
         """

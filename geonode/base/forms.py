@@ -29,10 +29,9 @@ from dal import autocomplete
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.core import validators
 from django.db.models import Prefetch, Q
-from django.forms import ModelForm, models
+from django.forms import models
 from django.forms.fields import MultipleChoiceField
 from django.utils.translation import ugettext as _
 from modeltranslation.forms import TranslationModelForm
@@ -40,7 +39,7 @@ from taggit.forms import TagField
 from tinymce.widgets import TinyMCE
 from django.contrib.admin.utils import flatten
 from geonode.base.enumerations import ALL_LANGUAGES
-from geonode.base.models import (CuratedThumbnail, DataType, HierarchicalKeyword,
+from geonode.base.models import (DataType, HierarchicalKeyword,
                                  License, Region, ResourceBase, RestrictionCodeType, Thesaurus,
                                  ThesaurusKeyword, ThesaurusKeywordLabel, ThesaurusLabel,
                                  TopicCategory)
@@ -647,12 +646,6 @@ class UserAndGroupPermissionsForm(forms.Form):
     @staticmethod
     def label_from_instance(obj):
         return obj.title
-
-
-class CuratedThumbnailForm(ModelForm):
-    class Meta:
-        model = CuratedThumbnail
-        fields = ['img']
 
 
 class OwnerRightsRequestForm(forms.Form):

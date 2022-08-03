@@ -683,14 +683,8 @@ class CommonModelApi(ModelResource):
                     icons = {}
                 formatted_obj['category__icons'] = icons
 
-            # replace thumbnail_url with curated_thumbs
-            # if hasattr(obj, 'curatedthumbnail'):
-            #     formatted_obj['thumbnail_url'] = obj.curatedthumbnail
-            # else:
-            #     formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
             if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
                 formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
-
 
             if obj.resource_type == 'document':
                 _links = Document.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
@@ -885,12 +879,6 @@ class LayerResource(CommonModelApi):
 
             formatted_obj['gtype'] = self.dehydrate_gtype(bundle)
 
-            # replace thumbnail_url with curated_thumbs
-            if hasattr(obj, 'curatedthumbnail'):
-                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
-            else:
-                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
-
             formatted_obj['processed'] = obj.instance_is_processed
             # put the object on the response stack
             formatted_objects.append(formatted_obj)
@@ -1053,12 +1041,6 @@ class MapResource(CommonModelApi):
                 formatted_layers.append(formatted_map_layer)
             formatted_obj['layers'] = formatted_layers
 
-            # replace thumbnail_url with curated_thumbs
-            if hasattr(obj, 'curatedthumbnail'):
-                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
-            else:
-                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
-
             formatted_objects.append(formatted_obj)
         return formatted_objects
 
@@ -1118,12 +1100,6 @@ class GeoAppResource(CommonModelApi):
             # Probe Remote Services
             formatted_obj['store_type'] = 'geoapp'
             formatted_obj['online'] = True
-
-            # replace thumbnail_url with curated_thumbs
-            if hasattr(obj, 'curatedthumbnail'):
-                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
-            else:
-                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_objects.append(formatted_obj)
         return formatted_objects
@@ -1194,12 +1170,6 @@ class DocumentResource(CommonModelApi):
             # Probe Remote Services
             formatted_obj['store_type'] = 'dataset'
             formatted_obj['online'] = True
-
-            # replace thumbnail_url with curated_thumbs
-            if hasattr(obj, 'curatedthumbnail'):
-                formatted_obj['thumbnail_url'] = obj.curatedthumbnail
-            else:
-                formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
             formatted_objects.append(formatted_obj)
         return formatted_objects

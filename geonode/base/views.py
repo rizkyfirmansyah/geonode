@@ -33,19 +33,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 
 from dal import views, autocomplete
-from geonode.storage.manager import storage_manager
-from geonode.thumbs.utils import remove_cur_thumb
-from geonode.views import unauthorized_message
 from user_messages.models import Message
 from guardian.shortcuts import get_objects_for_user
 
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.utils import resolve_object
 from geonode.documents.models import Document
 from geonode.groups.models import GroupProfile
 from geonode.tasks.tasks import set_permissions
-from geonode.base.forms import BatchPermissionsForm, CuratedThumbnailForm
+from geonode.base.forms import BatchPermissionsForm
 from geonode.security.utils import get_visible_resources, serialize_resource_permissions
 from geonode.notifications_helper import send_notification
 from geonode.base.utils import OwnerRightsRequestViewUtils
@@ -273,43 +269,6 @@ def batch_permissions(request, model):
             'model': model,
         }
     )
-
-
-def thumbnail_upload(
-        request,
-        res_id,
-        template='base/thumbnail_upload.html'):
-    try:
-        res = resolve_object(
-            request, ResourceBase, {
-                'id': res_id}, 'base.change_resourcebase')
-    except PermissionDenied:
-        return unauthorized_message(request, 'You are not allowed to modify this resource. Please ask nicely to the resource owner.')
-
-    form = CuratedThumbnailForm()
-
-    if request.method == 'POST':
-        if 'remove-thumb' in request.POST:
-            if hasattr(res, 'curatedthumbnail'):
-                res.curatedthumbnail.delete()
-        else:
-            form = CuratedThumbnailForm(request.POST, request.FILES)
-            if form.is_valid():
-                ct = form.save(commit=False)
-                # remove existing thumbnail if any
-                if hasattr(res, 'curatedthumbnail'):
-                    _file = str(res.curatedthumbnail.img)
-                    remove_cur_thumb(_file)
-                    res.curatedthumbnail.delete()
-                ct.resource = res
-                ct.save()
-        return HttpResponseRedirect(request.path_info)
-
-    return render(request, template, context={
-        'resource': res,
-        'form': form
-    })
-
 
 class SimpleSelect2View(autocomplete.Select2QuerySetView):
     """ Generic select2 view for autocompletes

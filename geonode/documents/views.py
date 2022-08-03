@@ -24,7 +24,7 @@ import traceback
 import warnings
 from geonode.decorators import registered_users
 from geonode.documents.tasks import delete_orphaned_thumbnail
-from geonode.resource.utils import sha256sum
+from geonode.security.utils import sha256sum
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -355,7 +355,7 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
                 date=date,
                 date_type="Creation",
                 bbox_polygon=BBOXHelper.from_xy(bbox).as_polygon() if bbox else None,
-                hash=hash,
+                hash=[hash],
                 file_size=file_size
             ),
             notify=True)

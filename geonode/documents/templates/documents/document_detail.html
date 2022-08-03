@@ -37,7 +37,7 @@
     </div>
   </div>
   <div class="card-footer">
-    <span class="text-muted small">{% if resource.hash %}SHA256: {{ resource.hash }} - {% endif %} {{ resource.file_size|filesizeformat }}</span>
+    <span class="text-muted small">{% if resource.hash %}SHA256: {% for hash in resource.hash %} {{ hash }} {% endfor %} - {% endif %} {{ resource.file_size|filesizeformat }}</span>
   </div>
 </div>
 <div class="row">

@@ -41,27 +41,6 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
-def delete_orphaned_document_files():
-    """
-    Deletes orphaned files of deleted documents.
-    """
-    deleted = []
-    _, files = storage_manager.listdir(os.path.join("documents", "document"))
-
-    for filename in files:
-        if Document.objects.filter(doc_file__contains=filename).count() == 0:
-            logger.debug(f"Deleting orphaned document {filename}")
-            try:
-                storage_manager.delete(os.path.join(
-                    os.path.join("documents", "document"), filename))
-                deleted.append(filename)
-            except NotImplementedError as e:
-                logger.error(
-                    f"Failed to delete orphaned document '{filename}': {e}")
-
-    return deleted
-
-
 def get_download_response(request, docid, attachment=False):
     """
     Returns a download response if user has access to download the document of a given id,

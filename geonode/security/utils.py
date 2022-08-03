@@ -17,6 +17,7 @@
 #
 #########################################################################
 import copy
+import hashlib
 import json
 import logging
 import collections
@@ -986,3 +987,14 @@ def serialize_resource_permissions(obj):
     resource_permissions = {'users': dict(perms_users), 'groups': dict(perms_groups)}
 
     return resource_permissions
+
+def sha256sum(filename):
+    h = hashlib.sha256()
+    b = bytearray(128*1024)
+    mv = memoryview(b)
+
+    with open(filename, 'rb', buffering=0) as f:
+        while n := f.readinto(mv):
+          h.update(mv[:n])
+
+    return h.hexdigest()
