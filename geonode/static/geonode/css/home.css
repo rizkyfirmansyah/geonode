@@ -2996,34 +2996,6 @@ form-inline {
   border-color: var(--warning)!important
 }
 
-#clear-search {
-  padding: 2px 6px 2px 6px;
-  border: 1px solid var(--warning);
-  background-color: var(--warning);
-  color: var(--secondary);
-  border-radius: var(--border-radius-md);
-  right: 1em;
-}
-
-.remove-file {
-  padding: 2px 6px 2px 6px;
-  border: 1px solid var(--warning);
-  background-color: var(--warning);
-  color: var(--secondary);
-  border-radius: var(--border-radius-md);
-  margin-left: 2em;
-  cursor: pointer;
-  text-decoration: none
-}
-
-#clear-search:hover,
-.remove-file:hover {
-  text-decoration: none;
-  background-color: #fdba12;
-  border: 1px solid #fdba12;
-  box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7)
-}
-
 #region_search_input .result-wrapper a:hover {
   color: var(--warning)!important
 }

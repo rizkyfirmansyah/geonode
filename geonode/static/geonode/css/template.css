@@ -3259,7 +3259,7 @@ form-inline {
 
 #clear-search {
     padding: 2px 6px 2px 6px;
-    border: 1px solid var(--warning);
+    border: 0px;
     background-color: var(--warning);
     color: var(--secondary);
     border-radius: var(--border-radius-md);
@@ -3268,20 +3268,19 @@ form-inline {
 
 .remove-file {
     padding: 2px 6px 2px 6px;
-    border: 1px solid var(--warning);
     background-color: var(--warning);
     color: var(--secondary);
     border-radius: var(--border-radius-md);
-    margin-left: 2em;
+    margin-left: 1em;
     cursor: pointer;
-    text-decoration: none
+    text-decoration: none;
+    float: right;
 }
 
 #clear-search:hover,
 .remove-file:hover {
     text-decoration: none;
     background-color: #fdba12;
-    border: 1px solid #fdba12;
     box-shadow: 0 10px 20px -8px rgba(0, 0, 0, .7)
 }
 
