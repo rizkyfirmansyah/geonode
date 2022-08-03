@@ -18,7 +18,6 @@
 #
 #########################################################################
 import json
-import os
 import logging
 import traceback
 import warnings
@@ -297,7 +296,6 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
             dirname = doc_path()
             filepath = storage_manager.save(f"{dirname}/{file.name}", file)
             storage_path = storage_manager.path(filepath)
-            file_size = os.path.getsize(storage_path)
             self.object = resource_manager.create(
                 None,
                 resource_type=Document,
@@ -352,8 +350,7 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
                 abstract=abstract,
                 date=date,
                 date_type="Creation",
-                bbox_polygon=BBOXHelper.from_xy(bbox).as_polygon() if bbox else None,
-                file_size=file_size
+                bbox_polygon=BBOXHelper.from_xy(bbox).as_polygon() if bbox else None
             ),
             notify=True)
         resource_manager.set_thumbnail(self.object.uuid, instance=self.object, overwrite=False)

@@ -318,6 +318,7 @@ class ResourceManager(ResourceManagerInterface):
                     _resource = self._concrete_resource_manager.create(uuid, resource_type=resource_type, defaults=defaults)
                 if _resource.files:
                     _resource.hash = sha256sum(_resource.files)
+                    _resource.file_size = sum([os.path.getsize(f) for f in _resource.files])
                 _resource.save()
                 resourcebase_post_save(_resource.get_real_instance())
                 _resource.set_processing_state(enumerations.STATE_PROCESSED)
