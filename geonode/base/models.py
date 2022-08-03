@@ -18,7 +18,6 @@
 #
 #########################################################################
 
-import hashlib
 import os
 import re
 import html
@@ -43,7 +42,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
-from geonode.security.utils import sha256sum
 from geonode.thumbs.utils import MISSING_THUMB
 from geonode.storage.manager import storage_manager
 from django.utils.html import strip_tags
@@ -725,7 +723,6 @@ class ResourceBaseManager(PolymorphicManager):
         """Update the ResourceBase model"""
         try:
             out = []
-            hashes = []
             for f in files:
                 if force:
                     out.append(f)
@@ -735,11 +732,10 @@ class ResourceBaseManager(PolymorphicManager):
                         filename = os.path.basename(f)
                         file_uploaded_path = storage_manager.save(f'{folder}/{filename}', ff)
                         out.append(storage_manager.path(file_uploaded_path))
-                        hashes.append(sha256sum(file_uploaded_path))
 
             # making an update instead of save in order to avoid others
             # signal like post_save and commiunication with geoserver
-            ResourceBase.objects.filter(id=resource_id).update(files=out, hash=hashes)
+            ResourceBase.objects.filter(id=resource_id).update(files=out)
             return out
         except Exception as e:
             logger.exception(e)

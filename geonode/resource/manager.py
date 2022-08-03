@@ -65,7 +65,7 @@ from .utils import (
 
 from ..base import enumerations
 from ..base.models import ResourceBase
-from ..security.utils import AdvancedSecurityWorkflowManager
+from ..security.utils import AdvancedSecurityWorkflowManager, sha256sum
 from ..layers.metadata import parse_metadata
 from ..documents.models import Document, DocumentResourceLink
 from ..layers.models import Layer, Attribute
@@ -316,6 +316,8 @@ class ResourceManager(ResourceManagerInterface):
                 with transaction.atomic():
                     _resource.set_missing_info()
                     _resource = self._concrete_resource_manager.create(uuid, resource_type=resource_type, defaults=defaults)
+                if _resource.files:
+                    _resource.hash = sha256sum(_resource.files)
                 _resource.save()
                 resourcebase_post_save(_resource.get_real_instance())
                 _resource.set_processing_state(enumerations.STATE_PROCESSED)
