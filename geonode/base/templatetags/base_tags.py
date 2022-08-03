@@ -17,8 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
-from pydoc import doc
+import os
 from django import template
 from django.db.models import Q
 from django.conf import settings
@@ -516,3 +515,16 @@ def get_categories():
     topic_categories = TopicCategory.objects.exclude(is_choice=False)
 
     return list(topic_categories)
+
+
+@register.simple_tag
+def hash_files_ext(obj):
+    zipped_hash = zip(obj.files, obj.hash)
+    hashes = []
+    for f, h in zipped_hash:
+        hashes.append(f"SHA256 {os.path.basename(f)}: {h}")
+
+    if len(hashes) > 1:
+        return "<br />".join(hashes)
+    else:
+        return hashes[0]

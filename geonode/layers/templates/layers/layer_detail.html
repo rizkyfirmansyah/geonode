@@ -49,13 +49,19 @@
       </div>
     </div>
   </div>
-  {% if subtype == 'remote' %}
   <div class="card-footer">
-    <em>
-      <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
-      {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
-    </em>
+    {% hash_files_ext resource as hash %}
+    <span class="text-muted small">
+      {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} - {{ resource.file_size|filesizeformat }} {% endif %} 
+    </span>
   </div>
+  {% if subtype == 'remote' %}
+    <div class="card-footer">
+      <em>
+        <i class="fa-solid fa-power-off {% if online %}text-success{% else %}text-danger{% endif %}"></i> {% trans "Service is" %}
+        {% if online %}{% trans "online" %}{% else %}{% trans "offline" %}{% endif %}
+      </em>
+    </div>
   {% endif %}
 </div>
 
