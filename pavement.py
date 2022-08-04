@@ -412,6 +412,8 @@ def sync(options):
     if 'django_celery_beat' in INSTALLED_APPS:
         sh(f"{settings} python -W ignore manage.py loaddata geonode/base/fixtures/django_celery_beat.json")
     sh(f"{settings} python -W ignore manage.py set_all_layers_alternate")
+    sh(f"{settings} python -W ignore manage.py set_all_hash_files")
+    sh(f"{settings} python -W ignore manage.py set_total_file_size")
     sh(f"{settings} python -W ignore manage.py collectstatic --noinput")
 
 
