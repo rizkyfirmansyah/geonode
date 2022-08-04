@@ -1,0 +1,39 @@
+<script type="text/javascript">
+  {% if resource.extension|lower in tabulartypes %}
+      $(function() {
+          var loading = '<div class="spinner-grow text-info mr-3 d-inline-flex" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+          <div class="spinner-grow text-info" role="status"><span class="sr-only text-center">Loading...</span></div>';
+          $.ajax({
+              url: "{% url "render_tabular" resource.id %}",
+              type: 'POST',
+              success: function(data) {
+                $('#dataframe_container').append(data);
+                $("#tabular_data").DataTable({
+                  scrollY:        "600px",
+                  scrollX:        true,
+                  scrollCollapse: true,
+                  paging:         true
+                });
+              },
+              beforeSend: function() {
+                $('#dataframe_container').append(loading);
+              },
+              complete: function() {
+                $('.spinner-grow').remove();
+              }
+          });
+      })
+  {% endif %}
+</script>

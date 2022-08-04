@@ -81,6 +81,8 @@
       {% elif resource.doc_url %}
         <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }}.</a>
           <small>({% trans 'External Resource' %})</small></p>
+      {% elif resource.extension|lower in tabulartypes and resource.doc_file %}
+        <div class="p-3 bg-light" id="dataframe_container"></div>
       {%  endif %}
     {%  endif %}
 
@@ -246,4 +248,7 @@
   {% if FAVORITE_ENABLED %}
     {% include "favorite/_favorite_js.html" %}
   {% endif %}
+
+  {% include "documents/render_tabular.html" %}
+
 {% endblock extra_script %}

@@ -2030,6 +2030,13 @@ th:last-child {
     -webkit-overflow-scrolling: touch
 }
 
+.dataframe {
+    font-size: .85em;
+    background-color: #e8e8e8;
+    width: inherit !important;
+    border: none !important;
+}
+
 .pace {
 	-webkit-pointer-events: none;
 	pointer-events: none;

@@ -21,6 +21,11 @@ import json
 import logging
 import traceback
 import warnings
+import pandas as pd
+import os
+import numpy as np
+from django.views.decorators.csrf import csrf_exempt
+
 from geonode.decorators import registered_users
 from geonode.documents.tasks import delete_orphaned_thumbnail
 from geonode.views import page_not_found_message, unauthorized_message
@@ -28,7 +33,7 @@ from geonode.views import page_not_found_message, unauthorized_message
 from guardian.shortcuts import get_objects_for_user
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -50,6 +55,7 @@ from geonode.base.auth import get_or_create_token
 from geonode.base.bbox_utils import BBOXHelper
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.models import (
+    ResourceBase,
     Thesaurus)
 from geonode.documents.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.documents.models import Document, get_related_resources
@@ -756,3 +762,53 @@ class DocumentAutocomplete(autocomplete.Select2QuerySetView):
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
             unpublished_not_visible=settings.RESOURCE_PUBLISHING,
             private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
+
+
+@csrf_exempt
+@login_required
+def render_tabular(request, docid):
+      """
+      Read tabular files directly from files and return as html
+      """
+      try:
+          document = _resolve_document(
+              request,
+              docid,
+              'base.view_resourcebase',
+            _PERMISSION_MSG_VIEW)
+      except PermissionDenied:
+          return unauthorized_message(request, _PERMISSION_MSG_VIEW)
+
+      def replace_nan(df):
+          # replace all NaNs with an empty string
+          df = df.replace(np.nan, '', regex=True)
+          return df
+      
+      if document.files:
+          tabular = [os.path.basename(f) for f in document.files][0]
+          data = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION, 'tabular', tabular)
+          if document.extension == 'csv':
+              df = pd.read_csv(data)
+              replace_nan(df)
+
+          elif document.extension == 'tsv':
+              df = pd.read_csv(data, sep='\t', header=0)
+              replace_nan(df)
+
+          elif document.extension == 'sav':
+              df = pd.read_spss(data)
+              replace_nan(df)
+
+          elif document.extension == 'dta':
+              ## need to find other methods to read efficiently
+              stata = pd.read_stata(data, chunksize=5000)
+              df = pd.DataFrame()
+              for i in stata:
+                  df = df.append(i)
+              
+              replace_nan(df)
+
+      classes = 'table table-sm'
+      render_df = df.to_html(classes=classes, justify='center', table_id='tabular_data')      
+      
+      return HttpResponse(render_df)

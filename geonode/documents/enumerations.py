@@ -31,7 +31,6 @@ DOCUMENT_TYPE_MAP = {
     'xml': 'text',
 
     'py': 'text',
-    'dta': 'text',
     'm': 'text',
     'mat': 'text',
     'rmd': 'text',
@@ -59,6 +58,7 @@ DOCUMENT_TYPE_MAP = {
     'r': 'tabular',
     'sav': 'tabular',
     'rdata': 'tabular',
+    'dta': 'tabular',
 
     'doc': 'word',
     'docx': 'word',
