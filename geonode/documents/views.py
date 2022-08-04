@@ -154,6 +154,7 @@ def document_detail(request, docid):
     WORDTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'word']
     EXCELTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'excel']
     PPTTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'powerpoint']
+    TABULARTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'tabular']
 
     context_dict = {
         'access_token': access_token,
@@ -168,6 +169,7 @@ def document_detail(request, docid):
         'wordtypes': WORDTYPES,
         'exceltypes': EXCELTYPES,
         'ppttypes': PPTTYPES,
+        'tabulartypes': TABULARTYPES,
         'mimetypemap': DOCUMENT_MIMETYPE_MAP,
         'related': related}
 
@@ -290,10 +292,10 @@ class DocumentUploadView(LoginRequiredMixin, CreateView):
         If the form is valid, save the associated model.
         """
         doc_form = form.cleaned_data
-
         file = doc_form.pop('doc_file', None)
+        ext = doc_form.pop('doc_ext', None)
         if file:
-            dirname = doc_path()
+            dirname = doc_path(ext)
             filepath = storage_manager.save(f"{dirname}/{file.name}", file)
             storage_path = storage_manager.path(filepath)
             self.object = resource_manager.create(

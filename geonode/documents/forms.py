@@ -279,6 +279,13 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
                 'id': 'permissions'}),
         required=False)
 
+    doc_ext = forms.CharField(
+        widget=HiddenInput(
+            attrs={
+                'name': 'doc_ext',
+                'id': 'doc_ext'}),
+        required=False)
+
     links = forms.MultipleChoiceField(
         label=_("Link to"),
         help_text=_("Set a link to datasets if any"),
@@ -328,6 +335,7 @@ class DocumentCreateForm(TranslationModelForm, DocumentFormMixin):
         cleaned_data = super().clean()
         doc_file = self.cleaned_data.get('doc_file')
         doc_url = self.cleaned_data.get('doc_url')
+        doc_ext = self.cleaned_data.get('doc_ext')
 
         if not doc_file and not doc_url and "doc_file" not in self.errors and "doc_url" not in self.errors:
             logger.error("Document must be a file or url.")

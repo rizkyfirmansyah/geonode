@@ -118,6 +118,8 @@ class Document(ResourceBase):
             return finders.find(placeholder.format('image'), False)
         elif self.is_video:
             return finders.find(placeholder.format('video'), False)
+        elif self.is_tabular:
+            return finders.find(placeholder.format('tabular'), False)
         return finders.find(placeholder.format('generic'), False)
 
     @property
@@ -154,6 +156,12 @@ class Document(ResourceBase):
     def is_video(self):
         VIDEOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'video']
         return self.is_file and self.extension.lower() in VIDEOTYPES
+
+
+    @property
+    def is_tabular(self):
+        TABULARTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'tabular']
+        return self.is_file and self.extension.lower() in TABULARTYPES
 
     @property
     def class_name(self):

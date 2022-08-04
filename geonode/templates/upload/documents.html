@@ -1,13 +1,15 @@
 {% load i18n %}
 
 <script type="text/javascript">
-  $('#id_doc_file').on('change', function () {
+  $('#doc_file').on('change', function () {
     if ($('#id_title').val() == '') {
-      var _text = $('#id_doc_file').val().replace("C:\\fakepath\\", "");
+      var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
       var _title = _text.replace(/\.[^/.]+$/, "");
       var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
       $('#id_title').val(_fileName);
       $(this).prev('label').text(_text);
+      var doc_ext = $(this).val().substring($(this).val().lastIndexOf('.') + 1);
+      $('#doc_ext').val(doc_ext);
     }
   });
 

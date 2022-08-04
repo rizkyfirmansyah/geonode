@@ -120,6 +120,9 @@ Markdown==3.3.7
 pinax-notifications==6.0.0
 pinax-ratings==4.0.0
 
+# Read Tabular Data
+pandas==1.4.3
+
 # production
 uWSGI==2.0.20
 gunicorn==20.1.0

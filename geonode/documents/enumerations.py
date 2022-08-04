@@ -31,13 +31,10 @@ DOCUMENT_TYPE_MAP = {
     'xml': 'text',
 
     'py': 'text',
-    'r': 'text',
     'dta': 'text',
     'm': 'text',
     'mat': 'text',
-    'rdata': 'text',
     'rmd': 'text',
-    'sav': 'text',
     'sps': 'text',
     'spv': 'text',
     'nc': 'text',
@@ -56,6 +53,12 @@ DOCUMENT_TYPE_MAP = {
     'tif': 'archive',
     'tiff': 'archive',
     'pbm': 'archive',
+    
+    'csv': 'tabular',
+    'tsv': 'tabular',
+    'r': 'tabular',
+    'sav': 'tabular',
+    'rdata': 'tabular',
 
     'doc': 'word',
     'docx': 'word',

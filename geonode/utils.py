@@ -49,6 +49,7 @@ from slugify import slugify
 from contextlib import closing
 from requests.exceptions import RetryError
 from collections import namedtuple, defaultdict
+from geonode.documents.enumerations import DOCUMENT_TYPE_MAP
 from rest_framework.exceptions import APIException
 from math import atan, exp, log, pi, sin, tan, floor
 from zipfile import ZipFile, is_zipfile, ZIP_DEFLATED
@@ -295,12 +296,16 @@ def mkdtemp(dir=settings.MEDIA_ROOT):
             tempdir = None
     return tempdir
 
-def doc_path():
+def doc_path(ext):
     dir = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION)
-    date_time_dir = f'{dir}{time.strftime("/%Y/%m/%d")}'
-    if not os.path.exists(date_time_dir):
-        os.makedirs(date_time_dir, exist_ok=True)
-    return os.path.join(date_time_dir)
+    if ext:
+        folder_keys = [v for k, v in DOCUMENT_TYPE_MAP.items() if ext in k.lower()]
+        folder_path = f'{dir}/{folder_keys[0]}'
+    else:
+        folder_path = f'{dir}/others'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path, exist_ok=True)
+    return os.path.join(folder_path)
 
 
 def layer_path():
