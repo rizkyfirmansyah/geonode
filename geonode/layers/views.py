@@ -23,6 +23,7 @@ import decimal
 import logging
 import warnings
 import traceback
+import xml.etree.ElementTree as ET
 
 import psycopg2
 from dal import autocomplete
