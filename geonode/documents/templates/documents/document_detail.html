@@ -39,7 +39,7 @@
   <div class="card-footer">
     {% hash_files_ext resource as hash %}
     <span class="text-muted small">
-      {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} - {{ resource.file_size|filesizeformat }} {% endif %} 
+      {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} {{ resource.file_size|filesizeformat }} {% endif %} 
     </span>
   </div>
 </div>
@@ -154,10 +154,10 @@
           {% if resource.extension|lower in imgtypes and resource.doc_file %}
             <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
               class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
-          {% elif not resource.doc_file %}
+          {% elif resource.doc_file %}
             <a style="text-decoration:none;" target="_blank" href="{% url "document_download" resource.id %}"><button
               class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
-          {% elif  resource.doc_url %}
+          {% elif resource.doc_url %}
             <a style="text-decoration:none;" target="_blank" href="{{ resource.doc_url }}"><button
               class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
           {%  endif %}

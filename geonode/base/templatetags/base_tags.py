@@ -519,12 +519,15 @@ def get_categories():
 
 @register.simple_tag
 def hash_files_ext(obj):
-    zipped_hash = zip(obj.files, obj.hash)
-    hashes = []
-    for f, h in zipped_hash:
-        hashes.append(f"SHA256 {os.path.basename(f)}: {h}")
+    if obj.files:
+        zipped_hash = zip(obj.files, obj.hash)
+        hashes = []
+        for f, h in zipped_hash:
+            hashes.append(f"SHA256 {os.path.basename(f)}: {h}")
 
-    if len(hashes) > 1:
-        return "<br />".join(hashes)
+        if len(hashes) > 1:
+            return "<br />".join(hashes)
+        else:
+            return f"{hashes[0]} -"
     else:
-        return hashes[0]
+        return ''

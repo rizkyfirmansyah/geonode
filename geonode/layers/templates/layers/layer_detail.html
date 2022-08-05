@@ -52,7 +52,7 @@
   <div class="card-footer">
     {% hash_files_ext resource as hash %}
     <span class="text-muted small">
-      {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} - {{ resource.file_size|filesizeformat }} {% endif %} 
+      {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} {{ resource.file_size|filesizeformat }} {% endif %}
     </span>
   </div>
   {% if subtype == 'remote' %}
