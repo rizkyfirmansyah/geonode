@@ -1211,7 +1211,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     objects = ResourceBaseManager()
 
     hash = JSONField(null=True, default=list, blank=True)
-    file_size = models.IntegerField(default=0)
+    file_size = models.PositiveBigIntegerField(default=0)
 
     class Meta:
         # custom permissions,
