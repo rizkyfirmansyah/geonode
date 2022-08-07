@@ -15,9 +15,46 @@
 
   $('#upload_form').submit(function () {
       $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
+      var form = $(this);
+      var action = form.attr("action");
+      var start = new Date().getTime();
+      $('.btn-upload').prop("disabled", true);
+      $.ajax({
+          type: $(this).attr('method'),
+          url: action,
+          cache: false,
+          async: true,
+          mode: "queue",
+          xhr: function() {
+            var req = $.ajaxSettings.xhr();
+            $(document.body).append(`{% with toast_title="Uploading Datasets `+ dataset_title +`" %}
+              {% include "toast/_toast_loading.html" %}
+            {% endwith %}`);
+            $('.toast').toast('show');
+            if (req) {
+                req.upload.addEventListener('progress', function(evt) {
+                    if (evt.lengthComputable) {
+                        var pct = (evt.loaded / evt.total) * 100;
+                        var end = new Date().getTime();
+                        var duration = (end - start) / 1000;
+                        var bps = evt.loaded / duration
+                        var time = (evt.total - evt.loaded) / bps;
+                        var seconds = time % 60;
+                        var minutes = time / 60;
+                        seconds = Math.floor(seconds);
+                        minutes = Math.floor(minutes);
+                        $("#remaining").text(minutes + " minutes " + seconds + " seconds remaining");
+                        $('#prog > .progress-bar').css('width', pct.toPrecision(3) + '%');
+                    }
+                }, false);
+            }
+            return req;
+          }
+      })
   });
 
   $('#upload-button').click(function () {
       $('#_resource_uploading').modal('toggle');
   });
+  
 </script>

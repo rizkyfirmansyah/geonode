@@ -379,18 +379,27 @@
                     **/
                     var time_value = String(row[time_attribute]);
                     if(time_value.match(ISO_time_regex)) {
-                        $("#timeMsgBoxModalOK").find('.modal-title w-100 text-center').text('{% trans "Valid ISO-8601 for" %} "' + time_attribute + '"');
-                        $("#timeMsgBoxModalOK").find('.modal-body').text(time_value + ' {% trans "matches a valid ISO-8601 Date-Time string!" %}');
-                        $("#timeMsgBoxModalOK").modal("show");
+                        $(document.body).append(`{% with toast_title="Valid ISO-8601 for `+ time_attribute +` %}
+                            {% with toast_message='`+ time_value +`matches a valid ISO-8601 Date-Time string!' %}
+                              {% include "toast/_trigger_toast.html" %}
+                            {% endwith %}
+                        {% endwith %}`);
+                        $('.toast').toast('show');
                     } else {
-                        $("#timeMsgBoxModalWarning").find('.modal-title w-100 text-center').text('{% trans "Not Valid ISO-8601 for" %} "' + time_attribute + '"');
-                        $("#timeMsgBoxModalWarning").find('.modal-body').text(time_value + ' {% trans "does NOT match any valid ISO-8601 Date-Time string!" %}');
-                        $("#timeMsgBoxModalWarning").modal("show");
+                        $(document.body).append(`{% with toast_title="Not Valid ISO-8601 for `+ time_attribute +` %}
+                            {% with toast_message='`+ time_value +`does NOT match any valid ISO-8601 Date-Time string!' %}
+                              {% include "toast/_trigger_toast.html" %}
+                            {% endwith %}
+                        {% endwith %}`);
+                        $('.toast').toast('show');
                     }
                 } else {
-                    $("#timeMsgBoxModalWarning").find('.modal-title w-100 text-center').text('{% trans "Wrong Selection" %}');
-                    $("#timeMsgBoxModalWarning").find('.modal-body').text('{% trans "Please, select one Time Attribute to test!" %}');
-                    $("#timeMsgBoxModalWarning").modal("show");
+                    $(document.body).append(`{% with toast_title="Wrong Selection" %}
+                        {% with toast_message='Please, select one Time Attribute to test!' %}
+                          {% include "toast/_trigger_toast.html" %}
+                        {% endwith %}
+                    {% endwith %}`);
+                    $('.toast').toast('show');
                 }
             }/*,
             'click .remove': function (e, value, row, index) {
@@ -403,6 +412,9 @@
             var data = {{ layer_values }};
             // $('#bootstrap-table').bootstrapTable('load', data);
             $('#bootstrap-text-att-table').bootstrapTable('load', data);
+            $('.btn-upload').on('click', function() {
+                $('.btn-upload').prop("disabled", true);
+            });
         });
         {% endautoescape %}
     </script>
