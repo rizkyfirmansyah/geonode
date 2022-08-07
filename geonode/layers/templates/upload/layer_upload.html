@@ -119,7 +119,7 @@
               <a href="{% url "layer_upload" %}" class="btn btn-danger text-center w-100">{% trans "Clear" %}</a>
             </div>
             <div class="col-6">
-              <a href="#" class="btn btn-upload text-center w-100" id="upload-button" type="submit">{% trans "Upload files" %}</a>
+              <button class="btn btn-upload text-center btn-block" id="upload-button" type="submit">{% trans "Upload files" %}</button>
             </div>
         </div>
   </div>
@@ -160,6 +160,13 @@
   userLookup = "{% url "account_ajax_lookup" %}"
 
 {% endautoescape %}
+
+  $('#upload-button').on('click', function() {
+      $('#upload-button').prop("disabled", true)
+      setTimeout(function() {
+        $('#upload-button').prop("disabled", false)
+      }, 3000);
+  });
 
 </script>
 
