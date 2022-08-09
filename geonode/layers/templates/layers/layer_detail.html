@@ -44,16 +44,11 @@
   <div class="card-header">
     <div class="row">
       <h3 class="col-md-8 d-flex text-layer">{{ resource.title|default:resource.alternate }}</h3>
+      <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
       <div class="col-md-4 float-right">
         <a href="{% url "catalogue_browse" %}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
       </div>
     </div>
-  </div>
-  <div class="card-footer">
-    {% hash_files_ext resource as hash %}
-    <span class="text-muted small">
-      {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} {{ resource.file_size|filesizeformat }} {% endif %}
-    </span>
   </div>
   {% if subtype == 'remote' %}
     <div class="card-footer">
@@ -63,6 +58,7 @@
       </em>
     </div>
   {% endif %}
+  {% include "modal/dataset_properties.html" %}
 </div>
 
 <div class="row">

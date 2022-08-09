@@ -31,19 +31,12 @@
     <div class="row">
       <div class="col-md-8 d-flex">
         <h3 class="text-document">{{ resource.title }}</h3>
-        <span class="badge badge-secondary rounded-pill ml-2 p-1" style="width: auto">{% if resource.extension %}{{ resource.extension }}{% else %}{% trans "External" %}{% endif %}</span>
+        <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
       </div>
       <div class="col-md-4 float-right"><a href="{% url "catalogue_browse" %}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a></div>
     </div>
   </div>
-  {% if resource.doc_file != '[]' %}
-    <div class="card-footer">
-      {% hash_files_ext resource as hash %}
-      <span class="text-muted small">
-        {% if resource.hash|length > 1 %} {{ hash|safe }} <br />Total File Size: {{ resource.file_size|filesizeformat }} {% else %} {{ hash }} {{ resource.file_size|filesizeformat }} {% endif %} 
-      </span>
-    </div>
-  {% endif %}
+    {% include "modal/dataset_properties.html" %}
 </div>
 <div class="row">
   <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">

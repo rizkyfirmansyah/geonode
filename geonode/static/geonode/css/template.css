@@ -854,6 +854,10 @@ button.full-width {
 
 @media (min-width: 1200px) {
 
+  .dataset-popover {
+    max-width: 450px !important;
+  }  
+
   .cite-card {
     margin-left: 15px;
     margin-right: 15px;
@@ -3526,6 +3530,10 @@ form#text-search-autocomplete .ac-results {
 
 span.external-popover {
     margin-left: .5em;
+}
+
+#dataset-popover:focus {
+  box-shadow: none !important;
 }
 
 #id_resource-regions {

@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load base_tags %}
+
+<div id="dataset_properties_wrapper" class="d-none">
+    <div class="row">
+      {% if resource.doc_file != '[]' %}
+        <div class="col-sm-4 text-right">File Name</div>
+        <div class="col-sm-8 text-left">
+          {% hash_files_ext resource as hf %}
+          <p>
+            {% for hash in hf.filenames %}
+              {{ hash }}
+            {% endfor %}
+          </p>
+        </div>
+        <div class="col-sm-4 text-right">
+          Digital Signature (SHA-256)
+        </div>
+        <div class="col-sm-8 text-left">
+            {% hash_files_ext resource as hf %}
+            <p>
+              {% for hash in hf.hash %}
+                {{ hash }}
+              {% endfor %}
+            </p>
+        </div>
+      {% endif %}
+      <div class="col-sm-4 text-right">File Size</div>
+      <div class="col-sm-8 text-left">
+        <p>{{ resource.file_size|filesizeformat }}</p>
+      </div>
+      <div class="col-sm-4 text-right">File Type</div>
+      <div class="col-sm-8 text-left">
+        <p>{% if resource.extension %}{{ resource.extension }}{% else %}{% trans "External" %}{% endif %}</p>
+      </div>
+      <div class="col-sm-4 text-right">Created</div>
+      <div class="col-sm-8 text-left">
+        <p>{{ resource.created }}</p>
+      </div>
+      <div class="col-sm-4 text-right">Updated</div>
+      <div class="col-sm-8 text-left">
+        <p>{{ resource.last_updated }}</p>
+      </div>
+    </div>
+</div>
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(function() {
+    var tooltipContent =  '<p>All fields declared mandatory by the schema are completed, you can continue editing the optional fields or click on <span class="text-primary"><strong>Done</strong></span> to save your changes and close this page.</p>'
+      + '<a id="close-popover-done" data-toggle="tooltip" data-placement="left" class="btn btn-small btn-primary btn-block">Got it</a>';
+    var dp = $('#dataset-popover').popover({
+      placement: 'right',
+      html: true,
+      trigger: 'hover focus',
+      animation: true,
+      content: function() {
+        return $('#dataset_properties_wrapper').html();
+      },
+      customClass: "dataset-popover"
+    });
+  })
+</script>
+{% endblock extra_script %}

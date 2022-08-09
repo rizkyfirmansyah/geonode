@@ -521,13 +521,11 @@ def get_categories():
 def hash_files_ext(obj):
     if obj.files:
         zipped_hash = zip(obj.files, obj.hash)
-        hashes = []
+        hashes = dict({'filenames': [], 'hash': []})
         for f, h in zipped_hash:
-            hashes.append(f"SHA256 {os.path.basename(f)}: {h}")
+            hashes['filenames'].append(os.path.basename(f))
+            hashes['hash'].append(h)
 
-        if len(hashes) > 1:
-            return "<br />".join(hashes)
-        else:
-            return f"{hashes[0]} -"
+        return hashes
     else:
         return ''
