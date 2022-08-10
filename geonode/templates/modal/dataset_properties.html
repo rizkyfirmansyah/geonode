@@ -30,9 +30,15 @@
         <p>{{ resource.file_size|filesizeformat }}</p>
       </div>
       <div class="col-sm-4 text-right">File Type</div>
-      <div class="col-sm-8 text-left">
-        <p>{% if resource.extension %}{{ resource.extension }}{% else %}{% trans "External" %}{% endif %}</p>
-      </div>
+      {% if catalogue == 'layer' %}
+          <div class="col-sm-8 text-left">
+            <p>{{ resource.subtype|title }}</p>
+          </div>
+      {% else %}
+          <div class="col-sm-8 text-left">
+            <p>{% if resource.extension %}{{ resource.extension }}{% else %}{% trans "External" %}{% endif %}</p>
+          </div>
+      {% endif %}
       <div class="col-sm-4 text-right">Created</div>
       <div class="col-sm-8 text-left">
         <p>{{ resource.created }}</p>
