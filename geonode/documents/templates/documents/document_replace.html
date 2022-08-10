@@ -23,12 +23,17 @@
     </div>
     <div class="card-body">
       <div id="upload_form">
+        {{ form.title|as_crispy_field }}
         {{ form.errors }}
         {% if document.doc_file != '[]' %}
-          {{ form.doc_file|as_crispy_field }}
+          <section id="drop-zone" class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
+            <h3 id="drop_files"><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
+              <input type="file" name="doc_file" id="doc_file" style="display: none;">
+          </section>
         {% elif document.doc_url %}
           {{ form.doc_url|as_crispy_field }}
         {% endif %}
+        <input type="hidden" name="doc_ext" id="doc_ext">
       </div>
       <div title="Preview Image" id="previewImageDiv" class="d-none">
         <div id="divPreview"><span><label id="doc_change_to"></label></span></div>
@@ -70,14 +75,25 @@
       on: 'Remove Current Datasets',
       off: 'Keep the Datasets'
   });
-  $("#id_doc_file").prev().prev().css('display', 'none');
+  $("#doc_file").prev().prev().css('display', 'none');
   $(".toggle").css('margin-top', '1em');
 
-  $('#id_doc_file').on('change', function (e) {
-    var _text = $('#id_doc_file').val().replace("C:\\fakepath\\", "");
+  $('#doc_file').on('change', function (e) {
+    var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
     var _title = _text.replace(/\.[^/.]+$/, "");
     var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
     var file = e.target.files[0];
+    var doc_ext = $(this).val().substring($(this).val().lastIndexOf('.') + 1);
+    $('#doc_ext').val(doc_ext);
+    const displaySelectedFile = () => {
+      $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
+      $('#drop-zone').addClass('drop-selected');
+    }
+    if ($('.files_selected').length) {
+        $('.files_selected').remove();
+        $('#drop-zone').removeClass('drop-selected');
+    }
+    displaySelectedFile();
 
     if (file.type == 'application/pdf') {
         $('#doc_change_to').text("Document Preview: " + _fileName);
@@ -94,9 +110,11 @@
   });
 
   $('#clear-button').on('click', function(e) {
-    $('#id_doc_file').val(null);
+    $('#doc_file').val(null);
     $('#previewImageDiv').addClass('d-none');
     $('#previewPdf').addClass('d-none');
+    $('#drop-zone').removeClass('drop-selected');
+    $('.files_selected').remove();
   })
 </script>
 {% endblock extra_script %}

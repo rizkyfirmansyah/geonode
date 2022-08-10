@@ -373,9 +373,16 @@ class DocumentReplaceForm(forms.ModelForm):
         field_slug="document_upload_size"
     )
 
+    doc_ext = forms.CharField(
+        widget=HiddenInput(
+            attrs={
+                'name': 'doc_ext',
+                'id': 'doc_ext'}),
+        required=False)
+
     class Meta:
         model = Document
-        fields = ['doc_file', 'doc_url']
+        fields = ['title', 'doc_file', 'doc_url']
 
     def clean(self):
         """
@@ -384,6 +391,7 @@ class DocumentReplaceForm(forms.ModelForm):
         cleaned_data = super().clean()
         doc_file = self.cleaned_data.get('doc_file')
         doc_url = self.cleaned_data.get('doc_url')
+        doc_ext = self.cleaned_data.get('doc_ext')
 
         if not doc_file and not doc_url:
             raise forms.ValidationError(_("Document must be a file or url."))

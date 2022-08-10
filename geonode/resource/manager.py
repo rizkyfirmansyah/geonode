@@ -385,6 +385,9 @@ class ResourceManager(ResourceManagerInterface):
                 raise
             finally:
                 try:
+                    if _resource.files:
+                        _resource.hash = sha256sum(_resource.files)
+                        _resource.file_size = sum([os.path.getsize(f) for f in _resource.files])
                     _resource.save(notify=notify)
                     resourcebase_post_save(_resource.get_real_instance())
                     _resource.set_permissions(

@@ -16,7 +16,7 @@
         <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
         {{ form.title|as_crispy_field }}
         <section id="drop-zone" class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
-          <h3><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
+          <h3 id="drop_files"><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
             <input type="file" name="doc_file" id="doc_file" style="display: none;">
         </section>
         {{ form.doc_url|as_crispy_field }}

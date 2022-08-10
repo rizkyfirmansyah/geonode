@@ -65,7 +65,7 @@ from geonode.groups.models import GroupProfile
 from geonode.base.views import batch_modify, batch_permissions
 from geonode.base import register_event
 from geonode.monitoring.models import EventType
-from geonode.security.utils import get_user_visible_groups, get_visible_resources
+from geonode.security.utils import get_user_visible_groups, get_visible_resources, sha256sum
 from django.contrib import messages
 from geonode.resource.manager import resource_manager
 from geonode.storage.manager import storage_manager
@@ -401,8 +401,30 @@ class DocumentUpdateView(LoginRequiredMixin, UpdateView):
         """
         If the form is valid, save the associated model.
         """
-        self.object = form.save()
+        doc_form = form.cleaned_data
+        title = doc_form.pop('title', None)
+        file = doc_form.pop('doc_file', None)
+        ext = doc_form.pop('doc_ext', None)
+        toast_title = _("Replace Document")
+        message = _("Your document {} has been updated".format(title))
+        messages.success(self.request, message, extra_tags=toast_title)
+
+        if file:
+            dirname = doc_path(ext)
+            filepath = storage_manager.save(f"{dirname}/{file.name}", file)
+            storage_path = storage_manager.path(filepath)
+            # Remove uploaded files, if any
+            ResourceBase.objects.cleanup_uploaded_files(resource_id=self.object.id)
+            self.object = resource_manager.update(
+                self.object.uuid,
+                instance=self.object,
+                vals=dict(
+                    owner=self.request.user,
+                    files=[storage_path])
+            )
+
         register_event(self.request, EventType.EVENT_CHANGE, self.object)
+
         return HttpResponseRedirect(
             reverse(
                 'document_detail',
