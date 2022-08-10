@@ -43,8 +43,10 @@
 <div class="card mb-2 border-layer">
   <div class="card-header">
     <div class="row">
-      <h3 class="col-md-8 d-flex text-layer">{{ resource.title|default:resource.alternate }}</h3>
-      <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
+      <div class="col-md-8 d-inline-flex">
+        <h3 class="text-layer">{{ resource.title|default:resource.alternate }}</h3>
+        <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
+      </div>
       <div class="col-md-4 float-right">
         <a href="{% url "catalogue_browse" %}" class="btn btn-info btn-block">{% trans "Explore Catalogue" %}</a>
       </div>
@@ -58,7 +60,9 @@
       </em>
     </div>
   {% endif %}
-  {% include "modal/dataset_properties.html" %}
+  {% with catalogue='layer' %}
+    {% include "modal/dataset_properties.html" %}
+  {% endwith %}
 </div>
 
 <div class="row">
