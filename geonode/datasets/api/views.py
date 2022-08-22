@@ -251,6 +251,7 @@ class DatasetsViewSet(DynamicModelViewSet):
             )
         )
         update_file = File.objects.filter(dataset_id__isnull=True).update(dataset=self.object.id)
+        update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(detail_url='/datasets/'+str(self.object.id))
 
         return Response({"message": "Your file has been updated", "response": reverse('dataset_metadata', args=(self.object.id,))}, status=status.HTTP_201_CREATED)
 

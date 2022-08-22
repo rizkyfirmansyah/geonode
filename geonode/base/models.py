@@ -1290,10 +1290,6 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     def raw_data_quality_statement(self):
         return self._remove_html_tags(self.data_quality_statement)
 
-    @property
-    def detail_url(self):
-        return self.get_absolute_url()
-
     def save(self, notify=False, *args, **kwargs):
         """
         Send a notification when a resource is created or updated
