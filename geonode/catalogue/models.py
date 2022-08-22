@@ -25,7 +25,7 @@ from django.db.models import signals
 from lxml import etree
 from defusedxml import lxml as dlxml
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.catalogue import get_catalogue
 from geonode.base.models import Link, ResourceBase
 
@@ -109,5 +109,3 @@ def catalogue_post_save(instance, sender, **kwargs):
 if 'geonode.catalogue' in settings.INSTALLED_APPS:
     signals.post_save.connect(catalogue_post_save, sender=Layer)
     signals.pre_delete.connect(catalogue_pre_delete, sender=Layer)
-    signals.post_save.connect(catalogue_post_save, sender=Document)
-    signals.pre_delete.connect(catalogue_pre_delete, sender=Document)

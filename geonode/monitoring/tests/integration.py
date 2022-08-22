@@ -56,7 +56,7 @@ from geonode.monitoring.utils import generate_periods, align_period_start
 from geonode.base.models import ResourceBase
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.monitoring.models import *  # noqa
 
 from geonode.tests.utils import Client
@@ -219,7 +219,7 @@ class MonitoringTestBase(GeoNodeLiveTestSupport):
         # Cleanup
         Layer.objects.all().delete()
         Map.objects.all().delete()
-        Document.objects.all().delete()
+        File.objects.all().delete()
 
         MetricValue.objects.all().delete()
         ExceptionEvent.objects.all().delete()
@@ -1405,7 +1405,7 @@ class MonitoringAnalyticsTestCase(MonitoringTestBase):
         for d in data:
             self.assertFalse(d["data"])
 
-    def test_document_download_endpoints(self):
+    def test_dataset_download_endpoints(self):
         # url
         url = (f"{reverse('monitoring:api_metric_data', args={'request.users'})}?"
                f"{'valid_from=2018-09-11T20:00:00.000Z&valid_to=2019-09-11T20:00:00.000Z&interval=2628000'}&{'event_type=download'}&{'resource_type=document'}")
@@ -1624,7 +1624,7 @@ class MonitoringAnalyticsTestCase(MonitoringTestBase):
             {'name': 'layer', 'type_label': 'Layer'},
             {'name': 'map', 'type_label': 'Map'},
             {'name': 'resource_base', 'type_label': 'Resource base'},
-            {'name': 'document', 'type_label': 'Document'},
+            {'name': 'document', 'type_label': 'File'},
             {'name': 'style', 'type_label': 'Style'},
             {'name': 'admin', 'type_label': 'Admin'},
             {'name': 'url', 'type_label': 'URL'},

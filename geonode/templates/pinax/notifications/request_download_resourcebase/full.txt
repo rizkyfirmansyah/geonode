@@ -8,7 +8,7 @@
 {% trans "Layer" %}: <i><a href="{{ default_http_protocol }}://{{ current_site }}{% url "layer_detail" resource.layer.service_typename %}">{{ resource.layer.service_typename }}</a></i>
 <br/>
 {% else %}
-{% trans "Document" %}: {{ current_site }}{% url "document_detail" resource.document.id %}
+{% trans "Document" %}: {{ current_site }}{% url "dataset_detail" resource.document.id %}
 <br/>
 {% endif %}
 <br/>

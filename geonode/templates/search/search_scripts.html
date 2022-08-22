@@ -77,21 +77,24 @@
   {% endif %}
 
   {% get_context_resourcetype as pathc %}
-        {% if pathc == "catalogue" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base"%}';
-        {% elif pathc == "maps" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_map" %}';
-        {% elif pathc == "search" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
-        {% elif pathc == "people" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_profile" %}';
-        {% elif pathc == "groups/categories" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_category" %}';
-        {% elif pathc == "groups" %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_groups" %}';
-        {% else %}
-                AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
-        {% endif %}
+  {% if pathc == "catalogue" %}
+          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = siteUrl + 'api/v2/resources'; {% endcomment %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base"%}';
+  {% elif pathc == "maps" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_map" %}';
+  {% elif pathc == "search" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
+          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = siteUrl + 'api/v2/resources'; {% endcomment %}
+  {% elif pathc == "people" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_profile" %}';
+  {% elif pathc == "groups/categories" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_category" %}';
+  {% elif pathc == "groups" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_groups" %}';
+  {% else %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
+          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = siteUrl + 'api/v2/resources'; {% endcomment %}
+  {% endif %}
 
   var module = angular.module('search', ['geonode_main_search', 'cart']);
   module.constant('Configs', {
@@ -100,7 +103,7 @@
 
   var deps = ['search'];
   {% if include_spatial == 'true' %}
-  deps.push('openlayers-directive');
+    deps.push('openlayers-directive');
   {% endif %}
   angular.bootstrap(document, deps);
 </script>

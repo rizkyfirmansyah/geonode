@@ -130,11 +130,11 @@ class BaseHookSet:
     #     return resource_detail_url(resource.resource_type, resource.id)
 
     # Documents
-    def document_list_url(self):
-        return resource_list_url('documents')
+    def dataset_list_url(self):
+        return resource_list_url('datasets')
 
-    def document_detail_url(self, resource):
-        return resource_detail_url('documents', resource.id)
+    def dataset_detail_url(self, resource):
+        return resource_detail_url('datasets', resource.id)
 
     # Map Persisting
     def viewer_json(self, conf, context=None):

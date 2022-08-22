@@ -26,7 +26,7 @@ from django.conf import settings
 from django.templatetags.static import static
 from django.utils.module_loading import import_string
 
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.geoapps.models import GeoApp
 from geonode.maps.models import Map, MapLayer
 from geonode.layers.models import Layer
@@ -202,7 +202,7 @@ def create_thumbnail(
     return instance.thumbnail_url
 
 
-def _generate_thumbnail_name(instance: Union[Layer, Map, Document, GeoApp]) -> Optional[str]:
+def _generate_thumbnail_name(instance: Union[Layer, Map, File, GeoApp]) -> Optional[str]:
     """
     Method returning file name for the thumbnail.
     If provided instance is a Map, and doesn't have any defined layers, None is returned.
@@ -223,7 +223,7 @@ def _generate_thumbnail_name(instance: Union[Layer, Map, Document, GeoApp]) -> O
 
         file_name = f"map-{instance.uuid}-thumb.png"
 
-    elif isinstance(instance, Document):
+    elif isinstance(instance, File):
         file_name = f"document-{instance.uuid}-thumb.png"
 
     elif isinstance(instance, GeoApp):

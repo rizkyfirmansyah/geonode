@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load base_tags %}
+{% load dataset_tags %}
+{% load static %}
+
+<script src="{% static "geonode/js/base/pdf.min.js" %}"></script>
+<script src="{% static "geonode/js/base/pdf.worker.min.js" %}"></script>
+<link href="{% static "geonode/css/pdf_viewer.css" %}" rel="stylesheet" />
+
+{% block pdf_renderer %}
+  <canvas id="pdf_renderer" class="w-100"></canvas>
+  <div class="row justify-content-center mt-2">
+      <div id="prev" class="btn btn-light mr-4"><i class="fa-solid fa-angle-left"></i></div>
+      <div>
+        <input id="current_page" value="1" type="text" class="btn btn-light text-center mr-3" style="width: 60px; border: 1px solid var(--shadow-1) !important;">
+        <span> / <span id="page_count"></span> </span>
+      </div>
+      <div id="next" class="btn btn-light ml-4"><i class="fa-solid fa-angle-right"></i></div>
+  </div>
+{% endblock  %}

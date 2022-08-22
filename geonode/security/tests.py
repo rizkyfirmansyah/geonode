@@ -40,7 +40,7 @@ from guardian.shortcuts import (
 from geonode import geoserver
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.compat import ensure_string
 from geonode.utils import check_ogc_backend
 from geonode.tests.utils import check_layer
@@ -151,8 +151,8 @@ class SecurityTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         self.assertIsNotNone(perms)
         self.assertTrue(len(perms["users"]) > 0, perms["users"])
 
-        # Test with a Document object
-        a_doc = Document.objects.first()
+        # Test with a File object
+        a_doc = File.objects.first()
         perms = get_users_with_perms(a_doc)
         self.assertIsNotNone(perms)
         self.assertTrue(len(perms["users"]) > 0, perms["users"])
@@ -1898,7 +1898,7 @@ class SecurityTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
 
         # Test "download" permissions retention policy
         # 1. "download" permissions are allowed on "Documents"
-        test_document = Document.objects.first()
+        test_document = File.objects.first()
         perm_spec = {
             'users': {
                 'bobby': [

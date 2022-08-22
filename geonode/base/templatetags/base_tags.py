@@ -35,7 +35,7 @@ from geonode.base.models import ResourceBase, TopicCategory
 from geonode.base.bbox_utils import filter_bbox
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.groups.models import GroupProfile
 from geonode.base.models import (
     HierarchicalKeyword, Menu, MenuItem
@@ -97,7 +97,7 @@ def facets(context):
             pass
 
     if facet_type == 'catalogue':
-        documents = Document.objects.filter(title__icontains=title_filter)
+        documents = ResourceBase.objects.filter(title__icontains=title_filter)
         if data_type_filter:
             documents = documents.filter(data_type__identifier__in=data_type_filter)
         if link_filter:
@@ -197,7 +197,7 @@ def facets(context):
                     facets[app.default_model] = geoapps.count()
         return facets
     elif facet_type == 'documents':
-        documents = Document.objects.filter(title__icontains=title_filter)
+        documents = ResourceBase.objects.filter(title__icontains=title_filter)
         if data_type_filter:
             documents = documents.filter(data_type__identifier__in=data_type_filter)
         if link_filter:
@@ -325,7 +325,7 @@ def facets(context):
             return facets
 
         maps = Map.objects.filter(title__icontains=title_filter)
-        documents = Document.objects.filter(title__icontains=title_filter)
+        documents = ResourceBase.objects.filter(title__icontains=title_filter)
 
         if data_type_filter:
             maps = maps.filter(data_type__identifier__in=data_type_filter)

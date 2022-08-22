@@ -47,7 +47,7 @@ from django.core.exceptions import (
     FieldDoesNotExist)
 
 from geonode.thumbs.thumbnails import _generate_thumbnail_name
-from geonode.documents.tasks import create_document_thumbnail
+from geonode.datasets.tasks import create_dataset_thumbnail
 from geonode.thumbs import utils as thumb_utils
 from geonode.security.permissions import (
     PermSpecCompact,
@@ -67,7 +67,7 @@ from ..base import enumerations
 from ..base.models import ResourceBase
 from ..security.utils import AdvancedSecurityWorkflowManager, sha256sum
 from ..layers.metadata import parse_metadata
-from ..documents.models import Document, DocumentResourceLink
+from ..datasets.models import File, FileResourceLink
 from ..layers.models import Layer, Attribute
 from ..maps.models import Map
 from ..storage.manager import storage_manager
@@ -84,7 +84,7 @@ class ResourceManagerInterface(metaclass=ABCMeta):
          - The 'filter' parameter should be an dictionary with the filtering criteria;
            - 'filter' = None won't return any result
            - 'filter' = {} will return the whole set
-         - The 'resource_type' parameter allows to specify the concrete resource model (e.g. Layer, Document, Map, ...)
+         - The 'resource_type' parameter allows to specify the concrete resource model (e.g. Layer, File, Map, ...)
            - 'resource_type' must be a class
            - 'resource_type' = Layer will return a set of the only available Layers
         """
@@ -419,14 +419,14 @@ class ResourceManager(ResourceManagerInterface):
             to_update.pop('files')
         try:
             with transaction.atomic():
-                if resource_type == Document:
+                if resource_type == File:
                     if 'name' in to_update:
                         to_update.pop("name")
                     if files:
                         to_update['files'] = storage_manager.copy_files_list(files)
                     instance = self.create(
                         uuid,
-                        resource_type=Document,
+                        resource_type=File,
                         defaults=to_update
                     )
                 elif resource_type == Layer:
@@ -482,8 +482,8 @@ class ResourceManager(ResourceManagerInterface):
                         if 'name' in defaults:
                             defaults.pop('name')
                     _resource.save()
-                    if isinstance(instance.get_real_instance(), Document):
-                        for resource_link in DocumentResourceLink.objects.filter(document=instance.get_real_instance()):
+                    if isinstance(instance.get_real_instance(), File):
+                        for resource_link in FileResourceLink.objects.filter(document=instance.get_real_instance()):
                             _resource_link = copy.copy(resource_link)
                             _resource_link.pk = _resource_link.id = None
                             _resource_link.document = _resource.get_real_instance()
@@ -560,7 +560,7 @@ class ResourceManager(ResourceManagerInterface):
         if not isinstance(instance, Layer) and action_type == 'append':
             raise Exception("Append data is available only for Layers")
 
-        if isinstance(instance, Document) and action_type == "replace":
+        if isinstance(instance, File) and action_type == "replace":
             return True
 
         exists = self._concrete_resource_manager.exists(instance.uuid, instance)
@@ -822,9 +822,9 @@ class ResourceManager(ResourceManagerInterface):
                         file_name = _generate_thumbnail_name(_resource.get_real_instance())
                         _resource.save_thumbnail(file_name, thumbnail)
                     else:
-                        if instance and instance.files and isinstance(instance.get_real_instance(), Document):
+                        if instance and instance.files and isinstance(instance.get_real_instance(), File):
                             if overwrite or instance.thumbnail_url == static(thumb_utils.MISSING_THUMB):
-                                create_document_thumbnail.apply((instance.id,))
+                                create_dataset_thumbnail.apply((instance.id,))
                         self._concrete_resource_manager.set_thumbnail(uuid, instance=_resource, overwrite=overwrite, check_bbox=check_bbox)
                 return True
             except Exception as e:

@@ -66,13 +66,13 @@ def map_detail_url(map):
 
 
 @register.simple_tag
-def document_list_url():
-    return hookset.document_list_url()
+def dataset_list_url():
+    return hookset.dataset_list_url()
 
 
 @register.simple_tag
-def document_detail_url(document):
-    return hookset.document_detail_url(document)
+def dataset_detail_url(document):
+    return hookset.dataset_detail_url(document)
 
 
 @register.simple_tag

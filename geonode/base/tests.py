@@ -32,7 +32,7 @@ from PIL import Image
 
 from geonode.base.utils import OwnerRightsRequestViewUtils, ManageResourceOwnerPermissions
 from geonode.base.templatetags.base_tags import display_change_perms_button
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.services.models import Service
@@ -712,7 +712,7 @@ class TestOwnerRightsRequestUtils(TestCase):
         User = get_user_model()
         self.user = User.objects.create(username='test', email='test@test.com')
         self.admin = User.objects.create(username='admin', email='test@test.com', is_superuser=True)
-        self.d = Document.objects.create(owner=self.user, title='test', is_approved=True)
+        self.d = File.objects.create(owner=self.user, title='test', is_approved=True)
         self.la = Layer.objects.create(owner=self.user, title='test', is_approved=True)
         self.s = Service.objects.create(owner=self.user, title='test', is_approved=True)
         self.m = Map.objects.create(owner=self.user, title='test', is_approved=True, zoom=0, center_x=0.0,
@@ -720,7 +720,7 @@ class TestOwnerRightsRequestUtils(TestCase):
 
     def test_get_concrete_resource(self):
         self.assertTrue(isinstance(
-            OwnerRightsRequestViewUtils.get_resource(ResourceBase.objects.get(pk=self.d.id)), Document
+            OwnerRightsRequestViewUtils.get_resource(ResourceBase.objects.get(pk=self.d.id)), File
         ))
 
         self.assertTrue(isinstance(

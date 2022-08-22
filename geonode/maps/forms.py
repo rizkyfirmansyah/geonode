@@ -19,7 +19,7 @@
 
 from geonode.base.forms import ResourceBaseForm
 from geonode.base.models import ResourceBase
-from geonode.documents.forms import GroupsChoiceField
+from geonode.datasets.forms import GroupsChoiceField
 from geonode.maps.models import Map
 from django.contrib.auth.models import Group
 

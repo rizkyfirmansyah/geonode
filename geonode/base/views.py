@@ -38,7 +38,7 @@ from guardian.shortcuts import get_objects_for_user
 
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.groups.models import GroupProfile
 from geonode.tasks.tasks import set_permissions
 from geonode.base.forms import BatchPermissionsForm
@@ -138,8 +138,8 @@ def user_and_group_permission(request, model):
 def batch_modify(request, model):
     if not request.user.is_superuser:
         raise PermissionDenied
-    if model == 'Document':
-        Resource = Document
+    if model == 'File':
+        Resource = File
     if model == 'Layer':
         Resource = Layer
     if model == 'Map':
@@ -228,8 +228,8 @@ from django.http import HttpResponse
 def batch_permissions(request, model):
     if not request.user.is_superuser:
         raise PermissionDenied
-    if model == 'Document':
-        Resource = Document
+    if model == 'File':
+        Resource = File
     if model == 'Layer':
         Resource = Layer
     if model == 'Map':

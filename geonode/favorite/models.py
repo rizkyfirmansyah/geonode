@@ -24,7 +24,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 
@@ -41,7 +41,7 @@ class FavoriteManager(models.Manager):
         return result
 
     def favorite_documents_for_user(self, user):
-        return self._favorite_ct_for_user(user, Document)
+        return self._favorite_ct_for_user(user, File)
 
     def favorite_maps_for_user(self, user):
         return self._favorite_ct_for_user(user, Map)
@@ -72,7 +72,7 @@ class FavoriteManager(models.Manager):
     def bulk_favorite_objects(self, user):
         'get the actual favorite objects for a user as a dict by content_type'
         favs = {}
-        for m in (Document, Map, Layer, get_user_model()):
+        for m in (File, Map, Layer, get_user_model()):
             ct = ContentType.objects.get_for_model(m)
             f = self.favorites_for_user(user).filter(content_type=ct)
             favs[ct.name] = m.objects.filter(id__in=f.values('object_id'))

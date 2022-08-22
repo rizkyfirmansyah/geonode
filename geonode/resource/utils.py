@@ -49,8 +49,8 @@ from ..base.models import (
     SpatialRepresentationType)
 
 from ..layers.models import Layer
-from ..documents.models import Document
-from ..documents.enumerations import (
+from ..datasets.models import Dataset, File
+from ..datasets.enumerations import (
     DOCUMENT_TYPE_MAP,
     DOCUMENT_MIMETYPE_MAP)
 from ..people.utils import get_valid_user
@@ -66,7 +66,7 @@ class KeywordHandler:
     '''
     Object needed to handle the keywords coming from the XML
     The expected input are:
-     - instance (Layer/Document/Map): instance of any object inherited from ResourceBase.
+     - instance (Layer/File/Map): instance of any object inherited from ResourceBase.
      - keywords (list(dict)): Is required to analyze the keywords to find if some thesaurus is available.
     '''
 
@@ -216,10 +216,10 @@ def update_resource(instance: ResourceBase, xml_file: str = None, regions: list 
                     to_update[_key] = getattr(instance, _key)
             elif _key in defaults:
                 defaults.pop(_key)
-    if isinstance(instance, Document):
+    if isinstance(instance, File):
         if 'links' in defaults:
             defaults.pop('links')
-        for _key in ('subtype', 'doc_url', 'doc_file', 'extension'):
+        for _key in ('subtype', 'file_url', 'doc_file', 'extension'):
             if hasattr(instance, _key):
                 if _key in defaults:
                     to_update[_key] = defaults.pop(_key)
@@ -340,59 +340,7 @@ def get_related_resources(document):
         return []
 
 
-def document_post_save(instance, *args, **kwargs):
-    instance.csw_type = 'document'
-
-    if instance.files:
-        _, extension = os.path.splitext(os.path.basename(instance.files[0]))
-        instance.extension = extension[1:]
-        doc_type_map = DOCUMENT_TYPE_MAP
-        doc_type_map.update(getattr(settings, 'DOCUMENT_TYPE_MAP', {}))
-        if doc_type_map is None:
-            subtype = 'other'
-        else:
-            subtype = doc_type_map.get(
-                instance.extension.lower(), 'other')
-        instance.subtype = subtype
-        instance.doc_type = subtype
-
-    elif instance.doc_url:
-        if '.' in urlparse(instance.doc_url).path:
-            instance.extension = urlparse(instance.doc_url).path.rsplit('.')[-1]
-    name = None
-    ext = instance.extension
-    mime_type_map = DOCUMENT_MIMETYPE_MAP
-    mime_type_map.update(getattr(settings, 'DOCUMENT_MIMETYPE_MAP', {}))
-    mime = mime_type_map.get(ext, 'text/plain')
-    url = None
-
-    if instance.id and instance.files:
-        name = "Hosted Document"
-        site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
-        url = f"{site_url}{reverse('document_download', args=(instance.id,))}"
-    elif instance.doc_url:
-        name = "External Document"
-        url = instance.doc_url
-
-    Document.objects.filter(id=instance.id).update(
-        extension=instance.extension,
-        subtype=instance.subtype,
-        detail_url=instance.get_absolute_url(),
-        doc_url=instance.doc_url,
-        doc_file=instance.files,
-        csw_type=instance.csw_type)
-
-    if name and url and ext:
-        Link.objects.get_or_create(
-            resource=instance.resourcebase_ptr,
-            url=url,
-            defaults=dict(
-                extension=ext,
-                name=name,
-                mime=mime,
-                url=url,
-                link_type='data',))
-
+def dataset_post_save(instance, *args, **kwargs):
     resources = get_related_resources(instance)
 
     # if there are (new) linked resources update the bbox computed by their bboxes
@@ -543,8 +491,8 @@ def resourcebase_post_save(instance, *args, **kwargs):
         if hasattr(instance, 'abstract') and not getattr(instance, 'abstract', None):
             instance.abstract = _('No abstract provided')
 
-        if isinstance(instance, Document):
-            document_post_save(instance, *args, **kwargs)
+        if isinstance(instance, Dataset):
+            dataset_post_save(instance, *args, **kwargs)
         if isinstance(instance, Layer):
             if hasattr(instance, 'name') and getattr(instance, 'name', None):
                 instance.title = instance.name

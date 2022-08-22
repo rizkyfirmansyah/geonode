@@ -519,7 +519,7 @@ class TaggedContentItem(ItemBase):
         }, **kwargs).distinct()
 
 
-class _HierarchicalTagManager(_TaggableManager):
+class HierarchicalTagManager(_TaggableManager):
     def add(self, *tags, through_defaults=None, tag_kwargs=None):
         if tag_kwargs is None:
             tag_kwargs = {}
@@ -949,7 +949,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
         through=TaggedContentItem,
         blank=True,
         help_text=keywords_help_text,
-        manager=_HierarchicalTagManager)
+        manager=HierarchicalTagManager)
     tkeywords = models.ManyToManyField(
         ThesaurusKeyword,
         verbose_name=_('keywords'),
@@ -1289,6 +1289,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     @property
     def raw_data_quality_statement(self):
         return self._remove_html_tags(self.data_quality_statement)
+
+    @property
+    def detail_url(self):
+        return self.get_absolute_url()
 
     def save(self, notify=False, *args, **kwargs):
         """

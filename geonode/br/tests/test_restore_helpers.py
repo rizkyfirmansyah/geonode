@@ -190,9 +190,9 @@ class RestoreCommandHelpersTests(GeoNodeBaseTestSupport):
             with zipfile.ZipFile(tmp_file, 'w', zipfile.ZIP_DEFLATED) as archive:
                 archive.writestr('something.txt', 'Some Content Here')
 
-            file_hash = RestoreCommand().validate_backup_file_hash(tmp_file.name)
+            hash = RestoreCommand().validate_backup_file_hash(tmp_file.name)
 
-            self.assertIsNotNone(file_hash, 'Expected the backup file MD5 hash to be returned.')
+            self.assertIsNotNone(hash, 'Expected the backup file MD5 hash to be returned.')
 
     # validate_backup_file_hash() method test
     def test_backup_hash_failure(self):
@@ -235,9 +235,9 @@ class RestoreCommandHelpersTests(GeoNodeBaseTestSupport):
                 hash_file.write(md5_file_hash(tmp_file.name))
 
             try:
-                file_hash = RestoreCommand().validate_backup_file_hash(tmp_file.name)
+                hash = RestoreCommand().validate_backup_file_hash(tmp_file.name)
 
-                self.assertIsNotNone(file_hash, 'Expected the backup file MD5 hash to be returned.')
+                self.assertIsNotNone(hash, 'Expected the backup file MD5 hash to be returned.')
 
             finally:
                 # remove temporary hash file

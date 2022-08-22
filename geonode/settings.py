@@ -371,9 +371,9 @@ GEONODE_CORE_APPS = (
     'geonode.base',
     'geonode.br',
     'geonode.layers',
+    'geonode.datasets',
     'geonode.maps',
     'geonode.geoapps',
-    'geonode.documents',
     'geonode.security',
     'geonode.catalogue',
     'geonode.catalogue.metadataxsl',
@@ -399,7 +399,6 @@ GEONODE_INTERNAL_APPS = (
     'geonode.resource',
     'geonode.resource.processing',
 
-    'geonode.datasets',
     'geonode.storage',
 
     # GeoServer Apps
@@ -1336,8 +1335,8 @@ API_INCLUDE_REGIONS_COUNT = ast.literal_eval(
 EXIF_ENABLED = ast.literal_eval(os.getenv('EXIF_ENABLED', 'True'))
 
 if EXIF_ENABLED:
-    if 'geonode.documents.exif' not in INSTALLED_APPS:
-        INSTALLED_APPS += ('geonode.documents.exif',)
+    if 'geonode.datasets.exif' not in INSTALLED_APPS:
+        INSTALLED_APPS += ('geonode.datasets.exif',)
 
 # Settings for CREATE_LAYER plugin
 CREATE_LAYER = ast.literal_eval(os.getenv('CREATE_LAYER', 'False'))
@@ -2245,7 +2244,7 @@ Define the URLs patterns used by the SizeRestrictedFileUploadHandler
 to evaluate if the file is greater than the limit size defined
 '''
 
-SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES = ("data_upload", "uploads-upload", "document_upload",)
+SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES = ("data_upload", "uploads-upload", "dataset_upload",)
 
 SUPPORTED_LAYER_FILE_TYPES = [
         {

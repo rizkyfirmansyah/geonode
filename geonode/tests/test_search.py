@@ -16,7 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.people.models import Profile
 from geonode.tests.base import GeoNodeBaseTestSupport
 from django.conf import settings
@@ -26,9 +26,9 @@ class ResourceBaseSearchTest(GeoNodeBaseTestSupport):
 
     def setUp(self):
         self.p = Profile.objects.create(username='test')
-        self.d1 = Document.objects.create(title='word', purpose='this is a test', abstract='a brief document about...',
+        self.d1 = File.objects.create(title='word', purpose='this is a test', abstract='a brief document about...',
                                           owner=self.p)
-        self.d1 = Document.objects.create(title='a word', purpose='this is a test',
+        self.d1 = File.objects.create(title='a word', purpose='this is a test',
                                           abstract='a brief document about...',
                                           owner=self.p)
 

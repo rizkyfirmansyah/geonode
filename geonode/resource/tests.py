@@ -32,7 +32,7 @@ from geonode.resource.manager import ResourceManager
 from geonode.base.models import ResourceBase
 from geonode.layers.models import Layer
 from geonode.services.models import Service
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.maps.models import Map, MapLayer
 from geonode.resource import settings as rm_settings
 from geonode.layers.populate_layers_data import create_layer_data
@@ -79,7 +79,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
         result = self.rm.search({"title__icontains": "ipsum", "abstract__icontains": "ipsum"}, resource_type=None)
         self.assertEqual(result.count(), 3)
         # test with specific resource_type
-        result = self.rm.search({"title__icontains": "ipsum", "abstract__icontains": "ipsum"}, resource_type=Document)
+        result = self.rm.search({"title__icontains": "ipsum", "abstract__icontains": "ipsum"}, resource_type=File)
         self.assertEqual(result.count(), 2)
 
     def test_exists(self):
@@ -138,8 +138,8 @@ class TestResourceManager(GeoNodeBaseTestSupport):
         # raises an exception if resource_type is not provided
         self.rm.ingest(dt_files)
         # ingest with documents
-        res = self.rm.ingest(dt_files, resource_type=Document, defaults=defaults)
-        self.assertTrue(isinstance(res, Document))
+        res = self.rm.ingest(dt_files, resource_type=File, defaults=defaults)
+        self.assertTrue(isinstance(res, File))
         res.delete()
         # ingest with layers
         res = self.rm.ingest(dt_files, resource_type=Layer, defaults=defaults)
@@ -171,13 +171,13 @@ class TestResourceManager(GeoNodeBaseTestSupport):
         # copy with documents
         res = self.rm.ingest(
             dt_files,
-            resource_type=Document,
+            resource_type=File,
             defaults={
                 "title": "relief_san_andres",
                 "owner": self.user
             })
-        self.assertTrue(isinstance(res, Document))
-        _copy_assert_resource(res, "Testing Document 2")
+        self.assertTrue(isinstance(res, File))
+        _copy_assert_resource(res, "Testing File 2")
 
         # copy with layers
         res = self.rm.ingest(

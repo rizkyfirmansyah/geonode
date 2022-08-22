@@ -3,7 +3,7 @@
 {% trans "A comment has been posted for the document" %} {{ resource.title }}
 {% trans "by the user" %} <strong>{{ author.username }}</strong>
 <br/>
-{% trans "You can visit the document's detail page here" %}: <a href="https://{{ current_site }}{% url "document_detail" resource.id %}">{% url "document_detail" resource.id %}</a>
+{% trans "You can visit the document's detail page here" %}: <a href="https://{{ current_site }}{% url "dataset_detail" resource.id %}">{% url "dataset_detail" resource.id %}</a>
 <br/>
 <br/>
 <br/>

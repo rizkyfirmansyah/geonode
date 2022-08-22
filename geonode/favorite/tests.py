@@ -99,7 +99,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         self.client.login(username=self.adm_un, password=self.adm_pw)
 
         document_pk = Document.objects.first().pk
-        response = self._get_response("add_favorite_document", (document_pk,))
+        response = self._get_response("add_favorite_dataset", (document_pk,))
 
         # check persisted.
         self.assertEqual(Favorite.objects.count(), 1)
@@ -119,7 +119,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
 
         # call method again, check for idempotent.
         document_pk = Document.objects.first().pk
-        response2 = self._get_response("add_favorite_document", (document_pk,))
+        response2 = self._get_response("add_favorite_dataset", (document_pk,))
 
         # check still one only persisted, same as before second call.
         self.assertEqual(Favorite.objects.count(), 1)
@@ -136,7 +136,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         call create view, not logged in.
         expect a redirect to login page.
         """
-        response = self._get_response("add_favorite_document", ("1",))
+        response = self._get_response("add_favorite_dataset", ("1",))
         self.assertEqual(response.status_code, 302)
 
     def test_create_favorite_view_id_not_found(self):
@@ -149,7 +149,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         pk_not_in_db = str(max_document_pk["pk__max"] + 1)
 
         self.client.login(username=self.adm_un, password=self.adm_pw)
-        response = self._get_response("add_favorite_document", (pk_not_in_db,))
+        response = self._get_response("add_favorite_dataset", (pk_not_in_db,))
         self.assertEqual(response.status_code, 404)
 
     def test_delete_favorite_view(self):
@@ -161,7 +161,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
 
         # first, add one to delete.
         document_pk = Document.objects.first().pk
-        response = self._get_response("add_favorite_document", (document_pk,))
+        response = self._get_response("add_favorite_dataset", (document_pk,))
 
         # check persisted.
         self.assertEqual(Favorite.objects.count(), 1)

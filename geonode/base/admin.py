@@ -79,7 +79,7 @@ def metadata_batch_edit(modeladmin, request, queryset):
     name_space_mapper = {
         'layer': 'layer_batch_metadata',
         'map': 'map_batch_metadata',
-        'document': 'document_batch_metadata'
+        'document': 'dataset_batch_metadata'
     }
 
     try:
@@ -111,7 +111,7 @@ def set_batch_permissions(modeladmin, request, queryset):
 
     name_space_mapper = {
         'layer': 'layer_batch_permissions',
-        'document': 'document_batch_permissions'
+        'document': 'dataset_batch_permissions'
     }
 
     try:

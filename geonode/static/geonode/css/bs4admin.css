@@ -235,6 +235,10 @@ input[type=text], input[type=password], select, textarea {
   width: 100% !important;
 }
 
+.grp-tools-container {
+    width: auto !important;
+}
+
 .grp-module.grp-table select, .grp-module.grp-table .grp-autocomplete-wrapper-m2m, .grp-module.grp-table .grp-autocomplete-wrapper-fk,
 input.grp-has-related-lookup, input.vDateField.hasDatepicker, input.vTimeField.hasTimepicker, input.vFileBrowseField {
   width: max-content !important;

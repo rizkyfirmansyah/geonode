@@ -283,7 +283,7 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   color: #007bff !important;
 }
 
-.text-document {
+.text-dataset {
   color: #a82a54 !important;
 }
 
@@ -311,7 +311,7 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   border-color: #007bff !important;
 }
 
-.border-document {
+.border-dataset {
   border-color: #a82a54 !important;
 }
 
@@ -338,7 +338,7 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
   background-color: #007bff !important;
 }
 
-.bg-document {
+.bg-dataset {
   background-color: #a82a54 !important;
 }
 
@@ -372,7 +372,7 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 
 
 .bg-layer div p,
-.bg-document div p,
+.bg-dataset div p,
 .bg-dashboard div p,
 .bg-geostory div p,
 .bg-remote div p {
@@ -384,7 +384,7 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 }
 
 .bg-layer span svg,
-.bg-document span svg,
+.bg-dataset span svg,
 .bg-maps span svg,
 .bg-geostory span svg
 .bg-remote span svg

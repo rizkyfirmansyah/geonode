@@ -49,7 +49,7 @@ from slugify import slugify
 from contextlib import closing
 from requests.exceptions import RetryError
 from collections import namedtuple, defaultdict
-from geonode.documents.enumerations import DOCUMENT_TYPE_MAP
+from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP
 from rest_framework.exceptions import APIException
 from math import atan, exp, log, pi, sin, tan, floor
 from zipfile import ZipFile, is_zipfile, ZIP_DEFLATED

@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load static %}
-{% load document_tags %}
+{% load dataset_tags %}
 {% block extra_script %}
 <script type="text/javascript">
   $(document).ready(function(){
@@ -8,7 +8,7 @@
       $("#remove_document").submit(function(t){
         return t.preventDefault(),
         $.ajax({
-          data:{docid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "document_remove" %}',headers:{"X-CSRFToken":'{{csrf_token}}'},
+          data:{docid:"{{resource.id}}"},type:$(this).attr("method"),method:"POST",url:'{% url "dataset_remove" %}',headers:{"X-CSRFToken":'{{csrf_token}}'},
           success:function(data){
             $(document.body).append(data);
         }}).done(function(){setInterval(function(){location.href="{% url 'catalogue_browse' %}"},2e3)}),!1})

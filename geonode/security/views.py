@@ -42,8 +42,7 @@ from geonode.groups.models import GroupProfile
 
 from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import send_notification
-from geonode.datasets.forms import RodaForm
-from django.contrib.auth.decorators import login_required
+# from geonode.datasets.forms import RodaForm
 from django.shortcuts import render, redirect
 from geonode.notifications_helper import toast_unauthorized
 from django.contrib import messages
@@ -471,7 +470,7 @@ def set_bulk_permissions(request):
 def request_permissions(request):
     toast_title = _("Request Permission")
     if request.method == 'POST':
-        roda_form = RodaForm(request.POST)
+        # roda_form = RodaForm(request.POST)
         uuid = request.POST['uuid']
         absolute_url = request.POST['absolute_url']
         resource_title = request.POST['resource_title']
@@ -479,40 +478,40 @@ def request_permissions(request):
         purposes = request.POST['purposes']
         resource = get_object_or_404(ResourceBase, uuid=uuid)
         
-        if roda_form.is_valid():
-            roda = roda_form.save(commit=False)
-            roda.resource_owner = resource.owner
-            roda.requester = request.user
+        # if roda_form.is_valid():
+        #     roda = roda_form.save(commit=False)
+        #     roda.resource_owner = resource.owner
+        #     roda.requester = request.user
 
-            user = get_user_model().objects.get(username=request.user)
-            requester = user.full_name_or_nick
+        #     user = get_user_model().objects.get(username=request.user)
+        #     requester = user.full_name_or_nick
 
-            roda.resource_title = resource_title
-            roda.absolute_url = absolute_url
-            roda.uuid = uuid
-            roda.save()
-            _toast_message = _("We have sent an email to the resource owner about your request.")
+        #     roda.resource_title = resource_title
+        #     roda.absolute_url = absolute_url
+        #     roda.uuid = uuid
+        #     roda.save()
+        #     _toast_message = _("We have sent an email to the resource owner about your request.")
             
-            subject = _('System message: A request to download resource')
+        #     subject = _('System message: A request to download resource')
 
-            message_title = f'<p class="font-weight-bold">{requester_name} has requested to download the resource {resource_title}</p>'
-            message_body = f'<p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {requester}.</p>'
-            message = message_title + message_body
+        #     message_title = f'<p class="font-weight-bold">{requester_name} has requested to download the resource {resource_title}</p>'
+        #     message_body = f'<p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {requester}.</p>'
+        #     message = message_title + message_body
 
-            logger.debug("Record request download resources...")
-            send_inbox(request, subject, message, resource.owner)
-            send_notification([resource.owner],
-                              'request_download_resourcebase',
-                              {'resource': resource, 'from_user': request.user})
+        #     logger.debug("Record request download resources...")
+        #     send_inbox(request, subject, message, resource.owner)
+        #     send_notification([resource.owner],
+        #                       'request_download_resourcebase',
+        #                       {'resource': resource, 'from_user': request.user})
 
-            messages.success(request, _toast_message, extra_tags=toast_title)
-            context = {'roda_form': roda_form}
+        #     messages.success(request, _toast_message, extra_tags=toast_title)
+        #     context = {'roda_form': roda_form}
 
-            return render(request, 'modal/request_data.html', context)
+        return render(request, 'modal/request_data.html', context)
 
     else:
-        roda_form = RodaForm()
-        context = {'roda_form': roda_form}
+        # roda_form = RodaForm()
+        context = {'roda_form': ''}
         return render(request, 'modal/request_data.html', context)
 
 

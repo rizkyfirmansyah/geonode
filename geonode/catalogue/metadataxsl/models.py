@@ -26,7 +26,7 @@ from django.db.models import signals
 
 from geonode.base.models import Link
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset, File
 
 
 ISO_XSL_NAME = 'ISO with XSL'
@@ -61,5 +61,5 @@ def add_xsl_link(resourcebase):
 
 if 'geonode.catalogue' in settings.INSTALLED_APPS:
     signals.post_save.connect(xsl_post_save, sender=Layer)
-    signals.post_save.connect(xsl_post_save, sender=Document)
+    signals.post_save.connect(xsl_post_save, sender=Dataset)
     # TODO: maps as well?

@@ -29,7 +29,6 @@ from guardian.shortcuts import get_objects_for_user
 from geonode.catalogue.backends.pycsw_local import CONFIGURATION
 from geonode.base.models import ResourceBase
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
 from geonode.base.auth import get_or_create_token
 from geonode.base.models import ContactRole, SpatialRepresentationType
 from geonode.groups.models import GroupProfile

@@ -1,0 +1,249 @@
+{% extends "datasets/dataset_base.html" %}
+{% load i18n %}
+{% load dialogos_tags %}
+{% load pinax_ratings_tags %}
+{% load crispy_forms_tags %}
+{% load base_tags %}
+{% load guardian_tags %}
+{% load dataset_tags %}
+{% load static %}
+
+{% block title %}{{ resource.title }} — {{ block.super }}{% endblock %}
+
+{% block head %}
+
+{% if TWITTER_CARD %}
+{% include "base/_resourcebase_twittercard.html" %}
+{% endif %}
+{% if OPENGRAPH_ENABLED %}
+{% include "base/_resourcebase_opengraph.html" %}
+{% endif %}
+
+{{ block.super }}
+
+{% endblock %}
+
+{% block body_class %}{% trans "documents" %}{% endblock %}
+
+{% block body %}
+<div class="card mb-2 border-dataset">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-8 d-flex">
+        <h3 class="text-dataset">{{ resource.title }}</h3>
+        <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
+      </div>
+      <div class="col-md-4 float-right"><a href="{% url "catalogue_browse" %}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a></div>
+    </div>
+  </div>
+    {% include "modal/dataset_properties.html" %}
+</div>
+<div class="row">
+  <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
+    {% if "download_resourcebase" in perms_list %}
+      {% if resource.extension|lower in audiotypes and resource.doc_file %}
+      {% get_mime_type mimetypemap resource.extension as mimetype %}
+      <div id="embedded_map" width="100%">
+        <a style="text-decoration:none;" href="{% url "dataset_link" resource.id %}" target="_blank">
+          <audio controls width="100%">
+            <source src="{% url "dataset_download" resource.id %}" type="{{ mimetype }}">
+            {% trans "Your browser does not support the audio element." %}
+          </audio>
+        </a>
+      </div>
+      {% elif resource.extension|lower in imgtypes and resource.doc_file %}
+      <div id="embedded_map" width="100%">
+        <a style="text-decoration:none;" href="{% url "dataset_link" resource.id %}" target="_blank">
+          <img src="{% url "dataset_download" resource.id %}" width='100%' class="img-responsive" />
+        </a>
+      </div>
+      {% elif resource.extension|lower in videotypes and resource.doc_file %}
+      {% get_mime_type mimetypemap resource.extension as mimetype %}
+      <div id="embedded_map" width="100%">
+        <a style="text-decoration:none;" href="{% url "dataset_link" resource.id %}" target="_blank">
+          <video width="500" controls>
+            <source src="{% url "dataset_download" resource.id %}" type="{{ mimetype }}">
+            {% trans "Your browser does not support the video tag." %}
+          </video>
+        </a>
+      </div>
+      {% elif resource.extension|lower in wordtypes or resource.extension|lower in exceltypes or resource.extension|lower in ppttypes and resource.doc_file %}
+          <iframe src="https://docs.google.com/gview?url={{ SITEURL }}{% url "dataset_download" resource.id %}&embedded=true" width="100%" height="480px" frameborder="0"></iframe>
+      {% elif resource.extension == 'pdf' and resource.doc_file %}
+          {% include "datasets/pdf_renderer.html" %}
+      {% elif not resource.doc_file %}
+        <p><a href="{% url "dataset_link" resource.id %}" target="_blank">{% trans "Download the" %} {{ resource }}</a></p>
+      {% elif resource.doc_url %}
+        <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }}.</a>
+          <small>({% trans 'External Resource' %})</small></p>
+      {% elif resource.extension|lower in tabulartypes and resource.doc_file %}
+        <div class="p-3 bg-light" id="dataframe_container"></div>
+      {%  endif %}
+    {%  endif %}
+
+    <div class="row d-flex">
+      {% include "_actions.html" %}
+    </div>
+
+    <div class="tab-content bg-light">
+      <article id="info" class="tab-pane{% if tab == 'info' or not tab %} active{% endif %}">
+        {% include "base/resourcebase_info_panel.html" %}
+      </article>
+
+      {% block social_links %}
+      {% if DISPLAY_SOCIAL %}
+      {% include "social_links.html" %}
+      {% endif %}
+      {% endblock %}
+
+      {% if DISPLAY_COMMENTS %}
+      <article id="comments" class="tab-pane">
+        {% include "_comments.html" %}
+      </article>
+      {% endif %}
+
+      {% if DISPLAY_RATINGS %}
+      <article id="rate" class="tab-pane">
+        <!-- TODO: Move this to a reusable template snippet -->
+        {% if request.user.is_authenticated %}
+        <h4>{% trans "Rate this Datasets" %}</h4>
+        {% user_rating request.user resource "document" as user_document_rating %}
+        <div id="user_rating" class="category-layer" data-score="{{user_document_rating}}"></div>
+        {% endif %}
+        <h4>{% trans 'Average Rating' %}</h4>
+        {% overall_rating resource "document" as document_rating %}
+        {% num_ratings resource as num_votes %}
+        <div class="overall_rating row w-100 pl-3" style="float:left" data-score="{{ document_rating }}"></div> ({{num_votes}})
+        <!-- TODO: Add display of who gave what rating based -->
+      </article>
+      {% endif %}
+
+      {% if EXIF_ENABLED and exif_data %}
+      {% with "exif/_exif_dataset_detail.html" as exif_template %}
+      {% include exif_template %}
+      {% endwith %}
+      {% endif %}
+
+      {% if FAVORITE_ENABLED %}
+      <article class="tab-pane" id="favorite">
+        {% include "favorite/_favorite.html" %}
+      </article>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0{% endif %}">
+    
+    <ul class="list-group">
+      {% if not request.user_agent.is_mobile and "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list %}
+        <li class="list-group-item">
+            {% include "upload/thumbnail.html" %}
+        </li>
+      {% endif %}
+      <li class="list-group-item">
+        <a class="btn btn-primary btn-md btn-block" href="{% url "dataset_metadata_detail" resource.id %}">{% trans "Metadata Detail" %}</a>
+      </li>
+      <li class="list-group-item">
+        {% if "download_resourcebase" in perms_list %}
+          {% if resource.extension|lower in imgtypes and resource.doc_file %}
+            <a style="text-decoration:none;" target="_blank" href="{% url "dataset_download" resource.id %}"><button
+              class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+          {% elif resource.doc_file %}
+            <a style="text-decoration:none;" target="_blank" href="{% url "dataset_download" resource.id %}"><button
+              class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+          {% elif resource.doc_url %}
+            <a style="text-decoration:none;" target="_blank" href="{{ resource.doc_url }}"><button
+              class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+          {%  endif %}
+        {% else %}
+          <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
+        {%  endif %}
+      </li>
+      {% if not READ_ONLY_MODE %}
+      {% if "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}
+      <li class="list-group-item">
+        <button class="btn btn-edit btn-md btn-block" data-toggle="modal" data-target="#edit-document">{% trans "Edit Datasets" %}</button>
+      </li>
+      {% endif %}
+      {% endif %}
+      {% display_edit_request_button resource request.user perms_list as display_request_button %}
+      {% if display_request_button %}
+      <li class="list-group-item">
+        <a href="{% url "owner_rights_request" resource.id %}">
+          <button class="btn btn-primary btn-md btn-block">{% trans "Request change" %}</button>
+        </a>
+      </li>
+      {% endif %}
+
+      <li class="list-group-item">
+        <button class="btn btn-download btn-md btn-block" data-toggle="modal" data-target="#download-metadata">{% trans "Download Metadata" %}</button>
+      </li>
+
+      {% if related %}
+      <li class="list-group-item">
+        <h4>{% trans "Resources using this Datasets" %}</h4>
+        {% if layer.maps %}
+            <p>{% trans "List of resources using this Datasets:" %}</p>
+        {% endif %}
+        <ul class="list-unstyled">
+          {% for resource in related %}
+            {% if resource.resource_type == 'dataset' %}
+                <li><a href="{{ resource.id }}" class="text-dataset">{{ resource.title }}</a></li>
+            {% elif resource.resource_type == 'layer' %}
+                <li><a href="{% url 'layer_detail' layername=resource.alternate %}" class="text-layer">{{ resource.title }}</a></li>
+            {% endif %}
+          {% empty %}
+          {% endfor %}
+        </ul>
+      </li>
+      {% endif %}
+
+      {% if GEONODE_SECURITY_ENABLED %}
+      {% if "change_resourcebase_permissions" in perms_list %}
+      {% if not READ_ONLY_MODE %}
+      <li class="list-group-item">
+        <h4>{% trans "Permissions" %}</h4>
+        <p>{% trans "Click the button below to change the permissions of this Datasets." %}</p>
+        <button class="btn btn-edit btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
+      </li>
+
+      {% with catalogue='document' %}
+        {% include "modal/permissions.html" %}
+      {% endwith %}
+
+      {% endif %}
+      {% endif %}
+      {% endif %}
+
+      {% include "base/_resourcebase_contact_snippet.html" %}
+
+      {% include "modal/manage_documents.html" %}
+      {% include "modal/download_metadata_document.html" %}
+
+    </ul>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+{{ block.super }}  
+  
+  {% if DISPLAY_SOCIAL %}
+    {% include 'facebook_sdk.html' %}
+  {% endif %}
+  {% if request.user.is_authenticated %}
+    {% user_rating_js request.user resource "document" %}
+  {% else %}
+    {% overall_rating resource "document" as the_doc_rating %}
+  {% endif %}
+
+    {% include 'rating.html' %}
+
+  {% if FAVORITE_ENABLED %}
+    {% include "favorite/_favorite_js.html" %}
+  {% endif %}
+
+  {% include "datasets/render_tabular.html" %}
+
+{% endblock extra_script %}

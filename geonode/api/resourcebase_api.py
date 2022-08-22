@@ -49,7 +49,7 @@ from geonode import get_version, geoserver
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.geoapps.models import GeoApp
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset, File
 from geonode.base.models import ResourceBase, Link
 from geonode.base.models import HierarchicalKeyword
 from geonode.base.bbox_utils import filter_bbox
@@ -173,7 +173,7 @@ class CommonModelApi(ModelResource):
         'is_published',
         'dirty_state',
         'metadata_only',
-        'link__extension',
+        # 'link__extension',
         'featured',
         'perms',
         'avatar',
@@ -213,7 +213,7 @@ class CommonModelApi(ModelResource):
         extent = applicable_filters.pop('extent', None)
         keywords = applicable_filters.pop('keywords__slug__in', None)
         metadata_only = applicable_filters.pop('metadata_only', False)
-        link = applicable_filters.pop('link__extension__in', None)
+        # link = applicable_filters.pop('link__extension__in', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
 
         if filtering_method == 'or':
@@ -263,8 +263,8 @@ class CommonModelApi(ModelResource):
         if keywords:
             filtered = self.filter_h_keywords(filtered, keywords)
 
-        if link:
-            filtered = self.filter_link_extension(filtered, link)
+        # if link:
+            # filtered = self.filter_link_extension(filtered, link)
 
         # return filtered
         return get_visible_resources(
@@ -356,7 +356,7 @@ class CommonModelApi(ModelResource):
         resource_type = parameters.getlist("resource__type__in")
 
         # Dataset type filter
-        link = parameters.getlist("link__extension__in")
+        # link = parameters.getlist("link__extension__in")
 
         # Filter by Type and subtype
         if type_facets is not None:
@@ -487,9 +487,9 @@ class CommonModelApi(ModelResource):
                         bbox_right__lte=left))
 
         # filter by dataset_ext
-        if link:
-            sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
-                f"link__extension:{','.join(map(str, link))}")
+        # if link:
+            # sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
+            #     f"link__extension:{','.join(map(str, link))}")
 
         # Apply sort
         if sort.lower() == "-date":
@@ -686,9 +686,9 @@ class CommonModelApi(ModelResource):
             if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
                 formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
-            if obj.resource_type == 'document':
-                _links = Document.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
-                formatted_obj['link__extension'] = _links[0].get('extension')
+            # if obj.resource_type == 'dataset':
+            #     _links = Dataset.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
+            #     formatted_obj['link__extension'] = _links[0].get('extension')
 
             formatted_objects.append(formatted_obj)
 
@@ -890,7 +890,7 @@ class LayerResource(CommonModelApi):
         dehydrated = []
         obj = bundle.obj
         link_fields = [
-            'extension',
+            # 'extension',
             'link_type',
             'name',
             'mime',
@@ -1178,8 +1178,8 @@ class DocumentResource(CommonModelApi):
         paginator_class = CrossSiteXHRPaginator
         filtering = CommonMetaApi.filtering
         filtering.update({'subtype': ALL})
-        queryset = Document.objects.distinct().order_by('-date')
-        resource_name = 'documents'
+        queryset = Dataset.objects.distinct().order_by('-date')
+        resource_name = 'dataset'
         authentication = MultiAuthentication(SessionAuthentication(),
                                              OAuthAuthentication(),
                                              GeonodeApiKeyAuthentication())

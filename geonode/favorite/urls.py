@@ -22,9 +22,9 @@ from . import views
 
 urlpatterns = [
     url(
-        r'^document/(?P<id>\d+)$',
-        views.favorite, {'subject': 'document'},
-        name='add_favorite_document'
+        r'^datasets/(?P<id>\d+)$',
+        views.favorite, {'subject': 'dataset'},
+        name='add_favorite_dataset'
     ),
     url(
         r'^map/(?P<id>\d+)$',

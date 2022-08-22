@@ -1,0 +1,90 @@
+{% extends "datasets/dataset_upload_base.html" %}
+{% load i18n %}
+{% load base_tags %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} {% trans "Upload Datasets" %} - {{ block.super }} {% endblock %}
+
+{% block body_class %}datasets upload{% endblock body_class %}
+
+{% block body_inner %}
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <form enctype="multipart/form-data">
+          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
+          <section id="drop-zone" dropzone class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
+            <h3 id="drop_files"><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
+              <input type="file" name="doc_file" id="doc_file" style="display: none;">
+          </section>
+          {{ form.file_url|as_crispy_field }}
+          <input type="hidden" name="extension" id="extension">
+          <input type="hidden" name="import_id" id="import_id" value="{{ import_id }}">
+          {% verbatim %}
+            <button id="submit" type="submit" class="btn btn-primary btn-block" ng-click="post_file($event)">Add file</button>
+          {% endverbatim %}
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block body_sidebar %}
+
+{% display_change_perms_button resource request.user perms_list as display_perms_button %}
+{% if display_perms_button %}
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="text-center">{% trans "Permissions" %}</h3>
+      </div>
+      <form id="permission_form">
+        {% with catalogue='document' %}
+          {% include "modal/permissions_form.html" %}
+        {% endwith %}
+      </form>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}
+
+{% block additional_body %}
+  {% verbatim %}
+    <div class="col-md-12 p-0 mt-4 d-none" cardingest id="card-ingest">
+      
+    </div>
+  {% endverbatim %}
+{% endblock additional_body %}
+
+{% block extra_script %}
+{{ block.super }}
+<script type="text/javascript">
+
+  function delete_file(id) {    
+    $.ajax({
+        data: {pk: id},
+        url: "/api/v2/datasets/delete_file",
+        type: 'DELETE',
+        headers:{"X-CSRFToken":'{{csrf_token}}'},
+        method: 'DELETE',
+        success: function(result) {
+          $(document.body).append(deleteMsg);
+          setTimeout(function() {
+            $("#datasetToast").remove();
+            $("#card-"+id+"").remove();
+          }, 1000);
+        }
+    });
+  };
+</script>
+{% include "modal/preview_files.html" %}
+{% include "toast/permissions_form.html" %}
+
+{% include "upload/documents.html" %}
+{% include "modal/remove_dataset_files.html" %}
+<script src="{% static "geonode/js/upload/dataset.js" %}"></script>
+
+{% endblock extra_script %}

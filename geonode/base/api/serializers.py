@@ -19,6 +19,7 @@
 #########################################################################
 import json
 from urllib.parse import urljoin
+from slugify import slugify
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -46,6 +47,7 @@ from geonode.base.models import (
     DataType,
     SpatialRepresentationType,
     ThesaurusKeyword,
+    ThesaurusKeywordLabel,
     ExtraMetadata
 )
 from geonode.groups.models import (
@@ -55,6 +57,7 @@ from geonode.groups.models import (
 from geonode.base.utils import build_absolute_uri
 from geonode.security.utils import get_resources_with_perms
 from geonode.base.models import Link
+from geonode.resource.models import ExecutionRequest
 
 import logging
 

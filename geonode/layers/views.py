@@ -90,7 +90,7 @@ from geonode.monitoring.models import EventType
 from geonode.groups.models import GroupProfile
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
-from geonode.documents.models import get_related_documents
+from geonode.datasets.models import get_related_documents
 from geonode.security.utils import (
     get_user_visible_groups,
     get_visible_resources,

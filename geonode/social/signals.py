@@ -34,7 +34,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.notifications_helper import (send_notification, queue_notification,
                                           has_notifications, get_notification_recipients,
                                           get_comment_notification_recipients)
@@ -59,7 +59,7 @@ if "pinax.ratings" in settings.INSTALLED_APPS:
 
 def activity_post_modify_object(sender, instance, created=None, **kwargs):
     """
-    Creates new activities after a Map, Layer, Document, or Comment is  created/updated/deleted.
+    Creates new activities after a Map, Layer, File, or Comment is  created/updated/deleted.
 
     action_settings:
     actor: the user who performed the activity
@@ -119,7 +119,7 @@ def activity_post_modify_object(sender, instance, created=None, **kwargs):
             if created is False:
                 # object was saved.
                 if not isinstance(instance, Layer) and \
-                not isinstance(instance, Document) and \
+                not isinstance(instance, File) and \
                 not isinstance(instance, Map):
                     verb = action.get('updated_verb')
                     raw_action = 'updated'
@@ -167,8 +167,8 @@ if activity:
     signals.post_save.connect(activity_post_modify_object, sender=Map)
     signals.post_delete.connect(activity_post_modify_object, sender=Map)
 
-    signals.post_save.connect(activity_post_modify_object, sender=Document)
-    signals.post_delete.connect(activity_post_modify_object, sender=Document)
+    signals.post_save.connect(activity_post_modify_object, sender=File)
+    signals.post_delete.connect(activity_post_modify_object, sender=File)
 
 
 def rating_post_save(instance, sender, created, **kwargs):

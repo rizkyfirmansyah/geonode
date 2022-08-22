@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load static %}
 {% load base_tags %}
-{% load document_tags %}
+{% load dataset_tags %}
 
 <div class="modal fade" id="edit-document" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -18,8 +18,8 @@
               <div class="col p-1">
                 <i class="fa-solid fa-rectangle-list fa-3x"></i>
                 <h5>{% trans "Metadata" %}</h5>
-                <a class="btn btn-primary btn-block btn-md" href="{% url "document_metadata" resource.id %}">{% trans "Wizard" %}</a>
-                <a class="btn btn-edit btn-block btn-md" href="{% url "document_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
+                <a class="btn btn-primary btn-block btn-md" href="{% url "dataset_metadata" resource.id %}">{% trans "Wizard" %}</a>
+                <a class="btn btn-edit btn-block btn-md" href="{% url "dataset_metadata_advanced" resource.id %}">{% trans "Advanced Edit" %}</a>
                 </div>
             {% endif %}
             {% if "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}
@@ -27,7 +27,7 @@
                 <i class="fa-regular fa-file-lines fa-3x"></i>
                 <h5>{% trans "Data" %}</h5>
                 {% if "change_resourcebase" in perms_list %}
-                  <a class="btn btn-edit btn-block btn-md" href="{% url "document_replace" resource.id %}">{% trans "Replace" %}</a>
+                  <a class="btn btn-edit btn-block btn-md" href="{% url "dataset_replace" resource.id %}">{% trans "Replace" %}</a>
                 {% endif %}
                 {% if "delete_resourcebase" in perms_list %}
                   <a id="removeDocumentModal" data-toggle="modal" class="btn btn-danger btn-block btn-md" data-target="#removeDocumentsModal" style="cursor: pointer;">Remove</a>

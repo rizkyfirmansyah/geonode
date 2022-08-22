@@ -94,7 +94,7 @@ urlpatterns += [
     url(r'^maps/', include('geonode.maps.urls')),
 
     # Documents views
-    url(r'^documents/', include('geonode.documents.urls')),
+    url(r'^datasets/', include('geonode.datasets.urls')),
 
     # Apps views
     url(r'^apps/', include('geonode.geoapps.urls')),

@@ -28,7 +28,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from . import models
@@ -42,7 +42,7 @@ def favorite(req, subject, id):
     only creates if does not already exist.
     """
     if subject == 'document':
-        obj = get_object_or_404(Document, pk=id)
+        obj = get_object_or_404(File, pk=id)
     elif subject == 'map':
         obj = get_object_or_404(Map, pk=id)
     elif subject == 'layer':

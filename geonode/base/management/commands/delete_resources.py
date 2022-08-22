@@ -27,7 +27,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 
 
 class Command(BaseCommand):
@@ -151,10 +151,10 @@ class Command(BaseCommand):
         if document_filters:
 
             if '*' in document_filters:
-                documents_to_delete = Document.objects.all()
+                documents_to_delete = Dataset.objects.all()
             else:
                 documents_q_expressions = [eval(expr) for expr in document_filters]
-                documents_to_delete = Document.objects.filter(*documents_q_expressions)
+                documents_to_delete = Dataset.objects.filter(*documents_q_expressions)
 
             for document in documents_to_delete:
                 print(f'Deleting document "{document.title}" with ID: {document.id}')

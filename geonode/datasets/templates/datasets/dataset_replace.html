@@ -1,0 +1,120 @@
+{% extends "datasets/dataset_upload_base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %} {% trans "Replace Document" %} - {{ block.super }} {% endblock %}
+
+{% block body_class %}documents replace{% endblock body_class %}
+
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+<form method="post" enctype="multipart/form-data" action="{% url "dataset_replace" document.id %}">
+  {% csrf_token %}
+  <div class="card">
+    <div class="card-header bg-warning">
+      <div class="row">
+        <h3 class="col">{% trans "Replace " %}{{ document.title }}</h3>
+        <div class="col-sm-4 text-right"><a href="{% url 'dataset_detail' docid=document.id %}" class="btn btn-light w-100">{% trans "Return to Datasets" %}</a></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="upload_form">
+        {{ form.title|as_crispy_field }}
+        {{ form.errors }}
+        {% if document.doc_file != '[]' %}
+          <section id="drop-zone" class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
+            <h3 id="drop_files"><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
+              <input type="file" name="doc_file" id="doc_file" style="display: none;">
+          </section>
+        {% elif document.doc_url %}
+          {{ form.doc_url|as_crispy_field }}
+        {% endif %}
+        <input type="hidden" name="extension" id="extension">
+      </div>
+      <div title="Preview Image" id="previewImageDiv" class="d-none">
+        <div id="divPreview"><span><label id="doc_change_to"></label></span></div>
+        <img id="previewImage" src="" class="mx-auto d-block" />
+      </div>
+      <div class="d-none" id="previewPdf">
+        <canvas id="pdfRendererReplace" class="w-100"></canvas>
+        <div class="row justify-content-center mt-2">
+            <div>
+              <input id="current_page_replace" value="1" type="text" disabled class="btn btn-light text-center mr-3" style="width: 60px; border: 1px solid var(--shadow-1) !important;">
+              <span> / <span id="pageCountReplace"></span> </span>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-transparent">
+      <div class="row">
+        <button id="clear-button" type="reset" class="btn btn-info col m-3">{% trans "Clear" %}</button>
+        <button id="upload-button" type="submit" class="btn btn-save col m-3" value="Update">{% trans "Replace Datasets" %}</button>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+{% block extra_script %}
+{{ block.super }}
+
+<script src="{% static "geonode/js/base/pdf.min.js" %}"></script>
+<script src="{% static "geonode/js/base/pdf.worker.min.js" %}"></script>
+<link href="{% static "geonode/css/pdf_viewer.css" %}" rel="stylesheet" />
+
+<script type="text/javascript">
+
+  $('#doc_file-clear_id').attr('data-toggle', 'toggle');
+  $('#doc_file-clear_id').attr('data-width', '100%');
+  $('#doc_file-clear_id').attr('data-height', '50');
+  $("#doc_file-clear_id").bootstrapToggle({
+      on: 'Remove Current Datasets',
+      off: 'Keep the Datasets'
+  });
+  $("#doc_file").prev().prev().css('display', 'none');
+  $(".toggle").css('margin-top', '1em');
+
+  $('#doc_file').on('change', function (e) {
+    var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
+    var _title = _text.replace(/\.[^/.]+$/, "");
+    var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+    var file = e.target.files[0];
+    var extension = $(this).val().substring($(this).val().lastIndexOf('.') + 1);
+    $('#extension').val(extension);
+    const displaySelectedFile = () => {
+      $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
+      $('#drop-zone').addClass('drop-selected');
+    }
+    if ($('.files_selected').length) {
+        $('.files_selected').remove();
+        $('#drop-zone').removeClass('drop-selected');
+    }
+    displaySelectedFile();
+
+    if (file.type == 'application/pdf') {
+        $('#doc_change_to').text("Document Preview: " + _fileName);
+        $('#divPreview').addClass('alert-box--notice mb-2');
+        $('#previewPdf').removeClass('d-none');
+        {% include "datasets/pdf_replace.html" %}
+    } else {
+        $('#doc_change_to').text("Image Preview: " + _fileName);
+        $('#divPreview').addClass('alert-box--notice mb-2');
+        $('#previewImage').attr('src', URL.createObjectURL(e.target.files[0]));
+        $('#previewImageDiv').removeClass('d-none')
+    }
+
+  });
+
+  $('#clear-button').on('click', function(e) {
+    $('#doc_file').val(null);
+    $('#previewImageDiv').addClass('d-none');
+    $('#previewPdf').addClass('d-none');
+    $('#drop-zone').removeClass('drop-selected');
+    $('.files_selected').remove();
+  })
+</script>
+{% endblock extra_script %}

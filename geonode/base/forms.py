@@ -45,7 +45,7 @@ from geonode.base.models import (DataType, HierarchicalKeyword,
                                  TopicCategory)
 from geonode.base.utils import validate_extra_metadata
 from geonode.base.widgets import TaggitSelect2Custom
-from geonode.documents.models import Document
+from geonode.datasets.models import File
 from geonode.layers.models import Layer
 from django.utils.translation import get_language
 from .fields import MultiThesauriField
@@ -182,7 +182,7 @@ class TKeywordForm(forms.ModelForm):
     prefix = 'tkeywords'
 
     class Meta:
-        model = Document
+        model = File
         fields = ['tkeywords']
 
     tkeywords = MultiThesauriField(

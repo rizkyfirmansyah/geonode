@@ -444,7 +444,7 @@
           <p>{% trans "List of documents related to this layer:" %}</p>
           <ul class="list-unstyled">
             {% for document in documents %}
-            <li><a class="text-document" href="{{ document.get_absolute_url }}">{{ document.title }}</a></li>
+            <li><a class="text-dataset" href="{{ document.get_absolute_url }}">{{ document.title }}</a></li>
             {% endfor %}
           </ul>
         </li>

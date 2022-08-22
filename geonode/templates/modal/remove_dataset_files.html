@@ -1,0 +1,52 @@
+{% load i18n %}
+
+<div class="modal fade removeDatasetFiles" id="removeDatasetFiles" tabindex="-1" role="dialog" aria-labelledby="removeDatasetFilesTitle" aria-hidden="true">
+  <form id="remove_dfiles">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0">
+      <div class="modal-header">
+        <h3 class="modal-title">Delete Confirmation</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" data-dismiss="modal" title="Close Panel"></i>
+        </button>
+      </div>
+      <div class="modal-body text-center alert-danger">
+        Are you sure you want to remove all these files?
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" class="btn btn-secondary">Maybe later</a>
+        <button class="btn btn-danger" type="submit">Yes, I am sure</button>
+      </div>
+    </div>
+  </div>
+  </form>
+</div>
+
+{% block extra_script %}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $("#remove_dfiles").submit(function(t) {
+      t.preventDefault();
+      var ids = JSON.parse(window.localStorage.getItem('file_ids'));
+
+      $.ajax({
+          data: {ids: ids},
+          url: "/api/v2/datasets/delete_files",
+          type: 'DELETE',
+          headers:{"X-CSRFToken":'{{csrf_token}}'},
+          method: 'DELETE',
+          success: function(result) {
+            $(document.body).append(deleteMsg);
+            $("#card-ingest").remove();
+            window.localStorage.removeItem('file_ids');
+            setTimeout(function() {
+              $('#removeDatasetFiles').modal('hide');
+              $("#datasetToast").remove();
+            }, 1000);
+          }
+      });
+    });
+  });
+</script>
+{% endblock extra_script %}

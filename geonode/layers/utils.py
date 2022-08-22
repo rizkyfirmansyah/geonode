@@ -130,7 +130,7 @@ def get_files(filename):
             # We need to iterate files as filename could be the zipfile
             import ntpath
             from geonode.upload.utils import _SUPPORTED_EXT
-            file_basename, file_ext = ntpath.splitext(filename)
+            file_basename, extension = ntpath.splitext(filename)
             for item in os.listdir(tempdir):
                 item_basename, item_ext = ntpath.splitext(item)
                 if ntpath.basename(item_basename) == ntpath.basename(file_basename) and (

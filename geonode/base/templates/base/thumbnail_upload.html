@@ -11,15 +11,15 @@
     </div>
   {% endif %}
 
-  <div class="card rounded {% if resource.resource_type == 'layer' %}border-layer{% elif resource.resource_type == 'document' %}border-document{% endif %} mb-2 text-center">
+  <div class="card rounded {% if resource.resource_type == 'layer' %}border-layer{% elif resource.resource_type == 'dataset' %}border-dataset{% endif %} mb-2 text-center">
       <div class="card-header">
         <div class="row">
           {% if resource.resource_type == 'layer' %}
             <h3 class="col d-flex text-layer">Upload Dataset Thumbnail</h3>
             <div class="col-2"><a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
-          {% elif resource.resource_type == 'document' %}
-            <h3 class="col d-flex text-document">Upload Dataset Thumbnail</h3>
-            <div class="col-2"><a href="{% url 'document_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
+          {% elif resource.resource_type == 'dataset' %}
+            <h3 class="col d-flex text-dataset">Upload Dataset Thumbnail</h3>
+            <div class="col-2"><a href="{% url 'dataset_detail' resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a></div>
           {% endif %}
         </div>
       </div>
