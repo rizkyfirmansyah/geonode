@@ -44,6 +44,7 @@ class DatasetSerializer(DynamicModelSerializer):
         self.fields['created'] = serializers.DateTimeField(read_only=True)
         self.fields['last_updated'] = serializers.DateTimeField(read_only=True)
         self.fields['session'] = serializers.CharField(required=True)
+        self.fields['dataset'] = serializers.CharField(read_only=True)
 
     class Meta:
         model = File
@@ -51,9 +52,9 @@ class DatasetSerializer(DynamicModelSerializer):
         view_name = 'datasets-file'
         fields = (
             'pk', 'id', 'file_name', 'file_description', 'file_data_quality', 'file',
-            'file_url', 'hash', 'created', 'file_size', 'session', 'extension', 'file_type'
+            'file_url', 'hash', 'created', 'file_size', 'session', 'extension', 'file_type', 'dataset'
         )
-        read_only_fileds = ('id', 'hash', 'file_size', 'created', 'extension', 'file_type')
+        read_only_fileds = ('id', 'hash', 'file_size', 'created', 'extension', 'file_type', 'dataset')
 
 
 class DatasetIngestFileSerializer(serializers.ModelSerializer):

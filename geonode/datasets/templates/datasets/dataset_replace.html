@@ -66,7 +66,7 @@
                     <div class="d-flex flex-row float-right">
                       {% if file.hash %}
                           <div class="align-self-center mr-3"><span class="badge badge-secondary d-inline">{{ file.extension }}</span></div>
-                          <div><a class="btn btn-primary mr-3 preview-file" ng-click="preview_file({{ file.extension }}, {{ file.id }}, {{ file.file_type }})" data-target="#previewDatasetFiles" style="cursor: pointer;" data-type="{{ file.file_type }}" data-id="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
+                          <div><a class="btn btn-primary mr-3 preview-file" ng-click="preview_file('{{ file.extension }}', {{ file.id }}, '{{ file.file_type }}')" data-target="#previewDatasetFiles" style="cursor: pointer;" data-type="{{ file.file_type }}" data-id="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
                           <button class="btn btn-warning" style="cursor: pointer;" ng-click="delete_file({{file.id}})"><i class="fa-solid fa-trash" title="Delete File"></i></button>
                       {% endif %}
                     </div>
@@ -116,41 +116,4 @@
   {% include "modal/remove_dataset_files.html" %}
   <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
 
-  {% comment %} <script type="text/javascript">
-
-    $('#doc_file-clear_id').attr('data-toggle', 'toggle');
-    $('#doc_file-clear_id').attr('data-width', '100%');
-    $('#doc_file-clear_id').attr('data-height', '50');
-    $("#doc_file-clear_id").bootstrapToggle({
-        on: 'Remove Current Datasets',
-        off: 'Keep the Datasets'
-    });
-    $("#doc_file").prev().prev().css('display', 'none');
-    $(".toggle").css('margin-top', '1em');
-
-    $('#doc_file').on('change', function (e) {
-      var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
-      var _title = _text.replace(/\.[^/.]+$/, "");
-      var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
-      var file = e.target.files[0];
-      var extension = $(this).val().substring($(this).val().lastIndexOf('.') + 1);
-      $('#extension').val(extension);
-      const displaySelectedFile = () => {
-        $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
-        $('#drop-zone').addClass('drop-selected');
-      }
-      if ($('.files_selected').length) {
-          $('.files_selected').remove();
-          $('#drop-zone').removeClass('drop-selected');
-      }
-      displaySelectedFile();
-
-    });
-
-    $('#clear-button').on('click', function(e) {
-      $('#doc_file').val(null);
-      $('#drop-zone').removeClass('drop-selected');
-      $('.files_selected').remove();
-    })
-  </script> {% endcomment %}
 {% endblock extra_script %}

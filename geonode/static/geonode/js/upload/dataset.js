@@ -1,3 +1,20 @@
+var formHandlerMsg = `
+  <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+    <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="mr-auto">Invalid Form</strong>
+        <small class="text-muted"></small>
+        <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetToast').remove()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="toast-body">
+        <span class="font-lg-1"><strong>File Name</strong> may not be blank.</span>
+      </div>
+    </div>
+  </div>
+`
+
 var handlerSubmitMsg = `
   <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
     <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
@@ -145,7 +162,9 @@ var dataset = angular.module('dataset', ['ngCookies']);
             });
             formData.append('file_url', $('#id_file_url').val());
             formData.append('import_id', $('#import_id').val());
-            formData.append('dataset_id', dataset_id);
+            if (dataset_id) {
+                formData.append('dataset_id', dataset_id);
+            }
     
             if (file) {
                 var currentChunk = file.slice(start, nextChunk);
@@ -388,15 +407,18 @@ var dataset = angular.module('dataset', ['ngCookies']);
         }
         else {
             render_html = '<p>We have a trouble for previewing your file, please download <a href='+url+' target="_blank">here</a></p>'
-        }
-        
-        $(".preview_file").append('<div id="render_file">'+render_html+'</div>');
+        }        
+        $("#preview_file").append('<div id="render_file">'+render_html+'</div>');
         if ($("#pdf_renderer").length) {
             dataset.renderPDFFile(id);
         }
     }
 
-    dataset.controller('DatasetList', function($scope, $http, $rootScope) {
+    dataset.controller('DatasetList', function($scope, $http, $rootScope, $location) {
+        var url = $location.absUrl().split('/');
+        if (url[url.length - 1] === 'replace') {
+            $scope.edit_dataset_id = url[url.length - 2];
+        }
         $scope.preview_file = function(ext, id, type) {
             // set global variable then alter once the preview modal is clicked
             var previewModal = $(".preview-file").data('target');
@@ -412,7 +434,6 @@ var dataset = angular.module('dataset', ['ngCookies']);
             } else {
                 preview = download_url;
             }
-
             dataset.render_file(ext, type, preview, id);
         }
 
@@ -424,7 +445,6 @@ var dataset = angular.module('dataset', ['ngCookies']);
 
           var file = $("#doc_file").val();
           var file_url = $("#id_file_url").val();
-
           if (file || file_url) {
               var uploader = dataset.upload_dataset_file($http, $rootScope, document.querySelector('#doc_file'), dataset_id);
           } else {
@@ -467,6 +487,12 @@ var dataset = angular.module('dataset', ['ngCookies']);
             function patchDatasetFile() {
                 var datasets_files = new Array();
                 for (var i = 0; i < $rootScope.datasets.length; i++) {
+                    if (!$(".file_name:eq("+i+")").val()) {
+                        $(document.body).append(formHandlerMsg)
+                        setTimeout(function() {
+                          $('#datasetToast').remove();
+                        }, 2500)
+                    }
                     datasets_files.push({
                         "id": $(".file_id:eq("+i+")").val(),
                         "file_name": $(".file_name:eq("+i+")").val(),
@@ -479,21 +505,34 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 return datasets_files
             }
 
-            var postParams = {
-                method: 'PATCH',
-                url: siteUrl + "api/v2/datasets/upload_dataset_files",
-                transformRequest: angular.identity,
-                data: JSON.stringify(patchDatasetFile()),
-                cache: false,
-                dataType: 'json',
-                headers: {'Content-Type': "application/json" }
-            };
+            if ($scope.edit_dataset_id) {
+                var postParams = {
+                    method: 'PATCH',
+                    url: siteUrl + "api/v2/datasets/patch_dataset_files/" + $scope.edit_dataset_id,
+                    transformRequest: angular.identity,
+                    data: JSON.stringify(patchDatasetFile()),
+                    cache: false,
+                    dataType: 'json',
+                    headers: {'Content-Type': "application/json" }
+                };
+            } else {
+              var postParams = {
+                  method: 'PATCH',
+                  url: siteUrl + "api/v2/datasets/upload_dataset_files",
+                  transformRequest: angular.identity,
+                  data: JSON.stringify(patchDatasetFile()),
+                  cache: false,
+                  dataType: 'json',
+                  headers: {'Content-Type': "application/json" }
+              };
+            }
+
             $http(postParams).then(successCallback);
 
             function successCallback(data) {
                 var _siteUrl = siteUrl.slice(0, -1);
                 var redirect_url = data.data.response;
-                setTimeout(function(){location.href=_siteUrl + redirect_url} , 1e3);
+                setTimeout(function(){location.href=_siteUrl + redirect_url}, 5e2);
             }
         }
     })
@@ -524,11 +563,17 @@ var dataset = angular.module('dataset', ['ngCookies']);
         }
     })
 
-    dataset.directive("cardingest", function($http, $rootScope) {
+    dataset.directive("cardingest", function($http, $rootScope, $location) {
         return {
             restrict: "A",
             link: function(scope, elem) {
-                dataset.load_resume_upload($http, $rootScope);
+                var url = $location.absUrl().split('/');
+                var dataset_id = url[url.length - 2];
+                if (url[url.length - 1] === 'replace') {
+                    dataset.edit_dataset_files($http, $rootScope, dataset_id)
+                } else {
+                    dataset.load_resume_upload($http, $rootScope);
+                }
             },
             templateUrl: staticUrl + "geonode/js/templates/card_ingest.html"
         }
@@ -553,6 +598,26 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 }, 3000);
             }
         }
+    }
+
+    dataset.edit_dataset_files = function($http, $rootScope, dataset_id) {
+      $http.get(siteUrl + "api/v2/datasets/edit_dataset_files/" + dataset_id).then(successCallback);
+
+      function successCallback(data) {
+          $rootScope.datasets = data.data.files;
+          var datasets_id = []
+          if ($rootScope.datasets.length > 0) {
+              if ($(".card-ingest").hasClass('d-none')) {
+                $(".card-ingest").removeClass('d-none');
+              }
+              $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
+              window.localStorage.setItem('file_ids', JSON.stringify(datasets_id))
+
+              setTimeout(function() {
+                  $("#datasetToast").remove();
+              }, 3000);
+          }
+      }
     }
 
 document.getElementById('top').setAttribute('ng-controller', "DatasetList");

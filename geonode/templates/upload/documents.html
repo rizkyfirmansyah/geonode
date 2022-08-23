@@ -19,6 +19,7 @@
   };
 
   var removeEventSelected = () => {
+    $('#doc_file').val(null);
     if ($('.files_selected').length) {
         $('.files_selected').remove();
         $('#drop-zone').removeClass('drop-selected');
@@ -33,7 +34,6 @@
           $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
           $('#drop-zone').addClass('drop-selected');
       }
-      removeEventSelected();
       displaySelectedFile();
   });
 

@@ -147,7 +147,7 @@ class DatasetsViewSet(DynamicModelViewSet):
         description="API endpoint allowing to edit the File.")
     @action(
         detail=False,
-        url_path="edit_dataset_files",
+        url_path="edit_dataset_files/(?P<dataset_id>\d+)?$",
         url_name="edit_dataset_files",
         methods=['get'],
         permission_classes=[
@@ -155,8 +155,8 @@ class DatasetsViewSet(DynamicModelViewSet):
         ],
         parser_classes=[JSONParser, MultiPartParser]
     )
-    def get(self, request):
-        resources = File.objects.filter(dataset_id__in=[239])
+    def edit_dataset_files(self, request, dataset_id):
+        resources = File.objects.filter(dataset_id__in=[dataset_id])
         exclude = []
         for resource in resources:
             if not request.user.is_superuser and \
@@ -166,6 +166,41 @@ class DatasetsViewSet(DynamicModelViewSet):
         serializer = DatasetSerializer(instance=resources, embed=True, many=True)
 
         return Response({"files": serializer.data, "length": resources.count()})
+
+
+    @extend_schema(
+        methods=['patch'],
+        responses={200},
+        description="API endpoint allowing to edit each files of Dataset.")
+    @action(
+        detail=False,
+        url_path="patch_dataset_files/(?P<dataset_id>\d+)?$",
+        url_name="patch_dataset_files",
+        methods=['patch'],
+        permission_classes=[
+            IsAuthenticated,
+        ]
+    )
+    def patch_dataset_files(self, request, dataset_id):
+        session_uuid = request.session.get('session')
+        _data = request.data.copy()
+        for item in _data:
+            item.update( {"session": session_uuid} )
+
+        data = {
+            int(i['id']): {k: v for k, v in i.items() if k != 'id'} for i in _data
+        }
+        for inst in self.get_queryset().filter(id__in=data.keys()):
+            title = inst.file_name
+            serializer = self.get_serializer(inst, data=data[inst.id], partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        toast_title = f"Upload Datasets"
+        msg = f"Your files has been saved."
+        messages.success(request, msg, extra_tags=toast_title)
+
+        return Response({"message": "Your file has been updated", "response": reverse('dataset_detail', args=(dataset_id,))}, status=status.HTTP_201_CREATED)
 
     @extend_schema(
         methods=['get'],
@@ -181,8 +216,7 @@ class DatasetsViewSet(DynamicModelViewSet):
         ],
         parser_classes=[JSONParser, MultiPartParser]
     )
-    def get(self, request):
-
+    def resume_upload(self, request):
         resources = File.objects.filter(dataset_id__isnull=True)
         exclude = []
         for resource in resources:
@@ -207,7 +241,7 @@ class DatasetsViewSet(DynamicModelViewSet):
             IsAuthenticated,
         ]
     )
-    def patch(self, request):
+    def upload_dataset_files(self, request):
         # ref https://stackoverflow.com/questions/53130126/bulk-partial-updates-with-django-rest-framework
         session_uuid = request.session.get('session')
         _data = request.data.copy()
@@ -217,29 +251,39 @@ class DatasetsViewSet(DynamicModelViewSet):
         data = {
             int(i['id']): {k: v for k, v in i.items() if k != 'id'} for i in _data
         }
-        for inst in self.get_queryset().filter(id__in=data.keys()):
-            title = inst.file_name
-            serializer = self.get_serializer(inst, data=data[inst.id], partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
         toast_title = f"Upload Datasets"
-        msg = f"Your files has been saved."
-        messages.success(request, msg, extra_tags=toast_title)
-
-        self.object = resource_manager.create(
-            None,
-            resource_type=Dataset,
-            defaults=dict(
-                owner=self.request.user,
-                title=title,
-                resource_type='dataset'
+        try:
+            for inst in self.get_queryset().filter(id__in=data.keys()):
+                title = inst.file_name
+                serializer = self.get_serializer(inst, data=data[inst.id], partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+            self.object = resource_manager.create(
+                None,
+                resource_type=Dataset,
+                defaults=dict(
+                    owner=self.request.user,
+                    title=title,
+                    resource_type='dataset'
+                )
             )
-        )
-        update_file = File.objects.filter(dataset_id__isnull=True).update(dataset=self.object.id)
-        update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(detail_url='/datasets/'+str(self.object.id))
+            update_file = File.objects.filter(dataset_id__isnull=True).update(dataset=self.object.id)
+            update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(detail_url='/datasets/'+str(self.object.id))
+            msg = f"Your files has been saved."
+            messages.success(request, msg, extra_tags=toast_title)
 
-        return Response({"message": "Your file has been updated", "response": reverse('dataset_metadata', args=(self.object.id,))}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Your file has been updated", "response": reverse('dataset_metadata', args=(self.object.id,))}, status=status.HTTP_201_CREATED)
+
+        except NotImplementedError as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={'message': e.args[0], 'success': False}, status=405, exception=True)
+
+        except Exception as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={"message": e.args[0], "success": False}, status=500, exception=True)
+
 
 class DatasetIngestView(viewsets.ModelViewSet):
     """
@@ -251,7 +295,10 @@ class DatasetIngestView(viewsets.ModelViewSet):
     def post(self, request, *args, **kwargs):
         file_url = request.POST['file_url']
         import_id = request.POST['import_id']
-        dataset_id = request.POST['dataset_id']
+        try:
+            dataset_id = request.POST['dataset_id']
+        except Exception:
+            dataset_id = None
 
         if not file_url:
             ext = request.POST['extension']
@@ -287,10 +334,8 @@ class DatasetIngestView(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Adding new dataset file", "files": serializer.data}, status=status.HTTP_201_CREATED)
-        else:
-            if storage_path:
-                storage_manager.delete(storage_path)
-            return Response({"message": serializer.errors, "files": None}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({"message": serializer.errors, "files": None}, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(
         methods=['get'],
