@@ -309,26 +309,32 @@ nav.filter .bootstrap-datetimepicker-widget, nav.filter .bootstrap-datetimepicke
 ----------------------------------------------------- */
 .border-layer {
   border-color: #007bff !important;
+  border: 1px solid;
 }
 
 .border-dataset {
   border-color: #a82a54 !important;
+  border: 1px solid;
 }
 
 .border-map {
   border-color: #ffcc35 !important;
+  border: 1px solid;
 }
 
 .border-geostory {
   border-color: #ff7c30 !important;
+  border: 1px solid;
 }
 
 .border-dashboard {
   border-color: #ff30b0 !important;
+  border: 1px solid;
 }
 
 .border-remote {
   border-color: #01a94d !important;
+  border: 1px solid;
 }
 
 /* ---------------------------------------------------

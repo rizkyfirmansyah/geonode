@@ -10,8 +10,7 @@
       <div class="row">
         <div class="col-md-10 align-self-center">
           <div ng-if="file.hash">
-            <span class="text-muted small">SHA-256: {{ file.hash }} - {{ file.file_size | humanFileSize }} -</span>
-            <span class="badge badge-secondary d-inline">{{ file.extension }}</span>
+            <span class="text-muted small">SHA-256: {{ file.hash }} - {{ file.file_size | humanFileSize }}</span>
           </div>
           <div ng-if="!file.hash">
             <span class="badge badge-info d-inline">External Dataset</span>
@@ -19,6 +18,7 @@
         </div>
         <div class="col-md-2">
             <div class="d-flex flex-row float-right">
+              <div ng-if="file.hash" class="align-self-center mr-3"><span class="badge badge-secondary d-inline">{{ file.extension }}</span></div>
               <div ng-if="file.hash"><a ng-click="preview_file(file.extension, file.id, file.file_type)" class="btn btn-primary mr-3 preview-file" data-target="#previewDatasetFiles" style="cursor: pointer;" data-value="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
               <button class="btn btn-warning" style="cursor: pointer;" ng-click="delete_file(file.id)"><i class="fa-solid fa-trash" title="Delete File"></i></button>
             </div>

@@ -47,10 +47,9 @@ def get_download_response(request, docid, attachment=False):
     and an http response if they have no permissions to download it.
     """
     dataset = get_object_or_404(File, pk=docid)
-
     if not request.user.has_perm(
             'base.download_resourcebase',
-            obj=dataset.get_self_resource()):
+            obj=dataset):
         return HttpResponse(
             loader.render_to_string(
                 'error/401.html', context={

@@ -17,7 +17,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-from functools import partial
 from drf_spectacular.utils import extend_schema
 
 from dynamic_rest.viewsets import DynamicModelViewSet
@@ -34,10 +33,12 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
-from rest_framework.exceptions import ValidationError
 from rest_framework import status
-from django.db.models import Max
-
+from django.template import loader
+from django.http import HttpResponse
+from django_downloadview.response import DownloadResponse
+from django.utils.text import slugify
+import os
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
@@ -55,7 +56,6 @@ from .serializers import DatasetIngestFileSerializer, DatasetIngestUrlSerializer
 from .permissions import DocumentPermissionsFilter
 from django.conf import settings
 import logging
-from django.http import HttpResponseRedirect
 from django.contrib import messages
 
 logger = logging.getLogger(__name__)
@@ -140,46 +140,6 @@ class DatasetsViewSet(DynamicModelViewSet):
         file.delete()
 
         return Response(status=status.HTTP_200_OK)
-
-    @extend_schema(
-        methods=['get'],
-        responses={200},
-        description="API endpoint for preview file.")
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=[
-            IsAuthenticated,
-        ],
-        parser_classes=[JSONParser, MultiPartParser]
-    )
-    def preview_file(self, request, pk):
-        from django.template import loader
-        from django.http import HttpResponse
-        from django_downloadview.response import DownloadResponse
-        from django.utils.text import slugify
-        import os
-
-        resources = get_object_or_404(File, pk=pk)
-        if not request.user.has_perm(
-            'base.download_resourcebase',
-            obj=resources.get_self_resource()):
-            return HttpResponse(
-                loader.render_to_string(
-                    'error/401.html', context={
-                        'error_message': _("You are not allowed to view this dataset.")}, request=request), status=401)
-        filename = slugify(os.path.splitext(os.path.basename(resources.title))[0])
-
-        if resources.file and storage_manager.exists(resources.file[0]):
-            return DownloadResponse(
-                storage_manager.open(resources.file[0]).file,
-                basename=f'{filename}.{resources.extension}'
-            )
-
-        return HttpResponse(
-            "File is not available",
-            status=404
-        )
 
     @extend_schema(
         methods=['get'],
@@ -316,10 +276,6 @@ class DatasetIngestView(viewsets.ModelViewSet):
         parser_classes=[JSONParser, MultiPartParser]
     )
     def preview_file(self, request, pk):
-        from django.http import HttpResponse
-        from django_downloadview.response import DownloadResponse
-        from django.utils.text import slugify
-        import os
         resources = get_object_or_404(File, pk=pk)
         filename = slugify(os.path.splitext(os.path.basename(resources.file_name))[0])
 

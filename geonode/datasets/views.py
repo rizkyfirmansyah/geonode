@@ -19,6 +19,7 @@
 #########################################################################
 import json
 import logging
+from pydoc import doc
 import traceback
 import warnings
 import pandas as pd
@@ -108,7 +109,7 @@ def dataset_detail(request, docid):
             docid,
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
-        print(f"{document, docid}")
+
     except PermissionDenied:
         return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
@@ -125,7 +126,7 @@ def dataset_detail(request, docid):
     document.add_missing_metadata_author_or_poc()
 
     related = get_related_resources(document)
-
+    files = File.objects.filter(dataset_id__in=[document.id])
     # Update count for popularity ranking,
     # but do not includes admins or resource owners
     if request.user != document.owner and not request.user.is_superuser:
@@ -170,6 +171,7 @@ def dataset_detail(request, docid):
     context_dict = {
         'access_token': access_token,
         'resource': document,
+        'files': files,
         'perms_list': perms_list,
         'permissions_json': permissions_json,
         'group': group,
