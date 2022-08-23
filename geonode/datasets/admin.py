@@ -60,7 +60,7 @@ class DatasetAdmin(TabbedTranslationAdmin):
     inlines = [FileInline,]
     exclude = ('bbox_polygon', 'll_bbox_polygon', 'csw_typename', 'csw_schema', 'csw_mdsource', 'csw_insert_date', 'csw_type',
               'metadata_xml', 'temporal_extent_start', 'temporal_extent_end',
-              'spatial_resolution', 'spatial_representation_type', 'srid', 'state', 'source_type', 'remote_typename', 'hash', 'file_size', 'files', 'blob', 'sourcetype', 'csw_anytext', 'csw_wkt_geometry', 'subtype',)
+              'spatial_resolution', 'spatial_representation_type', 'srid', 'state', 'source_type', 'remote_typename', 'hash', 'file_size', 'files', 'blob', 'sourcetype', 'csw_anytext', 'csw_wkt_geometry', 'subtype', 'users_geolimits', 'groups_geolimits')
     form = DatasetAdminForm
     actions = [metadata_batch_edit, set_batch_permissions]
 
