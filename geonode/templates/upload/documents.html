@@ -1,34 +1,53 @@
 {% load i18n %}
 
 <script type="text/javascript">
-  $('#doc_file').on('change', function () {
-    var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
-    var _title = _text.replace(/\.[^/.]+$/, "");
-    var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+  function delete_file(id) {    
+    $.ajax({
+        data: {pk: id},
+        url: "/api/v2/datasets/delete_file",
+        type: 'DELETE',
+        headers:{"X-CSRFToken":'{{csrf_token}}'},
+        method: 'DELETE',
+        success: function(result) {
+          $(document.body).append(deleteMsg);
+          setTimeout(function() {
+            $("#datasetToast").remove();
+            $("#card-"+id+"").remove();
+          }, 1000);
+        }
+    });
+  };
 
-    const displaySelectedFile = () => {
-      $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
-      $('#drop-zone').addClass('drop-selected');
-    }
+  var removeEventSelected = () => {
     if ($('.files_selected').length) {
         $('.files_selected').remove();
         $('#drop-zone').removeClass('drop-selected');
     }
-    displaySelectedFile();
+  }
+
+  $('#doc_file').on('change', function () {
+      var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
+      var _title = _text.replace(/\.[^/.]+$/, "");
+      var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+      const displaySelectedFile = () => {
+          $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
+          $('#drop-zone').addClass('drop-selected');
+      }
+      removeEventSelected();
+      displaySelectedFile();
   });
+
+  $('#clear-button').on('click', function () {
+      removeEventSelected();
+  })
 
   $('#upload_form').submit(function () {
       $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
       var form = $(this);
-      console.log("fire upload ", form)
       var action = form.attr("action");
       var start = new Date().getTime();
       $('.btn-upload').prop("disabled", true);
       
-  });
-
-  $('#upload-button').click(function () {
-      $('#_resource_uploading').modal('toggle');
   });
   
 </script>

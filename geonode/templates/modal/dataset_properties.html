@@ -3,7 +3,7 @@
 
 <div id="dataset_properties_wrapper" class="d-none">
     <div class="row">
-      {% if resource.doc_file != '[]' %}
+      {% if resource.resource_type == 'layer' %}
         <div class="col-sm-4 text-right">File Name</div>
         <div class="col-sm-8 text-left">
           {% hash_files_ext resource as hf %}
@@ -24,11 +24,11 @@
               {% endfor %}
             </p>
         </div>
+        <div class="col-sm-4 text-right">File Size</div>
+        <div class="col-sm-8 text-left">
+          <p>{{ resource.file_size|filesizeformat }}</p>
+        </div>
       {% endif %}
-      <div class="col-sm-4 text-right">File Size</div>
-      <div class="col-sm-8 text-left">
-        <p>{{ resource.file_size|filesizeformat }}</p>
-      </div>
       <div class="col-sm-4 text-right">File Type</div>
       {% if catalogue == 'layer' %}
           <div class="col-sm-8 text-left">

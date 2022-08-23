@@ -265,8 +265,6 @@
                       {% if file.hash %}
                           <div class="align-self-center mr-3"><span class="badge badge-secondary d-inline">{{ file.extension }}</span></div>
                           <div><a class="btn btn-primary mr-3 preview-file" ng-click="preview_file({{ file.extension }}, {{ file.id }}, {{ file.file_type }})" data-target="#previewDatasetFiles" style="cursor: pointer;" data-type="{{ file.file_type }}" data-id="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
-                      {% endif %}
-                      {% if file.file %}
                           <a href="{% url 'dataset_ingest_preview_file' pk=file.id %}" class="btn btn-download" style="cursor: pointer;" ><i class="fa-solid fa-download" title="Download File"></i></a>
                       {% endif %}
                     </div>

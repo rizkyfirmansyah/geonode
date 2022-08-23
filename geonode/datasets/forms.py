@@ -414,40 +414,77 @@ class DatasetIngestForm(forms.ModelForm):
             'name': HiddenInput(attrs={'cols': 80, 'rows': 20}),
         }
 
-class DatasetReplaceForm(forms.ModelForm):
+class DatasetReplaceForm(forms.ModelForm, FileFormMixin):
     """
     The form used to replace a dataset.
     """
+    file_name = forms.CharField(
+        label=_('File Name'),
+        max_length=255)
+
+    links = forms.MultipleChoiceField(
+        label=_("Link to"),
+        help_text=_("Set a link to datasets if any"),
+        required=False)
+
     doc_file = SizeRestrictedFileField(
         label=_("File"),
-        required=True,
+        required=False,
         field_slug="document_upload_size"
     )
 
-    file_ext = forms.CharField(
-        widget=HiddenInput(
-            attrs={
-                'name': 'file_ext',
-                'id': 'file_ext'}),
-        required=False)
+    file_description = forms.CharField(
+        label=_('Description'),
+        max_length=2000, widget=forms.Textarea(attrs={'rows': 2}), required=False)
+    file_data_quality = forms.CharField(
+        label=_('Data Quality'),
+        max_length=2000, widget=forms.Textarea(attrs={'rows': 2}), required=False)
 
     class Meta:
         model = File
-        fields = ['file_name', 'doc_file', 'file_url', 'file_description']
+        fields = ['file_name', 'file_url', 'file_description', 'file_data_quality', 'import_id']
+        widgets = {
+            'name': HiddenInput(attrs={'cols': 80, 'rows': 20}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['links'].choices = self.generate_link_choices()
+        self.fields['links'].widget.attrs.update(
+            {
+                'class': 'has-external-popover selectpicker d-block',
+                'data-live-search': 'true',
+                'data-selected-text-format': 'count > 4',
+                'data-size': '5'})
+
+    def clean_permissions(self):
+        """
+        Ensures the JSON field is JSON.
+        """
+        permissions = self.cleaned_data['permissions']
+
+        if not self.fields['permissions'].required and (permissions is None or permissions == ''):
+            return None
+
+        try:
+            return json.loads(permissions)
+        except ValueError:
+            raise forms.ValidationError(_("Permissions must be valid JSON."))
 
     def clean(self):
         """
-        Ensures the doc_file field is populated.
+        Ensures the file or the file_url field is populated.
         """
         cleaned_data = super().clean()
         doc_file = self.cleaned_data.get('doc_file')
         file_url = self.cleaned_data.get('file_url')
-        file_ext = self.cleaned_data.get('file_ext')
 
-        if not doc_file and not file_url:
+        if not doc_file and not file_url and "doc_file" not in self.errors and "file_url" not in self.errors:
+            logger.error("Dataset must be a file or url.")
             raise forms.ValidationError(_("Dataset must be a file or url."))
 
         if doc_file and file_url:
+            logger.error("A dataset cannot have both a file and a url.")
             raise forms.ValidationError(
                 _("A dataset cannot have both a file and a url."))
 
@@ -462,6 +499,7 @@ class DatasetReplaceForm(forms.ModelForm):
         if doc_file and not os.path.splitext(
                 doc_file.name)[1].lower()[
                 1:] in settings.ALLOWED_DOCUMENT_TYPES:
+            logger.debug("This file type is not allowed")
             raise forms.ValidationError(_("This file type is not allowed"))
 
         return doc_file

@@ -144,6 +144,32 @@ class DatasetsViewSet(DynamicModelViewSet):
     @extend_schema(
         methods=['get'],
         responses={200},
+        description="API endpoint allowing to edit the File.")
+    @action(
+        detail=False,
+        url_path="edit_dataset_files",
+        url_name="edit_dataset_files",
+        methods=['get'],
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        parser_classes=[JSONParser, MultiPartParser]
+    )
+    def get(self, request):
+        resources = File.objects.filter(dataset_id__in=[239])
+        exclude = []
+        for resource in resources:
+            if not request.user.is_superuser and \
+            not request.user.has_perm('view_file', resource.get_self_resource()):
+                exclude.append(resource.id)
+        resources = resources.exclude(id__in=exclude)
+        serializer = DatasetSerializer(instance=resources, embed=True, many=True)
+
+        return Response({"files": serializer.data, "length": resources.count()})
+
+    @extend_schema(
+        methods=['get'],
+        responses={200},
         description="API endpoint allowing to resume the upload files of the File.")
     @action(
         detail=False,
@@ -225,6 +251,7 @@ class DatasetIngestView(viewsets.ModelViewSet):
     def post(self, request, *args, **kwargs):
         file_url = request.POST['file_url']
         import_id = request.POST['import_id']
+        dataset_id = request.POST['dataset_id']
 
         if not file_url:
             ext = request.POST['extension']
@@ -244,14 +271,16 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 'extension': ext,
                 'file_type': file_type[0],
                 'import_id': import_id,
-                'session': request.session.get('session')
+                'session': request.session.get('session'),
+                'dataset': dataset_id
             }
             serializer = DatasetIngestFileSerializer(data=data)
         else:
             data = {
                 'file_url': file_url,
                 'import_id': import_id,
-                'session': request.session.get('session')
+                'session': request.session.get('session'),
+                'dataset': dataset_id
             }
             serializer = DatasetIngestUrlSerializer(data=data)
         

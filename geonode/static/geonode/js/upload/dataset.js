@@ -82,7 +82,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
         }
     });
 
-    dataset.upload_dataset_file = function($http, $rootScope, file) {
+    dataset.upload_dataset_file = function($http, $rootScope, file, dataset_id) {
         // https://github.com/shubhamkshatriya25/AJAX-File-Uploader/blob/master/static/js/app.js
         const max_length = 1024 * 1024 * 10;
       
@@ -164,6 +164,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 formData.append('end', end);
                 formData.append('existingPath', existingPath);
                 formData.append('nextSlice', nextChunk);
+                formData.append('dataset_id', dataset_id);
                 $('.filename').text(file.name);
                 var postParams = {
                     method: 'POST',
@@ -204,8 +205,8 @@ var dataset = angular.module('dataset', ['ngCookies']);
 
               setTimeout(function() {
                   $(".uploaded_files").remove();
-                  if ($("#card-ingest").hasClass('d-none')) {
-                    $("#card-ingest").removeClass('d-none');
+                  if ($(".card-ingest").hasClass('d-none')) {
+                    $(".card-ingest").removeClass('d-none');
                   }
                   clearInputFile();
               }, 2000);
@@ -292,7 +293,6 @@ var dataset = angular.module('dataset', ['ngCookies']);
           }
         }
         document.getElementById('current_page').addEventListener('keypress', onJumpPage);
-        
 
         /**
           * Displays previous page.
@@ -416,7 +416,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
             dataset.render_file(ext, type, preview, id);
         }
 
-        $scope.post_file = function ($event) {
+        $scope.post_file = function (dataset_id) {
           $('#submit').prop("disabled", true)
           setTimeout(function() {
             $('#submit').prop("disabled", false)
@@ -426,14 +426,13 @@ var dataset = angular.module('dataset', ['ngCookies']);
           var file_url = $("#id_file_url").val();
 
           if (file || file_url) {
-              var uploader = dataset.upload_dataset_file($http, $rootScope, document.querySelector('#doc_file'));
+              var uploader = dataset.upload_dataset_file($http, $rootScope, document.querySelector('#doc_file'), dataset_id);
           } else {
               $(document.body).append(handlerSubmitMsg);
               setTimeout(function() {
                 $('#datasetToast').remove();
               }, 4000)
           }
-        
         };
 
         $scope.delete_file = function(id) {
@@ -457,7 +456,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 setTimeout(function() {
                   $("#card-"+id+"").remove();
                   if ($rootScope.datasets.length < 1) {
-                       $("#card-ingest").addClass('d-none');
+                       $(".card-ingest").addClass('d-none');
                   }
                 }, 1500)
             };
@@ -481,13 +480,13 @@ var dataset = angular.module('dataset', ['ngCookies']);
             }
 
             var postParams = {
-              method: 'PATCH',
-              url: siteUrl + "api/v2/datasets/upload_dataset_files",
-              transformRequest: angular.identity,
-              data: JSON.stringify(patchDatasetFile()),
-              cache: false,
-              dataType: 'json',
-              headers: {'Content-Type': "application/json" }
+                method: 'PATCH',
+                url: siteUrl + "api/v2/datasets/upload_dataset_files",
+                transformRequest: angular.identity,
+                data: JSON.stringify(patchDatasetFile()),
+                cache: false,
+                dataType: 'json',
+                headers: {'Content-Type': "application/json" }
             };
             $http(postParams).then(successCallback);
 
@@ -496,9 +495,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 var redirect_url = data.data.response;
                 setTimeout(function(){location.href=_siteUrl + redirect_url} , 1e3);
             }
-          
         }
-
     })
 
     dataset.directive("dropzone", function($http, $rootScope) {
@@ -509,7 +506,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                     evt.stopPropagation();
                     evt.preventDefault();
                     const files = evt.originalEvent.dataTransfer;
-                    var uploader = dataset.upload_dataset_file($http, $rootScope, files);
+                    var uploader = dataset.upload_dataset_file($http, $rootScope, files, dataset_id);
                 });
                 elem.on('dragenter', function(evt) {
                     evt.preventDefault();
@@ -544,8 +541,8 @@ var dataset = angular.module('dataset', ['ngCookies']);
             $rootScope.datasets = data.data.files;
             var datasets_id = []
             if ($rootScope.datasets.length > 0) {
-                if ($("#card-ingest").hasClass('d-none')) {
-                  $("#card-ingest").removeClass('d-none');
+                if ($(".card-ingest").hasClass('d-none')) {
+                  $(".card-ingest").removeClass('d-none');
                 }
                 $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
                 window.localStorage.setItem('file_ids', JSON.stringify(datasets_id))

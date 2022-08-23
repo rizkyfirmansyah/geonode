@@ -19,7 +19,6 @@
 #########################################################################
 import json
 import logging
-from pydoc import doc
 import traceback
 import warnings
 import pandas as pd
@@ -36,7 +35,7 @@ from geonode.views import page_not_found_message, unauthorized_message
 from guardian.shortcuts import get_objects_for_user
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -63,7 +62,7 @@ from geonode.base.models import (
 from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.datasets.models import Dataset, File
 from geonode.resource.utils import get_related_resources
-from geonode.datasets.forms import DatasetForm, DatasetCreateForm, DatasetIngestForm, DatasetReplaceForm
+from geonode.datasets.forms import DatasetForm, DatasetCreateForm, DatasetReplaceForm
 from geonode.utils import build_social_links
 from geonode.groups.models import GroupProfile
 from geonode.base.views import batch_modify, batch_permissions
@@ -427,52 +426,60 @@ class DatasetUploadView(LoginRequiredMixin, CreateView):
         return context
 
 
-class DatasetUpdateView(LoginRequiredMixin, UpdateView):
+class DatasetUpdateView(LoginRequiredMixin, CreateView):
     template_name = 'datasets/dataset_replace.html'
-    pk_url_kwarg = 'docid'
     form_class = DatasetReplaceForm
-    queryset = File.objects.all()
-    context_object_name = 'document'
+    queryset = Dataset.objects.all()
+    context_object_name = 'dataset'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        import_id = list(File.objects.all().aggregate(Max('import_id')).values())[0]
+        import_id = (int(import_id) + 1) if import_id is not None else 0
+        context["import_id"] = import_id
+        self.request.session['session'] =  str(uuid.uuid1())
         context['ALLOWED_DOC_TYPES'] = ALLOWED_DOC_TYPES
+        pk_url_kwarg = self.kwargs['docid']
+        context['dataset_id'] = pk_url_kwarg
+        files = File.objects.filter(dataset_id__in=[pk_url_kwarg])
+        context['files'] = files
+
         return context
 
-    def form_valid(self, form):
-        """
-        If the form is valid, save the associated model.
-        """
-        doc_form = form.cleaned_data
-        title = doc_form.pop('title', None)
-        file = doc_form.pop('doc_file', None)
-        ext = doc_form.pop('doc_ext', None)
-        toast_title = _("Replace File")
-        message = _("Your document {} has been updated".format(title))
-        messages.success(self.request, message, extra_tags=toast_title)
+    # def form_valid(self, form):
+    #     """
+    #     If the form is valid, save the associated model.
+    #     """
+    #     doc_form = form.cleaned_data
+    #     title = doc_form.pop('title', None)
+    #     file = doc_form.pop('doc_file', None)
+    #     ext = doc_form.pop('doc_ext', None)
+    #     toast_title = _("Replace File")
+    #     message = _("Your document {} has been updated".format(title))
+    #     messages.success(self.request, message, extra_tags=toast_title)
 
-        if file:
-            dirname = doc_path(ext)
-            filepath = storage_manager.save(f"{dirname}/{file.name}", file)
-            storage_path = storage_manager.path(filepath)
-            # Remove uploaded files, if any
-            ResourceBase.objects.cleanup_uploaded_files(resource_id=self.object.id)
-            self.object = resource_manager.update(
-                self.object.uuid,
-                instance=self.object,
-                vals=dict(
-                    owner=self.request.user,
-                    files=[storage_path])
-            )
+    #     if file:
+    #         dirname = doc_path(ext)
+    #         filepath = storage_manager.save(f"{dirname}/{file.name}", file)
+    #         storage_path = storage_manager.path(filepath)
+    #         # Remove uploaded files, if any
+    #         ResourceBase.objects.cleanup_uploaded_files(resource_id=self.object.id)
+    #         self.object = resource_manager.update(
+    #             self.object.uuid,
+    #             instance=self.object,
+    #             vals=dict(
+    #                 owner=self.request.user,
+    #                 files=[storage_path])
+    #         )
 
-        register_event(self.request, EventType.EVENT_CHANGE, self.object)
+    #     register_event(self.request, EventType.EVENT_CHANGE, self.object)
 
-        return HttpResponseRedirect(
-            reverse(
-                'dataset_detail',
-                args=(
-                    self.object.id,
-                )))
+    #     return HttpResponseRedirect(
+    #         reverse(
+    #             'dataset_detail',
+    #             args=(
+    #                 self.object.id,
+    #             )))
 
 
 def dataset_metadata(
@@ -726,7 +733,7 @@ def dataset_remove(request):
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
         logger.debug(f'Deleting File {document}')
-        delete_orphaned_thumbnail.apply((document.thumbnail_path,))
+        # delete_orphaned_thumbnail.apply((document.thumbnail_path,))
         document.delete()
         message = _("File: {} has been deleted".format(document.title))
         register_event(request, EventType.EVENT_REMOVE, document)

@@ -5,116 +5,152 @@
 
 {% block title %} {% trans "Replace Document" %} - {{ block.super }} {% endblock %}
 
-{% block body_class %}documents replace{% endblock body_class %}
+{% block body_class %}datasets replace{% endblock body_class %}
 
 {% block head %}
     {{ block.super }}
 {% endblock %}
 
 {% block body %}
-<form method="post" enctype="multipart/form-data" action="{% url "dataset_replace" document.id %}">
-  {% csrf_token %}
+<form enctype="multipart/form-data">
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
   <div class="card">
     <div class="card-header bg-warning">
       <div class="row">
         <h3 class="col">{% trans "Replace " %}{{ document.title }}</h3>
-        <div class="col-sm-4 text-right"><a href="{% url 'dataset_detail' docid=document.id %}" class="btn btn-light w-100">{% trans "Return to Datasets" %}</a></div>
+        <div class="col-sm-4 text-right"><a href="{% url 'dataset_detail' docid=dataset_id %}" class="btn btn-light w-100">{% trans "Return to Datasets" %}</a></div>
       </div>
     </div>
     <div class="card-body">
       <div id="upload_form">
-        {{ form.title|as_crispy_field }}
         {{ form.errors }}
-        {% if document.doc_file != '[]' %}
-          <section id="drop-zone" class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
+          <section id="drop-zone" dropzone class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
             <h3 id="drop_files"><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
               <input type="file" name="doc_file" id="doc_file" style="display: none;">
           </section>
-        {% elif document.doc_url %}
-          {{ form.doc_url|as_crispy_field }}
-        {% endif %}
+          {{ form.file_url|as_crispy_field }}
         <input type="hidden" name="extension" id="extension">
-      </div>
-      <div title="Preview Image" id="previewImageDiv" class="d-none">
-        <div id="divPreview"><span><label id="doc_change_to"></label></span></div>
-        <img id="previewImage" src="" class="mx-auto d-block" />
-      </div>
-      <div class="d-none" id="previewPdf">
-        <canvas id="pdfRendererReplace" class="w-100"></canvas>
-        <div class="row justify-content-center mt-2">
-            <div>
-              <input id="current_page_replace" value="1" type="text" disabled class="btn btn-light text-center mr-3" style="width: 60px; border: 1px solid var(--shadow-1) !important;">
-              <span> / <span id="pageCountReplace"></span> </span>
-            </div>
-        </div>
+        <input type="hidden" name="import_id" id="import_id" value="{{ import_id }}">
       </div>
     </div>
     <div class="card-footer bg-transparent">
       <div class="row">
         <button id="clear-button" type="reset" class="btn btn-info col m-3">{% trans "Clear" %}</button>
-        <button id="upload-button" type="submit" class="btn btn-save col m-3" value="Update">{% trans "Replace Datasets" %}</button>
+        <button id="submit" type="submit" class="btn btn-save col m-3" value="Update" ng-click="post_file({{dataset_id}})">Add File</button>
       </div>
     </div>
   </div>
 </form>
 {% endblock %}
 
+{% block additional_body %}
+    {% verbatim %}
+    <div class="col-md-12 p-0 mt-4 d-none card-ingest" cardingest>
+    {% endverbatim %}
+      {% for file in files %}
+        <div class="card" id="card-dataset">
+          <input class="file_id" type="hidden" name="id" value="{{ file.id }}">
+          <div class="card-body border-dataset" id="card-{{ file.id }}">
+              <div class="row">
+                <div class="col-md-10 align-self-center">
+                    <div>
+                      {% if file.hash %}
+                          <span class="text-muted small">SHA-256: {{ file.hash }} - {{ file.file_size|filesizeformat }}</span>
+                      {% else %}
+                          <span class="badge badge-info d-inline">External Dataset</span>
+                      {% endif %}
+                        <span class="text-muted small">- {{ file.created|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                  <div class="col-md-2">
+                    <div class="d-flex flex-row float-right">
+                      {% if file.hash %}
+                          <div class="align-self-center mr-3"><span class="badge badge-secondary d-inline">{{ file.extension }}</span></div>
+                          <div><a class="btn btn-primary mr-3 preview-file" ng-click="preview_file({{ file.extension }}, {{ file.id }}, {{ file.file_type }})" data-target="#previewDatasetFiles" style="cursor: pointer;" data-type="{{ file.file_type }}" data-id="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
+                          <button class="btn btn-warning" style="cursor: pointer;" ng-click="delete_file({{file.id}})"><i class="fa-solid fa-trash" title="Delete File"></i></button>
+                      {% endif %}
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-2 mt-2">
+                    <span><label for="file_name">File Name</label></span></br/>
+                </div>
+                <div class="col-md-10 mt-2">
+                    <input class="w-100 form-control file_name" type="text" name="file_name" aria-disabled="false" value="{{ file.file_name }}">
+                </div>
+                {% if file.file_url %}
+                    <div class="col-md-2 mt-2">
+                        <span><label for="file_url">URL File</label></span></br/>
+                    </div>
+                    <div class="col-md-10 mt-2">
+                        <input class="w-100 form-control file_url" type="text" name="file_url" aria-disabled="false" value="{{ file.file_url }}">
+                    </div>
+                {% endif %}
+                <div class="col-md-2 mt-2">
+                    <span><label for="file_description">Description</label></span>
+                </div>
+                <div class="col-md-10 mt-2">
+                    <textarea name="file_description" rows="3" class="textarea form-control d-inline-flex w-100 file_description" required="">{{ file.file_description }}</textarea>
+                </div>
+                <div class="col-md-2 mt-2">
+                    <span><label for="file_data_quality">Data Quality</label></span>
+                </div>
+                <div class="col-md-10 mt-2">
+                    <textarea name="file_data_quality" rows="3" class="textarea form-control d-inline-flex w-100 file_data_quality" required="">{{ file.file_data_quality }}</textarea>
+                </div>
+              </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+{% endblock additional_body %}
+
 {% block extra_script %}
-{{ block.super }}
+  {{ block.super }}
 
-<script src="{% static "geonode/js/base/pdf.min.js" %}"></script>
-<script src="{% static "geonode/js/base/pdf.worker.min.js" %}"></script>
-<link href="{% static "geonode/css/pdf_viewer.css" %}" rel="stylesheet" />
+  {% include "upload/documents.html" %}
+  {% include "modal/preview_files.html" %}
+  {% include "toast/permissions_form.html" %}
 
-<script type="text/javascript">
+  {% include "modal/remove_dataset_files.html" %}
+  <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
 
-  $('#doc_file-clear_id').attr('data-toggle', 'toggle');
-  $('#doc_file-clear_id').attr('data-width', '100%');
-  $('#doc_file-clear_id').attr('data-height', '50');
-  $("#doc_file-clear_id").bootstrapToggle({
-      on: 'Remove Current Datasets',
-      off: 'Keep the Datasets'
-  });
-  $("#doc_file").prev().prev().css('display', 'none');
-  $(".toggle").css('margin-top', '1em');
+  {% comment %} <script type="text/javascript">
 
-  $('#doc_file').on('change', function (e) {
-    var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
-    var _title = _text.replace(/\.[^/.]+$/, "");
-    var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
-    var file = e.target.files[0];
-    var extension = $(this).val().substring($(this).val().lastIndexOf('.') + 1);
-    $('#extension').val(extension);
-    const displaySelectedFile = () => {
-      $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
-      $('#drop-zone').addClass('drop-selected');
-    }
-    if ($('.files_selected').length) {
-        $('.files_selected').remove();
-        $('#drop-zone').removeClass('drop-selected');
-    }
-    displaySelectedFile();
+    $('#doc_file-clear_id').attr('data-toggle', 'toggle');
+    $('#doc_file-clear_id').attr('data-width', '100%');
+    $('#doc_file-clear_id').attr('data-height', '50');
+    $("#doc_file-clear_id").bootstrapToggle({
+        on: 'Remove Current Datasets',
+        off: 'Keep the Datasets'
+    });
+    $("#doc_file").prev().prev().css('display', 'none');
+    $(".toggle").css('margin-top', '1em');
 
-    if (file.type == 'application/pdf') {
-        $('#doc_change_to').text("Document Preview: " + _fileName);
-        $('#divPreview').addClass('alert-box--notice mb-2');
-        $('#previewPdf').removeClass('d-none');
-        {% include "datasets/pdf_replace.html" %}
-    } else {
-        $('#doc_change_to').text("Image Preview: " + _fileName);
-        $('#divPreview').addClass('alert-box--notice mb-2');
-        $('#previewImage').attr('src', URL.createObjectURL(e.target.files[0]));
-        $('#previewImageDiv').removeClass('d-none')
-    }
+    $('#doc_file').on('change', function (e) {
+      var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
+      var _title = _text.replace(/\.[^/.]+$/, "");
+      var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
+      var file = e.target.files[0];
+      var extension = $(this).val().substring($(this).val().lastIndexOf('.') + 1);
+      $('#extension').val(extension);
+      const displaySelectedFile = () => {
+        $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
+        $('#drop-zone').addClass('drop-selected');
+      }
+      if ($('.files_selected').length) {
+          $('.files_selected').remove();
+          $('#drop-zone').removeClass('drop-selected');
+      }
+      displaySelectedFile();
 
-  });
+    });
 
-  $('#clear-button').on('click', function(e) {
-    $('#doc_file').val(null);
-    $('#previewImageDiv').addClass('d-none');
-    $('#previewPdf').addClass('d-none');
-    $('#drop-zone').removeClass('drop-selected');
-    $('.files_selected').remove();
-  })
-</script>
+    $('#clear-button').on('click', function(e) {
+      $('#doc_file').val(null);
+      $('#drop-zone').removeClass('drop-selected');
+      $('.files_selected').remove();
+    })
+  </script> {% endcomment %}
 {% endblock extra_script %}

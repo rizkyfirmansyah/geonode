@@ -21,9 +21,7 @@
           {{ form.file_url|as_crispy_field }}
           <input type="hidden" name="extension" id="extension">
           <input type="hidden" name="import_id" id="import_id" value="{{ import_id }}">
-          {% verbatim %}
-            <button id="submit" type="submit" class="btn btn-primary btn-block" ng-click="post_file($event)">Add file</button>
-          {% endverbatim %}
+          <button id="submit" type="submit" class="btn btn-primary btn-block" ng-click="post_file()">Add file</button>
         </form>
       </div>
     </div>
@@ -53,38 +51,19 @@
 
 {% block additional_body %}
   {% verbatim %}
-    <div class="col-md-12 p-0 mt-4 d-none" cardingest id="card-ingest">
+    <div class="col-md-12 p-0 mt-4 d-none card-ingest" cardingest>
       
     </div>
   {% endverbatim %}
 {% endblock additional_body %}
 
 {% block extra_script %}
-{{ block.super }}
-<script type="text/javascript">
+  {{ block.super }}
+  {% include "upload/documents.html" %}
+  {% include "modal/preview_files.html" %}
+  {% include "toast/permissions_form.html" %}
 
-  function delete_file(id) {    
-    $.ajax({
-        data: {pk: id},
-        url: "/api/v2/datasets/delete_file",
-        type: 'DELETE',
-        headers:{"X-CSRFToken":'{{csrf_token}}'},
-        method: 'DELETE',
-        success: function(result) {
-          $(document.body).append(deleteMsg);
-          setTimeout(function() {
-            $("#datasetToast").remove();
-            $("#card-"+id+"").remove();
-          }, 1000);
-        }
-    });
-  };
-</script>
-{% include "modal/preview_files.html" %}
-{% include "toast/permissions_form.html" %}
-
-{% include "upload/documents.html" %}
-{% include "modal/remove_dataset_files.html" %}
-<script src="{% static "geonode/js/upload/dataset.js" %}"></script>
+  {% include "modal/remove_dataset_files.html" %}
+  <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
 
 {% endblock extra_script %}
