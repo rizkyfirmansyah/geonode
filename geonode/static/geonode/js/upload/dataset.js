@@ -145,6 +145,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
             });
             formData.append('file_url', $('#id_file_url').val());
             formData.append('import_id', $('#import_id').val());
+            formData.append('dataset_id', dataset_id);
     
             if (file) {
                 var currentChunk = file.slice(start, nextChunk);
@@ -164,7 +165,6 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 formData.append('end', end);
                 formData.append('existingPath', existingPath);
                 formData.append('nextSlice', nextChunk);
-                formData.append('dataset_id', dataset_id);
                 $('.filename').text(file.name);
                 var postParams = {
                     method: 'POST',
