@@ -396,6 +396,42 @@ var dataset = angular.module('dataset', ['ngCookies']);
         else if (type == 'image') {
             render_html = '<img src='+ url +' width="100%" class="img-responsive" />'
         }
+        else if (type == 'tabular') {
+              var loading = '<div class="spinner-grow text-info mr-3 d-inline-flex" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
+              <div class="spinner-grow text-info" role="status"><span class="sr-only text-center">Loading...</span></div>';
+              $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                  $('#dataframe_container').append(data);
+                  $("#tabular_data").DataTable({
+                    scrollY:        "600px",
+                    scrollX:        true,
+                    scrollCollapse: true,
+                    paging:         true
+                  });
+                },
+                beforeSend: function() {
+                  $('#dataframe_container').append(loading);
+                },
+                complete: function() {
+                  $('.spinner-grow').remove();
+                }
+            });
+            render_html = '<div class="p-3 bg-light" id="dataframe_container"></div>'
+        }
         else if (type == 'video') {
             render_html = `
               <video width="500" controls>

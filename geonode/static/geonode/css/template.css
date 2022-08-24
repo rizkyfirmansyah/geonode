@@ -1276,6 +1276,11 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
   display: none
 }
 
+.modal-dialog-preview {
+    margin: 4em !important;
+    max-width: none !important;
+}
+
 #SigninModal .modal-dialog-centered {
   display: -webkit-box;
   display: -ms-flexbox;

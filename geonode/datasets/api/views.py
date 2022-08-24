@@ -425,6 +425,7 @@ class DatasetIngestView(viewsets.ModelViewSet):
         
         return Response({"message": serializer.errors, "files": None}, status=status.HTTP_400_BAD_REQUEST)
 
+
     @extend_schema(
         methods=['get'],
         responses={200},
@@ -440,12 +441,42 @@ class DatasetIngestView(viewsets.ModelViewSet):
     def preview_file(self, request, pk):
         resources = get_object_or_404(File, pk=pk)
         filename = slugify(os.path.splitext(os.path.basename(resources.file_name))[0])
+        import numpy as np
+        import pandas as pd
+        try:
+            if resources.file_type == 'tabular':
+                def replace_nan(df):
+                    # replace all NaNs with an empty string
+                    df = df.replace(np.nan, '', regex=True)
+                    return df
 
-        if resources.file and storage_manager.exists(resources.file):
-            return DownloadResponse(
-                storage_manager.open(resources.file),
-                basename=f'{filename}.{resources.extension}'
-            )
+                if resources.extension == 'csv':
+                    df = pd.read_csv(resources.file)
+                    df = df.head(200)
+                    replace_nan(df)
+
+                elif resources.extension == 'tsv':
+                    df = pd.read_csv(resources.file, sep='\t', header=0)
+                    df = df.head(200)
+                    replace_nan(df)
+                
+                elif resources.extension == 'sav':
+                    df = pd.read_spss(resources.file)
+                    df = df.head(200)
+                    replace_nan(df)
+
+                classes = 'table table-sm'
+                render_df = df.to_html(classes=classes, justify='center', table_id='tabular_data')
+                
+                return HttpResponse(render_df)
+
+            elif resources.file and storage_manager.exists(resources.file):
+                return DownloadResponse(
+                    storage_manager.open(resources.file),
+                    basename=f'{filename}.{resources.extension}'
+                )
+        except Exception as e:
+            logger.error(e)
 
         return HttpResponse(
             "File is not available",

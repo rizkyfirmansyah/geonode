@@ -706,14 +706,17 @@ def render_tabular(request, docid):
           data = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION, 'tabular', tabular)
           if document.extension == 'csv':
               df = pd.read_csv(data)
+              df = df.head(200)
               replace_nan(df)
 
           elif document.extension == 'tsv':
               df = pd.read_csv(data, sep='\t', header=0)
+              df = df.head(200)
               replace_nan(df)
 
           elif document.extension == 'sav':
               df = pd.read_spss(data)
+              df = df.head(200)
               replace_nan(df)
 
           elif document.extension == 'dta':
