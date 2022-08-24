@@ -19,10 +19,8 @@
 #########################################################################
 from django.conf.urls import url, include
 from django.views.generic import TemplateView
-from django.conf.urls.static import static
-from django.conf import settings
 
-from .api.views import DatasetIngestDetailView, DatasetIngestView
+from .api.views import DatasetIngestView
 
 from .views import DatasetUploadView, DatasetUpdateView
 from .views import DatasetAutocomplete
@@ -49,22 +47,15 @@ urlpatterns = [  # 'geonode.datasets.views',
         views.dataset_detail, name='dataset_detail'),
     url(r'^download/(?P<docid>\d+)?$',
         views.dataset_download, name='dataset_download'),
-    # url(r'^file/download$',
-    #     views.dataset_download, name='dataset_download'),
     url(r'^(?P<docid>\d+)/link/?$',
         views.dataset_link, name='dataset_link'),
-    # url(r'^file/link$',
-    #     views.dataset_link, name='dataset_link'),
     url(r'^(?P<docid>\d+)/replace$', DatasetUpdateView.as_view(), name="dataset_replace"),
     url(r'^(?P<docid>\d+)/embed/?$', views.dataset_embed, name='dataset_embed'),
     url(r'^remove$',
         views.dataset_remove, name="dataset_remove"),
     url(r'^upload/?$', DatasetUploadView.as_view(), name='dataset_upload'),
-    # url(r'^upload/(?P<filename>[^/]+)$', DatasetIngestView.as_view(), name='dataset_ingest'),
     url(r'^upload/file$', DatasetIngestView.as_view({'post': 'post'}), name='dataset_ingest'),
     url(r'^upload/file/preview/(?P<pk>[0-9]+)$', DatasetIngestView.as_view({'get': 'preview_file'}), name='dataset_ingest_preview_file'),
-    # url(r'^upload/file$', DatasetIngestView.as_view(), name='dataset_ingest'),
-    url(r'^upload/file/(?P<pk>[0-9]+)$', DatasetIngestDetailView.as_view(), name='dataset_ingest_detail'),
     url(r'^(?P<docid>[^/]*)/metadata_detail$', views.dataset_metadata_detail,
         name='dataset_metadata_detail'),
     url(r'^(?P<docid>\d+)/metadata$',

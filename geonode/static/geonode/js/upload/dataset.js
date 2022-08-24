@@ -396,6 +396,16 @@ var dataset = angular.module('dataset', ['ngCookies']);
         else if (type == 'image') {
             render_html = '<img src='+ url +' width="100%" class="img-responsive" />'
         }
+        else if (type == 'text') {
+              $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                  $('#text_container').append(data);
+                }
+            });
+            render_html = '<div class="p-3 bg-light" id="text_container"></div>'
+        }
         else if (type == 'tabular') {
               var loading = '<div class="spinner-grow text-info mr-3 d-inline-flex" role="status"><span class="sr-only text-center">Loading...</span></div> \
               <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div> \
@@ -571,10 +581,18 @@ var dataset = angular.module('dataset', ['ngCookies']);
         }
     })
 
-    dataset.directive("dropzone", function($http, $rootScope) {
+    dataset.directive("dropzone", function($http, $rootScope, $location) {
         return {
             restrict : "A",
             link: function (scope, elem) {
+                var url = $location.absUrl().split('/');
+                var dataset_id;
+                if (url[url.length - 1] === 'replace') {
+                    dataset_id = url[url.length - 2];
+                } else {
+                    dataset_id = null;
+                }
+
                 elem.on('drop', function(evt) {
                     evt.stopPropagation();
                     evt.preventDefault();

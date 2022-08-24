@@ -470,6 +470,9 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 
                 return HttpResponse(render_df)
 
+            if resources.file_type == 'text':
+                return HttpResponse(storage_manager.open(resources.file), content_type="text/plain")
+
             elif resources.file and storage_manager.exists(resources.file):
                 return DownloadResponse(
                     storage_manager.open(resources.file),
@@ -482,20 +485,3 @@ class DatasetIngestView(viewsets.ModelViewSet):
             "File is not available",
             status=404
         )
-
-
-class DatasetIngestDetailView(APIView):
-    """
-    Retrieve, update or delete a Dataset File instance
-    """
-    # renderer_classes = [TemplateHTMLRenderer]
-    # template_name = 'dataset_ingest.html'
-    parser_classes = [MultiPartParser, JSONParser,]
-
-    def put(self, request, filename, format=None):
-        file_obj = request.data['file']
-        # ...
-        # do some stuff with uploaded file
-        # ...
-        return Response(status=204)
-

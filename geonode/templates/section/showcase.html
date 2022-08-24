@@ -11,8 +11,8 @@
                 <path d="M32.0001 19.2C44.4801 19.2 54.4001 16.32 54.4001 12.8C54.4001 9.28002 44.4801 6.40002 32.0001 6.40002C19.5201 6.40002 9.6001 9.28002 9.6001 12.8C9.6001 16.32 19.5201 19.2 32.0001 19.2ZM32.0001 48C19.5201 48 9.6001 45.12 9.6001 41.6V51.2C9.6001 54.72 19.5201 57.6 32.0001 57.6C44.4801 57.6 54.4001 54.72 54.4001 51.2V41.6C54.4001 45.12 44.4801 48 32.0001 48ZM32.0001 35.2C19.5201 35.2 9.6001 32.32 9.6001 28.8V38.4C9.6001 41.92 19.5201 44.8 32.0001 44.8C44.4801 44.8 54.4001 41.92 54.4001 38.4V28.8C54.4001 32.32 44.4801 35.2 32.0001 35.2ZM32.0001 22.4C19.5201 22.4 9.6001 19.52 9.6001 16V25.6C9.6001 29.12 19.5201 32 32.0001 32C44.4801 32 54.4001 29.12 54.4001 25.6V16C54.4001 19.52 44.4801 22.4 32.0001 22.4Z" fill="white"/>
                 </svg>                
             </a></p>
-            <h2><a class="text-white" {% if request.user.is_authenticated %} href="{{ SITEURL }}catalogue" {% endif %}>{{ facets.document|default:_("No") }}
-                {% blocktrans count counter=facets.document %}Catalogue{% plural %}Catalogues{% endblocktrans %}</a></h2>
+            <h2><a class="text-white" {% if request.user.is_authenticated %} href="{{ SITEURL }}catalogue" {% endif %}>{{ facets.dataset|default:_("No") }}
+                {% blocktrans count counter=facets.dataset %}Catalogue{% plural %}Catalogues{% endblocktrans %}</a></h2>
         </div>
         <div class="col-4">
           <p><a {% if request.user.is_authenticated %} href="{% url "catalogue_browse" %}?type__in=map" {% endif %}><i class="text-white fa-solid fa-map-location-dot fa-4x"></i></a></p>

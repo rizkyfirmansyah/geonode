@@ -361,59 +361,6 @@ class DatasetCreateForm(TranslationModelForm, FileFormMixin):
         return doc_file
 
 
-class DatasetIngestForm(forms.ModelForm):
-    """
-    """
-    
-    doc_file = SizeRestrictedFileField(
-        label=_("File"),
-        required=False,
-        field_slug="document_upload_size"
-    )
-
-    def clean_file(self):
-        """
-        Ensures the doc_file is valid.
-        """
-        doc_file = self.cleaned_data.get('doc_file')
-
-        if doc_file and not os.path.splitext(
-                doc_file.name)[1].lower()[
-                1:] in settings.ALLOWED_DOCUMENT_TYPES:
-            logger.debug("This file type is not allowed")
-            raise forms.ValidationError(_("This file type is not allowed"))
-
-        return doc_file
-
-
-    def clean(self):
-        """
-        Ensures the file or the file_url field is populated.
-        """
-        cleaned_data = super().clean()
-        doc_file = self.cleaned_data.get('doc_file')
-        file_url = self.cleaned_data.get('file_url')
-        file_ext = self.cleaned_data.get('file_ext')
-
-        if not doc_file and not file_url and "doc_file" not in self.errors and "file_url" not in self.errors:
-            logger.error("Dataset must be a file or url.")
-            raise forms.ValidationError(_("Dataset must be a file or url."))
-
-        if doc_file and file_url:
-            logger.error("A dataset cannot have both a file and a url.")
-            raise forms.ValidationError(
-                _("A dataset cannot have both a file and a url."))
-
-        return cleaned_data
-
-
-    class Meta:
-        model = File
-        fields = ['file_url', 'file']
-        widgets = {
-            'name': HiddenInput(attrs={'cols': 80, 'rows': 20}),
-        }
-
 class DatasetReplaceForm(forms.ModelForm, FileFormMixin):
     """
     The form used to replace a dataset.

@@ -30,11 +30,11 @@ DATASET_TYPE_MAP = {
     'qml': 'text',
     'xml': 'text',
 
-    'py': 'script',
-    'm': 'script',
-    'mat': 'script',
-    'r': 'script',
-    'sql': 'script',
+    'py': 'text',
+    'm': 'text',
+    'mat': 'text',
+    'r': 'text',
+    'sql': 'text',
 
     'rmd': 'text',
     'sps': 'text',
