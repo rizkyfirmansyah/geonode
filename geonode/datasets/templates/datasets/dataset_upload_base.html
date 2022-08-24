@@ -17,10 +17,9 @@
 		</div>
 	</div>
   <div class="card-body">
-    <p class="allowed_doctype mb-1">{% trans "Allowed raw data types" %}:</p>
-    {% for doc in ALLOWED_DOC_TYPES %}
-      <div class="mt-1 mb-1 d-inline-block"><span class="badge badge-pill badge-secondary d-inline">.{{ doc }}</span></div>
-    {% endfor %}
+    <p>
+      All file types are supported for upload and download in their original format. If you are uploading Tabular Files {% for type in TABULARTYPES %} <span class="badge badge-pill badge-secondary d-inline">{{type}}</span>{% endfor %}<br/>We only limit to 200 data for previewing.
+    </p>
   </div>
 </div>
 <div class="row">

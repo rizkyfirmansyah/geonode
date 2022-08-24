@@ -259,146 +259,6 @@ def dataset_embed(request, docid):
         )
 
 
-# class DatasetIngestView(LoginRequiredMixin, CreateView):
-#     template_name = 'datasets/dataset_ingest.html'
-#     form_class = DatasetIngestForm
-#     success_url = '/'
-
-#     def get_object(self):
-#         pk = self.kwargs.get('pk')
-#         post_instance = get_object_or_404(ResourceBase, pk=pk)
-#         print(post_instance)
-#         return post_instance
-
-#     def post(self, request, *args, **kwargs):
-#         self.object = None
-#         try:
-#             return super().post(request, *args, **kwargs)
-#         except Exception as e:
-#             exception_response = geonode_exception_handler(e, {})
-#             return HttpResponse(
-#                 json.dumps(exception_response.data),
-#                 content_type='application/json',
-#                 status=exception_response.status_code)
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['ALLOWED_DOC_TYPES'] = ALLOWED_DOC_TYPES
-#         return context
-
-#     def form_invalid(self, form):
-#         messages.error(self.request, f"{form.errors}")
-#         if self.request.GET.get('no__redirect', False):
-#             plaintext_errors = []
-#             for field in form.errors.values():
-#                 plaintext_errors.append(field.data[0].message)
-#             out = {'success': False}
-#             out['message'] = '.'.join(plaintext_errors)
-#             status_code = 400
-#             return HttpResponse(
-#                 json.dumps(out),
-#                 content_type='application/json',
-#                 status=status_code)
-#         else:
-#             form.name = None
-#             form.title = None
-#             form.doc_file = None
-#             form.doc_url = None
-#             return self.render_to_response(self.get_context_data(request=self.request, form=form))
-
-#     def form_valid(self, form):
-#         """
-#         If the form is valid, save the associated model.
-#         """
-#         doc_form = form.cleaned_data
-#         file = doc_form.pop('doc_file', None)
-#         ext = doc_form.pop('doc_ext', None)
-#         print(f"FILE EXT === {file} {ext}")
-#         if file:
-#             dirname = doc_path(ext)
-#             filepath = storage_manager.save(f"{dirname}/{file.name}", file)
-#             storage_path = storage_manager.path(filepath)
-#             self.object = resource_manager.create(
-#                 None,
-#                 resource_type=File,
-#                 defaults=dict(
-#                     owner=self.request.user,
-#                     doc_url=doc_form.pop('doc_url', None),
-#                     title=doc_form.pop('title', file.name),
-#                     files=[storage_path])
-#             )
-#         else:
-#             self.object = resource_manager.create(
-#                 None,
-#                 resource_type=File,
-#                 defaults=dict(
-#                     owner=self.request.user,
-#                     doc_url=doc_form.pop('doc_url', None),
-#                     title=doc_form.pop('title', None))
-#             )
-
-#         self.object.handle_moderated_uploads()
-#         resource_manager.set_permissions(
-#             None, instance=self.object, permissions=form.cleaned_data["permissions"], created=True
-#         )
-
-#         abstract = None
-#         date = None
-#         regions = []
-#         keywords = []
-#         bbox = None
-#         url = hookset.document_detail_url(self.object)
-
-#         out = {'success': False}
-
-#         if getattr(settings, 'EXIF_ENABLED', False):
-#             try:
-#                 from geonode.datasets.exif.utils import exif_extract_metadata_doc
-#                 exif_metadata = exif_extract_metadata_doc(self.object)
-#                 if exif_metadata:
-#                     date = exif_metadata.get('date', None)
-#                     keywords.extend(exif_metadata.get('keywords', []))
-#                     bbox = exif_metadata.get('bbox', None)
-#                     abstract = exif_metadata.get('abstract', None)
-#             except Exception:
-#                 logger.debug("Exif extraction failed.")
-
-#         resource_manager.update(
-#             self.object.uuid,
-#             instance=self.object,
-#             keywords=keywords,
-#             regions=regions,
-#             vals=dict(
-#                 abstract=abstract,
-#                 date=date,
-#                 date_type="Creation",
-#                 bbox_polygon=BBOXHelper.from_xy(bbox).as_polygon() if bbox else None
-#             ),
-#             notify=True)
-#         resource_manager.set_thumbnail(self.object.uuid, instance=self.object, overwrite=False)
-
-#         register_event(self.request, EventType.EVENT_UPLOAD, self.object)
-
-#         if self.request.GET.get('no__redirect', False):
-#             out['success'] = True
-#             out['url'] = url
-#             if out['success']:
-#                 status_code = 200
-#             else:
-#                 status_code = 400
-#             return HttpResponse(
-#                 json.dumps(out),
-#                 content_type='application/json',
-#                 status=status_code)
-#         else:
-#             return HttpResponseRedirect(
-#                 reverse(
-#                     'dataset_metadata',
-#                     args=(
-#                         self.object.id,
-#                     )))
-
-
 class DatasetUploadView(LoginRequiredMixin, CreateView):
     template_name = 'datasets/dataset_upload.html'
     form_class = DatasetCreateForm
@@ -419,7 +279,9 @@ class DatasetUploadView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         import_id = list(File.objects.all().aggregate(Max('import_id')).values())[0]
         import_id = (int(import_id) + 1) if import_id is not None else 0
+        TABULARTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'tabular']
         context["ALLOWED_DOC_TYPES"] = ALLOWED_DOC_TYPES
+        context["TABULARTYPES"] = TABULARTYPES
         context["import_id"] = import_id
         self.request.session['session'] =  str(uuid.uuid1())
 
