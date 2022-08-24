@@ -229,7 +229,6 @@
       <div class="card-header">
         <div class="row">
           <h5 class="col">{{ files.count }} Files</h5>
-          {% comment %} <a data-toggle="modal" class="btn btn-danger mr-4" data-target="#removeDatasetFiles" style="cursor: pointer;"><i class="fa-solid fa-trash" title="Delete All Files"></i></a> {% endcomment %}
         </div>
       </div>
       
@@ -312,5 +311,14 @@
   {% endif %}
   {% include "modal/preview_files.html" %}
   <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
+  <script type="text/javascript">
+      $(function() {
+          {% if not "download_resourcebase" in perms_list %}
+            $("#card-dataset .btn-download").remove();
+            $("#card-dataset .preview-file").remove();
+          {% endif %}
+      })
+
+  </script>
 
 {% endblock extra_script %}
