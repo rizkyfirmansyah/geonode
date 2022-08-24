@@ -17,11 +17,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+from zipfile import ZipFile, ZIP_DEFLATED
 from drf_spectacular.utils import extend_schema
+import io
 
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
-from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP
+from geonode.datasets.enumerations import DATASET_TYPE_MAP
 from ...security.utils import sha256file
 from ...utils import doc_path
 from ..models import Dataset, File
@@ -34,7 +36,6 @@ from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from rest_framework import status
-from django.template import loader
 from django.http import HttpResponse
 from django_downloadview.response import DownloadResponse
 from django.utils.text import slugify
@@ -115,9 +116,21 @@ class DatasetsViewSet(DynamicModelViewSet):
     def delete_file(self, request):
         pk = request.data.get('pk')
         file = get_object_or_404(File, pk=pk)
-        file.delete()
+        toast_title = f"Delete File"
+        try:
+            file.delete()
+            msg = f"Your selected file has been deleted."
+            return Response(data={'message': msg}, status=status.HTTP_200_OK)
 
-        return Response(status=status.HTTP_200_OK)
+        except NotImplementedError as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={'message': e.args[0], 'success': False}, status=405, exception=True)
+
+        except Exception as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={'message': e.args[0], 'success': False}, status=500, exception=True)
 
     @extend_schema(
         methods=['delete'],
@@ -135,11 +148,22 @@ class DatasetsViewSet(DynamicModelViewSet):
     )
     def delete_files(self, request):
         query = request.data.getlist('ids[]')
+        toast_title = f"Delete Dataset"
+        try:
+            file = File.objects.filter(id__in=query)
+            file.delete()
+            msg = f"Your files has been deleted."
+            return Response(data={'message': msg}, status=status.HTTP_200_OK)
 
-        file = File.objects.filter(id__in=query)
-        file.delete()
+        except NotImplementedError as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={'message': e.args[0], 'success': False}, status=405, exception=True)
 
-        return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={'message': e.args[0], 'success': False}, status=500, exception=True)
 
     @extend_schema(
         methods=['get'],
@@ -190,17 +214,75 @@ class DatasetsViewSet(DynamicModelViewSet):
         data = {
             int(i['id']): {k: v for k, v in i.items() if k != 'id'} for i in _data
         }
-        for inst in self.get_queryset().filter(id__in=data.keys()):
-            title = inst.file_name
-            serializer = self.get_serializer(inst, data=data[inst.id], partial=True)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
         toast_title = f"Upload Datasets"
-        msg = f"Your files has been saved."
-        messages.success(request, msg, extra_tags=toast_title)
+        try:
+            for inst in self.get_queryset().filter(id__in=data.keys()):
+                title = inst.file_name
+                serializer = self.get_serializer(inst, data=data[inst.id], partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
 
-        return Response({"message": "Your file has been updated", "response": reverse('dataset_detail', args=(dataset_id,))}, status=status.HTTP_201_CREATED)
+            msg = f"Your files has been saved."
+            messages.success(request, msg, extra_tags=toast_title)
+
+            return Response({"message": "Your file has been updated", "response": reverse('dataset_detail', args=(dataset_id,))}, status=status.HTTP_201_CREATED)
+        
+        except NotImplementedError as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={"message:": e.args[0], 'success': False}, status=405, exception=True)
+
+        except Exception as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={"message:": e.args[0], 'success': False}, status=500, exception=True)
+
+
+    @extend_schema(
+        methods=['post', 'get'],
+        responses={200},
+        description="API endpoint allowing to download all files of Dataset.")
+    @action(
+        detail=False,
+        url_path="download_dataset_files/(?P<dataset_id>\d+)?$",
+        url_name="download_dataset_files",
+        methods=['post', 'get'],
+        permission_classes=[
+            IsAuthenticated,
+        ]
+    )
+    def download_dataset_files(self, request, dataset_id):
+        resources = File.objects.filter(dataset__id__in=[dataset_id])
+        dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
+
+        toast_title = f"Download Dataset Files"
+        try:
+            output = io.BytesIO()
+            zf = ZipFile(output, 'w', ZIP_DEFLATED)
+            try:
+                for file in resources:
+                    if file.file:
+                        fdir, fname = os.path.split(file.file)
+                        zf.write(file.file, arcname=fname)
+
+            except FileNotFoundError:
+                logger.error(f"Try to download dataset files but not found")
+
+            finally:
+                zf.close()
+
+            return HttpResponse(output.getvalue(), content_type='application/zip', headers={'Content-Disposition': 'attachment; filename='f"{dataset}.zip"''})
+
+        except NotImplementedError as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={"message:": e.args[0], 'success': False}, status=405, exception=True)
+
+        except Exception as e:
+            logger.error(e)
+            messages.error(request, message=e.args[0], extra_tags=toast_title)
+            return Response(data={"message:": e.args[0], 'success': False}, status=500, exception=True)
+
 
     @extend_schema(
         methods=['get'],
@@ -225,8 +307,14 @@ class DatasetsViewSet(DynamicModelViewSet):
                 exclude.append(resource.id)
         resources = resources.exclude(id__in=exclude)
         serializer = DatasetSerializer(instance=resources, embed=True, many=True)
+        files_length = resources.count()
 
-        return Response({"files": serializer.data, "length": resources.count()})
+        if (files_length > 0):
+            toast_title = f"Resume Upload"
+            msg = f"You have unresolved files to upload."
+            messages.warning(request, msg, extra_tags=toast_title)
+
+        return Response({"files": serializer.data, "length": files_length})
 
     @extend_schema(
         methods=['patch'],
@@ -305,7 +393,7 @@ class DatasetIngestView(viewsets.ModelViewSet):
             file_name = request.POST['file_name']
             file = request.FILES['file']
             file_size = request.POST['file_size']
-            file_type = [v for k, v in DOCUMENT_TYPE_MAP.items() if ext in k.lower()]
+            file_type = [v for k, v in DATASET_TYPE_MAP.items() if ext in k.lower()]
             dirname = doc_path(ext)
             filepath = storage_manager.save(f"{dirname}/{file_name}", file)
             storage_path = storage_manager.path(filepath)

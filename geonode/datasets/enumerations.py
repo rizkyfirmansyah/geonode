@@ -18,10 +18,10 @@
 #
 #########################################################################
 
-# DOCUMENT_TYPE_MAP and DOCUMENT_MIMETYPE_MAP
+# DATASET_TYPE_MAP and DOCUMENT_MIMETYPE_MAP
 # match values in settings.ALLOWED_DOCUMENT_TYPES
 
-DOCUMENT_TYPE_MAP = {
+DATASET_TYPE_MAP = {
     'txt': 'text',
     'log': 'text',
     'ods': 'text',

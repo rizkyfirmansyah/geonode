@@ -54,7 +54,7 @@ from geonode.datasets import DatasetsAppConfig
 from geonode.datasets.forms import FileFormMixin
 from geonode.tests.utils import NotificationsTestsHelper
 from geonode.base.populate_test_data import create_models
-from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP
+from geonode.datasets.enumerations import DATASET_TYPE_MAP
 from geonode.datasets.models import File, FileResourceLink
 
 
@@ -78,10 +78,10 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         self.anonymous_user = get_anonymous_user()
 
     def test_document_mimetypes_rendering(self):
-        ARCHIVETYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'archive']
-        AUDIOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'audio']
-        IMGTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'image']
-        VIDEOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'video']
+        ARCHIVETYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'archive']
+        AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
+        IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
+        VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
         self.assertIsNotNone(ARCHIVETYPES)
         self.assertIsNotNone(AUDIOTYPES)
         self.assertIsNotNone(IMGTYPES)

@@ -596,12 +596,12 @@ except ValueError:
 
 MAX_DOCUMENT_SIZE = int(os.getenv('MAX_DOCUMENT_SIZE ', '2'))  # MB
 
-# DOCUMENT_TYPE_MAP and DOCUMENT_MIMETYPE_MAP update enumerations in
+# DATASET_TYPE_MAP and DOCUMENT_MIMETYPE_MAP update enumerations in
 # documents/enumerations.py and should only
 # need to be uncommented if adding other types
 # to settings.ALLOWED_DOCUMENT_TYPES
 
-# DOCUMENT_TYPE_MAP = {}
+# DATASET_TYPE_MAP = {}
 # DOCUMENT_MIMETYPE_MAP = {}
 
 UNOCONV_ENABLE = ast.literal_eval(os.getenv('UNOCONV_ENABLE', 'False'))

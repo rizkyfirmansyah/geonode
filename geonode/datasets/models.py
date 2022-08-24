@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import signals
 from django.urls import reverse
 from django.utils.functional import classproperty
-from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
+from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.security.permissions import (
     VIEW_PERMISSIONS,
     OWNER_PERMISSIONS,
@@ -153,17 +153,17 @@ class Dataset(ResourceBase):
 
     # @property
     # def is_audio(self):
-    #     AUDIOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'audio']
+    #     AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
     #     return self.is_file and self.extension.lower() in AUDIOTYPES
 
     # @property
     # def is_image(self):
-    #     IMGTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'image']
+    #     IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
     #     return self.is_file and self.extension.lower() in IMGTYPES
 
     # @property
     # def is_video(self):
-    #     VIDEOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'video']
+    #     VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
     #     return self.is_file and self.extension.lower() in VIDEOTYPES
 
     # @property
@@ -294,23 +294,23 @@ class File(models.Model):
 
     @property
     def is_audio(self):
-        AUDIOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'audio']
+        AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
         return self.is_file and self.extension.lower() in AUDIOTYPES
 
     @property
     def is_image(self):
-        IMGTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'image']
+        IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
         return self.is_file and self.extension.lower() in IMGTYPES
 
     @property
     def is_video(self):
-        VIDEOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'video']
+        VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
         return self.is_file and self.extension.lower() in VIDEOTYPES
 
 
     @property
     def is_tabular(self):
-        TABULARTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'tabular']
+        TABULARTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'tabular']
         return self.is_file and self.extension.lower() in TABULARTYPES
 
     @property

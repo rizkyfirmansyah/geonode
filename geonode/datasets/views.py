@@ -59,7 +59,7 @@ from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, Thesauru
 from geonode.base.models import (
     ResourceBase,
     Thesaurus)
-from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
+from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.datasets.models import Dataset, File
 from geonode.resource.utils import get_related_resources
 from geonode.datasets.forms import DatasetForm, DatasetCreateForm, DatasetReplaceForm
@@ -159,13 +159,13 @@ def dataset_detail(request, docid):
         else:
             access_token = None
 
-    AUDIOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'audio']
-    IMGTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'image']
-    VIDEOTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'video']
-    WORDTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'word']
-    EXCELTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'excel']
-    PPTTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'powerpoint']
-    TABULARTYPES = [_e for _e, _t in DOCUMENT_TYPE_MAP.items() if _t == 'tabular']
+    AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
+    IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
+    VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
+    WORDTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'word']
+    EXCELTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'excel']
+    PPTTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'powerpoint']
+    TABULARTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'tabular']
 
     context_dict = {
         'access_token': access_token,

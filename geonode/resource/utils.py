@@ -51,7 +51,7 @@ from ..base.models import (
 from ..layers.models import Layer
 from ..datasets.models import Dataset, File
 from ..datasets.enumerations import (
-    DOCUMENT_TYPE_MAP,
+    DATASET_TYPE_MAP,
     DOCUMENT_MIMETYPE_MAP)
 from ..people.utils import get_valid_user
 from ..layers.utils import resolve_regions

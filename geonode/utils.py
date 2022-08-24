@@ -49,7 +49,7 @@ from slugify import slugify
 from contextlib import closing
 from requests.exceptions import RetryError
 from collections import namedtuple, defaultdict
-from geonode.datasets.enumerations import DOCUMENT_TYPE_MAP
+from geonode.datasets.enumerations import DATASET_TYPE_MAP
 from rest_framework.exceptions import APIException
 from math import atan, exp, log, pi, sin, tan, floor
 from zipfile import ZipFile, is_zipfile, ZIP_DEFLATED
@@ -299,7 +299,7 @@ def mkdtemp(dir=settings.MEDIA_ROOT):
 def doc_path(ext):
     dir = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION)
     if ext:
-        folder_keys = [v for k, v in DOCUMENT_TYPE_MAP.items() if ext in k.lower()]
+        folder_keys = [v for k, v in DATASET_TYPE_MAP.items() if ext in k.lower()]
         folder_path = f'{dir}/{folder_keys[0]}'
     else:
         folder_path = f'{dir}/others'

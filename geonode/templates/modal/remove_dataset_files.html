@@ -37,13 +37,13 @@
           headers:{"X-CSRFToken":'{{csrf_token}}'},
           method: 'DELETE',
           success: function(result) {
-            $(document.body).append(deleteMsg);
-            $("#card-ingest").remove();
-            window.localStorage.removeItem('file_ids');
-            setTimeout(function() {
-              $('#removeDatasetFiles').modal('hide');
-              $("#datasetToast").remove();
-            }, 1000);
+              $(document.body).append(deleteAllFilesMsg);
+              $(".card-ingest").remove();
+              window.localStorage.removeItem('file_ids');
+              setTimeout(function() {
+                  $('#removeDatasetFiles').modal('hide');
+                  $("#datasetToast").remove();
+              }, 1000);
           }
       });
     });

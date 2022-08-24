@@ -31,36 +31,35 @@ var handlerSubmitMsg = `
     </div>
   </div>
 `
-
-var deleteMsg = `
+var deleteAllFilesMsg = `
   <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
     <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
-        <strong class="mr-auto">Delete Dataset</strong>
+        <strong class="mr-auto">Delete Files</strong>
         <small class="text-muted"></small>
         <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetToast').remove()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="toast-body">
-        <span class="font-lg-1">Your file has been deleted.</span>
+        <span class="font-lg-1">Your files has been deleted.</span>
       </div>
     </div>
   </div>
 `
 
-var resumeUploadMsg = `
+var deleteMsg = `
   <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
-    <div class="toast-message alert-warning align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
-        <strong class="mr-auto">Resume Upload</strong>
+        <strong class="mr-auto">Delete File</strong>
         <small class="text-muted"></small>
         <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetToast').remove()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="toast-body">
-        <span class="font-lg-1">You have unresolved files to upload.</span>
+        <span class="font-lg-1">Your selected file has been deleted.</span>
       </div>
     </div>
   </div>
@@ -466,10 +465,9 @@ var dataset = angular.module('dataset', ['ngCookies']);
             };
             $http(deleteParams).then(successCallback)
 
-            function successCallback() {
-                $(document.body).append(deleteMsg);
+            function successCallback(res) {
                 $rootScope.datasets = $rootScope.datasets.filter(file => file.id !== id);
-
+                $(document.body).append(deleteMsg);
                 setTimeout(function() {
                     $("#datasetToast").remove();
                 }, 3000);
@@ -591,11 +589,6 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 }
                 $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
                 window.localStorage.setItem('file_ids', JSON.stringify(datasets_id))
-                $(document.body).append(resumeUploadMsg)
-
-                setTimeout(function() {
-                    $("#datasetToast").remove();
-                }, 3000);
             }
         }
     }
@@ -612,10 +605,6 @@ var dataset = angular.module('dataset', ['ngCookies']);
               }
               $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
               window.localStorage.setItem('file_ids', JSON.stringify(datasets_id))
-
-              setTimeout(function() {
-                  $("#datasetToast").remove();
-              }, 3000);
           }
       }
     }

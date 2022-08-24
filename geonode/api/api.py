@@ -51,7 +51,7 @@ from geonode.base.models import ThesaurusKeywordLabel
 from geonode.layers.models import Layer, Style
 from geonode.maps.models import Map
 from geonode.geoapps.models import GeoApp
-from geonode.datasets.models import File
+from geonode.datasets.models import Dataset, File
 from geonode.groups.models import GroupProfile, GroupCategory
 from django.core.serializers.json import DjangoJSONEncoder
 from tastypie.serializers import Serializer
@@ -367,7 +367,8 @@ class DocumentExtResource(TypeFilteredResource):
         request = bundle.request
         obj_with_perms = get_objects_for_user(request.user, 'base.view_resourcebase')
 
-        filter_set = File.objects.all().filter(id__in=obj_with_perms, extension=bundle.obj.extension).exclude(extension='')
+        # filter_set = Dataset.objects.filter(file__dataset__in=obj_with_perms, file__extension=bundle.obj.extension).exclude(file__extension='')
+        filter_set = File.objects.all()
         if not settings.SKIP_PERMS_FILTER:
             filter_set = get_visible_resources(
                 filter_set,
@@ -379,15 +380,16 @@ class DocumentExtResource(TypeFilteredResource):
         return filter_set.distinct().count()
 
     class Meta:
-        queryset = File.objects.all().order_by('extension').distinct('extension')
+        queryset = Dataset.objects.all()
         resource_name = 'dataset_type'
         excludes = ['resource_uri']
         allowed_methods = ['get']
-        fields = ('count', 'extension',)
+        # fields = ('count', 'extension',)
+        fields = ('count')
         
-        filtering = {
-            'extension': ALL,
-        }
+        # filtering = {
+        #     'extension': ALL,
+        # }
         authorization = ApiLockdownAuthorization()
 
 
