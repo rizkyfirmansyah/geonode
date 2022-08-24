@@ -97,28 +97,28 @@ def facets(context):
             pass
 
     if facet_type == 'catalogue':
-        documents = ResourceBase.objects.filter(title__icontains=title_filter)
+        datasets = ResourceBase.objects.filter(title__icontains=title_filter)
         if data_type_filter:
-            documents = documents.filter(data_type__identifier__in=data_type_filter)
+            datasets = datasets.filter(data_type__identifier__in=data_type_filter)
         if link_filter:
-            documents = documents.filter(link__extension__in=link_filter)
+            datasets = datasets.filter(link__extension__in=link_filter)
         if resource_type_filter:
-            documents = documents.filter(resource__type__in=resource_type_filter)
+            datasets = datasets.filter(resource__type__in=resource_type_filter)
         if category_filter:
-            documents = documents.filter(category__identifier__in=category_filter)
+            datasets = datasets.filter(category__identifier__in=category_filter)
         if regions_filter:
-            documents = documents.filter(regions__name__in=regions_filter)
+            datasets = datasets.filter(regions__name__in=regions_filter)
         if owner_filter:
-            documents = documents.filter(owner__username__in=owner_filter)
+            datasets = datasets.filter(owner__username__in=owner_filter)
         if date_gte_filter:
-            documents = documents.filter(date__gte=date_gte_filter)
+            datasets = datasets.filter(date__gte=date_gte_filter)
         if date_lte_filter:
-            documents = documents.filter(date__lte=date_lte_filter)
+            datasets = datasets.filter(date__lte=date_lte_filter)
         if date_range_filter:
-            documents = documents.filter(date__range=date_range_filter.split(','))
+            datasets = datasets.filter(date__range=date_range_filter.split(','))
 
-        documents = get_visible_resources(
-            documents,
+        datasets = get_visible_resources(
+            datasets,
             request.user if request else None,
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
             unpublished_not_visible=settings.RESOURCE_PUBLISHING,
@@ -135,12 +135,12 @@ def facets(context):
                     # Ignore keywords not actually used?
                     pass
 
-            documents = documents.filter(Q(keywords__in=treeqs))
+            datasets = datasets.filter(Q(keywords__in=treeqs))
 
         if not settings.SKIP_PERMS_FILTER:
-            documents = documents.filter(id__in=authorized)
+            datasets = datasets.filter(id__in=authorized)
 
-        counts = documents.values('doc_type').annotate(count=Count('doc_type'))
+        counts = datasets.values('doc_type').annotate(count=Count('doc_type'))
         facets = {count['doc_type']: count['count'] for count in counts}
 
         return facets
@@ -196,29 +196,29 @@ def facets(context):
 
                     facets[app.default_model] = geoapps.count()
         return facets
-    elif facet_type == 'documents':
-        documents = ResourceBase.objects.filter(title__icontains=title_filter)
+    elif facet_type == 'datasets':
+        datasets = ResourceBase.objects.filter(title__icontains=title_filter)
         if data_type_filter:
-            documents = documents.filter(data_type__identifier__in=data_type_filter)
+            datasets = datasets.filter(data_type__identifier__in=data_type_filter)
         if link_filter:
-            documents = documents.filter(link__extension__in=link_filter)
+            datasets = datasets.filter(link__extension__in=link_filter)
         if resource_type_filter:
-            documents = documents.filter(resource__type__in=resource_type_filter)
+            datasets = datasets.filter(resource__type__in=resource_type_filter)
         if category_filter:
-            documents = documents.filter(category__identifier__in=category_filter)
+            datasets = datasets.filter(category__identifier__in=category_filter)
         if regions_filter:
-            documents = documents.filter(regions__name__in=regions_filter)
+            datasets = datasets.filter(regions__name__in=regions_filter)
         if owner_filter:
-            documents = documents.filter(owner__username__in=owner_filter)
+            datasets = datasets.filter(owner__username__in=owner_filter)
         if date_gte_filter:
-            documents = documents.filter(date__gte=date_gte_filter)
+            datasets = datasets.filter(date__gte=date_gte_filter)
         if date_lte_filter:
-            documents = documents.filter(date__lte=date_lte_filter)
+            datasets = datasets.filter(date__lte=date_lte_filter)
         if date_range_filter:
-            documents = documents.filter(date__range=date_range_filter.split(','))
+            datasets = datasets.filter(date__range=date_range_filter.split(','))
 
-        documents = get_visible_resources(
-            documents,
+        datasets = get_visible_resources(
+            datasets,
             request.user if request else None,
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
             unpublished_not_visible=settings.RESOURCE_PUBLISHING,
@@ -235,12 +235,12 @@ def facets(context):
                     # Ignore keywords not actually used?
                     pass
 
-            documents = documents.filter(Q(keywords__in=treeqs))
+            datasets = datasets.filter(Q(keywords__in=treeqs))
 
         if not settings.SKIP_PERMS_FILTER:
-            documents = documents.filter(id__in=authorized)
+            datasets = datasets.filter(id__in=authorized)
 
-        counts = documents.values('subtype').annotate(count=Count('subtype'))
+        counts = datasets.values('subtype').annotate(count=Count('subtype'))
         facets = {count['subtype']: count['count'] for count in counts}
 
         return facets
@@ -325,32 +325,32 @@ def facets(context):
             return facets
 
         maps = Map.objects.filter(title__icontains=title_filter)
-        documents = ResourceBase.objects.filter(title__icontains=title_filter)
+        datasets = ResourceBase.objects.filter(title__icontains=title_filter)
 
         if data_type_filter:
             maps = maps.filter(data_type__identifier__in=data_type_filter)
-            documents = documents.filter(data_type__identifier__in=data_type_filter)
+            datasets = datasets.filter(data_type__identifier__in=data_type_filter)
         if resource_type_filter:
             maps = maps.filter(resource__type__in=resource_type_filter)
-            documents = documents.filter(resource__type__in=resource_type_filter)
+            datasets = datasets.filter(resource__type__in=resource_type_filter)
         if category_filter:
             maps = maps.filter(category__identifier__in=category_filter)
-            documents = documents.filter(category__identifier__in=category_filter)
+            datasets = datasets.filter(category__identifier__in=category_filter)
         if regions_filter:
             maps = maps.filter(regions__name__in=regions_filter)
-            documents = documents.filter(regions__name__in=regions_filter)
+            datasets = datasets.filter(regions__name__in=regions_filter)
         if owner_filter:
             maps = maps.filter(owner__username__in=owner_filter)
-            documents = documents.filter(owner__username__in=owner_filter)
+            datasets = datasets.filter(owner__username__in=owner_filter)
         if date_gte_filter:
             maps = maps.filter(date__gte=date_gte_filter)
-            documents = documents.filter(date__gte=date_gte_filter)
+            datasets = datasets.filter(date__gte=date_gte_filter)
         if date_lte_filter:
             maps = maps.filter(date__lte=date_lte_filter)
-            documents = documents.filter(date__lte=date_lte_filter)
+            datasets = datasets.filter(date__lte=date_lte_filter)
         if date_range_filter:
             maps = maps.filter(date__range=date_range_filter.split(','))
-            documents = documents.filter(date__range=date_range_filter.split(','))
+            datasets = datasets.filter(date__range=date_range_filter.split(','))
 
         maps = get_visible_resources(
             maps,
@@ -358,15 +358,15 @@ def facets(context):
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
             unpublished_not_visible=settings.RESOURCE_PUBLISHING,
             private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
-        documents = get_visible_resources(
-            documents,
+        datasets = get_visible_resources(
+            datasets,
             request.user if request else None,
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
             unpublished_not_visible=settings.RESOURCE_PUBLISHING,
             private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
 
         if extent_filter:
-            documents = filter_bbox(documents, extent_filter)
+            datasets = filter_bbox(datasets, extent_filter)
 
         if keywords_filter:
             treeqs = HierarchicalKeyword.objects.none()
@@ -380,14 +380,14 @@ def facets(context):
                     pass
 
             maps = maps.filter(Q(keywords__in=treeqs))
-            documents = documents.filter(Q(keywords__in=treeqs))
+            datasets = datasets.filter(Q(keywords__in=treeqs))
 
         if not settings.SKIP_PERMS_FILTER:
             maps = maps.filter(id__in=authorized)
-            documents = documents.filter(id__in=authorized)
+            datasets = datasets.filter(id__in=authorized)
 
         facets['map'] = maps.count()
-        facets['document'] = documents.count()
+        facets['dataset'] = datasets.count()
 
         if facet_type == 'home':
             facets['user'] = get_user_model().objects.exclude(
@@ -427,7 +427,7 @@ def get_current_path(context):
 @register.simple_tag(takes_context=True)
 def get_context_resourcetype(context):
     c_path = get_current_path(context)
-    resource_types = ['layers', 'maps', 'geoapps', 'documents', 'search', 'people',
+    resource_types = ['layers', 'maps', 'geoapps', 'datasets', 'search', 'people',
                       'groups/categories', 'groups', 'catalogue']
     for resource_type in resource_types:
         if f"/{resource_type}/" in c_path:

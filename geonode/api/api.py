@@ -66,7 +66,7 @@ from geonode.security.utils import get_visible_resources
 FILTER_TYPES = {
     'layer': Layer,
     'map': Map,
-    'document': File,
+    'dataset': Dataset,
     'geoapp': GeoApp
 }
 
@@ -567,7 +567,7 @@ class ProfileResource(TypeFilteredResource):
     email = fields.CharField(default='')
     layers_count = fields.IntegerField(default=0)
     maps_count = fields.IntegerField(default=0)
-    documents_count = fields.IntegerField(default=0)
+    datasets_count = fields.IntegerField(default=0)
     current_user = fields.BooleanField(default=False)
     activity_stream_url = fields.CharField(null=True)
 
@@ -627,7 +627,7 @@ class ProfileResource(TypeFilteredResource):
         return bundle.obj.resourcebase_set.filter(id__in=obj_with_perms.values('id')).filter(metadata_only=False)\
             .distinct().count()
 
-    def dehydrate_documents_count(self, bundle):
+    def dehydrate_datasets_count(self, bundle):
         obj_with_perms = get_objects_for_user(bundle.request.user,
                                               'base.view_resourcebase').filter(polymorphic_ctype__model='document')
         return bundle.obj.resourcebase_set.filter(id__in=obj_with_perms.values('id')).filter(metadata_only=False)\
@@ -664,7 +664,7 @@ class ProfileResource(TypeFilteredResource):
                 last_name=bundle.data.get('last_name', ''),
                 avatar_100=bundle.data.get('avatar_100', ''),
                 profile_detail_url=bundle.data.get('profile_detail_url', ''),
-                documents_count=bundle.data.get('documents_count', 0),
+                datasets_count=bundle.data.get('datasets_count', 0),
                 maps_count=bundle.data.get('maps_count', 0),
                 layers_count=bundle.data.get('layers_count', 0),
             )
@@ -860,7 +860,7 @@ def _get_resource_counts(request, resourcebase_filter_kwargs):
     qs = values.annotate(counts=Count('polymorphic_ctype__model'))
     types = [
         'layer',
-        'document',
+        'dataset',
         'map',
         'geoapp',
         'all'

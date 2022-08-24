@@ -388,7 +388,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 },
                 {
                     "name": "document",
-                    "count": <number of documents>
+                    "count": <number of datasets>
                 },
                 {
                     "name": "geostory",
