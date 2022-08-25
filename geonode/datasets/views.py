@@ -118,8 +118,8 @@ def dataset_detail(request, docid):
     if not document:
         return page_not_found_message(request)
 
-    permission_manager = ManageResourceOwnerPermissions(document)
-    permission_manager.set_owner_permissions_according_to_workflow()
+    # permission_manager = ManageResourceOwnerPermissions(document)
+    # permission_manager.set_owner_permissions_according_to_workflow()
 
     # Add metadata_author or poc if missing
     document.add_missing_metadata_author_or_poc()
@@ -307,41 +307,6 @@ class DatasetUpdateView(LoginRequiredMixin, CreateView):
         context['files'] = files
 
         return context
-
-    # def form_valid(self, form):
-    #     """
-    #     If the form is valid, save the associated model.
-    #     """
-    #     doc_form = form.cleaned_data
-    #     title = doc_form.pop('title', None)
-    #     file = doc_form.pop('doc_file', None)
-    #     ext = doc_form.pop('doc_ext', None)
-    #     toast_title = _("Replace File")
-    #     message = _("Your document {} has been updated".format(title))
-    #     messages.success(self.request, message, extra_tags=toast_title)
-
-    #     if file:
-    #         dirname = doc_path(ext)
-    #         filepath = storage_manager.save(f"{dirname}/{file.name}", file)
-    #         storage_path = storage_manager.path(filepath)
-    #         # Remove uploaded files, if any
-    #         ResourceBase.objects.cleanup_uploaded_files(resource_id=self.object.id)
-    #         self.object = resource_manager.update(
-    #             self.object.uuid,
-    #             instance=self.object,
-    #             vals=dict(
-    #                 owner=self.request.user,
-    #                 files=[storage_path])
-    #         )
-
-    #     register_event(self.request, EventType.EVENT_CHANGE, self.object)
-
-    #     return HttpResponseRedirect(
-    #         reverse(
-    #             'dataset_detail',
-    #             args=(
-    #                 self.object.id,
-    #             )))
 
 
 def dataset_metadata(

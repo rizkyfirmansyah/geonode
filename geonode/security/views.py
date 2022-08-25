@@ -32,7 +32,7 @@ from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _
 from geonode import GeoNodeException
 from geonode.security.utils import serialize_resource_permissions
-from geonode.utils import resolve_object
+from geonode.utils import build_absolute_uri, resolve_object
 from geonode.base.models import (
     ResourceBase,
     UserGeoLimit,
@@ -42,11 +42,12 @@ from geonode.groups.models import GroupProfile
 
 from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import send_notification
-# from geonode.datasets.forms import RodaForm
+from geonode.security.forms import RodaForm
 from django.shortcuts import render, redirect
 from geonode.notifications_helper import toast_unauthorized
 from django.contrib import messages
 from user_messages.models import Message, Thread
+from django.core.mail import EmailMessage
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +82,8 @@ def resource_permissions_handle_post(request, resource):
     success = True
     toast_title = _("Update Permissions")
     message = _("Permissions successfully updated!")
+    geonode_email = os.getenv('DJANGO_EMAIL_HOST_USER')
+
     try:
         permission_spec = json.loads(request.body.decode('UTF-8'))
         resource_permissions = serialize_resource_permissions(permission_spec)
@@ -102,6 +105,26 @@ def resource_permissions_handle_post(request, resource):
                 message = _("User {username} has download permissions but cannot "
                             "access the resource. Please update permission "
                             "consistently!").format(username=user.username)
+
+        # mail the user pertaining to they can download the resource
+        subject_email = f"🌏 Download Resource {resource.title}"
+        msg = f"You have been granted access to download {resource.title} by {request.user}. Jump to this resource {build_absolute_uri(resource.get_absolute_url())}"
+        for user, perms in info['users'].items():
+            if "download_resourcebase" in perms:
+                if user != request.user:
+                    user_email = get_user_model().objects.get(username=user).email
+                    try:
+                        email = EmailMessage(
+                            subject=subject_email,
+                            body=msg,
+                            from_email=geonode_email,
+                            to=[user_email, ],
+                            reply_to=[geonode_email, ])
+
+                        email.content_subtype = "html"
+                        email.send()
+                    except Exception:
+                        traceback.print_exc()
 
         messages.success(request, message, extra_tags=toast_title)
         
@@ -470,7 +493,7 @@ def set_bulk_permissions(request):
 def request_permissions(request):
     toast_title = _("Request Permission")
     if request.method == 'POST':
-        # roda_form = RodaForm(request.POST)
+        roda_form = RodaForm(request.POST)
         uuid = request.POST['uuid']
         absolute_url = request.POST['absolute_url']
         resource_title = request.POST['resource_title']
@@ -478,39 +501,39 @@ def request_permissions(request):
         purposes = request.POST['purposes']
         resource = get_object_or_404(ResourceBase, uuid=uuid)
         
-        # if roda_form.is_valid():
-        #     roda = roda_form.save(commit=False)
-        #     roda.resource_owner = resource.owner
-        #     roda.requester = request.user
+        if roda_form.is_valid():
+            roda = roda_form.save(commit=False)
+            roda.resource_owner = resource.owner
+            roda.requester = request.user
 
-        #     user = get_user_model().objects.get(username=request.user)
-        #     requester = user.full_name_or_nick
+            user = get_user_model().objects.get(username=request.user)
+            requester = user.full_name_or_nick
 
-        #     roda.resource_title = resource_title
-        #     roda.absolute_url = absolute_url
-        #     roda.uuid = uuid
-        #     roda.save()
-        #     _toast_message = _("We have sent an email to the resource owner about your request.")
+            roda.resource_title = resource_title
+            roda.absolute_url = absolute_url
+            roda.uuid = uuid
+            roda.save()
+            _toast_message = _("We have sent an email to the resource owner about your request.")
             
-        #     subject = _('System message: A request to download resource')
+            subject = _('System message: A request to download resource')
 
-        #     message_title = f'<p class="font-weight-bold">{requester_name} has requested to download the resource {resource_title}</p>'
-        #     message_body = f'<p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {requester}.</p>'
-        #     message = message_title + message_body
+            message_title = f'<p class="font-weight-bold">{requester_name} has requested to download the resource {resource_title}</p>'
+            message_body = f'<p>Reason for the request: {purposes}</p><p>To allow his/her download the resource, please go to <a href="{absolute_url}">{resource_title}</a>.</p><p> Under the permissions setting, change data and assign download to {requester}.</p>'
+            message = message_title + message_body
 
-        #     logger.debug("Record request download resources...")
-        #     send_inbox(request, subject, message, resource.owner)
-        #     send_notification([resource.owner],
-        #                       'request_download_resourcebase',
-        #                       {'resource': resource, 'from_user': request.user})
+            logger.debug("Record request download resources...")
+            send_inbox(request, subject, message, resource.owner)
+            send_notification([resource.owner],
+                              'request_download_resourcebase',
+                              {'resource': resource, 'from_user': request.user})
 
-        #     messages.success(request, _toast_message, extra_tags=toast_title)
-        #     context = {'roda_form': roda_form}
+            messages.success(request, _toast_message, extra_tags=toast_title)
+            context = {'roda_form': roda_form}
 
         return render(request, 'modal/request_data.html', context)
 
     else:
-        # roda_form = RodaForm()
+        roda_form = RodaForm()
         context = {'roda_form': ''}
         return render(request, 'modal/request_data.html', context)
 
@@ -529,7 +552,6 @@ def send_email_owner_on_view(owner, viewer, layer_id, geonode_email=os.getenv('D
     layer = Layer.objects.get(id=layer_id)
     # check if those values are empty
     if owner_email and geonode_email:
-        from django.core.mail import EmailMessage
         # TODO: Copy edit message.
         subject_email = "Your Layer has been seen."
         msg = (f"Your layer called {layer.name} with uuid={layer.uuid}"
@@ -559,6 +581,5 @@ def delete_bulk_messages(request):
         toast_title = _("Delete Inbox Messages")
         message = _("Selected messages have been deleted")
         messages.success(request, message, extra_tags=toast_title)
-
 
         return redirect(previous)

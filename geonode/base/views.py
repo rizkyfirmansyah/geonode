@@ -20,7 +20,6 @@
 
 import json
 import logging
-import os
 # Geonode functionality
 from django.shortcuts import render
 from django.conf import settings
@@ -223,7 +222,6 @@ def batch_modify(request, model):
         }
     )
 
-from django.http import HttpResponse
 
 def batch_permissions(request, model):
     if not request.user.is_superuser:

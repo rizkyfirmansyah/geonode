@@ -40,14 +40,5 @@
   $('#clear-button').on('click', function () {
       removeEventSelected();
   })
-
-  $('#upload_form').submit(function () {
-      $('#permissions').val(JSON.stringify($("#permission_form").serializeObject()));
-      var form = $(this);
-      var action = form.attr("action");
-      var start = new Date().getTime();
-      $('.btn-upload').prop("disabled", true);
-      
-  });
   
 </script>

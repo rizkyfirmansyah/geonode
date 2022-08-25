@@ -72,8 +72,9 @@ class Command(BaseCommand):
             logger.info(f"[{(index + 1)} / {len(all_resources)}] Checking 'title' of Resource [{resource.title}] ...")
             try:
                 if not resource.hash:
-                    resource.hash = sha256sum(resource.files)
-                    resource.save()
+                    if resource.files:
+                        resource.hash = sha256sum(resource.files)
+                        resource.save()
             except Exception as e:
                 if ignore_errors:
                     logger.error(f"[ERROR] Resource [{resource.title}] couldn't be updated")

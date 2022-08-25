@@ -89,7 +89,7 @@ class Dataset(ResourceBase):
     @classproperty
     def allowed_permissions(cls):
         return {
-            "anonymous": VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS,
+            "anonymous": VIEW_PERMISSIONS,
             "default": OWNER_PERMISSIONS + DOWNLOAD_PERMISSIONS,
             groups_settings.REGISTERED_MEMBERS_GROUP_NAME: OWNER_PERMISSIONS + DOWNLOAD_PERMISSIONS
         }
@@ -221,6 +221,7 @@ class File(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
     session = models.TextField(null=True, blank=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.file_name)
@@ -325,8 +326,11 @@ class File(models.Model):
     def download_url(self):
         return build_absolute_uri(reverse('dataset_download', args=(self.id,)))
 
-    class Meta(ResourceBase.Meta):
-        pass
+    class Meta:
+        permissions = (
+            ('preview_file', 'Can preview file'),
+            ('download_file', 'Can download file'),
+        )
 
 
 class FileResourceLink(models.Model):

@@ -60,10 +60,10 @@ class DatasetSerializer(DynamicModelSerializer):
 class DatasetIngestFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ["id", "file_name", "file", "file_size", "hash", "extension", "import_id", "session", "file_type", "dataset"]
+        fields = ["id", "file_name", "file", "file_size", "hash", "extension", "import_id", "session", "file_type", "dataset", "owner"]
 
 
 class DatasetIngestUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ["id", "file_url", "import_id", "session", "dataset"]
+        fields = ["id", "file_url", "import_id", "session", "dataset", "owner"]

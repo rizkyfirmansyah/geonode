@@ -26,6 +26,7 @@ import re
 import json
 import logging
 from urllib.parse import urljoin
+from geonode.security.utils import AdvancedSecurityWorkflowManager
 from schema import Schema
 
 from dateutil.parser import isoparse
@@ -140,19 +141,13 @@ def configuration_session_cache(session):
         session['config'] = cached_config
 
 
-def build_absolute_uri(url):
-    if url and 'http' not in url:
-        url = urljoin(settings.SITEURL, url)
-    return url
-
-
 class OwnerRightsRequestViewUtils:
 
     @staticmethod
     def get_message_recipients(owner):
         User = get_user_model()
         allowed_users = User.objects.none()
-        if OwnerRightsRequestViewUtils.is_admin_publish_mode():
+        if AdvancedSecurityWorkflowManager.is_admin_moderate_mode():
             allowed_users |= User.objects.filter(is_superuser=True).exclude(pk=owner.pk)
             try:
                 from geonode.groups.models import GroupProfile
@@ -176,11 +171,6 @@ class OwnerRightsRequestViewUtils:
     @staticmethod
     def get_resource(resource_base):
         return resource_base.get_real_instance()
-
-    @staticmethod
-    def is_admin_publish_mode():
-        return settings.ADMIN_MODERATE_UPLOADS
-
 
 class ManageResourceOwnerPermissions:
     def __init__(self, resource):

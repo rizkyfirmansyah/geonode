@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from geonode.datasets.models import Roda
 from geonode.groups.models import GroupProfile
 from django.db.models import Q
 from django.conf import settings
@@ -122,3 +123,35 @@ class PermissionsForm(forms.Form):
             raise ValidationError(_("Must have at least one validated user or group."))
         if not any(view_resourcebase_users) and not any(download_resourcebase_users):
             raise ValidationError(_("Must select at least one user or group."))
+
+
+class RodaForm(forms.ModelForm):
+    """
+    Form for record all request resources activity
+    """
+    requester_name = forms.CharField(label="Name", required=True)
+    requester_email = forms.CharField(label="Email", required=True)
+    requester_institution = forms.CharField(label="Institution", required=True)
+    requester_position = forms.CharField(label="Position", required=True)
+    purposes = forms.CharField(label="Purposes", required=True, help_text=Roda.purposes_help_text, widget=forms.Textarea)
+    retention = forms.ChoiceField(label="Retention", required=False, help_text=Roda.retention_help_text, choices=Roda.RETENTION_CHOICES)
+
+    class Meta:
+        model = Roda
+        fields = ["requester_name", "requester_email", "requester_institution",  "requester_position", "purposes", "retention"]
+        widgets = {
+          'requester_name': forms.TextInput(attrs={'class': 'form-control'}),
+          'requester_email': forms.TextInput(attrs={'class': 'form-control'}),
+          'requester_institution': forms.TextInput(attrs={'class': 'form-control'}),
+          'requester_position': forms.TextInput(attrs={'class': 'form-control'}),
+          'purposes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': "Please briefly describe how you intend to use this data?"}),
+        }
+        exclude = ('created_at', 'absolute_url', 'resource_owner', 'uuid', 'resource_title', 'requester',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['retention'].widget.attrs.update(
+            {
+                'class': 'selectpicker',
+                'data-live-search': 'true',
+                'data-size': '5'})

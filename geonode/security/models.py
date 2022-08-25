@@ -39,7 +39,6 @@ from geonode.groups.models import GroupProfile
 from geonode.groups.conf import settings as groups_settings
 from geonode.security.utils import (
     get_user_groups,
-    ResourceManager,
     AdvancedSecurityWorkflowManager)
 
 from .permissions import (
@@ -180,6 +179,8 @@ class PermissionLevelMixin:
         Removes all the permissions except for the owner and assign the
         view permission to the anonymous group.
         """
+        from geonode.resource.manager import resource_manager
+
         # default permissions for anonymous users
         anonymous_group, _ = Group.objects.get_or_create(name='anonymous')
 
@@ -215,7 +216,7 @@ class PermissionLevelMixin:
                     perm_spec["groups"][user_group] = ['view_resourcebase', 'download_resourcebase']
 
         AdvancedSecurityWorkflowManager.handle_moderated_uploads(self.uuid, instance=self)
-        return ResourceManager.set_permissions(self.uuid, instance=self, owner=owner, permissions=perm_spec, created=created)
+        return resource_manager.set_permissions(self.uuid, instance=self, owner=owner, permissions=perm_spec, created=created)
 
     def set_permissions(self, perm_spec=None, created=False, approval_status_changed=False, group_status_changed=False):
         """
@@ -236,8 +237,9 @@ class PermissionLevelMixin:
             ]
         }
         """
-        return ResourceManager.set_permissions(self.uuid, instance=self, permissions=perm_spec, created=created,
-                                               approval_status_changed=approval_status_changed, group_status_changed=group_status_changed)
+        from geonode.resource.manager import resource_manager
+        return resource_manager.set_permissions(self.uuid, instance=self, permissions=perm_spec, created=created,
+                                                approval_status_changed=approval_status_changed, group_status_changed=group_status_changed)
 
     def handle_moderated_uploads(self):
         AdvancedSecurityWorkflowManager.handle_moderated_uploads(self.uuid, instance=self)
@@ -344,6 +346,8 @@ class PermissionLevelMixin:
 
         config = Configuration.load()
         ctype = ContentType.objects.get_for_model(self)
+        ctype_resource_base = ContentType.objects.get_for_model(self.get_self_resource())
+
         PERMISSIONS_TO_FETCH = VIEW_PERMISSIONS + DOWNLOAD_PERMISSIONS + ADMIN_PERMISSIONS + SERVICE_PERMISSIONS
         # include explicit permissions appliable to "subtype == 'vector'"
         if self.subtype == 'vector':
@@ -353,7 +357,7 @@ class PermissionLevelMixin:
 
         resource_perms = Permission.objects.filter(
             codename__in=PERMISSIONS_TO_FETCH,
-            content_type_id=ctype.id
+            content_type_id__in=[ctype.id, ctype_resource_base.id]
         ).values_list('codename', flat=True)
 
         # Don't filter for admin users
@@ -361,7 +365,7 @@ class PermissionLevelMixin:
             user_model = get_user_obj_perms_model(self)
             user_resource_perms = user_model.objects.filter(
                 object_pk=self.pk,
-                content_type_id=ctype.id,
+                content_type_id__in=[ctype.id, ctype_resource_base.id],
                 user__username=str(user),
                 permission__codename__in=resource_perms
             )

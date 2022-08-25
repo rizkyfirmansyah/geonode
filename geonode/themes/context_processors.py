@@ -1,7 +1,7 @@
 
 from django.core.cache import cache
 
-from geonode.datasets.forms import RodaForm
+from geonode.security.forms import RodaForm
 from geonode.people.forms import ProfileSignupForm, ProfileLoginForm, ProfileChangePasswordForm, ProfileAddEmailForm
 from geonode.security.forms import PermissionsForm
 from .forms import FeedbackForm

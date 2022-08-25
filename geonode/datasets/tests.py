@@ -55,7 +55,7 @@ from geonode.datasets.forms import FileFormMixin
 from geonode.tests.utils import NotificationsTestsHelper
 from geonode.base.populate_test_data import create_models
 from geonode.datasets.enumerations import DATASET_TYPE_MAP
-from geonode.datasets.models import File, FileResourceLink
+from geonode.datasets.models import Dataset, File, FileResourceLink
 
 
 class DocumentsTest(GeoNodeBaseTestSupport):
@@ -293,7 +293,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         """Verify that the set_document_permissions view is behaving as expected
         """
         # Get a document to work with
-        document = File.objects.all()[0]
+        document = Dataset.objects.all()[0]
 
         # Set the Permissions
         document.set_permissions(self.perm_spec)
@@ -504,7 +504,7 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
                 resp = self.client.post(self.document_upload_url, data=data)
                 self.assertEqual(resp.status_code, 200)
             dname = 'document title'
-            _d = File.objects.get(title=dname)
+            _d = Dataset.objects.get(title=dname)
 
             self.assertTrue(_d.is_published)
             uuid = _d.uuid
@@ -545,7 +545,7 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
                 resp = self.client.post(self.document_upload_url, data=data)
                 self.assertEqual(resp.status_code, 200)
             dname = 'document title'
-            _d = File.objects.get(title=dname)
+            _d = Dataset.objects.get(title=dname)
             self.assertFalse(_d.is_approved)
             self.assertTrue(_d.is_published)
 
@@ -605,7 +605,7 @@ class DocumentsNotificationsTestCase(NotificationsTestsHelper):
                 PINAX_NOTIFICATIONS_QUEUE_ALL=False):
             self.clear_notifications_queue()
             self.client.login(username=self.user, password=self.passwd)
-            _d = File.objects.create(
+            _d = Dataset.objects.create(
                 title='test notifications',
                 owner=self.norman)
             self.assertTrue(self.check_notification_out('document_created', self.u))

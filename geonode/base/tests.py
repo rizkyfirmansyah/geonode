@@ -30,7 +30,7 @@ from imagekit.cachefiles.backends import Simple
 from io import BytesIO
 from PIL import Image
 
-from geonode.base.utils import OwnerRightsRequestViewUtils, ManageResourceOwnerPermissions
+from geonode.base.utils import OwnerRightsRequestViewUtils
 from geonode.base.templatetags.base_tags import display_change_perms_button
 from geonode.datasets.models import File
 from geonode.layers.models import Layer
@@ -647,53 +647,6 @@ class TestOwnerPermissionManagement(TestCase):
         User = get_user_model()
         self.user = User.objects.create(username='test', email='test@test.com')
         self.la = Layer.objects.create(owner=self.user, title='test', is_approved=True)
-
-    @override_settings(ADMIN_MODERATE_UPLOADS=True)
-    def test_owner_has_no_permissions(self):
-        l_manager = ManageResourceOwnerPermissions(self.la)
-        l_manager.set_owner_permissions_according_to_workflow()
-
-        self.assertEqual(self._retrieve_resource_perms_definition(self.la, ['read', 'download']).sort(),
-                         get_perms(self.user, self.la.get_self_resource()).sort()
-                         )
-
-    @override_settings(ADMIN_MODERATE_UPLOADS=False)
-    def test_user_has_own_permissions(self):
-        l_manager = ManageResourceOwnerPermissions(self.la)
-        l_manager.set_owner_permissions_according_to_workflow()
-
-        self.assertEqual(self._retrieve_resource_perms_definition(self.la).sort(),
-                         get_perms(self.user, self.la.get_self_resource()).sort()
-                         )
-
-    @override_settings(ADMIN_MODERATE_UPLOADS=True)
-    def test_user_has_permissions_restored(self):
-        self.la.is_approved = False
-        self.la.save()
-        l_manager = ManageResourceOwnerPermissions(self.la)
-        l_manager.set_owner_permissions_according_to_workflow()
-
-        self.assertEqual(self._retrieve_resource_perms_definition(self.la).sort(),
-                         get_perms(self.user, self.la.get_self_resource()).sort()
-                         )
-
-    @override_settings(ADMIN_MODERATE_UPLOADS=True)
-    def test_remove_and_add_perms(self):
-        l_manager = ManageResourceOwnerPermissions(self.la)
-        l_manager.set_owner_permissions_according_to_workflow()
-
-        self.assertEqual(self._retrieve_resource_perms_definition(self.la, ['read', 'download']).sort(),
-                         get_perms(self.user, self.la.get_self_resource()).sort()
-                         )
-
-        self.la.is_approved = False
-        self.la.save()
-
-        l_manager.set_owner_permissions_according_to_workflow()
-
-        self.assertEqual(self._retrieve_resource_perms_definition(self.la).sort(),
-                         get_perms(self.user, self.la.get_self_resource()).sort()
-                         )
 
     def _retrieve_resource_perms_definition(self, resource, perm_key_bundle=[]):
         ret = []

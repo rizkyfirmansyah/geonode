@@ -20,11 +20,15 @@
 from zipfile import ZipFile, ZIP_DEFLATED
 from drf_spectacular.utils import extend_schema
 import io
-
+from django.template import loader
+from django.utils.translation import ugettext as _
+from django.contrib.auth import get_user_model
+from geonode.monitoring.models import EventType
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
+from geonode.base import register_event
 from geonode.datasets.enumerations import DATASET_TYPE_MAP
-from ...security.utils import sha256file
+from ...security.utils import serialize_resource_permissions, sha256file
 from ...utils import doc_path
 from ..models import Dataset, File
 from rest_framework import viewsets
@@ -51,7 +55,6 @@ from geonode.storage.manager import storage_manager
 
 from geonode.base.models import ResourceBase
 from geonode.base.api.serializers import ResourceBaseSerializer
-from rest_framework.views import APIView
 
 from .serializers import DatasetIngestFileSerializer, DatasetIngestUrlSerializer, DatasetSerializer
 from .permissions import DocumentPermissionsFilter
@@ -255,6 +258,11 @@ class DatasetsViewSet(DynamicModelViewSet):
         resources = File.objects.filter(dataset__id__in=[dataset_id])
         dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
 
+        if not request.user.has_perm('datasets.download_resourcebase', obj=resources):
+            return HttpResponse(
+                loader.render_to_string('error/401.html', context={
+                    'error_message': _("You are not allowed to view this dataset.")}, request=request), status=401)
+
         toast_title = f"Download Dataset Files"
         try:
             output = io.BytesIO()
@@ -299,13 +307,7 @@ class DatasetsViewSet(DynamicModelViewSet):
         parser_classes=[JSONParser, MultiPartParser]
     )
     def resume_upload(self, request):
-        resources = File.objects.filter(dataset_id__isnull=True)
-        exclude = []
-        for resource in resources:
-            if not request.user.is_superuser and \
-            not request.user.has_perm('view_file', resource.get_self_resource()):
-                exclude.append(resource.id)
-        resources = resources.exclude(id__in=exclude)
+        resources = File.objects.filter(dataset_id__isnull=True, owner=get_user_model().objects.get(username=request.user).id)
         serializer = DatasetSerializer(instance=resources, embed=True, many=True)
         files_length = resources.count()
 
@@ -327,19 +329,26 @@ class DatasetsViewSet(DynamicModelViewSet):
         methods=['patch'],
         permission_classes=[
             IsAuthenticated,
-        ]
+        ],
+        parser_classes=[JSONParser, MultiPartParser]
     )
     def upload_dataset_files(self, request):
+        import json
         # ref https://stackoverflow.com/questions/53130126/bulk-partial-updates-with-django-rest-framework
         session_uuid = request.session.get('session')
         _data = request.data.copy()
         for item in _data:
+            permissions = item['permissions']
+            del item['permissions']
             item.update( {"session": session_uuid} )
 
         data = {
             int(i['id']): {k: v for k, v in i.items() if k != 'id'} for i in _data
         }
+
         toast_title = f"Upload Datasets"
+        resource_permissions = serialize_resource_permissions(json.loads(permissions))
+
         try:
             for inst in self.get_queryset().filter(id__in=data.keys()):
                 title = inst.file_name
@@ -355,8 +364,14 @@ class DatasetsViewSet(DynamicModelViewSet):
                     resource_type='dataset'
                 )
             )
+            self.object.handle_moderated_uploads()
+            resource_manager.set_permissions(
+                None, instance=self.object, permissions=resource_permissions, created=True
+            )
             update_file = File.objects.filter(dataset_id__isnull=True).update(dataset=self.object.id)
             update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(detail_url='/datasets/'+str(self.object.id))
+            register_event(self.request, EventType.EVENT_UPLOAD, self.object)
+
             msg = f"Your files has been saved."
             messages.success(request, msg, extra_tags=toast_title)
 
@@ -376,7 +391,7 @@ class DatasetsViewSet(DynamicModelViewSet):
 class DatasetIngestView(viewsets.ModelViewSet):
     """
     Retrieve, update or delete a Dataset File instance
-    """
+    """    
     parser_classes = [MultiPartParser, JSONParser,]
     serializer_class = DatasetIngestFileSerializer
 
@@ -407,7 +422,8 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 'file_type': file_type[0],
                 'import_id': import_id,
                 'session': request.session.get('session'),
-                'dataset': dataset_id
+                'dataset': dataset_id,
+                'owner': get_user_model().objects.get(username=request.user).id
             }
             serializer = DatasetIngestFileSerializer(data=data)
         else:
@@ -415,7 +431,8 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 'file_url': file_url,
                 'import_id': import_id,
                 'session': request.session.get('session'),
-                'dataset': dataset_id
+                'dataset': dataset_id,
+                'owner': get_user_model().objects.get(username=request.user).id
             }
             serializer = DatasetIngestUrlSerializer(data=data)
         

@@ -97,7 +97,7 @@
               {% verbatim %}
             </div>
           </div>
-            <em ng-if="item.resource_type == 'remoteStore'">
+            <em ng-if="item.resource_type == 'remote'">
               <div class="card-footer text-center">
                 <span ng-if="item.online == true"><i class="fa-solid fa-power-off text-success"></i> {% trans "Service is" %} {% trans "online" %}</span>
                 <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i> {% trans "Service is" %} {% trans "offline" %}</span>

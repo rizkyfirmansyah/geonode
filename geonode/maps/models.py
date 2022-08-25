@@ -44,10 +44,8 @@ from geonode.utils import (
 
 from geonode import geoserver  # noqa
 from geonode.utils import check_ogc_backend
-from geonode.security.utils import ResourceManager
 
 from deprecated import deprecated
-from pinax.ratings.models import OverallRating
 
 logger = logging.getLogger(__name__)
 
@@ -606,14 +604,4 @@ class MapLayer(models.Model, GXPLayerBase):
     def __str__(self):
         return f'{self.ows_url}?layers={self.name}'
 
-
-def pre_delete_map(instance, sender, **kwrargs):
-    ct = ContentType.objects.get_for_model(instance)
-    OverallRating.objects.filter(
-        content_type=ct,
-        object_id=instance.id).delete()
-    ResourceManager.remove_permissions(instance.uuid, instance=instance.get_self_resource())
-
-
-signals.pre_delete.connect(pre_delete_map, sender=Map)
 signals.post_save.connect(resourcebase_post_save, sender=Map)

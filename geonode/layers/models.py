@@ -36,7 +36,6 @@ from tinymce.models import HTMLField
 from geonode.base.models import ResourceBase, ResourceBaseManager, resourcebase_post_save_layers
 from geonode.people.utils import get_valid_user
 from geonode.utils import build_absolute_uri, check_shp_columnnames
-from geonode.security.utils import ResourceManager
 from geonode.security.models import PermissionLevelMixin
 from geonode.notifications_helper import (
     send_notification,

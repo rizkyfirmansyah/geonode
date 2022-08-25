@@ -404,7 +404,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                   $('#text_container').append(data);
                 }
             });
-            render_html = '<div class="p-3 bg-light" id="text_container"></div>'
+            render_html = '<pre id="text_container" class="bg-light p-0 m-0"></pre>'
         }
         else if (type == 'tabular') {
               var loading = '<div class="spinner-grow text-info mr-3 d-inline-flex" role="status"><span class="sr-only text-center">Loading...</span></div> \
@@ -528,6 +528,13 @@ var dataset = angular.module('dataset', ['ngCookies']);
         };
 
         $scope.upload_datasets = function($event) {
+            var perms_form = $("#permission_form");
+            var perms;
+            if (perms_form.length) {
+                $('#permissions').val(JSON.stringify(perms_form.serializeObject()));
+                perms = $('#permissions').val();
+            }
+
             function patchDatasetFile() {
                 var datasets_files = new Array();
                 for (var i = 0; i < $rootScope.datasets.length; i++) {
@@ -543,6 +550,28 @@ var dataset = angular.module('dataset', ['ngCookies']);
                         "file_url": $(".file_url:eq("+i+")").val(),
                         "file_description": $(".file_description:eq("+i+")").val(),
                         "file_data_quality": $(".file_data_quality:eq("+i+")").val(),
+                        "permissions": perms
+                        // "file_keywords": $(".file_keywords:eq("+i+")").val(),
+                    })
+                }
+                return datasets_files
+            }
+
+            function patchReplaceDatasetFile() {
+                var datasets_files = new Array();
+                for (var i = 0; i < $rootScope.datasets.length; i++) {
+                    if (!$(".file_name:eq("+i+")").val()) {
+                        $(document.body).append(formHandlerMsg)
+                        setTimeout(function() {
+                          $('#datasetToast').remove();
+                        }, 2500)
+                    }
+                    datasets_files.push({
+                        "id": $(".file_id:eq("+i+")").val(),
+                        "file_name": $(".file_name:eq("+i+")").val(),
+                        "file_url": $(".file_url:eq("+i+")").val(),
+                        "file_description": $(".file_description:eq("+i+")").val(),
+                        "file_data_quality": $(".file_data_quality:eq("+i+")").val()
                         // "file_keywords": $(".file_keywords:eq("+i+")").val(),
                     })
                 }
@@ -554,7 +583,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                     method: 'PATCH',
                     url: siteUrl + "api/v2/datasets/patch_dataset_files/" + $scope.edit_dataset_id,
                     transformRequest: angular.identity,
-                    data: JSON.stringify(patchDatasetFile()),
+                    data: JSON.stringify(patchReplaceDatasetFile()),
                     cache: false,
                     dataType: 'json',
                     headers: {'Content-Type': "application/json" }
@@ -570,6 +599,11 @@ var dataset = angular.module('dataset', ['ngCookies']);
                   headers: {'Content-Type': "application/json" }
               };
             }
+
+            $('.btn-upload').prop("disabled", true);
+            setTimeout(function() {
+                $('.btn-upload').prop("disabled", false);
+            }, 1000);
 
             $http(postParams).then(successCallback);
 

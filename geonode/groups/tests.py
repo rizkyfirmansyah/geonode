@@ -35,7 +35,7 @@ from geonode.groups.models import (
     GroupProfile,
     GroupMember,
     GroupCategory)
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.security.views import _perms_info_json
@@ -414,7 +414,7 @@ class SmokeTest(GeoNodeBaseTestSupport):
         self.assertTrue(self.client.login(username="admin", password="admin"))
 
         layer = Layer.objects.all()[0]
-        document = Document.objects.all()[0]
+        document = Dataset.objects.all()[0]
         map_obj = Map.objects.all()[0]
         layer.set_default_permissions()
         document.set_default_permissions()

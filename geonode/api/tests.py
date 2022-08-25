@@ -18,7 +18,7 @@
 #
 #########################################################################
 from geonode.maps.models import Map
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 from unittest.mock import patch
 from django.conf import settings
 
@@ -776,7 +776,7 @@ class TopicCategoryResourceTest(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
         self.assertEqual(9, actual)
 
     def test_the_api_should_return_all_document_with_metadata_true(self):
-        x = Document.objects.get(title='doc metadata true')
+        x = Dataset.objects.get(title='doc metadata true')
         x.metadata_only = False
         x.save()
         url = f"{self.list_url}?type=document"

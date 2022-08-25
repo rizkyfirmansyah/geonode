@@ -67,7 +67,7 @@ from ..base import enumerations
 from ..base.models import ResourceBase
 from ..security.utils import AdvancedSecurityWorkflowManager, sha256sum
 from ..layers.metadata import parse_metadata
-from ..datasets.models import File, FileResourceLink
+from ..datasets.models import Dataset
 from ..layers.models import Layer, Attribute
 from ..maps.models import Map
 from ..storage.manager import storage_manager
@@ -419,17 +419,7 @@ class ResourceManager(ResourceManagerInterface):
             to_update.pop('files')
         try:
             with transaction.atomic():
-                if resource_type == File:
-                    if 'name' in to_update:
-                        to_update.pop("name")
-                    if files:
-                        to_update['files'] = storage_manager.copy_files_list(files)
-                    instance = self.create(
-                        uuid,
-                        resource_type=File,
-                        defaults=to_update
-                    )
-                elif resource_type == Layer:
+                if resource_type == Layer:
                     if files:
                         instance = self.create(
                             uuid,
@@ -482,12 +472,6 @@ class ResourceManager(ResourceManagerInterface):
                         if 'name' in defaults:
                             defaults.pop('name')
                     _resource.save()
-                    if isinstance(instance.get_real_instance(), File):
-                        for resource_link in FileResourceLink.objects.filter(document=instance.get_real_instance()):
-                            _resource_link = copy.copy(resource_link)
-                            _resource_link.pk = _resource_link.id = None
-                            _resource_link.document = _resource.get_real_instance()
-                            _resource_link.save()
                     if isinstance(instance.get_real_instance(), Layer):
                         for attribute in Attribute.objects.filter(layer=instance.get_real_instance()):
                             _attribute = copy.copy(attribute)
@@ -560,8 +544,8 @@ class ResourceManager(ResourceManagerInterface):
         if not isinstance(instance, Layer) and action_type == 'append':
             raise Exception("Append data is available only for Layers")
 
-        if isinstance(instance, File) and action_type == "replace":
-            return True
+        # if isinstance(instance, File) and action_type == "replace":
+        #     return True
 
         exists = self._concrete_resource_manager.exists(instance.uuid, instance)
 
@@ -745,7 +729,7 @@ class ResourceManager(ResourceManagerInterface):
                                         if perm == 'change_layer_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
                                             pass
                                         else:
-                                            _safe_assign_perm(perm, _group, _resource.layer)
+                                            _safe_assign_perm(perm, _group, _resource.dataset)
                                     elif AdvancedSecurityWorkflowManager.assignable_perm_condition(perm, _resource_type):
                                         _safe_assign_perm(perm, _group, _resource.get_self_resource())
 
@@ -756,13 +740,13 @@ class ResourceManager(ResourceManagerInterface):
                                 anonymous_user = "AnonymousUser" if "AnonymousUser" in _perm_spec['users'] else get_anonymous_user()
                                 perms = _perm_spec['users'][anonymous_user]
                                 for perm in perms:
-                                    if _resource_type == 'layer' and perm in (
-                                            'change_layer_data', 'change_layer_style',
-                                            'add_layer', 'change_layer', 'delete_layer'):
-                                        if perm == 'change_layer_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
+                                    if _resource_type == 'dataset' and perm in (
+                                            'change_dataset_data', 'change_dataset_style',
+                                            'add_dataset', 'change_dataset', 'delete_dataset'):
+                                        if perm == 'change_dataset_style' and _resource_subtype not in DATA_STYLABLE_RESOURCES_SUBTYPES:
                                             pass
                                         else:
-                                            _safe_assign_perm(perm, _user, _resource.layer)
+                                            _safe_assign_perm(perm, _user, _resource.dataset)
                                     elif AdvancedSecurityWorkflowManager.assignable_perm_condition(perm, _resource_type):
                                         _safe_assign_perm(perm, _user, _resource.get_self_resource())
                     else:
@@ -790,19 +774,19 @@ class ResourceManager(ResourceManagerInterface):
                                         _prev_perm = _perm_spec["groups"].get(user_group, []) if "groups" in _perm_spec else []
                                         _perm_spec["groups"][user_group] = set.union(perms_as_set(_prev_perm), perms_as_set('download_resourcebase'))
 
-                        if _resource_type == 'layer':
+                        if _resource_type == 'dataset':
                             # only for layer owner
-                            _safe_assign_perm('change_layer_data', _owner, _resource)
-                            _safe_assign_perm('change_layer_style', _owner, _resource)
+                            _safe_assign_perm('change_dataset_data', _owner, _resource)
+                            _safe_assign_perm('change_dataset_style', _owner, _resource)
                             _prev_perm = _perm_spec["users"].get(_owner, []) if "users" in _perm_spec else []
-                            _perm_spec["users"][_owner] = set.union(perms_as_set(_prev_perm), perms_as_set(['change_layer_data', 'change_layer_style']))
+                            _perm_spec["users"][_owner] = set.union(perms_as_set(_prev_perm), perms_as_set(['change_dataset_data', 'change_dataset_style']))
 
                         _resource = AdvancedSecurityWorkflowManager.handle_moderated_uploads(_resource.uuid, instance=_resource)
 
                     # Fixup GIS Backend Security Rules Accordingly
                     if not self._concrete_resource_manager.set_permissions(
                             uuid, instance=_resource, owner=owner, permissions=_resource.get_all_level_info(), created=created):
-                        # This might not be a severe error. E.g. for layers outside of local GeoServer
+                        # This might not be a severe error. E.g. for datasets outside of local GeoServer
                         logger.error(Exception("Could not complete concrete manager operation successfully!"))
                 _resource.set_processing_state(enumerations.STATE_PROCESSED)
                 return True
@@ -822,7 +806,7 @@ class ResourceManager(ResourceManagerInterface):
                         file_name = _generate_thumbnail_name(_resource.get_real_instance())
                         _resource.save_thumbnail(file_name, thumbnail)
                     else:
-                        if instance and instance.files and isinstance(instance.get_real_instance(), File):
+                        if instance and instance.files and isinstance(instance.get_real_instance(), Dataset):
                             if overwrite or instance.thumbnail_url == static(thumb_utils.MISSING_THUMB):
                                 create_dataset_thumbnail.apply((instance.id,))
                         self._concrete_resource_manager.set_thumbnail(uuid, instance=_resource, overwrite=overwrite, check_bbox=check_bbox)

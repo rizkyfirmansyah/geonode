@@ -191,14 +191,14 @@ class GroupDetailView(ListView):
         if self.group.access == 'private' and \
         not self.group.user_is_member(request.user):
             raise Http404
-        return super(GroupDetailView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(GroupDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['object'] = self.group
         context['maps'] = self.group.resources(resource_type='map')
         context['layers'] = self.group.resources(resource_type='layer')
-        context['documents'] = self.group.resources(resource_type='document')
+        context['datasets'] = self.group.resources(resource_type='dataset')
         context['is_member'] = self.group.user_is_member(self.request.user)
         context['is_manager'] = self.group.user_is_role(
             self.request.user,

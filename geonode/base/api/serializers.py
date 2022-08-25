@@ -54,7 +54,7 @@ from geonode.groups.models import (
     GroupCategory,
     GroupProfile)
 
-from geonode.base.utils import build_absolute_uri
+from geonode.utils import build_absolute_uri
 from geonode.security.utils import get_resources_with_perms
 from geonode.base.models import Link
 from geonode.resource.models import ExecutionRequest

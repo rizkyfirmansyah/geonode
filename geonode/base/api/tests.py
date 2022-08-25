@@ -46,10 +46,10 @@ from geonode import geoserver
 from geonode.favorite.models import Favorite
 from geonode.utils import check_ogc_backend, set_resource_default_links
 from geonode.layers.models import Layer
-from geonode.base.utils import build_absolute_uri
+from geonode.utils import build_absolute_uri
 from geonode.base.populate_test_data import create_models
 from geonode.security.utils import get_resources_with_perms
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 logger = logging.getLogger(__name__)
 
 test_image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
@@ -332,7 +332,7 @@ class BaseApiTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(len(response.data['resources']), 3)
 
         # Filter by resource_type == document
-        response = self.client.get(f"{url}?filter{{resource_type}}=document", format='json')
+        response = self.client.get(f"{url}?filter{{resource_type}}=dataset", format='json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 5)
         self.assertEqual(response.data['total'], 9)
@@ -880,7 +880,7 @@ class BaseApiTests(APITestCase, URLPatternsTestCase):
         """
         # Admin
         self.client.login(username="admin", password="admin")
-        dataset_id = Document.objects.first().resourcebase_ptr_id
+        dataset_id = Dataset.objects.first().resourcebase_ptr_id
         url = reverse('base-resources-set-thumb-from-bbox', args=[dataset_id])
         payload = {
             "bbox": [],

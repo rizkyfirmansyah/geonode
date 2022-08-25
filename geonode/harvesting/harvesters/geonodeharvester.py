@@ -34,7 +34,7 @@ from django.contrib.gis import geos
 from lxml import etree
 
 from geonode.layers.enumerations import GXP_PTYPES
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 
@@ -62,13 +62,13 @@ class RemoteDatasetType(enum.Enum):
 
 
 class GeoNodeResourceType(enum.Enum):
-    DOCUMENT = "documents"
+    DOCUMENT = "datasets"
     DATASET = "layers"
     MAP = "maps"
 
 
 class GeoNodeResourceTypeCurrent(enum.Enum):
-    DOCUMENT = "document"
+    DOCUMENT = "dataset"
     DATASET = "layer"
 
 
@@ -191,10 +191,10 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
         return _check_availability(
             self.http_session, f"{self.base_api_url}/layers", "layers", timeout_seconds)
 
-    def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Document]]:
+    def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Dataset]]:
         return {
             GeoNodeResourceTypeCurrent.DATASET.value: Layer,
-            GeoNodeResourceTypeCurrent.DOCUMENT.value: Document
+            GeoNodeResourceTypeCurrent.DOCUMENT.value: Dataset
         }[remote_resource_type]
 
     def get_resource(
@@ -246,7 +246,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
         defaults.update(harvested_info.resource_descriptor.additional_parameters)
         local_resource_type = self.get_geonode_resource_type(harvestable_resource.remote_resource_type)
         to_copy = self.should_copy_resource(harvestable_resource)
-        if local_resource_type == Document and not to_copy:
+        if local_resource_type == Dataset and not to_copy:
             # since we are not copying the document, we need to provide suitable remote URLs
             defaults.update({
                 "doc_url": harvested_info.resource_descriptor.distribution.embed_url,
@@ -571,12 +571,12 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         """Check whether the remote GeoNode is online."""
         return _check_availability(self.http_session, f"{self.base_api_url}/", "layers", timeout_seconds)
 
-    def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Document, Map]]:
+    def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Dataset, Map]]:
         """Return resource type class from resource type string."""
         return {
             GeoNodeResourceType.MAP.value: Map,
             GeoNodeResourceType.DATASET.value: Layer,
-            GeoNodeResourceType.DOCUMENT.value: Document,
+            GeoNodeResourceType.DOCUMENT.value: Dataset,
         }[remote_resource_type]
 
     def get_resource(
@@ -586,8 +586,8 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         resource_unique_identifier = harvestable_resource.unique_identifier
         local_resource_type = self.get_geonode_resource_type(harvestable_resource.remote_resource_type)
         endpoint_suffix = {
-            Document: (
-                f"/documents/{resource_unique_identifier}/"),
+            Dataset: (
+                f"/datasets/{resource_unique_identifier}/"),
             Layer: f"/layers/{resource_unique_identifier}/",
             Map: f"/maps/{resource_unique_identifier}/",
         }[local_resource_type]
@@ -628,7 +628,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
         defaults.update(harvested_info.resource_descriptor.additional_parameters)
         local_resource_type = self.get_geonode_resource_type(harvestable_resource.remote_resource_type)
         to_copy = self.should_copy_resource(harvestable_resource)
-        if local_resource_type == Document and not to_copy:
+        if local_resource_type == Dataset and not to_copy:
             # since we are not copying the document, we need to provide suitable remote URLs
             defaults.update({
                 "doc_url": harvested_info.resource_descriptor.distribution.download_url,
@@ -877,7 +877,7 @@ class GeonodeLegacyHarvester(base.BaseHarvesterWorker):
             api_record: typing.Dict
     ) -> typing.Dict:
         return {
-            "resource_type": "document",
+            "resource_type": "dataset",
             "extension": api_record.get("extension")
         }
 
@@ -1090,7 +1090,7 @@ class GeonodeUnifiedHarvesterWorker(base.BaseHarvesterWorker):
     def check_availability(self, timeout_seconds: typing.Optional[int] = 5) -> bool:
         return self.concrete_worker.check_availability(timeout_seconds)
 
-    def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Document]]:
+    def get_geonode_resource_type(self, remote_resource_type: str) -> typing.Type[typing.Union[Layer, Dataset]]:
         return self.concrete_worker.get_geonode_resource_type(remote_resource_type)
 
     def get_resource(

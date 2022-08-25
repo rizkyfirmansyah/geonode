@@ -71,8 +71,9 @@ class Command(BaseCommand):
             logger.info(f"[{(index + 1)} / {len(all_resources)}] Checking 'title' of Resource [{resource.title}] ...")
             try:
                 if not resource.file_size:
-                    resource.file_size = sum([os.path.getsize(f) for f in resource.files])
-                    resource.save()
+                    if resource.files:
+                        resource.file_size = sum([os.path.getsize(f) for f in resource.files])
+                        resource.save()
             except Exception as e:
                 if ignore_errors:
                     logger.error(f"[ERROR] Resource [{resource.title}] couldn't be updated")

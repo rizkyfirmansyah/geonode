@@ -31,6 +31,33 @@ from django.contrib.auth import get_user_model
 from geonode.utils import build_absolute_uri
 from geonode.groups.conf import settings as groups_settings
 
+"""
+Permissions will be managed according to a "compact" set:
+
+ - view: view resource
+ - download: view and download
+ - edit: view download and edit (metadata, style, data)
+ - manage: change permissions, delete resource, etc.
+
+The GET method will return:
+
+users:
+ - username
+ - first name
+ - last name
+ - permissions (view | download | edit | manage)
+
+organizations:
+ - title
+ - name
+ - permissions (view | download | edit | manage)
+
+groups:
+ - title
+ - name
+ - permissions (view | download | edit | manage)
+
+"""
 
 # Permissions mapping
 PERMISSIONS = {
@@ -39,7 +66,7 @@ PERMISSIONS = {
 
 DOWNLOADABLE_RESOURCES = [
     'layer',
-    'document'
+    'dataset'
 ]
 
 DATA_EDITABLE_RESOURCES_SUBTYPES = [

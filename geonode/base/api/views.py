@@ -27,7 +27,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Subquery
 from django.contrib import messages
+from django.urls import reverse
 
+from geonode.resource.api.tasks import resouce_service_dispatcher
 from drf_spectacular.utils import extend_schema
 from dynamic_rest.viewsets import DynamicModelViewSet, WithDynamicViewSetMixin
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
@@ -40,7 +42,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from geonode.favorite.models import Favorite
-from geonode.base.models import ExtraMetadata, HierarchicalKeyword, Region, ResourceBase, TopicCategory, DataType, ThesaurusKeyword
+from geonode.base.models import Configuration, ExtraMetadata, HierarchicalKeyword, Region, ResourceBase, TopicCategory, DataType, ThesaurusKeyword
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, FavoriteFilter
 from geonode.groups.models import GroupProfile, GroupMember
 from geonode.layers.models import Layer
@@ -50,8 +52,9 @@ from geonode.security.utils import (
     get_geoapp_subtypes,
     get_visible_resources,
     get_resources_with_perms)
-from geonode.security.permissions import get_compact_perms_list
+from geonode.security.permissions import PermSpec, PermSpecCompact, get_compact_perms_list
 
+from geonode.resource.models import ExecutionRequest
 from geonode.resource.manager import resource_manager
 from PIL import Image
 from django.core.validators import URLValidator
@@ -465,6 +468,160 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 "allowed_perms": _allowed_perms[_type] if _type in _allowed_perms else []
             })
         return Response({"resource_types": resource_types})
+
+    @extend_schema(methods=['get', 'put', 'patch', 'delete'],
+                   request=PermSpecSerialiazer(),
+                   responses={200: None},
+                   description="""
+        Sets an object's the permission levels based on the perm_spec JSON.
+
+        the mapping looks like:
+        ```
+        {
+            'users': {
+                'AnonymousUser': ['view'],
+                <username>: ['perm1','perm2','perm3'],
+                <username2>: ['perm1','perm2','perm3']
+                ...
+            },
+            'groups': {
+                <groupname>: ['perm1','perm2','perm3'],
+                <groupname2>: ['perm1','perm2','perm3'],
+                ...
+            }
+        }
+        ```
+        """)
+    @action(
+        detail=True,
+        url_path="permissions",  # noqa
+        url_name="perms-spec",
+        methods=['get', 'put', 'patch', 'delete'],
+        permission_classes=[
+            IsAuthenticated
+        ])
+    def resource_service_permissions(self, request, pk):
+        """Instructs the Async dispatcher to execute a 'DELETE' or 'UPDATE' on the permissions of a valid 'uuid'
+
+        - GET input_params: {
+            id: "<str: ID>"
+        }
+
+        - DELETE input_params: {
+            id: "<str: ID>"
+        }
+
+        - PUT input_params: {
+            id: "<str: ID>"
+            owner: str = None
+            permissions: dict = {}
+            created: bool = False
+        }
+
+        - output_params: {
+            output: {
+                uuid: "<str: UUID>"
+            }
+        }
+
+        - output: {
+                "status": "ready",
+                "execution_id": "<str: execution ID>",
+                "status_url": "http://localhost:8000/api/v2/resource-service/execution-status/<str: execution ID>"
+            }
+
+        Sample Requests:
+        - Removes all the permissions (except owner and admin ones) from a Resource:
+        curl -v -X DELETE -u admin:admin -H "Content-Type: application/json" http://localhost:8000/api/v2/resources/<id>/permissions
+
+        - Changes the owner of a Resource:
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [],"organizations": [],"users": [{"id": 1001,"permissions": "owner"}]}'
+
+        - Assigns View permissions to some users:
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [],"organizations": [],"users": [{"id": 1000,"permissions": "view"}]}'
+
+        - Assigns View permissions to anyone:
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [],"organizations": [],"users": [{"id": -1,"permissions": "view"}]}'
+
+        - Assigns View permissions to anyone and edit permissions to a Group on a Dataset:
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [{"id": 1,"permissions": "manage"}],"organizations": [],"users": [{"id": -1,"permissions": "view"}]}'
+
+        """
+        config = Configuration.load()
+        resource = get_object_or_404(ResourceBase, pk=pk)
+        _user_can_manage = request.user.has_perm('change_resourcebase_permissions', resource.get_self_resource())
+        if config.read_only or config.maintenance or request.user.is_anonymous or not request.user.is_authenticated or \
+                resource is None or not _user_can_manage:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        try:
+            perms_spec = PermSpec(resource.get_all_level_info(), resource)
+            request_params = request.data
+            if request.method == 'GET':
+                return Response(perms_spec.compact)
+            elif request.method == 'DELETE':
+                _exec_request = ExecutionRequest.objects.create(
+                    user=request.user,
+                    func_name='remove_permissions',
+                    geonode_resource=resource,
+                    action="permissions",
+                    input_params={
+                        "uuid": request_params.get('uuid', resource.uuid)
+                    }
+                )
+            elif request.method == 'PUT':
+                perms_spec_compact = PermSpecCompact(request.data, resource)
+                _exec_request = ExecutionRequest.objects.create(
+                    user=request.user,
+                    func_name='set_permissions',
+                    geonode_resource=resource,
+                    action="permissions",
+                    input_params={
+                        "uuid": request_params.get('uuid', resource.uuid),
+                        "owner": request_params.get('owner', resource.owner.username),
+                        "permissions": perms_spec_compact.extended,
+                        "created": request_params.get('created', False)
+                    }
+                )
+            elif request.method == 'PATCH':
+                perms_spec_compact_patch = PermSpecCompact(request.data, resource)
+                perms_spec_compact_resource = PermSpecCompact(perms_spec.compact, resource)
+                perms_spec_compact_resource.merge(perms_spec_compact_patch)
+                _exec_request = ExecutionRequest.objects.create(
+                    user=request.user,
+                    func_name='set_permissions',
+                    geonode_resource=resource,
+                    action="permissions",
+                    input_params={
+                        "uuid": request_params.get('uuid', resource.uuid),
+                        "owner": request_params.get('owner', resource.owner.username),
+                        "permissions": perms_spec_compact_resource.extended,
+                        "created": request_params.get('created', False)
+                    }
+                )
+            resouce_service_dispatcher.apply_async((_exec_request.exec_id,))
+            return Response(
+                {
+                    'status': _exec_request.status,
+                    'execution_id': _exec_request.exec_id,
+                    'status_url':
+                        urljoin(
+                            settings.SITEURL,
+                            reverse('rs-execution-status', kwargs={'execution_id': _exec_request.exec_id})
+                        )
+                },
+                status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.exception(e)
+            return Response(status=status.HTTP_400_BAD_REQUEST, exception=e)
+
 
     @extend_schema(methods=['get'], responses={200: PermSpecSerialiazer()},
                    description="""

@@ -124,7 +124,7 @@
 
       {% if EXIF_ENABLED and exif_data %}
       {% with "exif/_exif_dataset_detail.html" as exif_template %}
-      {% include exif_template %}
+        {% include exif_template %}
       {% endwith %}
       {% endif %}
 
@@ -203,7 +203,7 @@
         <button class="btn btn-edit btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
       </li>
 
-      {% with catalogue='document' %}
+      {% with catalogue='dataset' %}
         {% include "modal/permissions.html" %}
       {% endwith %}
 

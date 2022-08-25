@@ -22,7 +22,7 @@ def resource_list_url(resource_type):
     return '/{}/upload'.format(resource_type)
 
 def resource_detail_url(resource_type, resource_id):
-    return '/catalogue/#/{}/{}'.format(resource_type, resource_id)
+    return '/{}/{}'.format(resource_type, resource_id)
 
 
 class BaseHookSet:

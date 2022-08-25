@@ -3,17 +3,25 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
-{% block title %}{% trans "Request perission" %} {% endblock %}
-{% block body_inner %}
-<h3>{% trans "Request editing for resource: " %} {{ resource.title }}</h3>
-    <a href="{{ resource.get_absolute_url }}" class="btn btn-primary" type="button">{% trans "Back to resource" %}</a>
-<form method="post" action="{% url 'owner_rights_request' resource.id %}">
-  {% csrf_token %}
-  <table width=100%>
-    {{ form|crispy }}
-  </table>
-  <div class="form-actions">
-    <input type="submit" value="{% trans "Send request" %}"  class="btn btn-primary" type="button"/>
+{% block title %}{% trans "Request Permission" %} {% endblock %}
+{% block body %}
+<div class="card">
+  <div class="card-header">
+    <div class="row">
+      <h4 class="col">{% trans "Request editing for resource: " %} {{ resource.title }}</h4>
+      <div class="col-md-2"><a href="{{ resource.get_absolute_url }}" class="btn btn-secondary btn-block" type="button">{% trans "Back to resource" %}</a></div>
+    </div>
   </div>
-</form>
+  <div class="card-body">
+    <form method="post" action="{% url 'owner_rights_request' resource.id %}">
+      {% csrf_token %}
+      <table width=100%>
+        {{ form|crispy }}
+      </table>
+      <div class="form-actions">
+        <input type="submit" value="{% trans "Send request" %}"  class="btn btn-primary btn-block" type="button"/>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

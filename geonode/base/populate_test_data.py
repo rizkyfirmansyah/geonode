@@ -40,7 +40,7 @@ from geonode.maps.models import Map
 from geonode.layers.models import Layer
 from geonode.compat import ensure_string
 from geonode.base.models import ResourceBase, TopicCategory
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 
 # This is used to populate the database with the search fixture data. This is
 # primarily used as a first step to generate the json data for the fixture using
@@ -63,7 +63,7 @@ def all_public():
     for mp in Map.objects.all():
         mp.set_default_permissions()
         mp.clear_dirty_state()
-    for doc in Document.objects.all():
+    for doc in Dataset.objects.all():
         doc.set_default_permissions()
         doc.clear_dirty_state()
     ResourceBase.objects.all().update(dirty_state=False)
@@ -291,9 +291,9 @@ def remove_models(obj_ids, type=None, integration=False):
                 pass
         elif type == 'document':
             try:
-                d_ids = obj_ids or [doc.id for doc in Document.objects.all()]
+                d_ids = obj_ids or [doc.id for doc in Dataset.objects.all()]
                 for id in d_ids:
-                    d = Document.objects.get(pk=id)
+                    d = Dataset.objects.get(pk=id)
                     d.delete()
             except Exception:
                 pass
@@ -304,7 +304,7 @@ def dump_models(path=None):
                                     [get_user_model().objects.all(),
                                      Layer.objects.all(),
                                      Map.objects.all(),
-                                     Document.objects.all(),
+                                     Dataset.objects.all(),
                                      Tag.objects.all(),
                                      TaggedItem.objects.all(),
                                      ]], []), indent=2, use_natural_keys=True)
@@ -414,7 +414,7 @@ def create_single_doc(name, keywords=None):
         ll_bbox_polygon=Polygon.from_bbox((bbox_x0, bbox_y0, bbox_x1, bbox_y1)),
         srid='EPSG:4326',
         doc_file=f,
-        resource_type="document"
+        resource_type="dataset"
     )
     m.save()
 

@@ -5,10 +5,10 @@
 <strong>{{ resource.title }}</strong><br/>
 {% if resource.polymorphic_ctype.name == 'layer' %}
 <br/>
-{% trans "Layer" %}: <i><a href="{{ default_http_protocol }}://{{ current_site }}{% url "layer_detail" resource.layer.service_typename %}">{{ resource.layer.service_typename }}</a></i>
+{% trans "Layer" %}: <i><a href="{{ default_http_protocol }}://{{ current_site }}{{ resource.get_absolute_url }}">{{ resource.get_absolute_url }}</a></i>
 <br/>
 {% else %}
-{% trans "Document" %}: {{ current_site }}{% url "dataset_detail" resource.document.id %}
+{% trans "Dataset" %}: {{ default_http_protocol }}://{{ current_site }}{{ resource.get_absolute_url }}
 <br/>
 {% endif %}
 <br/>

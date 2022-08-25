@@ -14,7 +14,7 @@
         </div>
         <form id="permission-form" accept-charset="UTF-8" method="post" action="{% url "resource_permissions" resource.id %}">
           <div class="text-center">
-            {% if is_layer and storeType != "remoteStore" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
+            {% if is_layer and subtype != "remote" and GEONODE_SECURITY_ENABLED and OGC_SERVER.default.BACKEND == 'geonode.geoserver' %}
               {% if user.is_superuser or "change_resourcebase_permissions" in perms_list %}
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item col"><a href="#permissions_tab1" data-toggle="tab" class="nav-primary active" role="tab" aria-controls="permissions_tab1" aria-selected="true">{% trans "People and Groups" %}</a></li>

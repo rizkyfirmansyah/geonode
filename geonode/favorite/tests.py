@@ -28,7 +28,7 @@ from django.urls import reverse
 from django.db.models import Max
 
 from .models import Favorite
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 
 
 class FavoriteTest(GeoNodeBaseTestSupport):
@@ -48,8 +48,8 @@ class FavoriteTest(GeoNodeBaseTestSupport):
     def test_favorite(self):
         # assume we created at least one User and two Documents in setUp.
         test_user = get_user_model().objects.first()
-        test_document_1 = Document.objects.first()
-        test_document_2 = Document.objects.last()
+        test_document_1 = Dataset.objects.first()
+        test_document_2 = Dataset.objects.last()
 
         # test create favorite.
         Favorite.objects.create_favorite(test_document_1, test_user)
@@ -98,12 +98,12 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         """
         self.client.login(username=self.adm_un, password=self.adm_pw)
 
-        document_pk = Document.objects.first().pk
+        document_pk = Dataset.objects.first().pk
         response = self._get_response("add_favorite_dataset", (document_pk,))
 
         # check persisted.
         self.assertEqual(Favorite.objects.count(), 1)
-        ct = ContentType.objects.get_for_model(Document)
+        ct = ContentType.objects.get_for_model(Dataset)
         self.assertEqual(Favorite.objects.first().content_type, ct)
         favorite_pk = Favorite.objects.first().pk
 
@@ -118,7 +118,7 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         self.assertEqual(json_content["delete_url"], expected_delete_url)
 
         # call method again, check for idempotent.
-        document_pk = Document.objects.first().pk
+        document_pk = Dataset.objects.first().pk
         response2 = self._get_response("add_favorite_dataset", (document_pk,))
 
         # check still one only persisted, same as before second call.
@@ -144,8 +144,8 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         call create view with object id that does not exist.
         expect not found.
         """
-        # get a pk that is not in the db for Document object.
-        max_document_pk = Document.objects.aggregate(Max("pk"))
+        # get a pk that is not in the db for Dataset object.
+        max_document_pk = Dataset.objects.aggregate(Max("pk"))
         pk_not_in_db = str(max_document_pk["pk__max"] + 1)
 
         self.client.login(username=self.adm_un, password=self.adm_pw)
@@ -160,12 +160,12 @@ class FavoriteTest(GeoNodeBaseTestSupport):
         self.client.login(username=self.adm_un, password=self.adm_pw)
 
         # first, add one to delete.
-        document_pk = Document.objects.first().pk
+        document_pk = Dataset.objects.first().pk
         response = self._get_response("add_favorite_dataset", (document_pk,))
 
         # check persisted.
         self.assertEqual(Favorite.objects.count(), 1)
-        ct = ContentType.objects.get_for_model(Document)
+        ct = ContentType.objects.get_for_model(Dataset)
         self.assertEqual(Favorite.objects.first().content_type, ct)
         favorite_pk = Favorite.objects.first().pk
 
