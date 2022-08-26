@@ -20,7 +20,6 @@
 from zipfile import ZipFile, ZIP_DEFLATED
 from drf_spectacular.utils import extend_schema
 import io
-from django.template import loader
 from django.utils.translation import ugettext as _
 from django.contrib.auth import get_user_model
 from geonode.monitoring.models import EventType
@@ -29,7 +28,7 @@ from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 from geonode.base import register_event
 from geonode.datasets.enumerations import DATASET_TYPE_MAP
 from ...security.utils import serialize_resource_permissions, sha256file
-from ...utils import doc_path
+from ...utils import doc_path, mkdtemp
 from ..models import Dataset, File
 from rest_framework import viewsets
 
@@ -234,6 +233,36 @@ class DatasetsViewSet(DynamicModelViewSet):
             messages.error(request, message=e.args[0], extra_tags=toast_title)
             return Response(data={"message:": e.args[0], 'success': False}, status=500, exception=True)
 
+    @extend_schema(
+        methods=['get'],
+        responses={200},
+        description="API endpoint allowing to download single file of Dataset.")
+    @action(
+        detail=False,
+        url_path="download_dataset_file/(?P<pk>\d+)?$",
+        url_name="download_dataset_file",
+        methods=['get'],
+        permission_classes=[
+            IsAuthenticated,
+        ]
+    )
+    def download_dataset_file(self, request, pk):
+        file = File.objects.filter(id=pk).get()
+        filename = file.file_name.split(".")[0]
+        try:
+            if file.file and storage_manager.exists(file.file):
+                return DownloadResponse(
+                    storage_manager.open(file.file),
+                    basename=f'{filename}.{file.extension}'
+                )
+        except Exception as e:
+            logger.error(e)
+
+        return HttpResponse(
+            "File is not available",
+            status=404
+        )
+
 
     @extend_schema(
         methods=['post', 'get'],
@@ -249,24 +278,52 @@ class DatasetsViewSet(DynamicModelViewSet):
         ]
     )
     def download_dataset_files(self, request, dataset_id):
+        import requests
+        import mimetypes
+        import gdown
+        import shutil
         resources = File.objects.filter(dataset__id__in=[dataset_id])
         dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
-
         toast_title = f"Download Dataset Files"
+        output = io.BytesIO()
+        zf = ZipFile(output, 'w', ZIP_DEFLATED)
+        def download_file_from_google_drive(url, filename, tempdir):
+            try:
+                gfile = gdown.download(url=url, output=tempdir, fuzzy=True)
+            except Exception as e:
+                logger.error(e)
+            finally:
+                zf.write(gfile, arcname=filename)
         try:
-            output = io.BytesIO()
-            zf = ZipFile(output, 'w', ZIP_DEFLATED)
             try:
                 for file in resources:
                     if file.file:
                         fdir, fname = os.path.split(file.file)
                         zf.write(file.file, arcname=fname)
+                    elif file.file_url:
+                        tempdir = mkdtemp()
+                        response = requests.get(file.file_url, stream=True)
+                        if "drive.google" in file.file_url:
+                            download_file_from_google_drive(file.file_url, file.file_name, os.path.join(tempdir, file.file_name))
+                        elif "sharepoint.com" in file.file_url:
+                            messages.error(request, message=f"Apologies we couldn't download the file from sharepoint right now. Please find the external file below and download manually.", extra_tags=toast_title)
+                        else:
+                            content_type = response.headers['content-type']
+                            extension = mimetypes.guess_extension(content_type)
+                            if response.status_code != requests.codes.ok:
+                                return HttpResponse("File is not available", status=404)
+
+                            if extension:
+                                zf.writestr(f'{file.file_name}{extension}', response.content)
+                            else:
+                                zf.writestr(f'{file.file_name}', response.content)
 
             except FileNotFoundError:
                 logger.error(f"Try to download dataset files but not found")
 
             finally:
                 zf.close()
+                shutil.rmtree(tempdir, ignore_errors=True)
 
             return HttpResponse(output.getvalue(), content_type='application/zip', headers={'Content-Disposition': 'attachment; filename='f"{dataset}.zip"''})
 
@@ -486,8 +543,5 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 )
         except Exception as e:
             logger.error(e)
-
-        return HttpResponse(
-            "File is not available",
-            status=404
-        )
+            
+        return HttpResponse("File is not available", status=404)

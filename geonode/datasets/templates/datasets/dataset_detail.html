@@ -42,51 +42,6 @@
 </div>
 <div class="row">
   <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
-    {% if "download_resourcebase" in perms_list %}
-      {% if files.count == 1 %}
-          {% for resource in files %}
-              {% if resource.extension|lower in audiotypes and resource.doc_file %}
-              {% get_mime_type mimetypemap resource.extension as mimetype %}
-              <div id="embedded_map" width="100%">
-                <a style="text-decoration:none;" href="{% url "dataset_link" resource.id %}" target="_blank">
-                  <audio controls width="100%">
-                    <source src="{% url "dataset_download" resource.id %}" type="{{ mimetype }}">
-                    {% trans "Your browser does not support the audio element." %}
-                  </audio>
-                </a>
-              </div>
-              {% elif resource.extension|lower in imgtypes and resource.doc_file %}
-              <div id="embedded_map" width="100%">
-                <a style="text-decoration:none;" href="{% url "dataset_link" resource.id %}" target="_blank">
-                  <img src="{% url "dataset_download" resource.id %}" width='100%' class="img-responsive" />
-                </a>
-              </div>
-              {% elif resource.extension|lower in videotypes and resource.doc_file %}
-              {% get_mime_type mimetypemap resource.extension as mimetype %}
-              <div id="embedded_map" width="100%">
-                <a style="text-decoration:none;" href="{% url "dataset_link" resource.id %}" target="_blank">
-                  <video width="500" controls>
-                    <source src="{% url "dataset_download" resource.id %}" type="{{ mimetype }}">
-                    {% trans "Your browser does not support the video tag." %}
-                  </video>
-                </a>
-              </div>
-              {% elif resource.extension|lower in wordtypes or resource.extension|lower in exceltypes or resource.extension|lower in ppttypes and resource.doc_file %}
-                  <iframe src="https://docs.google.com/gview?url={{ SITEURL }}{% url "dataset_download" resource.id %}&embedded=true" width="100%" height="480px" frameborder="0"></iframe>
-              {% elif resource.extension == 'pdf' and resource.doc_file %}
-                  {% include "datasets/pdf_renderer.html" %}
-              {% elif not files %}
-                <p><a href="{% url "dataset_link" resource.id %}" target="_blank">{% trans "Download the" %} {{ resource }}</a></p>
-              {% elif resource.doc_url %}
-                <p><a href="{{ resource.doc_url }}" target="_blank">{% trans "Download the" %} {{ resource }}.</a>
-                  <small>({% trans 'External Resource' %})</small></p>
-              {% elif resource.extension|lower in tabulartypes and resource.doc_file %}
-                <div class="p-3 bg-light" id="dataframe_container"></div>
-              {%  endif %}
-          {% endfor %}
-      {% endif %}
-    {%  endif %}
-
     <div class="row d-flex">
       {% include "_actions.html" %}
     </div>
@@ -113,13 +68,13 @@
         <!-- TODO: Move this to a reusable template snippet -->
         {% if request.user.is_authenticated %}
         <h4>{% trans "Rate this Datasets" %}</h4>
-        {% user_rating request.user resource "dataset" as user_document_rating %}
-        <div id="user_rating" class="category-layer" data-score="{{user_document_rating}}"></div>
+        {% user_rating request.user resource "dataset" as user_dataset_rating %}
+        <div id="user_rating" class="category-layer" data-score="{{user_dataset_rating}}"></div>
         {% endif %}
         <h4>{% trans 'Average Rating' %}</h4>
-        {% overall_rating resource "dataset" as document_rating %}
+        {% overall_rating resource "dataset" as dataset_rating %}
         {% num_ratings resource as num_votes %}
-        <div class="overall_rating row w-100 pl-3" style="float:left" data-score="{{ document_rating }}"></div> ({{num_votes}})
+        <div class="overall_rating row w-100 pl-3" style="float:left" data-score="{{ dataset_rating }}"></div> ({{num_votes}})
         <!-- TODO: Add display of who gave what rating based -->
       </article>
       {% endif %}
@@ -152,10 +107,21 @@
       </li>
       <li class="list-group-item">
         {% if "download_resourcebase" in perms_list %}
-        <a target="_blank" href="{% url "datasets-download_dataset_files" resource.id %}"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+            {% if files.count == 1 %}
+                {% for file in files %}
+                    {% if file.file_url %}
+                      <a target="_blank" href="{{ file.file_url }}" onclick="history.go(0);"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+                    {% endif %}
+                    {% if file.file %}
+                      <a target="_blank" href="{% url "datasets-download_dataset_files" resource.id %}"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+              <a target="_blank" href="{% url "datasets-download_dataset_files" resource.id %}"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+            {% endif %}
         {% else %}
-          <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">{% trans "Request Download" %}</button>
-        {%  endif %}
+          <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">Request Download</button>
+        {% endif %}
       </li>
       {% if not READ_ONLY_MODE %}
       {% if "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list or "delete_resourcebase" in perms_list %}
@@ -252,8 +218,19 @@
                     <div class="d-flex flex-row float-right">
                       {% if file.hash %}
                           <div class="align-self-center mr-3"><span class="badge badge-secondary d-inline">{{ file.extension }}</span></div>
-                          <div><a class="btn btn-primary mr-3 preview-file" ng-click="preview_file('{{ file.extension }}', {{ file.id }}, '{{ file.file_type }}')" data-target="#previewDatasetFiles" style="cursor: pointer;" data-type="{{ file.file_type }}" data-id="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
-                          <a href="{% url 'dataset_ingest_preview_file' pk=file.id %}" class="btn btn-download" style="cursor: pointer;" ><i class="fa-solid fa-download" title="Download File"></i></a>
+                        {% if "download_resourcebase" in perms_list %}
+                            <div><a class="btn btn-primary mr-3 preview-file" ng-click="preview_file('{{ file.extension }}', {{ file.id }}, '{{ file.file_type }}')" data-target="#previewDatasetFiles" role="button" data-type="{{ file.file_type }}" data-id="{{ file.id }}" data-extension="{{ file.extension }}"><i class="fa-solid fa-folder-open" title="Preview File"></i></a></div>
+                            <a href="{% url 'datasets-download_dataset_file' pk=file.id %}" class="btn btn-download" role="button" ><i class="fa-solid fa-download" title="Download File"></i></a>
+                        {% else %}
+                            <a data-target="#requestDownloadLayer" data-toggle="modal" role="button"><i class="fa-solid fa-ban" title="Submit Request Download to access this dataset" style="color: gray;"></i></a>
+                        {% endif %}
+                      {% endif %}
+                      {% if file.file_url %}
+                        {% if "download_resourcebase" in perms_list %}
+                            <a href="{{ file.file_url }}" class="btn btn-download" role="button" target="_blank"><i class="fa-solid fa-download" title="Download File"></i></a>
+                        {% else %}
+                            <a data-target="#requestDownloadLayer" data-toggle="modal" role="button"><i class="fa-solid fa-ban" title="Submit Request Download to access this dataset" style="color: gray;"></i></a>
+                        {% endif %}
                       {% endif %}
                     </div>
                 </div>
@@ -265,14 +242,6 @@
                 <div class="col-md-10 mt-2">
                     <p>{{ file.file_name }}</p>
                 </div>
-                {% if file.file_url %}
-                    <div class="col-md-2 mt-2">
-                        <span><label for="file_url">URL File</label></span></br/>
-                    </div>
-                    <div class="col-md-10 mt-2">
-                        <p>{{ file.file_url }}</p>
-                    </div>
-                {% endif %}
                 <div class="col-md-2 mt-2">
                     <span><label for="file_description">Description</label></span>
                 </div>
@@ -313,14 +282,5 @@
   {% endif %}
   {% include "modal/preview_files.html" %}
   <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
-  <script type="text/javascript">
-      $(function() {
-          {% if not "download_resourcebase" in perms_list %}
-            $("#card-dataset .btn-download").remove();
-            $("#card-dataset .preview-file").remove();
-          {% endif %}
-      })
-
-  </script>
 
 {% endblock extra_script %}
