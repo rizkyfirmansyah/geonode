@@ -179,7 +179,7 @@ export const getMapsCount = () => {
 };
 
 export const getDocumentsCount = () => {
-    return axios.get('/api/documents/', {
+    return axios.get('/api/datasets/', {
             params: {
                 limit: 1
             }

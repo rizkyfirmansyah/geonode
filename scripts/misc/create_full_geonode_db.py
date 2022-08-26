@@ -33,7 +33,7 @@ from taggit.models import Tag
 
 from geonode.base.models import ResourceBase, TopicCategory
 from geonode.base.models import Region
-from geonode.documents.models import Document
+from geonode.datasets.models import Dataset
 from geonode.layers.models import Layer
 from geonode.layers.utils import file_upload
 from geonode.layers.tasks import delete_shapefile_data
@@ -94,9 +94,9 @@ def create_document(number):
     file_list = glob.glob(f'{doc_path}*.jpg')
     random_index = randint(0, len(file_list) - 1)
     file_uri = file_list[random_index]
-    title = f'Document N. {number}'
+    title = f'Dataset N. {number}'
     img_filename = f'{number}_img.jpg'
-    doc = Document(title=title, owner=get_random_user())
+    doc = Dataset(title=title, owner=get_random_user())
     doc.save()
     with open(file_uri, 'r') as f:
         img_file = File(f)
@@ -136,11 +136,11 @@ Tag.objects.all().delete()
 get_user_model().objects.exclude(username='admin').exclude(username='AnonymousUser').delete()
 create_users(n_users)
 
-# 2. create documents
-Document.objects.all().delete()
+# 2. create datasets
+Dataset.objects.all().delete()
 for d in range(0, n_docs):
     t = Timer(partial(create_document, d))
-    print(f'Document {d} generated in: {t.timeit(number=1)}')
+    print(f'Dataset {d} generated in: {t.timeit(number=1)}')
 
 # 3. create layers
 # first we delete layers

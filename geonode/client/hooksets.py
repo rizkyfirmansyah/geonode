@@ -129,7 +129,7 @@ class BaseHookSet:
     # def geoapp_detail_url(self, resource):
     #     return resource_detail_url(resource.resource_type, resource.id)
 
-    # Documents
+    # Datasets
     def dataset_list_url(self):
         return resource_list_url('datasets')
 

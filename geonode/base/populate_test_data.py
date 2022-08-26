@@ -56,7 +56,7 @@ f = SimpleUploadedFile('test_img_file.gif', imgfile.read(), 'image/gif')
 
 
 def all_public():
-    '''ensure all layers, maps and documents are publicly available'''
+    '''ensure all layers, maps and datasets are publicly available'''
     for lyr in Layer.objects.all():
         lyr.set_default_permissions()
         lyr.clear_dirty_state()

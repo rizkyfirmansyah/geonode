@@ -353,7 +353,7 @@ class FileResourceLink(models.Model):
     resource = GenericForeignKey('content_type', 'object_id')
 
 
-def get_related_documents(resource):
+def get_related_datasets(resource):
     if isinstance(resource, Layer) or isinstance(resource, Map):
         content_type = ContentType.objects.get_for_model(resource)
         return Dataset.objects.filter(links__content_type=content_type,

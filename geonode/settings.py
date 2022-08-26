@@ -892,8 +892,8 @@ PINAX_RATINGS_CATEGORY_CHOICES = {
     "layers.Layer": {
         "layer": "How good is this layer?"
     },
-    "documents.Document": {
-        "document": "How good is this document?"
+    "datasets.Dataset": {
+        "dataset": "How good is this dataset?"
     },
     "geoapps.GeoApp": {
         "geoapp": "How good is this geoapp?"

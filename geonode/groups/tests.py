@@ -692,7 +692,7 @@ class GroupActivityTest(GeoNodeBaseTestSupport):
                             msg_prefix='',
                             html=False)
         self.assertContains(response,
-                            'Documents',
+                            'Datasets',
                             count=3,
                             status_code=200,
                             msg_prefix='',

@@ -77,7 +77,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
             b'\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
         self.anonymous_user = get_anonymous_user()
 
-    def test_document_mimetypes_rendering(self):
+    def test_dataset_mimetypes_rendering(self):
         ARCHIVETYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'archive']
         AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
         IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
@@ -94,8 +94,8 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         self.assertTrue('tiff' in ARCHIVETYPES)
         self.assertTrue('pbm' in ARCHIVETYPES)
 
-    def test_create_document_with_no_rel(self):
-        """Tests the creation of a document with no relations"""
+    def test_create_dataset_with_no_rel(self):
+        """Tests the creation of a dataset with no relations"""
 
         f = SimpleUploadedFile(
             'test_img_file.gif',
@@ -110,8 +110,8 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         c.set_default_permissions()
         self.assertEqual(File.objects.get(pk=c.id).title, 'theimg')
 
-    def test_create_document_with_rel(self):
-        """Tests the creation of a document with no a map related"""
+    def test_create_dataset_with_rel(self):
+        """Tests the creation of a dataset with no a map related"""
         f = SimpleUploadedFile(
             'test_img_file.gif',
             self.imgfile.read(),
@@ -127,15 +127,15 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         m = Map.objects.all()[0]
         ctype = ContentType.objects.get_for_model(m)
         _d = FileResourceLink.objects.create(
-            document_id=c.id,
+            dataset_id=c.id,
             content_type=ctype,
             object_id=m.id)
 
         self.assertEqual(File.objects.get(pk=c.id).title, 'theimg')
         self.assertEqual(FileResourceLink.objects.get(pk=_d.id).object_id, m.id)
 
-    def test_create_document_url(self):
-        """Tests creating an external document instead of a file."""
+    def test_create_dataset_url(self):
+        """Tests creating an external dataset instead of a file."""
 
         superuser = get_user_model().objects.get(pk=2)
         c = File.objects.create(doc_url="http://geonode.org/map.pdf",
@@ -146,7 +146,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         self.assertEqual(doc.title, "GeoNode Map")
         self.assertEqual(doc.extension, "pdf")
 
-    def test_create_document_url_view(self):
+    def test_create_dataset_url_view(self):
         """
         Tests creating and updating external documents.
         """
@@ -174,7 +174,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         d = File.objects.get(title='GeoNode Map')
         self.assertEqual(d.doc_url, 'http://www.geonode.org/mapz.pdf')
 
-    def test_upload_document_form(self):
+    def test_upload_dataset_form(self):
         """
         Tests the Upload form.
         """
@@ -194,7 +194,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
 
         form_data = {
             'title': 'GeoNode Map',
-            'permissions': '{"anonymous":"document_readonly","authenticated":"resourcebase_readwrite","users":[]}',
+            'permissions': '{"anonymous":"dataset_readonly","authenticated":"resourcebase_readwrite","users":[]}',
             'doc_url': 'http://www.geonode.org/map.pdf'}
 
         form = DatasetCreateForm(data=form_data)
@@ -211,7 +211,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
 
         form_data = {
             'title': 'GeoNode Map',
-            'permissions': '{"anonymous":"document_readonly","authenticated":"resourcebase_readwrite","users":[]}',
+            'permissions': '{"anonymous":"dataset_readonly","authenticated":"resourcebase_readwrite","users":[]}',
         }
 
         file_data = {
@@ -229,8 +229,8 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         self.assertFalse(form.is_valid())
         self.assertTrue('__all__' in form.errors)
 
-    def test_document_details(self):
-        """/documents/1 -> Test accessing the detail view of a document"""
+    def test_dataset_details(self):
+        """/datasets/1 -> Test accessing the detail view of a dataset"""
         d = File.objects.all().first()
         d.set_default_permissions()
 
@@ -248,7 +248,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         self.assertContains(response, "Featured", count=1, status_code=200, msg_prefix='', html=False)
         self.assertContains(response, "<dt>Group</dt>", count=0, status_code=200, msg_prefix='', html=False)
 
-        # ... now assigning a Group to the document
+        # ... now assigning a Group to the dataset
         group = Group.objects.first()
         d.group = group
         d.save()
@@ -258,16 +258,16 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         d.group = None
         d.save()
 
-    def test_access_document_upload_form(self):
-        """Test the form page is returned correctly via GET request /documents/upload"""
+    def test_access_dataset_upload_form(self):
+        """Test the form page is returned correctly via GET request /datasets/upload"""
 
         log = self.client.login(username='bobby', password='bob')
         self.assertTrue(log)
         response = self.client.get(reverse('dataset_upload'))
         self.assertTrue('Upload Documents' in ensure_string(response.content))
 
-    def test_document_isuploaded(self):
-        """/documents/upload -> Test uploading a document"""
+    def test_dataset_isuploaded(self):
+        """/datasets/upload -> Test uploading a dataset"""
 
         f = SimpleUploadedFile(
             'test_img_file.gif',
@@ -280,7 +280,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
             reverse('dataset_upload'),
             data={
                 'file': f,
-                'title': 'uploaded_document',
+                'title': 'uploaded_dataset',
                 'q': m.id,
                 'type': 'map',
                 'permissions': '{"users":{"AnonymousUser": ["view_resourcebase"]}}'},
@@ -289,61 +289,61 @@ class DocumentsTest(GeoNodeBaseTestSupport):
 
     # Permissions Tests
 
-    def test_set_document_permissions(self):
-        """Verify that the set_document_permissions view is behaving as expected
+    def test_set_dataset_permissions(self):
+        """Verify that the set_dataset_permissions view is behaving as expected
         """
-        # Get a document to work with
-        document = Dataset.objects.all()[0]
+        # Get a dataset to work with
+        dataset = Dataset.objects.all()[0]
 
         # Set the Permissions
-        document.set_permissions(self.perm_spec)
+        dataset.set_permissions(self.perm_spec)
 
         # Test that the Permissions for anonympus user are set correctly
         self.assertFalse(
             self.anonymous_user.has_perm(
                 'view_resourcebase',
-                document.get_self_resource()))
+                dataset.get_self_resource()))
 
         # Test that previous permissions for users other than ones specified in
-        # the perm_spec (and the document owner) were removed
-        current_perms = document.get_all_level_info()
+        # the perm_spec (and the dataset owner) were removed
+        current_perms = dataset.get_all_level_info()
         self.assertEqual(len(current_perms['users']), 2)
 
         # Test that the User permissions specified in the perm_spec were
         # applied properly
         for username, perm in self.perm_spec['users'].items():
             user = get_user_model().objects.get(username=username)
-            self.assertTrue(user.has_perm(perm, document.get_self_resource()))
+            self.assertTrue(user.has_perm(perm, dataset.get_self_resource()))
 
-    def test_ajax_document_permissions(self):
-        """Verify that the ajax_document_permissions view is behaving as expected
+    def test_ajax_dataset_permissions(self):
+        """Verify that the ajax_dataset_permissions view is behaving as expected
         """
 
-        # Setup some document names to work with
+        # Setup some dataset names to work with
         f = SimpleUploadedFile(
             'test_img_file.gif',
             self.imgfile.read(),
             'image/gif')
 
         superuser = get_user_model().objects.get(pk=2)
-        document = File.objects.create(
+        dataset = File.objects.create(
             doc_file=f,
             owner=superuser,
             title='theimg')
-        document.set_default_permissions()
-        document_id = document.id
-        invalid_document_id = 20
+        dataset.set_default_permissions()
+        dataset_id = dataset.id
+        invalid_dataset_id = 20
 
-        # Test that an invalid document is handled for properly
+        # Test that an invalid dataset is handled for properly
         response = self.client.post(
             reverse(
                 'resource_permissions', args=(
-                    invalid_document_id,)), data=json.dumps(
+                    invalid_dataset_id,)), data=json.dumps(
                 self.perm_spec), content_type="application/json")
         self.assertEqual(response.status_code, 404)
 
         # Test that GET returns permissions
-        response = self.client.get(reverse('resource_permissions', args=(document_id,)))
+        response = self.client.get(reverse('resource_permissions', args=(dataset_id,)))
         assert('permissions' in ensure_string(response.content))
 
         # Test that a user is required to have
@@ -351,7 +351,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
 
         # First test un-authenticated
         response = self.client.post(
-            reverse('resource_permissions', args=(document_id,)),
+            reverse('resource_permissions', args=(dataset_id,)),
             data=json.dumps(self.perm_spec),
             content_type="application/json")
         self.assertEqual(response.status_code, 401)
@@ -360,7 +360,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         logged_in = self.client.login(username='bobby', password='bob')
         self.assertEqual(logged_in, True)
         response = self.client.post(
-            reverse('resource_permissions', args=(document_id,)),
+            reverse('resource_permissions', args=(dataset_id,)),
             data=json.dumps(self.perm_spec),
             content_type="application/json")
         self.assertEqual(response.status_code, 401)
@@ -369,7 +369,7 @@ class DocumentsTest(GeoNodeBaseTestSupport):
         logged_in = self.client.login(username='admin', password='admin')
         self.assertEqual(logged_in, True)
         response = self.client.post(
-            reverse('resource_permissions', args=(document_id,)),
+            reverse('resource_permissions', args=(dataset_id,)),
             data=json.dumps(self.perm_spec),
             content_type="application/json")
 
@@ -458,7 +458,7 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
         self.passwd = 'admin'
         create_models(type=b'dataset')
         create_models(type=b'map')
-        self.document_upload_url = f"{(reverse('dataset_upload'))}?no__redirect=true"
+        self.dataset_upload_url = f"{(reverse('dataset_upload'))}?no__redirect=true"
         self.u = get_user_model().objects.get(username=self.user)
         self.u.email = 'test@email.com'
         self.u.is_active = True
@@ -468,22 +468,22 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
         base_path = gisdata.GOOD_DATA
         return os.path.join(base_path, 'vector', 'readme.txt')
 
-    def test_document_upload_redirect(self):
+    def test_dataset_upload_redirect(self):
         with self.settings(ADMIN_MODERATE_UPLOADS=False):
             self.client.login(username=self.user, password=self.passwd)
             input_path = self._get_input_path()
-            document_upload_url = str(reverse('dataset_upload'))
+            dataset_upload_url = str(reverse('dataset_upload'))
             with open(input_path, 'rb') as f:
-                data = {'title': 'document title',
+                data = {'title': 'dataset title',
                         'doc_file': f,
                         'resource': '',
                         'extension': 'txt',
                         'permissions': '{}',
                         }
-                resp = self.client.post(document_upload_url, data=data)
+                resp = self.client.post(dataset_upload_url, data=data)
                 if resp.status_code == 200:
                     content = resp.content.decode('utf-8')
-                    self.asserTrue("document title" in content)
+                    self.asserTrue("dataset title" in content)
 
     def test_moderated_upload(self):
         """
@@ -495,15 +495,15 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
             input_path = self._get_input_path()
 
             with open(input_path, 'rb') as f:
-                data = {'title': 'document title',
+                data = {'title': 'dataset title',
                         'doc_file': f,
                         'resource': '',
                         'extension': 'txt',
                         'permissions': '{}',
                         }
-                resp = self.client.post(self.document_upload_url, data=data)
+                resp = self.client.post(self.dataset_upload_url, data=data)
                 self.assertEqual(resp.status_code, 200)
-            dname = 'document title'
+            dname = 'dataset title'
             _d = Dataset.objects.get(title=dname)
 
             self.assertTrue(_d.is_published)
@@ -523,7 +523,7 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
                     f"deleted: {deleted} vs {set(thumb_files_before) - set(thumb_files_after)}")
 
             fn = os.path.join(
-                os.path.join("documents", "document"), os.path.basename(input_path))
+                os.path.join("documents", "dataset"), os.path.basename(input_path))
             self.assertFalse(storage_manager.exists(fn))
 
             files = [thumb for thumb in get_thumbs() if uuid in thumb]
@@ -536,15 +536,15 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
             group = GroupProfile.objects.get(slug="bar")
             input_path = self._get_input_path()
             with open(input_path, 'rb') as f:
-                data = {'title': 'document title',
+                data = {'title': 'dataset title',
                         'doc_file': f,
                         'resource': '',
                         'extension': 'txt',
                         'permissions': '{}',
                         }
-                resp = self.client.post(self.document_upload_url, data=data)
+                resp = self.client.post(self.dataset_upload_url, data=data)
                 self.assertEqual(resp.status_code, 200)
-            dname = 'document title'
+            dname = 'dataset title'
             _d = Dataset.objects.get(title=dname)
             self.assertFalse(_d.is_approved)
             self.assertTrue(_d.is_published)
@@ -608,14 +608,14 @@ class DocumentsNotificationsTestCase(NotificationsTestsHelper):
             _d = Dataset.objects.create(
                 title='test notifications',
                 owner=self.norman)
-            self.assertTrue(self.check_notification_out('document_created', self.u))
-            # Ensure "resource.owner" won't be notified for having created its own document
-            self.assertFalse(self.check_notification_out('document_created', self.norman))
+            self.assertTrue(self.check_notification_out('dataset_created', self.u))
+            # Ensure "resource.owner" won't be notified for having created its own dataset
+            self.assertFalse(self.check_notification_out('dataset_created', self.norman))
 
             self.clear_notifications_queue()
             _d.title = 'test notifications 2'
             _d.save(notify=True)
-            self.assertTrue(self.check_notification_out('document_updated', self.u))
+            self.assertTrue(self.check_notification_out('dataset_updated', self.u))
 
             self.clear_notifications_queue()
             from dialogos.models import Comment
@@ -627,7 +627,7 @@ class DocumentsNotificationsTestCase(NotificationsTestsHelper):
                               content_object=_d,
                               comment='test comment')
             comment.save()
-            self.assertTrue(self.check_notification_out('document_comment', self.u))
+            self.assertTrue(self.check_notification_out('dataset_comment', self.u))
 
             if "pinax.ratings" in settings.INSTALLED_APPS:
                 self.clear_notifications_queue()
@@ -638,7 +638,7 @@ class DocumentsNotificationsTestCase(NotificationsTestsHelper):
                                 content_object=_d,
                                 rating=5)
                 rating.save()
-                self.assertTrue(self.check_notification_out('document_rated', self.u))
+                self.assertTrue(self.check_notification_out('dataset_rated', self.u))
 
 
 class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
@@ -653,8 +653,8 @@ class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
             b'\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
         )
 
-    def test_create_document_with_links(self):
-        """Tests the creation of document links."""
+    def test_create_dataset_with_links(self):
+        """Tests the creation of dataset links."""
         f = SimpleUploadedFile(
             'test_img_file.gif',
             self.test_file.read(),
@@ -675,7 +675,7 @@ class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
         layers = list(Layer.objects.all())
         resources = maps + layers
 
-        # create document links
+        # create dataset links
 
         mixin1 = FileFormMixin()
         mixin1.instance = d
@@ -687,13 +687,13 @@ class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
         for resource in resources:
             ct = ContentType.objects.get_for_model(resource)
             _d = FileResourceLink.objects.get(
-                document_id=d.id,
+                dataset_id=d.id,
                 content_type=ct.id,
                 object_id=resource.id
             )
             self.assertEqual(_d.object_id, resource.id)
 
-        # update document links
+        # update dataset links
 
         mixin2 = FileFormMixin()
         mixin2.instance = d
@@ -705,7 +705,7 @@ class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
         for resource in layers:
             ct = ContentType.objects.get_for_model(resource)
             _d = FileResourceLink.objects.get(
-                document_id=d.id,
+                dataset_id=d.id,
                 content_type=ct.id,
                 object_id=resource.id
             )
@@ -715,7 +715,7 @@ class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
             ct = ContentType.objects.get_for_model(resource)
             with self.assertRaises(FileResourceLink.DoesNotExist):
                 FileResourceLink.objects.get(
-                    document_id=d.id,
+                    dataset_id=d.id,
                     content_type=ct.id,
                     object_id=resource.id
                 )
@@ -818,7 +818,7 @@ class DocumentViewTestCase(GeoNodeBaseTestSupport):
             self.assertFalse(self.not_admin.is_superuser)
             self.assertEqual(response.status_code, 200)
 
-    def test_document_link_with_permissions(self):
+    def test_dataset_link_with_permissions(self):
         self.test_doc.set_permissions(self.perm_spec)
         # Get link as Anonymous user
         response = self.client.get(self.dock_link_url)

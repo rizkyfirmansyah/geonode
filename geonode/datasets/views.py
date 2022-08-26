@@ -41,20 +41,18 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from django.views.generic.edit import UpdateView, CreateView
+from django.views.generic.edit import CreateView
 from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 from geonode.base.api.exceptions import geonode_exception_handler
 
-from geonode.base.utils import ManageResourceOwnerPermissions
 from geonode.datasets.utils import get_download_response
-from geonode.utils import doc_path, resolve_object
+from geonode.utils import resolve_object
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
 from geonode.base.auth import get_or_create_token
-from geonode.base.bbox_utils import BBOXHelper
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.models import (
     ResourceBase,
@@ -70,14 +68,11 @@ from geonode.base import register_event
 from geonode.monitoring.models import EventType
 from geonode.security.utils import get_user_visible_groups, get_visible_resources, sha256sum
 from django.contrib import messages
-from geonode.resource.manager import resource_manager
-from geonode.storage.manager import storage_manager
-from geonode.client.hooks import hookset
 import uuid
 
 from dal import autocomplete
 
-logger = logging.getLogger("geonode.documents.views")
+logger = logging.getLogger("geonode.datasets.views")
 
 ALLOWED_DOC_TYPES = settings.ALLOWED_DOCUMENT_TYPES
 
@@ -117,9 +112,6 @@ def dataset_detail(request, docid):
 
     if not document:
         return page_not_found_message(request)
-
-    # permission_manager = ManageResourceOwnerPermissions(document)
-    # permission_manager.set_owner_permissions_according_to_workflow()
 
     # Add metadata_author or poc if missing
     document.add_missing_metadata_author_or_poc()

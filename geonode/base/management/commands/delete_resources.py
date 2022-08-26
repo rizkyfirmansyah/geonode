@@ -151,11 +151,11 @@ class Command(BaseCommand):
         if document_filters:
 
             if '*' in document_filters:
-                documents_to_delete = Dataset.objects.all()
+                datasets_to_delete = Dataset.objects.all()
             else:
-                documents_q_expressions = [eval(expr) for expr in document_filters]
-                documents_to_delete = Dataset.objects.filter(*documents_q_expressions)
+                datasets_q_expressions = [eval(expr) for expr in document_filters]
+                datasets_to_delete = Dataset.objects.filter(*datasets_q_expressions)
 
-            for document in documents_to_delete:
+            for document in datasets_to_delete:
                 print(f'Deleting document "{document.title}" with ID: {document.id}')
                 document.delete()

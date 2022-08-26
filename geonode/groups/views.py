@@ -417,13 +417,13 @@ class GroupActivityView(ListView):
         actions = Action.objects.filter(
             public=True,
             action_object_content_type__model='dataset')[:15]
-        context['action_list_documents'] = [
+        context['action_list_datasets'] = [
             action
             for action in actions
             if
             action.action_object and action.action_object.group == self.group.group][
             :15]
-        action_list.extend(context['action_list_documents'])
+        action_list.extend(context['action_list_datasets'])
         context['action_list_comments'] = Action.objects.filter(
             public=True,
             actor_object_id__in=members,

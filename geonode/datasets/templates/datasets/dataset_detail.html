@@ -23,7 +23,7 @@
 
 {% endblock %}
 
-{% block body_class %}{% trans "documents" %}{% endblock %}
+{% block body_class %}{% trans "datasets" %}{% endblock %}
 
 {% block body %}
 <div class="card mb-2 border-dataset">
@@ -215,8 +215,8 @@
 
       {% include "base/_resourcebase_contact_snippet.html" %}
 
-      {% include "modal/manage_documents.html" %}
-      {% include "modal/download_metadata_document.html" %}
+      {% include "modal/manage_datasets.html" %}
+      {% include "modal/download_metadata_dataset.html" %}
 
     </ul>
   </div>

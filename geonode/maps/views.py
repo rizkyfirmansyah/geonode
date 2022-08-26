@@ -65,7 +65,7 @@ from geonode.base.models import (
 from geonode import geoserver
 from geonode.groups.models import GroupProfile
 from geonode.base.auth import get_or_create_token
-from geonode.datasets.models import get_related_documents
+from geonode.datasets.models import get_related_datasets
 from geonode.people.forms import ProfileForm
 from geonode.base.views import batch_modify
 from geonode.views import page_not_found_message, unauthorized_message
@@ -183,7 +183,7 @@ def map_detail(request, mapid, template='maps/map_detail.html'):
         'layers': layers,
         'perms_list': perms_list,
         'permissions_json': permissions_json,
-        "documents": get_related_documents(map_obj),
+        "datasets": get_related_datasets(map_obj),
         'links': links,
         'preview': getattr(
             settings,

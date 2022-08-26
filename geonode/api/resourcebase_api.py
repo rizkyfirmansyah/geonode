@@ -1143,14 +1143,14 @@ class GeoAppResource(CommonModelApi):
                                              GeonodeApiKeyAuthentication())
 
 
-class DocumentResource(CommonModelApi):
+class DatasetResource(CommonModelApi):
 
-    """Documents API"""
+    """Datasets API"""
 
     def build_filters(self, filters=None, ignore_bad_filters=False, **kwargs):
         _filters = filters.copy()
         metadata_only = _filters.pop('metadata_only', False)
-        orm_filters = super(DocumentResource, self).build_filters(_filters)
+        orm_filters = super(DatasetResource, self).build_filters(_filters)
         orm_filters['metadata_only'] = False if not metadata_only else metadata_only[0]
         return orm_filters
 
@@ -1207,7 +1207,7 @@ class DocumentResource(CommonModelApi):
         filtering = CommonMetaApi.filtering
         filtering.update({'subtype': ALL})
         queryset = Dataset.objects.distinct().order_by('-date')
-        resource_name = 'dataset'
+        resource_name = 'datasets'
         authentication = MultiAuthentication(SessionAuthentication(),
                                              OAuthAuthentication(),
                                              GeonodeApiKeyAuthentication())

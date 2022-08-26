@@ -90,7 +90,7 @@ from geonode.monitoring.models import EventType
 from geonode.groups.models import GroupProfile
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
-from geonode.datasets.models import get_related_documents
+from geonode.datasets.models import get_related_datasets
 from geonode.security.utils import (
     get_user_visible_groups,
     get_visible_resources,
@@ -674,7 +674,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         'group': group,
         'perms_list': perms_list,
         "permissions_json": permissions_json,
-        "documents": get_related_documents(layer),
+        "datasets": get_related_datasets(layer),
         "metadata": metadata,
         "attributes": json.dumps(data_tables[0]),
         "column_names": [k for k in _keys.keys()],

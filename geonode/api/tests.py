@@ -691,7 +691,7 @@ class DocumentResourceTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
             'api_dispatch_list',
             kwargs={
                 'api_name': 'api',
-                'resource_name': 'documents'})
+                'resource_name': 'datasets'})
 
     def test_the_api_should_return_all_documents_with_metadata_false(self):
         resp = self.api_client.get(self.list_url)
