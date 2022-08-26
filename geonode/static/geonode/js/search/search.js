@@ -820,6 +820,9 @@
           }
           $('.selectpicker').selectpicker('val', '');
           $('.selectpicker').selectpicker('refresh');
+          $('#filter-sidebar-content .btn_wrapper').removeClass('active');
+          $('#filter-sidebar-content .btn_wrapper').find('input[type=checkbox]:checked').prop("checked", false);
+
           
           $scope.query = {};
           $scope.offset = 0;
