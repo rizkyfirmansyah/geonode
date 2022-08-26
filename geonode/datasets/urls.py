@@ -18,29 +18,17 @@
 #
 #########################################################################
 from django.conf.urls import url, include
-from django.views.generic import TemplateView
-
 from .api.views import DatasetIngestView
 
 from .views import DatasetUploadView, DatasetUpdateView
 from .views import DatasetAutocomplete
 from . import views
-from geonode.base import register_url_event
-from geonode.decorators import registered_users
 
 js_info_dict = {
     'packages': ('geonode.datasets',),
 }
 
-datasets_list = register_url_event()(TemplateView.as_view(
-        template_name='datasets/dataset_list.html'))
-
 urlpatterns = [  # 'geonode.datasets.views',
-    url(r'^$',
-        registered_users(datasets_list),
-        {'facet_type': 'datasets'},
-        name='dataset_browse'
-        ),
     url(r'^(?P<docid>\d+)/tabular$',
         views.render_tabular, name='render_tabular'),
     url(r'^(?P<docid>\d+)/?$',
