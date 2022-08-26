@@ -75,6 +75,25 @@
                 message.addClass('alert-danger').removeClass('alert-success alert-warning hidden');
                 return;
             }
+            var bulkPermsMsg = function(msg, status = 'success') {
+                return `
+                <div id="permsToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+                  <div class="toast-message alert-`+status+` align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                      <strong class="mr-auto">Set Permissions</strong>
+                      <small class="text-muted"></small>
+                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetToast').remove()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="toast-body">
+                      <span class="font-lg-1">`+msg+`.</span>
+                    </div>
+                  </div>
+                </div>
+              `
+            }
+            
             $.ajax({
                 type: "POST",
                 url: siteUrl + "security/bulk-permissions",
@@ -95,20 +114,29 @@
                 },
                 success: function(data) {
                     var not_changed = $.parseJSON(data).not_changed;
+                    var msg;
                     if (not_changed.length > 0) {
-                        message.find('.message').html('Permissions correctly registered, although the following resources were' +
-                            ' skipped because you don\'t have the rights to edit their permissions:');
-                        message.find('.extra_content').html(not_changed.join('</br>'));
-                        message.addClass('alert-warning').removeClass('alert-success alert-danger hidden');
+                        msg = 'Permissions correctly registered, although the following resources were' +
+                        ' skipped because you don\'t have the rights to edit their permissions:' + not_changed.join('</br>')
+                        $(document.body).append(bulkPermsMsg(msg));
+                        setTimeout(function() {
+                            $("#permsToast").remove();
+                        }, 2000);
                     } else {
-                        message.find('.message').html('Permissions correctly registered.');
-                        message.addClass('alert-success').removeClass('alert-warning alert-danger hidden');
+                        msg = 'Permissions correctly registered.'
+                        $(document.body).append(bulkPermsMsg(msg));
+                        setTimeout(function() {
+                            $("#permsToast").remove();
+                        }, 2000);
                     }
                     Pace.stop();
                 },
                 error: function(data) {
-                    message.find('.message').html($.parseJSON(data).error);
-                    message.addClass('alert-danger').removeClass('alert-success alert-warning hidden');
+                    msg = $.parseJSON(data).error
+                    $(document.body).append(bulkPermsMsg(msg, 'error'));
+                    setTimeout(function() {
+                        $("#permsToast").remove();
+                    }, 2000);
                 }
             });
         };
