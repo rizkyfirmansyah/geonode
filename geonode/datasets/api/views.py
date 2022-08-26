@@ -294,6 +294,11 @@ class DatasetsViewSet(DynamicModelViewSet):
                 logger.error(e)
             finally:
                 zf.write(gfile, arcname=filename)
+
+        def human_size(bytes, units=[' bytes','KB','MB','GB','TB', 'PB', 'EB']):
+            """ Returns a human readable string representation of bytes """
+            return str(bytes) + units[0] if bytes < 1024 else human_size(bytes>>10, units[1:])
+
         try:
             try:
                 for file in resources:
@@ -303,20 +308,25 @@ class DatasetsViewSet(DynamicModelViewSet):
                     elif file.file_url:
                         tempdir = mkdtemp()
                         response = requests.get(file.file_url, stream=True)
-                        if "drive.google" in file.file_url:
-                            download_file_from_google_drive(file.file_url, file.file_name, os.path.join(tempdir, file.file_name))
-                        elif "sharepoint.com" in file.file_url:
-                            messages.error(request, message=f"Apologies we couldn't download the file from sharepoint right now. Please find the external file below and download manually.", extra_tags=toast_title)
-                        else:
-                            content_type = response.headers['content-type']
-                            extension = mimetypes.guess_extension(content_type)
-                            if response.status_code != requests.codes.ok:
-                                return HttpResponse("File is not available", status=404)
-
-                            if extension:
-                                zf.writestr(f'{file.file_name}{extension}', response.content)
+                        file_size = int(response.headers['Content-length'])
+                        if file_size < 200000000:
+                            if "drive.google" in file.file_url:
+                                download_file_from_google_drive(file.file_url, file.file_name, os.path.join(tempdir, file.file_name))
+                            elif "sharepoint.com" in file.file_url:
+                                messages.error(request, message=f"Apologies we couldn't download the file from sharepoint right now. Please find the external file below and download manually.", extra_tags=toast_title)
                             else:
-                                zf.writestr(f'{file.file_name}', response.content)
+                                content_type = response.headers['content-type']
+                                extension = mimetypes.guess_extension(content_type)
+                                if response.status_code != requests.codes.ok:
+                                    return HttpResponse("File is not available", status=404)
+
+                                if extension:
+                                    zf.writestr(f'{file.file_name}{extension}', response.content)
+                                else:
+                                    zf.writestr(f'{file.file_name}', response.content)
+                        else:
+                            msg = f"Apologies we couldn't download the file from your external url. Your external file size: {human_size(file_size)} exceeds the server capacity to process. Please find the external file below and download manually."
+                            messages.error(request, message=msg, extra_tags=toast_title)
 
             except FileNotFoundError:
                 logger.error(f"Try to download dataset files but not found")
