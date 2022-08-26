@@ -33,7 +33,7 @@ from geonode.datasets.models import Dataset
 
 class FavoriteTest(GeoNodeBaseTestSupport):
 
-    type = 'document'
+    type = 'dataset'
 
     """
     Tests geonode.favorite app/module

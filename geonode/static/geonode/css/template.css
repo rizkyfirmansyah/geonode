@@ -4189,10 +4189,6 @@ footer form {
     padding-bottom: 11px
 }
 
-.comment-description {
-    margin-bottom: 0
-}
-
 .comment-author {
     font-size: 11px;
     font-weight: 700;
@@ -4644,10 +4640,6 @@ article.tab-pane {
 .item-container {
     padding-left: 2rem;
     padding-bottom: 2rem
-}
-
-.avatar.pull-left {
-    margin-right: 5px
 }
 
 .item-thumb img {

@@ -211,11 +211,11 @@ def create_models(type=None, integration=False):
                         m.keywords.add(kw)
                         m.save()
 
-            if not type or ensure_string(type) == 'document':
+            if not type or ensure_string(type) == 'dataset':
                 for dd, user in zip(document_data, cycle(users)):
                     title, abstract, kws, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), category = dd
                     logger.debug(f"[SetUp] Add document {title}")
-                    m = Document(
+                    m = Dataset(
                         title=title,
                         abstract=abstract,
                         owner=user,
@@ -272,7 +272,7 @@ def remove_models(obj_ids, type=None, integration=False):
         if not type:
             remove_models(None, type=b'map')
             remove_models(None, type=b'layer')
-            remove_models(None, type=b'document')
+            remove_models(None, type=b'dataset')
         if type == 'map':
             try:
                 m_ids = obj_ids or [mp.id for mp in Map.objects.all()]
@@ -289,7 +289,7 @@ def remove_models(obj_ids, type=None, integration=False):
                     layer.delete()
             except Exception:
                 pass
-        elif type == 'document':
+        elif type == 'dataset':
             try:
                 d_ids = obj_ids or [doc.id for doc in Dataset.objects.all()]
                 for id in d_ids:
@@ -406,7 +406,7 @@ def create_single_doc(name, keywords=None):
         0, 22, 0, 22], test_datetime, ('populartag',))
     title, abstract, name, alternate, (bbox_x0, bbox_x1, bbox_y0, bbox_y1), start, kws = dd
     logger.debug(f"[SetUp] Add document {title}")
-    m = Document(
+    m = Dataset(
         title=title,
         abstract=abstract,
         owner=user,

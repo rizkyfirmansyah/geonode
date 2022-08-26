@@ -83,14 +83,14 @@ def activity_item(action, **kwargs):
         if object_type == 'layer':
             activity_class = 'layer'
 
-        if object_type == 'document':
-            activity_class = 'document'
+        if object_type == 'dataset':
+            activity_class = 'dataset'
 
     if raw_action == 'deleted':
         activity_class = 'delete'
 
     if raw_action == 'created' and \
-    object_type in ('layer', 'document'):
+    object_type in ('layer', 'dataset'):
         activity_class = 'upload'
 
     ctx = dict(

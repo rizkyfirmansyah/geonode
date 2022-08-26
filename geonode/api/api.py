@@ -18,7 +18,6 @@
 #
 #########################################################################
 
-from email.policy import default
 import json
 import time
 
@@ -359,37 +358,25 @@ class DataTypeResource(TypeFilteredResource):
         authorization = ApiLockdownAuthorization()
 
 
-class DocumentExtResource(TypeFilteredResource):
+class DatasetFileExtResource(TypeFilteredResource):
     """Extension api List to filter"""
     count = fields.CharField(readonly=True)
 
     def dehydrate_count(self, bundle):
-        request = bundle.request
-        obj_with_perms = get_objects_for_user(request.user, 'base.view_resourcebase')
-
-        # filter_set = Dataset.objects.filter(file__dataset__in=obj_with_perms, file__extension=bundle.obj.extension).exclude(file__extension='')
-        filter_set = File.objects.all()
-        if not settings.SKIP_PERMS_FILTER:
-            filter_set = get_visible_resources(
-                filter_set,
-                request.user if request else None,
-                admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
-                unpublished_not_visible=settings.RESOURCE_PUBLISHING,
-                private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
-        
-        return filter_set.distinct().count()
+        filter_set = File.objects.filter(extension=bundle.obj.extension).values_list('dataset_id', flat=True)
+        dataset_filter = Dataset.objects.filter(file__dataset_id__in=filter_set)
+        return dataset_filter.distinct().count()
 
     class Meta:
-        queryset = Dataset.objects.all()
+        queryset = File.objects.all().order_by('extension').distinct('extension')
         resource_name = 'dataset_type'
         excludes = ['resource_uri']
         allowed_methods = ['get']
-        # fields = ('count', 'extension',)
-        fields = ('count')
+        fields = ('count', 'extension', 'file_type')
         
-        # filtering = {
-        #     'extension': ALL,
-        # }
+        filtering = {
+            'extension': ALL,
+        }
         authorization = ApiLockdownAuthorization()
 
 
@@ -629,7 +616,7 @@ class ProfileResource(TypeFilteredResource):
 
     def dehydrate_datasets_count(self, bundle):
         obj_with_perms = get_objects_for_user(bundle.request.user,
-                                              'base.view_resourcebase').filter(polymorphic_ctype__model='document')
+                                              'base.view_resourcebase').filter(polymorphic_ctype__model='dataset')
         return bundle.obj.resourcebase_set.filter(id__in=obj_with_perms.values('id')).filter(metadata_only=False)\
             .distinct().count()
 

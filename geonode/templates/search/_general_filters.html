@@ -1,6 +1,6 @@
 {% load i18n %}
 <nav class="filter" ng-cloak>
-  <a href="#dataset_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Data Extension</a>
+  <a href="#dataset_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Dataset Extension</a>
   <ul class="collapse list-unstyled" id="dataset_type">
   {% verbatim %}
   <li ng-repeat="item in dataset_type" ng-if="item.count > 0">

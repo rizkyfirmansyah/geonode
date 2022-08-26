@@ -416,7 +416,7 @@ class GroupActivityView(ListView):
         action_list.extend(context['action_list_maps'])
         actions = Action.objects.filter(
             public=True,
-            action_object_content_type__model='document')[:15]
+            action_object_content_type__model='dataset')[:15]
         context['action_list_documents'] = [
             action
             for action in actions

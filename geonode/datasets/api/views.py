@@ -178,18 +178,12 @@ class DatasetsViewSet(DynamicModelViewSet):
         url_name="edit_dataset_files",
         methods=['get'],
         permission_classes=[
-            IsAuthenticated,
+            IsAuthenticated, IsOwnerOrReadOnly
         ],
         parser_classes=[JSONParser, MultiPartParser]
     )
     def edit_dataset_files(self, request, dataset_id):
         resources = File.objects.filter(dataset_id__in=[dataset_id])
-        exclude = []
-        for resource in resources:
-            if not request.user.is_superuser and \
-            not request.user.has_perm('view_file', resource.get_self_resource()):
-                exclude.append(resource.id)
-        resources = resources.exclude(id__in=exclude)
         serializer = DatasetSerializer(instance=resources, embed=True, many=True)
 
         return Response({"files": serializer.data, "length": resources.count()})
@@ -257,11 +251,6 @@ class DatasetsViewSet(DynamicModelViewSet):
     def download_dataset_files(self, request, dataset_id):
         resources = File.objects.filter(dataset__id__in=[dataset_id])
         dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
-
-        if not request.user.has_perm('datasets.download_resourcebase', obj=resources):
-            return HttpResponse(
-                loader.render_to_string('error/401.html', context={
-                    'error_message': _("You are not allowed to view this dataset.")}, request=request), status=401)
 
         toast_title = f"Download Dataset Files"
         try:

@@ -1624,7 +1624,7 @@ class MonitoringAnalyticsTestCase(MonitoringTestBase):
             {'name': 'layer', 'type_label': 'Layer'},
             {'name': 'map', 'type_label': 'Map'},
             {'name': 'resource_base', 'type_label': 'Resource base'},
-            {'name': 'document', 'type_label': 'File'},
+            {'name': 'dataset', 'type_label': 'File'},
             {'name': 'style', 'type_label': 'Style'},
             {'name': 'admin', 'type_label': 'Admin'},
             {'name': 'url', 'type_label': 'URL'},

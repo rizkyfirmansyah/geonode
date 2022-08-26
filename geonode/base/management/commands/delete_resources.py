@@ -107,7 +107,7 @@ class Command(BaseCommand):
                             [
                                 config.get('filters').get('layer'),
                                 config.get('filters').get('map'),
-                                config.get('filters').get('document')
+                                config.get('filters').get('dataset')
                             ])
                 ):
                     print('Nothing to be done... exiting delete_resources command.')
@@ -116,7 +116,7 @@ class Command(BaseCommand):
             # override filters variables with configuration file data
             layer_filters = config.get('filters').get('layer')
             map_filters = config.get('filters').get('map')
-            document_filters = config.get('filters').get('document')
+            document_filters = config.get('filters').get('dataset')
 
         # remove layers
         if layer_filters:

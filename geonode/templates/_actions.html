@@ -40,7 +40,7 @@
   {% if DISPLAY_COMMENTS %}
   <li><a class="nav-primary" href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
   {% endif %}
-  {% if EXIF_ENABLED and resource.polymorphic_ctype.name == 'document' and exif_data %}
+  {% if EXIF_ENABLED and resource.polymorphic_ctype.name == 'dataset' and exif_data %}
   <li><a class="nav-primary" href="#exif" data-toggle="tab"><i class="fa-solid fa-image"></i> {% trans "Exif" %}</a></li>
   {% endif %}
   {% if FAVORITE_ENABLED and favorite_info %}

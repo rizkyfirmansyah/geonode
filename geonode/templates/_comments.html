@@ -19,22 +19,25 @@
     <p class="float-right">{% trans 'Log in to add a comment' %}</p>
   </div>
   {% endif %}
-  <div class="paginate-contents">
+  <div class="row">
   {% comments resource as comment_list %}
   {% autopaginate comment_list 5 %}
   {% for comment in comment_list %}
-    <article class="col-md-8 comment">
-      <div class="avatar pull-left"><a href="{{ comment.author.get_absolute_url }}">{% autoescape off %}{% avatar comment.author 40 %}{% endautoescape %}</a></div>
-      <p class="comment-description">
+    <article class="col-md-12 card-body">
+      <div class="row pl-2">
+        <div class="avatar col-md-2 p-0"><a href="{{ comment.author.get_absolute_url }}">{% autoescape off %}{% avatar comment.author 40 %}{% endautoescape %}</a></div>
+        <div class="comment-author col text-right">
+          <p><a href="{{ comment.author.get_absolute_url }}" rel="author">{{ comment.author }}</a> {% trans "on" %} <time>{{ comment.submit_date|date:"M j, Y" }}</time></p>
+          <span>
+        </div>
+      </div>
+      <p class="mb-0">
         {{ comment.comment }}
-          <div class="comment-author">
-            <p>{% trans 'By' %} <a href="{{ comment.author.get_absolute_url }}" rel="author">{{ comment.author }}</a> {% trans "on" %} <time>{{ comment.submit_date|date:"M j, Y" }}</time></p>
-          </div>
           {% if comment|can_delete_comment:request.user %}
           <div class="comment-manage">
             <form method="POST" action="{% url 'delete_comment' comment.id %}">
               {% csrf_token %}
-              <button type="submit" class="btn btn-danger btn-xs">{% trans "Delete" %}</button>
+              <button type="submit" class="btn btn-danger btn-xs float-right">{% trans "Delete" %}</button>
             </form>
           </div>
           {% endif %}

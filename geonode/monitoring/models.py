@@ -158,7 +158,7 @@ class MonitoredResource(models.Model):
     TYPE_LAYER = 'layer'
     TYPE_MAP = 'map'
     TYPE_RESOURCE_BASE = 'resource_base'
-    TYPE_DOCUMENT = 'document'
+    TYPE_DOCUMENT = 'dataset'
     TYPE_STYLE = 'style'
     TYPE_ADMIN = 'admin'
     TYPE_URL = 'url'

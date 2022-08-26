@@ -48,7 +48,7 @@ class DocumentPermissionsFilter(BaseFilterBackend):
             user,
             'base.view_resourcebase',
             **self.shortcut_kwargs
-        ).filter(polymorphic_ctype__model='document')
+        ).filter(polymorphic_ctype__model='dataset')
 
         obj_with_perms = get_visible_resources(
             resources,

@@ -67,7 +67,7 @@ from .api import (
     TopicCategoryResource,
     DataTypeResource,
     GroupResource,
-    DocumentExtResource,
+    DatasetFileExtResource,
     FILTER_TYPES)
 from .paginator import CrossSiteXHRPaginator
 
@@ -120,7 +120,7 @@ class CommonModelApi(ModelResource):
     owner = fields.ToOneField(OwnersResource, 'owner', full=True)
     tkeywords = fields.ToManyField(
         ThesaurusKeywordResource, 'tkeywords', null=True)
-    link = fields.ToOneField(DocumentExtResource, 'link', full=True, null=True)
+    link = fields.ToManyField(DatasetFileExtResource, 'link', null=True)
 
     VALUES = [
         # fields in the db
@@ -173,7 +173,7 @@ class CommonModelApi(ModelResource):
         'is_published',
         'dirty_state',
         'metadata_only',
-        # 'link__extension',
+        'link__extension',
         'featured',
         'perms',
         'avatar',
@@ -213,7 +213,7 @@ class CommonModelApi(ModelResource):
         extent = applicable_filters.pop('extent', None)
         keywords = applicable_filters.pop('keywords__slug__in', None)
         metadata_only = applicable_filters.pop('metadata_only', False)
-        # link = applicable_filters.pop('link__extension__in', None)
+        link = applicable_filters.pop('link__extension__in', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
 
         if filtering_method == 'or':
@@ -263,8 +263,8 @@ class CommonModelApi(ModelResource):
         if keywords:
             filtered = self.filter_h_keywords(filtered, keywords)
 
-        # if link:
-            # filtered = self.filter_link_extension(filtered, link)
+        if link:
+            filtered = self.filter_link_extension(filtered, link)
 
         # return filtered
         return get_visible_resources(
@@ -298,7 +298,7 @@ class CommonModelApi(ModelResource):
         if link and len(link) > 0:
             for ext in link:
                 try:
-                    exts = Link.objects.filter(link_type='data', extension=ext).values('resource_id')
+                    exts = File.objects.filter(extension=ext).values('dataset_id')
                     dataset_ext = exts
                 except ObjectDoesNotExist:
                     # Ignore keywords not actually used?
@@ -356,7 +356,7 @@ class CommonModelApi(ModelResource):
         resource_type = parameters.getlist("resource__type__in")
 
         # Dataset type filter
-        # link = parameters.getlist("link__extension__in")
+        link = parameters.getlist("link__extension__in")
 
         # Filter by Type and subtype
         if type_facets is not None:
@@ -487,9 +487,9 @@ class CommonModelApi(ModelResource):
                         bbox_right__lte=left))
 
         # filter by dataset_ext
-        # if link:
-            # sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
-            #     f"link__extension:{','.join(map(str, link))}")
+        if link:
+            sqs = (SearchQuerySet() if sqs is None else sqs).narrow(
+                f"link__extension:{','.join(map(str, link))}")
 
         # Apply sort
         if sort.lower() == "-date":
@@ -686,9 +686,10 @@ class CommonModelApi(ModelResource):
             if formatted_obj['thumbnail_url'] and len(formatted_obj['thumbnail_url']) == 0:
                 formatted_obj['thumbnail_url'] = static(MISSING_THUMB)
 
-            # if obj.resource_type == 'dataset':
-            #     _links = Dataset.objects.filter(resourcebase_ptr_id=obj.id).values('extension', 'id')
-            #     formatted_obj['link__extension'] = _links[0].get('extension')
+            if obj.resource_type == 'dataset':
+                _links = Dataset.objects.filter(resourcebase_ptr_id=obj.id).values_list('id', flat=True)
+                files = File.objects.filter(dataset_id__in=[_links[0]]).values_list('extension', flat=True)
+                formatted_obj['link__extension'] = list(files)
 
             formatted_objects.append(formatted_obj)
 
@@ -890,7 +891,7 @@ class LayerResource(CommonModelApi):
         dehydrated = []
         obj = bundle.obj
         link_fields = [
-            # 'extension',
+            'extension',
             'link_type',
             'name',
             'mime',

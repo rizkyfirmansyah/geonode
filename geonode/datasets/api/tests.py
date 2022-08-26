@@ -103,7 +103,7 @@ class DocumentsApiTests(APITestCase, URLPatternsTestCase):
         ]
 
     def setUp(self):
-        create_models(b'document')
+        create_models(b'dataset')
         create_models(b'map')
         create_models(b'layer')
 
@@ -118,16 +118,16 @@ class DocumentsApiTests(APITestCase, URLPatternsTestCase):
         self.assertEqual(len(response.data), 5)
         self.assertEqual(response.data['total'], 9)
         # Pagination
-        self.assertEqual(len(response.data['documents']), 9)
+        self.assertEqual(len(response.data['datasets']), 9)
         logger.debug(response.data)
 
-        for _l in response.data['documents']:
-            self.assertTrue(_l['resource_type'], 'document')
+        for _l in response.data['datasets']:
+            self.assertTrue(_l['resource_type'], 'dataset')
 
         # Get Linked Resources List
         resource = File.objects.first()
 
-        url = urljoin(f"{reverse('documents-detail', kwargs={'pk': resource.pk})}/", 'linked_resources/')
+        url = urljoin(f"{reverse('datasets-detail', kwargs={'pk': resource.pk})}/", 'linked_resources/')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, 200)
         layers_data = response.data

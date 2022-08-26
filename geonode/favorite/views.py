@@ -28,7 +28,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
-from geonode.datasets.models import File
+from geonode.datasets.models import Dataset
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from . import models
@@ -41,8 +41,8 @@ def favorite(req, subject, id):
     method is idempotent, Favorite's create_favorite method
     only creates if does not already exist.
     """
-    if subject == 'document':
-        obj = get_object_or_404(File, pk=id)
+    if subject == 'dataset':
+        obj = get_object_or_404(Dataset, pk=id)
     elif subject == 'map':
         obj = get_object_or_404(Map, pk=id)
     elif subject == 'layer':

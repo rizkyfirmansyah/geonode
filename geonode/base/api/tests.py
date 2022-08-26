@@ -76,7 +76,7 @@ class BaseApiTests(APITestCase, URLPatternsTestCase):
         ]
 
     def setUp(self):
-        create_models(b'document')
+        create_models(b'dataset')
         create_models(b'map')
         create_models(b'layer')
 
@@ -543,7 +543,7 @@ class BaseApiTests(APITestCase, URLPatternsTestCase):
         self.assertTrue('resource_types' in response.data)
         self.assertTrue('layer' in r_type_names)
         self.assertTrue('map' in r_type_names)
-        self.assertTrue('document' in r_type_names)
+        self.assertTrue('dataset' in r_type_names)
         self.assertFalse('service' in r_type_names)
 
     def test_get_favorites(self):

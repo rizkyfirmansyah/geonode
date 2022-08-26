@@ -95,7 +95,7 @@
 
       {% if resource.is_mosaic %}
         <article id="granules" class="description tab-pane {% if tab and tab == 'granules' %}active{% endif %}">
-          <div class="paginate-contents">
+          <div class="row">
 
             <form method="GET" action="{% url "layer_detail" resource.layer.service_typename %}">
               {% csrf_token %}

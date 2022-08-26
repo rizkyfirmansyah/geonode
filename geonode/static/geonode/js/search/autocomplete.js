@@ -112,7 +112,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
             <path d="M7.7915 9.16675C8.55089 9.16675 9.1665 8.55114 9.1665 7.79175C9.1665 7.03236 8.55089 6.41675 7.7915 6.41675C7.03211 6.41675 6.4165 7.03236 6.4165 7.79175C6.4165 8.55114 7.03211 9.16675 7.7915 9.16675Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> \
             <path d="M19.2502 13.7501L14.6668 9.16675L4.5835 19.2501" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> \
           </svg>'          
-      } else if (resource == 'document') {
+      } else if (resource == 'dataset') {
           icon = '<i title="'+ resource +'" class="fa-solid fa-file float-right"></i>'
       } else if (resource == 'remote') {
           icon = '<i title="'+ resource +'" class="fa-solid fa-layer-group float-right"></i>'

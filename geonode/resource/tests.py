@@ -54,7 +54,7 @@ class TestResourceManager(GeoNodeBaseTestSupport):
     def setUp(self):
         create_models(b'layer')
         create_models(b'map')
-        create_models(b'document')
+        create_models(b'dataset')
         User = get_user_model()
         self.user = User.objects.create(username='test', email='test@test.com')
         self.rm = ResourceManager()

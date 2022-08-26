@@ -84,7 +84,7 @@ class ResourceBaseToRepresentationSerializerMixin(DynamicModelSerializer):
 
     def to_representation(self, instance):
         request = self.context.get('request')
-        data = super(ResourceBaseToRepresentationSerializerMixin, self).to_representation(instance)
+        data = super().to_representation(instance)
         if request:
             data['perms'] = instance.get_user_perms(request.user).union(
                 instance.get_self_resource().get_user_perms(request.user)
@@ -705,7 +705,7 @@ class DataTypeSerializer(BaseResourceCountSerializer):
         name = 'data_type'
         model = DataType
         count_type = 'data_type'
-        view_name = 'data-type-list'
+        view_name = 'data_type-list'
         fields = '__all__'
 
 

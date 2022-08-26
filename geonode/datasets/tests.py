@@ -60,7 +60,7 @@ from geonode.datasets.models import Dataset, File, FileResourceLink
 
 class DocumentsTest(GeoNodeBaseTestSupport):
 
-    type = 'document'
+    type = 'dataset'
     perm_spec = {
         "users": {
             "admin": [
@@ -456,7 +456,7 @@ class DocumentModerationTestCase(GeoNodeBaseTestSupport):
         super(DocumentModerationTestCase, self).setUp()
         self.user = 'admin'
         self.passwd = 'admin'
-        create_models(type=b'document')
+        create_models(type=b'dataset')
         create_models(type=b'map')
         self.document_upload_url = f"{(reverse('dataset_upload'))}?no__redirect=true"
         self.u = get_user_model().objects.get(username=self.user)
@@ -583,7 +583,7 @@ class DocumentsNotificationsTestCase(NotificationsTestsHelper):
     def setUp(self):
         self.user = 'admin'
         self.passwd = 'admin'
-        create_models(type=b'document')
+        create_models(type=b'dataset')
         self.anonymous_user = get_anonymous_user()
         self.u = get_user_model().objects.get(username=self.user)
         self.u.email = 'test@email.com'
@@ -644,7 +644,7 @@ class DocumentsNotificationsTestCase(NotificationsTestsHelper):
 class DocumentResourceLinkTestCase(GeoNodeBaseTestSupport):
 
     def setUp(self):
-        create_models(b'document')
+        create_models(b'dataset')
         create_models(b'map')
         create_models(b'layer')
 
