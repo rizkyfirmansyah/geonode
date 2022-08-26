@@ -5,18 +5,18 @@
 {% load guardian_tags %}
 {% load floppyforms %}
 
-{% block title %}{{ document.title }} — {{ block.super }}{% endblock %}
+{% block title %}{{ dataset.title }} — {{ block.super }}{% endblock %}
 
 {% block body_class %}{% trans "data" %}{% endblock body_class %}
 
 {% block body %}
 
 {{ block.super }}
-<form id="metadata_update" class="form-horizontal" action="{% url "dataset_metadata" document.id %}" method="POST" novalidate>
+<form id="metadata_update" class="form-horizontal" action="{% url "dataset_metadata" dataset.id %}" method="POST" novalidate>
   <div class="card border-info mb-2">
     <div class="card-header">
       <div class="row">
-        <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with document.title as document_title %}for
+        <h3 class="col">{% trans "Metadata" %}&nbsp;{% blocktrans with dataset.title as document_title %}for
           {{ document_title }}{% endblocktrans %}
         </h3>
         <div class="col-sm-4 text-right">

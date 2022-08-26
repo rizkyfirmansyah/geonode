@@ -515,7 +515,7 @@ def dataset_metadata(
     register_event(request, EventType.EVENT_VIEW_METADATA, document)
     return render(request, template, context={
         "resource": document,
-        "document": document,
+        "dataset": document,
         "dataset_form": dataset_form,
         "poc_form": poc_form,
         "author_form": author_form,

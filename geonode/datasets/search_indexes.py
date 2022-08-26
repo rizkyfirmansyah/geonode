@@ -87,7 +87,7 @@ class DatasetIndex(indexes.SearchIndex, indexes.Indexable):
         return File
 
     def prepare_type(self, obj):
-        return "document"
+        return "dataset"
 
     def prepare_rating(self, obj):
         ct = ContentType.objects.get_for_model(obj)

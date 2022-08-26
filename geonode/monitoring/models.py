@@ -171,7 +171,7 @@ class MonitoredResource(models.Model):
              (TYPE_LAYER, _("Layer"),),
              (TYPE_MAP, _("Map"),),
              (TYPE_RESOURCE_BASE, _("Resource base"),),
-             (TYPE_DOCUMENT, _("Document"),),
+             (TYPE_DOCUMENT, _("Dataset"),),
              (TYPE_STYLE, _("Style"),),
              (TYPE_ADMIN, _("Admin"),),
              (TYPE_URL, _("URL"),),

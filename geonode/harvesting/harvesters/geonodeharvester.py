@@ -1231,7 +1231,7 @@ def _get_native_format(
         csw_identification: etree.Element,
         api_record: typing.Dict
 ) -> typing.Optional[str]:
-    if api_record.get("csw_type") == "document":
+    if api_record.get("csw_type") == "dataset":
         result = api_record.get("extension")
     else:
         store_type = api_record.get("storeType", "").lower()

@@ -390,7 +390,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                     "count": <number of maps>
                 },
                 {
-                    "name": "document",
+                    "name": "dataset",
                     "count": <number of datasets>
                 },
                 {

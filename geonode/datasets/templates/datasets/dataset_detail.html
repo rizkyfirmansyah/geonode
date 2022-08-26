@@ -113,11 +113,11 @@
         <!-- TODO: Move this to a reusable template snippet -->
         {% if request.user.is_authenticated %}
         <h4>{% trans "Rate this Datasets" %}</h4>
-        {% user_rating request.user resource "document" as user_document_rating %}
+        {% user_rating request.user resource "dataset" as user_document_rating %}
         <div id="user_rating" class="category-layer" data-score="{{user_document_rating}}"></div>
         {% endif %}
         <h4>{% trans 'Average Rating' %}</h4>
-        {% overall_rating resource "document" as document_rating %}
+        {% overall_rating resource "dataset" as document_rating %}
         {% num_ratings resource as num_votes %}
         <div class="overall_rating row w-100 pl-3" style="float:left" data-score="{{ document_rating }}"></div> ({{num_votes}})
         <!-- TODO: Add display of who gave what rating based -->
@@ -301,9 +301,9 @@
     {% include 'facebook_sdk.html' %}
   {% endif %}
   {% if request.user.is_authenticated %}
-    {% user_rating_js request.user resource "document" %}
+    {% user_rating_js request.user resource "dataset" %}
   {% else %}
-    {% overall_rating resource "document" as the_doc_rating %}
+    {% overall_rating resource "dataset" as the_doc_rating %}
   {% endif %}
 
     {% include 'rating.html' %}

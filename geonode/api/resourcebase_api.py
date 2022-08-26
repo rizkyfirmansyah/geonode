@@ -384,7 +384,7 @@ class CommonModelApi(ModelResource):
             subtypes = []
 
             for type in type_facets:
-                if type in {"map", "layer", "document", "user"}:
+                if type in {"map", "layer", "dataset", "user"}:
                     # Type is one of our Major Types (not a sub type)
                     types.append(type)
                 elif type in LAYER_TYPES:
