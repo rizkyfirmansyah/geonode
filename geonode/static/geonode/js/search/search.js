@@ -463,6 +463,7 @@
         $scope.infiniteScroll = 0;
         $scope.infiniteScrollLoaded = true;
         $scope.filter = false;
+        $scope.reset = false;
         $scope.init = true;
         $scope.loadMoreResource = function() {
             const _infinite = new Promise(function(resolve, reject) {
@@ -583,62 +584,6 @@
             }, true);
         }
 
-        // Hierarchical keyword listeners
-        $scope.$on('select_h_keyword', function($event, element) {
-            var data_filter = 'keywords__slug__in';
-            var query_entry = [];
-            var value = (element.href ? element.href : element.text);
-            // If the query object has the record then grab it
-            if ($scope.query.hasOwnProperty(data_filter)) {
-
-                // When in the location are passed two filters of the same
-                // type then they are put in an array otherwise is a single string
-                if ($scope.query[data_filter] instanceof Array) {
-                    query_entry = $scope.query[data_filter];
-                } else {
-                    query_entry.push($scope.query[data_filter]);
-                }
-            }
-
-            // Add the entry in the correct query
-            if (query_entry.indexOf(value) == -1) {
-                query_entry.push(value);
-            }
-
-            //save back the new query entry to the scope query
-            $scope.query[data_filter] = query_entry;
-
-            query_api($scope.query);
-        });
-
-        $scope.$on('unselect_h_keyword', function($event, element) {
-            var data_filter = 'keywords__slug__in';
-            var query_entry = [];
-            var value = (element.href ? element.href : element.text);
-            // If the query object has the record then grab it
-            if ($scope.query.hasOwnProperty(data_filter)) {
-
-                // When in the location are passed two filters of the same
-                // type then they are put in an array otherwise is a single string
-                if ($scope.query[data_filter] instanceof Array) {
-                    query_entry = $scope.query[data_filter];
-                } else {
-                    query_entry.push($scope.query[data_filter]);
-                }
-            }
-
-            query_entry.splice(query_entry.indexOf(value), 1);
-
-            //save back the new query entry to the scope query
-            $scope.query[data_filter] = query_entry;
-
-            //if the entry is empty then delete the property from the query
-            if (query_entry.length == 0) {
-                delete($scope.query[data_filter]);
-            }
-            query_api($scope.query);
-        });
-
         /*
          * Add the selection behavior to the element, it adds/removes the 'active' class
          * and pushes/removes the value of the element from the query object
@@ -704,8 +649,11 @@
                 //save back the new query entry to the scope query
                 $scope.query[data_filter] = query_entry;
             }
+
+            if (!$scope.reset) {
+                query_api($scope.query);
+            }
             
-            query_api($scope.query);
         }
 
         $scope.single_choice_listener = function($event, selected) {
@@ -729,13 +677,12 @@
             if (type === 'select-one') {
                 if (type_id === 'regions') {
                     data_filter = 'regions__name__in';
+                    if (selected) {
+                        value = selected;
+                        $scope.query[data_filter] = selected;
+                        query_api($scope.query);
+                    }
                 }
-                if (selected) {
-                    value = selected;
-                }
-                $scope.query[data_filter] = selected;
-
-                query_api($scope.query);
             }
 
             if (!element.hasClass('selected')) {
@@ -750,7 +697,9 @@
                 //save back the new query entry to the scope query
                 $scope.query[data_filter] = query_entry;
 
-                query_api($scope.query);
+                if (!$scope.reset) {
+                    query_api($scope.query);
+                }
             }
         }
 
@@ -815,33 +764,34 @@
         }
 
         function reset_query() {
-          if (HAYSTACK_SEARCH) {
-              $scope.query['q'] = $('#text_search_input').val('');
-          }
-          $('.selectpicker').selectpicker('val', '');
-          $('.selectpicker').selectpicker('refresh');
-          $('#filter-sidebar-content .btn_wrapper').removeClass('active');
-          $('#filter-sidebar-content .btn_wrapper').find('input[type=checkbox]:checked').prop("checked", false);
-
-          
-          $scope.query = {};
-          $scope.offset = 0;
-          $scope.infiniteScroll = 0;
-          $scope.infiniteScrollLoaded = true;
-          $scope.filter = false;
-          $scope.init = true;
-          $location.search($scope.query);
-
-          return query_api($scope.query);
-        }
-
-        $('.delete_search_query').on('click', function(e) {
-            reset_query();
+            if (HAYSTACK_SEARCH) {
+                $scope.query['q'] = $('#text_search_input').val('');
+            }
+            $scope.query = {};
+            $scope.offset = 0;
+            $scope.infiniteScroll = 0;
+            $scope.infiniteScrollLoaded = true;
+            $scope.filter = false;
+            $scope.init = true;
+            $scope.reset = true;
             // remove active class elements from sidebar
+            $('.selectpicker').selectpicker('val', '');
+            $('.selectpicker').selectpicker('refresh');
+            $('#filter-sidebar-content .btn_wrapper').removeClass('active');
+            $('#filter-sidebar-content .btn_wrapper').find('input[type=checkbox]:checked').prop("checked", false);
             $(".scrollbar-sidebar a").removeClass("active");
             $("#text_search_input").val('');
             $(".result-wrapper").css('display', 'none');
             $(".input-highlight").css("width", '0em');
+
+            $location.search($scope.query);
+            return query_api($scope.query);
+        }
+
+        $('.delete_search_query').on('click', function(e) {
+            e.preventDefault();
+            reset_query();
+            $scope.reset = false;
         });
 
         $("#dltDate1").on('click', function (e) {
