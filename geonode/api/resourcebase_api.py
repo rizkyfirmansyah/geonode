@@ -19,6 +19,7 @@
 #########################################################################
 import re
 import logging
+from urllib import request
 from geonode.base.enumerations import LAYER_TYPES
 
 from django.db.models import Q
@@ -26,6 +27,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.templatetags.static import static
 from avatar.templatetags.avatar_tags import avatar_url
+from geonode.favorite.models import Favorite
 from geonode.thumbs.utils import MISSING_THUMB
 from tastypie.authentication import MultiAuthentication, SessionAuthentication
 from tastypie.bundle import Bundle
@@ -175,6 +177,7 @@ class CommonModelApi(ModelResource):
         'metadata_only',
         'link__extension',
         'featured',
+        'favorited',
         'perms',
         'avatar',
         'subtype',
@@ -191,6 +194,8 @@ class CommonModelApi(ModelResource):
             orm_filters.update({'polymorphic_ctype__model': filters['app_type__in'].lower()})
         if 'extent' in filters:
             orm_filters.update({'extent': filters['extent']})
+        if 'favorited' in filters:
+            orm_filters.update({'favorited': filters['favorited']})
         if 'resource_type' in filters:
             orm_filters.update({'resource_type': filters['resource__type__in']})
 
@@ -214,6 +219,7 @@ class CommonModelApi(ModelResource):
         keywords = applicable_filters.pop('keywords__slug__in', None)
         metadata_only = applicable_filters.pop('metadata_only', False)
         link = applicable_filters.pop('link__extension__in', None)
+        favorited = applicable_filters.pop('favorited', None)
         filtering_method = applicable_filters.pop('f_method', 'and')
 
         if filtering_method == 'or':
@@ -266,6 +272,9 @@ class CommonModelApi(ModelResource):
         if link:
             filtered = self.filter_link_extension(filtered, link)
 
+        if favorited:
+            filtered = self.filter_favorited_resources(filtered, favorited, request)
+
         # return filtered
         return get_visible_resources(
             filtered,
@@ -306,6 +315,17 @@ class CommonModelApi(ModelResource):
             filtered = queryset.filter(Q(id__in=dataset_ext))
         else:
             filtered = queryset
+        return filtered
+
+
+    def filter_favorited_resources(self, queryset, favorited, request):
+        is_favorited = Favorite.objects.favorites_for_user(user=request.user).values_list('object_id', flat=True)
+        
+        if favorited == 'true':
+            filtered = queryset.filter(Q(id__in=is_favorited))
+        else:
+            filtered = queryset.filter(~Q(id__in=is_favorited))
+
         return filtered
 
     def build_haystack_filters(self, parameters):
@@ -652,6 +672,12 @@ class CommonModelApi(ModelResource):
             formatted_obj['owner__full_name'] = obj.owner.get_full_name() or obj.owner.username
             formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
                 obj.get_self_resource().get_user_perms(request.user)))
+                
+            favorites = Favorite.objects.favorites_for_user(user=request.user).get()
+            if str(obj.id) == str(favorites):
+                formatted_obj['favorited'] = True
+            else:
+                formatted_obj['favorited'] = False
 
             if formatted_obj.get('metadata', None):
                 formatted_obj['metadata'] = [model_to_dict(_m) for _m in formatted_obj['metadata']]

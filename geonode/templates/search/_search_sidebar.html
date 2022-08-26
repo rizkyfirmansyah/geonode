@@ -34,6 +34,7 @@
         {% endif  %} {% endcomment %}
         <div id="filter-sidebar-content">
           {% include "search/_featured_filter.html" %}
+          {% include "search/_favorited_filter.html" %}
           {% block search_facet_lists %}
           {% if SEARCH_FILTERS.H_KEYWORDS_ENABLED %}
             {% include "search/_h_keywords_filter.html" %}

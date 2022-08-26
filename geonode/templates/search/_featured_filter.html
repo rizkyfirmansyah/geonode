@@ -14,7 +14,7 @@
     $("#featured_filter").on("click", function(e) {
         $(this).toggleClass('active selected');
         $('#featured_filter').attr('data-value',$(this).attr('data-value')==='true'?'false':'true' );
-        var checkBoxes = $("input[type='checkbox']");
+        var checkBoxes = $("#featured_input");
         (checkBoxes.prop("checked")==true)?checkBoxes.prop("checked", false):checkBoxes.prop("checked", true);
     });
 
