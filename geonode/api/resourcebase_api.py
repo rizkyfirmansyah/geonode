@@ -673,8 +673,9 @@ class CommonModelApi(ModelResource):
             formatted_obj['perms'] = list(obj.get_user_perms(request.user).union(
                 obj.get_self_resource().get_user_perms(request.user)))
                 
-            favorites = Favorite.objects.favorites_for_user(user=request.user).get()
-            if str(obj.id) == str(favorites):
+            favorites = Favorite.objects.favorites_for_user(user=request.user)
+            favorites_id = [f.object_id for f in favorites]
+            if obj.id in favorites_id:
                 formatted_obj['favorited'] = True
             else:
                 formatted_obj['favorited'] = False

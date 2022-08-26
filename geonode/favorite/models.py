@@ -106,6 +106,5 @@ class Favorite(models.Model):
     def __str__(self):
         if self.content_object:
             return str(self.content_object.pk)
-            # return f"Favorite: {self.content_object.title}, {self.content_type}, {self.user}"
         else:
             return "Unknown"
