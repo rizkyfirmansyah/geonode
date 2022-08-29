@@ -13,13 +13,13 @@
         <div class="row">
           <h3 class="col-8">{% trans "Metadata" %} : {{ resource.title }}</h3>
           <div class="col">
-            {% if resource.class_name == "Dataset" %}
-              <a href="{% url 'dataset_detail' docid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to Document" %}</a>
-            {% elif resource.class_name == "Layer" %}
+            {% if resource.resource_type == "dataset" %}
+              <a href="{% url 'dataset_detail' docid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to Dataset" %}</a>
+            {% elif resource.resource_type == "layer" %}
               <a href="{% url 'layer_detail' layername=resource.alternate %}" class="btn btn-info btn-block">{% trans "Return to Layer" %}</a>
-            {% elif resource.class_name == "Map" %}
+            {% elif resource.resource_type == "map" %}
               <a href="{% url 'map_detail' mapid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to Map" %}</a>
-            {% elif resource.class_name == "GeoApp" %}
+            {% elif resource.resource_type == "geoapp" %}
               <a href="{% url 'geoapp_detail' geoappid=resource.id %}" class="btn btn-info btn-block">{% trans "Return to" %} {{ resource.type }}</a>
             {% endif %}
           </div>
@@ -131,11 +131,28 @@
                 <dd><a href="/groups/group/{{ resource.group.name }}/activity/">{{ group }}</a> </dd>
                 {% endif %}
         
-                <dt>{% trans "DOI" %}</dt>
-                <dd>{{ resource.doi|safe|escape }}</dd>
+                {% if resource.doi %}
+                  <dt>{% trans "DOI" %}</dt>
+                  <dd>{{ resource.doi|safe|escape }}</dd>
+                {% endif %}
+
+                {% if resource.related_publication %}
+                  <dt>{% trans "Related Publication" %}</dt>
+                  <dd>{{ resource.related_publication|safe }}</dd>
+                {% endif %}
         
                 <dt>{% trans "Author" %}</dt>
                 <dd>{{ resource.author }}</dd>
+
+                {% if resource.project_information %}
+                  <dt>{% trans "Project Information" %}</dt>
+                  <dd>{{ resource.project_information }}</dd>
+                {% endif %}
+
+                {% if resource.distributor %}
+                  <dt>{% trans "Distributor" %}</dt>
+                  <dd>{{ resource.distributor }}</dd>
+                {% endif %}
         
             </dl>
         
@@ -187,7 +204,7 @@
         
             </dl>
         
-            {% if resource.class_name != "Dataset" %}
+            {% if not resource.resource_type == "dataset" %}
               <dl class="dl-horizontal">
           
                   <dt>{% trans "Spatial Extent" %}</dt>
