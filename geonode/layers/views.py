@@ -50,6 +50,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
+from geonode.favorite.models import Favorite
 from geonode.layers.tasks import delete_shapefile_data
 from geonode.views import page_not_found_message, unauthorized_message
 from geonode.notifications_helper import toast_unauthorized
@@ -599,6 +600,11 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
                 granules = {"features": []}
                 all_granules = {"features": []}
 
+    try:
+        is_favorited = Favorite.objects.filter(user=request.user, object_id=layer.pk).exists()
+    except Favorite.DoesNotExist:
+        is_favorited = False
+
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(layer)
 
@@ -678,6 +684,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         "metadata": metadata,
         "attributes": json.dumps(data_tables[0]),
         "column_names": [k for k in _keys.keys()],
+        'is_favorited': is_favorited,
         "is_layer": True,
         "wps_enabled": settings.OGC_SERVER['default']['WPS_ENABLED'],
         "granules": granules,

@@ -42,6 +42,7 @@ from django.views.decorators.clickjacking import (
     xframe_options_exempt,
     xframe_options_sameorigin)
 from geonode.decorators import check_keyword_write_perms
+from geonode.favorite.models import Favorite
 from geonode.layers.models import Layer
 from geonode.maps.models import Map, MapLayer
 from geonode.layers.views import _resolve_layer
@@ -152,6 +153,11 @@ def map_detail(request, mapid, template='maps/map_detail.html'):
     layers = MapLayer.objects.filter(map=map_obj.id)
     links = map_obj.link_set.download()
 
+    try:
+        is_favorited = Favorite.objects.filter(user=request.user, object_id=map_obj.pk).exists()
+    except Favorite.DoesNotExist:
+        is_favorited = False
+
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(map_obj)
 
@@ -180,6 +186,7 @@ def map_detail(request, mapid, template='maps/map_detail.html'):
         'config': config,
         'resource': map_obj,
         'group': group,
+        'is_favorited': is_favorited,
         'layers': layers,
         'perms_list': perms_list,
         'permissions_json': permissions_json,
