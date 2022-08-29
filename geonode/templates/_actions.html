@@ -9,7 +9,7 @@
           <span class="mb-0">{{ resource.raw_data_citation|safe|escape }}</span>
         </div>
         <div class="col-sm-6 col-2">
-          <button class="btn" data-clipboard-target="#citation">
+          <button class="btn" data-clipboard-target="#citation" id="citation_copy">
             <i class="fa-solid fa-copy" title="Copy to clipboard"></i>
           </button>
         </div>
@@ -47,6 +47,33 @@
 
 {% block extra_script %}
   <script type="text/javascript">
-    new ClipboardJS('.btn');
+    $('#citation_copy').tooltip({
+      trigger: 'click',
+      placement: 'right'
+    });
+    
+    function setTooltip(btn, message) {
+      $(btn).tooltip('hide')
+        .attr('data-original-title', message)
+        .tooltip('show');
+    }
+    
+    function hideTooltip(btn) {
+      setTimeout(function() {
+        $(btn).tooltip('hide');
+      }, 1000);
+    }
+    
+    // Clipboard
+    var clipboard = new ClipboardJS("#citation_copy");
+    clipboard.on('success', function(e) {
+      setTooltip(e.trigger, 'Citation url copied!');
+      hideTooltip(e.trigger);
+    });
+    
+    clipboard.on('error', function(e) {
+      setTooltip(e.trigger, 'Citation url failed!');
+      hideTooltip(e.trigger);
+    });
   </script>
 {% endblock extra_script %}
