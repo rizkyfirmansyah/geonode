@@ -20,6 +20,11 @@
         }
     });
 
+    module.config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    }]);
+
     // Used to set the class of the filters based on the url parameters
     module.set_initial_filters_from_query = function(data, url_query, filter_param) {
         for (var i = 0; i < data.length; i++) {
@@ -815,6 +820,63 @@
                 article.addClass('resource_selected');
             }
         };
+
+        $scope.add_to_favorite = function(resource_id, is_favorited) {
+          var favoriteMsg = (status, msg) => {
+              return `
+              <div id="favoriteToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+                <div class="toast-message alert-`+status+` align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="toast-body">
+                    <span class="font-lg-1">`+msg+`</span>
+                    <button type="button" class="close pl-2" style="font-size: .9em" aria-label="Close" onclick="document.getElementById('favoriteToast').remove()">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `
+          }
+
+          if (!is_favorited) {
+              var postParams = {
+                method: 'POST',
+                data: {pk: resource_id},
+                url: siteUrl + "api/v2/resources/"+resource_id+"/favorite",
+                headers: {
+                    'Content-type': 'application/json;charset=utf-8'
+                }
+              };
+              $("#add-favorite-"+resource_id+"").html('<i class="fa-solid fa-star" title="Just added to your favorites"></i>')
+          } else {
+              var postParams = {
+                method: 'DELETE',
+                data: {pk: resource_id},
+                url: siteUrl + "api/v2/resources/"+resource_id+"/favorite",
+                headers: {
+                    'Content-type': 'application/json;charset=utf-8'
+                }
+              };
+              $("#add-favorite-"+resource_id+"").html('<i class="fa-regular fa-star" title="Just removed from your favorites"></i>')
+          }
+
+          $http(postParams).then(successCallback, errorCallback)
+
+          function successCallback(res) {
+              var msg = res.data.message;
+              $(document.body).append(favoriteMsg('success', msg));
+              setTimeout(function() {
+                $('#favoriteToast').remove();
+              }, 3000)
+          }
+
+          function errorCallback(res) {
+              var msg = res.data.message;
+              $(document.body).append(favoriteMsg('error', msg));
+              setTimeout(function() {
+                $('#favoriteToast').remove();
+              }, 3000)
+          }
+        }
 
         /*
          * Date management

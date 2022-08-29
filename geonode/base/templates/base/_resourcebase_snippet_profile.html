@@ -74,7 +74,7 @@
               {% endverbatim %}
               {% if request.user.is_authenticated and not request.user_agent.is_mobile %}
                 {% verbatim %}
-                  <div class="col-md-3 text-center" ng-controller="CartList">
+                  <div class="col align-self-center" ng-controller="CartList">
                     <button
                       class="btn btn-default btn-xs p-0"
                       ng-if="cart"
@@ -86,16 +86,18 @@
                 {% endverbatim %}
               {% endif %}
                 {% verbatim %}
-                <div class="col text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
+                <div class="col align-self-center"><a href="{{ item.detail_url }}" class="card-link d-block align-center text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
                 {% endverbatim %}
                 {% if DISPLAY_SOCIAL %}
                   {% verbatim %}
-                    <div class="col text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
+                    <div class="col align-self-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
                   {% endverbatim %}
                 {% endif %}
               {% if request.user.is_authenticated %}
                 {% verbatim %}
-                <div class="col text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
+                  <div class="col align-self-center">
+                    <button type="submit" ng-click="add_to_favorite(item.id, item.favorited)" class="btn btn-block text-muted"><span id="add-favorite-{{item.id}}"><i class="fa-{{ item.favorited ? 'solid' : 'regular' }} fa-star" title="{{ item.favorited ? 'Already saved as your favorites' : 'Add to favorite?' }}"></i></span></button>
+                  </div>
                 {% endverbatim %}
               {% endif %}
               {% verbatim %}

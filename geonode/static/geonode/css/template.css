@@ -2551,6 +2551,10 @@ color: #491217;
     height: 2em
 }
 
+.fa-star path {
+    fill: blue !important;
+}
+
 @-webkit-keyframes fadeIn {
     from {
         opacity: 0;
@@ -5241,7 +5245,6 @@ footer li a:hover {
     .wrapper {
       position: fixed;
       left: 0;
-      top: var(--header-height);
       height: 100vh;
     }
 
