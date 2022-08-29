@@ -87,8 +87,12 @@
               {% endif %}
                 {% verbatim %}
                 <div class="col text-center"><a href="{{ item.detail_url }}" class="card-link text-muted"><i class="fa-solid fa-eye" title="See details"></i>{{ item.popular_count }}</a></div>
-                <div class="col text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
                 {% endverbatim %}
+                {% if DISPLAY_SOCIAL %}
+                  {% verbatim %}
+                    <div class="col text-center"><a href="{{ item.detail_url }}#share" class="card-link text-muted"><i class="fa-solid fa-share" title="Share"></i>{{ item.share_count }}</a></div>
+                  {% endverbatim %}
+                {% endif %}
               {% if request.user.is_authenticated %}
                 {% verbatim %}
                 <div class="col text-center"><a href="{{ item.detail_url }}#rate" class="card-link text-muted"><i class="fa-regular fa-star" title="Add to favorite"></i>{{ item.rating }}</a></div>
