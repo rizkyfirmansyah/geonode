@@ -78,17 +78,17 @@ logger = logging.getLogger("geonode.datasets.views")
 
 ALLOWED_DOC_TYPES = settings.ALLOWED_DOCUMENT_TYPES
 
-_PERMISSION_MSG_DELETE = _("You are not permitted to delete this document")
-_PERMISSION_MSG_GENERIC = _("You do not have permissions for this document.")
-_PERMISSION_MSG_MODIFY = _("You are not permitted to modify this document.")
-_PERMISSION_MSG_METADATA = _("You are not permitted to modify this document's metadata.")
-_PERMISSION_MSG_VIEW = _("You are not permitted to view this document.")
+_PERMISSION_MSG_DELETE = _("You are not permitted to delete this dataset")
+_PERMISSION_MSG_GENERIC = _("You do not have permissions for this dataset.")
+_PERMISSION_MSG_MODIFY = _("You are not permitted to modify this dataset.")
+_PERMISSION_MSG_METADATA = _("You are not permitted to modify this dataset's metadata.")
+_PERMISSION_MSG_VIEW = _("You are not permitted to view this dataset.")
 
 
-def _resolve_document(request, docid, permission='base.change_resourcebase',
+def _resolve_dataset(request, docid, permission='base.change_resourcebase',
                       msg=_PERMISSION_MSG_GENERIC, **kwargs):
     '''
-    Resolve the document by the provided primary key and check the optional permission.
+    Resolve the dataset by the provided primary key and check the optional permission.
     '''
     return resolve_object(request, Dataset, {'pk': docid},
                           permission=permission, permission_msg=msg, **kwargs)
@@ -97,10 +97,10 @@ def _resolve_document(request, docid, permission='base.change_resourcebase',
 @registered_users
 def dataset_detail(request, docid):
     """
-    The view that show details of each document
+    The view that show details of each dataset
     """
     try:
-        document = _resolve_document(
+        dataset =_resolve_dataset(
             request,
             docid,
             'base.view_resourcebase',
@@ -112,41 +112,41 @@ def dataset_detail(request, docid):
     except Exception:
         return page_not_found_message(request)
 
-    if not document:
+    if not dataset:
         return page_not_found_message(request)
 
     # Add metadata_author or poc if missing
-    document.add_missing_metadata_author_or_poc()
+    dataset.add_missing_metadata_author_or_poc()
 
-    related = get_related_resources(document)
-    files = File.objects.filter(dataset_id__in=[document.id])
+    related = get_related_resources(dataset)
+    files = File.objects.filter(dataset_id__in=[dataset.id])
     # Update count for popularity ranking,
     # but do not includes admins or resource owners
-    if request.user != document.owner and not request.user.is_superuser:
+    if request.user != dataset.owner and not request.user.is_superuser:
         Dataset.objects.filter(
-            id=document.id).update(
+            id=dataset.id).update(
             popular_count=F('popular_count') + 1)
 
-    metadata = document.link_set.metadata().filter(
+    metadata = dataset.link_set.metadata().filter(
         name__in=settings.DOWNLOAD_FORMATS_METADATA)
 
     try:
-        is_favorited = Favorite.objects.filter(user=request.user, object_id=document.pk).exists()
+        is_favorited = Favorite.objects.filter(user=request.user, object_id=dataset.pk).exists()
     except Favorite.DoesNotExist:
         is_favorited = False
 
     # Call this first in order to be sure "perms_list" is correct
-    permissions_json = _perms_info_json(document)
+    permissions_json = _perms_info_json(dataset)
 
     perms_list = list(
-        document.get_self_resource().get_user_perms(request.user)
-        .union(document.get_user_perms(request.user))
+        dataset.get_self_resource().get_user_perms(request.user)
+        .union(dataset.get_user_perms(request.user))
     )
 
     group = None
-    if document.group:
+    if dataset.group:
         try:
-            group = GroupProfile.objects.get(slug=document.group.name)
+            group = GroupProfile.objects.get(slug=dataset.group.name)
         except ObjectDoesNotExist:
             group = None
 
@@ -168,7 +168,7 @@ def dataset_detail(request, docid):
 
     context_dict = {
         'access_token': access_token,
-        'resource': document,
+        'resource': dataset,
         'files': files,
         'perms_list': perms_list,
         'permissions_json': permissions_json,
@@ -187,12 +187,12 @@ def dataset_detail(request, docid):
 
     if settings.SOCIAL_ORIGINS:
         context_dict["social_links"] = build_social_links(
-            request, document)
+            request, dataset)
 
     if getattr(settings, 'EXIF_ENABLED', False):
         try:
             from geonode.datasets.exif.utils import exif_extract_dict
-            exif = exif_extract_dict(document)
+            exif = exif_extract_dict(dataset)
             if exif:
                 context_dict['exif_data'] = exif
         except Exception:
@@ -201,9 +201,9 @@ def dataset_detail(request, docid):
     if request.user.is_authenticated:
         if getattr(settings, 'FAVORITE_ENABLED', False):
             from geonode.favorite.utils import get_favorite_info
-            context_dict["favorite_info"] = get_favorite_info(request.user, document)
+            context_dict["favorite_info"] = get_favorite_info(request.user, dataset)
 
-    register_event(request, EventType.EVENT_VIEW, document)
+    register_event(request, EventType.EVENT_VIEW, dataset)
 
     return render(
         request,
@@ -222,35 +222,35 @@ def dataset_link(request, docid):
 
 def dataset_embed(request, docid):
     from django.http.response import HttpResponseRedirect
-    document = get_object_or_404(File, pk=docid)
+    dataset =get_object_or_404(File, pk=docid)
 
     if not request.user.has_perm(
             'base.download_resourcebase',
-            obj=document.get_self_resource()):
+            obj=dataset.get_self_resource()):
         return HttpResponse(
             loader.render_to_string(
                 'error/401.html', context={
-                    'error_message': _("You are not allowed to view this document.")}, request=request), status=401)
-    if document.is_image:
-        if document.doc_url:
-            imageurl = document.doc_url
+                    'error_message': _("You are not allowed to view this dataset.")}, request=request), status=401)
+    if dataset.is_image:
+        if dataset.doc_url:
+            imageurl = dataset.doc_url
         else:
-            imageurl = reverse('dataset_link', args=(document.id,))
+            imageurl = reverse('dataset_link', args=(dataset.id,))
         context_dict = {
             "image_url": imageurl,
-            "resource": document.get_self_resource(),
+            "resource": dataset.get_self_resource(),
         }
         return render(
             request,
             "datasets/dataset_embed.html",
             context_dict
         )
-    if document.doc_url:
-        return HttpResponseRedirect(document.doc_url)
+    if dataset.doc_url:
+        return HttpResponseRedirect(dataset.doc_url)
     else:
         context_dict = {
-            "dataset_link": reverse('dataset_link', args=(document.id,)),
-            "resource": document.get_self_resource(),
+            "dataset_link": reverse('dataset_link', args=(dataset.id,)),
+            "resource": dataset.get_self_resource(),
         }
         return render(
             request,
@@ -320,9 +320,9 @@ def dataset_metadata(
         docid,
         template='datasets/dataset_metadata.html',
         ajax=True):
-    document = None
+    dataset =None
     try:
-        document = _resolve_document(
+        dataset =_resolve_dataset(
             request,
             docid,
             'base.change_resourcebase_metadata',
@@ -333,19 +333,19 @@ def dataset_metadata(
     except Exception:
         return page_not_found_message(request)
 
-    if not document:
+    if not dataset:
         return page_not_found_message(request)
 
     # Add metadata_author or poc if missing
-    document.add_missing_metadata_author_or_poc()
-    poc = document.poc
-    metadata_author = document.metadata_author
-    topic_category = document.category.all()
+    dataset.add_missing_metadata_author_or_poc()
+    poc = dataset.poc
+    metadata_author = dataset.metadata_author
+    topic_category = dataset.category.all()
 
     if request.method == "POST":
         dataset_form = DatasetForm(
             request.POST,
-            instance=document,
+            instance=dataset,
             prefix="resource")
         category_form = CategoryForm(request.POST, prefix="category_choice_field",
                     initial=(
@@ -400,26 +400,26 @@ def dataset_metadata(
                 if author_form.has_changed and author_form.is_valid():
                     new_author = author_form.save()
 
-            document = dataset_form.instance
+            dataset =dataset_form.instance
             if new_poc is not None and new_author is not None:
-                document.poc = new_poc
-                document.metadata_author = new_author
-            document.keywords.clear()
-            document.keywords.add(*new_keywords)
-            document.regions.clear()
-            document.regions.add(*new_regions)
-            document.category.clear()
-            document.category.add(*new_categories)
-            document.save(notify=True)
+                dataset.poc = new_poc
+                dataset.metadata_author = new_author
+            dataset.keywords.clear()
+            dataset.keywords.add(*new_keywords)
+            dataset.regions.clear()
+            dataset.regions.add(*new_regions)
+            dataset.category.clear()
+            dataset.category.add(*new_categories)
+            dataset.save(notify=True)
             dataset_form.save_many2many()
 
-            register_event(request, EventType.EVENT_CHANGE_METADATA, document)
+            register_event(request, EventType.EVENT_CHANGE_METADATA, dataset)
             if not ajax:
                 return HttpResponseRedirect(
                     reverse(
                         'dataset_detail',
                         args=(
-                            document.id,
+                            dataset.id,
                         )))
 
             try:
@@ -434,36 +434,36 @@ def dataset_metadata(
                     tkeywords_data = tkeywords_data.filter(
                         thesaurus__identifier=thesaurus_setting['name']
                     )
-                    document.tkeywords.set(tkeywords_data)
+                    dataset.tkeywords.set(tkeywords_data)
                 elif Thesaurus.objects.all().exists():
                     fields = tkeywords_form.cleaned_data
-                    document.tkeywords.set(tkeywords_form.cleanx(fields))
+                    dataset.tkeywords.set(tkeywords_form.cleanx(fields))
 
             except Exception:
                 tb = traceback.format_exc()
                 logger.error(tb)
 
             toast_title = _("Update Metadata")
-            message = _("Metadata {} has been updated".format(document.title))
+            message = _("Metadata {} has been updated".format(dataset.title))
             messages.success(request, message, extra_tags=toast_title)
 
             return HttpResponse(json.dumps({'message': "Metadata has been updated"}))
 
     else:
-        dataset_form = DatasetForm(instance=document, prefix="resource")
+        dataset_form = DatasetForm(instance=dataset, prefix="resource")
         dataset_form.disable_keywords_widget_for_non_superuser(request.user)
         #  set initial values for category form
         ids = list(c.id for c in topic_category)
         category_form = CategoryForm(
                     prefix="category_choice_field",
                     initial=ids)
-        region_list = list(r.id for r in document.regions.all())
+        region_list = list(r.id for r in dataset.regions.all())
         region_form = RegionsForm(
                     prefix="region_choice_field",
                     initial=region_list)
 
         # Keywords from THESAURUS management
-        doc_tkeywords = document.tkeywords.all()
+        doc_tkeywords = dataset.tkeywords.all()
         if hasattr(settings, 'THESAURUS') and settings.THESAURUS:
             warnings.warn('The settings for Thesaurus has been moved to Model, \
             this feature will be removed in next releases', DeprecationWarning)
@@ -488,7 +488,7 @@ def dataset_metadata(
                         tb = traceback.format_exc()
                         logger.error(tb)
 
-            tkeywords_form = TKeywordForm(instance=document)
+            tkeywords_form = TKeywordForm(instance=dataset)
         else:
             tkeywords_form = ThesaurusAvailableForm(prefix='tkeywords')
             #  set initial values for thesaurus form
@@ -514,7 +514,7 @@ def dataset_metadata(
         if not request.user.is_superuser:
             can_change_metadata = request.user.has_perm(
                 'change_resourcebase_metadata',
-                document.get_self_resource())
+                dataset.get_self_resource())
             try:
                 is_manager = request.user.groupmember_set.all().filter(role='manager').exists()
             except Exception:
@@ -526,10 +526,10 @@ def dataset_metadata(
                 dataset_form.fields['is_approved'].widget.attrs.update(
                     {'disabled': 'true'})
 
-    register_event(request, EventType.EVENT_VIEW_METADATA, document)
+    register_event(request, EventType.EVENT_VIEW_METADATA, dataset)
     return render(request, template, context={
-        "resource": document,
-        "dataset": document,
+        "resource": dataset,
+        "dataset": dataset,
         "dataset_form": dataset_form,
         "poc_form": poc_form,
         "author_form": author_form,
@@ -560,16 +560,16 @@ def dataset_metadata_advanced(request, docid):
 def dataset_remove(request):
     docid = request.POST['docid']
     try:
-        document = _resolve_document(
+        dataset =_resolve_dataset(
             request,
             docid,
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
-        logger.debug(f'Deleting File {document}')
-        # delete_orphaned_thumbnail.apply((document.thumbnail_path,))
-        document.delete()
-        message = _("File: {} has been deleted".format(document.title))
-        register_event(request, EventType.EVENT_REMOVE, document)
+        logger.debug(f'Deleting File {dataset}')
+        # delete_orphaned_thumbnail.apply((dataset.thumbnail_path,))
+        dataset.delete()
+        message = _("File: {} has been deleted".format(dataset.title))
+        register_event(request, EventType.EVENT_REMOVE, dataset)
         messages.error(request, message, extra_tags=_PERMISSION_MSG_DELETE)
 
         return redirect('catalogue_browse')
@@ -579,7 +579,7 @@ def dataset_remove(request):
 
     except Exception:
         traceback.print_exc()
-        message = f'{_("We are incredibly sorry, we could not execute to delete")}: {document.title}.'
+        message = f'{_("We are incredibly sorry, we could not execute to delete")}: {dataset.title}.'
         message += f'{_("Please submit a ticket or fill the form in the help & support. Thank you.")}'
 
         messages.error(request, message, extra_tags=_PERMISSION_MSG_DELETE)
@@ -593,7 +593,7 @@ def dataset_metadata_detail(
         docid,
         template='datasets/dataset_metadata_detail.html'):
     try:
-        document = _resolve_document(
+        dataset =_resolve_dataset(
             request,
             docid,
             'view_resourcebase',
@@ -604,19 +604,19 @@ def dataset_metadata_detail(
     except Exception:
         return page_not_found_message(request)
 
-    if not document:
+    if not dataset:
         return page_not_found_message(request)
 
     group = None
-    if document.group:
+    if dataset.group:
         try:
-            group = GroupProfile.objects.get(slug=document.group.name)
+            group = GroupProfile.objects.get(slug=dataset.group.name)
         except ObjectDoesNotExist:
             group = None
     site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
-    register_event(request, EventType.EVENT_VIEW_METADATA, document)
+    register_event(request, EventType.EVENT_VIEW_METADATA, dataset)
     return render(request, template, context={
-        "resource": document,
+        "resource": dataset,
         "group": group,
         'SITEURL': site_url
     })
@@ -659,7 +659,7 @@ def render_tabular(request, docid):
       Read tabular files directly from files and return as html
       """
       try:
-          document = _resolve_document(
+          dataset =_resolve_dataset(
               request,
               docid,
               'base.view_resourcebase',
@@ -672,25 +672,25 @@ def render_tabular(request, docid):
           df = df.replace(np.nan, '', regex=True)
           return df
       
-      if document.files:
-          tabular = [os.path.basename(f) for f in document.files][0]
-          data = os.path.join(settings.MEDIA_ROOT, settings.DOCUMENT_LOCATION, 'tabular', tabular)
-          if document.extension == 'csv':
+      if dataset.files:
+          tabular = [os.path.basename(f) for f in dataset.files][0]
+          data = os.path.join(settings.MEDIA_ROOT, settings.dataset_LOCATION, 'tabular', tabular)
+          if dataset.extension == 'csv':
               df = pd.read_csv(data)
               df = df.head(200)
               replace_nan(df)
 
-          elif document.extension == 'tsv':
+          elif dataset.extension == 'tsv':
               df = pd.read_csv(data, sep='\t', header=0)
               df = df.head(200)
               replace_nan(df)
 
-          elif document.extension == 'sav':
+          elif dataset.extension == 'sav':
               df = pd.read_spss(data)
               df = df.head(200)
               replace_nan(df)
 
-          elif document.extension == 'dta':
+          elif dataset.extension == 'dta':
               ## need to find other methods to read efficiently
               stata = pd.read_stata(data, chunksize=5000)
               df = pd.DataFrame()
