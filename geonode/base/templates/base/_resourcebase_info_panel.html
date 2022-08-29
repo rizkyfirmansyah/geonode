@@ -243,6 +243,11 @@
     <dd>{{ resource.supplemental_information|safe|escape }}</dd>
     {% endif %}
 
+    {% if resource.distributor %}
+      <dt>{% trans "Distributor" %}</dt>
+      <dd>{{ resource.distributor }}</dd>
+    {% endif %}
+
     {% if resource.spatial_representation_type %}
     <dt>{% trans "Spatial Representation Type" %}</dt>
     <dd>{{ resource.spatial_representation_type|safe }}</dd>
