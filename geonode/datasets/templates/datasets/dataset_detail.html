@@ -242,18 +242,22 @@
                 <div class="col-md-10 mt-2">
                     <p>{{ file.file_name }}</p>
                 </div>
-                <div class="col-md-2 mt-2">
-                    <span><label for="file_description">Description</label></span>
-                </div>
-                <div class="col-md-10 mt-2">
-                    <p>{{ file.file_description }}</p>
-                </div>
-                <div class="col-md-2 mt-2">
-                    <span><label for="file_data_quality">Data Quality</label></span>
-                </div>
-                <div class="col-md-10 mt-2">
-                    <p>{{ file.file_data_quality }}</p>
-                </div>
+                {% if file.file_description %}
+                    <div class="col-md-2 mt-2">
+                        <span><label for="file_description">Description</label></span>
+                    </div>
+                    <div class="col-md-10 mt-2">
+                        <p>{{ file.file_description }}</p>
+                    </div>
+                {% endif %}
+                {% if file.file_data_quality %}
+                    <div class="col-md-2 mt-2">
+                        <span><label for="file_data_quality">Data Quality</label></span>
+                    </div>
+                    <div class="col-md-10 mt-2">
+                        <p>{{ file.file_data_quality }}</p>
+                    </div>
+                {% endif %}
               </div>
           </div>
         </div>
