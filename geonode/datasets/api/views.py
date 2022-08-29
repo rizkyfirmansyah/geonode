@@ -525,17 +525,17 @@ class DatasetIngestView(viewsets.ModelViewSet):
 
                 if resources.extension == 'csv':
                     df = pd.read_csv(resources.file)
-                    df = df.head(200)
+                    df = df.head(1000)
                     replace_nan(df)
 
                 elif resources.extension == 'tsv':
                     df = pd.read_csv(resources.file, sep='\t', header=0)
-                    df = df.head(200)
+                    df = df.head(1000)
                     replace_nan(df)
                 
                 elif resources.extension == 'sav':
                     df = pd.read_spss(resources.file)
-                    df = df.head(200)
+                    df = df.head(1000)
                     replace_nan(df)
 
                 classes = 'table table-sm'

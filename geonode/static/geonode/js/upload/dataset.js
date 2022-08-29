@@ -432,7 +432,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                     scrollCollapse: true,
                     paging:         true
                   });
-                  $("#previewDatasetFiles .modal-title").html("Preview File <span class='text-muted small'>(limited to 200 data)</span>")
+                  $("#previewDatasetFiles .modal-title").html("Preview File <span class='text-muted small' id='tabular'>(limited to 1000 data)</span>")
                 },
                 beforeSend: function() {
                   $('#dataframe_container').append(loading);
@@ -455,6 +455,10 @@ var dataset = angular.module('dataset', ['ngCookies']);
             render_html = '<p>We have a trouble for previewing your file, please download <a href='+url+' target="_blank">here</a></p>'
         }        
         $("#preview_file").append('<div id="render_file">'+render_html+'</div>');
+        if (!type == 'tabular') {
+            $("#previewDatasetFiles .modal-title").html("Preview File")
+            $("#tabular").remove();
+        }
         if ($("#pdf_renderer").length) {
             dataset.renderPDFFile(id);
         }
