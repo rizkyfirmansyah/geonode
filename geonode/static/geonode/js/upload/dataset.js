@@ -377,7 +377,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
 
     dataset.render_file = function(ext, type, url, id) {
         var render_html;
-        if (ext == 'pdf') {
+        if (ext == 'odp') {
             render_html = `
               <canvas id="pdf_renderer" class="w-100"></canvas>
               <div class="row justify-content-center mt-2">
@@ -390,7 +390,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
               </div>
             `
         }
-        else if (type == 'word' || type == 'excel' || type == 'powerpoint') {
+        else if (type == 'word' || type == 'excel' || type == 'powerpoint' || type == 'pdf') {
             render_html = '<iframe src='+ url +' width="100%" height="480px" frameborder="0"></iframe>'
         }
         else if (type == 'image') {
@@ -479,7 +479,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
             }).modal('show');
             var preview;
             var download_url = siteUrl + "datasets/upload/file/preview/" + id;
-            if (type == 'word' || type == 'excel' || type == 'powerpoint') {
+            if (type == 'word' || type == 'excel' || type == 'powerpoint' || type == 'pdf') {
                 preview = "https://docs.google.com/gview?url=" + download_url + "&embedded=true";
             } else {
                 preview = download_url;
