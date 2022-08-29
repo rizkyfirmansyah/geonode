@@ -79,10 +79,22 @@
                 <dt>{% trans resource.date_type|title %} {% trans "Date" %}</dt>
                 <dd>{{ resource.date }}</dd>
                 {% endif %}
-        
-                {% if resource.display_type %}
-                <dt>{% trans "Type" %}</dt>
-                <dd>{{ resource.display_type }}</dd>
+
+                {% if resource.keyword_list %}
+                <dt>{% trans "Keywords" %}</dt>
+                <dd>{% for keyword in resource.keyword_list %}
+                    {{ keyword }}
+                    {% endfor %}</dd>
+                {% endif %}
+
+                {% if resource.category.count > 0 %}
+                <dt>{% trans "Category" %}</dt>
+                {% for category in resource.category.all %}
+                    <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.title %}</a> {% if category.title %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+                    <dd class="category-more-{{ category.id }} collapse">
+                    {% trans category.gn_description %}
+                    </dd>
+                {% endfor %}
                 {% endif %}
         
                 {% if resource.data_type %}
@@ -93,23 +105,6 @@
                     {{ resource.data_type.gn_description }}
                 </dd>
                 {% endif %}
-                {% endif %}
-        
-                {% if resource.keyword_list %}
-                <dt>{% trans "Keywords" %}</dt>
-                <dd>{% for keyword in resource.keyword_list %}
-                    {{ keyword }}
-                    {% endfor %}</dd>
-                {% endif %}
-        
-                {% if resource.category.count > 0 %}
-                <dt>{% trans "Category" %}</dt>
-                {% for category in resource.category.all %}
-                    <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.title %}</a> {% if category.title %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
-                    <dd class="category-more-{{ category.id }} collapse">
-                    {% trans category.gn_description %}
-                    </dd>
-                {% endfor %}
                 {% endif %}
         
                 {% if resource.regions.all %}

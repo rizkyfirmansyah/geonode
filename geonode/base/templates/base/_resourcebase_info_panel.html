@@ -55,11 +55,6 @@
       {% endif %}
     {% endif %}
 
-    {% if resource.display_type %}
-    <dt>{% trans "Type" %}</dt>
-    <dd>{{ resource.display_type }}</dd>
-    {% endif %}
-
     {% if resource.keywords.count > 0 or resource.tkeywords.count > 0 %}
     <dt>{% trans "Keywords" %}</dt>
       <dd itemprop="keywords">
