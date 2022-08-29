@@ -110,10 +110,10 @@
             {% if files.count == 1 %}
                 {% for file in files %}
                     {% if file.file_url %}
-                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{{ file.file_url }}" onclick="history.go(0);">{% trans "Download Datasets" %}</a>
+                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{{ file.file_url }}">{% trans "Download Datasets" %}</a>
                     {% endif %}
                     {% if file.file %}
-                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{% url "datasets-download_dataset_files" resource.id %}">{% trans "Download Datasets" %}</a>
+                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{% url "datasets-download_dataset_file" resource.id %}">{% trans "Download Datasets" %}</a>
                     {% endif %}
                 {% endfor %}
             {% else %}
