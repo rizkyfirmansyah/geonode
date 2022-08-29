@@ -408,7 +408,7 @@ def sync(options):
     sh(f"{settings} python -W ignore manage.py migrate --noinput")
     sh(f"{settings} python -W ignore manage.py loaddata sample_admin.json")
     sh(f"{settings} python -W ignore manage.py loaddata default_oauth_apps.json")
-    sh(f"{settings} python -W ignore manage.py loaddata initial_data.json")
+    sh(f"{settings} python -W ignore manage.py loaddata fixtures/initial_data.json")
     if 'django_celery_beat' in INSTALLED_APPS:
         sh(f"{settings} python -W ignore manage.py loaddata geonode/base/fixtures/django_celery_beat.json")
     sh(f"{settings} python -W ignore manage.py set_all_layers_alternate")
