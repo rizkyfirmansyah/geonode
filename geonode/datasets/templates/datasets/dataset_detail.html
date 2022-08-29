@@ -110,14 +110,14 @@
             {% if files.count == 1 %}
                 {% for file in files %}
                     {% if file.file_url %}
-                      <a target="_blank" href="{{ file.file_url }}" onclick="history.go(0);"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{{ file.file_url }}" onclick="history.go(0);">{% trans "Download Datasets" %}</a>
                     {% endif %}
                     {% if file.file %}
-                      <a target="_blank" href="{% url "datasets-download_dataset_files" resource.id %}"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{% url "datasets-download_dataset_files" resource.id %}">{% trans "Download Datasets" %}</a>
                     {% endif %}
                 {% endfor %}
             {% else %}
-              <a target="_blank" href="{% url "datasets-download_dataset_files" resource.id %}"><button class="btn btn-download btn-md btn-block">{% trans "Download Datasets" %}</button></a>
+              <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{% url "datasets-download_dataset_files" resource.id %}">{% trans "Download Datasets" %}</a>
             {% endif %}
         {% else %}
           <button class="btn btn-info btn-md btn-block" data-toggle="modal" data-target="#requestDownloadLayer">Request Download</button>
@@ -192,7 +192,7 @@
 {% block additional_body %}
   {% if files %}
     {% verbatim %}
-    <div class="col-md-12 p-0" ng-controller="DatasetList">
+    <div ng-controller="DatasetList">
     {% endverbatim %}
       <div class="card-header">
         <div class="row">
