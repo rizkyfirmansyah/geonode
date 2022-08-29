@@ -432,6 +432,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
                     scrollCollapse: true,
                     paging:         true
                   });
+                  $("#previewDatasetFiles .modal-title").html("Preview File <span class='text-muted small'>(limited to 200 data)</span>")
                 },
                 beforeSend: function() {
                   $('#dataframe_container').append(loading);
