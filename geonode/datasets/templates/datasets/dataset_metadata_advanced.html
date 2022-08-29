@@ -5,7 +5,7 @@
 {% load crispy_forms_tags %}
 {% load guardian_tags %}
 
-{% block title %}{{ document.title }} — {{ block.super }}{% endblock %}
+{% block title %}{{ dataset.title }} — {{ block.super }}{% endblock %}
 
 {% block body_class %}{% trans "data" %}{% endblock %}
 
@@ -26,11 +26,11 @@
 
 <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
 
-<form id="metadata_update" class="form-horizontal" action="{% url "dataset_metadata" document.id %}" method="POST">
+<form id="metadata_update" class="form-horizontal" action="{% url "dataset_metadata" dataset.id %}" method="POST">
   <div class="card" id="fixed-header">
     <h3 class="card-header text-center">
-      {% blocktrans with document.title as document_title %}
-        Edit Metadata for {{ document_title }}
+      {% blocktrans with dataset.title as dataset_title %}
+        Edit Metadata for {{ dataset_title }}
       {% endblocktrans %}
     </h3>
     <div class="row w-100 m-0 mb-2">

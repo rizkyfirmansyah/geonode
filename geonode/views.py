@@ -152,7 +152,7 @@ def server_error_view(request, template_name="error/500.html"):
 def page_not_found_message(request, template_name="error/404.html"):
     out = {'success': False}
     out['status_code'] = 404
-    out['message'] = _("Hey... what are you trying to look for? Nothing is here.")
+    out['error_message'] = _("Hey... what are you trying to look for? Nothing is here.")
     
     return render(request, template_name, context=out)
 
@@ -160,7 +160,7 @@ def page_not_found_message(request, template_name="error/404.html"):
 def unauthorized_message(request, message, template_name="error/403.html"):
     out = {'success': False}
     out['status_code'] = 403
-    out['message'] = message
+    out['error_message'] = message
     
     return render(request, template_name, context=out)
 

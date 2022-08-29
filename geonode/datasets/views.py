@@ -31,6 +31,7 @@ from django.views.decorators.csrf import csrf_exempt
 from geonode.decorators import registered_users
 from geonode.datasets.tasks import delete_orphaned_thumbnail
 from geonode.favorite.models import Favorite
+from geonode.notifications_helper import toast_unauthorized
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -306,6 +307,12 @@ class DatasetUpdateView(LoginRequiredMixin, CreateView):
         context['files'] = files
 
         return context
+    
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser and not request.user.has_perm('change_resourcebase'):
+            return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 def dataset_metadata(

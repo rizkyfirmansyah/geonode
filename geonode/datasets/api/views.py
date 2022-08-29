@@ -54,6 +54,7 @@ from geonode.storage.manager import storage_manager
 
 from geonode.base.models import ResourceBase
 from geonode.base.api.serializers import ResourceBaseSerializer
+from django.template import loader
 
 from .serializers import DatasetIngestFileSerializer, DatasetIngestUrlSerializer, DatasetSerializer
 from .permissions import DocumentPermissionsFilter
@@ -183,6 +184,12 @@ class DatasetsViewSet(DynamicModelViewSet):
     )
     def edit_dataset_files(self, request, dataset_id):
         resources = File.objects.filter(dataset_id__in=[dataset_id])
+        exclude = []
+        for resource in resources:
+            if not request.user.is_superuser and \
+            not request.user.has_perm('datasets.change_resourcebase', resource):
+                exclude.append(resource.id)
+        resources = resources.exclude(id__in=exclude)
         serializer = DatasetSerializer(instance=resources, embed=True, many=True)
 
         return Response({"files": serializer.data, "length": resources.count()})
@@ -249,6 +256,11 @@ class DatasetsViewSet(DynamicModelViewSet):
     def download_dataset_file(self, request, pk):
         file = File.objects.filter(id=pk).get()
         filename = file.file_name.split(".")[0]
+        if not request.user.is_superuser and not request.user.has_perm('datasets.download_resourcebase', file):
+            return HttpResponse(
+                loader.render_to_string(
+                    'error/403.html', context={
+                        'error_message': _("You are not allowed to download this resource.")}, request=request), status=401)
         try:
             if file.file and storage_manager.exists(file.file):
                 return DownloadResponse(
@@ -274,7 +286,7 @@ class DatasetsViewSet(DynamicModelViewSet):
         url_name="download_dataset_files",
         methods=['post', 'get'],
         permission_classes=[
-            IsAuthenticated,
+            IsAuthenticated
         ]
     )
     def download_dataset_files(self, request, dataset_id):
@@ -284,6 +296,13 @@ class DatasetsViewSet(DynamicModelViewSet):
         import shutil
         resources = File.objects.filter(dataset__id__in=[dataset_id])
         dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
+        exclude = []
+        for resource in resources:
+            if not request.user.is_superuser and \
+            not request.user.has_perm('datasets.download_resourcebase', resource):
+                exclude.append(resource.id)
+        resources = resources.exclude(id__in=exclude)
+
         toast_title = f"Download Dataset Files"
         output = io.BytesIO()
         zf = ZipFile(output, 'w', ZIP_DEFLATED)
@@ -301,41 +320,48 @@ class DatasetsViewSet(DynamicModelViewSet):
 
         try:
             try:
-                for file in resources:
-                    if file.file:
-                        fdir, fname = os.path.split(file.file)
-                        zf.write(file.file, arcname=fname)
-                    elif file.file_url:
-                        tempdir = mkdtemp()
-                        response = requests.get(file.file_url, stream=True)
-                        file_size = int(response.headers['Content-length'])
-                        if file_size < 200000000:
-                            if "drive.google" in file.file_url:
-                                download_file_from_google_drive(file.file_url, file.file_name, os.path.join(tempdir, file.file_name))
-                            elif "sharepoint.com" in file.file_url:
-                                messages.error(request, message=f"Apologies we couldn't download the file from sharepoint right now. Please find the external file below and download manually.", extra_tags=toast_title)
-                            else:
-                                content_type = response.headers['content-type']
-                                extension = mimetypes.guess_extension(content_type)
-                                if response.status_code != requests.codes.ok:
-                                    return HttpResponse("File is not available", status=404)
+                if not resources:
+                    return HttpResponse(loader.render_to_string(
+                        'error/403.html', context={
+                            'error_message': _("You are not allowed to download this resource.")}, request=request), status=401)
+                else:
+                    try:
+                        for file in resources:
+                            if file.file:
+                                fdir, fname = os.path.split(file.file)
+                                zf.write(file.file, arcname=fname)
+                            elif file.file_url:
+                                try:
+                                    tempdir = mkdtemp()
+                                    response = requests.get(file.file_url, stream=True, headers={'Accept-Encoding': None})
+                                    if "drive.google" in file.file_url:
+                                        download_file_from_google_drive(file.file_url, file.file_name, os.path.join(tempdir, file.file_name))
+                                    elif "sharepoint.com" in file.file_url:
+                                        messages.error(request, message=f"Apologies we couldn't download the file from sharepoint right now. Please find the external file below and download manually.", extra_tags=toast_title)
+                                    else:
+                                        toast_title = f"Download External Files"
+                                        file_size = int(response.headers['Content-length'])
+                                        if file_size < 200000000:
+                                            content_type = response.headers['content-type']
+                                            extension = mimetypes.guess_extension(content_type)
+                                            if response.status_code != requests.codes.ok:
+                                                return HttpResponse("File is not available", status=404)
 
-                                if extension:
-                                    zf.writestr(f'{file.file_name}{extension}', response.content)
-                                else:
-                                    zf.writestr(f'{file.file_name}', response.content)
-                        else:
-                            msg = f"Apologies we couldn't download the file from your external url. Your external file size: {human_size(file_size)} exceeds the server capacity to process. Please find the external file below and download manually."
-                            messages.error(request, message=msg, extra_tags=toast_title)
+                                            if extension:
+                                                zf.writestr(f'{file.file_name}{extension}', response.content)
+                                            else:
+                                                zf.writestr(f'{file.file_name}', response.content)
+                                        else:
+                                            msg = f"Apologies we couldn't download the file from your external url. Your external file size: {human_size(file_size)} exceeds the server capacity to process. Please find the external file below and download manually."
+                                            messages.error(request, message=msg, extra_tags=toast_title)
+                                finally:
+                                    shutil.rmtree(tempdir, ignore_errors=True)
+                    finally:
+                        zf.close()
+                        return HttpResponse(output.getvalue(), content_type='application/zip', headers={'Content-Disposition': 'attachment; filename='f"{dataset}.zip"''})
 
             except FileNotFoundError:
                 logger.error(f"Try to download dataset files but not found")
-
-            finally:
-                zf.close()
-                shutil.rmtree(tempdir, ignore_errors=True)
-
-            return HttpResponse(output.getvalue(), content_type='application/zip', headers={'Content-Disposition': 'attachment; filename='f"{dataset}.zip"''})
 
         except NotImplementedError as e:
             logger.error(e)
