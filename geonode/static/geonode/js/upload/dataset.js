@@ -479,12 +479,11 @@ var dataset = angular.module('dataset', ['ngCookies']);
             }).modal('show');
             var preview;
             var download_url = siteUrl + "datasets/upload/file/preview/" + id;
-            if (type == 'word' || type == 'excel' || type == 'powerpoint' || ext == 'presentation') {
+            if (type == 'word' || type == 'excel' || type == 'powerpoint' || ext == 'pdf') {
                 preview = "https://docs.google.com/gview?url=" + download_url + "&embedded=true";
             } else {
                 preview = download_url;
             }
-            console.log(ext, preview)
             dataset.render_file(ext, type, preview, id);
         }
 
