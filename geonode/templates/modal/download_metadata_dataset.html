@@ -24,14 +24,6 @@
                 {% trans "HTML format" %} </a></li>
           </ul>
         </div>
-        <h5 class="modal-title text-center" id="downloadMetadataDocModal">
-          {% trans "Standard Metadata - XML format" %}
-        </h5>
-        <ul>
-          {% for link in metadata %}
-          <li><a class="btn btn-light btn-block" href="{{ link.url }}">{{ link.name }}</a></li>
-          {% endfor %}
-        </ul>
       </div>
       <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
