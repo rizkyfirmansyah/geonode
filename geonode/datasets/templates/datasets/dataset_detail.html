@@ -29,12 +29,28 @@
 <div class="card mb-2 border-dataset">
   <div class="card-header">
     <div class="row">
-      <div class="col-md-8 d-flex">
+      <div class="col-md-10 d-inline-flex">
         <h3 class="text-dataset">{{ resource.title }}</h3>
-        <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
       </div>
-      <div class="col-md-4 float-right">
-        <a href="{% url "catalogue_browse" %}" target="_self" class="btn btn-info btn-block">Explore Catalogue</a>
+      <div class="col-md-2 p-0">
+        <div class="d-inline-flex">
+          <form action="{% url 'base-resources-list' %}/{{resource.id}}/favorite" id="resource_detail_favorite">
+            {% csrf_token %}
+            <button class="btn" type="submit">
+            {% if not is_favorited %}
+              <i class="fa-regular fa-star" title="Add to favorite?"></i>
+            {% else %}
+              <i class="fa-solid fa-star" title="Removed from favorite?"></i>
+            {% endif %}
+            </button>
+          </form>
+        </div>
+        <button type="button" class="btn" id="dataset-popover" data-toggle="popover" title="Dataset Properties"><i class="fa-solid fa-circle-info" aria-hidden="true" title="Dataset Properties"></i></button>
+        <a href='{{ SITEURL|slice:":-1" }}{{ resource.get_absolute_url }}' id='resource_url' class="d-none"></a>
+        <button class="btn" data-clipboard-target="#resource_url" id="share_uri">
+          <i class="fa-solid fa-share-nodes" title="Copy resource uri"></i>
+        </button>
+        <a href="{% url "catalogue_browse" %}" target="_self" role="button" class="btn"><i class="fa-solid fa-home" title="Explore Catalogue"></i></a>
       </div>
     </div>
   </div>
@@ -286,5 +302,7 @@
   {% endif %}
   {% include "modal/preview_files.html" %}
   <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
+
+  {% include "base/_resource_detail_button.html" %}
 
 {% endblock extra_script %}

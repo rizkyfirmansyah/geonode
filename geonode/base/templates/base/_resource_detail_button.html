@@ -1,0 +1,68 @@
+{% load i18n %}
+
+<script type="text/javascript">
+  $('button').tooltip({
+    trigger: 'click',
+    placement: 'top'
+  });
+  
+  function setTooltip(btn, message) {
+    $(btn).tooltip('hide')
+      .attr('data-original-title', message)
+      .tooltip('show');
+  }
+  
+  function hideTooltip(btn) {
+    setTimeout(function() {
+      $(btn).tooltip('hide');
+    }, 1000);
+  }
+  
+  // Clipboard
+  var clipboard = new ClipboardJS("#share_uri", {
+    text: function(trigger) {
+      const query = trigger.getAttribute('data-clipboard-target');
+      const target = document.querySelector(query);
+      return target.getAttribute('href');
+    }
+  });
+  clipboard.on('success', function(e) {
+    setTooltip(e.trigger, 'Resource url copied!');
+    hideTooltip(e.trigger);
+  });
+  
+  clipboard.on('error', function(e) {
+    setTooltip(e.trigger, 'Copied url failed!');
+    hideTooltip(e.trigger);
+  });
+
+  $(function() {
+      $("#resource_detail_favorite").submit(function(t) {
+          t.preventDefault();
+          var action = $(this).attr("action");
+          var type;
+          {% if not is_favorited %}
+              type = "POST";
+          {% else %}
+              type = "DELETE";
+          {% endif %}
+          $.ajax({
+              type: type,
+              headers:{"X-CSRFToken":'{{csrf_token}}'},
+              url: action,
+              cache: false,
+              success: function(res) {
+                  $(document.body).append(`
+                    {% with toast_message='`+ res.message +`' %}
+                      {% with toast_alert='success' %}
+                        {% include "toast/_trigger_toast.html" %}
+                      {% endwith %}
+                    {% endwith %}`);
+                  $('.toast').toast('show');
+              }
+          }).done(function() {
+              location.reload()
+          })
+      })
+  })
+</script>

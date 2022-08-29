@@ -30,6 +30,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from geonode.decorators import registered_users
 from geonode.datasets.tasks import delete_orphaned_thumbnail
+from geonode.favorite.models import Favorite
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -128,6 +129,11 @@ def dataset_detail(request, docid):
     metadata = document.link_set.metadata().filter(
         name__in=settings.DOWNLOAD_FORMATS_METADATA)
 
+    try:
+        is_favorited = Favorite.objects.filter(user=request.user, object_id=document.pk).exists()
+    except Favorite.DoesNotExist:
+        is_favorited = False
+
     # Call this first in order to be sure "perms_list" is correct
     permissions_json = _perms_info_json(document)
 
@@ -167,6 +173,7 @@ def dataset_detail(request, docid):
         'permissions_json': permissions_json,
         'group': group,
         'metadata': metadata,
+        'is_favorited': is_favorited,
         'audiotypes': AUDIOTYPES,
         'imgtypes': IMGTYPES,
         'videotypes': VIDEOTYPES,
