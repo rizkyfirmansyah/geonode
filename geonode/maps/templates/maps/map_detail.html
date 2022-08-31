@@ -38,8 +38,6 @@
       <div class="col-md-10 d-inline-flex">
         <h3 class="text-map">{{ resource.title }}</h3>
       </div>
-		</div>
-    <div class="col-md-2 p-0">
       <div class="col-md-2 p-0">
         <div class="d-inline-flex">
           <form action="{% url 'base-resources-list' %}/{{resource.id}}/favorite" id="resource_detail_favorite">
@@ -59,7 +57,7 @@
         </button>
         <a href="{% url "catalogue_browse" %}" target="_self" role="button" class="btn"><i class="fa-solid fa-home" title="Explore Catalogue"></i></a>
       </div>
-    </div>
+		</div>
 	</div>
 </div>
 
