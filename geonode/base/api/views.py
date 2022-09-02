@@ -28,6 +28,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Subquery
 from django.contrib import messages
 from django.urls import reverse
+from django_filters.rest_framework import DjangoFilterBackend
 
 from geonode.resource.api.tasks import resouce_service_dispatcher
 from drf_spectacular.utils import extend_schema
@@ -155,13 +156,21 @@ class UserViewSet(DynamicModelViewSet):
 
 class GroupViewSet(DynamicModelViewSet):
     """
-    API endpoint that allows gropus to be viewed or edited.
+    API endpoint that allows groups to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
     permission_classes = [IsAuthenticated, ]
-    queryset = GroupProfile.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['slug', 'title', 'categories']
     serializer_class = GroupProfileSerializer
     pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = GroupProfile.objects.all()
+        slug = self.request.query_params.get('q', None)
+        if slug is not None:
+            queryset = queryset.filter(slug__icontains=slug)
+        return queryset
 
     @extend_schema(methods=['get'], responses={200: UserSerializer(many=True)},
                    description="API endpoint allowing to retrieve the Group members.")
@@ -196,9 +205,17 @@ class RegionViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin,
         permission_classes = [AllowAny, ]
     else:
         permission_classes = [IsAuthenticated, ]
-    queryset = Region.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'code']
     serializer_class = RegionSerializer
     pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = Region.objects.all()
+        name = self.request.query_params.get('q', None)
+        if name is not None:
+            queryset = queryset.filter(name__icontains=name)
+        return queryset
 
 
 class HierarchicalKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -209,9 +226,17 @@ class HierarchicalKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, Retrie
         permission_classes = [AllowAny, ]
     else:
         permission_classes = [IsAuthenticated, ]
-    queryset = HierarchicalKeyword.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['slug', 'name']
     serializer_class = HierarchicalKeywordSerializer
     pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = HierarchicalKeyword.objects.all()
+        slug = self.request.query_params.get('q', None)
+        if slug is not None:
+            queryset = queryset.filter(slug__icontains=slug)
+        return queryset
 
 
 class ThesaurusKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -235,9 +260,17 @@ class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveMode
         permission_classes = [AllowAny, ]
     else:
         permission_classes = [IsAuthenticated, ]
-    queryset = TopicCategory.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['identifier', 'title']
     serializer_class = TopicCategorySerializer
     pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = TopicCategory.objects.all()
+        identifier = self.request.query_params.get('q', None)
+        if identifier is not None:
+            queryset = queryset.filter(identifier__icontains=identifier)
+        return queryset
 
 
 class DataTypeViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -248,9 +281,17 @@ class DataTypeViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixi
         permission_classes = [AllowAny, ]
     else:
         permission_classes = [IsAuthenticated, ]
-    queryset = DataType.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['identifier', 'title']
     serializer_class = DataTypeSerializer
     pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = DataType.objects.all()
+        identifier = self.request.query_params.get('q', None)
+        if identifier is not None:
+            queryset = queryset.filter(identifier__icontains=identifier)
+        return queryset
 
 
 class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -262,6 +303,8 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
         permission_classes = [AllowAny, ]
     else:
         permission_classes = [IsAuthenticated, ]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['username', 'id']
     serializer_class = OwnerSerializer
     pagination_class = GeoNodeApiPagination
 
@@ -269,7 +312,6 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
         """
         Filter users with atleast a resource
         """
-
         queryset = get_user_model().objects.exclude(pk=-1)
         filter_options = {}
         if self.request.query_params:
@@ -277,9 +319,14 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
                 'type_filter': self.request.query_params.get('type'),
                 'title_filter': self.request.query_params.get('title__icontains')
             }
-        queryset = queryset.filter(id__in=Subquery(
-            get_resources_with_perms(self.request.user, filter_options).values('owner'))
-        )
+        username = self.request.query_params.get('q', None)
+        if username is not None:
+            queryset = queryset.filter(username__icontains=username)
+        else:
+            queryset = queryset.filter(id__in=Subquery(
+                get_resources_with_perms(self.request.user, filter_options).values('owner'))
+            )
+
         return queryset.order_by("username")
 
 

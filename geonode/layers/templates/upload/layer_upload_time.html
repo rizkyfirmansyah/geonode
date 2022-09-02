@@ -379,15 +379,15 @@
                     **/
                     var time_value = String(row[time_attribute]);
                     if(time_value.match(ISO_time_regex)) {
-                        $(document.body).append(`{% with toast_title="Valid ISO-8601 for `+ time_attribute +` %}
-                            {% with toast_message='`+ time_value +`matches a valid ISO-8601 Date-Time string!' %}
+                        $(document.body).append(`{% with toast_title="Valid ISO-8601 for `+ time_attribute +`" %}
+                            {% with toast_message='`+ time_value +` matches a valid ISO-8601 Date-Time string!' %}
                               {% include "toast/_trigger_toast.html" %}
                             {% endwith %}
                         {% endwith %}`);
                         $('.toast').toast('show');
                     } else {
-                        $(document.body).append(`{% with toast_title="Not Valid ISO-8601 for `+ time_attribute +` %}
-                            {% with toast_message='`+ time_value +`does NOT match any valid ISO-8601 Date-Time string!' %}
+                        $(document.body).append(`{% with toast_title="Not Valid ISO-8601 for `+ time_attribute +`" %}
+                            {% with toast_message='`+ time_value +` does NOT match any valid ISO-8601 Date-Time string!' %}
                               {% include "toast/_trigger_toast.html" %}
                             {% endwith %}
                         {% endwith %}`);

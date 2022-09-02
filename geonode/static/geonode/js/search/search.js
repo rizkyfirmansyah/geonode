@@ -43,16 +43,16 @@
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        params['limit'] = 0;
         $http.get(CATEGORIES_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
+            var _data = data.data.categories;
             if ($location.search().hasOwnProperty('category__identifier__in')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+              _data = module.set_initial_filters_from_query(_data,
                     $location.search()['category__identifier__in'], 'identifier');
             }
-            $rootScope.categories = data.data.objects;
+            $rootScope.categories = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -83,12 +83,12 @@
 
     module.load_keywords = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
-        params['limit'] = 0;
         $http.get(KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
+            var _data = data.data.keywords;
             //success code
-            $rootScope.keywords = data.data.objects;
+            $rootScope.keywords = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -173,16 +173,16 @@
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        params['limit'] = 0;
         $http.get(REGIONS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
+            var _data = data.data.regions;
             //success code
             if ($location.search().hasOwnProperty('regions__name__in')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+                _data = module.set_initial_filters_from_query(_data,
                     $location.search()['regions__name__in'], 'name');
             }
-            $rootScope.regions = data.data.objects;
+            $rootScope.regions = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -195,12 +195,12 @@
 
     module.load_groups = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
-        params['limit'] = 0;
         $http.get(GROUPS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
-            $rootScope.groups = data.data.objects;
+            var _data = data.data.group_profiles;
+            $rootScope.groups = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -238,11 +238,12 @@
         $http.get(DATATYPE_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
+            var _data = data.data.data_types;
             if ($location.search().hasOwnProperty('data_type__identifier__in')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+              _data = module.set_initial_filters_from_query(_data,
                     $location.search()['data_type__identifier__in'], 'identifier');
             }
-            $rootScope.data_type = data.data.objects;
+            $rootScope.data_type = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -258,16 +259,15 @@
         if ($location.search().hasOwnProperty('title__icontains')) {
             params['title__icontains'] = $location.search()['title__icontains'];
         }
-        params['limit'] = 0;
         $http.get(OWNERS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
-
         function successCallback(data) {
+            var _data = data.data.owners;
             //success code
             if ($location.search().hasOwnProperty('owner__username__in')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+                _data = module.set_initial_filters_from_query(_data,
                     $location.search()['owner__username__in'], 'identifier');
             }
-            $rootScope.owners = data.data.objects;
+            $rootScope.owners = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
@@ -782,6 +782,7 @@
             // remove active class elements from sidebar
             $('.selectpicker').selectpicker('val', '');
             $('.selectpicker').selectpicker('refresh');
+            $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
             $('#filter-sidebar-content .btn_wrapper').removeClass('active');
             $('#filter-sidebar-content .btn_wrapper').find('input[type=checkbox]:checked').prop("checked", false);
             $(".scrollbar-sidebar a").removeClass("active");

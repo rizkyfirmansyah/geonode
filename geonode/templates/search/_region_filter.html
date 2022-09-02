@@ -2,19 +2,126 @@
 
 {% verbatim %}
 <label class="pl-2 mb-0 font-weight-bold">Regions</label>
-<select title="Select Regions" class="form-select selectpicker mb-2" id="regions" data-live-search="true" data-size="10" data-width="100%" data-allow-clear="true" data-hide-disabled="true">
-  <option ng-repeat="region in regions">{{ region.name }}</option>
-</select>
+<div id="region_filter">
+  <select title="Select Regions" class="form-select selectpicker mb-2" id="regions" data-live-search="true" data-size="8" data-width="100%" data-containre="body" data-allow-clear="true">
+    <option ng-repeat="region in regions" data-content="
+    <span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>{{ region.name }}</span><span class='small span_count float-right'>{{ region.count }}</span>">
+    {{ region.name }}
+    </option>
+  </select>
+</div>
 {% endverbatim %}
 
 {% block extra_script %}
 <script type="text/javascript">
   $(function() {
+    var refrestSelectPicker = () => {
+        $("#regions").selectpicker('refresh');
+        $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
+    }
 
-    $("#regions").on("changed.bs.select", function(e) {
-        var selected = e.target.value;
-        angular.element("body").scope().single_choice_listener(e, selected);
+    $("#regions").on("changed.bs.select", function(e, clickedIndex, previousValue) {
+        $('.filter-option-inner-inner .span_count').remove();
 
+        var selected = [];
+        $(".filter-option-inner-inner span.badge" ).each(function() {
+            selected.push($( this ).text())
+        });
+        
+        if (selected) {
+            angular.element("body").scope().single_choice_listener(e, selected);
+        }
+    });
+
+    // Event handler for autocomplete by querying input searchpicker; rendered the data after enter being pressed
+    $('#regions').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        $("#region_filter .bootstrap-select .bs-searchbox input").on('change keyup paste',function(e){
+            if (e.keyCode == 13) {
+                var q = this.value;
+                if (q) {
+                  $.ajax({
+                      url: '{% url "regions-list" %}',
+                      headers:{"X-CSRFToken":'{{csrf_token}}'},
+                      type: 'GET',
+                      dataType: 'json',
+                      data: {
+                          q: q
+                      },
+                      success: function(data) {
+                          if (data.total == 0) {
+                            $(document.body).append(`{% with toast_title="Search Region" %}
+                                {% with toast_message='No records were found that match with your query: `+ q +`' %}
+                                  {% with toast_alert='warning' %}
+                                    {% include "toast/_trigger_toast.html" %}
+                                  {% endwith %}
+                                {% endwith %}
+                            {% endwith %}`);
+                            $('.toast').toast('show');
+                          }
+                          var _data = data.regions;
+                          $("#regions").empty();
+                          $.each(_data, function(i, v) {
+                              $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                              `+v.name+`
+                              </option>`)
+                          });
+                          refrestSelectPicker();
+                      }
+                  })
+                } else {
+                    $.ajax({
+                        url: '{% url "regions-list" %}',
+                        headers:{"X-CSRFToken":'{{csrf_token}}'},
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            var _data = data.regions;
+                            $("#regions").empty();
+                            $.each(_data, function(i, v) {
+                                $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                                `+v.name+`
+                                </option>`)
+                            });
+                            refrestSelectPicker();
+                        }
+                    })
+                }
+            }
+        })
+    });
+
+    // Event handler for scroll and render the next page
+    $('#regions').on('shown.bs.select', function(e) {
+        var page = 2;
+        var ready = true;
+        var $innerMenu = $(this).data('selectpicker').$menu.find('.inner'),
+            _offset = $innerMenu.find('li').first().height();
+        $innerMenu.scroll(function() {
+            const offset = _offset * 2.5;
+            if(ready && $(this).scrollTop() > $(this).height() - offset) {
+                ready = false;
+                $.ajax({
+                    url: '{% url "regions-list" %}',
+                    headers:{"X-CSRFToken":'{{csrf_token}}'},
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                      page: page++
+                    },
+                    success: function(data) {
+                        var _data = data.regions;
+                        $.each(_data, function(i, v) {
+                            $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                            `+v.name+`
+                            </option>`)
+                        });
+                        refrestSelectPicker();
+                    }
+                }).done(function() {
+                    ready = true;
+                });
+            }    
+        });
     });
 
   })

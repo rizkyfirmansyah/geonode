@@ -17,6 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+from importlib.resources import Resource
 import json
 from urllib.parse import urljoin
 from slugify import slugify
@@ -55,7 +56,7 @@ from geonode.groups.models import (
     GroupProfile)
 
 from geonode.utils import build_absolute_uri
-from geonode.security.utils import get_resources_with_perms
+from geonode.security.utils import get_resources_with_perms, get_visible_resources
 from geonode.base.models import Link
 from geonode.resource.models import ExecutionRequest
 
@@ -145,13 +146,21 @@ class GroupSerializer(DynamicModelSerializer):
 
 
 class GroupProfileSerializer(BaseDynamicModelSerializer):
+    count = serializers.SerializerMethodField()
 
     class Meta:
         model = GroupProfile
         name = 'group_profile'
         view_name = 'group-profiles-list'
         fields = ('pk', 'title', 'group', 'slug', 'logo', 'description',
-                  'email', 'keywords', 'access', 'categories')
+                  'email', 'keywords', 'access', 'categories', 'count')
+
+    def get_count(self, obj):
+        request = self.context.get('request')
+        resources = get_resources_with_perms(
+            request.user, {}).filter(group_id=obj.id+1).count()
+
+        return resources
 
     group = DynamicRelationField(GroupSerializer, embed=True, many=False)
     keywords = serializers.SlugRelatedField(many=True, slug_field='slug', read_only=True)
@@ -506,7 +515,7 @@ class ResourceBaseSerializer(
         self.fields['state'] = serializers.CharField(read_only=True)
         self.fields['sourcetype'] = serializers.CharField(read_only=True)
 
-        self.fields['embed_url'] = EmbedUrlField()
+        # self.fields['embed_url'] = EmbedUrlField()
         self.fields['thumbnail_url'] = ThumbnailUrlField(read_only=True)
         self.fields['keywords'] = DynamicRelationField(
             SimpleHierarchicalKeywordSerializer, embed=False, many=True)
@@ -545,7 +554,7 @@ class ResourceBaseSerializer(
             'spatial_representation_type', 'temporal_extent_start', 'temporal_extent_end',
             'supplemental_information', 'data_quality_statement', 'group',
             'popular_count', 'share_count', 'rating', 'featured', 'is_published', 'is_approved', ''
-            'detail_url', 'embed_url', 'created', 'last_updated', 'date_distribution',
+            'detail_url', 'created', 'last_updated', 'date_distribution',
             'raw_abstract', 'raw_purpose', 'raw_constraints_other', 'raw_source', 'raw_data_citation', 'raw_related_publication',
             'raw_supplemental_information', 'raw_data_quality_statement', 'metadata_only', 'processed', 'state',
             'data_description', 'author', 'source', 'data_type', 'subtype', 'sourcetype', 'blob', 'metadata', 'data', 'executions', 'is_copyable'
@@ -583,7 +592,7 @@ class ResourceBaseSerializer(
             "is_published": {"required": False},
             "is_approved": {"required": False},
             "metadata_only": {"required": False},
-            "embed_url": {"required": False},
+            # "embed_url": {"required": False},
             "thumbnail_url": {"required": False},
             "blob": {"required": False, "write_only": True},
             "executions": {"required": False, "embed": False, "deferred": True, "read_only": True},
@@ -728,6 +737,6 @@ class OwnerSerializer(BaseResourceCountSerializer):
         count_type = 'owner'
         view_name = 'owners-list'
         model = get_user_model()
-        fields = ('pk', 'username', 'first_name', 'last_name', 'avatar', 'perms')
+        fields = ('pk', 'username', 'first_name', 'last_name', 'full_name_or_nick', 'avatar', 'perms')
 
     avatar = AvatarUrlField(240, read_only=True)

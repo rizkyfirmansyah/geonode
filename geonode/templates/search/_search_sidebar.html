@@ -42,12 +42,15 @@
           {% if SEARCH_FILTERS.KEYWORDS_ENABLED %}
             {% include "search/_keywords_filter.html" %}
           {% endif %}
-          {% include "search/_owners_filter.html" %}
-          {% include "search/_groups_filter.html" %}
           {% if SEARCH_FILTERS.REGION_ENABLED %}
             {% include "search/_region_filter.html" %}
           {% endif %}
-          {% include "search/_datatype_filter.html" %}
+          {% if SEARCH_FILTERS.OWNERS_ENABLED %}
+            {% include "search/_owners_filter.html" %}
+          {% endif %}
+          {% if SEARCH_FILTERS.GROUPS_ENABLED %}
+            {% include "search/_groups_filter.html" %}
+          {% endif %}
           {% if SEARCH_FILTERS.T_KEYWORDS_ENABLED %}
             {% include "search/_t_keywords_filter.html" %}
           {% endif %}
@@ -63,16 +66,23 @@
 
 {% block extra_script %}
 <script type="text/javascript">
-const ps = new PerfectScrollbar("#ps_sidebar", {
-    wheelSpeed: 1,
-    wheelPropagation: true,
-    minScrollbarLength: 20
-});
-$(function() {
-  $('#close-sidebar').on('click', function() {
-      $('#sidebar').toggleClass('active');
-      $('.app-sidebar').toggleClass('d-none');
-  })
-})
+    const ps = new PerfectScrollbar("#ps_sidebar", {
+        wheelSpeed: 1,
+        wheelPropagation: true,
+        minScrollbarLength: 20
+    });
+    $(function() {
+      $('#close-sidebar').on('click', function() {
+          $('#sidebar').toggleClass('active');
+          $('.app-sidebar').toggleClass('d-none');
+      })
+    })
+    var initSelectPicker = () => {
+        $('.selectpicker').selectpicker('refresh');
+        $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
+    }
+    setTimeout(function () {
+        initSelectPicker();
+    }, 500)
 </script>
 {% endblock extra_script %}

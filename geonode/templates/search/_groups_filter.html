@@ -1,21 +1,26 @@
 {% load i18n %}
 {% load thesaurus %}
 
-{% if SEARCH_FILTERS.GROUPS_ENABLED %}
-  {% verbatim %}
-  <label class="pl-2 mb-0 font-weight-bold">Groups</label>
-  <select title="Select Groups" class="form-select selectpicker mb-2 remove-select" id="groups" multiple data-live-search="true" data-size="10" data-width="100%" data-container="body" data-actions-box="true" data-deselect-all-text="Deselect">
-    <option ng-repeat="group in groups" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0" data-content="
-        <span class='d-none'>{{ group.name }}</span>
-        <span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>{{ group.group_profile.title }}</span><span class='small span_count float-right'>{{ group.resource_counts.all.total }}</span>">
+{% verbatim %}
+<label class="pl-2 mb-0 font-weight-bold">Groups</label>
+<div id="groups_filter">
+  <select title="Select Groups" class="form-select selectpicker mb-2 remove-select" id="groups" multiple data-live-search="true" data-size="8" data-width="100%" data-container="body" data-actions-box="true" data-deselect-all-text="Deselect">
+    <option ng-repeat="group in groups" data-content="
+        <span class='d-none'>{{ group.slug }}</span>
+        <span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>{{ group.title }}</span><span class='small span_count float-right'>{{ group.count }}</span>">
     </option>
   </select>
-  {% endverbatim %}
-{% endif %}
+</div>
+{% endverbatim %}
 
 {% block extra_script %}
 <script type="text/javascript">
   $(function() {
+
+    var refrestSelectPicker = () => {
+        $("#groups").selectpicker('refresh');
+        $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
+    }
 
     $("#groups").on("changed.bs.select", function(e, clickedIndex, previousValue) {
         $('.filter-option-inner-inner .span_count').remove();
@@ -29,6 +34,99 @@
             angular.element("body").scope().multiple_choice_listener(e, selected);
         }
     });
+
+    // Event handler for autocomplete by querying input searchpicker; rendered the data after enter being pressed
+    $('#groups').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+      $("#groups_filter .bootstrap-select .bs-searchbox input").on('change keyup paste',function(e){
+          if (e.keyCode == 13) {
+              var q = this.value;
+              if (q) {
+                $.ajax({
+                    url: '{% url "group-profiles-list" %}',
+                    headers:{"X-CSRFToken":'{{csrf_token}}'},
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        q: q
+                    },
+                    success: function(data) {
+                        if (data.total === 0) {
+                          $(document.body).append(`{% with toast_title="Search Groups" %}
+                              {% with toast_message='No records were found that match with your query: `+ q +`' %}
+                                {% with toast_alert='warning' %}
+                                  {% include "toast/_trigger_toast.html" %}
+                                {% endwith %}
+                              {% endwith %}
+                          {% endwith %}`);
+                          $('.toast').toast('show');
+                        }
+                        var _data = data.group_profiles;
+                        $("#groups").empty();
+                        $.each(_data, function(i, v) {
+                            $('#groups').append(`<option data-content="<span class='d-none'>`+v.slug+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.title+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                            `+v.title+`
+                            </option>`)
+                        });
+                        refrestSelectPicker();
+                    }
+                })
+              } else {
+                  $.ajax({
+                      url: '{% url "group-profiles-list" %}',
+                      headers:{"X-CSRFToken":'{{csrf_token}}'},
+                      type: 'GET',
+                      dataType: 'json',
+                      success: function(data) {
+                          var _data = data.group_profiles;
+                          $("#groups").empty();
+                          $.each(_data, function(i, v) {
+                              $('#groups').append(`<option data-content="<span class='d-none'>`+v.slug+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.title+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                              `+v.title+`
+                              </option>`)
+                          });
+                          refrestSelectPicker();
+                      }
+                  })
+              }
+          }
+      })
+    });
+
+    // Event handler for scroll and render the next page
+    $('#groups').on('shown.bs.select', function(e) {
+        var page = 2;
+        var ready = true;
+        var $innerMenu = $(this).data('selectpicker').$menu.find('.inner'),
+            _offset = $innerMenu.find('li').first().height();
+        $innerMenu.scroll(function() {
+            var scrollTop = $(this).scrollTop();
+            var height = $(this).height();
+            
+            if(ready && (scrollTop / height) * _offset > (height / _offset) - 0.5) {
+                ready = false;
+                $.ajax({
+                    url: '{% url "group-profiles-list" %}',
+                    headers:{"X-CSRFToken":'{{csrf_token}}'},
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                      page: page++
+                    },
+                    success: function(data) {
+                        var _data = data.group_profiles;
+                        $.each(_data, function(i, v) {
+                            $('#groups').append(`<option data-content="<span class='d-none'>`+v.slug+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.title+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                            `+v.title+`
+                            </option>`)
+                        });
+                        refrestSelectPicker();
+                    }
+                }).done(function() {
+                    ready = true;
+                })
+            }    
+        });
+    })
 
   })
 </script>

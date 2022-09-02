@@ -1,4 +1,46 @@
 {% load i18n %}
+
+{% if SEARCH_FILTERS.CATEGORIES_ENABLED %}
+  <nav class="filter" ng-cloak ng-if="categories">
+      <a href="#categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Categories</a>
+      <ul class="collapse list-unstyled" id="categories">
+          {% verbatim %}
+          <li ng-repeat="category in categories" ng-if="category.count > 0">
+              <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
+                  title="{{ category.title }}" ng-click="multiple_choice_listener($event)"
+                  class="{{category.active}}">
+                  <div class="fa-stack text-right" ng-if="category.svg">
+                      <div class="text-center">
+                        <img src="data:image/svg+xml;charset=UTF-8,{{category.svg}}" style="max-width: 24px;">
+                      </div>
+                  </div>
+                  <div class="fa-stack text-center" ng-if="!category.svg">
+                      <i class="fa fa-{{category.fa_class}} justify-content-center" style="max-width: 24px;"></i>
+                  </div>
+                  {{ category.title | limitTo: 25 }}{{ category.title.length > 25 ? '...' : ''}}
+                  <span class="badge float-right">{{ category.count }}</span>
+              </a>
+          </li>
+          {% endverbatim %}
+      </ul>
+  </nav>
+{% endif %}
+
+{% if SEARCH_FILTERS.DATATYPE_ENABLED %}
+  <nav class="filter" ng-cloak>
+    <a href="#data_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Data Type</a>
+    <ul class="collapse list-unstyled" id="data_type">
+    {% verbatim %}
+    <li ng-repeat="data_type in data_type">
+      <a data-value="{{ data_type.identifier }}" data-filter="data_type__identifier__in" title="{{ data_type.title }}"ng-click="multiple_choice_listener($event)" class="{{data_type.active}}">{{ data_type.title }}
+        <span class="badge float-right">{{ data_type.count }}</span>
+      </a>
+    </li>
+    {% endverbatim %}
+  </ul>
+  </nav>
+{% endif %}
+
 <nav class="filter" ng-cloak>
   <a href="#dataset_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Dataset Extension</a>
   <ul class="collapse list-unstyled" id="dataset_type">
@@ -12,31 +54,6 @@
 </ul>
 </nav>
 
-{% if SEARCH_FILTERS.CATEGORIES_ENABLED %}
-<nav class="filter" ng-cloak ng-if="categories">
-    <a href="#categories" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Categories</a>
-    <ul class="collapse list-unstyled" id="categories">
-        {% verbatim %}
-        <li ng-repeat="category in categories" ng-if="category.count > 0">
-            <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
-                title="{{ category.title }}" ng-click="multiple_choice_listener($event)"
-                class="{{category.active}}">
-                <div class="fa-stack text-right" ng-if="category.svg">
-                    <div class="text-center">
-                      <img src="data:image/svg+xml;charset=UTF-8,{{category.svg}}" style="max-width: 24px;">
-                    </div>
-                </div>
-                <div class="fa-stack text-center" ng-if="!category.svg">
-                    <i class="fa fa-{{category.fa_class}} justify-content-center" style="max-width: 24px;"></i>
-                </div>
-                {{ category.title | limitTo: 25 }}{{ category.title.length > 25 ? '...' : ''}}
-                <span class="badge float-right">{{ category.count }}</span>
-            </a>
-        </li>
-        {% endverbatim %}
-    </ul>
-</nav>
-{% endif %}
 {% if SEARCH_FILTERS.GROUP_CATEGORIES_ENABLED %}
 {% verbatim %}
 <nav class="filter" ng-cloak ng-repeat="groupCategory in groupCategories" ng-if="group.resource_counts.layer.total > 0 || group.resource_counts.document.total > 0">

@@ -28,19 +28,19 @@
 <script type="text/javascript">
   $("body").attr('ng-controller', 'geonode_search_controller');
   {% block search_scripts_endpoints %}
-  CATEGORIES_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='categories' %}';
+  CATEGORIES_ENDPOINT = '{% url 'categories-list' %}';
   GROUP_CATEGORIES_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='groupcategory' %}';
-  KEYWORDS_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='keywords' %}';
+  KEYWORDS_ENDPOINT = '{% url 'keywords-list' %}';
   H_KEYWORDS_ENDPOINT = '{% url 'h_keywords_api' %}';
   var enable_thesauri = false;
   {% if THESAURI_FILTERS %}
     var enable_thesauri = true;
     T_KEYWORDS_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='thesaurus/keywords' %}';
   {% endif %}
-  REGIONS_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='regions' %}';
-  OWNERS_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='owners' %}';
-  GROUPS_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='groups' %}';
-  DATATYPE_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='data_type' %}';
+  REGIONS_ENDPOINT = '{% url 'regions-list' %}';
+  OWNERS_ENDPOINT = '{% url 'owners-list' %}';
+  GROUPS_ENDPOINT = '{% url 'group-profiles-list' %}';
+  DATATYPE_ENDPOINT = '{% url 'data_type-list' %}';
   DATASETEXT_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='dataset_type' %}';
   HAYSTACK_SEARCH = "{{ HAYSTACK_SEARCH }}".toLowerCase() === "true";
   HAYSTACK_FACET_COUNTS = "{{ HAYSTACK_FACET_COUNTS }}".toLowerCase() === "true";
