@@ -18,13 +18,13 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row">
+      <div class="table-responsive">
         <table class="table table-borderless" id="roda_table">
           <thead>
             <tr>
               <th scope="col" style="width: 25px;">#</th>
               <th scope="col">Requester</th>
-              <th scope="col">Purposes</th>
+              <th scope="col" class="col-md-5">Purposes</th>
               <th scope="col">Retention</th>
               <th scope="col">Resource Title</th>
               <th scope="col">Requested Time</th>
@@ -56,11 +56,7 @@
 
 <script type="text/javascript">
   $(document).ready(function () {
-      $('#roda_table').DataTable({
-        scrollX:        true,
-        scrollCollapse: true,
-        paging:         true
-      });
+      $('#roda_table').DataTable();
   });
 </script>
   
