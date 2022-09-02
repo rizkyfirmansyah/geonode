@@ -1,0 +1,67 @@
+{% extends "geonode_base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %} {% trans "Record of Dataset Activities" %} - {{ block.super }} {% endblock %}
+{% block body_class %}{% trans "Record Dataset" %}{% endblock %}
+
+{% block additional_body %}
+
+<div class="col-md-12 mb-4 float-right groupsList">
+  <div class="card border-dark rounded">
+    <div class="card-header">
+      <div class="row">
+        <h3 class="col">Record of Dataset Activities</h3>
+        <div class="col-sm-4 text-right">
+            <a href="{% url 'profile_detail' request.user %}" class="btn btn-primary w-100" type="button">{% trans "Back to Profile" %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <table class="table table-borderless" id="roda_table">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 25px;">#</th>
+              <th scope="col">Requester</th>
+              <th scope="col">Purposes</th>
+              <th scope="col">Retention</th>
+              <th scope="col">Resource Title</th>
+              <th scope="col">Requested Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for roda in roda_list %}
+            <tr>
+              <th scope="row">{{ forloop.counter }}</th>
+              <td>
+                  <div role="button" data-toggle="tooltip" data-placement="right" title="Email: {{ roda.requester_email }}">{{ roda.requester_name }}<br/><span class="text-muted small">{{ roda.requester_position }}, {{ roda.requester_institution }}</span></div>
+              </td>
+              <td>{{ roda.purposes }}</td>
+              <td>{{ roda.get_retention_display }}</td>
+              <td><a href="{{ roda.absolute_url }}">{{ roda.resource_title }}</a></td>
+              <td>{{ roda.created_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_script %}
+
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('#roda_table').DataTable({
+        scrollX:        true,
+        scrollCollapse: true,
+        paging:         true
+      });
+  });
+</script>
+  
+{% endblock %}

@@ -20,7 +20,7 @@
 from django.conf.urls import url, include
 from .api.views import DatasetIngestView
 
-from .views import DatasetUploadView, DatasetUpdateView
+from .views import DatasetUploadView, DatasetUpdateView, RecordDatasetDetailView
 from .views import DatasetAutocomplete
 from . import views
 
@@ -56,5 +56,6 @@ urlpatterns = [  # 'geonode.datasets.views',
         views.dataset_batch_permissions, name='dataset_batch_permissions'),
     url(r'^autocomplete/$',
         DatasetAutocomplete.as_view(), name='autocomplete_document'),
+    url(r'^roda/$', RecordDatasetDetailView.as_view(), name='roda_list'),
     url(r'^', include('geonode.datasets.api.urls')),
 ]

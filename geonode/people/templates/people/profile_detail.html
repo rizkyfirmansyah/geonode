@@ -147,6 +147,11 @@
       {% endif %}
     </ul>
     <ul class="list-group m-0">
+      {% if request.user.is_staff %}
+      <li class="list-group-item p-0"><a href="{% url "roda_list" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-file-shield"></i>{% trans "Record of Datasets Activities" %}</a></li>
+      {% endif %}
+    </ul>
+    <ul class="list-group m-0">
       {% if not READ_ONLY_MODE %}
         <li class="list-group-item p-0"><a href="{% url "geonode.invitations:geonode-send-invite" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-edit"></i>{% trans "Invite Users" %}</a></li>
       {% endif %}

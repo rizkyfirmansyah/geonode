@@ -24,6 +24,7 @@ import warnings
 import pandas as pd
 import os
 from django.db.models import Max
+from django.views.generic import ListView
 
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
@@ -31,7 +32,6 @@ from django.views.decorators.csrf import csrf_exempt
 from geonode.decorators import registered_users
 from geonode.datasets.tasks import delete_orphaned_thumbnail
 from geonode.favorite.models import Favorite
-from geonode.notifications_helper import toast_unauthorized
 from geonode.views import page_not_found_message, unauthorized_message
 
 from guardian.shortcuts import get_objects_for_user
@@ -60,7 +60,7 @@ from geonode.base.models import (
     ResourceBase,
     Thesaurus)
 from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
-from geonode.datasets.models import Dataset, File
+from geonode.datasets.models import Dataset, File, Roda
 from geonode.resource.utils import get_related_resources
 from geonode.datasets.forms import DatasetForm, DatasetCreateForm, DatasetReplaceForm
 from geonode.utils import build_social_links
@@ -650,6 +650,20 @@ class DatasetAutocomplete(autocomplete.Select2QuerySetView):
             admin_approval_required=settings.ADMIN_MODERATE_UPLOADS,
             unpublished_not_visible=settings.RESOURCE_PUBLISHING,
             private_groups_not_visibile=settings.GROUP_PRIVATE_RESOURCES)
+
+
+class RecordDatasetDetailView(LoginRequiredMixin, ListView):
+    model = Roda
+    template_name = "roda.html"
+    fields = ['requester_name', 'requester_email', 'requester_institution', 'requester_position', 'purposes', 'retention', 'resource_title', 'absolute_url', 'created_at']
+    context_object_name = 'roda_list'
+
+    def get_queryset(self):
+        request = self.request
+        qs = Roda.objects.all().filter(resource_owner_id=request.user)
+
+        return qs
+
 
 
 @csrf_exempt
