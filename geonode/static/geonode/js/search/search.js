@@ -151,12 +151,13 @@
         }
 
         function successCallback(data) {
+            var _data = data.data.tkeywords;
             //success code
             if ($location.search().hasOwnProperty('tkeywords__id__in')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
+                _data = module.set_initial_filters_from_query(_data,
                     $location.search()['tkeywords__id__in'], 'id');
             }
-            $rootScope.tkeywords = data.data.objects;
+            $rootScope.tkeywords = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }

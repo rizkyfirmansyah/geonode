@@ -247,9 +247,18 @@ class ThesaurusKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveM
         permission_classes = [AllowAny, ]
     else:
         permission_classes = [IsAuthenticated, ]
-    queryset = ThesaurusKeyword.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'thesaurus', 'alt_label']
     serializer_class = ThesaurusKeywordSerializer
     pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = ThesaurusKeyword.objects.all()
+        id = self.request.query_params.get('q', None)
+        if id is not None:
+            queryset = queryset.filter(id=id)
+        return queryset
+
 
 
 class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
