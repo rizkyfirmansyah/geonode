@@ -18,13 +18,13 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row">
-        <table class="table table-borderless">
+      <div class="table-responsive">
+        <table class="table table-borderless" id="feedback_table">
           <thead>
             <tr>
               <th scope="col" style="width: 25px;">#</th>
               <th scope="col">Title</th>
-              <th scope="col">Details</th>
+              <th scope="col" class="col-md-5">Details</th>
               <th scope="col">Feedback File</th>
               <th scope="col">Reported By</th>
               <th scope="col">Reported Date</th>
@@ -34,9 +34,9 @@
             {% for feedback in feedback_list %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
-              <td>{{ feedback.title|truncatewords:15 }}</td>
-              <td>{{ feedback.details|truncatewords:50 }}</td>
-              <td>
+              <td>{{ feedback.title }}</td>
+              <td>{{ feedback.details }}</td>
+              <td class="text-center">
                 {% if feedback.feedback_file %}
                   <img src="/uploaded/{{ feedback.feedback_file }}" id="{{ feedback.uuid }}"/>
                 {% else %}
@@ -57,5 +57,11 @@
 {% endblock %}
 
 {% block extra_script %}
-  
+
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('#feedback_table').DataTable();
+  });
+</script>
+
 {% endblock %}

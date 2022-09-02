@@ -77,4 +77,6 @@ class FeedbackDetailView(LoginRequiredMixin, ListView):
     context_object_name = 'feedback_list'
 
     def get_queryset(self):
-        return Feedback.objects.all()
+        request = self.request
+        qs = Feedback.objects.all().exclude(user_id=request.user)
+        return qs
