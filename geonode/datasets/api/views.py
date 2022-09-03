@@ -194,7 +194,6 @@ class DatasetsViewSet(DynamicModelViewSet):
 
         return Response({"files": serializer.data, "length": resources.count()})
 
-
     @extend_schema(
         methods=['patch'],
         responses={200},
@@ -513,6 +512,7 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 'file_url': file_url,
                 'import_id': import_id,
                 'session': request.session.get('session'),
+                'extension': 'External Data Source',
                 'dataset': dataset_id,
                 'owner': get_user_model().objects.get(username=request.user).id
             }

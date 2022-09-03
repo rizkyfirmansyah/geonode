@@ -215,19 +215,27 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 };
             }
             var uploadFile = $http(postParams).then(function(res) {
-              var _data = res.data.files;
-              $rootScope.datasets.push(_data);
-              var datasets_id = []
-              $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
-              window.localStorage.setItem('file_ids', JSON.stringify(datasets_id))
-
-              setTimeout(function() {
-                  $(".uploaded_files").remove();
-                  if ($(".card-ingest").hasClass('d-none')) {
-                    $(".card-ingest").removeClass('d-none');
-                  }
-                  clearInputFile();
-              }, 2000);
+                var _data = res.data.files;
+                var is_external_data = res.data.files.file_url;
+                $rootScope.datasets.push(_data);
+                var datasets_id = []
+                $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
+                window.localStorage.setItem('file_ids', JSON.stringify(datasets_id))
+                if (!is_external_data) {
+                    setTimeout(function() {
+                      $(".uploaded_files").remove();
+                      if ($(".card-ingest").hasClass('d-none')) {
+                        $(".card-ingest").removeClass('d-none');
+                      }
+                      clearInputFile();
+                  }, 2000);
+                } else {
+                    $(".uploaded_files").remove();
+                    if ($(".card-ingest").hasClass('d-none')) {
+                      $(".card-ingest").removeClass('d-none');
+                    }
+                    clearInputFile();
+                }
             });
         };
         return upload();

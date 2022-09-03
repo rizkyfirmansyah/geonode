@@ -57,7 +57,7 @@
                       {% if file.hash %}
                           <span class="text-muted small">SHA-256: {{ file.hash }} - {{ file.file_size|filesizeformat }}</span>
                       {% else %}
-                          <span class="badge badge-info d-inline">External Dataset</span>
+                          <span class="badge badge-info d-inline">External Data Source</span>
                       {% endif %}
                         <span class="text-muted small">- {{ file.created|date:"M d, Y" }}</span>
                     </div>

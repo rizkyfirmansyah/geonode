@@ -66,4 +66,4 @@ class DatasetIngestFileSerializer(serializers.ModelSerializer):
 class DatasetIngestUrlSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ["id", "file_url", "import_id", "session", "dataset", "owner"]
+        fields = ["id", "file_url", "import_id", "session", "dataset", "owner", 'extension']
