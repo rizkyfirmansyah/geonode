@@ -37,6 +37,7 @@ from dynamic_rest.fields.fields import DynamicRelationField, DynamicComputedFiel
 from avatar.templatetags.avatar_tags import avatar_url
 
 from geonode.favorite.models import Favorite
+from geonode.datasets.models import File
 from geonode.base.models import (
     ResourceBase,
     HierarchicalKeyword,
@@ -214,11 +215,10 @@ class SimpleRegionSerializer(DynamicModelSerializer):
 
 
 class SimpleTopicCategorySerializer(DynamicModelSerializer):
-
     class Meta:
         model = TopicCategory
         name = 'TopicCategory'
-        fields = ('identifier',)
+        fields = ('identifier', 'title', 'gn_description', 'fa_class', 'svg')
 
 
 class SimpleDataTypeSerializer(DynamicModelSerializer):
@@ -339,6 +339,18 @@ class FavoriteField(DynamicComputedField):
         _user = self.context.get('request')
         if _user and not _user.user.is_anonymous:
             return Favorite.objects.filter(object_id=instance.pk, user=_user.user).exists()
+        return False
+
+
+class DatasetExtensionField(DynamicComputedField):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def get_attribute(self, instance):
+        _user = self.context.get('request')
+        if _user and not _user.user.is_anonymous:
+            extension = File.objects.filter(dataset__id=instance.pk, owner=_user.user).values_list('extension', flat=True)
+            return extension
         return False
 
 
@@ -523,7 +535,7 @@ class ResourceBaseSerializer(
         self.fields['regions'] = DynamicRelationField(
             SimpleRegionSerializer, embed=True, many=True, read_only=True)
         self.fields['category'] = DynamicRelationField(
-            SimpleTopicCategorySerializer, embed=True, many=False)
+            SimpleTopicCategorySerializer, embed=True, many=True, read_only=True)
         self.fields['data_type'] = DynamicRelationField(
             SimpleDataTypeSerializer, embed=True, many=False)
         self.fields['restriction_code_type'] = DynamicRelationField(
@@ -536,6 +548,7 @@ class ResourceBaseSerializer(
         self.fields['is_copyable'] = serializers.BooleanField(read_only=True)
         self.fields['download_url'] = DownloadLinkField(read_only=True)
         self.fields['favorite'] = FavoriteField(read_only=True)
+        self.fields['extension'] = DatasetExtensionField(read_only=True)
 
     metadata = DynamicRelationField(ExtraMetadataSerializer, embed=False, many=True, deferred=True)
 
@@ -552,7 +565,7 @@ class ResourceBaseSerializer(
             'restriction_code_type', 'constraints_other', 'license', 'language',
             'spatial_representation_type', 'temporal_extent_start', 'temporal_extent_end',
             'supplemental_information', 'data_quality_statement', 'group',
-            'popular_count', 'share_count', 'rating', 'featured', 'is_published', 'is_approved', ''
+            'popular_count', 'share_count', 'rating', 'featured', 'is_published', 'is_approved',
             'detail_url', 'created', 'last_updated', 'date_distribution',
             'raw_abstract', 'raw_purpose', 'raw_constraints_other', 'raw_source', 'raw_data_citation', 'raw_related_publication',
             'raw_supplemental_information', 'raw_data_quality_statement', 'metadata_only', 'processed', 'state',

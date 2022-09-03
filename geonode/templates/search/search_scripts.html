@@ -92,8 +92,8 @@
   {% elif pathc == "groups" %}
           AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_groups" %}';
   {% else %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
-          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = siteUrl + 'api/v2/resources'; {% endcomment %}
+          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}'; {% endcomment %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "base-resources-list" %}';
   {% endif %}
 
   var module = angular.module('search', ['geonode_main_search', 'cart']);
