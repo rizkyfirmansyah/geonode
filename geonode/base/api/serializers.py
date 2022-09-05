@@ -138,11 +138,27 @@ class PermSpecSerialiazer(DynamicEphemeralSerializer):
 
 
 class GroupSerializer(DynamicModelSerializer):
+    count = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
 
     class Meta:
         model = Group
         name = 'group'
-        fields = ('pk', 'name')
+        fields = ('pk', 'name', 'count', 'title')
+
+    def get_count(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            resources = get_resources_with_perms(request.user, {}).filter(group_id=obj.id).count()
+        else:
+            resources = GroupProfile.objects.filter(group_id=obj.id).count()
+
+        return resources
+
+    def get_title(self, obj):
+        resources = GroupProfile.objects.filter(group_id=obj.id).values_list('title', flat=True)
+
+        return list(resources)[0]
 
 
 class GroupProfileSerializer(BaseDynamicModelSerializer):
@@ -152,20 +168,17 @@ class GroupProfileSerializer(BaseDynamicModelSerializer):
         model = GroupProfile
         name = 'group_profile'
         view_name = 'group-profiles-list'
-        fields = ('pk', 'title', 'group', 'slug', 'logo', 'description',
-                  'email', 'keywords', 'access', 'categories', 'count')
+        fields = ('pk', 'title', 'slug', 'logo', 'description',
+                  'email', 'keywords', 'access', 'categories', 'count', 'group_id')
 
     def get_count(self, obj):
         request = self.context.get('request')
-        resources = get_resources_with_perms(
-            request.user, {}).filter(group_id=obj.id+1).count()
+        resources = get_resources_with_perms(request.user, {}).filter(group_id=obj.group_id).count()
 
         return resources
 
-    group = DynamicRelationField(GroupSerializer, embed=True, many=False)
     keywords = serializers.SlugRelatedField(many=True, slug_field='slug', read_only=True)
-    categories = serializers.SlugRelatedField(
-        many=True, slug_field='slug', queryset=GroupCategory.objects.all())
+    categories = serializers.SlugRelatedField(many=True, slug_field='slug', queryset=GroupCategory.objects.all())
 
 
 class SimpleHierarchicalKeywordSerializer(DynamicModelSerializer):
@@ -361,7 +374,7 @@ class UserSerializer(BaseDynamicModelSerializer):
         model = get_user_model()
         name = 'user'
         view_name = 'users-list'
-        fields = ('pk', 'username', 'first_name', 'last_name', 'avatar', 'perms', 'is_superuser', 'is_staff')
+        fields = ('pk', 'username', 'first_name', 'last_name', 'full_name_or_nick', 'avatar', 'perms', 'is_superuser', 'is_staff')
 
     @classmethod
     def setup_eager_loading(cls, queryset):

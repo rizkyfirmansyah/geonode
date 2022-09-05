@@ -90,7 +90,7 @@
                 {% if resource.category.count > 0 %}
                 <dt>{% trans "Category" %}</dt>
                 {% for category in resource.category.all %}
-                    <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.title %}</a> {% if category.title %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+                    <dd><a href="{% url "catalogue_browse" %}?f4e493d={{ category.identifier }}">{% trans category.title %}</a> {% if category.title %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
                     <dd class="category-more-{{ category.id }} collapse">
                     {% trans category.gn_description %}
                     </dd>
@@ -99,7 +99,7 @@
         
                 {% if resource.data_type %}
                 <dt>{% trans "Type of Data" %}</dt>
-                <dd><a href="/search/?data_type__identifier__in={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.gn_description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+                <dd><a href="{% url 'catalogue_browse' %}?182243e={{ resource.data_type.identifier }}">{{ resource.data_type }}</a> {% if resource.data_type.gn_description %}<a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
                 {% if resource.data_type.gn_description %}
                 <dd class="data_type-more collapse">
                     {{ resource.data_type.gn_description }}

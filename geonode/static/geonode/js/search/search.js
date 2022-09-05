@@ -2,7 +2,6 @@
 
 (function() {
 
-
     // hide the autocomplete div results whenever the users click on container
     $('.container').on('click', function(){
         $('.ac-results').addClass("d-none");
@@ -40,17 +39,14 @@
     // Load categories, keywords, and regions
     module.load_categories = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
-        if ($location.search().hasOwnProperty('title__icontains')) {
-            params['title__icontains'] = $location.search()['title__icontains'];
-        }
         $http.get(CATEGORIES_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
             //success code
             var _data = data.data.categories;
-            if ($location.search().hasOwnProperty('category__identifier__in')) {
+            if ($location.search().hasOwnProperty('f4e493d')) {
               _data = module.set_initial_filters_from_query(_data,
-                    $location.search()['category__identifier__in'], 'identifier');
+                    $location.search()['f4e493d'], 'identifier');
             }
             $rootScope.categories = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -153,9 +149,9 @@
         function successCallback(data) {
             var _data = data.data.tkeywords;
             //success code
-            if ($location.search().hasOwnProperty('tkeywords__id__in')) {
+            if ($location.search().hasOwnProperty('ebe16ff')) {
                 _data = module.set_initial_filters_from_query(_data,
-                    $location.search()['tkeywords__id__in'], 'id');
+                    $location.search()['ebe16ff'], 'id');
             }
             $rootScope.tkeywords = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -179,10 +175,6 @@
         function successCallback(data) {
             var _data = data.data.regions;
             //success code
-            if ($location.search().hasOwnProperty('regions__name__in')) {
-                _data = module.set_initial_filters_from_query(_data,
-                    $location.search()['regions__name__in'], 'name');
-            }
             $rootScope.regions = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
@@ -218,9 +210,9 @@
         $http.get(DATASETEXT_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            if ($location.search().hasOwnProperty('link__extension__in')) {
+            if ($location.search().hasOwnProperty('extension')) {
                 data.data.objects = module.set_initial_filters_from_query(data.data.objects,
-                    $location.search()['link__extension__in'], 'extension');
+                    $location.search()['extension'], 'extension');
             }
             $rootScope.dataset_type = data.data.objects;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -240,9 +232,9 @@
 
         function successCallback(data) {
             var _data = data.data.data_types;
-            if ($location.search().hasOwnProperty('data_type__identifier__in')) {
+            if ($location.search().hasOwnProperty('182243e')) {
               _data = module.set_initial_filters_from_query(_data,
-                    $location.search()['data_type__identifier__in'], 'identifier');
+                    $location.search()['182243e'], 'identifier');
             }
             $rootScope.data_type = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -255,19 +247,30 @@
         };
     }
 
+    // load resource type
+    module.load_resource_type = function($http, $rootScope, $location) {
+        var params = typeof FILTER_TYPE == "undefined" ? {} : { 'type': FILTER_TYPE };
+        $http.get(RESOURCETYPE_ENDPOINT, { params: params }).then(successCallback, errorCallback);
+
+        function successCallback(data) {
+            var _data = data.data.resource_types;
+            $rootScope.resource_types = _data;
+            if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
+                module.haystack_facets($http, $rootScope, $location);
+            }
+        }
+
+        function errorCallback(error) {
+            console.log(error);
+        }
+    }
+
     module.load_owners = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
-        if ($location.search().hasOwnProperty('title__icontains')) {
-            params['title__icontains'] = $location.search()['title__icontains'];
-        }
         $http.get(OWNERS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
         function successCallback(data) {
             var _data = data.data.owners;
             //success code
-            if ($location.search().hasOwnProperty('owner__username__in')) {
-                _data = module.set_initial_filters_from_query(_data,
-                    $location.search()['owner__username__in'], 'identifier');
-            }
             $rootScope.owners = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
@@ -396,6 +399,24 @@
         }
     })
 
+
+    /*
+     * Bind an event to load infinite to display user content
+     */
+        module.directive("infiniteuserScrollDirective", function() {
+          return function(scope, elm, attr) {
+            if (scope.infiniteScrollLoaded)
+                $(window).on('scroll', function() {
+                    if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+                        setTimeout(function() {
+                            scope.$apply(attr.infiniteuserScrollDirective);
+                            scope.infiniteScroll++;
+                        }, 500);
+                    }
+                })
+          }
+      })
+
     /*
      * Load categories and keywords
      */
@@ -434,6 +455,9 @@
         if ($('#data_type').length > 0) {
             module.load_data_type($http, $rootScope, $location);
         }
+        if ($('#resource_type').length > 0) {
+            module.load_resource_type($http, $rootScope, $location);
+        }
         if ($('#dataset_type').length > 0) {
             module.load_dataset_type($http, $rootScope, $location);
         }
@@ -471,6 +495,8 @@
         $scope.filter = false;
         $scope.reset = false;
         $scope.init = true;
+        $scope.page = 0;
+        $scope.is_next = true;
         $scope.loadMoreResource = function() {
             const _infinite = new Promise(function(resolve, reject) {
                 if ($scope.infiniteScrollLoaded) {
@@ -480,8 +506,113 @@
             });
         };
 
+        $scope.loadMoreUserResource = function() {
+            const _infinite = new Promise(function(resolve, reject) {
+                if ($scope.infiniteScrollLoaded) {
+                    query_api_user($scope.query);
+                }
+                resolve(true);
+            });
+        };
+
         //Get data from apis and make them available to the page
         function query_api(data) {
+            // handling for infinite scroll at the catalogue browse without filtered is true
+            if (jQuery.isEmptyObject(data)) {
+              if (!$scope.results && $scope.init) {
+                  $scope.page = 1;
+              }
+              data = { page: $scope.page }
+            } else {
+                // handling for filter is true
+                if ($scope.init) {
+                    $scope.page = 1;
+                }
+                data.page = $scope.page;
+            }
+
+            $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback)
+
+            function successCallback(data) {
+                //success code
+                setTimeout(function() {
+                    $('[ng-controller="CartList"] [data-toggle="tooltip"]').tooltip();
+                }, 0);
+                var result = data.data.total;
+
+                if (result === 0) {
+                    $scope.infiniteScrollLoaded = false;
+                }
+
+                if (!$scope.filter) {
+                    if (!$scope.results && $scope.init) {
+                        // Initialize the data
+                        $scope.results = data.data.resources;
+                        $scope.init = false;
+                    } else if ($scope.init) {
+                        $scope.results = data.data.resources;
+                        $scope.init = false;
+                    } else if ($scope.is_next) {
+                        $scope.results.push(...data.data.resources);
+                    }
+                } else {
+                    if ($scope.init) {
+                        $scope.init = false;
+                        $scope.results = data.data.resources;
+                    } else if ($scope.is_next) {
+                        $scope.results.push(...data.data.resources);
+                    }
+                }
+
+                $scope.total_counts = data.data.total;
+                $scope.$root.query_data = data.data;
+                if (HAYSTACK_SEARCH) {
+                    if ($location.search().hasOwnProperty('q')) {
+                        $scope.text_query = $location.search()['q'].replace(/\+/g, " ");
+                    }
+                }
+
+                //Update facet/keyword/category counts from search results
+                if (HAYSTACK_FACET_COUNTS) {
+                    try {
+                        module.haystack_facets($http, $scope.$root, $location);
+                        $("#types").find("a").each(function() {
+                            if ($(this)[0].id in data.data.meta.facets.subtype) {
+                                $(this).find("span").text(data.data.meta.facets.subtype[$(this)[0].id]);
+                            } else if ($(this)[0].id in data.data.meta.facets.type) {
+                                $(this).find("span").text(data.data.meta.facets.type[$(this)[0].id]);
+                            } else {
+                                $(this).find("span").text("0");
+                            }
+                        });
+                    } catch (err) {
+                        // console.log(err);
+                    }
+                }
+
+                $scope.is_next = data.data.links.next;
+                if (!$scope.is_next) {
+                    $scope.infiniteScrollLoaded = false;
+                } else if ($scope.is_next) {
+                    $scope.page += 1;
+                } 
+            };
+
+            function errorCallback(error) {
+                //error code
+            };
+        };
+        if (!$location.path().includes("group") && !$location.path().includes("people")) {
+            query_api($scope.query);
+        } else if ($location.path().includes("group")) {
+            query_api_user($scope.query);
+        } else if ($location.path().includes("people")) {
+            query_api_user($scope.query);
+        }
+
+
+        //Get data from apis and make them available to the page
+        function query_api_user(data) {
             // handling for infinite scroll at the catalogue browse without filtered is true
             if (jQuery.isEmptyObject(data)) {
               if (!$scope.results && $scope.init) {
@@ -581,7 +712,6 @@
                 //error code
             };
         };
-        query_api($scope.query);
 
         if (!Configs.hasOwnProperty("disableQuerySync")) {
             // Keep in sync the page location with the query object
@@ -597,7 +727,7 @@
         $scope.multiple_choice_listener = function($event, selected) {
             $scope.infiniteScrollLoaded = true;
             $scope.filter = true;
-            $scope.offset = 0;
+            $scope.page = 1;
             $scope.init = true;
             $scope.infiniteScroll = 0;
             
@@ -623,7 +753,7 @@
             if (element.hasClass('active') && type != 'select-multiple') {
                 // clear the active class from it
                 element.removeClass('active');
-                $scope.offset = 0;
+                $scope.page = 1;
                 // Remove the entry from the correct query in scope
                 query_entry.splice(query_entry.indexOf(value), 1);
             }
@@ -635,22 +765,23 @@
                 }
                 element.addClass('active');
             }
-
             if (type === 'select-multiple') {
                 if (type_id === 'keywords') {
-                    data_filter = 'keywords__slug__in'
+                    data_filter = '7e31fcb';
                 } else if (type_id === 'owners') {
-                    data_filter = 'owner__username__in'
+                    data_filter = '225d70a'
                 }  else if (type_id === 'groups') {
-                    data_filter = 'group__group_profile__slug__in'
+                    data_filter = '5af2a45'
                 }
                 if (selected.length != 0) {
-                    value = selected;
                     query_entry = selected;
                 }
                 $scope.query[data_filter] = query_entry;
-                if (selected.length == 0)
-                    delete $scope.query['keywords__slug__in']
+                if (query_entry.length == 0) {
+                    delete $scope.query['7e31fcb']
+                    delete $scope.query['225d70a']
+                    delete $scope.query['5af2a45']
+                }
             } else {
                 //save back the new query entry to the scope query
                 $scope.query[data_filter] = query_entry;
@@ -674,7 +805,7 @@
             $scope.init = true;
             // Type of data being displayed, use 'content' instead of 'all'
             $scope.dataValue = (value == 'all') ? 'content' : value;
-            $scope.offset = 0;
+            $scope.page = 1;
             // If the query object has the record then grab it
             if ($scope.query.hasOwnProperty(data_filter)) {
                 query_entry = $scope.query[data_filter];
@@ -682,7 +813,7 @@
 
             if (type === 'select-one') {
                 if (type_id === 'regions') {
-                    data_filter = 'regions__name__in';
+                    data_filter = '90ca628';
                     if (selected) {
                         value = selected;
                         $scope.query[data_filter] = selected;
@@ -722,17 +853,6 @@
             }
         })
 
-        $('#region_search_btn').on('click', function(e) {
-            if ($('#region_search_input').val()) {
-                $scope.query['regions__name__in'] = $('#region_search_input').val();
-            } else {
-                delete $scope.query['regions__name__in']
-            }
-            $scope.infiniteScrollLoaded = true;
-            $scope.init = true;
-            query_api($scope.query);
-        });
-
         function fetch_results() {
             if (HAYSTACK_SEARCH) {
               $scope.query['q'] = $('#text_search_input').val();
@@ -753,13 +873,9 @@
                   $scope.query['title__icontains'] = $('#text_search_input').val();
                   $scope.query['description__icontains'] = $('#text_search_input').val();
                   $scope.query['f_method'] = 'or';
-              } else if (SEARCH_URL == "/api/base/") {
-                  $scope.query['title__icontains'] = $('#text_search_input').val();
-                  $scope.query['abstract__icontains'] = $('#text_search_input').val();
-                  $scope.query['keywords__slug__in'] = $('#text_search_input').val();
-                  $scope.query['purpose__icontains'] = $('#text_search_input').val();
-                  $scope.query['data_description__icontains'] = $('#text_search_input').val();
-                  $scope.query['f_method'] = 'or';
+              // } else if (SEARCH_URL == "/api/base/") {
+              } else if (SEARCH_URL == siteUrl + 'api/v2/resources/') {
+                  $scope.query['dbbc87e'] = $('#text_search_input').val();
               }
             } else {
                 reset_query();
@@ -774,7 +890,7 @@
                 $scope.query['q'] = $('#text_search_input').val('');
             }
             $scope.query = {};
-            $scope.offset = 0;
+            $scope.page = 1;
             $scope.infiniteScroll = 0;
             $scope.infiniteScrollLoaded = true;
             $scope.filter = false;
@@ -790,7 +906,11 @@
             $("#text_search_input").val('');
             $(".result-wrapper").css('display', 'none');
             $(".input-highlight").css("width", '0em');
-
+            delete $scope.query['7e31fcb']
+            delete $scope.query['225d70a']
+            delete $scope.query['5af2a45']
+            delete $scope.query['90ca628']
+            delete $scope.query['page']
             $location.search($scope.query);
             return query_api($scope.query);
         }
@@ -838,7 +958,6 @@
               </div>
             `
           }
-
           if (!is_favorited) {
               var postParams = {
                 method: 'POST',
@@ -852,6 +971,7 @@
           } else {
               var postParams = {
                 method: 'DELETE',
+                type: 'DELETE',
                 data: {pk: resource_id},
                 url: siteUrl + "api/v2/resources/"+resource_id+"/favorite",
                 headers: {

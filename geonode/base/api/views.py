@@ -44,7 +44,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from geonode.favorite.models import Favorite
 from geonode.base.models import Configuration, ExtraMetadata, HierarchicalKeyword, Region, ResourceBase, TopicCategory, DataType, ThesaurusKeyword
-from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, FavoriteFilter
+from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, ResourceBaseFilter
 from geonode.groups.models import GroupProfile, GroupMember
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
@@ -364,11 +364,12 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
-        ExtentFilter, ResourceBasePermissionsFilter, FavoriteFilter
+        ExtentFilter, ResourceBasePermissionsFilter, ResourceBaseFilter
     ]
-    queryset = ResourceBase.objects.all()
     serializer_class = ResourceBaseSerializer
     pagination_class = GeoNodeApiPagination
+    ordering_fields = ('title', 'date', 'popular_count')
+    ordering = ('-last_updated')
 
     def _filtered(self, request, filter):
         paginator = GeoNodeApiPagination()
@@ -457,7 +458,11 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         }
         ```
         """)
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_name="resource_types",
+        permission_classes=[
+            IsAuthenticated,
+        ],    
+    )
     def resource_types(self, request):
 
         def _to_compact_perms_list(allowed_perms: dict, resource_type: str, resource_subtype: str, compact_perms_labels: dict = {}) -> list:

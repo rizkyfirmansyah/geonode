@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-<div class="card w-100 mb-4 rounded border-dark">
+<div class="card w-100 mb-4 rounded border-dark" infiniteuser-scroll-directive="loadMoreUserResource()">
   <div class="card-header text-center"><h3>{%  trans "Edit Members for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h3></div>
   <div class="card-body bg-light">
     <h4 class="card-title">{%  trans "Current Members" %}</h4>
@@ -65,11 +65,9 @@
 {% endblock %}
 
 {% block extra_script %}
-{{ block.super }}
-{% with "none" as layer %}
-  {% include "toast/permissions_form.html" %}
-{% endwith %}
-
-
+  {{ block.super }}
+  {% with "none" as layer %}
+    {% include "toast/permissions_form.html" %}
+  {% endwith %}
 
 {% endblock extra_script %}

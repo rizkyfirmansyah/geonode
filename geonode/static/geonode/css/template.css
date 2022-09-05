@@ -3369,18 +3369,6 @@ form-inline {
     margin: auto
 }
 
-#region_search_btn {
-    width: 100%;
-    background: 0 0;
-    border: none;
-    cursor: pointer;
-    margin-top: .4em
-}
-
-#region_search_btn svg:hover {
-    fill: #fdba12
-}
-
 .fltSpTree {
     display: inline-block;
     height: 28px;

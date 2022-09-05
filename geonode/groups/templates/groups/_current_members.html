@@ -4,7 +4,7 @@
 <div class="card-body">
     <div class="row">
       <div class="avatar ml-2">
-        <a href="{{ user.get_absolute_url }}">{% avatar member.user.username 40 %}</a>
+        <a href="{{ member.user.get_absolute_url }}">{% avatar member.user.username 40 %}</a>
       </div>
       <h5 class="col">
         {{ member.user.full_name_or_nick }}
@@ -35,9 +35,11 @@
           </form>
         {% endif %}
       <h5>
-      <p class="{% if member.role == 'manager' %}text-primary {% else %}text-muted {% endif %}small float-right">
-          {% trans 'Role' %}: {{ member.role }}
-      </p>
+      {% if member.role %}
+        <p class="{% if member.role == 'manager' %}text-primary {% else %}text-muted {% endif %}small float-right">
+            {% trans 'Role' %}: {{ member.role }}
+        </p>
+      {% endif %}
     </div>
 </div>
 <hr class="m-0">

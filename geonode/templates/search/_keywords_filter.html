@@ -5,7 +5,7 @@
 <label class="pl-2 mb-0 font-weight-bold">Keywords</label>
 <div id="keywords_filter">
   <select title="Select Keywords" class="form-select selectpicker mb-2 remove-select" id="keywords" multiple data-live-search="true" data-size="8" data-width="100%" data-container="body" data-actions-box="true" data-deselect-all-text="Deselect">
-    <option ng-repeat="keyword in keywords" data-content="
+    <option ng-repeat="keyword in keywords" ng-if="keyword.count > 0" data-content="
         <span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>{{ keyword.name }}</span><span class='small span_count float-right'>{{ keyword.count }}</span>">
         {{ keyword.name }}
     </option>
@@ -16,16 +16,16 @@
 {% block extra_script %}
 <script type="text/javascript">
   $(function() {
-    var refrestSelectPicker = () => {
+    var refreshSelectPicker = () => {
         $("#keywords").selectpicker('refresh');
         $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
     }
 
     $("#keywords").on("changed.bs.select", function(e, clickedIndex, previousValue) {
-        $('.filter-option-inner-inner .span_count').remove();
+        $('#keywords_filter .filter-option-inner-inner .span_count').remove();
 
         var selected = [];
-        $(".filter-option-inner-inner span.badge" ).each(function() {
+        $("#keywords_filter .filter-option-inner-inner span.badge" ).each(function() {
             selected.push($( this ).text())
         });
         
@@ -66,7 +66,7 @@
                             `+v.name+`
                             </option>`)
                         });
-                        refrestSelectPicker();
+                        refreshSelectPicker();
                     }
                 })
               } else {
@@ -83,7 +83,7 @@
                               `+v.name+`
                               </option>`)
                           });
-                          refrestSelectPicker();
+                          refreshSelectPicker();
                       }
                   })
               }
@@ -118,7 +118,7 @@
                             `+v.name+`
                             </option>`)
                         });
-                        refrestSelectPicker();
+                        refreshSelectPicker();
                     }
                 }).done(function() {
                     ready = true;

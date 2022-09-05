@@ -1,19 +1,14 @@
 {% load i18n %}
 {% load base_tags %}
-<nav class="filter">
-  <a href="#types" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Resource Type</a>
-  <ul class="collapse list-unstyled" id="types">
-        {% facets as facets %}
-
-        {% for facet, count in facets.items %}
-        {% if count > 0 %}
-        <li>
-            <a id="{{ facet }}" data-value="{{ facet }}" data-filter="type__in" ng-click="multiple_choice_listener($event)">
-                {{ facet|get_facet_title|title }}
-                <span class="badge float-right">{{ count }}</span>
-            </a>
-        </li>
-        {% endif %}
-        {% endfor %}
+<nav class="filter" ng-cloak>
+  <a href="#resource_type" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-toggle">Resource Type</a>
+  <ul class="collapse list-unstyled" id="resource_type">
+  {% verbatim %}
+  <li ng-repeat="resource_type in resource_types">
+    <a ng-if="resource_type.count > 0" data-value="{{ resource_type.name }}" data-filter="9fadb94" title="{{ resource_type.name }}"ng-click="multiple_choice_listener($event)" class="{{resource_type.active}}">{{ resource_type.name }}
+      <span class="badge float-right">{{ resource_type.count }}</span>
+    </a>
+  </li>
+  {% endverbatim %}
   </ul>
 </nav>

@@ -158,9 +158,7 @@
             e.preventDefault();
             var data = $('#main_search_input').val();
             var params = { 
-                title__icontains: data, keywords__slug__in: data,
-                abstract__icontains: data, purpose__icontains: data,
-                data_description__icontains: data, f_method: 'or'
+                dbbc87e: data
             };
             const submit_url = '{% url "catalogue_browse" %}';
             

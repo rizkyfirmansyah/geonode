@@ -1,10 +1,10 @@
 {% load i18n %}
 {% load static %}
 {% load avatar_tags %}
-{% verbatim %}
 
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-    <div ng-repeat="item in results | limitTo: limit" resource_id="{{ item.id }}" ng-cloak class="ng-cloak col mb-4">
+  <div class="row row-cols-1 row-cols-md-2{% if page != 'profile' %} row-cols-lg-3 {% endif %}" id="PSCatalogue">
+    {% verbatim %}
+    <div ng-repeat="item in results | limitTo: limit" resource_id="{{ item.pk }}" ng-cloak class="ng-cloak col mb-4">
         <div class="card rounded border-{{ item.resource_type }}">
           <a href="{{ item.detail_url }}" class="img-card"><img ng-src="{{ item.thumbnail_url }}"/></a>
           <div class="card-header pb-0 border-{{ item.resource_type }} bg-{{ item.resource_type }}">
@@ -40,21 +40,21 @@
             </div>
           </div>
           <div class="card-content p-2">
-            <div class="row ml-1">
+            <div class="row ml-0">
               <div class="avatar">
-                <a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">
-                  <img src="{{ item.avatar }}" width="34" alt="{{ item.owner__full_name }}">
+                <a href="/people/profile/{{ item.owner.username }}" class="card-link">
+                  <img src="{{ item.owner.avatar }}" width="34" alt="{{ item.owner.full_name_or_nick }}">
                 </a>
               </div>
-              <div class="col-10 pr-0 pl-2">
+              <div class="col-10 pr-0 pl-1">
                 <div class="row w-100 m-0">
-                  <div class="col pl-0"><a href="{{ item.site_url }}people/profile/{{ item.owner__username }}" class="card-link">{{ item.owner__full_name }}</a></div>
-                  <div ng-controller="CartList" class="text-right" ng-repeat="(key, value) in item.category__icons">
-                    <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') == -1">
-                      <i class="fa fa-{{ value }} fa-1x" title="{{ key }}"></i>
+                  <div class="col p-0"><a href="/people/profile/{{ item.owner.username }}" class="card-link">{{ item.owner.full_name_or_nick }}</a></div>
+                  <div ng-controller="CartList" class="text-right" ng-repeat="topiccategory in item.category">
+                    <span role="button" ng-click="cart.category(topiccategory.title)" ng-if="!topiccategory.svg">
+                      <i class="fa fa-{{ topiccategory.fa_class }} fa-1x" title="{{ topiccategory.title }}"></i>
                     </span>
-                    <span role="button" ng-click="cart.category(key)" ng-if="value.indexOf('svg') >= 1">
-                      <img src="data:image/svg+xml;charset=UTF-8,{{value}}" style="max-width: 16px;">
+                    <span role="button" ng-click="cart.category(topiccategory.title)" ng-if="topiccategory.svg">
+                      <img src="data:image/svg+xml;charset=UTF-8,{{topiccategory.svg}}" style="max-width: 16px;">
                     </span>
                   </div>
                   <span class="m-0">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="row pt-1 m-0">
                   <div class="card-subtitle font-small" title="Published at: {{ item.date|date:'d MMM y' }}"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
-                  <div class="col-md-8 pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="{{ item.site_url }}groups/group/{{ item.group }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true"></i>{{ item.group_name }}</a><br></span></div>
+                  <div class="col-md-8 text-right pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="/groups/group/{{ item.group.name }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true" title="{{ item.group.title }}"></i>{{ item.group.title | limitWithEllipsis: 24 }}</a><br></span></div>
                 </div>
               </div>
             </div>
@@ -81,7 +81,7 @@
                         ng-click="cart.toggleItem(item)"
                         data-toggle="tooltip"
                         data-placement="bottom"
-                        title="Bulk Select"><i ng-class="cart.getFaClass(item.id)" class="fa-solid fa-lg"></i></button>
+                        title="Bulk Select"><i ng-class="cart.getFaClass(item.pk)" class="fa-solid fa-lg"></i></button>
                     </div>
                   {% endverbatim %}
                 {% endif %}
@@ -96,7 +96,7 @@
                 {% if request.user.is_authenticated %}
                   {% verbatim %}
                   <div class="col">
-                    <button type="submit" ng-click="add_to_favorite(item.id, item.favorited)" class="col btn btn-block text-muted"><span id="add-favorite-{{item.id}}"><i class="fa-{{ item.favorited ? 'solid' : 'regular' }} fa-star" title="{{ item.favorited ? 'Already saved as your favorites' : 'Add to favorite?' }}"></i></span></button>
+                    <button type="submit" ng-click="add_to_favorite(item.pk, item.favorite)" class="col btn btn-block text-muted"><span id="add-favorite-{{item.pk}}"><i class="fa-{{ item.favorite ? 'solid' : 'regular' }} fa-star" title="{{ item.favorite ? 'Already saved as your favorites' : 'Add to favorite?' }}"></i></span></button>
                   </div>
                   {% endverbatim %}
                 {% endif %}
@@ -109,15 +109,14 @@
                   <span ng-if="item.online == false"><i class="fa-solid fa-power-off text-danger"></i>Service is offline</span>
                 </div>
               </em>
-              <em ng-if="item.processed == false">
-                <div class="card-footer text-center">
+              <em ng-if="item.processed == false && item.resource_type == 'layer'">
+                <div class="card-footer text-center alert-warning">
                   <i class="fa-solid fa-gear fa-spin fa-fw"></i>Layer not ready yet. Still finalizing layer ingestion...
                 </div>
               </em>
               <div class="alert alert-danger" ng-if="item.dirty_state == true">SECURITY NOT YET SYNCHRONIZED
-                  <div class="card-footer text-center">{% verbatim %}<a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">{% endverbatim %}{% trans "Sync permissions immediately" %}</a></div>
+                  <div class="card-footer text-center"><a href="{{ item.detail_url }}" class="btn btn-primary btn-block" data-dismiss="modal" ng-click="securityRefreshButton($event)">Sync permissions immediately</a></div>
               </div>
-              {% verbatim %}
               <div class="alert alert-warning card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == false">PENDING APPROVAL</div>
               <div class="alert alert-danger card-footer text-center" ng-if="item.dirty_state == false && item.is_approved == true && item.is_published == false">UNPUBLISHED</div>
             {% endverbatim %}

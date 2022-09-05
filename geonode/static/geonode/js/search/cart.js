@@ -67,7 +67,7 @@
 
         $scope.bulk_perms_submit = function() {
             var items = cart.getCart().items;
-            var selected_ids = $.map(items, function(item) { return item.id });
+            var selected_ids = $.map(items, function(item) { return item.pk });
             var data = $("#bulk_permission_form").serializeObject();
             var message = $('#bulk_perms_message');
             if (selected_ids.length == 0) {
@@ -198,24 +198,24 @@
         }
 
         this.addItem = function(item) {
-            if (!item.id && item.layer_identifier) {
-                item.id = item.layer_identifier;
+            if (!item.pk && item.layer_identifier) {
+                item.pk = item.layer_identifier;
             }
 
-            if (this.getItemById(item.id) === null) {
+            if (this.getItemById(item.pk) === null) {
                 this.getCart().items.push(item);
                 var cookie_item = {};
-                cookie_item['id'] = item.id
+                cookie_item['pk'] = item.pk
                 cookie_item['detail_url'] = item.detail_url
                 $cookies.putObject(item['uuid'], cookie_item);
             }
         }
 
         this.removeItem = function(item) {
-            if (this.getItemById(item.id) !== null) {
+            if (this.getItemById(item.pk) !== null) {
                 var cart = this.getCart();
                 angular.forEach(cart.items, function(cart_item, index) {
-                    if (cart_item.id === item.id) {
+                    if (cart_item.pk === item.pk) {
                         cart.items.splice(index, 1);
                         $cookies.remove(cart_item['uuid']);
                     }
@@ -230,13 +230,15 @@
         this.toggleItem = function(item) {
             if (!$("#sidebar").hasClass('active')) {
               if (Modernizr.mq('(min-width: 600px) and (max-width: 1368px)')) {
-                $("#catalogueList").removeClass('col-md-12').addClass('col-md-10 pl-5');
-                $('#sidebar').toggleClass('active');
+                  $("#catalogueList").removeClass('col-md-12').addClass('col-md-10 pl-5');
+                  $('#sidebar').toggleClass('active');
+                  $('.app-sidebar').toggleClass('d-none');
               } else {
                 $('#sidebar').toggleClass('active');
+                $('.app-sidebar').toggleClass('d-none');
               }
             }
-            if (this.getItemById(item.id) === null) {
+            if (this.getItemById(item.pk) === null) {
                 this.addItem(item);
             } else {
                 this.removeItem(item);
@@ -247,7 +249,7 @@
           var items = this.getCart().items;
             var the_item = null;
             angular.forEach(items, function(item) {
-                if (item.id === itemId) {
+                if (item.pk === itemId) {
                     the_item = item;
                 }
             });
@@ -263,15 +265,15 @@
         }
 
         this.category = function(key) {
-            const url = siteUrl + 'api/categories/';
+            const url = siteUrl + 'api/v2/categories/';
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     const response = JSON.parse(xhttp.responseText);
-                    response.objects.forEach(function(value, index, array) {
+                    response.categories.forEach(function(value, index, array) {
                         if (value.title == key) {
                             const cid = value.identifier;
-                            const redirect_to = siteUrl + "catalogue/?category__identifier__in=" + cid
+                            const redirect_to = siteUrl + "catalogue/?f4e493d=" + cid
                             window.location.replace(redirect_to);
                         }
                     })

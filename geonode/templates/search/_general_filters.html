@@ -6,7 +6,7 @@
       <ul class="collapse list-unstyled" id="categories">
           {% verbatim %}
           <li ng-repeat="category in categories" ng-if="category.count > 0">
-              <a data-value="{{ category.identifier }}" data-filter="category__identifier__in"
+              <a data-value="{{ category.identifier }}" data-filter="f4e493d"
                   title="{{ category.title }}" ng-click="multiple_choice_listener($event)"
                   class="{{category.active}}">
                   <div class="fa-stack text-right" ng-if="category.svg">
@@ -32,12 +32,12 @@
     <ul class="collapse list-unstyled" id="data_type">
     {% verbatim %}
     <li ng-repeat="data_type in data_type">
-      <a data-value="{{ data_type.identifier }}" data-filter="data_type__identifier__in" title="{{ data_type.title }}"ng-click="multiple_choice_listener($event)" class="{{data_type.active}}">{{ data_type.title }}
+      <a ng-if="data_type.count > 0" data-value="{{ data_type.identifier }}" data-filter="182243e" title="{{ data_type.title }}"ng-click="multiple_choice_listener($event)" class="{{data_type.active}}">{{ data_type.title }}
         <span class="badge float-right">{{ data_type.count }}</span>
       </a>
     </li>
     {% endverbatim %}
-  </ul>
+    </ul>
   </nav>
 {% endif %}
 
@@ -46,7 +46,7 @@
   <ul class="collapse list-unstyled" id="dataset_type">
   {% verbatim %}
   <li ng-repeat="item in dataset_type" ng-if="item.count > 0">
-    <a data-value="{{ item.extension }}" data-filter="link__extension__in" title="{{ item.extension }}"ng-click="multiple_choice_listener($event)" class="{{item.extension.active}}">{{ item.extension }}
+    <a data-value="{{ item.extension }}" data-filter="36db053" title="{{ item.extension }}"ng-click="multiple_choice_listener($event)" class="{{item.extension.active}}">{{ item.extension }}
       <span class="badge float-right">{{ item.count }}</span>
     </a>
   </li>

@@ -59,7 +59,7 @@
     <dt>{% trans "Keywords" %}</dt>
       <dd itemprop="keywords">
       {% for keyword in resource.keywords.all %}
-        <a itemscope itemtype="http://schema.org/Text" href="{% url "search" %}?keywords__slug__in={{ keyword.slug }}" >
+        <a itemscope itemtype="http://schema.org/Text" href="{% url "keywords-list" %}?7e31fcb={{ keyword.slug }}" >
           {{ keyword.name }}
         </a>
         {% if not forloop.last %},{% endif %}
@@ -68,7 +68,7 @@
         {% if resource.tkeywords.count > 0 %}
           {% get_current_language as LANGUAGE_CODE %}
           {% for keyword in resource.tkeywords.all %}
-            <a itemscope itemtype="http://schema.org/Text" href="{% url "search" %}?tkeywords__id__in={{ keyword.id }}">
+            <a itemscope itemtype="http://schema.org/Text" href="{% url "catalogue_browse" %}?ebe16ff={{ keyword.id }}">
               {% for label in keyword.labels %}
                 {% if forloop.first %},{% endif %}
                 {% if label.lang == LANGUAGE_CODE %}
@@ -85,7 +85,7 @@
     {% if resource.category.count > 0 %}
     <dt>{% trans "Category" %}</dt>
       {% for category in resource.category.all %}
-        <dd><a href="{% url "search" %}?category__identifier__in={{ category.identifier }}">{% trans category.title %}</a> {% if category.gn_description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+        <dd><a href="{% url "catalogue_browse" %}?f4e493d={{ category.identifier }}">{% trans category.title %}</a> {% if category.gn_description %}<a href="#category-more" data-toggle="collapse" data-target=".category-more-{{ category.id }}"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
         <dd class="category-more-{{ category.id }} collapse">
           {% trans category.gn_description %}
         </dd>
@@ -96,7 +96,7 @@
     <dt>{% trans "Regions" %}</dt>
     <dd itemprop="keywords">
       {% for region in resource.regions.all %}
-        <a itemscope itemtype="http://schema.org/Text" href="{% url "search" %}?regions__name__in={{ region.name }}">
+        <a itemscope itemtype="http://schema.org/Text" href="{% url "catalogue_browse" %}?90ca628={{ region.name }}">
           {{ region.name }}
         </a>
         {% if not forloop.last %},{% endif %}
@@ -146,7 +146,7 @@
 
     {% if resource.data_type %}
     <dt>{% trans "Type of Data" %}</dt>
-    <dd><a href="{% url "search" %}?data_type__identifier__in={{ resource.data_type.identifier }}">{% trans resource.data_type.title %}</a> {% if resource.data_type.gn_description %} <a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
+    <dd><a href="{% url "catalogue_browse" %}?182243e={{ resource.data_type.identifier }}">{% trans resource.data_type.title %}</a> {% if resource.data_type.gn_description %} <a href="#data_type-more" data-toggle="collapse" data-target=".data_type-more"><i class="fa-solid fa-circle-info"></i></a>{% endif %}</dd>
       {% if resource.data_type.gn_description %}
       <dd class="data_type-more collapse">
         {% trans resource.data_type.gn_description %}

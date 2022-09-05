@@ -17,16 +17,16 @@
 <script type="text/javascript">
   $(function() {
 
-    var refrestSelectPicker = () => {
+    var refreshSelectPicker = () => {
         $("#owners").selectpicker('refresh');
         $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
     }
 
     $("#owners").on("changed.bs.select", function(e, clickedIndex, previousValue) {
-        $('.filter-option-inner-inner .span_count').remove();
+        $('#owners_filter .filter-option-inner-inner .span_count').remove();
 
         var selected = [];
-        $(".filter-option-inner-inner span.d-none" ).each(function() {
+        $("#owners_filter .filter-option-inner-inner span.d-none" ).each(function() {
             selected.push($( this ).text())
         });
         
@@ -68,7 +68,7 @@
                             `+v.full_name_or_nick+`
                             </option>`)
                         });
-                        refrestSelectPicker();
+                        refreshSelectPicker();
                     }
                 })
               } else {
@@ -85,7 +85,7 @@
                               `+v.full_name_or_nick+`
                               </option>`)
                           });
-                          refrestSelectPicker();
+                          refreshSelectPicker();
                       }
                   })
               }
@@ -120,7 +120,7 @@
                             `+v.full_name_or_nick+`
                             </option>`)
                         });
-                        refrestSelectPicker();
+                        refreshSelectPicker();
                     }
                 }).done(function() {
                     ready = true;

@@ -172,17 +172,23 @@
   {% endif %}
 </div>
 
-<div class="col-xs-12 col-md-9">
+<div class="col-xs-12 col-md-9" infinite-scroll-directive="loadMoreResource()" id="catalogueList">
   <div class="card bg-light">
-    <div class="card-header text-center"><h4>{% trans "Resources" %}</h4></div>
+    <div class="card-header">
+      <div class="row">
+        <h4 class="col">{% trans "Resources" %}</h4>
+        <div class="col-md-2 w-100">
+          {% include "search/_sort_filters.html" %}
+        </div>
+      </div>
+    </div>
     <div class="card-body">
       {% include "people/_profile_filters.html" %}
     </div>
-    <!-- <div class="col-md-12">
-      {% include "search/_sort_filters.html" %}
-    </div> -->
     <div class="mt-2">
-      {% include 'base/_resourcebase_snippet_profile.html' %}
+      {% with page='profile' %}
+        {% include 'base/_resourcebase_snippet.html' %}
+      {% endwith %}
     </div>
   </div>
 </div>
@@ -196,11 +202,7 @@
   {% endif %}
 
   <script type="text/javascript">
-    {% if HAYSTACK_SEARCH %}
-        SEARCH_URL = '{% url 'api_get_search' api_name='api' resource_name='base' %}?owner__username={{profile.username}}'
-    {% else %}
-        SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='base' %}?owner__username={{profile.username}}';
-    {% endif %}
+    SEARCH_URL = '{% url 'base-resources-list' %}?225d70a={{profile.username}}';
   </script>
   
   {% include 'search/search_scripts.html' %}

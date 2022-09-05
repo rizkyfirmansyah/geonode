@@ -28,7 +28,7 @@ import traceback
 
 from django.db import models, transaction
 from django.conf import settings
-from django.utils.functional import cached_property
+from django.utils.functional import cached_property, classproperty
 from django.utils.html import escape
 from django.utils.timezone import now
 from django.db.models import Q, signals
@@ -76,6 +76,11 @@ from geonode.utils import (
 from geonode.groups.models import GroupProfile
 from geonode.security.utils import get_visible_resources, get_geoapp_subtypes
 from geonode.security.models import PermissionLevelMixin
+from geonode.security.permissions import (
+    VIEW_PERMISSIONS,
+    OWNER_PERMISSIONS
+)
+from geonode.groups.conf import settings as groups_settings
 
 from geonode.notifications_helper import (
     send_notification,
@@ -1249,6 +1254,25 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 _attribute_str = html.unescape(
                     attribute_str.replace('\n', ' ').replace('\r', '').strip())
         return strip_tags(_attribute_str)
+
+    @classproperty
+    def allowed_permissions(cls):
+        return {
+            "anonymous": VIEW_PERMISSIONS,
+            "default": OWNER_PERMISSIONS,
+            groups_settings.REGISTERED_MEMBERS_GROUP_NAME: OWNER_PERMISSIONS
+        }
+
+    @classproperty
+    def compact_permission_labels(cls):
+        return {
+            "none": _("None"),
+            "view": _("View"),
+            "download": _("Download"),
+            "edit": _("Edit"),
+            "manage": _("Manage"),
+            "owner": _("Owner")
+        }
 
     @property
     def raw_author(self):

@@ -21,8 +21,8 @@
     {% if HAYSTACK_SEARCH %}
       SEARCH_URL = '{% url 'api_get_search' api_name='api' resource_name='base'%}'
     {% else %}
-      SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='base' %}';
-      {% comment %} SEARCH_URL = '{% url 'base-resources-list' %}'; {% endcomment %}
+      {% comment %} SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='base' %}'; {% endcomment %}
+      SEARCH_URL = '{% url 'base-resources-list' %}';
     {% endif %}
   {% endif %}
 
