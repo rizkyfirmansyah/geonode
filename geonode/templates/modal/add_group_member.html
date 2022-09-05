@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load static %}
+{% load base_tags %}
+{% load crispy_forms_tags %}
+
+{% if member_form %}
+  <form method="POST" action="{% url "group_members_add" group.slug %}">
+    
+    <div class="modal fade" id="add_group_member" tabindex="-1" role="dialog" aria-labelledby="addGroupMemberModal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-0">
+          <div class="modal-header">
+            <h3 class="modal-title">Add New Members</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+            </button>
+          </div>
+          <div class="modal-body text-center pb-0">
+            {% csrf_token %}
+            <div id="member_form_container">
+                {{ member_form|crispy }}<br/><br/>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" data-dismiss="modal" class="btn btn-secondary">Maybe later</a>
+            <input type="submit" value="{% trans "Add Group Members" %}" class="btn btn-save"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+{% endif %}
+
+{% block extra_script %}
+<script text="text/javascript">
+  $(document).ready(function () {
+    $("#div_id_manager_role").addClass("p-0");
+  });
+</script>
+{% endblock %}

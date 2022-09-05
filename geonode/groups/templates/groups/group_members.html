@@ -4,7 +4,12 @@
 
 {% block body %}
 <div class="card w-100 mb-4 rounded border-dark" infiniteuser-scroll-directive="loadMoreUserResource()">
-  <div class="card-header text-center"><h3>{%  trans "Edit Members for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h3></div>
+  <div class="card-header">
+    <div class="row">
+      <h3 class="col">{%  trans "Edit Members for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h3>
+      <div class="align-self-center pr-4"><a role="button" data-toggle="modal" data-target="#add_group_member" class=""><i class="fa-solid fa-bars" title="Add Member"></i></a></div>
+    </div>
+  </div>
   <div class="card-body bg-light">
     <h4 class="card-title">{%  trans "Current Members" %}</h4>
     <div class="row">
@@ -46,22 +51,8 @@
   </div>
 </div>
 
-{% if member_form %}
-  <form method="POST" action="{% url "group_members_add" group.slug %}">
-    <div class="card w-100 rounded border-dark">
-      <div class="card-header text-center"><h3>{% trans "Add new members" %}</h3></div>
-      <div class="card-body">
-          {% csrf_token %}
-          <div id="member_form_container">
-              {{ member_form|crispy }}<br/><br/>
-          </div>
-      </div>
-      <div class="card-footer">
-        <input type="submit" value="{% trans "Add Group Members" %}" class="btn btn-save btn-block"/>
-      </div>
-    </div>
-  </form>
-{% endif %}
+{% include "modal/add_group_member.html" %}
+
 {% endblock %}
 
 {% block extra_script %}

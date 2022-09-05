@@ -3214,7 +3214,7 @@ html {
     }
 }
 
-#member_form_container .select2-container, #div_id_remember {
+.select2-container, #div_id_remember {
     padding: 0
 }
 

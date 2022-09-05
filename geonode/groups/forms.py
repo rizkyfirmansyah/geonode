@@ -121,14 +121,28 @@ class GroupMemberForm(forms.Form):
         }),
         required=False)
 
-    manager_role_choices=(
-        (False, "Assign to member"),
-        (True, "Assign manager role"))
-
     manager_role = forms.BooleanField(
-        required=False,
-        label=_("Assign manager role")
+        required=False
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        manager_role_choices=(
+            (True, "Assign manager role"),
+            (False, "Assign to member"))
+
+        self.fields['manager_role'].widget.attrs.update({
+            'data-toggle': 'toggle',
+            'data-width': '100%',
+            'data-height': 'auto',
+            'data-on': manager_role_choices[0][1],
+            'data-off': manager_role_choices[1][1],
+            'value': manager_role_choices[0][0],
+            'data-onstyle': 'info',
+            'data-offstyle': 'primary'})
+        self.fields['manager_role'].label = ''
+
 
     def clean_user_identifiers(self):
         values = list(self.cleaned_data['user_identifiers'])
