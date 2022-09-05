@@ -23,13 +23,11 @@
 
   <div class="card-body">
     <ul class="nav nav-tabs">
-      <li class="active"><a class="nav-primary" data-toggle="tab"><i class=""></i>{% trans "All" %}</a></li>
-      <li><a class="nav-primary" href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a>
-      </li>
-      <li><a class="nav-primary" href="#maps" data-toggle="tab"><i class="fa-solid fa-map-location-dot"></i> {% trans "Maps" %}</a></li>
-      <li><a class="nav-primary" href="#datasets" data-toggle="tab"><i class="fa-regular fa-file-lines"></i> {% trans "Datasets" %}</a>
-      </li>
-      <li><a class="nav-primary" href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
+      <li class="col active"><a class="nav-primary" data-toggle="tab">{% trans "All" %}</a></li>
+      <li class="col"><a class="nav-primary" href="#layers" data-toggle="tab"><i class="fa-regular fa-square rotate-45"></i> {% trans "Layers" %}</a></li>
+      <li class="col"><a class="nav-primary" href="#maps" data-toggle="tab"><i class="fa-solid fa-map-location-dot"></i> {% trans "Maps" %}</a></li>
+      <li class="col"><a class="nav-primary" href="#datasets" data-toggle="tab"><i class="fa-regular fa-file-lines"></i> {% trans "Datasets" %}</a></li>
+      <li class="col"><a class="nav-primary" href="#comments" data-toggle="tab"><i class="fa-regular fa-comment"></i> {% trans "Comments" %}</a></li>
     </ul>
     <div class="tab-content bg-light">
       <article id="all" class="tab-pane active">
