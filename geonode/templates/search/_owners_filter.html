@@ -103,7 +103,7 @@
             var scrollTop = $(this).scrollTop();
             var height = $(this).height();
             
-            if(ready && (scrollTop / height) * _offset > (height / _offset) - 0.5) {
+            if(ready && scrollTop > _offset) {
                 ready = false;
                 $.ajax({
                     url: '{% url "owners-list" %}',
