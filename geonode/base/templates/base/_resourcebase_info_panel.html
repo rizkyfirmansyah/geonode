@@ -59,7 +59,7 @@
     <dt>{% trans "Keywords" %}</dt>
       <dd itemprop="keywords">
       {% for keyword in resource.keywords.all %}
-        <a itemscope itemtype="http://schema.org/Text" href="{% url "keywords-list" %}?7e31fcb={{ keyword.slug }}" >
+        <a itemscope itemtype="http://schema.org/Text" href="{% url "catalogue_browse" %}?7e31fcb={{ keyword.slug }}" >
           {{ keyword.name }}
         </a>
         {% if not forloop.last %},{% endif %}
