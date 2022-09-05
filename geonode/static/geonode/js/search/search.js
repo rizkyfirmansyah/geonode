@@ -858,31 +858,20 @@
               $scope.query['q'] = $('#text_search_input').val();
             }
             if ($('#text_search_input').val()) {
-              if (SEARCH_URL == "/api/profiles/") {
-                  // updated url to work with new autocomplete backend format
-                  // a user profile has no title; if search was triggered from
-                  // the /people page, filter by username instead
-                  var query_key = 'username__icontains';
-                  $scope.query[query_key] = $('#text_search_input').val();
-              } else if (SEARCH_URL == "/api/groupcategory/") {
-                  // Adding in this conditional since both groups autocomplete and searches requests need to search name not title.
-                  var query_key = 'name__icontains';
-                  $scope.query[query_key] = $('#text_search_input').val();
-              } else if (SEARCH_URL == "/api/group_profile/") {
-                  // Adding in this conditional since both groups autocomplete and searches requests need to search name not title.
-                  $scope.query['title__icontains'] = $('#text_search_input').val();
-                  $scope.query['description__icontains'] = $('#text_search_input').val();
-                  $scope.query['f_method'] = 'or';
-              // } else if (SEARCH_URL == "/api/base/") {
-              } else if (SEARCH_URL == siteUrl + 'api/v2/resources/') {
+              $scope.infiniteScrollLoaded = true;
+              $scope.init = true;
+              if (!$location.path().includes("group") && !$location.path().includes("people")) {
                   $scope.query['dbbc87e'] = $('#text_search_input').val();
+                  query_api($scope.query);
+              } else if ($location.path().includes("group")) {
+                  query_api_user($scope.query);
+              } else if ($location.path().includes("people")) {
+                  query_api_user($scope.query);
               }
+              
             } else {
                 reset_query();
             }
-            $scope.infiniteScrollLoaded = true;
-            $scope.init = true;
-            query_api($scope.query);
         }
 
         function reset_query() {

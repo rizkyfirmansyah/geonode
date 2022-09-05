@@ -58,6 +58,7 @@ from geonode.base.models import (
 )
 from django.contrib import messages
 from celery.utils.log import get_logger
+from django.db.models import Q
 
 
 logger = logging.getLogger("geonode.layers.views")
@@ -326,7 +327,7 @@ class ResourceBaseAutocomplete(autocomplete.Select2QuerySetView):
         qs = ResourceBase.objects.all().filter(id__in=permitted)
 
         if self.q:
-            qs = qs.filter(title__icontains=self.q).order_by('title')
+            qs = qs.filter(Q(title__icontains=self.q) | Q(abstract__icontains=self.q)).order_by('title')
 
         return get_visible_resources(
             qs,
