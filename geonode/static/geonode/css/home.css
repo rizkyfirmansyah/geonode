@@ -2855,10 +2855,6 @@ html {
   content: "\f045"
 }
 
-.activity-timestamp {
-  margin-top: -10px
-}
-
 @media (max-width:991px) {
   .navbar-header {
       float: none

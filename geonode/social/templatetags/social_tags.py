@@ -52,7 +52,7 @@ def activity_item(action, **kwargs):
     Provides a location to manipulate an action in preparation for display.
     """
     actor = action.actor
-    activity_class = 'activity'
+    activity_class = 'list-check'
     verb = action.verb
     username = actor.username if actor else "someone"
     target = action.target

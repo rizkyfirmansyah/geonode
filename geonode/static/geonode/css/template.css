@@ -3192,10 +3192,6 @@ html {
     content: "\f045"
 }
 
-.activity-timestamp {
-    margin-top: -10px
-}
-
 @media (min-width:850px) and (max-width:991px) {
     .item-details {
         transform: translate(40%, -45%);

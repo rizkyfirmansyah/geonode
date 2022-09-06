@@ -5,12 +5,12 @@
       {% if activity_class == 'delete' %}
           <span class="icon-activity"><i class="fa-solid fa-trash"></i></span>
       {% else %}
-          <span class="icon-activity"><i class="fa-solid fa-{{ activity_class|default:'activity' }}"></i></span>
+          <span class="icon-activity"><i class="fa-solid fa-{{ activity_class|default:'list-check' }}"></i></span>
       {% endif %}
       {% if object %}
           <span class="thumb-activity"><img src="{{ object.thumbnail_url }}"></span>
       {% endif %}
-      <a href="{{ actor.get_absolute_url }}">{{ username }}</a>
+          <a href="{{ actor.get_absolute_url }}">{{ username }}</a>
 
       {{ verb|safe }}
 
@@ -31,7 +31,7 @@
           <a href="{{ target.get_absolute_url }}">{{ target }}</a>
         {% endif %}
       {% endif %}
+      <span class="float-right small text-muted ">{{ timestamp|timesince }} {% trans "ago" %}</spam>
     </p>
-    <p class="activity-timestamp">{{ timestamp|timesince }} {% trans "ago" %}</p>
   </div>
 </li>
