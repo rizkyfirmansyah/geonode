@@ -119,64 +119,6 @@ class Dataset(ResourceBase):
         else:
             return f'{self.title} ({self.id})'
 
-    def find_placeholder(self):
-        placeholder = 'datasets/{0}-placeholder.png'
-        if finders.find(placeholder.format(self.extension), False):
-            return finders.find(placeholder.format(self.extension), False)
-        elif self.is_audio:
-            return finders.find(placeholder.format('audio'), False)
-        elif self.is_image:
-            return finders.find(placeholder.format('image'), False)
-        elif self.is_video:
-            return finders.find(placeholder.format('video'), False)
-        return finders.find(placeholder.format('generic'), False)
-
-    # @property
-    # def href(self):
-    #     if self.doc_url:
-    #         return self.doc_url
-    #     elif self.files:
-    #         return urljoin(
-    #             settings.SITEURL,
-    #             reverse('document_link', args=(self.id,))
-    #         )
-
-    # @property
-    # def is_file(self):
-    #     return self.files and self.extension
-
-    # @property
-    # def mime_type(self):
-    #     if self.is_file and self.extension.lower() in DOCUMENT_MIMETYPE_MAP:
-    #         return DOCUMENT_MIMETYPE_MAP[self.extension.lower()]
-    #     return None
-
-    # @property
-    # def is_audio(self):
-    #     AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
-    #     return self.is_file and self.extension.lower() in AUDIOTYPES
-
-    # @property
-    # def is_image(self):
-    #     IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
-    #     return self.is_file and self.extension.lower() in IMGTYPES
-
-    # @property
-    # def is_video(self):
-    #     VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
-    #     return self.is_file and self.extension.lower() in VIDEOTYPES
-
-    # @property
-    # def class_name(self):
-    #     return self.__class__.__name__
-
-    # @property
-    # def embed_url(self):
-    #     return reverse('document_embed', args=(self.id,))
-
-    # @property
-    # def download_url(self):
-    #     return build_absolute_uri(reverse('document_download', args=(self.id,)))
 
     class Meta(ResourceBase.Meta):
         pass

@@ -45,6 +45,7 @@ from django.utils.text import slugify
 import os
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.templatetags.static import static
 
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter
 from geonode.base.api.permissions import IsOwnerOrReadOnly
@@ -429,6 +430,7 @@ class DatasetsViewSet(DynamicModelViewSet):
 
         toast_title = f"Upload Datasets"
         resource_permissions = serialize_resource_permissions(json.loads(permissions))
+        DATASET_THUMB = 'geonode/thumbs/datasets'
 
         try:
             for inst in self.get_queryset().filter(id__in=data.keys()):
@@ -449,8 +451,18 @@ class DatasetsViewSet(DynamicModelViewSet):
             resource_manager.set_permissions(
                 None, instance=self.object, permissions=resource_permissions, created=True
             )
-            update_file = File.objects.filter(dataset_id__isnull=True).update(dataset=self.object.id)
-            update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(detail_url='/datasets/'+str(self.object.id))
+            update_file = File.objects.filter(dataset_id__isnull=True)
+            extension_list = list(update_file.values_list('extension', flat=True))
+            if len(extension_list) > 1:
+                ext = 'datasets'
+            else:
+                ext = extension_list[0] 
+            dataset_thumb = os.path.join(DATASET_THUMB, f'{ext}-placeholder.png')
+            update_file.update(dataset=self.object.id)
+            update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(
+                detail_url='/datasets/'+str(self.object.id),
+                thumbnail_url=static(dataset_thumb)
+            )
             register_event(self.request, EventType.EVENT_UPLOAD, self.object)
 
             msg = f"Your files has been saved."
