@@ -517,7 +517,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
             var deleteParams = {
                 method: 'DELETE',
                 data: {pk: id},
-                url: siteUrl + "api/v2/datasets/delete_file",
+                url: siteUrl + "api/v2/files/delete_file",
                 headers: {
                     'Content-type': 'application/json;charset=utf-8'
                 }
@@ -594,7 +594,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
             if ($scope.edit_dataset_id) {
                 var postParams = {
                     method: 'PATCH',
-                    url: siteUrl + "api/v2/datasets/patch_dataset_files/" + $scope.edit_dataset_id,
+                    url: siteUrl + "api/v2/files/patch_dataset_files/" + $scope.edit_dataset_id,
                     transformRequest: angular.identity,
                     data: JSON.stringify(patchReplaceDatasetFile()),
                     cache: false,
@@ -604,7 +604,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
             } else {
               var postParams = {
                   method: 'PATCH',
-                  url: siteUrl + "api/v2/datasets/upload_dataset_files",
+                  url: siteUrl + "api/v2/files/upload_dataset_files",
                   transformRequest: angular.identity,
                   data: JSON.stringify(patchDatasetFile()),
                   cache: false,
@@ -679,7 +679,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
     })
 
     dataset.load_resume_upload = function($http, $rootScope) {
-        $http.get(siteUrl + "api/v2/datasets/resume_upload").then(successCallback);
+        $http.get(siteUrl + "api/v2/files/resume_upload").then(successCallback);
 
         function successCallback(data) {
             $rootScope.datasets = data.data.files;
@@ -695,7 +695,7 @@ var dataset = angular.module('dataset', ['ngCookies']);
     }
 
     dataset.edit_dataset_files = function($http, $rootScope, dataset_id) {
-      $http.get(siteUrl + "api/v2/datasets/edit_dataset_files/" + dataset_id).then(successCallback);
+      $http.get(siteUrl + "api/v2/files/edit_dataset_files/" + dataset_id).then(successCallback);
 
       function successCallback(data) {
           $rootScope.datasets = data.data.files;

@@ -21,6 +21,7 @@ import logging
 import traceback
 from urllib.parse import quote, urlsplit, urljoin
 import warnings
+from django.contrib.auth import get_user_model
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -154,7 +155,11 @@ def map_detail(request, mapid, template='maps/map_detail.html'):
     links = map_obj.link_set.download()
 
     try:
-        is_favorited = Favorite.objects.filter(user=request.user, object_id=map_obj.pk).exists()
+        _user = get_user_model().objects.get(username=request.user)
+        if not str(_user) == 'AnonymousUser':
+            is_favorited = Favorite.objects.filter(user=request.user, object_id=map_obj.pk).exists()
+        else:
+            is_favorited = False
     except Favorite.DoesNotExist:
         is_favorited = False
 

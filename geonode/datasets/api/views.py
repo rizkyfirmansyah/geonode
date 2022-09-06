@@ -27,13 +27,13 @@ from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 from geonode.base import register_event
 from geonode.datasets.enumerations import DATASET_TYPE_MAP
-from ...security.utils import serialize_resource_permissions, sha256file
+from ...security.utils import get_resources_with_perms, serialize_resource_permissions, sha256file
 from ...utils import doc_path, mkdtemp
 from ..models import Dataset, File
 from rest_framework import viewsets
 
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, DjangoModelPermissionsOrAnonReadOnly  # noqa
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, DjangoModelPermissionsOrAnonReadOnly  # noqa
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework.response import Response
@@ -56,17 +56,17 @@ from geonode.storage.manager import storage_manager
 from geonode.base.models import ResourceBase
 from geonode.base.api.serializers import ResourceBaseSerializer
 from django.template import loader
-
 from .serializers import DatasetIngestFileSerializer, DatasetIngestUrlSerializer, DatasetSerializer
 from .permissions import DocumentPermissionsFilter
 from django.conf import settings
 import logging
 from django.contrib import messages
+from django.db.models import Count
 
 logger = logging.getLogger(__name__)
 
 
-class DatasetsViewSet(DynamicModelViewSet):
+class DatasetFilesViewSet(DynamicModelViewSet):
     """
     API endpoint that allows datasets to be viewed or edited.
     """
@@ -102,6 +102,37 @@ class DatasetsViewSet(DynamicModelViewSet):
         result_page = paginator.paginate_queryset(resources, request)
         serializer = ResourceBaseSerializer(result_page, embed=True, many=True)
         return paginator.get_paginated_response({"resources": serializer.data})
+
+    @extend_schema(
+        methods=['get'],
+        responses={200},
+        description="API endpoint allowing to get extension of File.")
+    @action(
+        detail=False,
+        url_path="file_extension",
+        url_name="file_extension",
+        methods=['get'],
+        permission_classes=[
+            IsOwnerOrReadOnly,
+        ],
+        parser_classes=[JSONParser]
+    )
+    def file_extension(self, request):
+        resources = get_resources_with_perms(request.user)
+        queryset = Dataset.objects.filter(file__dataset_id__in=resources)
+        try:
+            file = File.objects.filter(dataset_id__in=list(queryset)).values('extension').annotate(count=Count('extension')).order_by('extension')
+
+            out = []
+            for item in list(file):
+                out.append({"count": item.get('count'),
+                            "extension": item.get('extension')})
+
+            return Response(data={'files': out}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(e)
+            return Response(data={'files': e.args[0], 'success': False}, status=500, exception=True)
 
     @extend_schema(
         methods=['delete'],
@@ -456,7 +487,16 @@ class DatasetsViewSet(DynamicModelViewSet):
             if len(extension_list) > 1:
                 ext = 'datasets'
             else:
-                ext = extension_list[0] 
+                ext = extension_list[0]
+            AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
+            VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
+            TEXTTPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'text']
+            if ext in AUDIOTYPES:
+                ext = 'audio'
+            elif ext in VIDEOTYPES:
+                ext = 'video'
+            elif ext in TEXTTPES:
+                ext = 'txt'
             dataset_thumb = os.path.join(DATASET_THUMB, f'{ext}-placeholder.png')
             update_file.update(dataset=self.object.id)
             update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(

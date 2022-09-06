@@ -119,6 +119,10 @@ class Dataset(ResourceBase):
         else:
             return f'{self.title} ({self.id})'
 
+    @property
+    def class_name(self):
+        return self.__class__.__name__
+
 
     class Meta(ResourceBase.Meta):
         pass

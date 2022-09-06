@@ -39,7 +39,7 @@
   GROUPS_ENDPOINT = '{% url 'group-profiles-list' %}';
   DATATYPE_ENDPOINT = '{% url 'data_type-list' %}';
   RESOURCETYPE_ENDPOINT = '{% url 'base-resources-resource_types' %}';
-  DATASETEXT_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='dataset_type' %}';
+  DATASETEXT_ENDPOINT = '{% url 'files-file_extension' %}';
   HAYSTACK_SEARCH = "{{ HAYSTACK_SEARCH }}".toLowerCase() === "true";
   HAYSTACK_FACET_COUNTS = "{{ HAYSTACK_FACET_COUNTS }}".toLowerCase() === "true";
   CLIENT_RESULTS_LIMIT = {{ CLIENT_RESULTS_LIMIT }};

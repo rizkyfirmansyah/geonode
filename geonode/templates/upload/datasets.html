@@ -4,7 +4,7 @@
   function delete_file(id) {    
     $.ajax({
         data: {pk: id},
-        url: "/api/v2/datasets/delete_file",
+        url: "/api/v2/files/delete_file",
         type: 'DELETE',
         headers:{"X-CSRFToken":'{{csrf_token}}'},
         method: 'DELETE',

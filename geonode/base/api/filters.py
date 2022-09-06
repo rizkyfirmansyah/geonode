@@ -25,6 +25,7 @@ from rest_framework.filters import SearchFilter, BaseFilterBackend
 from geonode.base.bbox_utils import filter_bbox
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +124,9 @@ class ResourceBaseFilter(BaseFilterBackend):
                 queryset = queryset.filter(featured=False)
 
         try:
-            is_favorited = Favorite.objects.favorites_for_user(user=request.user).values('object_id')
+            _user = get_user_model().objects.get(username=request.user)
+            if not str(_user) == 'AnonymousUser':
+                is_favorited = Favorite.objects.favorites_for_user(user=_user).values('object_id')
         except ObjectDoesNotExist:
             pass
 

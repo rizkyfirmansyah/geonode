@@ -25,6 +25,7 @@ import pandas as pd
 import os
 from django.db.models import Max
 from django.views.generic import ListView
+from django.contrib.auth import get_user_model
 
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
@@ -131,7 +132,11 @@ def dataset_detail(request, docid):
         name__in=settings.DOWNLOAD_FORMATS_METADATA)
 
     try:
-        is_favorited = Favorite.objects.filter(user=request.user, object_id=dataset.pk).exists()
+        _user = get_user_model().objects.get(username=request.user)
+        if not str(_user) == 'AnonymousUser':
+            is_favorited = Favorite.objects.filter(user=request.user, object_id=dataset.pk).exists()
+        else:
+            is_favorited = False
     except Favorite.DoesNotExist:
         is_favorited = False
 
@@ -566,7 +571,6 @@ def dataset_remove(request):
             'base.delete_resourcebase',
             _PERMISSION_MSG_DELETE)
         logger.debug(f'Deleting File {dataset}')
-        # delete_orphaned_thumbnail.apply((dataset.thumbnail_path,))
         dataset.delete()
         message = _("File: {} has been deleted".format(dataset.title))
         register_event(request, EventType.EVENT_REMOVE, dataset)

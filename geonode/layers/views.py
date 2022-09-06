@@ -24,6 +24,7 @@ import logging
 import warnings
 import traceback
 import xml.etree.ElementTree as ET
+from django.contrib.auth import get_user_model
 
 import psycopg2
 from dal import autocomplete
@@ -75,7 +76,6 @@ from geonode.base.enumerations import CHARSETS
 from geonode.decorators import check_keyword_write_perms
 from geonode.layers.forms import (
     LayerForm,
-    LayerUploadForm,
     NewLayerUploadForm,
     LayerAttributeForm)
 from geonode.layers.models import (
@@ -601,7 +601,11 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
                 all_granules = {"features": []}
 
     try:
-        is_favorited = Favorite.objects.filter(user=request.user, object_id=layer.pk).exists()
+        _user = get_user_model().objects.get(username=request.user)
+        if not str(_user) == 'AnonymousUser':
+            is_favorited = Favorite.objects.filter(user=request.user, object_id=layer.pk).exists()
+        else:
+            is_favorited = False
     except Favorite.DoesNotExist:
         is_favorited = False
 

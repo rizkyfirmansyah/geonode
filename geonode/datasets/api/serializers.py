@@ -17,7 +17,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-from collections import OrderedDict
 from rest_framework import serializers
 from dynamic_rest.serializers import DynamicModelSerializer
 
@@ -48,7 +47,7 @@ class DatasetSerializer(DynamicModelSerializer):
 
     class Meta:
         model = File
-        name = 'datasets'
+        name = 'files'
         view_name = 'datasets-file'
         fields = (
             'pk', 'id', 'file_name', 'file_description', 'file_data_quality', 'file',

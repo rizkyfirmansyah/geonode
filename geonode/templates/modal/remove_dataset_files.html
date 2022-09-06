@@ -32,7 +32,7 @@
 
       $.ajax({
           data: {ids: ids},
-          url: "/api/v2/datasets/delete_files",
+          url: "/api/v2/files/delete_files",
           type: 'DELETE',
           headers:{"X-CSRFToken":'{{csrf_token}}'},
           method: 'DELETE',

@@ -51,10 +51,12 @@
           <form action="{% url 'base-resources-list' %}/{{resource.id}}/favorite" id="resource_detail_favorite">
             {% csrf_token %}
             <button class="btn" type="submit">
-            {% if not is_favorited %}
-              <i class="fa-regular fa-star" title="Add to favorite?"></i>
-            {% else %}
-              <i class="fa-solid fa-star" title="Removed from favorite?"></i>
+            {% if request.user.is_authenticated %}
+              {% if not is_favorited %}
+                <i class="fa-regular fa-star" title="Add to favorite?"></i>
+              {% else %}
+                <i class="fa-solid fa-star" title="Removed from favorite?"></i>
+              {% endif %}
             {% endif %}
             </button>
           </form>

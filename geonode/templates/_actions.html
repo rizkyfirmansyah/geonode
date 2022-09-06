@@ -34,7 +34,7 @@
   {% if DISPLAY_SOCIAL %}
   <li><a class="nav-primary" href="#share" data-toggle="tab"><i class="fa-solid fa-share"></i>{% trans "Share" %}</a></li>
   {% endif %}
-  {% if DISPLAY_RATINGS %}
+  {% if DISPLAY_RATINGS and request.user.is_authenticated %}
   <li><a class="nav-primary" href="#rate" data-toggle="tab"><i class="fa-solid fa-thumbs-up"></i>{% trans "Ratings" %}</a></li>
   {% endif %}
   {% if DISPLAY_COMMENTS %}

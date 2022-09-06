@@ -210,11 +210,8 @@
         $http.get(DATASETEXT_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            if ($location.search().hasOwnProperty('extension')) {
-                data.data.objects = module.set_initial_filters_from_query(data.data.objects,
-                    $location.search()['extension'], 'extension');
-            }
-            $rootScope.dataset_type = data.data.objects;
+            var _data = data.data.files;
+            $rootScope.dataset_type = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
             }
