@@ -559,7 +559,8 @@
                     if ($scope.init) {
                         $scope.init = false;
                         $scope.results = data.data.resources;
-                    } else if ($scope.is_next) {
+                    }
+                     else if ($scope.is_next) {
                         $scope.results.push(...data.data.resources);
                     }
                 }
@@ -879,7 +880,6 @@
                 $scope.query['q'] = $('#text_search_input').val('');
             }
             $scope.query = {};
-            $scope.page = 1;
             $scope.infiniteScroll = 0;
             $scope.infiniteScrollLoaded = true;
             $scope.filter = false;
@@ -895,13 +895,12 @@
             $("#text_search_input").val('');
             $(".result-wrapper").css('display', 'none');
             $(".input-highlight").css("width", '0em');
-            delete $scope.query['7e31fcb']
-            delete $scope.query['225d70a']
-            delete $scope.query['5af2a45']
-            delete $scope.query['90ca628']
-            delete $scope.query['page']
+            delete $scope.query['7e31fcb'];
+            delete $scope.query['225d70a'];
+            delete $scope.query['5af2a45'];
+            delete $scope.query['90ca628'];
+            delete $scope.query['page'];
             $location.search($scope.query);
-            return query_api($scope.query);
         }
 
         $('.delete_search_query').on('click', function(e) {
