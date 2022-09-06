@@ -203,7 +203,7 @@ class GeonodeCurrentHarvester(base.BaseHarvesterWorker):
     ) -> typing.Optional[base.HarvestedResourceInfo]:
         url_fragment = {
             GeoNodeResourceTypeCurrent.DATASET.value: "/layers/",
-            GeoNodeResourceTypeCurrent.DOCUMENT.value: "/documents/"
+            GeoNodeResourceTypeCurrent.DOCUMENT.value: "/datasets/"
         }[harvestable_resource.remote_resource_type]
         url = f"{self.base_api_url}{url_fragment}{harvestable_resource.unique_identifier}/"
         response = self.http_session.get(url)

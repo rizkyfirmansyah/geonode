@@ -201,20 +201,6 @@ class File(models.Model):
         else:
             return f'{self.file_name} ({self.id})'
 
-    def find_placeholder(self):
-        placeholder = 'documents/{0}-placeholder.png'
-        if finders.find(placeholder.format(self.extension), False):
-            return finders.find(placeholder.format(self.extension), False)
-        elif self.is_audio:
-            return finders.find(placeholder.format('audio'), False)
-        elif self.is_image:
-            return finders.find(placeholder.format('image'), False)
-        elif self.is_video:
-            return finders.find(placeholder.format('video'), False)
-        elif self.is_tabular:
-            return finders.find(placeholder.format('tabular'), False)
-        return finders.find(placeholder.format('generic'), False)
-
     @property
     def href(self):
         if self.doc_url:
