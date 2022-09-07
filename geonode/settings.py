@@ -2170,7 +2170,7 @@ UI_DEFAULT_MANDATORY_FIELDS = [
     # 'id_resource-abstract',
     'id_resource-language',
     'id_resource-license',
-    'region_form',
+    # 'region_form',
     'id_resource-date_type',
     'id_resource-date',
     'category_form',
