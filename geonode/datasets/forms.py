@@ -17,7 +17,6 @@
 #
 #########################################################################
 
-from distutils.command.clean import clean
 import os
 import re
 import json
@@ -44,7 +43,7 @@ from geonode.datasets.models import (
     FileResourceLink)
 from geonode.upload.models import UploadSizeLimit
 from geonode.upload.api.exceptions import FileUploadLimitException
-from .models import Roda
+from .models import Dataset
 
 logger = logging.getLogger(__name__)
 
@@ -95,7 +94,7 @@ class FileFormMixin:
 
         if resources is None:
             resources = list(Layer.objects.all())
-            # resources += list(Document.objects.all())
+            resources += list(Dataset.objects.all())
             resources += list(Map.objects.all())
             resources.sort(key=lambda x: x.title)
 
