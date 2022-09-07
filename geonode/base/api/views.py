@@ -178,7 +178,7 @@ class GroupViewSet(DynamicModelViewSet):
     def members(self, request, pk=None):
         group = self.get_object()
         members = get_user_model().objects.filter(id__in=group.member_queryset().values_list("user", flat=True))
-        return Response(UserSerializer(embed=True, many=True).to_representation(members))
+        return Response(data={"resources":UserSerializer(embed=True, many=True).to_representation(members)})
 
     @extend_schema(methods=['get'], responses={200: UserSerializer(many=True)},
                    description="API endpoint allowing to retrieve the Group managers.")

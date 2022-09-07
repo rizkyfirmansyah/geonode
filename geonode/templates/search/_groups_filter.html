@@ -60,7 +60,7 @@
                           {% endwith %}`);
                           $('.toast').toast('show');
                         }
-                        var _data = data.group_profiles;
+                        var _data = data.resources;
                         $("#groups").empty();
                         $.each(_data, function(i, v) {
                             $('#groups').append(`<option data-content="<span class='d-none'>`+v.group_id+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.title+`</span><span class='small span_count float-right'>`+v.count+`</span>">
@@ -77,7 +77,7 @@
                       type: 'GET',
                       dataType: 'json',
                       success: function(data) {
-                          var _data = data.group_profiles;
+                          var _data = data.resources;
                           $("#groups").empty();
                           $.each(_data, function(i, v) {
                               $('#groups').append(`<option data-content="<span class='d-none'>`+v.group_id+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.title+`</span><span class='small span_count float-right'>`+v.count+`</span>">
@@ -113,7 +113,7 @@
                       page: page++
                     },
                     success: function(data) {
-                        var _data = data.group_profiles;
+                        var _data = data.resources;
                         $.each(_data, function(i, v) {
                             $('#groups').append(`<option data-content="<span class='d-none'>`+v.group_id+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.title+`</span><span class='small span_count float-right'>`+v.count+`</span>">
                             `+v.title+`

@@ -163,19 +163,47 @@ class GroupSerializer(DynamicModelSerializer):
 
 class GroupProfileSerializer(BaseDynamicModelSerializer):
     count = serializers.SerializerMethodField()
+    manager_count = serializers.SerializerMethodField()
+    member_count = serializers.SerializerMethodField()
+    detail_url = serializers.SerializerMethodField()
+    profile_url = serializers.SerializerMethodField()
+    owner = serializers.SerializerMethodField()
 
     class Meta:
         model = GroupProfile
-        name = 'group_profile'
+        name = 'resources'
         view_name = 'group-profiles-list'
-        fields = ('pk', 'title', 'slug', 'logo', 'description',
-                  'email', 'keywords', 'access', 'categories', 'count', 'group_id')
+        fields = ('pk', 'title', 'slug', 'logo', 'description', 'email', 'keywords', 'access', 'categories', 'logo_url',
+                   'count', 'group_id', 'manager_count', 'member_count', 'detail_url', 'owner', 'profile_url')
 
     def get_count(self, obj):
         request = self.context.get('request')
         resources = get_resources_with_perms(request.user, {}).filter(group_id=obj.group_id).count()
 
         return resources
+
+    def get_manager_count(self, obj):
+        return obj.get_managers().count()
+
+    def get_member_count(self, obj):
+        return obj.member_queryset().count()
+
+    def get_detail_url(self, obj):
+        if obj.slug:
+            return reverse('group_detail', args=[obj.slug])
+        else:
+            return None
+
+    def get_profile_url(self, obj):
+        return obj.get_profile_url()
+
+    def get_owner(self, obj):
+        user = obj.created_by
+        if user:
+            return user.full_name_or_nick
+        else:
+            return None
+
 
     keywords = serializers.SlugRelatedField(many=True, slug_field='slug', read_only=True)
     categories = serializers.SlugRelatedField(many=True, slug_field='slug', queryset=GroupCategory.objects.all())

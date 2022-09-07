@@ -192,7 +192,7 @@
 
         function successCallback(data) {
             //success code
-            var _data = data.data.group_profiles;
+            var _data = data.data.resources;
             $rootScope.groups = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
