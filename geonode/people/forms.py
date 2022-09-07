@@ -18,6 +18,7 @@
 #
 #########################################################################
 
+from geonode.people.models import Profile
 import taggit
 
 from django import forms
@@ -113,6 +114,16 @@ class ProfileLoginForm(LoginForm):
                     'value': remember_choices[0][0],
                     'data-onstyle': 'info',
                     'data-offstyle': 'primary'})
+
+    def clean_login(self):
+        from django.db.models import Q
+
+        login = self.cleaned_data['login']
+        user = Profile.objects.filter(Q(username=login) | Q(email=login)).exists()
+        if user:
+            return login
+        else:
+            raise forms.ValidationError(f"That account {login} doesn't exist. Enter a different account or get a new one.")
 
     def login(self, *args, **kwargs):
         return super().login(*args, **kwargs)
