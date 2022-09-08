@@ -1,0 +1,68 @@
+{% load i18n %}
+{% block extra_script %}
+
+<script type="text/javascript">
+    $(function(){
+      setTimeout(function() {
+          $("#resourceBaseVersioning").modal('show');
+      }, 2000);
+
+      $("#resourcebase_versioning").submit(function(t) {
+        t.preventDefault();
+        var form = $(this);
+        var data = form.serializeObject();
+        $.ajax({
+            url: "{% url 'versions-set-version' resource_id %}",
+            type: 'POST',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            headers: {"X-CSRFToken":'{{csrf_token}}'},
+            method: 'POST',
+            contentType: "application/json; charset=utf-8",
+            success: function(res) {
+                $(document.body).append(`
+                    {% with toast_message='`+ res.message +`' %}
+                      {% with toast_alert='success' %}
+                        {% include "toast/_trigger_toast.html" %}
+                      {% endwith %}
+                    {% endwith %}`);
+                $('.toast').toast('show');
+                setTimeout(function() {
+                    $('#resourceBaseVersioning').modal('hide');
+                    $(".resourceVersioning").remove();
+                }, 1000);
+            },
+            error: function(jqXHR, textStatus, res) {
+                var status_code = jqXHR.status;
+                var msg = jqXHR.responseJSON.message;
+                if (status_code == 400) {
+                    $(document.body).append(`
+                        {% with toast_message='`+ msg +`' %}
+                          {% with toast_alert='error' %}
+                            {% include "toast/_trigger_toast.html" %}
+                          {% endwith %}
+                        {% endwith %}`);
+                    $('.toast').toast('show');
+                }
+            }
+        });
+      });
+
+      $.ajax({
+          type: 'GET',
+          url: "{% url 'versions-get-version' resource_id %}",
+          success: function(data){
+              var version = data.version;
+              if (version) {
+                  var input_version = $("#div_id_version input[name=version]");
+                  var help_tag = `<small id="hint_id_version" class="form-text text-muted">Your latest version of this change is `+ version +` </small>`;
+                  input_version.after(help_tag);
+                  var recommended_version = ((version * 10) + 1) / 10
+                  input_version.val(recommended_version);
+              }
+          }
+      })
+
+    });
+</script>
+{% endblock extra_script %}

@@ -42,25 +42,26 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
-from geonode.thumbs.utils import MISSING_THUMB
-from geonode.storage.manager import storage_manager
+from django.shortcuts import get_object_or_404
 from django.utils.html import strip_tags
-from mptt.models import MPTTModel, TreeForeignKey
-from geonode.upload.files import ALLOWED_EXTENSIONS
 
-from PIL import Image, ImageOps
-
-from polymorphic.models import PolymorphicModel
-from polymorphic.managers import PolymorphicManager
-from pinax.ratings.models import OverallRating
+from pyproj import transform, Proj
+from urllib.parse import urlsplit, urljoin
 
 from taggit.models import TagBase, ItemBase
 from taggit.managers import TaggableManager, _TaggableManager
-
+from mptt.models import MPTTModel, TreeForeignKey
+from PIL import Image, ImageOps
+from polymorphic.models import PolymorphicModel
+from polymorphic.managers import PolymorphicManager
+from pinax.ratings.models import OverallRating
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
 from treebeard.mp_tree import MP_Node, MP_NodeQuerySet, MP_NodeManager
-from geonode import GeoNodeException
 
+from geonode.thumbs.utils import MISSING_THUMB
+from geonode.storage.manager import storage_manager
+from geonode.upload.files import ALLOWED_EXTENSIONS
+from geonode import GeoNodeException
 from geonode.singleton import SingletonModel
 from geonode.base import enumerations
 from geonode.base.bbox_utils import BBOXHelper, polygon_from_bbox
@@ -70,9 +71,7 @@ from geonode.thumbs.utils import (
 from geonode.utils import (
     bbox_to_wkt,
     find_by_attr,
-    bbox_to_projection,
-    is_monochromatic_image
-)
+    bbox_to_projection)
 from geonode.groups.models import GroupProfile
 from geonode.security.utils import get_visible_resources, get_geoapp_subtypes
 from geonode.security.models import PermissionLevelMixin
@@ -81,15 +80,10 @@ from geonode.security.permissions import (
     OWNER_PERMISSIONS
 )
 from geonode.groups.conf import settings as groups_settings
-
 from geonode.notifications_helper import (
     send_notification,
     get_notification_recipients)
 from geonode.people.enumerations import ROLE_VALUES
-
-from pyproj import transform, Proj
-
-from urllib.parse import urlsplit, urljoin
 
 logger = logging.getLogger(__name__)
 
@@ -1046,7 +1040,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     supplemental_information = models.TextField(
         _('Supplemental Information'),
         max_length=2000,
-        default=enumerations.DEFAULT_SUPPLEMENTAL_INFORMATION,
+        blank=True,
+        null=True,
         help_text=supplemental_information_help_text)
 
     # Section 8
@@ -1601,6 +1596,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     def category_list(self):
         return [c.identifier for c in self.category.all()]
+
+    def category_list_id(self):
+        return [c.id for c in self.category.all()]
 
     def keyword_list(self):
         return [kw.name for kw in self.keywords.all()]
@@ -2483,3 +2481,163 @@ class ExtraMetadata(models.Model):
         blank=False,
         on_delete=models.CASCADE)
     metadata = JSONField(null=True, default=dict, blank=True)
+
+
+class ResourceVersion(models.Model):
+    """
+    Versioning track of any updated / replace of resources
+    """
+    version_help_text = _("write down using semantic versioning: MAJOR.MINOR; i.e.: 2.1")
+    description_help_text = _("write one sentence describing the change that you are committing")
+    summary_help_text = _("a summary of the changes that user are committing to change the resource")
+    contributors_help_text = _("the user who created this change")
+    published_help_text = _("the date and time this change was created")
+    TAG_CHOICES = [
+        ('replace', _('Replace Dataset')),
+        ('edit', _('Edit Metadata')),
+        ('append', _('Append Data'))
+    ]
+    resource = models.ForeignKey(ResourceBase, blank=True, null=True, on_delete=models.CASCADE)
+    version = models.CharField(
+        _('Version'),
+        null=False,
+        blank=False,
+        max_length=10,
+        default='1.0')
+    summary = models.TextField(
+        _('Summary'),
+        default='',
+        help_text=summary_help_text
+    )
+    description = models.TextField(
+        _('Description'),
+        default='',
+        help_text=description_help_text
+    )
+    tags = models.CharField(
+        _("Tags"),
+        null=True,
+        blank=True,
+        choices=TAG_CHOICES,
+        max_length=255)
+    contributors = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    published = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    class Meta:
+        ordering = ["id"]
+        verbose_name_plural = "Datasets Versioning"
+
+    def __str__(self):
+        return str(self.version)
+
+    def get_full_name(self):
+        return get_user_model().objects.get(username=self.contributors).full_name_or_nick
+
+
+def get_recommended_version(resource_id):
+    latest_version = get_latest_version(resource_id)
+    if latest_version:
+        latest_version = (float(latest_version) * 10 + 1) / 10
+        return str(latest_version)
+    else:
+        return None
+
+
+def get_latest_version(resource_id):
+    version = ResourceVersion.objects.filter(resource_id=resource_id)
+    if version:
+        version = version.only('version').order_by('-id')[0]
+        return str(version)
+    else:
+        return None
+
+
+def version_post_save(instance, sender, **kwargs):
+    """
+    Get information from resource
+    """
+    resources = get_object_or_404(ResourceBase, pk=instance.resourcebase_ptr.id)
+    recommended_version = get_recommended_version(instance.resourcebase_ptr.id)
+    description = []
+
+    if resources.title != instance.title:
+        description.append('Title (Changed)')
+
+    if len(instance.abstract) > 0 and len(resources.abstract) == 0:
+        description.append('Abstract (Added)')
+    elif resources.abstract != instance.abstract:
+        description.append('Abstract (Changed)')
+
+    if resources.keyword_list() != kwargs['keywords']:
+        description.append('Keywords (Changed)')
+
+    if resources.category_list_id() != kwargs['category']:
+        description.append('Category (Changed)')
+
+    if resources.owner != instance.owner:
+        description.append('Responsible (Changed)')
+
+    if resources.poc != instance.poc:
+        description.append('Point of Contact (Changed)')
+
+    if len(instance.data_citation) > 0 and len(resources.data_citation) == 0:
+        description.append('Data Citation (Added)')
+    elif resources.data_citation != instance.data_citation:
+        description.append('Data Citation (Changed)')
+
+    if len(instance.related_publication) > 0 and len(resources.related_publication) == 0:
+        description.append('Related Publication (Added)')
+    elif resources.related_publication != instance.related_publication:
+        description.append('Related Publication (Changed)')
+
+    if len(instance.data_description) > 0 and len(resources.data_description) == 0:
+        description.append('Data Description (Added)')
+    elif resources.data_description != instance.data_description:
+        description.append('Data Description (Changed)')
+
+    if len(instance.data_quality_statement) > 0 and len(resources.data_quality_statement) == 0:
+        description.append('Data Quality Statement (Added)')
+    elif resources.data_quality_statement != instance.data_quality_statement:
+        description.append('Data Quality Statement (Changed)')
+
+    if len(instance.source) > 0 and len(resources.source) == 0:
+        description.append('Source (Added)')
+    elif resources.source != instance.source:
+        description.append('Source (Changed)')
+
+    # data type of CharField which max_length of 255 or varchar(255) treat null value as None rather than empty string as any CharField defined its max_length > 255
+    if instance.edition and resources.edition:
+        if resources.edition != instance.edition:
+            description.append('Edition (Changed)')
+    elif instance.edition and not resources.edition:
+        description.append('Edition (Added)')
+    elif not instance.edition and resources.edition:
+        description.append('Edition (Changed)')
+
+    if len(instance.supplemental_information) > 0 and len(resources.supplemental_information) == 0:
+        description.append('Supplemental Information (Added)')
+    if resources.supplemental_information != instance.supplemental_information:
+        description.append('Supplemental Information (Changed)')
+
+    if resources.author != instance.author:
+        description.append('Author (Changed)')
+
+    if len(description) > 0:
+        description = '; '.join(description)
+        if recommended_version:
+            resource_version = ResourceVersion.objects.get_or_create(
+                resource=resources,
+                contributors=kwargs['contributors'],
+                tags=ResourceVersion.TAG_CHOICES[1][0],
+                version=recommended_version,
+                description=description,
+                summary=f'Updating Metadata')
+
+    if not recommended_version:
+        resource_version = ResourceVersion.objects.get_or_create(
+            resource=resources,
+            contributors=kwargs['contributors'],
+            tags=ResourceVersion.TAG_CHOICES[1][0],
+            version='1.0',
+            summary='This is the first published version.'
+        )

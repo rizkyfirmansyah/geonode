@@ -21,21 +21,16 @@ import json
 import logging
 import traceback
 import warnings
-import pandas as pd
 import os
+import uuid
+
+import pandas as pd
+import numpy as np
+
 from django.db.models import Max
 from django.views.generic import ListView
 from django.contrib.auth import get_user_model
-
-import numpy as np
 from django.views.decorators.csrf import csrf_exempt
-
-from geonode.decorators import registered_users
-from geonode.datasets.tasks import delete_orphaned_thumbnail
-from geonode.favorite.models import Favorite
-from geonode.views import page_not_found_message, unauthorized_message
-
-from guardian.shortcuts import get_objects_for_user
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
@@ -48,30 +43,31 @@ from django.views.generic.edit import CreateView
 from django.db.models import F
 from django.forms.utils import ErrorList
 from django.views.decorators.http import require_POST
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from geonode.base.api.exceptions import geonode_exception_handler
 
-from geonode.datasets.utils import get_download_response
-from geonode.utils import resolve_object
-from geonode.security.views import _perms_info_json
-from geonode.people.forms import ProfileForm
+from geonode.base import register_event
+from geonode.base.views import batch_modify, batch_permissions
+from geonode.base.api.exceptions import geonode_exception_handler
 from geonode.base.auth import get_or_create_token
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
-from geonode.base.models import (
-    ResourceBase,
-    Thesaurus)
+from geonode.base.models import Thesaurus, version_post_save
+from geonode.decorators import registered_users
+from geonode.favorite.models import Favorite
+from geonode.views import page_not_found_message, unauthorized_message
+from geonode.datasets.utils import get_download_response
+from geonode.utils import resolve_object, build_social_links
+from geonode.security.views import _perms_info_json
+from geonode.people.forms import ProfileForm
 from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.datasets.models import Dataset, File, Roda
 from geonode.resource.utils import get_related_resources
 from geonode.datasets.forms import DatasetForm, DatasetCreateForm, DatasetReplaceForm
-from geonode.utils import build_social_links
 from geonode.groups.models import GroupProfile
-from geonode.base.views import batch_modify, batch_permissions
-from geonode.base import register_event
 from geonode.monitoring.models import EventType
-from geonode.security.utils import get_user_visible_groups, get_visible_resources, sha256sum
-from django.contrib import messages
-import uuid
+from geonode.security.utils import get_user_visible_groups, get_visible_resources
+
+from guardian.shortcuts import get_objects_for_user
 
 from dal import autocomplete
 
@@ -307,14 +303,16 @@ class DatasetUpdateView(LoginRequiredMixin, CreateView):
         self.request.session['session'] =  str(uuid.uuid1())
         context['ALLOWED_DOC_TYPES'] = ALLOWED_DOC_TYPES
         pk_url_kwarg = self.kwargs['docid']
-        context['dataset_id'] = pk_url_kwarg
+        context['resource_id'] = pk_url_kwarg
         files = File.objects.filter(dataset_id__in=[pk_url_kwarg])
         context['files'] = files
 
         return context
     
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_superuser and not request.user.has_perm('change_resourcebase'):
+        id = self.kwargs['docid']
+        resource = Dataset.objects.filter(resourcebase_ptr=id).first()
+        if not request.user.is_superuser and not request.user.has_perm('change_resourcebase', resource.get_self_resource()):
             return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
 
         return super().dispatch(request, *args, **kwargs)
@@ -409,6 +407,7 @@ def dataset_metadata(
             if new_poc is not None and new_author is not None:
                 dataset.poc = new_poc
                 dataset.metadata_author = new_author
+            version_post_save(instance=dataset, sender=dataset.__class__, keywords=new_keywords, category=new_categories, contributors=request.user)
             dataset.keywords.clear()
             dataset.keywords.add(*new_keywords)
             dataset.regions.clear()
@@ -417,7 +416,7 @@ def dataset_metadata(
             dataset.category.add(*new_categories)
             dataset.save(notify=True)
             dataset_form.save_many2many()
-
+            
             register_event(request, EventType.EVENT_CHANGE_METADATA, dataset)
             if not ajax:
                 return HttpResponseRedirect(
@@ -628,12 +627,12 @@ def dataset_metadata_detail(
 
 @login_required
 def dataset_batch_metadata(request):
-    return batch_modify(request, 'File')
+    return batch_modify(request, 'Dataset')
 
 
 @login_required
 def dataset_batch_permissions(request):
-    return batch_permissions(request, 'File')
+    return batch_permissions(request, 'Dataset')
 
 
 class DatasetAutocomplete(autocomplete.Select2QuerySetView):

@@ -1,10 +1,16 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import signals
 from django.urls import reverse
 from django.utils.functional import classproperty
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+from geonode.client.hooks import hookset
+
+from urllib.parse import urljoin
+
 from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.security.permissions import (
     VIEW_PERMISSIONS,
@@ -13,15 +19,11 @@ from geonode.security.permissions import (
 from geonode.groups.conf import settings as groups_settings
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from django.contrib.staticfiles import finders
-from urllib.parse import urljoin
 from geonode.utils import build_absolute_uri
 from geonode.base.models import ResourceBase
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 from geonode.storage.manager import storage_manager
+
 import logging
-from geonode.client.hooks import hookset
 
 logger = logging.getLogger(__name__)
 
@@ -122,6 +124,17 @@ class Dataset(ResourceBase):
     @property
     def class_name(self):
         return self.__class__.__name__
+
+    def get_self_resource(self):
+        """
+        Returns the "ResourceBase" associated to this "object".
+        """
+        try:
+            if hasattr(self, "resourcebase_ptr_id"):
+                return self.resourcebase_ptr
+        except ObjectDoesNotExist:
+            pass
+        return self
 
 
     class Meta(ResourceBase.Meta):

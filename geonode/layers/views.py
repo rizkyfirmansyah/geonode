@@ -23,17 +23,16 @@ import decimal
 import logging
 import warnings
 import traceback
-import xml.etree.ElementTree as ET
-from django.contrib.auth import get_user_model
 
 import psycopg2
-from dal import autocomplete
+
+import xml.etree.ElementTree as ET
 from requests import Request
 from urllib.parse import quote, urlparse
 from owslib.wfs import WebFeatureService
 
+from django.contrib.auth import get_user_model
 from django.conf import settings
-
 from django.db.models import Q
 from django.db.models import F
 from django.urls import reverse
@@ -51,27 +50,28 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
-from geonode.favorite.models import Favorite
-from geonode.layers.tasks import delete_shapefile_data
-from geonode.views import page_not_found_message, unauthorized_message
-from geonode.notifications_helper import toast_unauthorized
 from django.template.loader import get_template
+from django.views.decorators.csrf import csrf_exempt
 
 from guardian.shortcuts import get_objects_for_user
-from geonode.proxy.views import fetch_response_headers
-from django.views.decorators.csrf import csrf_exempt
+from dal import autocomplete
 
 from geonode import geoserver
 from geonode.base.auth import get_or_create_token
 from geonode.layers.metadata import parse_metadata
 from geonode.resource.manager import resource_manager
-
+from geonode.favorite.models import Favorite
+from geonode.layers.tasks import delete_shapefile_data
+from geonode.views import page_not_found_message, unauthorized_message
+from geonode.notifications_helper import toast_unauthorized
+from geonode.proxy.views import fetch_response_headers
 from geonode.resource.utils import update_resource
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.views import batch_modify, batch_permissions
 from geonode.base.models import (
     ExtraMetadata,
-    Thesaurus)
+    Thesaurus,
+    version_post_save)
 from geonode.base.enumerations import CHARSETS
 from geonode.decorators import check_keyword_write_perms
 from geonode.layers.forms import (
@@ -1145,6 +1145,8 @@ def layer_metadata(
         new_keywords = layer_form.cleaned_data['keywords']
         new_regions = [int(c.strip()) for c in request.POST.getlist('resource-regions')]
         new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
+        
+        version_post_save(instance=layer, sender=layer.__class__, keywords=new_keywords, category=new_categories, contributors=request.user)
 
         layer.keywords.clear()
         if new_keywords:

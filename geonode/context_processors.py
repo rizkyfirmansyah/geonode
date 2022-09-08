@@ -69,6 +69,10 @@ def resource_urls(request):
             settings,
             'DISPLAY_COMMENTS',
             False),
+        DISPLAY_VERSIONS=getattr(
+            settings,
+            'DISPLAY_VERSIONS',
+            False),
         DISPLAY_RATINGS=getattr(
             settings,
             'DISPLAY_RATINGS',

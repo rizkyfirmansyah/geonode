@@ -678,6 +678,45 @@ var dataset = angular.module('dataset', ['ngCookies']);
         }
     })
 
+    dataset.directive("datasetversion", function($http, $rootScope, $location) {
+      return {
+          restrict: "A",
+          link: function(scope, elem) {
+              var url = $location.absUrl().split('/');
+              var dataset_id = url[url.length - 1];
+              if (dataset_id.includes("_")) {
+                  // query for layers
+                  var API_DATASET_VERSION = siteUrl + "api/v2/versions?l=" + dataset_id;
+                  dataset.load_dataset_version($http, $rootScope, API_DATASET_VERSION);
+              } else {
+                  var API_DATASET_VERSION = siteUrl + "api/v2/versions?d=" + dataset_id;
+                  dataset.load_dataset_version($http, $rootScope, API_DATASET_VERSION);
+              }
+          },
+          templateUrl: staticUrl + "geonode/js/templates/dataset_version.html"
+      }
+    })
+
+    dataset.load_dataset_version = function($http, $rootScope, API_DATASET_VERSION) {
+        $http.get(API_DATASET_VERSION).then(successCallback);
+
+        function successCallback(data) {
+            var _data = data.data.versions;
+            if (_data.length == 0) {
+                console.log("No version")
+            } else {
+              setTimeout(function() {
+                  $("#versions_table").DataTable({
+                    scrollCollapse: true,
+                    paging:         false,
+                    info:           false
+                  });
+              }, 1000);
+            }
+            $rootScope.versions = _data;
+        }
+    }
+
     dataset.load_resume_upload = function($http, $rootScope) {
         $http.get(siteUrl + "api/v2/files/resume_upload").then(successCallback);
 

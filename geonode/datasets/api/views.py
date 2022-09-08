@@ -287,7 +287,8 @@ class DatasetFilesViewSet(DynamicModelViewSet):
     def download_dataset_file(self, request, pk):
         file = File.objects.filter(id=pk).get()
         filename = file.file_name.split(".")[0]
-        if not request.user.is_superuser and not request.user.has_perm('datasets.download_resourcebase', file):
+        dataset = Dataset.objects.filter(file__dataset_id=pk).first()
+        if not request.user.is_superuser and not request.user.has_perm('download_resourcebase', dataset.get_self_resource()):
             return HttpResponse(
                 loader.render_to_string(
                     'error/403.html', context={
@@ -329,8 +330,7 @@ class DatasetFilesViewSet(DynamicModelViewSet):
         dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
         exclude = []
         for resource in resources:
-            if not request.user.is_superuser and \
-            not request.user.has_perm('datasets.download_resourcebase', resource):
+            if not request.user.is_superuser and not request.user.has_perm('download_resourcebase', dataset.get_self_resource()):
                 exclude.append(resource.id)
         resources = resources.exclude(id__in=exclude)
 

@@ -31,5 +31,6 @@ router.register(r'keywords', views.HierarchicalKeywordViewSet, 'keywords')
 router.register(r'tkeywords', views.ThesaurusKeywordViewSet, 'tkeywords')
 router.register(r'regions', views.RegionViewSet, 'regions')
 router.register(r'data_type', views.DataTypeViewSet, 'data_type')
+router.register(r'versions', views.ResourceVersionViewSet, 'versions')
 
 urlpatterns = []

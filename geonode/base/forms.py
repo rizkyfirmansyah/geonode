@@ -40,7 +40,7 @@ from tinymce.widgets import TinyMCE
 from django.contrib.admin.utils import flatten
 from geonode.base.enumerations import ALL_LANGUAGES
 from geonode.base.models import (DataType, HierarchicalKeyword,
-                                 License, Region, ResourceBase, RestrictionCodeType, Thesaurus,
+                                 License, Region, ResourceBase, ResourceVersion, RestrictionCodeType, Thesaurus,
                                  ThesaurusKeyword, ThesaurusKeywordLabel, ThesaurusLabel,
                                  TopicCategory)
 from geonode.base.utils import validate_extra_metadata
@@ -676,3 +676,31 @@ class BatchEditRegionForm(forms.Form):
         label=_("Parent"),
         queryset=Region.objects.all(),
         required=True)
+
+
+class ResourceVersionForm(forms.Form):
+    version = forms.CharField(label="Version", required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ResourceVersion.version_help_text}))
+    description = forms.CharField(label="Description", required=True, 
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': ResourceVersion.description_help_text}))
+    tags = forms.ChoiceField(label="Tags", required=False, choices=ResourceVersion.TAG_CHOICES)
+
+    class Meta:
+        model = ResourceVersion
+        fields = ["version", "description", "tags"]
+        widgets = {
+          'tags': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tags'].widget.attrs.update({'class': 'selectpicker'})
+
+
+    def clean_version(self):
+        import re
+        version = self.cleaned_data["version"]
+        match = re.match(r"(\d+\.\d+(?:\.\d+)?)", version)
+        if not match:
+            raise forms.ValidationError(f"Please use semantic versioning syntax like: MAJOR.MINOR -- i.e.: 1.2 or 2.1")
+        

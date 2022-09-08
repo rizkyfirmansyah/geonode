@@ -23,13 +23,15 @@ import logging
 # Geonode functionality
 from django.shortcuts import render
 from django.conf import settings
-from django.views.generic import FormView
+from django.views.generic import FormView, ListView
 from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
+from django.contrib import messages
+from django.db.models import Q
 
 from dal import views, autocomplete
 from user_messages.models import Message
@@ -37,28 +39,22 @@ from guardian.shortcuts import get_objects_for_user
 
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.datasets.models import File
+from geonode.datasets.models import Dataset
 from geonode.groups.models import GroupProfile
 from geonode.tasks.tasks import set_permissions
 from geonode.base.forms import BatchPermissionsForm
 from geonode.security.utils import get_visible_resources, serialize_resource_permissions
 from geonode.notifications_helper import send_notification
 from geonode.base.utils import OwnerRightsRequestViewUtils
-from geonode.base.forms import UserAndGroupPermissionsForm
-
-from geonode.base.forms import (
-    BatchEditForm,
-    OwnerRightsRequestForm
-)
+from geonode.base.forms import UserAndGroupPermissionsForm, BatchEditForm, OwnerRightsRequestForm
 from geonode.base.models import (
     Region,
     ResourceBase,
-    HierarchicalKeyword, ThesaurusKeyword,
+    HierarchicalKeyword,
+    ResourceVersion, ThesaurusKeyword,
     ThesaurusKeywordLabel
 )
-from django.contrib import messages
 from celery.utils.log import get_logger
-from django.db.models import Q
 
 
 logger = logging.getLogger("geonode.layers.views")
@@ -138,8 +134,8 @@ def user_and_group_permission(request, model):
 def batch_modify(request, model):
     if not request.user.is_superuser:
         raise PermissionDenied
-    if model == 'File':
-        Resource = File
+    if model == 'Dataset':
+        Resource = Dataset
     if model == 'Layer':
         Resource = Layer
     if model == 'Map':
@@ -227,8 +223,8 @@ def batch_modify(request, model):
 def batch_permissions(request, model):
     if not request.user.is_superuser:
         raise PermissionDenied
-    if model == 'File':
-        Resource = File
+    if model == 'Dataset':
+        Resource = Dataset
     if model == 'Layer':
         Resource = Layer
     if model == 'Map':
@@ -454,3 +450,16 @@ class OwnerRightsRequestView(LoginRequiredMixin, FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+
+class ResourceVersionDetailView(LoginRequiredMixin, ListView):
+    model = ResourceVersion
+    template_name = "versions.html"
+    fields = ['version', 'summary', 'description', 'published']
+    context_object_name = 'version_list'
+
+    def get_queryset(self):
+        request = self.request
+        qs = ResourceVersion.objects.all()
+
+        return qs

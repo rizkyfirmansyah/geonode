@@ -41,7 +41,7 @@ from django.core.exceptions import ValidationError
 from guardian.shortcuts import get_perms, remove_perm, assign_perm
 
 from geonode.layers.models import Layer
-from geonode.base.models import ResourceBase, Link, Configuration
+from geonode.base.models import ResourceBase, Link, Configuration, ResourceVersion
 from geonode.thumbs.utils import (
     get_thumbs,
     remove_thumb)

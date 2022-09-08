@@ -299,6 +299,12 @@
         </article>
       {% endif %}
 
+      {% if DISPLAY_VERSIONS %}
+        <article id="versions" class="tab-pane">
+          {% include "versions.html" %}
+        </article>
+      {% endif %}
+
       {% if DISPLAY_RATINGS %}
         <article id="rate" class="tab-pane">
           <!-- TODO: Move this to a reusable template snippet -->
@@ -657,4 +663,6 @@
   {% if FAVORITE_ENABLED %}
     {% include "favorite/_favorite_js.html" %}
   {% endif %}
+  <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
+
 {% endblock extra_script %}

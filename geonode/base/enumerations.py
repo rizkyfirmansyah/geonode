@@ -56,10 +56,6 @@ UPDATE_FREQUENCIES = (
     ('annually', _('data is updated every year')),
 )
 
-DEFAULT_SUPPLEMENTAL_INFORMATION = _(
-    _('No information provided')
-)
-
 CONTACT_FIELDS = [
     'name',
     'organization',

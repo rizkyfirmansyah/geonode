@@ -42,6 +42,7 @@ from geonode.base.models import (
     ResourceBase,
     HierarchicalKeyword,
     Region,
+    ResourceVersion,
     RestrictionCodeType,
     License,
     TopicCategory,
@@ -793,3 +794,26 @@ class OwnerSerializer(BaseResourceCountSerializer):
         fields = ('pk', 'username', 'first_name', 'last_name', 'full_name_or_nick', 'avatar', 'perms')
 
     avatar = AvatarUrlField(240, read_only=True)
+
+
+class ResourceVersionSerializer(BaseDynamicModelSerializer):
+    owner = serializers.SerializerMethodField()
+    class Meta:
+        model = ResourceVersion
+        name = 'versions'
+        count_type = 'version'
+        view_name = 'versions-list'
+        fields = ('version', 'summary', 'description', 'tags', 'contributors', 'published', 'resource', 'owner')
+        extra_kwargs = {
+            'summary': {"read_only": True}
+        }
+
+    def get_owner(self, obj):
+        return obj.get_full_name()
+
+
+class ResourceVersionCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ResourceVersion
+        fields = ['version', 'summary', 'description', 'tags', 'resource', 'contributors']

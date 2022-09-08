@@ -19,59 +19,63 @@
 #########################################################################
 import ast
 import re
-from geonode.thumbs.exceptions import ThumbnailError
-from geonode.thumbs.thumbnails import create_thumbnail
 import json
+from PIL import Image
+from decimal import Decimal
+from urllib.parse import urljoin, urlparse
+
 from django.apps import apps
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Subquery
 from django.contrib import messages
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.validators import URLValidator
+from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponseForbidden
+from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
+from geonode.thumbs.exceptions import ThumbnailError
+from geonode.thumbs.thumbnails import create_thumbnail
 from geonode.resource.api.tasks import resouce_service_dispatcher
-from drf_spectacular.utils import extend_schema
+
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
+
 from dynamic_rest.viewsets import DynamicModelViewSet, WithDynamicViewSetMixin
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 
+from drf_spectacular.utils import extend_schema
+
+from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
+from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from oauth2_provider.contrib.rest_framework import OAuth2Authentication
-from geonode.favorite.models import Favorite
-from geonode.base.models import Configuration, ExtraMetadata, HierarchicalKeyword, Region, ResourceBase, TopicCategory, DataType, ThesaurusKeyword
+from rest_framework import status
+
+from geonode.base.models import Configuration, ExtraMetadata, HierarchicalKeyword, Region, ResourceBase, ResourceVersion, TopicCategory, DataType, ThesaurusKeyword
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, ResourceBaseFilter
+from geonode.base.utils import validate_extra_metadata
+from geonode.favorite.models import Favorite
 from geonode.groups.models import GroupProfile, GroupMember
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.groups.conf import settings as groups_settings
-from geonode.security.utils import (
-    get_geoapp_subtypes,
-    get_visible_resources,
-    get_resources_with_perms)
+from geonode.security.utils import get_visible_resources, get_resources_with_perms
 from geonode.security.permissions import PermSpec, PermSpecCompact, get_compact_perms_list
-
 from geonode.resource.models import ExecutionRequest
 from geonode.resource.manager import resource_manager
-from PIL import Image
-from django.core.validators import URLValidator
-from rest_framework import status
 from geonode.thumbs.utils import _decode_base64, BASE64_PATTERN
-from rest_framework.parsers import JSONParser, MultiPartParser
-from rest_framework.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
+
 from pinax.ratings.categories import category_value
 from pinax.ratings.models import OverallRating, Rating
 from pinax.ratings.views import NUM_OF_RATINGS
-from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden
-from django.db import models
-from decimal import Decimal
-from urllib.parse import urljoin, urlparse
 
 from guardian.shortcuts import get_objects_for_user
 
@@ -83,6 +87,8 @@ from .permissions import (
 )
 from .serializers import (
     FavoriteSerializer,
+    ResourceVersionCreateSerializer,
+    ResourceVersionSerializer,
     UserSerializer,
     PermSpecSerialiazer,
     GroupProfileSerializer,
@@ -98,7 +104,6 @@ from .serializers import (
     ExtraMetadataSerializer
 )
 from .pagination import GeoNodeApiPagination
-from geonode.base.utils import validate_extra_metadata
 
 import logging
 
@@ -258,7 +263,6 @@ class ThesaurusKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveM
         if id is not None:
             queryset = queryset.filter(id=id)
         return queryset
-
 
 
 class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, GenericViewSet):
@@ -1019,3 +1023,104 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 _obj.metadata.add(new_m)
             _obj.refresh_from_db()
             return Response(ExtraMetadataSerializer().to_representation(_obj.metadata.all()), status=201)
+
+
+class ResourceVersionViewSet(DynamicModelViewSet):
+    """
+    API endpoint that lists all versioning resources.
+    """
+    authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
+
+    queryset = ResourceVersion.objects.all()
+    serializer_class = ResourceVersionSerializer
+    pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        """
+        Filter users with at least a versions
+        """
+        queryset = ResourceVersion.objects.all()
+        resource_id = self.request.query_params.get('d', None)
+        layer_id = self.request.query_params.get('l', None)
+        if resource_id is not None:
+            queryset = queryset.filter(resource=resource_id).order_by('-id')
+        if layer_id is not None:
+            resource_layer_id = get_object_or_404(ResourceBase, alternate=layer_id).get('id')
+            queryset = queryset.filter(resource=resource_layer_id).order_by('-id')
+
+        return queryset
+
+    @extend_schema(
+        methods=['post'],
+        responses={200},
+        description="API endpoint allowing to fill the changes of resources.")
+    @action(
+        detail=False,
+        url_path="set_version/(?P<resource_id>\d+)?$",
+        url_name="set-version",
+        methods=['post'],
+        parser_classes=[JSONParser, FormParser,],
+        permission_classes=[
+            IsAuthenticated
+        ]
+    )
+    def set_version(self, request, resource_id):
+        import re
+        version = request.data.get('version')
+        description = request.data.get('description')
+        tags = request.data.get('tags')
+        contributors = get_user_model().objects.get(username=request.user).id
+        latest_version = ResourceVersion.objects.filter(resource_id=resource_id).order_by('-id')[0]
+
+        data = {
+            'summary': f'Replace/Add File',
+            'resource': resource_id,
+            'version': version,
+            'description': description,
+            'tags': tags,
+            'contributors': contributors
+        }
+        serializer = ResourceVersionCreateSerializer(data=data)
+        match = re.match(r"(\d+\.\d+(?:\.\d+)?)", version)
+        if not match:
+            msg = f"Please use semantic versioning syntax like: MAJOR.MINOR -- i.e.: 1.2, 1.3, 2.0"
+            return Response({"message": msg}, status=status.HTTP_400_BAD_REQUEST)
+
+        if version == str(latest_version):
+            recommended_version = (float(str(latest_version)) * 10 + 1) / 10
+            msg = f"Please don't use the same version as before: {str(latest_version)}. Add increment to your MAJOR or MINOR version, say {str(recommended_version)}"
+            return Response({"message": msg}, status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid():
+            serializer.save()
+            msg = f'Your record has been saved'
+            return Response({'message': msg, 'serializer': serializer.data}, status=status.HTTP_201_CREATED)
+
+        return Response({"message": "Something went wrong, we couldn't save your record."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @extend_schema(
+        methods=['get'],
+        responses={200},
+        description="API endpoint allowing to fill the changes of resources.")
+    @action(
+        detail=False,
+        url_path="get_version/(?P<resource_id>\d+)?$",
+        url_name="get-version",
+        methods=['get'],
+        parser_classes=[JSONParser],
+        permission_classes=[
+            IsAuthenticated
+        ]
+    )
+    def get_version(self, request, resource_id):
+        version = ResourceVersion.objects.filter(resource_id=resource_id)
+        if version:
+            version = version.only('version').order_by('-id')[0]
+            return Response(data={"version": str(version)}, status=200)
+        else:
+            return Response(data={"message": "no previous version was founded"}, status=200)

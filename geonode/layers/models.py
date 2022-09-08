@@ -308,7 +308,7 @@ class Layer(ResourceBase):
     def get_absolute_url(self):
         return reverse(
             'layer_detail',
-            args=(f"{self.store}:{self.alternate}",)
+            args=(f"{self.alternate}",)
         )
 
     @property

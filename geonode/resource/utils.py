@@ -16,16 +16,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-import os
 import re
 import uuid
 import logging
 import datetime
 import traceback
 
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urljoin
 
-from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import FieldDoesNotExist
@@ -43,16 +41,12 @@ from ..base.models import (
     Region,
     License,
     ResourceBase,
-    TopicCategory,
     ThesaurusKeyword,
     HierarchicalKeyword,
     SpatialRepresentationType)
 
 from ..layers.models import Layer
 from ..datasets.models import Dataset, File
-from ..datasets.enumerations import (
-    DATASET_TYPE_MAP,
-    DOCUMENT_MIMETYPE_MAP)
 from ..people.utils import get_valid_user
 from ..layers.utils import resolve_regions
 from ..layers.metadata import convert_keyword

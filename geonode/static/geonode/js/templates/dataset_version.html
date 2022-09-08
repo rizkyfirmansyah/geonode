@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped w-auto" id="versions_table" style="width: 100%" ng-if="versions.length > 0">
+      <thead>
+        <tr>
+          <th class="text-center">Version</th>
+          <th class="text-center">Summary</th>
+          <th class="text-center">Description Changes</th>
+          <th class="text-center">Tags</th>
+          <th class="text-center">Contributors</th>
+          <th class="text-center">Published</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="version in versions">
+          <td>{{ version.version }}</td>
+          <td>{{ version.summary }}</td>
+          <td>{{ version.description }}</td>
+          <td class="text-center"><span class="badge {{ version.tags == 'replace' ? 'badge-info' : 'badge-secondary' }} d-inline">{{ version.tags }}</span></td>
+          <td>{{ version.owner }}</td>
+          <td>{{ version.published | date:'MMM d, y' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

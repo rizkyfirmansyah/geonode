@@ -80,6 +80,12 @@
         {% include "_comments.html" %}
       </article>
       {% endif %}
+      
+      {% if DISPLAY_VERSIONS %}
+      <article id="versions" class="tab-pane">
+        {% include "versions.html" %}
+      </article>
+      {% endif %}
 
       {% if DISPLAY_RATINGS and request.user.is_authenticated %}
         <article id="rate" class="tab-pane">
@@ -129,7 +135,7 @@
                       <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{{ file.file_url }}">{% trans "Download Datasets" %}</a>
                     {% endif %}
                     {% if file.file %}
-                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{% url "files-download_dataset_file" resource.id %}">{% trans "Download Datasets" %}</a>
+                      <a target="_blank" class="btn btn-download btn-md btn-block" role="button" href="{% url "files-download_dataset_files" resource.id %}">{% trans "Download Datasets" %}</a>
                     {% endif %}
                 {% endfor %}
             {% else %}
