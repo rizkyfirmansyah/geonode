@@ -1408,6 +1408,7 @@ def layer_append_replace_view(request, layername, template, action_type):
             'resource': layer,
             'is_featuretype': layer.is_vector(),
             'is_layer': True,
+            'resource_id': layer.resourcebase_ptr_id
         }
         return render(request, template, context=ctx)
     elif request.method == 'POST':
