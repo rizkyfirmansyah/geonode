@@ -1045,12 +1045,12 @@ class ResourceVersionViewSet(DynamicModelViewSet):
         """
         queryset = ResourceVersion.objects.all()
         resource_id = self.request.query_params.get('d', None)
-        layer_id = self.request.query_params.get('l', None)
+        layer = self.request.query_params.get('l', None)
         if resource_id is not None:
             queryset = queryset.filter(resource=resource_id).order_by('-id')
-        if layer_id is not None:
-            resource_layer_id = get_object_or_404(ResourceBase, alternate=layer_id).get('id')
-            queryset = queryset.filter(resource=resource_layer_id).order_by('-id')
+        if layer is not None:
+            resource_layer = get_object_or_404(ResourceBase, alternate=layer)
+            queryset = queryset.filter(resource=resource_layer).order_by('-id')
 
         return queryset
 
