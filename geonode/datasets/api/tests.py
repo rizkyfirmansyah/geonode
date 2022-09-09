@@ -76,9 +76,6 @@ class DocumentsApiTests(APITestCase, URLPatternsTestCase):
         url(r'^$',
             TemplateView.as_view(template_name='groups/group_list.html'),
             name='group_list'),
-        url(r'^search/$',
-            TemplateView.as_view(template_name='search/search.html'),
-            name='search'),
         url(r'^$', services, name='services'),
         url(r'^invitations/', include(
             'geonode.invitations.urls', namespace='geonode.invitations')),

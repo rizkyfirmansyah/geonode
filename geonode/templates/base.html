@@ -1,22 +1,3 @@
-<!-- -----------------------------------------------------------------
--
-- Copyright (C) 2019 OSGeo
--
-- This program is free software: you can redistribute it and/or modify
-- it under the terms of the GNU General Public License as published by
-- the Free Software Foundation, either version 3 of the License, or
-- (at your option) any later version.
--
-- This program is distributed in the hope that it will be useful,
-- but WITHOUT ANY WARRANTY; without even the implied warranty of
-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-- GNU General Public License for more details.
--
-- You should have received a copy of the GNU General Public License
-- along with this program. If not, see <http://www.gnu.org/licenses/>.
--
----------------------------------------------------------------------- -->
-
 {% load i18n avatar_tags %}
 {% load static %}
 {% load account socialaccount %}
@@ -38,8 +19,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="description" content="Spatial Data Infrastructure (SDI) is a platform for sharing (geo)spatial data."/>
-
+    <meta name="description" content="Data Repository is an open source platform to securely store and manage your data and information. This portal is a single-point access to datasets, spatial data, documents, services, tools and map visualizations published by registered users."/>
 
     <link rel="shortcut icon" href="{% if custom_theme.favicon %}{{SITEURL}}/uploaded/{{ custom_theme.favicon }} {% else %} {% static 'geonode/img/favicon.ico' %} {% endif %}" />
     <link href="{% static "lib/css/ol.css" %}" rel="stylesheet" />
@@ -50,6 +30,8 @@
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
 
     <link rel="stylesheet" href="{% static "geonode/css/template.css" %}" />
+    <link rel="stylesheet" href="{% static "geonode/css/owl.carousel.min.css" %}" />
+    <link rel="stylesheet" href="{% static "geonode/css/font_icomoon.css" %}" />
     <link rel="stylesheet" href="{% static "geonode/css/vendor.css" %}" />
 
     {% block head %}
@@ -203,8 +185,10 @@
       <p>{% trans "Please use a <strong>modern browser</strong> like Mozilla Firefox, Google Chrome or Safari." %}</p>
     </div>
 
+    {% block aside %}{% endblock aside %}
+
     <div class="container" id="wrap">
-        <div class="row {% if not request.user_agent.is_mobile %}pt-3{% else %}p-0{% endif %}">
+        <div class="row p-0">
           <div class="col-md-12 mb-4 p-0">
             {% include "_status_message.html" %}
             {% include "_announcements.html" %}
@@ -238,6 +222,7 @@
 
     <script src="{% static "geonode/js/utils/utils.js" %}"></script>
     <script src="{% static "geonode/js/base/base.js" %}"></script>
+    <script src="{% static "geonode/js/base/owl.carousel.min.js" %}"></script>
     <script type="text/javascript" src="{% url "javascript-catalog" %}"></script>
 
     <script type="text/javascript" src="{% static "geonode/js/base/plugins.js" %}"></script>

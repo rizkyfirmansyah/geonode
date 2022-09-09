@@ -29,3 +29,14 @@
   {% include "modal/bulk_permissions.html" %}
 
 {% endblock %}
+
+{% block aside %}
+  <aside class="sidebar">
+    <div class="toggle">
+      <a href="#" class="js-menu-toggle menu-toggle text-decoration-none">
+        <span class="icon-filter text-black" title="Filter query to find resources with one or more specified values"></span>
+      </a>
+    </div>
+    {% include 'search/_sidebar_group.html' %}
+  </aside>
+{% endblock aside %}

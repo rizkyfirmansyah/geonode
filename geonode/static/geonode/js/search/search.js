@@ -600,6 +600,7 @@
                 //error code
             };
         };
+
         if (!$location.path().includes("group") && !$location.path().includes("people")) {
             query_api($scope.query);
         } else if ($location.path().includes("group")) {
@@ -607,7 +608,6 @@
         } else if ($location.path().includes("people")) {
             query_api_user($scope.query);
         }
-
 
         //Get data from apis and make them available to the page
         function query_api_user(data) {
@@ -620,7 +620,7 @@
                       $scope.offset += API_LIMIT_PER_PAGE;
                   }
               }
-              data = { offset: $scope.offset}
+              data = { offset: $scope.offset }
             } else {
                 // handling for filter is true
                 if (!$scope.init) {
@@ -786,9 +786,14 @@
             }
 
             if (!$scope.reset) {
-                query_api($scope.query);
+                if (!$location.path().includes("group") && !$location.path().includes("people")) {
+                    query_api($scope.query);
+                } else if ($location.path().includes("group")) {
+                    query_api_user($scope.query);
+                } else if ($location.path().includes("people")) {
+                    query_api_user($scope.query);
+                }
             }
-            
         }
 
         $scope.single_choice_listener = function($event, selected) {

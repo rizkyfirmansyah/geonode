@@ -70,6 +70,11 @@
             <p class="mt-1 text-justify" ng-bind-html="item.abstract | limitWithEllipsis: 110"></p>
           </div>
             <div class="card-footer">
+              <div class="icon-tags" title="Keywords">
+                  <span class="text-muted" ng-repeat="keyword in item.keywords"><a role="button" data-value="{{ keyword.name }}" data-filter="7e31fcb" ng-click="multiple_choice_listener($event)">{{ keyword.name }}</a>{{$last ? '' : ($index==item.keywords.length-2) ? ' and ' : ', '}}</span>
+              </div>
+            </div>
+            <div class="card-footer">
               <div class="row">
                 {% endverbatim %}
                 {% if request.user.is_authenticated and not request.user_agent.is_mobile %}
@@ -81,7 +86,7 @@
                         ng-click="cart.toggleItem(item)"
                         data-toggle="tooltip"
                         data-placement="bottom"
-                        title="Bulk Select"><i ng-class="cart.getFaClass(item.pk)" class="fa-solid fa-lg"></i></button>
+                        title="Bulk Selection to manage permissions"><i ng-class="cart.getFaClass(item.pk)" class="fa-solid fa-lg"></i></button>
                     </div>
                   {% endverbatim %}
                 {% endif %}

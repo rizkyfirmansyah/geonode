@@ -2,18 +2,7 @@
 
 <div class="col" ng-controller="CartList">
   <h3 class="text-primary">
-    {% if facet_type == 'layers' %}
-    <span ng-bind="total_counts + ' ' + '{% trans "Spatial data found" %}'"></span>
-    {% elif facet_type == 'maps' %}
-    <span ng-bind="total_counts + ' ' + '{% trans "Maps found" %}'"></span>
-    {% elif facet_type == 'datasets' %}
-    <span ng-bind="total_counts + ' ' + '{% trans "Datasets found" %}'"></span>
-    {% elif facet_type == 'geoapps' %}
-    <span
-      ng-bind="total_counts + ' ' + '{% blocktrans %}{{GEONODE_APPS_NAME}}{% endblocktrans %} {% trans "found" %}'"></span>
-    {% else %}
     <span ng-bind="total_counts + ' {{ facet_type | title }} {% trans "found" %}'"></span>
-    {% endif %}
   </h3>
 </div>
 {% if facet_type == 'maps' %}

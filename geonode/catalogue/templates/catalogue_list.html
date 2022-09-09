@@ -9,17 +9,18 @@
 {% block body_sidebar %}
 <i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
 
-<div class="float-right col-md-10 p-0" infinite-scroll-directive="loadMoreResource()" id="catalogueList">
+<div class="float-right col-md-12 p-0" infinite-scroll-directive="loadMoreResource()" id="catalogueList">
     <div class="card mb-4 border-info">
       <div class="card-body">
         <div class="row">
-          {% with include_type_filter='true' %}
-              {% with header='Resource Type' %}
-                {% with filter='resource_type__in' %}
-                {% include "search/_search_content.html" %}
-              {% endwith %}
-            {% endwith %}
-          {% endwith %}
+          <div class="col">
+            <h3 class="text-primary">
+              <span ng-bind="total_counts + ' {% trans "found" %}'"></span>
+            </h3>
+          </div>
+          <button class="btn btn-primary sidebar-toggle col-md-2" id="sidebarFilter" aria-haspopup="true" aria-expanded="false">Filter</button>
+          {% include "search/_sort_filters.html" %}
+          {% include "modal/bulk_permissions.html" %}
         </div>
       </div>
     </div>
@@ -28,9 +29,27 @@
 </div>
 {% endblock body_sidebar %}
 
-{% block body_inner %}
-  <div class="col-md-2">{% include "search/_search_sidebar.html" %}</div>
-{% endblock body_inner %}
+{% block aside %}
+  <aside class="sidebar">
+    <div class="toggle">
+      <a href="#" class="js-menu-toggle menu-toggle text-decoration-none">
+        <span class="icon-filter text-black" title="Filter query to find resources with one or more specified values"></span>
+      </a>
+    </div>
+    {% include "search/_search_sidebar.html" %}
+  </aside>
+
+  {% if user.is_authenticated and not request.user_agent.is_mobile %}
+    <aside class="sidebar-right">
+      <div class="toggle-right">
+        <a href="#" class="js-menu-toggle-right menu-toggle text-decoration-none">
+          <span class="icon-plus-circle text-black" title="Bulk Selection to manage permissions"></span>
+        </a>
+      </div>
+      {% include "section/bulk_selection.html" %}
+    </aside>
+  {% endif %}
+{% endblock aside %}
 
 {% block extra_script %}
 {{ block.super }}

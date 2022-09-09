@@ -1,9 +1,6 @@
 {% load i18n %}
 
 <div class="col" ng-controller="CartList">
-  {% if facet_type == 'groups' %}
-    {% include 'search/_sidebar_group.html' %}
-  {% endif %}
   <h3 class="text-primary">
     <span>{% trans "Total" %}: </span>
     <span ng-bind="total_counts"></span>
@@ -22,15 +19,3 @@
 <button class="btn btn-primary sidebar-toggle" id="sidebarGC" aria-haspopup="true" aria-expanded="false">Search Group Categories</button>  
 {% endif %}
 {% include "search/_sort_filters.html" %}
-
-
-{% block extra_script %}
-<script type="text/javascript">
-  $(document).ready(function () {
-      $('#sidebarGC').on('click', function () {
-          $('#sidebarGroup').toggleClass('active');
-          $('.app-sidebar').toggleClass('d-none');
-      });
-  });
-</script>
-{% endblock extra_script %}
