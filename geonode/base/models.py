@@ -2558,95 +2558,111 @@ def version_post_save(instance, sender, **kwargs):
     resources = get_object_or_404(ResourceBase, pk=instance.resourcebase_ptr.id)
     recommended_version = get_recommended_version(instance.resourcebase_ptr.id)
     summary = []
-    changes = {"objects": []}
+    changes = {}
+    commit = {}
+
+    if not recommended_version:
+        commit["title"] = instance.title
+        commit["abstract"] = instance.abstract
+        commit["keywords"] = kwargs['keywords']
+        commit["category"] = [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]
+        commit["responsible"] = instance.owner.full_name_or_nick
+        commit["point_of_contact"] = kwargs['poc'].full_name_or_nick
+        commit["data_citation"] = instance.data_citation
+        commit["related_publication"] = instance.related_publication
+        commit["data_description"] = instance.data_description
+        commit["data_description"] = instance.data_description
+        commit["data_quality_statement"] = instance.data_quality_statement
+        commit["source"] = instance.source
+        commit["edition"] = instance.edition
+        commit["supplemental_information"] = instance.supplemental_information
+        commit["author"] = instance.author
 
     if resources.title != instance.title:
         summary.append('Title (Changed)')
-        changes["objects"].append({"title": {"old_value": resources.title, "new_value": instance.title}})
 
     if len(instance.abstract) > 0 and len(resources.abstract) == 0:
         summary.append('Abstract (Added)')
-        changes["objects"].append({"abstract": {"old_value": None, "new_value": instance.abstract}})
+        changes["abstract"] = instance.abstract
     elif resources.abstract != instance.abstract:
         summary.append('Abstract (Changed)')
-        changes["objects"].append({"abstract": {"old_value": resources.abstract, "new_value": instance.abstract}})
+        changes["abstract"] = instance.abstract
 
     if resources.keyword_list() != kwargs['keywords']:
         summary.append('Keywords (Changed)')
-        changes["objects"].append({"keywords": {"old_value": resources.keyword_list(), "new_value": kwargs['keywords']}})
+        changes["keywords"] = kwargs['keywords']
 
-    if resources.category_list_id() != kwargs['category']:
+    if sorted(resources.category_list_id()) != sorted(kwargs['category']):
         summary.append('Category (Changed)')
-        changes["objects"].append({"category": {"old_value": resources.category_list_title(), "new_value": [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]}})
+        changes["category"] = [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]
 
     if str(resources.owner) != str(instance.owner):
         summary.append('Responsible (Changed)')
-        changes["objects"].append({"responsible": {"old_value": resources.owner.full_name_or_nick, "new_value": instance.owner.full_name_or_nick}})
+        changes["responsible"] = instance.owner.full_name_or_nick
 
     if str(resources.poc) != str(kwargs['poc']):
         summary.append('Point of Contact (Changed)')
-        changes["objects"].append({"point_of_contact": {"old_value": resources.poc.full_name_or_nick, "new_value": kwargs['poc'].full_name_or_nick}})
+        changes["point_of_contact"] = kwargs['poc'].full_name_or_nick
 
     if len(instance.data_citation) > 0 and len(resources.data_citation) == 0:
         summary.append('Data Citation (Added)')
-        changes["objects"].append({"data_citation": {"old_value": None, "new_value": instance.data_citation}})
+        changes["data_citation"] = instance.data_citation
     elif resources.data_citation != instance.data_citation:
         summary.append('Data Citation (Changed)')
-        changes["objects"].append({"data_citation": {"old_value": resources.data_citation, "new_value": instance.data_citation}})
+        changes["data_citation"] = instance.data_citation
 
     if len(instance.related_publication) > 0 and len(resources.related_publication) == 0:
         summary.append('Related Publication (Added)')
-        changes["objects"].append({"related_publication": {"old_value": None, "new_value": instance.related_publication}})
+        changes["related_publication"] = instance.related_publication
     elif resources.related_publication != instance.related_publication:
         summary.append('Related Publication (Changed)')
-        changes["objects"].append({"related_publication": {"old_value": resources.related_publication, "new_value": instance.related_publication}})
+        changes["related_publication"] = instance.related_publication
 
     if len(instance.data_description) > 0 and len(resources.data_description) == 0:
         summary.append('Data Description (Added)')
-        changes["objects"].append({"data_description": {"old_value": None, "new_value": instance.data_description}})
+        changes["data_description"] = instance.data_description
     elif resources.data_description != instance.data_description:
         summary.append('Data Description (Changed)')
-        changes["objects"].append({"data_description": {"old_value": resources.data_description, "new_value": instance.data_description}})
+        changes["data_description"] = instance.data_description
 
     if len(instance.data_quality_statement) > 0 and len(resources.data_quality_statement) == 0:
         summary.append('Data Quality Statement (Added)')
-        changes["objects"].append({"data_quality_statement": {"old_value": None, "new_value": instance.data_quality_statement}})
+        changes["data_quality_statement"] = instance.data_quality_statement
     elif resources.data_quality_statement != instance.data_quality_statement:
         summary.append('Data Quality Statement (Changed)')
-        changes["objects"].append({"data_quality_statement": {"old_value": resources.data_quality_statement, "new_value": instance.data_quality_statement}})
+        changes["data_quality_statement"] = instance.data_quality_statement
 
     if len(instance.source) > 0 and len(resources.source) == 0:
         summary.append('Source (Added)')
-        changes["objects"].append({"source": {"old_value": None, "new_value": instance.source}})
+        changes["source"] = instance.source
     elif resources.source != instance.source:
         summary.append('Source (Changed)')
-        changes["objects"].append({"source": {"old_value": resources.source, "new_value": instance.source}})
+        changes["source"] = instance.source
 
     # data type of CharField which max_length of 255 or varchar(255) treat null value as None rather than empty string as any CharField defined its max_length > 255
     if instance.edition and resources.edition:
         if resources.edition != instance.edition:
             summary.append('Edition (Changed)')
-            changes["objects"].append({"edition": {"old_value": resources.edition, "new_value": instance.edition}})
+            changes["edition"] = instance.edition
     elif instance.edition and not resources.edition:
         summary.append('Edition (Added)')
-        changes["objects"].append({"edition": {"old_value": None, "new_value": instance.edition}})
+        changes["edition"] = instance.edition
     elif not instance.edition and resources.edition:
         summary.append('Edition (Changed)')
-        changes["objects"].append({"edition": {"old_value": resources.edition, "new_value": instance.edition}})
+        changes["edition"] = instance.edition
 
     if len(instance.supplemental_information) > 0 and len(resources.supplemental_information) == 0:
         summary.append('Supplemental Information (Added)')
-        changes["objects"].append({"supplemental_information": {"old_value": None, "new_value": instance.supplemental_information}})
-    if resources.supplemental_information != instance.supplemental_information:
+        changes["supplemental_information"] = instance.supplemental_information
+    elif resources.supplemental_information != instance.supplemental_information:
         summary.append('Supplemental Information (Changed)')
-        changes["objects"].append({"supplemental_information": {"old_value": resources.supplemental_information, "new_value": instance.supplemental_information}})
+        changes["supplemental_information"] = instance.supplemental_information
 
     if resources.author != instance.author:
         summary.append('Author (Changed)')
-        changes["objects"].append({"author": {"old_value": resources.author, "new_value": instance.author}})
+        changes["author"] = instance.author
 
     if len(summary) > 0:
-        changes["total"] = len(summary)
         summary = '; '.join(summary)
         if recommended_version:
             resource_version = ResourceVersion.objects.get_or_create(
@@ -2663,5 +2679,5 @@ def version_post_save(instance, sender, **kwargs):
             contributors=kwargs['contributors'],
             tags=ResourceVersion.TAG_CHOICES[1][0],
             version='1.0',
-            summary='This is the first published version.'
-        )
+            summary='This is the first published version.',
+            changes=commit)
