@@ -2758,7 +2758,7 @@ color: #491217;
     bottom: 20px;
     z-index: 99;
     position: fixed;
-    font-size: 3em;
+    font-size: 2em;
     cursor: pointer;
     border-radius: 20em;
     background: #fdba12;
@@ -5063,7 +5063,7 @@ color: transparent;
     }
 
     #jump_to_top {
-        right: 30px;
+        right: .5em;
     }
 }
 
