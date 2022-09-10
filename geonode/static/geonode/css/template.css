@@ -4683,10 +4683,6 @@ article.tab-pane {
     margin-top: 10px
 }
 
-#datasetsTable_filter label {
-    padding-right: 2rem
-}
-
 #datasetsTable_filter label,
 #datasetsTable_length label {
     display: inline-flex

@@ -40,8 +40,8 @@
         ).fail(function (jqXHR, textStatus, error) {
               $("#modal_perms").modal("hide");
         }).done(function() {
-          location.reload();
-          Pace.stop();
+            location.reload();
+            Pace.stop();
         });
         return false;
 

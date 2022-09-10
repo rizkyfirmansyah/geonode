@@ -58,7 +58,13 @@
                     </span>
                   </div>
                   <span class="m-0">
-                    <i id="download_icon" class="fa fa-{{ item.perms.includes('download_resourcebase') ? 'download' : 'ban' }}" aria-hidden="true" style="margin-right: 8px; color:{{ item.perms.includes('download_resourcebase') ? '#0000FF' : '#D3D3D3' }};" title="{{ item.perms.includes('download_resourcebase') ? 'Available for download' : 'Not available for download' }}"></i>
+                    <a target="_blank" href="/api/v2/files/download_dataset_files/{{ item.pk }}" role="button" ng-if="item.perms.includes('download_resourcebase') && item.resource_type == 'dataset'">
+                      <i id="download_icon" class="fa fa-download" aria-hidden="true" style="margin-right: 8px; color:#0000FF;" title="Available for download, click here to download datasets."></i>
+                    </a>
+                    <a target="_blank" href="/layer/{{ item.alternate }}/layer_download" role="button" ng-if="item.perms.includes('download_resourcebase') && item.resource_type == 'layer'">
+                      <i id="download_icon" class="fa fa-download" aria-hidden="true" style="margin-right: 8px; color:#0000FF;" title="Available for download, click here to download layer."></i>
+                    </a>
+                    <i ng-if="!item.perms.includes('download_resourcebase')" id="download_icon" class="fa fa-ban }}" aria-hidden="true" style="margin-right: 8px; color:#D3D3D3;" title="Not available for download"></i>
                   </span>
                 </div>
                 <div class="row pt-1 m-0">

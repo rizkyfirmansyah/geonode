@@ -5,17 +5,12 @@
 {% if resource.data_citation %}
   <div class="card alert alert-info mt-2 cite-card">
     <div class="row">
-        <div class="col-sm-12 small" id="citation">
+        <div class="col-sm-11 pr-0 small" id="citation">
           <span class="mb-0">{{ resource.raw_data_citation|safe|escape }}</span>
         </div>
-        <div class="col-sm-6 col-2">
-          <button class="btn" data-clipboard-target="#citation" id="citation_copy">
-            <i class="fa-solid fa-copy" title="Copy to clipboard"></i>
-          </button>
-        </div>
-        <div class="col-sm-6 col-10 text-muted small align-self-center text-right">
-          Learn about <a href="https://dataverse.org/best-practices/data-citation" title="Data Citation - Dataverse.org" target="_blank">Data Citation Standards.</a>
-        </div>
+        <button class="btn" data-clipboard-target="#citation" id="citation_copy">
+          <i class="fa-solid fa-copy" title="Copy to clipboard"></i>
+        </button>
     </div>
   </div>
 {% endif %}

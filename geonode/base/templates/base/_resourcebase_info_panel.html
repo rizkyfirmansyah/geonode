@@ -2,29 +2,6 @@
 {% block content %}
 
 <dl class="dl-horizontal">
-    {% if resource.title %}
-    <dt>{% trans "Title" %}</dt>
-    <dd itemprop="name">{{ resource.title|truncatechars:80 }}</dd>
-    {% endif %}
-
-    {% if resource.srid and SRID_DETAIL == 'above' %}
-    <dt>{% trans "SRID" %}</dt>
-    <dd>{{ resource.srid }}</dd>
-    {% endif %}
-
-    {% if LICENSES_ENABLED and LICENSES_DETAIL == 'above' and resource.license %}
-    <dt>{% trans "License" %}</dt>
-    <dd itemprop="license">{{ resource.license.name_long }} <a href="#license-more-above" data-toggle="collapse" data-target=".license-more-above"><i class="fa-solid fa-circle-info"></i></a></dd>
-    {% endif %}
-    <dd class="license-more-above collapse">
-      {% for bullet in resource.license.description_bullets %}
-        {{ bullet }}<br/><br/>
-      {% endfor %}
-      {% if resource.license.url %}
-        + {% trans "For more info see" %} <a href="{{ resource.license.url }}">{{ resource.license.url }}</a>.
-      {% endif %}
-    </dd>
-
     {% if resource.abstract %}
     <dt>{% trans "Abstract" %}</dt>
     <dd itemprop="description">{{ resource.abstract|safe }}</dd>
@@ -35,24 +12,9 @@
     <dd itemprop="description">{{ resource.data_description|safe|escape }}</dd>
     {% endif %}
 
-
-    {% if resource.date %}
-    {% if resource.date_type == 'creation' %}
-    <dt>{% trans "Creation Date" %}</dt>
-    {% elif resource.date_type == 'publication' %}
-    <dt>{% trans "Publication Date" %}</dt>
-    {% elif resource.date_type == 'revision' %}
-    <dt>{% trans "Revision Date" %}</dt>
-    {% else %}
-    <dt>{% trans resource.date_type|title %} {% trans "Date" %}</dt>
-    {% endif %}
-      {% if resource.date_type == 'creation' %}
-        <dd itemprop="dateCreated" datetime="{{ resource.date|date:"c"}}">{{ resource.date }}</dd>
-      {% elif resource.date_type == 'publication' %}
-        <dd itemprop="datePublished" datetime="{{ resource.date|date:"c"}}">{{ resource.date }}</dd>
-      {% else %}
-        <dd itemprop="dateModified" datetime="{{ resource.date|date:"c"}}">{{ resource.date }}</dd>
-      {% endif %}
+    {% if resource.data_quality_statement %}
+    <dt>{% trans "Data Quality" %}</dt>
+    <dd>{{ resource.data_quality_statement|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.keywords.count > 0 or resource.tkeywords.count > 0 %}
@@ -92,6 +54,38 @@
       {% endfor %}
     {% endif %}
 
+    {% if LICENSES_ENABLED and LICENSES_DETAIL == 'above' and resource.license %}
+    <dt>{% trans "License" %}</dt>
+    <dd itemprop="license">{{ resource.license.name_long }} <a href="#license-more-above" data-toggle="collapse" data-target=".license-more-above"><i class="fa-solid fa-circle-info"></i></a></dd>
+    {% endif %}
+    <dd class="license-more-above collapse">
+      {% for bullet in resource.license.description_bullets %}
+        {{ bullet }}<br/><br/>
+      {% endfor %}
+      {% if resource.license.url %}
+        + {% trans "For more info see" %} <a href="{{ resource.license.url }}">{{ resource.license.url }}</a>.
+      {% endif %}
+    </dd>
+
+    {% if resource.date %}
+    {% if resource.date_type == 'creation' %}
+    <dt>{% trans "Creation Date" %}</dt>
+    {% elif resource.date_type == 'publication' %}
+    <dt>{% trans "Publication Date" %}</dt>
+    {% elif resource.date_type == 'revision' %}
+    <dt>{% trans "Revision Date" %}</dt>
+    {% else %}
+    <dt>{% trans resource.date_type|title %} {% trans "Date" %}</dt>
+    {% endif %}
+      {% if resource.date_type == 'creation' %}
+        <dd itemprop="dateCreated" datetime="{{ resource.date|date:"c"}}">{{ resource.date }}</dd>
+      {% elif resource.date_type == 'publication' %}
+        <dd itemprop="datePublished" datetime="{{ resource.date|date:"c"}}">{{ resource.date }}</dd>
+      {% else %}
+        <dd itemprop="dateModified" datetime="{{ resource.date|date:"c"}}">{{ resource.date }}</dd>
+      {% endif %}
+    {% endif %}
+
     {% if resource.regions.all %}
     <dt>{% trans "Regions" %}</dt>
     <dd itemprop="keywords">
@@ -102,16 +96,6 @@
         {% if not forloop.last %},{% endif %}
       {% endfor %}
     </dd>
-    {% endif %}
-
-    {% if resource.owner %}
-    <dt>{% trans "Responsible" %}</dt>
-    <dd><a itemprop="author" href="{{ resource.owner.get_absolute_url }}">{{ resource.owner.full_name_or_nick }}</a></dd>
-    {% endif %}
-
-    {% if resource.poc %}
-    <dt>{% trans "Point of Contact" %}</dt>
-    <dd><a href="{{ resource.poc.get_absolute_url }}">{{ resource.poc.full_name_or_nick }}</a></dd>
     {% endif %}
 
     {% if resource.group %}
@@ -169,6 +153,11 @@
     <dd>{{ resource.spatial_resolution }}</dd>
     {% endif %}
 
+    {% if resource.srid and SRID_DETAIL == 'above' %}
+    <dt>{% trans "SRID" %}</dt>
+    <dd>{{ resource.srid }}</dd>
+    {% endif %}
+
     {% if resource.srid and SRID_DETAIL == 'below' %}
     <dt>{% trans "SRID" %}</dt>
     <dd>{{ resource.srid }}</dd>
@@ -220,11 +209,6 @@
     {% if resource.temporal_extent_start and resource.temporal_extent_end %}
     <dt>{% trans "Temporal Extent" %}</dt>
     <dd>{{ resource.temporal_extent_start }} - {{ resource.temporal_extent_end }}</dd>
-    {% endif %}
-
-    {% if resource.data_quality_statement %}
-    <dt>{% trans "Data Quality" %}</dt>
-    <dd>{{ resource.data_quality_statement|safe|escape }}</dd>
     {% endif %}
 
     {% if resource.project_information %}

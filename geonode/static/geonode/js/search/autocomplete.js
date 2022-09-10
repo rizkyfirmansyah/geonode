@@ -130,7 +130,7 @@ Autocomplete.prototype.show_results = function(data, remove, paginated, appendNe
             <path d="M6.46889 16.9078C6.22983 16.9969 6.15014 17.3062 6.32827 17.4844C6.41733 17.5734 6.48296 17.5781 8.40952 17.5781H10.4017L10.4955 17.4562C10.6642 17.2406 10.5986 17.0203 10.3408 16.9219C10.2095 16.875 6.60483 16.8609 6.46889 16.9078Z" fill="black"/> \
           </svg>'
       } else {
-          icon = '<i title="'+ resource +'" class="fa-solid fa-asterisk float-right"></i>'
+          icon = '<i title="'+ resource +'" class="fa-solid fa-user-group float-right"></i>'
       }
 
       elem.find('.ac-result').attr('onclick', "location.href='" + detail + "';");

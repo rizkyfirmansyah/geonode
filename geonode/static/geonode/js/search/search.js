@@ -838,7 +838,13 @@
                 $scope.query[data_filter] = query_entry;
 
                 if (!$scope.reset) {
-                    query_api($scope.query);
+                  if (!$location.path().includes("group") && !$location.path().includes("people")) {
+                      query_api($scope.query);
+                  } else if ($location.path().includes("group")) {
+                      query_api_user($scope.query);
+                  } else if ($location.path().includes("people")) {
+                      query_api_user($scope.query);
+                  }
                 }
             }
         }
@@ -909,6 +915,27 @@
             e.preventDefault();
             reset_query();
             $scope.reset = false;
+        });
+
+        $('.delete_search_query_user').on('click', function(e) {
+            e.preventDefault();
+            $scope.query = {};
+            $scope.infiniteScroll = 0;
+            $scope.infiniteScrollLoaded = true;
+            $scope.filter = false;
+            $scope.init = true;
+            $scope.reset = true;
+            // remove active class elements from sidebar
+            $('.selectpicker').selectpicker('val', '');
+            $('.selectpicker').selectpicker('refresh');
+            $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
+            $('#filter-sidebar-content .btn_wrapper').removeClass('active');
+            $(".result-wrapper").css('display', 'none');
+            $(".input-highlight").css("width", '0em');
+            delete $scope.query['categories__slug__in'];
+            delete $scope.query['offset'];
+            $location.search($scope.query);
+            return query_api_user($scope.query);
         });
 
         $("#dltDate1").on('click', function (e) {
