@@ -68,8 +68,8 @@
                   </span>
                 </div>
                 <div class="row pt-1 m-0">
-                  <div class="card-subtitle font-small" title="Published at: {{ item.date|date:'d MMM y' }}"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
-                  <div class="col-md-8 text-right pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="/groups/group/{{ item.group.name }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true" title="{{ item.group.title }}"></i>{{ item.group.title | limitWithEllipsis: 24 }}</a><br></span></div>
+                  <div class="col p-0 card-subtitle font-small" title="Published at: {{ item.date|date:'d MMM y' }}"><a href="{{ item.detail_url }}#info" class="card-link text-muted"><i class="fa-solid fa-calendar-check"></i>{{ item.date|date:'d MMM y' }}</a></div>
+                  <div class="col-md-8 text-right pr-0 card-subtitle font-small"><span class="item-category" ng-if="item.group"><a href="/groups/group/{{ item.group.name }}/activity/" class="card-link text-muted"><i class="fa-solid fa-user-group" aria-hidden="true" title="{{ item.group.title }}"></i>{{ item.group.title | limitWithEllipsis: 25 }}</a><br></span></div>
                 </div>
               </div>
             </div>
