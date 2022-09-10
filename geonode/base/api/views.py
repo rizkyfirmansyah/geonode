@@ -36,7 +36,6 @@ from django.core.validators import URLValidator
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from django.db import models
-from django.core.exceptions import ObjectDoesNotExist
 
 from geonode.thumbs.exceptions import ThumbnailError
 from geonode.thumbs.thumbnails import create_thumbnail
@@ -1039,6 +1038,12 @@ class ResourceVersionViewSet(DynamicModelViewSet):
     serializer_class = ResourceVersionSerializer
     pagination_class = GeoNodeApiPagination
 
+    def paginate_queryset(self, queryset):
+        if 'all' in self.request.query_params:
+            return None
+
+        return super().paginate_queryset(queryset)
+
     def get_queryset(self):
         """
         Filter users with at least a versions
@@ -1047,10 +1052,10 @@ class ResourceVersionViewSet(DynamicModelViewSet):
         resource_id = self.request.query_params.get('d', None)
         layer = self.request.query_params.get('l', None)
         if resource_id is not None:
-            queryset = queryset.filter(resource=resource_id).order_by('-id')
+            queryset = queryset.filter(resource=resource_id).order_by("-id")
         if layer is not None:
             resource_layer = get_object_or_404(ResourceBase, alternate=layer)
-            queryset = queryset.filter(resource=resource_layer).order_by('-id')
+            queryset = queryset.filter(resource=resource_layer)
 
         return queryset
 
@@ -1071,16 +1076,15 @@ class ResourceVersionViewSet(DynamicModelViewSet):
     def set_version(self, request, resource_id):
         import re
         version = request.data.get('version')
-        description = request.data.get('description')
+        summary = request.data.get('summary')
         tags = request.data.get('tags')
         contributors = get_user_model().objects.get(username=request.user).id
         latest_version = ResourceVersion.objects.filter(resource_id=resource_id).order_by('-id')[0]
 
         data = {
-            'summary': f'Replace/Add File',
             'resource': resource_id,
             'version': version,
-            'description': description,
+            'summary': summary,
             'tags': tags,
             'contributors': contributors
         }

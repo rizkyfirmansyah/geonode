@@ -686,10 +686,10 @@ var dataset = angular.module('dataset', ['ngCookies']);
               var dataset_id = url[url.length - 1];
               if (dataset_id.includes("_")) {
                   // query for layers
-                  var API_DATASET_VERSION = siteUrl + "api/v2/versions?l=" + dataset_id;
+                  var API_DATASET_VERSION = siteUrl + "api/v2/versions?l=" + dataset_id + "&all";
                   dataset.load_dataset_version($http, $rootScope, API_DATASET_VERSION);
               } else {
-                  var API_DATASET_VERSION = siteUrl + "api/v2/versions?d=" + dataset_id;
+                  var API_DATASET_VERSION = siteUrl + "api/v2/versions?d=" + dataset_id + "&all";
                   dataset.load_dataset_version($http, $rootScope, API_DATASET_VERSION);
               }
           },
@@ -706,11 +706,19 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 console.log("No version")
             } else {
               setTimeout(function() {
-                  $("#versions_table").DataTable({
-                    scrollCollapse: true,
-                    paging:         false,
-                    info:           false
-                  });
+                  if (_data.length > 10) {
+                      $("#versions_table").DataTable({
+                        scrollCollapse: true,
+                        paging:         true,
+                        info:           false
+                      });
+                  } else {
+                      $("#versions_table").DataTable({
+                        scrollCollapse: true,
+                        paging:         false,
+                        info:           false
+                      });
+                  }
               }, 1000);
             }
             $rootScope.versions = _data;

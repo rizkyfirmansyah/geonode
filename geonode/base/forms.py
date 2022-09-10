@@ -681,13 +681,13 @@ class BatchEditRegionForm(forms.Form):
 class ResourceVersionForm(forms.Form):
     version = forms.CharField(label="Version", required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': ResourceVersion.version_help_text}))
-    description = forms.CharField(label="Description", required=True, 
-        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': ResourceVersion.description_help_text}))
+    summary = forms.CharField(label="Description", required=True, 
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': ResourceVersion.summary_help_text}))
     tags = forms.ChoiceField(label="Tags", required=False, choices=ResourceVersion.TAG_CHOICES)
 
     class Meta:
         model = ResourceVersion
-        fields = ["version", "description", "tags"]
+        fields = ["version", "summary", "tags"]
         widgets = {
           'tags': forms.TextInput(attrs={'class': 'form-control'}),
         }

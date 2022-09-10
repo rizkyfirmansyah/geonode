@@ -803,7 +803,7 @@ class ResourceVersionSerializer(BaseDynamicModelSerializer):
         name = 'versions'
         count_type = 'version'
         view_name = 'versions-list'
-        fields = ('version', 'summary', 'description', 'tags', 'contributors', 'published', 'resource', 'owner')
+        fields = ('version', 'summary', 'tags', 'contributors', 'published', 'resource', 'owner', 'changes')
         extra_kwargs = {
             'summary': {"read_only": True}
         }
@@ -816,4 +816,4 @@ class ResourceVersionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResourceVersion
-        fields = ['version', 'summary', 'description', 'tags', 'resource', 'contributors']
+        fields = ['version', 'summary', 'tags', 'resource', 'contributors']

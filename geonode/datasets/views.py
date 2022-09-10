@@ -403,11 +403,12 @@ def dataset_metadata(
                 if author_form.has_changed and author_form.is_valid():
                     new_author = author_form.save()
 
-            dataset =dataset_form.instance
+            dataset = dataset_form.instance
+            version_post_save(instance=dataset, sender=dataset.__class__, keywords=new_keywords, category=new_categories, contributors=request.user, poc=new_poc)
+
             if new_poc is not None and new_author is not None:
                 dataset.poc = new_poc
                 dataset.metadata_author = new_author
-            version_post_save(instance=dataset, sender=dataset.__class__, keywords=new_keywords, category=new_categories, contributors=request.user)
             dataset.keywords.clear()
             dataset.keywords.add(*new_keywords)
             dataset.regions.clear()

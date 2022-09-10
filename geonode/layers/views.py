@@ -1090,6 +1090,9 @@ def layer_metadata(
     ) and tkeywords_form.is_valid():
         new_poc = layer_form.cleaned_data['poc']
         new_author = layer_form.cleaned_data['metadata_author']
+        new_keywords = layer_form.cleaned_data['keywords']
+        new_regions = [int(c.strip()) for c in request.POST.getlist('resource-regions')]
+        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
 
         if new_poc is None:
             if poc is None:
@@ -1127,6 +1130,8 @@ def layer_metadata(
             if author_form.has_changed and author_form.is_valid():
                 new_author = author_form.save()
 
+        version_post_save(instance=layer, sender=layer.__class__, keywords=new_keywords, category=new_categories, contributors=request.user, poc=new_poc)
+
         for form in attribute_form.cleaned_data:
             la = Attribute.objects.get(id=int(form['id'].id))
             la.description = form["description"]
@@ -1141,13 +1146,7 @@ def layer_metadata(
                 layer.poc = new_poc
             if new_author is not None:
                 layer.metadata_author = new_author
-
-        new_keywords = layer_form.cleaned_data['keywords']
-        new_regions = [int(c.strip()) for c in request.POST.getlist('resource-regions')]
-        new_categories = [int(c.strip()) for c in request.POST.getlist('category_choice_field')]
         
-        version_post_save(instance=layer, sender=layer.__class__, keywords=new_keywords, category=new_categories, contributors=request.user)
-
         layer.keywords.clear()
         if new_keywords:
             layer.keywords.add(*new_keywords)

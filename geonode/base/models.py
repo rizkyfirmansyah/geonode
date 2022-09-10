@@ -1600,6 +1600,9 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     def category_list_id(self):
         return [c.id for c in self.category.all()]
 
+    def category_list_title(self):
+        return [c.title for c in self.category.all()]
+
     def keyword_list(self):
         return [kw.name for kw in self.keywords.all()]
 
@@ -2488,10 +2491,10 @@ class ResourceVersion(models.Model):
     Versioning track of any updated / replace of resources
     """
     version_help_text = _("write down using semantic versioning: MAJOR.MINOR; i.e.: 2.1")
-    description_help_text = _("write one sentence describing the change that you are committing")
-    summary_help_text = _("a summary of the changes that user are committing to change the resource")
+    summary_help_text = _("write one sentence describing the change that you are committing")
     contributors_help_text = _("the user who created this change")
     published_help_text = _("the date and time this change was created")
+    changes_help_text = _('record all the field changes from previous version to the new one.')
     TAG_CHOICES = [
         ('replace', _('Replace Dataset')),
         ('edit', _('Edit Metadata')),
@@ -2509,11 +2512,6 @@ class ResourceVersion(models.Model):
         default='',
         help_text=summary_help_text
     )
-    description = models.TextField(
-        _('Description'),
-        default='',
-        help_text=description_help_text
-    )
     tags = models.CharField(
         _("Tags"),
         null=True,
@@ -2522,6 +2520,7 @@ class ResourceVersion(models.Model):
         max_length=255)
     contributors = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     published = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    changes = JSONField(null=True, default=dict, blank=True, help_text=changes_help_text)
 
     class Meta:
         ordering = ["id"]
@@ -2558,80 +2557,105 @@ def version_post_save(instance, sender, **kwargs):
     """
     resources = get_object_or_404(ResourceBase, pk=instance.resourcebase_ptr.id)
     recommended_version = get_recommended_version(instance.resourcebase_ptr.id)
-    description = []
+    summary = []
+    changes = {"objects": []}
 
     if resources.title != instance.title:
-        description.append('Title (Changed)')
+        summary.append('Title (Changed)')
+        changes["objects"].append({"title": {"old_value": resources.title, "new_value": instance.title}})
 
     if len(instance.abstract) > 0 and len(resources.abstract) == 0:
-        description.append('Abstract (Added)')
+        summary.append('Abstract (Added)')
+        changes["objects"].append({"abstract": {"old_value": None, "new_value": instance.abstract}})
     elif resources.abstract != instance.abstract:
-        description.append('Abstract (Changed)')
+        summary.append('Abstract (Changed)')
+        changes["objects"].append({"abstract": {"old_value": resources.abstract, "new_value": instance.abstract}})
 
     if resources.keyword_list() != kwargs['keywords']:
-        description.append('Keywords (Changed)')
+        summary.append('Keywords (Changed)')
+        changes["objects"].append({"keywords": {"old_value": resources.keyword_list(), "new_value": kwargs['keywords']}})
 
     if resources.category_list_id() != kwargs['category']:
-        description.append('Category (Changed)')
+        summary.append('Category (Changed)')
+        changes["objects"].append({"category": {"old_value": resources.category_list_title(), "new_value": [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]}})
 
-    if resources.owner != instance.owner:
-        description.append('Responsible (Changed)')
+    if str(resources.owner) != str(instance.owner):
+        summary.append('Responsible (Changed)')
+        changes["objects"].append({"responsible": {"old_value": resources.owner.full_name_or_nick, "new_value": instance.owner.full_name_or_nick}})
 
-    if resources.poc != instance.poc:
-        description.append('Point of Contact (Changed)')
+    if str(resources.poc) != str(kwargs['poc']):
+        summary.append('Point of Contact (Changed)')
+        changes["objects"].append({"point_of_contact": {"old_value": resources.poc.full_name_or_nick, "new_value": kwargs['poc'].full_name_or_nick}})
 
     if len(instance.data_citation) > 0 and len(resources.data_citation) == 0:
-        description.append('Data Citation (Added)')
+        summary.append('Data Citation (Added)')
+        changes["objects"].append({"data_citation": {"old_value": None, "new_value": instance.data_citation}})
     elif resources.data_citation != instance.data_citation:
-        description.append('Data Citation (Changed)')
+        summary.append('Data Citation (Changed)')
+        changes["objects"].append({"data_citation": {"old_value": resources.data_citation, "new_value": instance.data_citation}})
 
     if len(instance.related_publication) > 0 and len(resources.related_publication) == 0:
-        description.append('Related Publication (Added)')
+        summary.append('Related Publication (Added)')
+        changes["objects"].append({"related_publication": {"old_value": None, "new_value": instance.related_publication}})
     elif resources.related_publication != instance.related_publication:
-        description.append('Related Publication (Changed)')
+        summary.append('Related Publication (Changed)')
+        changes["objects"].append({"related_publication": {"old_value": resources.related_publication, "new_value": instance.related_publication}})
 
     if len(instance.data_description) > 0 and len(resources.data_description) == 0:
-        description.append('Data Description (Added)')
+        summary.append('Data Description (Added)')
+        changes["objects"].append({"data_description": {"old_value": None, "new_value": instance.data_description}})
     elif resources.data_description != instance.data_description:
-        description.append('Data Description (Changed)')
+        summary.append('Data Description (Changed)')
+        changes["objects"].append({"data_description": {"old_value": resources.data_description, "new_value": instance.data_description}})
 
     if len(instance.data_quality_statement) > 0 and len(resources.data_quality_statement) == 0:
-        description.append('Data Quality Statement (Added)')
+        summary.append('Data Quality Statement (Added)')
+        changes["objects"].append({"data_quality_statement": {"old_value": None, "new_value": instance.data_quality_statement}})
     elif resources.data_quality_statement != instance.data_quality_statement:
-        description.append('Data Quality Statement (Changed)')
+        summary.append('Data Quality Statement (Changed)')
+        changes["objects"].append({"data_quality_statement": {"old_value": resources.data_quality_statement, "new_value": instance.data_quality_statement}})
 
     if len(instance.source) > 0 and len(resources.source) == 0:
-        description.append('Source (Added)')
+        summary.append('Source (Added)')
+        changes["objects"].append({"source": {"old_value": None, "new_value": instance.source}})
     elif resources.source != instance.source:
-        description.append('Source (Changed)')
+        summary.append('Source (Changed)')
+        changes["objects"].append({"source": {"old_value": resources.source, "new_value": instance.source}})
 
     # data type of CharField which max_length of 255 or varchar(255) treat null value as None rather than empty string as any CharField defined its max_length > 255
     if instance.edition and resources.edition:
         if resources.edition != instance.edition:
-            description.append('Edition (Changed)')
+            summary.append('Edition (Changed)')
+            changes["objects"].append({"edition": {"old_value": resources.edition, "new_value": instance.edition}})
     elif instance.edition and not resources.edition:
-        description.append('Edition (Added)')
+        summary.append('Edition (Added)')
+        changes["objects"].append({"edition": {"old_value": None, "new_value": instance.edition}})
     elif not instance.edition and resources.edition:
-        description.append('Edition (Changed)')
+        summary.append('Edition (Changed)')
+        changes["objects"].append({"edition": {"old_value": resources.edition, "new_value": instance.edition}})
 
     if len(instance.supplemental_information) > 0 and len(resources.supplemental_information) == 0:
-        description.append('Supplemental Information (Added)')
+        summary.append('Supplemental Information (Added)')
+        changes["objects"].append({"supplemental_information": {"old_value": None, "new_value": instance.supplemental_information}})
     if resources.supplemental_information != instance.supplemental_information:
-        description.append('Supplemental Information (Changed)')
+        summary.append('Supplemental Information (Changed)')
+        changes["objects"].append({"supplemental_information": {"old_value": resources.supplemental_information, "new_value": instance.supplemental_information}})
 
     if resources.author != instance.author:
-        description.append('Author (Changed)')
+        summary.append('Author (Changed)')
+        changes["objects"].append({"author": {"old_value": resources.author, "new_value": instance.author}})
 
-    if len(description) > 0:
-        description = '; '.join(description)
+    if len(summary) > 0:
+        changes["total"] = len(summary)
+        summary = '; '.join(summary)
         if recommended_version:
             resource_version = ResourceVersion.objects.get_or_create(
                 resource=resources,
                 contributors=kwargs['contributors'],
                 tags=ResourceVersion.TAG_CHOICES[1][0],
                 version=recommended_version,
-                description=description,
-                summary=f'Updating Metadata')
+                summary=summary,
+                changes=changes)
 
     if not recommended_version:
         resource_version = ResourceVersion.objects.get_or_create(
