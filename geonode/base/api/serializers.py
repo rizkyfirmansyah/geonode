@@ -812,6 +812,19 @@ class ResourceVersionSerializer(BaseDynamicModelSerializer):
         return obj.get_full_name()
 
 
+class ResourceVersionChangesSerializer(DynamicModelSerializer):
+    owner = serializers.SerializerMethodField()
+    class Meta:
+        model = ResourceVersion
+        name = 'versions'
+        count_type = 'version'
+        view_name = 'versions-list'
+        fields = ('version', 'published', 'owner', 'changes')
+
+    def get_owner(self, obj):
+        return obj.get_full_name()
+
+
 class ResourceVersionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:

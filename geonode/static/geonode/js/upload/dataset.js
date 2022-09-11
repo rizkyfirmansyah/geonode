@@ -65,7 +65,7 @@ var deleteMsg = `
   </div>
 `
 
-var dataset = angular.module('dataset', ['ngCookies']);
+var dataset = angular.module('dataset', ['ngCookies', 'ui.bootstrap']);
 
     dataset.config(['$httpProvider', function($httpProvider) {
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -96,6 +96,13 @@ var dataset = angular.module('dataset', ['ngCookies']);
           
             return bytes.toFixed(dp) + ' ' + units[u];
         }
+    });
+
+    dataset.filter("titleCase", function () {
+      return function (input) {
+        input = input || '';
+        return input.replace(/_/g, " ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+      }
     });
 
     dataset.upload_dataset_file = function($http, $rootScope, file, dataset_id) {
@@ -472,7 +479,18 @@ var dataset = angular.module('dataset', ['ngCookies']);
         }
     }
 
-    dataset.controller('DatasetList', function($scope, $http, $rootScope, $location) {
+    dataset.filter ('stripHTML', [function () {
+        return function (stringWithHtml) {
+            if (typeof(stringWithHtml) != 'object') {
+                var strippedText =  $('<div/>').html(stringWithHtml).text();
+            } else {
+                var strippedText = stringWithHtml.join(', ');
+            }
+            return strippedText;
+        };
+    }]);
+
+    dataset.controller('DatasetList', function($scope, $http, $rootScope, $location, $uibModal, $log) {
         var url = $location.absUrl().split('/');
         if (url[url.length - 1] === 'replace') {
             $scope.edit_dataset_id = url[url.length - 2];
@@ -625,7 +643,43 @@ var dataset = angular.module('dataset', ['ngCookies']);
                 var redirect_url = data.data.response;
                 setTimeout(function(){location.href=_siteUrl + redirect_url}, 5e2);
             }
+        };
+
+        $scope.remove_ui_modal = function() {
+            $(".datasetVersionModal").remove();
+            $(".modal-backdrop").remove();
+            $("body").removeClass('modal-open');
         }
+
+        $scope.load_version_changes = function($http, API_CHANGE_VERSION) {
+          $http.get(API_CHANGE_VERSION).then(successCallback)
+          function successCallback(data) {
+              var _data = data.data.version;
+              $scope.version_changes = _data;
+              var modalInstance = $uibModal.open({
+                  templateUrl: staticUrl + "geonode/js/templates/modal/version_detail.html",
+                  scope: $scope,
+                  size: 'lg',
+                  windowClass: 'datasetVersionModal',
+              });
+              setTimeout(function() {
+                  $(".datasetVersionModal").modal('show');
+              }, 500);
+              modalInstance.result.then(closedCallback, dismissedCallback);
+              function closedCallback(){
+                // Do something when the modal is closed
+                console.log("Close ui angular modal");
+              }
+
+              function dismissedCallback(){
+                // Do something when the modal is dismissed
+                  $(".datasetVersionModal").remove();
+                  $(".modal-backdrop").remove();
+                  $("body").removeClass('modal-open');
+              }
+          }
+        }
+
     })
 
     dataset.directive("dropzone", function($http, $rootScope, $location) {
@@ -687,17 +741,17 @@ var dataset = angular.module('dataset', ['ngCookies']);
               if (dataset_id.includes("_")) {
                   // query for layers
                   var API_DATASET_VERSION = siteUrl + "api/v2/versions?l=" + dataset_id + "&all";
-                  dataset.load_dataset_version($http, $rootScope, API_DATASET_VERSION);
+                  dataset.load_dataset_version($http, $rootScope, scope, API_DATASET_VERSION, dataset_id);
               } else {
                   var API_DATASET_VERSION = siteUrl + "api/v2/versions?d=" + dataset_id + "&all";
-                  dataset.load_dataset_version($http, $rootScope, API_DATASET_VERSION);
+                  dataset.load_dataset_version($http, $rootScope, scope, API_DATASET_VERSION, dataset_id);
               }
           },
           templateUrl: staticUrl + "geonode/js/templates/dataset_version.html"
       }
     })
 
-    dataset.load_dataset_version = function($http, $rootScope, API_DATASET_VERSION) {
+    dataset.load_dataset_version = function($http, $rootScope, scope, API_DATASET_VERSION, dataset_id) {
         $http.get(API_DATASET_VERSION).then(successCallback);
 
         function successCallback(data) {
@@ -707,18 +761,24 @@ var dataset = angular.module('dataset', ['ngCookies']);
             } else {
               setTimeout(function() {
                   if (_data.length > 10) {
-                      $("#versions_table").DataTable({
+                      var table = $("#versions_table").DataTable({
                         scrollCollapse: true,
                         paging:         true,
                         info:           false
                       });
                   } else {
-                      $("#versions_table").DataTable({
+                      var table = $("#versions_table").DataTable({
                         scrollCollapse: true,
                         paging:         false,
                         info:           false
                       });
-                  }
+                  };
+                  $('#versions_table tbody').on('click', 'tr', function () {
+                      var data = table.row(this).data();
+                      var version = data[0];
+                      var API_CHANGE_VERSION = siteUrl + "api/v2/versions/get_detailed_version/" + dataset_id + "?v=" + version;
+                      scope.load_version_changes($http, API_CHANGE_VERSION);
+                  });
               }, 1000);
             }
             $rootScope.versions = _data;

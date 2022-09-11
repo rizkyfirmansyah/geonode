@@ -86,6 +86,7 @@ from .permissions import (
 )
 from .serializers import (
     FavoriteSerializer,
+    ResourceVersionChangesSerializer,
     ResourceVersionCreateSerializer,
     ResourceVersionSerializer,
     UserSerializer,
@@ -1126,5 +1127,28 @@ class ResourceVersionViewSet(DynamicModelViewSet):
         if version:
             version = version.only('version').order_by('-id')[0]
             return Response(data={"version": str(version)}, status=200)
+        else:
+            return Response(data={"message": "no previous version was founded"}, status=200)
+
+
+    @extend_schema(
+        methods=['get'],
+        responses={200},
+        description="API endpoint allowing to see the detail changes of resources.")
+    @action(
+        detail=False,
+        url_path="get_detailed_version/(?P<resource_id>\d+)?$",
+        url_name="get-detailed-version",
+        methods=['get'],
+        parser_classes=[JSONParser],
+        permission_classes=[
+            IsAuthenticated
+        ]
+    )
+    def get_detailed_version(self, request, resource_id):
+        get_version = self.request.query_params.get('v', None)
+        version = ResourceVersion.objects.filter(resource_id=resource_id, version=get_version)
+        if version:
+            return Response(data={"version": ResourceVersionChangesSerializer(many=True).to_representation(version)[0]}, status=200)
         else:
             return Response(data={"message": "no previous version was founded"}, status=200)

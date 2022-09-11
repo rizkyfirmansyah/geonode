@@ -1,0 +1,22 @@
+<div class="modal-content rounded-0">
+  <div class="modal-header">
+    <h3 class="col modal-title">Metadata Version {{version_changes.version}}</h3>
+    <button type="button" class="close" aria-label="Close" ng-click="remove_ui_modal()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div ng-repeat="(key, value) in version_changes.changes">
+        <div ng-if="value">
+          <section class="mt-2 mb-2">
+            <div class="row">
+              <label class="col-md-2 font-weight-bold">{{ key | titleCase }}</label>
+              <div class="col pl-0">
+                <td class="td-wrapper">{{ value | stripHTML }}</td>
+              </div>
+            </div>
+          </section>
+        </div>
+    </div>
+  </div>
+</div>
