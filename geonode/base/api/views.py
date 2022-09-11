@@ -1137,7 +1137,7 @@ class ResourceVersionViewSet(DynamicModelViewSet):
         description="API endpoint allowing to see the detail changes of resources.")
     @action(
         detail=False,
-        url_path="get_detailed_version/(?P<resource_id>\d+)?$",
+        url_path="get_detailed_version",
         url_name="get-detailed-version",
         methods=['get'],
         parser_classes=[JSONParser],
@@ -1145,9 +1145,17 @@ class ResourceVersionViewSet(DynamicModelViewSet):
             IsAuthenticated
         ]
     )
-    def get_detailed_version(self, request, resource_id):
+    def get_detailed_version(self, request):
+        dataset_id = self.request.query_params.get('d', None)
+        layer_id = self.request.query_params.get('l', None)
         get_version = self.request.query_params.get('v', None)
-        version = ResourceVersion.objects.filter(resource_id=resource_id, version=get_version)
+
+        if dataset_id is not None:
+            version = ResourceVersion.objects.filter(resource_id=dataset_id, version=get_version)
+        if layer_id is not None:
+            resource_layer = get_object_or_404(ResourceBase, alternate=layer_id)
+            version = ResourceVersion.objects.filter(resource=resource_layer, version=get_version)
+
         if version:
             return Response(data={"version": ResourceVersionChangesSerializer(many=True).to_representation(version)[0]}, status=200)
         else:

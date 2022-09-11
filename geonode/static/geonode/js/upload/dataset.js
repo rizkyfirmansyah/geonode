@@ -739,13 +739,13 @@ var dataset = angular.module('dataset', ['ngCookies', 'ui.bootstrap']);
               var url = $location.absUrl().split('/');
               var dataset_id = url[url.length - 1];
               if (dataset_id.includes("_")) {
-                  // query for layers
+                  // api for layers
                   var API_DATASET_VERSION = siteUrl + "api/v2/versions?l=" + dataset_id + "&all";
-                  dataset.load_dataset_version($http, $rootScope, scope, API_DATASET_VERSION, dataset_id);
               } else {
+                  // api for datasets
                   var API_DATASET_VERSION = siteUrl + "api/v2/versions?d=" + dataset_id + "&all";
-                  dataset.load_dataset_version($http, $rootScope, scope, API_DATASET_VERSION, dataset_id);
               }
+              dataset.load_dataset_version($http, $rootScope, scope, API_DATASET_VERSION, dataset_id);
           },
           templateUrl: staticUrl + "geonode/js/templates/dataset_version.html"
       }
@@ -776,7 +776,13 @@ var dataset = angular.module('dataset', ['ngCookies', 'ui.bootstrap']);
                   $('#versions_table tbody').on('click', 'tr', function () {
                       var data = table.row(this).data();
                       var version = data[0];
-                      var API_CHANGE_VERSION = siteUrl + "api/v2/versions/get_detailed_version/" + dataset_id + "?v=" + version;
+                      if (dataset_id.includes("_")) {
+                          // api for layers
+                          var API_CHANGE_VERSION = siteUrl + "api/v2/versions/get_detailed_version?l=" + dataset_id + "&v=" + version;
+                      } else {
+                          // api for datasets
+                          var API_CHANGE_VERSION = siteUrl + "api/v2/versions/get_detailed_version?d=" + dataset_id + "&v=" + version;
+                      }
                       scope.load_version_changes($http, API_CHANGE_VERSION);
                   });
               }, 1000);
