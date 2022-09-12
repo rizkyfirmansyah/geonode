@@ -1074,7 +1074,7 @@ EPSG_CODE_MATCHES = {
     'EPSG:4326': '(4326) WGS 84',
     'EPSG:3857': '(3857) WGS 84 / Pseudo-Mercator',
     'EPSG:900913': '(900913) Google Maps Global Mercator',
-    'EPSG:3395': '(3395) World Mercator',
+    'EPSG:3395': '(3395) WGS 84 / World Mercator',
     'EPSG:32646': '(32646) WGS 84 / UTM zone 46N',
     'EPSG:32647': '(32647) WGS 84 / UTM zone 47N',
     'EPSG:32648': '(32648) WGS 84 / UTM zone 48N',
