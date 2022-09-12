@@ -1038,7 +1038,21 @@ UPLOADER = {
     },
     'SUPPORTED_CRS': [
         'EPSG:4326',
-        'EPSG:3395'
+        'EPSG:3395',
+        'EPSG:32646', # Aceh
+        'EPSG:32647', # North Sumatra, Riau
+        'EPSG:32648', # Riau Islands
+        'EPSG:32651', # North Sulawesi, Gorontalo
+        'EPSG:32652', # North Maluku
+        'EPSG:32747', # West Sumatra
+        'EPSG:32748', # Sumatra Selatan, Jambi, Bengkulu, Lampung, DKI, West Java, Banten, Bangka Belitung
+        'EPSG:32749', # Central Java, East Java, DIY, West Kalimantan, Central Kalimantan
+        'EPSG:32750', # East Kalimantan, South Kalimantan, Central Sulawesi, South Sulawesi, Bali, West Nusa Tenggara, West Sulawesi
+        'EPSG:32751', # Southeast Sulawesi, East Nusa Tenggara
+        'EPSG:32752', # Maluku
+        'EPSG:32753', # West Papua
+        'EPSG:32754', # Papua
+        ''
     ],
     'SUPPORTED_EXT': [
         '.shp',
@@ -1058,7 +1072,20 @@ UPLOADER = {
 EPSG_CODE_MATCHES = {
     'EPSG:4326': '(4326) WGS 84',
     'EPSG:900913': '(900913) Google Maps Global Mercator',
-    'EPSG:3395': '(3395) World Mercator'
+    'EPSG:3395': '(3395) World Mercator',
+    'EPSG:32646': '(32646) WGS 84 / UTM zone 46N',
+    'EPSG:32647': '(32647) WGS 84 / UTM zone 47N',
+    'EPSG:32648': '(32648) WGS 84 / UTM zone 48N',
+    'EPSG:32651': '(32651) WGS 84 / UTM zone 51N',
+    'EPSG:32652': '(32652) WGS 84 / UTM zone 52N',
+    'EPSG:32747': '(32747) WGS 84 / UTM zone 47N',
+    'EPSG:32748': '(32748) WGS 84 / UTM zone 48N',
+    'EPSG:32749': '(32749) WGS 84 / UTM zone 49N',
+    'EPSG:32750': '(32750) WGS 84 / UTM zone 50N',
+    'EPSG:32751': '(32751) WGS 84 / UTM zone 51N',
+    'EPSG:32752': '(32752) WGS 84 / UTM zone 52N',
+    'EPSG:32753': '(32753) WGS 84 / UTM zone 53N',
+    'EPSG:32754': '(32754) WGS 84 / UTM zone 54N'
 }
 
 # CSW settings
