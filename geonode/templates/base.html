@@ -207,7 +207,7 @@
     {% block monitoring %}{% endblock %}
 
     <!-- Modal must stay outside the navbar -->
-    {% if not user.is_authenticated or user.is_anonymous %}
+    {% if not user.is_authenticated %}
       {% include "modal/login.html" %}
     {% endif %}
     {% include "modal/forgot_password.html" %}

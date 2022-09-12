@@ -82,7 +82,8 @@ from .permissions import (
     IsSelfOrAdmin,
     IsOwnerOrAdmin,
     IsOwnerOrReadOnly,
-    ResourceBasePermissionsFilter
+    ResourceBasePermissionsFilter,
+    UserHasPerms
 )
 from .serializers import (
     FavoriteSerializer,
@@ -362,18 +363,14 @@ class ResourceBaseViewSet(DynamicModelViewSet):
     API endpoint that allows base resources to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    else:
-        permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, ResourceBasePermissionsFilter, ResourceBaseFilter
     ]
+    permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
+    queryset = ResourceBase.objects.all().order_by('-last_updated')
     serializer_class = ResourceBaseSerializer
     pagination_class = GeoNodeApiPagination
-    ordering_fields = ('title', 'date', 'popular_count')
-    ordering = ('-last_updated')
 
     def _filtered(self, request, filter):
         paginator = GeoNodeApiPagination()
