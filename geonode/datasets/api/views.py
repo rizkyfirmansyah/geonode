@@ -56,7 +56,7 @@ from geonode.storage.manager import storage_manager
 from geonode.base.models import ResourceBase
 from geonode.base.api.serializers import ResourceBaseSerializer
 from django.template import loader
-from .serializers import DatasetIngestFileSerializer, DatasetIngestUrlSerializer, DatasetSerializer
+from .serializers import DatasetFileSerializer, DatasetIngestFileSerializer, DatasetIngestUrlSerializer
 from .permissions import DocumentPermissionsFilter
 from django.conf import settings
 import logging
@@ -81,7 +81,7 @@ class DatasetFilesViewSet(DynamicModelViewSet):
         ExtentFilter, DocumentPermissionsFilter
     ]
     queryset = File.objects.all().order_by('-last_updated')
-    serializer_class = DatasetSerializer
+    serializer_class = DatasetFileSerializer
     pagination_class = GeoNodeApiPagination
 
     @extend_schema(methods=['get'], responses={200: ResourceBaseSerializer(many=True)},
@@ -216,13 +216,13 @@ class DatasetFilesViewSet(DynamicModelViewSet):
     )
     def edit_dataset_files(self, request, dataset_id):
         resources = File.objects.filter(dataset_id__in=[dataset_id])
+        dataset = Dataset.objects.filter(resourcebase_ptr=dataset_id).first()
         exclude = []
         for resource in resources:
-            if not request.user.is_superuser and \
-            not request.user.has_perm('datasets.change_resourcebase', resource):
+            if not request.user.is_superuser and not request.user.has_perm('download_resourcebase', dataset.get_self_resource()):
                 exclude.append(resource.id)
         resources = resources.exclude(id__in=exclude)
-        serializer = DatasetSerializer(instance=resources, embed=True, many=True)
+        serializer = DatasetFileSerializer(instance=resources, embed=True, many=True)
 
         return Response({"files": serializer.data, "length": resources.count()})
 
@@ -421,13 +421,8 @@ class DatasetFilesViewSet(DynamicModelViewSet):
     )
     def resume_upload(self, request):
         resources = File.objects.filter(dataset_id__isnull=True, owner=get_user_model().objects.get(username=request.user).id)
-        serializer = DatasetSerializer(instance=resources, embed=True, many=True)
+        serializer = DatasetFileSerializer(instance=resources, embed=True, many=True)
         files_length = resources.count()
-
-        if (files_length > 0):
-            toast_title = f"Resume Upload"
-            msg = f"You have unresolved files to upload."
-            messages.warning(request, msg, extra_tags=toast_title)
 
         return Response({"files": serializer.data, "length": files_length})
 

@@ -27,7 +27,7 @@ from ..models import File
 logger = logging.getLogger(__name__)
 
 
-class DatasetSerializer(DynamicModelSerializer):
+class DatasetFileSerializer(DynamicModelSerializer):
 
     def __init__(self, *args, **kwargs):
         # Instantiate the superclass normally
