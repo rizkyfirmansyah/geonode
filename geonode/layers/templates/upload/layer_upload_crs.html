@@ -40,8 +40,7 @@
           <h3>{% trans "Coordinate Reference System" %}</h3>
           <div title="{% trans "Provide EPSG code for Source SRS" %}" class="row">
               <label for="id_source" class="col-md-4">{% trans "EPSG Code (Source SRS)" %}  :</label>
-              <select id="id_source" name="source" class="col">
-                <option value="">{% trans "Select a Source SRS" %}</option>
+              <select id="id_source" name="source" class="selectpicker form-control" title="Select a Source SRS" data-live-search="true" data-size="5" data-width="100%">
                 {% for option in supported_crs %}
                   <option value="{{ option }}">{{ option|crs_labels }}</option>
                 {% endfor %}
@@ -72,10 +71,9 @@
                       <div class="card-body">
                           <div class="row">
                             <label for="id_target" class="d-inline-block col-md-4">{% trans "EPSG Code (Target SRS)" %}  :</label>
-                            <select id="id_target" class="d-inline-block col" name="target">
-                              <option value="">{% trans "Select a Target SRS" %}</option>
+                            <select id="id_target" name="target" class="selectpicker form-control" title="Select a Target SRS" data-live-search="true" data-size="5" data-width="100%">
                               {% for option in supported_crs %}
-                              <option selected="EPSG:3857" value="{{ option }}">{{ option|crs_labels }}</option>
+                                <option selected="EPSG:3857" value="{{ option }}">{{ option|crs_labels }}</option>
                               {% endfor %}
                             </select>
                           </div>
