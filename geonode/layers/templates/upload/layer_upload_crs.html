@@ -36,14 +36,14 @@
   {% endif %}
   <form method="POST" id="crsForm" role="form">
     {% csrf_token %}
-    <div class="card-body">
-      <h3>{% trans "Coordinate Reference System" %}</h3>
-          <div title="{% trans "Provide EPSG code for Source SRS" %}">
-              <label for="id_source" style="display: inline-block; width: 275px">{% trans "EPSG Code (Source SRS)" %}  :</label>
-              <select id="id_source" name="source" style="display: inline-block; max-width: 500px">
+      <div class="card-body">
+          <h3>{% trans "Coordinate Reference System" %}</h3>
+          <div title="{% trans "Provide EPSG code for Source SRS" %}" class="row">
+              <label for="id_source" class="col-md-4">{% trans "EPSG Code (Source SRS)" %}  :</label>
+              <select id="id_source" name="source" class="col">
                 <option value="">{% trans "Select a Source SRS" %}</option>
                 {% for option in supported_crs %}
-                <option value="{{ option }}">{{ option|crs_labels }}</option>
+                  <option value="{{ option }}">{{ option|crs_labels }}</option>
                 {% endfor %}
               </select>
               <span class="help-tip">
@@ -61,22 +61,24 @@
           <div id="upload-status" class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;"></div>
 
           <div class="panel-group" id="accordion">
-              <div class="faqHeader"><h5>{% trans "Advanced Options" %}:</h5></div>
+              <div class="mt-2"><h5>{% trans "Advanced Options" %}:</h5></div>
               <div class="card">
                   <div class="card-header">
-                      <h4 class="card-title" style="font-size:16px">
+                      <h4 class="card-title">
                           <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse_id_target_srs">{% trans "Target SRS" %}</a>
                       </h4>
                   </div>
                   <div id="collapse_id_target_srs" class="collapse">
                       <div class="card-body">
-                          <label for="id_target" style="display: inline-block; width: 275px">{% trans "EPSG Code (Target SRS)" %}  :</label>
-                          <select id="id_target" name="target" style="display: inline-block; width: 181px">
-                            <option value="">{% trans "Select a Target SRS" %}</option>
-                            {% for option in supported_crs %}
-                            <option value="{{ option }}">{{ option|crs_labels }}</option>
-                            {% endfor %}
-                          </select><em><i>&nbsp;&nbsp;{% trans "leave it empty to use only Source SRS" %}</i></em>
+                          <div class="row">
+                            <label for="id_target" class="d-inline-block col-md-4">{% trans "EPSG Code (Target SRS)" %}  :</label>
+                            <select id="id_target" class="d-inline-block col" name="target">
+                              <option value="">{% trans "Select a Target SRS" %}</option>
+                              {% for option in supported_crs %}
+                              <option selected="EPSG:3857" value="{{ option }}">{{ option|crs_labels }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
                       </div>
                   </div>
                   <div class="card-header">
@@ -203,11 +205,9 @@
     </div>
     <div class="card-footer">
       <div class="row">
-        <div class="col"><a href="{% url "layer_upload" %}" class="btn btn-secodary btn-block">{% trans "Cancel" %}</a></div>
+        <div class="col"><a href="{% url "layer_upload" %}" class="btn btn-secondary btn-block">{% trans "Cancel" %}</a></div>
         <div class="col">
-          <button id='next' class="btn btn-primary btn-block" type="submit" value="{% trans 'Next' %}"> Next
-              <i id="next-spinner" class="fa-solid fa-spinner fa-spin hide"></i>
-          </button>
+          <button id='next' class="btn btn-primary btn-block" type="submit" value="{% trans 'Next' %}"> Next >></button>
         </div>
       </div>
     </div>
@@ -217,9 +217,7 @@
 
 {% block extra_script %}
 {{ block.super }}
-<script data-main="{% static 'geonode/js/upload/srs.js' %}"
-  src="{% static 'lib/js/require.js' %}">
-</script>
+<script data-main="{% static 'geonode/js/upload/srs.js' %}" src="{% static 'lib/js/require.js' %}"></script>
 <script type="text/javascript">
 {% autoescape off %}
 {% if async_upload %}

@@ -3313,12 +3313,6 @@ form-inline {
     border-radius: var(--border-radius-sm)
 }
 
-.faqHeader {
-    width: fit-content;
-    margin-top: 1.5em;
-    font-size: 2em
-}
-
 .search-content ul {
     margin-left: -5px
 }

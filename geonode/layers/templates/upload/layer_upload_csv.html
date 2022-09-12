@@ -10,61 +10,69 @@
 {{ block.super }}
 {% endblock %}
 
-{% block body_inner %}
-<div class="span7">
-  <h2> {% trans "Geospatial Data" %} "{{ layer_name }}" </h2>
+{% block body %}
+<div class="card rounded bg-light mb-2">
+  <div class="card-header bg-layer">
+    <div class="row">
+      <h3 class="text-light"> {% trans "Geospatial Data " %} "{{ layer_name }}" </h3>
+    </div>
 
-    {% if present_choices %}
-        <p>{% trans "Please indicate which attributes contain the latitude and longitude coordinates in the CSV data." %}</p>
-        {% if guessed_lat_or_lng %}
-            <p>{% blocktrans %}With this data, GeoNode was able to guess which attributes contain the
-                latitude and longitude coordinates, but please confirm that the correct
-                attributes are selected below.{% endblocktrans %}</p>
-        {% endif %}
-
-        <form method="POST" id="csvForm" role="form">
+    <form method="POST" id="csvForm" role="form">
+        <div class="card-body">
           {% csrf_token %}
-          {% if error %}
-          <div class="msg alert alert-error">{{ error }}</div>
-          {% endif %}
-          <div>
-            <label for="lat" style="display: inline-block; width: 75px">{% trans "Latitude" %}</label>
-            <select id="lat" name="lat">
-              <option value="None">{% trans "Select an attribute" %}</option>
-              {% for option in point_candidates %}
-              <option value="{{ option }}"
-              {% if selected_lat and selected_lat == option %}
-              selected="selected"
+          {% if present_choices %}
+              <p>{% trans "Please indicate which attributes contain the latitude and longitude coordinates in the CSV data." %}</p>
+              {% if guessed_lat_or_lng %}
+                  <p>{% blocktrans %}With this data, GeoNode was able to guess which attributes contain the
+                      latitude and longitude coordinates, but please confirm that the correct
+                      attributes are selected below.{% endblocktrans %}</p>
               {% endif %}
-              >{{ option }}</option>
-              {% endfor %}
-            </select>
+              <div>
+                <label for="lat" style="display: inline-block; width: 75px">{% trans "Latitude" %}</label>
+                <select id="lat" name="lat">
+                  <option value="None">{% trans "Select an attribute" %}</option>
+                  {% for option in point_candidates %}
+                  <option value="{{ option }}"
+                  {% if selected_lat and selected_lat == option %}
+                  selected="selected"
+                  {% endif %}
+                  >{{ option }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div style="margin: 10px 0">
+                <label for="lat" style="display: inline-block; width: 75px">{% trans "Longitude" %}</label>
+                <select id="lng" name="lng">
+                  <option value="None">{% trans "Select an attribute" %}</option>
+                  {% for option in point_candidates %}
+                  <option value="{{ option }}"
+                  {% if selected_lng and selected_lng == option %}
+                  selected="selected"
+                  {% endif %}
+                  >{{ option }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div id="upload-status" class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;"></div>
+              <div id="csv-status">
+                <div id="status">
+                </div>
+              </div>
+        </div>
+        {% if error %}
+          <div class="card-footer">
+            <div class="row">
+                <div class="msg alert alert-error">{{ error }}</div>
+            </div>
           </div>
-          <div style="margin: 10px 0">
-            <label for="lat" style="display: inline-block; width: 75px">{% trans "Longitude" %}</label>
-            <select id="lng" name="lng">
-              <option value="None">{% trans "Select an attribute" %}</option>
-              {% for option in point_candidates %}
-              <option value="{{ option }}"
-              {% if selected_lng and selected_lng == option %}
-              selected="selected"
-              {% endif %}
-              >{{ option }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <a href="{% url "layer_upload" %}" class="btn btn-primary pull-left">{% trans "Cancel" %}</a> &nbsp;
-          <button id='next' class="btn btn-primary" type="submit" value="{% trans 'Next' %}"> Next
-              <i id="next-spinner" class="fa-solid fa-spinner fa-spin hide"></i>
-          </button>
-          <div id="upload-status"></div>
-        </form>
-
-        <div id="csv-status">
-            <div id="status">
+        {% endif %}
+        <div class="card-footer">
+            <div class="row">
+              <div class="col"><a href="{% url "layer_upload" %}" class="btn btn-primary btn-block">{% trans "Cancel" %}</a></div>
+              <div class="col"><button id='next' class="btn btn-primary btn-block" type="submit" value="{% trans 'Next' %}"> Next >></button></div>
             </div>
         </div>
+    </form>
 
     {% else %}
         <p>{% blocktrans %}We did not detect columns that could be used for the latitude and longitude.
@@ -76,9 +84,7 @@
 
 {% block extra_script %}
 {{ block.super }}
-<script data-main="{% static 'geonode/js/upload/csv.js' %}"
-  src="{% static 'lib/js/require.js' %}">
-</script>
+<script data-main="{% static 'geonode/js/upload/csv.js' %}" src="{% static 'lib/js/require.js' %}"></script>
 <script type="text/javascript">
 {% autoescape off %}
 {% if async_upload %}
