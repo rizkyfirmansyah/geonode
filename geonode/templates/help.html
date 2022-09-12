@@ -24,11 +24,19 @@
           
           {% url 'catalogue_browse' as url_catalogue_browse %}
           {% url 'new_map' as url_new_map %}
+          {% url 'dataset_upload' as url_dataset_upload %}
+          {% url 'layer_upload' as url_layer_upload %}
 
           <nav id="navbar-browsing-layers" class="navbar bg-dark mt-2 mb-4">
             <ul class="nav nav-pills">
               <li class="nav-item">
                 <a class="nav-link text-white" href="#browsing-data">Browsing Datasets</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="#creating-a-layer">Creating a Layer</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="#creating-a-dataset">Creating a Dataset</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link text-white" href="#creating-a-map">Creating a Map</a>
@@ -47,6 +55,14 @@
           <h4 id="browsing-data">Catalogue (Home) Page</h4>
           <p>The <a href="{{ url_catalogue_browse }}">Catalogue</a> page allows you to browse data uploaded to this SDI.</p>
           <p>All data can be downloaded in a variety of formats, for use in other applications.</p>
+
+          <h4 id="creating-a-layer">Creating a Layer</h4>
+          <p>SDI lets you to <a href="{{ url_layer_upload }}">upload spatial data layers</a> in type of native formats: ESRI Shapefile (.shp, .shx, .dbf, .xml and .prj)
+            .kml .kmz; .geojson. See <a href="{{ url_layer_upload }}">several tips before upload</a> and make sure your layers are clean and the projection system is well defined.</p>
+
+          <h4 id="creating-a-dataset">Creating a Dataset</h4>
+          <p>SDI lets you to <a href="{{ url_dataset_upload }}">upload multiple files</a> in variety of formats. All file types are supported for upload and download in their original format. If you are uploading Tabular Files (csv, tsv, sav, rdata, dta)
+            SDI limits you to preview 1000 data in the dataset detail page.</p>
   
           <h4 id="creating-a-map">Creating a Map</h4>
           <p>To create a new map go to <a href="{{ url_new_map }}">this link</a>.</p>
@@ -79,7 +95,7 @@
             <li><strong>IMPORTANT:</strong> Update the title, abstract, contact info and tags to reflect the new map.</li>
             <li>Save the map.</li>
           </ol>
-          <p>You will be able to see your new map when you search for it from the <a href="{{ url_catalogue_browse }}">Maps</a> tab.</p>
+          <p>You will be able to see your new map when you search for it from the <a href="{{ url_catalogue_browse }}">Catalogue</a> tab.</p>
           {% endblocktrans %}
         </div>
       {% endif %}
