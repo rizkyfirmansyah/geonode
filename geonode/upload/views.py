@@ -571,7 +571,7 @@ def final_step_view(req, upload_session):
                     {
                         'status': 'finished',
                         'id': import_session.id,
-                        'url': saved_layer.get_absolute_url(),
+                        'url': saved_layer.get_metadata_url(),
                         'bbox': saved_layer.bbox_string,
                         'crs': {
                             'type': 'name',

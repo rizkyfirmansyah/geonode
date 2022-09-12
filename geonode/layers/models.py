@@ -311,6 +311,9 @@ class Layer(ResourceBase):
             args=(f"{self.alternate}",)
         )
 
+    def get_metadata_url(self):
+        return reverse('layer_metadata', args=(f"{self.service_typename}",))
+
     @property
     def embed_url(self):
         try:

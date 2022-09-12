@@ -14,9 +14,7 @@
 {% block body %}
 <div class="card rounded bg-light mb-2">
   <div class="card-header bg-layer">
-    <div class="row">
       <h3 class="text-light"> {% trans "Provide CRS for " %} "{{ layer_name }}" </h3>
-    </div>
   </div>
   {% if native_crs %}
     <div class="card-footer bg-warning">
@@ -40,21 +38,21 @@
           <h3>{% trans "Coordinate Reference System" %}</h3>
           <div title="{% trans "Provide EPSG code for Source SRS" %}" class="row">
               <label for="id_source" class="col-md-4">{% trans "EPSG Code (Source SRS)" %}  :</label>
-              <select id="id_source" name="source" class="selectpicker form-control" title="Select a Source SRS" data-live-search="true" data-size="5" data-width="100%">
+              <select id="id_source" name="source" class="selectpicker col mr-3 form-control" title="Select a Source SRS" data-live-search="true" data-size="5">
                 {% for option in supported_crs %}
                   <option value="{{ option }}">{{ option|crs_labels }}</option>
                 {% endfor %}
               </select>
-              <span class="help-tip">
-                  <p>{% blocktrans %}Source SRS EPSG Code is mandatory and represents the native data Spatial Reference System.
-                      <br><br>
-                      This must be coherent with the Geometry values (lon/lat coordinates as an instance) stored on the geospatial dataset.
-                      <br><br>
-                      If not specified on the geospatial data itself, it must be manually declared by the operator.
-                      <br><br>
-                      More information is provided at the bottom of the page in the "Additional Help" sections.
-                      {% endblocktrans %}</p>
-              </span>
+          </div>
+
+          <div class="alert-info font-lg-1 mt-4 mb-4 p-2">
+              Source SRS EPSG Code is mandatory and represents the native data Spatial Reference System.
+                <br>
+                This must be coherent with the Geometry values (lon/lat coordinates as an instance) stored on the geospatial dataset.
+                <br>
+                If not specified on the geospatial data itself, it must be manually declared by the operator.
+                <br>
+                More information is provided at the bottom of the page in the "Additional Help" sections.
           </div>
           
           <div id="upload-status" class="position-fixed bottom-0 right-0 p-3 toast-container" style="z-index: 9999; right: 0; bottom: 0;"></div>
@@ -71,9 +69,9 @@
                       <div class="card-body">
                           <div class="row">
                             <label for="id_target" class="d-inline-block col-md-4">{% trans "EPSG Code (Target SRS)" %}  :</label>
-                            <select id="id_target" name="target" class="selectpicker form-control" title="Select a Target SRS" data-live-search="true" data-size="5" data-width="100%">
+                            <select id="id_target" name="target" class="selectpicker col mr-3 form-control" title="Select a Target SRS" data-live-search="true" data-size="5">
                               {% for option in supported_crs %}
-                                <option selected="EPSG:3857" value="{{ option }}">{{ option|crs_labels }}</option>
+                                <option value="{{ option }}">{{ option|crs_labels }}</option>
                               {% endfor %}
                             </select>
                           </div>
@@ -216,6 +214,12 @@
 {% block extra_script %}
 {{ block.super }}
 <script data-main="{% static 'geonode/js/upload/srs.js' %}" src="{% static 'lib/js/require.js' %}"></script>
+<script type="text/javascript">
+    $(function() {
+        $('#id_target').selectpicker('val', 'EPSG:3857');
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>
 <script type="text/javascript">
 {% autoescape off %}
 {% if async_upload %}
