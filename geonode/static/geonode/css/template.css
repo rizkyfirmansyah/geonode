@@ -3654,10 +3654,6 @@ td>input {
     min-height: 450px
 }
 
-#metadata_update {
-    min-height: 550px
-}
-
 .leaflet-container {
     height: 250px!important
 }
