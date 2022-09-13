@@ -20,7 +20,6 @@
 from geonode.datasets.models import File
 from geonode.favorite.models import Favorite
 import logging
-from geonode.security.utils import get_resources_with_perms
 from rest_framework.filters import SearchFilter, BaseFilterBackend
 from geonode.base.bbox_utils import filter_bbox
 from django.core.exceptions import ObjectDoesNotExist
@@ -52,7 +51,6 @@ class ResourceBaseFilter(BaseFilterBackend):
     Filter that only allows users to see their own objects.
     """
     def filter_queryset(self, request, queryset, _):
-        queryset = get_resources_with_perms(request.user).order_by('-date')
         order_by = request.query_params.get('order_by', None)
         search_input = request.query_params.get('dbbc87e', None)
         date_gte = request.query_params.get('date__gte', None)
@@ -105,7 +103,7 @@ class ResourceBaseFilter(BaseFilterBackend):
             queryset = queryset.filter(tkeywords__id__in=tkeywords)
 
         if keywords:
-            queryset = queryset.filter(keywords__slug__in=keywords)
+            queryset = queryset.filter(keywords__name__in=keywords)
 
         if extension:
             file = File.objects.filter(extension__in=extension).values('dataset_id')
