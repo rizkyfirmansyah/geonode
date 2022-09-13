@@ -367,7 +367,11 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, ResourceBasePermissionsFilter, ResourceBaseFilter
     ]
-    permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
+
     queryset = ResourceBase.objects.all().order_by('-date')
     serializer_class = ResourceBaseSerializer
     pagination_class = GeoNodeApiPagination
