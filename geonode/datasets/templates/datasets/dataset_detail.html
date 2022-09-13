@@ -174,9 +174,9 @@
         <ul class="list-unstyled">
           {% for resource in related %}
             {% if resource.resource_type == 'dataset' %}
-                <li><a href="{{ resource.id }}" class="text-dataset">{{ resource.title }}</a></li>
+                <li><a href="{{ resource.id }}" class="text-dataset p-0">{{ resource.title }}</a></li>
             {% elif resource.resource_type == 'layer' %}
-                <li><a href="{% url 'layer_detail' layername=resource.alternate %}" class="text-layer">{{ resource.title }}</a></li>
+                <li><a href="{% url 'layer_detail' layername=resource.alternate %}" class="text-layer p-0">{{ resource.title }}</a></li>
             {% endif %}
           {% empty %}
           {% endfor %}
