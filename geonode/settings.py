@@ -1080,14 +1080,14 @@ EPSG_CODE_MATCHES = {
     'EPSG:32648': '(32648) WGS 84 / UTM zone 48N',
     'EPSG:32651': '(32651) WGS 84 / UTM zone 51N',
     'EPSG:32652': '(32652) WGS 84 / UTM zone 52N',
-    'EPSG:32747': '(32747) WGS 84 / UTM zone 47N',
-    'EPSG:32748': '(32748) WGS 84 / UTM zone 48N',
-    'EPSG:32749': '(32749) WGS 84 / UTM zone 49N',
-    'EPSG:32750': '(32750) WGS 84 / UTM zone 50N',
-    'EPSG:32751': '(32751) WGS 84 / UTM zone 51N',
-    'EPSG:32752': '(32752) WGS 84 / UTM zone 52N',
-    'EPSG:32753': '(32753) WGS 84 / UTM zone 53N',
-    'EPSG:32754': '(32754) WGS 84 / UTM zone 54N'
+    'EPSG:32747': '(32747) WGS 84 / UTM zone 47S',
+    'EPSG:32748': '(32748) WGS 84 / UTM zone 48S',
+    'EPSG:32749': '(32749) WGS 84 / UTM zone 49S',
+    'EPSG:32750': '(32750) WGS 84 / UTM zone 50S',
+    'EPSG:32751': '(32751) WGS 84 / UTM zone 51S',
+    'EPSG:32752': '(32752) WGS 84 / UTM zone 52S',
+    'EPSG:32753': '(32753) WGS 84 / UTM zone 53S',
+    'EPSG:32754': '(32754) WGS 84 / UTM zone 54S'
 }
 
 # CSW settings
