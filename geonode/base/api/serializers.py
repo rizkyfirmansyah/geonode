@@ -26,6 +26,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 from django.forms.models import model_to_dict
 from django.db.models.query import QuerySet
+from django.db.models import Q
 
 from rest_framework import serializers
 from rest_framework_gis import fields

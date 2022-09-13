@@ -368,7 +368,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         ExtentFilter, ResourceBasePermissionsFilter, ResourceBaseFilter
     ]
     permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
-    queryset = ResourceBase.objects.all().order_by('-last_updated')
+    queryset = ResourceBase.objects.all()
     serializer_class = ResourceBaseSerializer
     pagination_class = GeoNodeApiPagination
 
