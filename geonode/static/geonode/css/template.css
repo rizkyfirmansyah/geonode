@@ -3488,7 +3488,7 @@ form#text-search-autocomplete .ac-results {
 
 #edit-metadata input, #edit-metadata select {
     min-height: 2.5em;
-    padding: .8em;
+    padding: 0 .8em;
     border: 1px solid rgba(0,0,0,.125) !important;
 }
 

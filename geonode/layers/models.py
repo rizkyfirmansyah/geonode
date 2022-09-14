@@ -196,7 +196,7 @@ class Layer(ResourceBase):
         null=True)
 
     def is_vector(self):
-        return self.subtype == 'vector'
+        return self.subtype in ['vector', 'vector_time']
 
     @property
     def is_raster(self):
@@ -204,7 +204,7 @@ class Layer(ResourceBase):
 
     @property
     def display_type(self):
-        if self.subtype == "vector":
+        if self.subtype in ["vector", "vector_time"]:
             return "Vector Data"
         elif self.subtype == "raster":
             return "Raster Data"
@@ -291,7 +291,7 @@ class Layer(ResourceBase):
 
         # we need to check, for shapefile, if column names are valid
         list_col = None
-        if self.subtype == 'vector':
+        if self.subtype in ['vector', 'vector_time']:
             valid_shp, wrong_column_name, list_col = check_shp_columnnames(
                 self)
             if wrong_column_name:
@@ -365,7 +365,7 @@ class Layer(ResourceBase):
 
     @property
     def download_url(self):
-        if self.subtype not in ['vector', 'raster']:
+        if self.subtype not in ['vector', 'raster', 'vector_time']:
             logger.error("Download URL is available only for datasets that have been harvested and copied locally")
             return None
         return build_absolute_uri(reverse('layer_download', args=(self.alternate,)))
@@ -576,105 +576,3 @@ class Attribute(models.Model):
 
     def unique_values_as_list(self):
         return self.unique_values.split(',')
-
-
-def _get_alternate_name(instance):
-    if instance.remote_service is not None and instance.remote_service.method == INDEXED:
-        result = instance.name
-    elif instance.remote_service is not None and instance.remote_service.method == CASCADED:
-        _ws = getattr(settings, "CASCADE_WORKSPACE", _DEFAULT_CASCADE_WORKSPACE)
-        result = f"{_ws}:{instance.name}"
-    else:  # we are not dealing with a service-related instance
-        _ws = getattr(settings, "DEFAULT_WORKSPACE", _DEFAULT_WORKSPACE)
-        result = f"{_ws}:{instance.name}"
-    return result
-
-
-def pre_save_layer(instance, sender, **kwargs):
-    if kwargs.get('raw', False):
-        try:
-            _resourcebase_ptr = instance.resourcebase_ptr
-            instance.owner = _resourcebase_ptr.owner
-            instance.uuid = _resourcebase_ptr.uuid
-            instance.bbox_polygon = _resourcebase_ptr.bbox_polygon
-            instance.srid = _resourcebase_ptr.srid
-        except Exception as e:
-            logger.exception(e)
-
-    if instance.abstract == '' or instance.abstract is None:
-        instance.abstract = 'No abstract provided'
-    if instance.title == '' or instance.title is None:
-        instance.title = instance.name
-
-    # Set a default user for accountstream to work correctly.
-    if instance.owner is None:
-        instance.owner = get_valid_user()
-
-    logger.debug("handling UUID In pre_save_layer")
-    if hasattr(settings, 'LAYER_UUID_HANDLER') and settings.LAYER_UUID_HANDLER != '':
-        logger.debug("using custom uuid handler In pre_save_layer")
-        from geonode.layers.utils import get_uuid_handler
-        instance.uuid = get_uuid_handler()(instance).create_uuid()
-    else:
-        if instance.uuid == '':
-            instance.uuid = str(uuid.uuid4())
-
-    logger.debug("In pre_save_layer")
-    if instance.alternate is None:
-        instance.alternate = _get_alternate_name(instance)
-    logger.debug(f"instance.alternate is: {instance.alternate}")
-
-    base_file, info = instance.get_base_file()
-
-    if info:
-        instance.info = info
-
-    if base_file is not None:
-        extension = f'.{base_file.name}'
-        if extension in vec_exts:
-            instance.storeType = 'dataStore'
-        elif extension in cov_exts:
-            instance.storeType = 'coverageStore'
-
-    if instance.bbox_polygon is None:
-        instance.set_bbox_polygon((-180, -90, 180, 90), 'EPSG:4326')
-
-    # Send a notification when a layer is created
-    if instance.pk is None and instance.title:
-        # Resource Created
-        notice_type_label = f'{instance.class_name.lower()}_created'
-        recipients = get_notification_recipients(notice_type_label, resource=instance)
-        send_notification(recipients, notice_type_label, {'resource': instance})
-
-
-def post_delete_layer(instance, sender, **kwargs):
-    """
-    - Remove any associated style to the layer, if it is not used by other layers.
-    - Default style will be deleted in post_delete_layer.
-    - Remove the layer from any associated map, if any.
-    - Remove the layer default style.
-    """
-
-    from geonode.maps.models import MapLayer
-    logger.debug(
-        "Going to delete associated maplayers for [%s]", instance.name)
-    MapLayer.objects.filter(
-        name=instance.alternate,
-        ows_url=instance.ows_url).delete()
-
-    logger.debug(
-        "Going to delete the default style for [%s]", instance.name)
-
-    if instance.default_style and Layer.objects.filter(
-            default_style__id=instance.default_style.id).count() == 0:
-        instance.default_style.delete()
-
-    ct = ContentType.objects.get_for_model(instance)
-    OverallRating.objects.filter(
-        content_type=ct,
-        object_id=instance.id).delete()
-
-
-signals.pre_save.connect(pre_save_layer, sender=Layer)
-signals.post_save.connect(resourcebase_post_save_layers, sender=Layer)
-signals.post_delete.connect(post_delete_layer, sender=Layer)

@@ -450,6 +450,37 @@
     {% endblock trigger_onInputChange %}
 
     $(document).ready(function() {
+
+        {% if resource.is_vector %}
+              if($("#id_resource-has_time").is(":checked")) {
+                  $("#settings_time_series").show();
+                  if ($("#id_timeseries-presentation").val() == 'LIST') {
+                      $("#precision_value").hide();
+                  }
+              } else {
+                  $("#settings_time_series").hide();
+              };
+
+              $("#id_resource-has_time").click(function() {
+                  if($(this).is(":checked")) {
+                      $("#settings_time_series").show();
+                      if ($("#id_timeseries-presentation").val() == 'LIST') {
+                          $("#precision_value").hide();
+                      }
+                  } else {
+                      $("#settings_time_series").hide();
+                  }
+              });
+              
+              $("#id_timeseries-presentation").change(function() {
+                  if(this.value != 'LIST') {
+                      $("#precision_value").show();
+                  } else {
+                      $("#precision_value").hide();
+                  }
+              });
+        {% endif %}
+
         $('.metadata-edit-done').popover({
             placement: 'left',
             html: true,
@@ -676,13 +707,22 @@
         var submitMetadata = () => {
             $('#metadata_update').submit(function(e) {
                 e.preventDefault();
-
                 var formData = $(this).serialize();
-
+                var total_forms = $("#id_layer_attribute_set-TOTAL_FORMS").val();
+                var initial_forms = $("#id_layer_attribute_set-INITIAL_FORMS").val();
+                var min_num_forms = $("#id_layer_attribute_set-MIN_NUM_FORMS").val();
+                var max_num_forms = $("#id_layer_attribute_set-MAX_NUM_FORMS").val();
+                formData += '&layer_attribute_set-TOTAL_FORMS='+ total_forms +'';
+                formData += '&layer_attribute_set-INITIAL_FORMS='+ initial_forms +'';
+                formData += '&layer_attribute_set-MIN_NUM_FORMS='+ min_num_forms +'';
+                formData += '&layer_attribute_set-MAX_NUM_FORMS='+ max_num_forms +'';
                 $.ajax({
                     url: "metadata",
                     type: "POST",
-                    data: formData
+                    data: formData,
+                    error: function (xhr, errmsg, err) {
+                      console.log(xhr.status + ": " + xhr.responseText);
+                    }
                 }).done(function(data){
                     // Do something more fancy with your response
                     // $('.message').html(data.message);

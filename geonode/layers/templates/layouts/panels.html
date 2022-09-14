@@ -418,7 +418,7 @@
                     </table>
                   </div>
 
-									<div id="layer-attributes-custom_template"{% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
+									<div id="layer-attributes-custom_template" {% if not resource.use_featureinfo_custom_template %}style="visibility: collapse;" {% endif %}>
 										{{layer_form.featureinfo_custom_template}}
 									</div>
 
@@ -495,11 +495,43 @@
                 </div>
               </div>
             </div>
+            {% if resource.is_vector %}
+                <div class="card" id="settings_time_series">
+                    <div class="card-header bg-dark">
+                      <h5 class="text-center text-light">Time series settings <span type="button" class="btn btn-link" data-toggle="modal" data-target="#timeSeriesModal">
+                        <i class="fa fa-question-circle "></i>
+                        </span>
+                      </h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <span class="col-md-2"><label for="dataset_attribute">Attribute</label></span>
+                        <div class="col">{{timeseries_form.attribute}}</div>
+                      </div>
+                      <div class="row mt-2">
+                        <span class="col-md-2"><label for="dataset_end_attribute">End attribute</label></span>
+                          <div class="col">{{timeseries_form.end_attribute}}</div>
+                      </div>
+                      <div class="row mt-2">
+                        <span class="col-md-2"><label for="dataset_presentation">Presentation</label></span>
+                          <div class="col">{{timeseries_form.presentation}}</div>
+                      </div>
+                      <div id='precision_value' class="row mt-2">                      
+                        <span class="col-md-2"><label for="dataset_precision_value">Precision Value</label></span>
+                        <div class="col-md-4">{{timeseries_form.precision_value}}</div>
+                        <span class="col-md-2"><label for="dataset_precision_step">Precision Step</label></span>
+                        <div class="col-md-4">{{timeseries_form.precision_step}}</div>
+                      </div>
+                    </div>
+                </div>
+            {% endif %}
           </div>
         </div>
 			{% endblock %}
 	</div>
 {% endblock %}
+
+{% include "modal/time_series.html" %}
 
 {% block extra_script %}
 	<script type="text/javascript">

@@ -359,3 +359,42 @@ class LayerStyleUploadForm(forms.Form):
     name = forms.CharField(required=False)
     update = forms.BooleanField(required=False)
     sld = forms.FileField()
+
+
+class DatasetTimeSerieForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        _choices = [(None, '-----')] + [(_a.pk, _a.attribute) for _a in kwargs.get('instance').attributes if _a.attribute_type in ['xsd:dateTime']]
+        self.base_fields.get('attribute').choices = _choices
+        self.base_fields.get('end_attribute').choices = _choices
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'col'})            
+
+    class Meta:
+        model = Attribute
+        fields = ('attribute',)
+
+    attribute = forms.ChoiceField(
+        required=False,
+    )
+    end_attribute = forms.ChoiceField(
+        required=False,
+    )
+    presentation = forms.ChoiceField(
+        required=False,
+        choices=[
+            ('LIST', 'List of all the distinct time values'),
+            ('DISCRETE_INTERVAL', 'Intervals defined by the resolution'),
+            ('CONTINUOUS_INTERVAL', 'Continuous Intervals for data that is frequently updated, resolution describes the frequency of updates')
+        ]
+    )
+    precision_value = forms.IntegerField(required=False)
+    precision_step = forms.ChoiceField(required=False, choices=[
+        ('years',) * 2,
+        ('months',) * 2,
+        ('days',) * 2,
+        ('hours',) * 2,
+        ('minutes',) * 2,
+        ('seconds',) * 2
+    ])

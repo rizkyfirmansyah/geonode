@@ -75,6 +75,7 @@ from geonode.base.models import (
 from geonode.base.enumerations import CHARSETS
 from geonode.decorators import check_keyword_write_perms
 from geonode.layers.forms import (
+    DatasetTimeSerieForm,
     LayerForm,
     NewLayerUploadForm,
     LayerAttributeForm)
@@ -904,6 +905,7 @@ def layer_metadata(
         form=LayerAttributeForm,
     )
     topic_category = layer.category.all()
+    toast_title = _("Update Metadata")
 
     topic_thesaurus = layer.tkeywords.all()
     # Add metadata_author or poc if missing
@@ -973,15 +975,13 @@ def layer_metadata(
                 'success': False,
                 'errors': METADATA_UPLOADED_PRESERVE_ERROR
             }
-            return HttpResponse(
-                json.dumps(out),
-                content_type='application/json',
-                status=400)
+            return JsonResponse(out, status=400)
 
         thumbnail_url = layer.thumbnail_url
         layer_form = LayerForm(request.POST, instance=layer, prefix="resource")
         if not layer_form.is_valid():
-            logger.error(f"Layer Metadata form is not valid: {layer_form.errors}")
+            msg = f"Layer Metadata form is not valid: {layer_form.errors}"
+            logger.error(msg)
             out = {
                 'success': False,
                 "errors": [f"{x}: {y[0].messages[0]}" for x, y in layer_form.errors.as_data().items()]
@@ -997,8 +997,10 @@ def layer_metadata(
             instance=layer,
             prefix="layer_attribute_set",
             queryset=Attribute.objects.order_by('display_order'))
+
         if not attribute_form.is_valid():
-            logger.error(f"Layer Attributes form is not valid: {attribute_form.errors}")
+            msg = f"Layer Attributes form is not valid: {attribute_form.errors}"
+            logger.error(msg)
             out = {
                 'success': False,
                 'errors': [
@@ -1026,12 +1028,23 @@ def layer_metadata(
             tkeywords_form = ThesaurusAvailableForm(request.POST, prefix='tkeywords')
             #  set initial values for thesaurus form
         if not tkeywords_form.is_valid():
-            logger.error(f"Layer Thesauri Keywords form is not valid: {tkeywords_form.errors}")
+            msg = f"Layer Thesauri Keywords form is not valid: {tkeywords_form.errors}"
+            logger.error(msg)
             out = {
                 'success': False,
                 'errors': [
                     re.sub(re.compile('<.*?>'), '', str(err)) for err in tkeywords_form.errors]
             }
+            return JsonResponse(msg, status=400)
+
+        timeseries_form = DatasetTimeSerieForm(request.POST, instance=layer, prefix='timeseries')
+        if not timeseries_form.is_valid():
+            out = {
+                'success': False,
+                'errors': [f"{x}: {y[0].messages[0]}" for x, y in timeseries_form.errors.as_data().items()]
+            }
+            msg = f"{out.get('errors')}"
+            logger.error(msg)
             return HttpResponse(
                 json.dumps(out),
                 content_type='application/json',
@@ -1052,6 +1065,37 @@ def layer_metadata(
         region_form = RegionsForm(
             prefix="region_choice_field",
             initial=region_list)
+
+        gs_layer = gs_catalog.get_layer(name=layer.name)
+        initial = {}
+        if gs_layer is not None and layer.has_time:
+            gs_time_info = gs_layer.resource.metadata.get("time")
+            if gs_time_info.enabled:
+                _attr = layer.attributes.filter(attribute=gs_time_info.attribute).first()
+                initial["attribute"] = _attr.pk if _attr else None
+                if gs_time_info.end_attribute is not None:
+                    end_attr = layer.attributes.filter(attribute=gs_time_info.end_attribute).first()
+                    initial["end_attribute"] = end_attr.pk if end_attr else None
+                initial["presentation"] = gs_time_info.presentation
+                lookup_value = sorted(list(gs_time_info._lookup), key=lambda x: x[1], reverse=True)
+                if gs_time_info.resolution is not None:
+                    res = gs_time_info.resolution // 1000
+                    for el in lookup_value:
+                        if res % el[1] == 0:
+                            initial["precision_value"] = res // el[1]
+                            initial["precision_step"] = el[0]
+                            break
+                else:
+                    initial["precision_value"] = gs_time_info.resolution
+                    initial["precision_step"] = "seconds"
+
+        timeseries_form = DatasetTimeSerieForm(
+            instance=layer,
+            prefix="timeseries",
+            initial=initial
+        )
+        timeseries_form.fields.get("attribute").queryset = layer.attributes.filter(attribute_type__in=['xsd:dateTime'])
+        timeseries_form.fields.get("end_attribute").queryset = layer.attributes.filter(attribute_type__in=['xsd:dateTime'])
 
         # Create THESAURUS widgets
         lang = settings.THESAURUS_DEFAULT_LANG if hasattr(settings, 'THESAURUS_DEFAULT_LANG') else 'en'
@@ -1204,15 +1248,30 @@ def layer_metadata(
             logger.error(tb)
 
         vals = {}
-        _group_status_changed = False
-        _approval_status_changed = False
         if 'group' in layer_form.changed_data:
-            _group_status_changed = True
             vals['group'] = layer_form.cleaned_data.get('group')
         if any([x in layer_form.changed_data for x in ['is_approved', 'is_published']]):
-            _approval_status_changed = True
             vals['is_approved'] = layer_form.cleaned_data.get('is_approved', layer.is_approved)
             vals['is_published'] = layer_form.cleaned_data.get('is_published', layer.is_published)
+
+        layer.has_time = layer_form.cleaned_data.get('has_time', layer.has_time)
+        if layer.is_vector() and timeseries_form.cleaned_data and ('has_time' in layer_form.changed_data or timeseries_form.changed_data):
+            ts = timeseries_form.cleaned_data
+            end_attr = layer.attributes.get(pk=ts.get("end_attribute")).attribute if ts.get("end_attribute") else None
+            start_attr = layer.attributes.get(pk=ts.get("attribute")).attribute if ts.get("attribute") else None
+            resource_manager.exec(
+                'set_time_info',
+                None,
+                instance=layer,
+                time_info={
+                    "attribute": start_attr,
+                    "end_attribute": end_attr,
+                    "presentation": ts.get('presentation', None),
+                    "precision_value": ts.get('precision_value', None),
+                    "precision_step": ts.get('precision_step', None),
+                    "enabled": layer_form.cleaned_data.get('has_time', False)
+                }
+            )
         resource_manager.update(
             layer.uuid,
             instance=layer,
@@ -1221,7 +1280,6 @@ def layer_metadata(
             extra_metadata=json.loads(layer_form.cleaned_data['extra_metadata'])
         )
 
-        toast_title = _("Update Metadata")
         message = _("Metadata {} has been updated".format(layer.title))
         messages.success(request, message, extra_tags=toast_title)
 
@@ -1262,6 +1320,7 @@ def layer_metadata(
         "author_form": author_form,
         "attribute_form": attribute_form,
         "category_form": category_form,
+        "timeseries_form": timeseries_form,
         "region_form": region_form,
         "tkeywords_form": tkeywords_form,
         "viewer": viewer,

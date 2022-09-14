@@ -4,6 +4,7 @@
 {% load base_tags %}
 {% load guardian_tags %}
 {% load floppyforms %}
+{% load client_lib_tags %}
 
 {% block title %}{{ layer.alternate }} — {{ block.super }}{% endblock title %}
 
@@ -46,47 +47,51 @@
     {% if layer.metadata_uploaded_preserve %}
       <div class="card-footer bg-warning">
         <div class="text-center">{% blocktrans %}Note: this layer's orginal metadata was populated and preserved by importing a metadata XML file.
-          This metadata cannot be edited.{% endblocktrans %}</div>
-        {% elif layer.metadata_uploaded %}
+          This metadata cannot be edited.{% endblocktrans %}
+        </div>
+      </div>
+    {% elif layer.metadata_uploaded %}
+      <div class="card-footer bg-warning">
         <div class="text-center">{% blocktrans %}Note: this layer's orginal metadata was populated by importing a metadata XML file.
           SDI's metadata import supports a subset of ISO, FGDC, and Dublin Core metadata elements.
-          Some of your original metadata may have been lost.{% endblocktrans %}</div>
+          Some of your original metadata may have been lost.{% endblocktrans %}
+        </div>
       </div>
     {% endif %}
   </div>
 
     {% if layer_form.errors or attribute_form.errors or category_form.errors or author_form.errors or poc.errors or tkeywords_form.errors %}
-    <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields: {% endblocktrans %}
-    </p>
-    <ul class="bg-danger">
-      {% if author_form.errors %}
-      <li>{% trans "Metadata Author" %}</li>
-      {{ author_form.errors }}
-      {% endif %}
-      {% if poc_form.errors %}
-      <li>{% trans "Point of Contact" %}</li>
-      {{ poc_form.errors }}
-      {% endif %}
-      {% for field in layer_form %}
-      {% if field.errors %}
-      <li>{{ field.label }}</li>
-      {% endif %}
-      {% endfor %}
-      {% if not attribute_form.is_valid %}
-      <li>{% trans "Attributes" %}</li>
-      {% for field in attribute_form %}
-      {% if field.errors %}
-      <li>{{ field.errors }}</li>
-      {% endif %}
-      {% endfor %}
-      {% endif %}
-      {% if category_form.errors %}
-      <li>{{ category_form.errors.as_ul }}</li>
-      {% endif %}
-      {% if tkeywords_form.errors %}
-      <li>{{ tkeywords_form.errors.as_ul }}</li>
-      {% endif %}
-    </ul>
+      <p class="bg-danger">{% blocktrans %}Error updating metadata. Please check the following fields: {% endblocktrans %}
+      </p>
+      <ul class="bg-danger">
+        {% if author_form.errors %}
+        <li>{% trans "Metadata Author" %}</li>
+        {{ author_form.errors }}
+        {% endif %}
+        {% if poc_form.errors %}
+        <li>{% trans "Point of Contact" %}</li>
+        {{ poc_form.errors }}
+        {% endif %}
+        {% for field in layer_form %}
+        {% if field.errors %}
+        <li>{{ field.label }}</li>
+        {% endif %}
+        {% endfor %}
+        {% if not attribute_form.is_valid %}
+        <li>{% trans "Attributes" %}</li>
+        {% for field in attribute_form %}
+        {% if field.errors %}
+        <li>{{ field.errors }}</li>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% if category_form.errors %}
+        <li>{{ category_form.errors.as_ul }}</li>
+        {% endif %}
+        {% if tkeywords_form.errors %}
+        <li>{{ tkeywords_form.errors.as_ul }}</li>
+        {% endif %}
+      </ul>
     {% endif %}
 
     {% csrf_token %}
