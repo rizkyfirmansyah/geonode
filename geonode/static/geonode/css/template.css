@@ -2551,10 +2551,6 @@ color: #491217;
     height: 2em
 }
 
-.fa-star path {
-    fill: blue !important;
-}
-
 @-webkit-keyframes fadeIn {
     from {
         opacity: 0;
@@ -3442,6 +3438,10 @@ form#text-search-autocomplete .ac-results {
 
 .font-lg-2 {
   font-size: var(--font-larger-2);
+}
+
+.font-lg-3 {
+  font-size: var(--font-larger-3);
 }
 
 .announcement {
