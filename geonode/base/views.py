@@ -158,15 +158,19 @@ def batch_modify(request, model):
                 form.cleaned_data.pop("date")
 
             new_categories = [int(c.strip()) for c in request.POST.getlist('category')]
+            new_poc = form.cleaned_data.pop("poc")
+            new_metadata_author = form.cleaned_data.pop("metadata_author")
 
             to_update = {}
             for _key, _value in form.cleaned_data.items():
-                if _value and _key != 'category':
+                if _value and _key != 'category' and _key != 'poc' and _key != 'metadata_author':
                     to_update[_key] = _value
             resources = Resource.objects.filter(id__in=ids.split(','))
 
             # update m2m category fields here
             for resource in resources:
+                resource.poc = new_poc
+                resource.metadata_author = new_metadata_author
                 resource.category.clear()
                 resource.category.add(*new_categories)
             resources.update(**to_update)
@@ -207,7 +211,7 @@ def batch_modify(request, model):
                 'model': model,
             }
         )
-
+    print(f"REGUE -- {request.user}")
     form = BatchEditForm()
     return render(
         request,

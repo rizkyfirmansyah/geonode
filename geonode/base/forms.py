@@ -582,6 +582,14 @@ class BatchEditForm(forms.Form):
         required=True,
         help_text=ResourceBase.owner_help_text,
         queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
+    poc = ProfileChoiceField(
+        label=_("Point of Contact"),
+        required=True,
+        queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
+    metadata_author = ProfileChoiceField(
+        label=_("Metadata Author"),
+        required=True,
+        queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
     regions = forms.ModelChoiceField(
         label=_('Regions'),
         help_text=ResourceBase.regions_help_text,
@@ -605,6 +613,8 @@ class BatchEditForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['category'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
         self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        # self.fields['poc'].initial = user
+        # self.fields['metadata_author'].initial = user
 
 
 class BatchPermissionsForm(PermissionsForm):
