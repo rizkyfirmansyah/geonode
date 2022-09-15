@@ -541,6 +541,10 @@ class BatchEditForm(forms.Form):
         required=False,
         help_text=ResourceBase.data_description_help_text,
         widget=TinyMCE())
+    data_quality_statement = forms.CharField(
+        required=False,
+        help_text=ResourceBase.data_quality_statement_help_text,
+        widget=TinyMCE())
     data_citation = forms.CharField(
         required=False,
         help_text=ResourceBase.data_citation_help_text,
@@ -549,10 +553,19 @@ class BatchEditForm(forms.Form):
         required=False,
         help_text=ResourceBase.constraints_other_help_text,
         widget=TinyMCE())
+    author = forms.CharField(
+        required=False,
+        help_text=ResourceBase.author_help_text,
+        widget=TinyMCE())
     license = forms.ModelChoiceField(
         label=_('License'),
         help_text=ResourceBase.license_help_text,
         queryset=License.objects.all(),
+        required=False)
+    restriction_code_type = forms.ModelChoiceField(
+        label=_("Restrictions"),
+        help_text=ResourceBase.restriction_code_type_help_text,
+        queryset=RestrictionCodeType.objects.all(),
         required=False)
     data_type = forms.ModelChoiceField(
         label=_('Data Type'),
@@ -571,11 +584,6 @@ class BatchEditForm(forms.Form):
     group = GroupsChoiceField(
         label=_('Group'),
         choices=get_groups_id_choices,
-        required=False)
-    restriction_code_type = forms.ModelChoiceField(
-        label=_("Restrictions"),
-        help_text=ResourceBase.restriction_code_type_help_text,
-        queryset=RestrictionCodeType.objects.all(),
         required=False)
     owner = ProfileChoiceField(
         label=_("Owner"),
@@ -602,6 +610,14 @@ class BatchEditForm(forms.Form):
         localize=True,
         input_formats=['%Y-%m-%d %H:%M %p'],
         widget=ResourceBaseDateTimePicker(options={"minDate": "1990-01-1", "format": "YYYY-MM-DD HH:mm a"}))
+    distributor = forms.CharField(
+        label=_("Distributor"),
+        required=False,
+        help_text=ResourceBase.distributor_help_text)
+    project_information = forms.CharField(
+        label=_("Project Information"),
+        required=False,
+        help_text=ResourceBase.project_information_help_text)
     language = forms.ChoiceField(
         label=_('Language'),
         required=False,
@@ -613,8 +629,6 @@ class BatchEditForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['category'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
         self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
-        # self.fields['poc'].initial = user
-        # self.fields['metadata_author'].initial = user
 
 
 class BatchPermissionsForm(PermissionsForm):

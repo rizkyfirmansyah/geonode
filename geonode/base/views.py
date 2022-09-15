@@ -211,7 +211,7 @@ def batch_modify(request, model):
                 'model': model,
             }
         )
-    print(f"REGUE -- {request.user}")
+
     form = BatchEditForm()
     return render(
         request,
