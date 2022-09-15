@@ -52,7 +52,7 @@
           type: 'GET',
           url: "{% url 'versions-get-version' resource_id %}",
           success: function(data){
-              var version = data.version;
+              var version = data.objects;
               if (version) {
                   var input_version = $("#div_id_version input[name=version]");
                   var help_tag = `<small id="hint_id_version" class="form-text text-muted">Your latest version of this change is `+ version +` </small>`;

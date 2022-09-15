@@ -3,7 +3,7 @@
 <div class="side-inner bg-white" id="sidebar">
   <div class="row justify-content-between mb-2 pt-2">
     <div class="col-4 ml-2">{% trans "Filters" %}</div>
-    <button type="button" id="clear-search" class="col-4 text-center delete_search_query_user">{% trans "Clear" %}</button>
+    <button type="button" id="clear-search" class="col-4 text-center delete_search_query">{% trans "Clear" %}</button>
     {% if request.user_agent.is_mobile %}
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close-sidebar">
         <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
@@ -16,7 +16,7 @@
       Categories</a>
     <ul class="collapse list-unstyled" id="group-categories">
       <li ng-repeat="category in groupCategories">
-        <a data-value="{{ category.slug }}" data-filter="categories__slug__in"
+        <a data-value="{{ category.slug }}" data-filter="c"
           ng-click="multiple_choice_listener($event)" class="{{category.active}}">
           <div ng-if="category.fa_class" class="fa-stack fa-1g">
             <i class="fa fa-{{category.fa_class}} fa-stack-1x"></i>

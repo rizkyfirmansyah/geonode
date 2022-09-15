@@ -3,11 +3,11 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-<div class="card w-100 mb-4 rounded border-dark" infiniteuser-scroll-directive="loadMoreUserResource()">
+<div class="card w-100 mb-4 rounded border-dark" infinite-scroll-directive="loadMoreResource()">
   <div class="card-header">
     <div class="row">
       <h3 class="col">{%  trans "Edit Members for"  %} <a href="{% url "group_detail" group.slug %}">{{ group.title }}</a></h3>
-      <div class="align-self-center pr-4"><a role="button" data-toggle="modal" data-target="#add_group_member" class=""><i class="fa-solid fa-bars" title="Add Member"></i></a></div>
+      <div class="align-self-center pr-4"><a role="button" data-toggle="modal" data-target="#add_group_member" class="text-decoration-none"><i class="icon-add_circle font-lg-2" title="Add Member"></i></a></div>
     </div>
   </div>
   <div class="card-body bg-light">

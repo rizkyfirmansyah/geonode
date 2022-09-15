@@ -65,7 +65,7 @@ class GroupCategory(models.Model):
 
     def get_profile_url(self):
         return reverse('profile_detail', args=(self.created_by,))
-    
+
     @property
     def absolute_url(self):
         return reverse('group_category_detail', args=(self.slug,))

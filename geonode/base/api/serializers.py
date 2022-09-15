@@ -145,7 +145,7 @@ class GroupSerializer(DynamicModelSerializer):
 
     class Meta:
         model = Group
-        name = 'group'
+        name = 'objects'
         fields = ('pk', 'name', 'count', 'title')
 
     def get_count(self, obj):
@@ -173,7 +173,7 @@ class GroupProfileSerializer(BaseDynamicModelSerializer):
 
     class Meta:
         model = GroupProfile
-        name = 'resources'
+        name = 'objects'
         view_name = 'group-profiles-list'
         fields = ('pk', 'title', 'slug', 'logo', 'description', 'email', 'keywords', 'access', 'categories', 'logo_url',
                    'count', 'group_id', 'manager_count', 'member_count', 'detail_url', 'owner', 'profile_url')
@@ -209,6 +209,78 @@ class GroupProfileSerializer(BaseDynamicModelSerializer):
 
     keywords = serializers.SlugRelatedField(many=True, slug_field='slug', read_only=True)
     categories = serializers.SlugRelatedField(many=True, slug_field='slug', queryset=GroupCategory.objects.all())
+
+
+class SimpleGroupProfileSerializer(serializers.ModelSerializer):
+    member_count = serializers.SerializerMethodField()
+    manager_count = serializers.SerializerMethodField()
+    detail_url = serializers.SerializerMethodField()
+    profile_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GroupProfile
+        fields = ('pk', 'title', 'slug', 'logo', 'description', 'email', 'access', 'logo_url', 'member_count', 'manager_count', 'detail_url', 'created_by', 'created_at', 'profile_url')
+
+    def get_member_count(self, obj):
+        return obj.member_queryset().count()
+
+    def get_manager_count(self, obj):
+        return obj.get_managers().count()
+
+    def get_detail_url(self, obj):
+        return obj.get_absolute_url()
+
+    def get_profile_url(self, obj):
+        return obj.get_profile_url()
+
+    def get_created_by(self, obj):
+        user = obj.created_by
+        if user:
+            return user.full_name_or_nick
+        else:
+            return None
+
+
+class GroupCategoriesSerializer(DynamicModelSerializer):
+    member_count = serializers.SerializerMethodField()
+    detail_url = serializers.SerializerMethodField()
+    profile_url = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
+
+    class Meta:
+        model = GroupCategory
+        name = 'objects'
+        view_name = 'group-categories-list'
+        fields = ('pk', 'slug', 'name', 'description', 'created_by', 'created_at', 'member_count', 'detail_url', 'profile_url', 'groups')
+
+    def get_profile_url(self, obj):
+        return obj.get_profile_url()
+
+    def get_detail_url(self, obj):
+        return obj.get_absolute_url()
+
+    def get_member_count(self, obj):
+        request = self.context.get('request')
+        user = request.user
+        filtered = obj.groups.all()
+        if not user.is_authenticated or user.is_anonymous:
+            filtered = filtered.exclude(access='private')
+        elif not user.is_superuser:
+            categories_ids = user.group_list_all().values('categories')
+            filtered = filtered.filter(
+                Q(id__in=categories_ids) |
+                ~Q(access='private')
+            )
+        return filtered.count()
+
+    def get_created_by(self, obj):
+        user = obj.created_by
+        if user:
+            return user.full_name_or_nick
+        else:
+            return None
+
+    groups = SimpleGroupProfileSerializer(many=True)
 
 
 class SimpleHierarchicalKeywordSerializer(DynamicModelSerializer):
@@ -402,7 +474,7 @@ class UserSerializer(BaseDynamicModelSerializer):
     class Meta:
         ref_name = 'UserProfile'
         model = get_user_model()
-        name = 'user'
+        name = 'objects'
         view_name = 'users-list'
         fields = ('pk', 'username', 'first_name', 'last_name', 'full_name_or_nick', 'avatar', 'perms', 'is_superuser', 'is_staff')
 
@@ -597,7 +669,7 @@ class ResourceBaseSerializer(
 
     class Meta:
         model = ResourceBase
-        name = 'resource'
+        name = 'objects'
         view_name = 'base-resources-list'
         fields = (
             'pk', 'uuid', 'resource_type', 'polymorphic_ctype_id', 'perms',
@@ -694,7 +766,7 @@ class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, 
 
     class Meta:
         model = ResourceBase
-        name = 'resource'
+        name = 'objects'
         view_name = 'base-resources-list'
         fields = ('pk', 'resource_type', 'perms', 'title')
         excludes = ['favorite', 'links']
@@ -738,7 +810,7 @@ class BaseResourceCountSerializer(BaseDynamicModelSerializer):
 class HierarchicalKeywordSerializer(BaseResourceCountSerializer):
 
     class Meta:
-        name = 'keywords'
+        name = 'objects'
         model = HierarchicalKeyword
         count_type = 'keywords'
         view_name = 'keywords-list'
@@ -749,7 +821,7 @@ class ThesaurusKeywordSerializer(BaseResourceCountSerializer):
 
     class Meta:
         model = ThesaurusKeyword
-        name = 'tkeywords'
+        name = 'objects'
         view_name = 'tkeywords-list'
         count_type = 'tkeywords'
         fields = '__all__'
@@ -758,7 +830,7 @@ class ThesaurusKeywordSerializer(BaseResourceCountSerializer):
 class RegionSerializer(BaseResourceCountSerializer):
 
     class Meta:
-        name = 'regions'
+        name = 'objects'
         model = Region
         count_type = 'regions'
         view_name = 'regions-list'
@@ -768,7 +840,7 @@ class RegionSerializer(BaseResourceCountSerializer):
 class TopicCategorySerializer(BaseResourceCountSerializer):
 
     class Meta:
-        name = 'categories'
+        name = 'objects'
         model = TopicCategory
         count_type = 'category'
         view_name = 'categories-list'
@@ -778,7 +850,7 @@ class TopicCategorySerializer(BaseResourceCountSerializer):
 class DataTypeSerializer(BaseResourceCountSerializer):
 
     class Meta:
-        name = 'data_type'
+        name = 'objects'
         model = DataType
         count_type = 'data_type'
         view_name = 'data_type-list'
@@ -788,7 +860,7 @@ class DataTypeSerializer(BaseResourceCountSerializer):
 class OwnerSerializer(BaseResourceCountSerializer):
 
     class Meta:
-        name = 'owners'
+        name = 'objects'
         count_type = 'owner'
         view_name = 'owners-list'
         model = get_user_model()
@@ -797,11 +869,50 @@ class OwnerSerializer(BaseResourceCountSerializer):
     avatar = AvatarUrlField(240, read_only=True)
 
 
+class ProfileSerializer(BaseResourceCountSerializer):
+    datasets_count = serializers.SerializerMethodField()
+    layers_count = serializers.SerializerMethodField()
+    maps_count = serializers.SerializerMethodField()
+    avatar = AvatarUrlField(100, read_only=True)
+    profile_detail_url = serializers.SerializerMethodField()
+
+    class Meta:
+        name = 'objects'
+        count_type = 'owner'
+        view_name = 'profiles-list'
+        model = get_user_model()
+        fields = ('pk', 'username', 'first_name', 'last_name', 'full_name_or_nick', 'email', 'language', 'avatar', 'organization', 'position', 'city', 'area', 'date_joined', 'datasets_count', 'layers_count', 'maps_count', 'profile_detail_url')
+
+    def get_datasets_count(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            resources = ResourceBase.objects.filter(owner=obj, resource_type='dataset').count()
+
+        return resources
+
+    def get_layers_count(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            resources = ResourceBase.objects.filter(owner=obj, resource_type='layer').count()
+
+        return resources
+
+    def get_maps_count(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            resources = ResourceBase.objects.filter(owner=obj, resource_type='map').count()
+
+        return resources
+
+    def get_profile_detail_url(self, obj):
+        return obj.get_absolute_url()
+
+
 class ResourceVersionSerializer(BaseDynamicModelSerializer):
     owner = serializers.SerializerMethodField()
     class Meta:
         model = ResourceVersion
-        name = 'versions'
+        name = 'objects'
         count_type = 'version'
         view_name = 'versions-list'
         fields = ('version', 'summary', 'tags', 'contributors', 'published', 'resource', 'owner', 'changes')
@@ -817,7 +928,7 @@ class ResourceVersionChangesSerializer(DynamicModelSerializer):
     owner = serializers.SerializerMethodField()
     class Meta:
         model = ResourceVersion
-        name = 'versions'
+        name = 'objects'
         count_type = 'version'
         view_name = 'versions-list'
         fields = ('version', 'published', 'owner', 'changes')

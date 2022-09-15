@@ -20,6 +20,7 @@
 {% block body_class %}{% trans "people explore" %}{% endblock %}
 
 {% block body %}
+<i class="fa-solid fa-angle-up" aria-hidden="true" id="jump_to_top" title="Jump to Top"></i>
 
 <div class="row">
   <div class="card w-100 border-dark rounded mb-4">
@@ -200,11 +201,5 @@
   {% if GEONODE_SECURITY_ENABLED %}
     {% include "toast/permissions_form.html" %}
   {% endif %}
-
-  <script type="text/javascript">
-    SEARCH_URL = '{% url 'base-resources-list' %}?225d70a={{profile.username}}';
-  </script>
-  
-  {% include 'search/search_scripts.html' %}
 
 {% endblock %}

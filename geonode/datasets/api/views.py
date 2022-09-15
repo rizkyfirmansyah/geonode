@@ -128,11 +128,11 @@ class DatasetFilesViewSet(DynamicModelViewSet):
                 out.append({"count": item.get('count'),
                             "extension": item.get('extension')})
 
-            return Response(data={'files': out}, status=status.HTTP_200_OK)
+            return Response(data={'objects': out}, status=status.HTTP_200_OK)
 
         except Exception as e:
             logger.error(e)
-            return Response(data={'files': e.args[0], 'success': False}, status=500, exception=True)
+            return Response(data={'objects': e.args[0], 'success': False}, status=500, exception=True)
 
     @extend_schema(
         methods=['delete'],
@@ -224,7 +224,7 @@ class DatasetFilesViewSet(DynamicModelViewSet):
         resources = resources.exclude(id__in=exclude)
         serializer = DatasetFileSerializer(instance=resources, embed=True, many=True)
 
-        return Response({"files": serializer.data, "length": resources.count()})
+        return Response({"objects": serializer.data, "length": resources.count()})
 
     @extend_schema(
         methods=['patch'],
@@ -424,7 +424,7 @@ class DatasetFilesViewSet(DynamicModelViewSet):
         serializer = DatasetFileSerializer(instance=resources, embed=True, many=True)
         files_length = resources.count()
 
-        return Response({"files": serializer.data, "length": files_length})
+        return Response({"objects": serializer.data, "length": files_length})
 
     @extend_schema(
         methods=['patch'],
@@ -567,9 +567,9 @@ class DatasetIngestView(viewsets.ModelViewSet):
         
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Adding new dataset file", "files": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Adding new dataset file", "objects": serializer.data}, status=status.HTTP_201_CREATED)
         
-        return Response({"message": serializer.errors, "files": None}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": serializer.errors, "objects": None}, status=status.HTTP_400_BAD_REQUEST)
 
 
     @extend_schema(

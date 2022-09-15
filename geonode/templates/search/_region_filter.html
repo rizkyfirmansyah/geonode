@@ -58,7 +58,7 @@
                             {% endwith %}`);
                             $('.toast').toast('show');
                           }
-                          var _data = data.regions;
+                          var _data = data.objects;
                           $("#regions").empty();
                           $.each(_data, function(i, v) {
                               $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
@@ -75,12 +75,14 @@
                         type: 'GET',
                         dataType: 'json',
                         success: function(data) {
-                            var _data = data.regions;
+                            var _data = data.objects;
                             $("#regions").empty();
                             $.each(_data, function(i, v) {
-                                $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
-                                `+v.name+`
-                                </option>`)
+                              if (v.count > 0) {
+                                  $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                                  `+v.name+`
+                                  </option>`)
+                              }
                             });
                             refreshSelectPicker();
                         }
@@ -109,7 +111,7 @@
                       page: page++
                     },
                     success: function(data) {
-                        var _data = data.regions;
+                        var _data = data.objects;
                         $.each(_data, function(i, v) {
                             $('#regions').append(`<option data-content="<span class='badge badge-dark w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
                             `+v.name+`

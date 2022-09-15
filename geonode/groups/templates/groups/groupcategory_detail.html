@@ -20,11 +20,7 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row">
-        <div class="col-xs-12 col-md-12 group-details">
-          <p class="group-desc">{{ object.description|default_if_none:'' }}</p>
-        </div>
-      </div>
+        <p>{{ object.description|default_if_none:'' }}</p>
     </div>
   </div>
   <div class="card w-100">

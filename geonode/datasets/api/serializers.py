@@ -47,7 +47,7 @@ class DatasetFileSerializer(DynamicModelSerializer):
 
     class Meta:
         model = File
-        name = 'files'
+        name = 'objects'
         view_name = 'datasets-file'
         fields = (
             'pk', 'id', 'file_name', 'file_description', 'file_data_quality', 'file',

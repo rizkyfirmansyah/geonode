@@ -29,7 +29,7 @@ class BaseHookSet:
 
     # Layers
     def layer_list_template(self, context=None):
-        return 'layers/layer_list_default.html'
+        return 'catalogue_list.html'
 
     def layer_detail_template(self, context=None):
         return NotImplemented
@@ -62,14 +62,14 @@ class BaseHookSet:
         return resource_list_url('layers')
 
     def layer_upload_url(self):
-        return '/catalogue/#/upload/layer'
+        return 'upload/layer_upload.html'
 
     def layer_detail_url(self, resource):
         return resource_detail_url('layer', resource.id)
 
     # Maps
     def map_list_template(self, context=None):
-        return 'maps/map_list_default.html'
+        return 'catalogue_list.html'
 
     def map_detail_template(self, context=None):
         return NotImplemented
@@ -100,7 +100,7 @@ class BaseHookSet:
 
     # GeoApps
     def geoapp_list_template(self, context=None):
-        return 'apps/app_list_default.html'
+        return 'catalogue_list.html'
 
     def geoapp_detail_template(self, context=None):
         return NotImplemented

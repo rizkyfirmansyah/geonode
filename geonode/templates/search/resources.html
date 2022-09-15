@@ -2,28 +2,25 @@
 {% load i18n %}
 
 <script type="text/javascript">
-  {% get_context_resourcetype as pathc %}
+  {% get_current_path as path %}
 
-  {% if pathc == "people" %}
-    {% if HAYSTACK_SEARCH %}
-      SEARCH_URL = '{% url 'api_get_search' api_name='api' resource_name='profiles'%}'
-    {% else %}
-      SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='profiles' %}';
-    {% endif %}
+  {% if path == "/people/" %}
+      SEARCH_URL = '{% url 'profiles-list' %}?q={{profile.username}}';
 
-  {% elif pathc == "groups" %}
-      SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='group_profile' %}';
-      {% comment %} SEARCH_URL = '{% url 'group-profiles-list' %}'; {% endcomment %}
+  {% elif "/people/profile" in path %}
+      SEARCH_URL = '{% url 'base-resources-list' %}?225d70a={{profile.username}}';
 
-  {% elif pathc == "groups/categories" %}
-      SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='groupcategory' %}';
+  {% elif "/groups/group/" in path %}
+      SEARCH_URL = '{% url 'profiles-list' %}?members={{object.slug}}';
+  
+  {% elif path == "/groups/" or "/groups/?c" in path %}
+      SEARCH_URL = '{% url 'group-profiles-list' %}';
+
+  {% elif "groups/categories/" in path %}
+      SEARCH_URL = '{% url 'group-categories-list' %}?c={{object.slug}}';
       
   {% else %}
-    {% if HAYSTACK_SEARCH %}
-      SEARCH_URL = '{% url 'base-resources-list' %}'
-    {% else %}
       SEARCH_URL = '{% url 'base-resources-list' %}';
-    {% endif %}
   {% endif %}
 
 </script>

@@ -62,7 +62,7 @@ from geonode.base.models import Configuration, ExtraMetadata, HierarchicalKeywor
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, ResourceBaseFilter
 from geonode.base.utils import validate_extra_metadata
 from geonode.favorite.models import Favorite
-from geonode.groups.models import GroupProfile, GroupMember
+from geonode.groups.models import GroupCategory, GroupProfile, GroupMember
 from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from geonode.groups.conf import settings as groups_settings
@@ -87,6 +87,8 @@ from .permissions import (
 )
 from .serializers import (
     FavoriteSerializer,
+    GroupCategoriesSerializer,
+    ProfileSerializer,
     ResourceVersionChangesSerializer,
     ResourceVersionCreateSerializer,
     ResourceVersionSerializer,
@@ -160,6 +162,27 @@ class UserViewSet(DynamicModelViewSet):
         return Response(GroupProfileSerializer(embed=True, many=True).to_representation(groups))
 
 
+class GroupCategoryViewSet(DynamicModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
+    permission_classes = [IsAuthenticated, ]
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = GroupCategoriesSerializer
+    pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = GroupCategory.objects.all().order_by('-last_modified')
+        slug = self.request.query_params.get('c', None)
+        order_by = self.request.query_params.get('order_by', None)
+        if slug is not None:
+            queryset = queryset.filter(slug__icontains=slug)
+        if order_by is not None:
+            queryset = queryset.order_by(order_by)
+        return queryset
+
+
 class GroupViewSet(DynamicModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -172,10 +195,16 @@ class GroupViewSet(DynamicModelViewSet):
     pagination_class = GeoNodeApiPagination
 
     def get_queryset(self):
-        queryset = GroupProfile.objects.all()
+        queryset = GroupProfile.objects.all().order_by('-last_modified')
         slug = self.request.query_params.get('q', None)
+        slug_categories = self.request.GET.getlist('c')
+        order_by = self.request.query_params.get('order_by', None)
         if slug is not None:
             queryset = queryset.filter(slug__icontains=slug)
+        if slug_categories:
+            queryset = queryset.filter(categories__slug__in=slug_categories)
+        if order_by is not None:
+            queryset = queryset.order_by(order_by)
         return queryset
 
     @extend_schema(methods=['get'], responses={200: UserSerializer(many=True)},
@@ -340,6 +369,32 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
             queryset = queryset.filter(id__in=Subquery(
                 get_resources_with_perms(self.request.user, filter_options).values('owner'))
             )
+
+        return queryset.order_by("username")
+
+
+class ProfileViewSet(DynamicModelViewSet):
+    """
+    API endpoint that lists all possible owners.
+    """
+    authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
+    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
+        permission_classes = [AllowAny, ]
+    else:
+        permission_classes = [IsAuthenticated, ]
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = ProfileSerializer
+    pagination_class = GeoNodeApiPagination
+
+    def get_queryset(self):
+        queryset = get_user_model().objects.exclude(pk=-1)
+        username = self.request.query_params.get('q', None)
+        members = self.request.query_params.get('members', None)
+        if username:
+            queryset = queryset.filter(username__icontains=username)
+
+        if members:
+            queryset = queryset.filter(groupmember__group__slug=members)
 
         return queryset.order_by("username")
 
@@ -1036,7 +1091,6 @@ class ResourceVersionViewSet(DynamicModelViewSet):
     else:
         permission_classes = [IsAuthenticated, ]
 
-    queryset = ResourceVersion.objects.all()
     serializer_class = ResourceVersionSerializer
     pagination_class = GeoNodeApiPagination
 
@@ -1127,7 +1181,7 @@ class ResourceVersionViewSet(DynamicModelViewSet):
         version = ResourceVersion.objects.filter(resource_id=resource_id)
         if version:
             version = version.only('version').order_by('-id')[0]
-            return Response(data={"version": str(version)}, status=200)
+            return Response(data={"objects": str(version)}, status=200)
         else:
             return Response(data={"message": "no previous version was founded"}, status=200)
 
@@ -1158,6 +1212,6 @@ class ResourceVersionViewSet(DynamicModelViewSet):
             version = ResourceVersion.objects.filter(resource=resource_layer, version=get_version)
 
         if version:
-            return Response(data={"version": ResourceVersionChangesSerializer(many=True).to_representation(version)[0]}, status=200)
+            return Response(data={"objects": ResourceVersionChangesSerializer(many=True).to_representation(version)[0]}, status=200)
         else:
             return Response(data={"message": "no previous version was founded"}, status=200)

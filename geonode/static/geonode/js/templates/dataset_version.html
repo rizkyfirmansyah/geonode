@@ -14,7 +14,7 @@
         <tr ng-repeat="version in versions">
           <td>{{ version.version }}</td>
           <td>{{ version.summary }}</td>
-          <td class="text-center"><span class="badge {{ version.tags == 'replace' ? 'badge-info' : 'badge-secondary' }} d-inline">{{ version.tags }}</span></td>
+          <td class="text-center"><span class="badge {{ version.tags == 'replace' ? 'badge-info' : version.tags == 'append' ? 'badge-primary' : 'badge-secondary' }} d-inline">{{ version.tags }}</span></td>
           <td>{{ version.owner }}</td>
           <td>{{ version.published | date:'MMM d, y' }}</td>
         </tr>

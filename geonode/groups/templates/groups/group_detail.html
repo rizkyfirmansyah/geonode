@@ -40,7 +40,9 @@
           {% if object.categories.exists %}
           <p>
             {% for category in object.categories.all %}
-              <a href="{{ category.get_absolute_url }}"><span class="label label-info">{{ category.name }}</span></a>
+              <a href="{{ category.get_absolute_url }}"><svg width="24" height="24" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M32 40H20V28H12V40H0V48H12V60H20V48H32V40ZM72 44C78.64 44 83.96 38.64 83.96 32C83.96 25.36 78.64 20 72 20C70.72 20 69.48 20.2 68.36 20.56C70.64 23.8 71.96 27.72 71.96 32C71.96 36.28 70.6 40.16 68.36 43.44C69.48 43.8 70.72 44 72 44ZM52 44C58.64 44 63.96 38.64 63.96 32C63.96 25.36 58.64 20 52 20C45.36 20 40 25.36 40 32C40 38.64 45.36 44 52 44ZM78.48 52.64C81.8 55.56 84 59.28 84 64V72H96V64C96 57.84 86.52 54.04 78.48 52.64ZM52 52C44 52 28 56 28 64V72H76V64C76 56 60 52 52 52Z" fill="black"/>
+                </svg><span class="pl-2">{{ category.name }}</span></a>
             {% endfor %}
           </p>
           {% endif %}
@@ -121,7 +123,7 @@
   </div>
 </div>
 <div class="row w-100">
-  <div class="card w-100 border-info rounded" infiniteuser-scroll-directive="loadMoreUserResource()">
+  <div class="card w-100 border-info rounded" infinite-scroll-directive="loadMoreResource()">
     <div class="card-header"><h4 class="text-center">Members</h4></div>
     <div class="tab-content paginate paginate-auto" id="search-content">
     {% include 'people/_profile_list_item.html' %}
@@ -132,14 +134,3 @@
 {% include "modal/remove_group.html" %}
 
 {% endblock %}
-
-{% block extra_script %}
-{{ block.super }}
-  <script type="text/javascript">
-    SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='profiles' %}'+ '?group='+ '{{ object.slug }}';
-    {% comment %} SEARCH_URL = '{% url 'group-profiles-list' %}'+ '/{{ object.pk }}/members'; {% endcomment %}
-  </script>
-
-  {% include 'search/search_scripts.html' %}
-
-{% endblock extra_script %}

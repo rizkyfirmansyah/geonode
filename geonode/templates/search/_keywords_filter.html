@@ -6,8 +6,8 @@
 <div id="keywords_filter">
   <select title="Select Keywords" class="form-select selectpicker mb-2 remove-select" id="keywords" multiple data-live-search="true" data-size="8" data-width="100%" data-container="body" data-actions-box="true" data-deselect-all-text="Deselect">
     <option ng-repeat="keyword in keywords" ng-if="keyword.count > 0" data-content="
+        <span class='d-none'>{{ keyword.slug }}</span>
         <span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>{{ keyword.name }}</span><span class='small span_count float-right'>{{ keyword.count }}</span>">
-        {{ keyword.name }}
     </option>
   </select>
 </div>
@@ -25,7 +25,7 @@
         $('#keywords_filter .filter-option-inner-inner .span_count').remove();
 
         var selected = [];
-        $("#keywords_filter .filter-option-inner-inner span.badge" ).each(function() {
+        $("#keywords_filter .filter-option-inner-inner span.d-none" ).each(function() {
             selected.push($( this ).text())
         });
         
@@ -59,10 +59,10 @@
                           {% endwith %}`);
                           $('.toast').toast('show');
                         }
-                        var _data = data.keywords;
+                        var _data = data.objects;
                         $("#keywords").empty();
                         $.each(_data, function(i, v) {
-                            $('#keywords').append(`<option data-content="<span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                            $('#keywords').append(`<option data-content="<span class='d-none'>`+v.slug+`</span><span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
                             `+v.name+`
                             </option>`)
                         });
@@ -76,10 +76,10 @@
                       type: 'GET',
                       dataType: 'json',
                       success: function(data) {
-                          var _data = data.keywords;
+                          var _data = data.objects;
                           $("#keywords").empty();
                           $.each(_data, function(i, v) {
-                              $('#keywords').append(`<option data-content="<span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                              $('#keywords').append(`<option data-content="<span class='d-none'>`+v.slug+`</span><span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
                               `+v.name+`
                               </option>`)
                           });
@@ -112,11 +112,13 @@
                       page: page++
                     },
                     success: function(data) {
-                        var _data = data.keywords;
+                        var _data = data.objects;
                         $.each(_data, function(i, v) {
-                            $('#keywords').append(`<option data-content="<span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
-                            `+v.name+`
-                            </option>`)
+                            if (v.count > 0) {
+                              $('#keywords').append(`<option data-content="<span class='d-none'>`+v.slug+`</span><span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.name+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                              `+v.name+`
+                              </option>`)
+                            }
                         });
                         refreshSelectPicker();
                     }

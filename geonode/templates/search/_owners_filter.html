@@ -61,10 +61,10 @@
                           {% endwith %}`);
                           $('.toast').toast('show');
                         }
-                        var _data = data.owners;
+                        var _data = data.objects;
                         $("#owners").empty();
                         $.each(_data, function(i, v) {
-                            $('#owners').append(`<option data-content="<span class='d-none'>`+v.username+`</span><span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.full_name_or_nick+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                            $('#owners').append(`<option data-content="<span class='d-none'>`+v.username+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.full_name_or_nick+`</span><span class='small span_count float-right'>`+v.count+`</span>">
                             `+v.full_name_or_nick+`
                             </option>`)
                         });
@@ -78,10 +78,10 @@
                       type: 'GET',
                       dataType: 'json',
                       success: function(data) {
-                          var _data = data.owners;
+                          var _data = data.objects;
                           $("#owners").empty();
                           $.each(_data, function(i, v) {
-                              $('#owners').append(`<option data-content="<span class='d-none'>`+v.username+`</span><span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.full_name_or_nick+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                              $('#owners').append(`<option data-content="<span class='d-none'>`+v.username+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.full_name_or_nick+`</span><span class='small span_count float-right'>`+v.count+`</span>">
                               `+v.full_name_or_nick+`
                               </option>`)
                           });
@@ -114,11 +114,13 @@
                       page: page++
                     },
                     success: function(data) {
-                        var _data = data.owners;
+                        var _data = data.objects;
                         $.each(_data, function(i, v) {
-                            $('#owners').append(`<option data-content="<span class='d-none'>`+v.username+`</span><span class='badge badge-info w-auto d-inline' style='font-size: .9em;'>`+v.full_name_or_nick+`</span><span class='small span_count float-right'>`+v.count+`</span>">
-                            `+v.full_name_or_nick+`
-                            </option>`)
+                            if (v.count > 0) {
+                              $('#owners').append(`<option data-content="<span class='d-none'>`+v.username+`</span><span class='badge badge-secondary w-auto d-inline' style='font-size: .9em;'>`+v.full_name_or_nick+`</span><span class='small span_count float-right'>`+v.count+`</span>">
+                              `+v.full_name_or_nick+`
+                              </option>`)
+                            }
                         });
                         refreshSelectPicker();
                     }

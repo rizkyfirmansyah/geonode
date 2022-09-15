@@ -24,11 +24,7 @@
     {% include "toast/permissions_form.html" %}
   {% endif %}
   <script type="text/javascript">
-      {% if HAYSTACK_SEARCH %}
-          SEARCH_URL = '{% url 'api_get_search' api_name='api' resource_name='base' %}?type__in=map'
-      {% else %}
-          SEARCH_URL = '{% url 'api_dispatch_list' api_name='api' resource_name='maps' %}';
-      {% endif %}
+      SEARCH_URL = '{% url 'base-resources-list' %}?9fadb94=map';
       FILTER_TYPE = 'map';
   </script>
   {% with include_spatial='true' %}

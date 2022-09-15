@@ -127,7 +127,7 @@
 
         function successCallback(data) {
             //success code
-            var _data = data.data.categories;
+            var _data = data.data.objects;
             if ($location.search().hasOwnProperty('f4e493d')) {
               _data = module.set_initial_filters_from_query(_data,
                     $location.search()['f4e493d'], 'identifier');
@@ -166,7 +166,7 @@
         $http.get(KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            var _data = data.data.keywords;
+            var _data = data.data.objects;
             //success code
             $rootScope.keywords = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -179,48 +179,6 @@
         };
     }
 
-
-    module.load_h_keywords = function($http, $rootScope, $location) {
-        var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
-        $http.get(H_KEYWORDS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
-
-        function successCallback(data) {
-            //success code
-            $('#treeview').treeview({
-                data: data.data,
-                multiSelect: true,
-                showIcon: true,
-                showCheckbox: false,
-                collapseIcon: false,
-                expandIcon: false,
-                showTags: true,
-                tagsClass: 'badge',
-                onNodeSelected: function($event, node) {
-                    $rootScope.$broadcast('select_h_keyword', node);
-                    if (node.nodes) {
-                        for (var i = 0; i < node.nodes.length; i++) {
-                            $('#treeview').treeview('selectNode', node.nodes[i]);
-                        }
-                    }
-                },
-                onNodeUnselected: function($event, node) {
-                    $rootScope.$broadcast('unselect_h_keyword', node);
-                    if (node.nodes) {
-                        for (var i = 0; i < node.nodes.length; i++) {
-                            $('#treeview').treeview('unselectNode', node.nodes[i]);
-                            $('#treeview').trigger('nodeUnselected', $.extend(true, {}, node.nodes[i]));
-                        }
-                    }
-                }
-            });
-        };
-
-        function errorCallback(error) {
-            //error code
-            console.log(error);
-        };
-    };
-
     module.load_t_keywords = function($http, $rootScope, $location) {
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         if ($location.search().hasOwnProperty('title__icontains')) {
@@ -231,7 +189,7 @@
         }
 
         function successCallback(data) {
-            var _data = data.data.tkeywords;
+            var _data = data.data.objects;
             //success code
             if ($location.search().hasOwnProperty('ebe16ff')) {
                 _data = module.set_initial_filters_from_query(_data,
@@ -257,7 +215,7 @@
         $http.get(REGIONS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            var _data = data.data.regions;
+            var _data = data.data.objects;
             //success code
             $rootScope.regions = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -276,7 +234,7 @@
 
         function successCallback(data) {
             //success code
-            var _data = data.data.resources;
+            var _data = data.data.objects;
             $rootScope.groups = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
@@ -294,7 +252,7 @@
         $http.get(DATASETEXT_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            var _data = data.data.files;
+            var _data = data.data.objects;
             $rootScope.dataset_type = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
@@ -312,7 +270,7 @@
         $http.get(DATATYPE_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            var _data = data.data.data_types;
+            var _data = data.data.objects;
             if ($location.search().hasOwnProperty('182243e')) {
               _data = module.set_initial_filters_from_query(_data,
                     $location.search()['182243e'], 'identifier');
@@ -334,7 +292,7 @@
         $http.get(RESOURCETYPE_ENDPOINT, { params: params }).then(successCallback, errorCallback);
 
         function successCallback(data) {
-            var _data = data.data.resource_types;
+            var _data = data.data.objects;
             $rootScope.resource_types = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
                 module.haystack_facets($http, $rootScope, $location);
@@ -350,7 +308,7 @@
         var params = typeof FILTER_TYPE == 'undefined' ? {} : { 'type': FILTER_TYPE };
         $http.get(OWNERS_ENDPOINT, { params: params }).then(successCallback, errorCallback);
         function successCallback(data) {
-            var _data = data.data.owners;
+            var _data = data.data.objects;
             //success code
             $rootScope.owners = _data;
             if (HAYSTACK_FACET_COUNTS && $rootScope.query_data) {
@@ -519,7 +477,7 @@
             module.load_keywords($http, $rootScope, $location);
         }
 
-        module.load_h_keywords($http, $rootScope, $location);
+        // module.load_h_keywords($http, $rootScope, $location);
 
         if ($('#regions').length > 0) {
             module.load_regions($http, $rootScope, $location);
@@ -734,7 +692,7 @@
         $scope.load_version_changes = function($http, API_CHANGE_VERSION) {
           $http.get(API_CHANGE_VERSION).then(successCallback)
           function successCallback(data) {
-              var _data = data.data.version;
+              var _data = data.data.objects;
               $scope.version_changes = _data;
               var modalInstance = $uibModal.open({
                   templateUrl: staticUrl + "geonode/js/templates/modal/version_detail.html",
@@ -777,15 +735,6 @@
             });
         };
 
-        $scope.loadMoreUserResource = function() {
-            const _infinite = new Promise(function(resolve, reject) {
-                if ($scope.infiniteScrollLoaded) {
-                    query_api_user($scope.query);
-                }
-                resolve(true);
-            });
-        };
-
         //Get data from apis and make them available to the page
         function query_api(data) {
             // handling for infinite scroll at the catalogue browse without filtered is true
@@ -818,21 +767,21 @@
                 if (!$scope.filter) {
                     if (!$scope.results && $scope.init) {
                         // Initialize the data
-                        $scope.results = data.data.resources;
+                        $scope.results = data.data.objects;
                         $scope.init = false;
                     } else if ($scope.init) {
-                        $scope.results = data.data.resources;
+                        $scope.results = data.data.objects;
                         $scope.init = false;
                     } else if ($scope.is_next) {
-                        $scope.results.push(...data.data.resources);
+                        $scope.results.push(...data.data.objects);
                     }
                 } else {
                     if ($scope.init) {
                         $scope.init = false;
-                        $scope.results = data.data.resources;
+                        $scope.results = data.data.objects;
                     }
                      else if ($scope.is_next) {
-                        $scope.results.push(...data.data.resources);
+                        $scope.results.push(...data.data.objects);
                     }
                 }
 
@@ -875,115 +824,7 @@
             };
         };
 
-        if (!$location.path().includes("group") && !$location.path().includes("people")) {
-            query_api($scope.query);
-        } else if ($location.path().includes("group")) {
-            query_api_user($scope.query);
-        } else if ($location.path().includes("people")) {
-            query_api_user($scope.query);
-        }
-
-        //Get data from apis and make them available to the page
-        function query_api_user(data) {
-            // handling for infinite scroll at the catalogue browse without filtered is true
-            if (jQuery.isEmptyObject(data)) {
-              if (!$scope.results && $scope.init) {
-                  $scope.offset = 0;
-              } else {
-                  if (!$scope.init) {
-                      $scope.offset += API_LIMIT_PER_PAGE;
-                  }
-              }
-              data = { offset: $scope.offset }
-            } else {
-                // handling for filter is true
-                if (!$scope.init) {
-                    $scope.offset += API_LIMIT_PER_PAGE;
-                } else {
-                    $scope.offset = 0;
-                }
-
-                for (var key in data) {
-                  if (!$scope.filter) {
-                      // handling for filter is not available
-                      if (key.includes("_in") && !$scope.offset) {
-                        $scope.offset = 0;
-                        $scope.filter = true;
-                    }
-                  }
-                }
-                data.offset = $scope.offset;
-            }
-
-            $http.get(Configs.url, { params: data || {} }).then(successCallback, errorCallback)
-
-            function successCallback(data) {
-                //success code
-                setTimeout(function() {
-                    $('[ng-controller="CartList"] [data-toggle="tooltip"]').tooltip();
-                }, 0);
-                var result = data.data.objects.length;
-
-                if (result === 0) {
-                    $scope.infiniteScrollLoaded = false;
-                }
-
-                if (!$scope.filter) {
-                    if (!$scope.results && $scope.init) {
-                        // Initialize the data
-                        $scope.results = data.data.objects;
-                        $scope.init = false;
-                    } else if ($scope.init) {
-                        $scope.results = data.data.objects;
-                        $scope.init = false;
-                    } else {
-                        $scope.results.push(...data.data.objects);
-                    }
-                } else {
-                    if ($scope.init) {
-                        $scope.init = false;
-                        $scope.results = data.data.objects;
-                    } else {
-                        $scope.results.push(...data.data.objects);
-                    }
-                }
-
-                $scope.total_counts = data.data.meta.total_count;
-                $scope.$root.query_data = data.data;
-                if (HAYSTACK_SEARCH) {
-                    if ($location.search().hasOwnProperty('q')) {
-                        $scope.text_query = $location.search()['q'].replace(/\+/g, " ");
-                    }
-                }
-
-                //Update facet/keyword/category counts from search results
-                if (HAYSTACK_FACET_COUNTS) {
-                    try {
-                        module.haystack_facets($http, $scope.$root, $location);
-                        $("#types").find("a").each(function() {
-                            if ($(this)[0].id in data.data.meta.facets.subtype) {
-                                $(this).find("span").text(data.data.meta.facets.subtype[$(this)[0].id]);
-                            } else if ($(this)[0].id in data.data.meta.facets.type) {
-                                $(this).find("span").text(data.data.meta.facets.type[$(this)[0].id]);
-                            } else {
-                                $(this).find("span").text("0");
-                            }
-                        });
-                    } catch (err) {
-                        // console.log(err);
-                    }
-                }
-
-                var meta = data.data.meta;
-                if (meta.limit >= meta.total_count) {
-                  $scope.infiniteScrollLoaded = false;
-                }
-            };
-
-            function errorCallback(error) {
-                //error code
-            };
-        };
+        query_api($scope.query);
 
         if (!Configs.hasOwnProperty("disableQuerySync")) {
             // Keep in sync the page location with the query object
@@ -1060,13 +901,7 @@
             }
 
             if (!$scope.reset) {
-                if (!$location.path().includes("group") && !$location.path().includes("people")) {
-                    query_api($scope.query);
-                } else if ($location.path().includes("group")) {
-                    query_api_user($scope.query);
-                } else if ($location.path().includes("people")) {
-                    query_api_user($scope.query);
-                }
+                query_api($scope.query);
             }
         }
 
@@ -1112,13 +947,7 @@
                 $scope.query[data_filter] = query_entry;
 
                 if (!$scope.reset) {
-                  if (!$location.path().includes("group") && !$location.path().includes("people")) {
-                      query_api($scope.query);
-                  } else if ($location.path().includes("group")) {
-                      query_api_user($scope.query);
-                  } else if ($location.path().includes("people")) {
-                      query_api_user($scope.query);
-                  }
+                  query_api($scope.query);
                 }
             }
         }
@@ -1143,14 +972,8 @@
             if ($('#text_search_input').val()) {
               $scope.infiniteScrollLoaded = true;
               $scope.init = true;
-              if (!$location.path().includes("group") && !$location.path().includes("people")) {
-                  $scope.query['dbbc87e'] = $('#text_search_input').val();
-                  query_api($scope.query);
-              } else if ($location.path().includes("group")) {
-                  query_api_user($scope.query);
-              } else if ($location.path().includes("people")) {
-                  query_api_user($scope.query);
-              }
+              $scope.query['dbbc87e'] = $('#text_search_input').val();
+              query_api($scope.query);
               
             } else {
                 reset_query();
@@ -1163,7 +986,7 @@
             }
             $scope.query = {};
             $scope.infiniteScroll = 0;
-            $scope.infiniteScrollLoaded = true;
+            $scope.infiniteScrollLoaded = false;
             $scope.filter = false;
             $scope.init = true;
             $scope.reset = true;
@@ -1174,6 +997,7 @@
             $('#filter-sidebar-content .btn_wrapper').removeClass('active');
             $('#filter-sidebar-content .btn_wrapper').find('input[type=checkbox]:checked').prop("checked", false);
             $(".scrollbar-sidebar a").removeClass("active");
+            $(".filter a").removeClass("active");
             $("#text_search_input").val('');
             $(".result-wrapper").css('display', 'none');
             $(".input-highlight").css("width", '0em');
@@ -1182,34 +1006,18 @@
             delete $scope.query['5af2a45'];
             delete $scope.query['90ca628'];
             delete $scope.query['page'];
+            delete $scope.query['c'];
             $location.search($scope.query);
+            if ($location.path().includes("group")) {
+                return query_api($scope.query);
+            }
         }
 
         $('.delete_search_query').on('click', function(e) {
             e.preventDefault();
             reset_query();
             $scope.reset = false;
-        });
-
-        $('.delete_search_query_user').on('click', function(e) {
-            e.preventDefault();
-            $scope.query = {};
-            $scope.infiniteScroll = 0;
             $scope.infiniteScrollLoaded = true;
-            $scope.filter = false;
-            $scope.init = true;
-            $scope.reset = true;
-            // remove active class elements from sidebar
-            $('.selectpicker').selectpicker('val', '');
-            $('.selectpicker').selectpicker('refresh');
-            $('.span_count').parent().addClass('w-100 m-0 d-inline-block');
-            $('#filter-sidebar-content .btn_wrapper').removeClass('active');
-            $(".result-wrapper").css('display', 'none');
-            $(".input-highlight").css("width", '0em');
-            delete $scope.query['categories__slug__in'];
-            delete $scope.query['offset'];
-            $location.search($scope.query);
-            return query_api_user($scope.query);
         });
 
         $("#dltDate1").on('click', function (e) {
@@ -1584,8 +1392,8 @@
               };
           }
           var uploadFile = $http(postParams).then(function(res) {
-              var _data = res.data.files;
-              var is_external_data = res.data.files.file_url;
+              var _data = res.data.objects;
+              var is_external_data = _data.file_url;
               $rootScope.datasets.push(_data);
               var datasets_id = []
               $rootScope.datasets.map(o => ( datasets_id.push(o.id)));
@@ -1845,7 +1653,7 @@
       $http.get(API_DATASET_VERSION).then(successCallback);
 
       function successCallback(data) {
-          var _data = data.data.versions;
+          var _data = data.data.objects;
           if (_data.length == 0) {
               console.log("No version")
           } else {
@@ -1885,7 +1693,7 @@
       $http.get(siteUrl + "api/v2/files/resume_upload").then(successCallback);
 
       function successCallback(data) {
-          $rootScope.datasets = data.data.files;
+          $rootScope.datasets = data.data.objects;
           var datasets_id = []
           if ($rootScope.datasets.length > 0) {
               if ($(".card-ingest").hasClass('d-none')) {
@@ -1905,7 +1713,7 @@
       $http.get(siteUrl + "api/v2/files/edit_dataset_files/" + dataset_id).then(successCallback);
 
       function successCallback(data) {
-          $rootScope.datasets = data.data.files;
+          $rootScope.datasets = data.data.objects;
           var datasets_id = []
           if ($rootScope.datasets.length > 0) {
               if ($(".card-ingest").hasClass('d-none')) {
