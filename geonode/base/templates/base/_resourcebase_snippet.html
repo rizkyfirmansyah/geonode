@@ -76,7 +76,7 @@
           </div>
             <div class="card-footer">
               <div class="icon-tags" title="Keywords">
-                  <span class="text-muted" ng-repeat="keyword in item.keywords"><a role="button" data-value="{{ keyword.name }}" data-filter="7e31fcb" ng-click="multiple_choice_listener($event)">{{ keyword.name }}</a>{{$last ? '' : ($index==item.keywords.length-2) ? ' and ' : ', '}}</span>
+                  <span class="text-muted" ng-repeat="keyword in item.keywords"><a role="button" data-value="{{ keyword.slug }}" data-filter="7e31fcb" ng-click="multiple_choice_listener($event)">{{ keyword.name }}</a>{{$last ? '' : ($index==item.keywords.length-2) ? ' and ' : ', '}}</span>
               </div>
             </div>
             <div class="card-footer">

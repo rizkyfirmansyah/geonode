@@ -103,7 +103,7 @@ class ResourceBaseFilter(BaseFilterBackend):
             queryset = queryset.filter(tkeywords__id__in=tkeywords)
 
         if keywords:
-            queryset = queryset.filter(keywords__name__in=keywords)
+            queryset = queryset.filter(keywords__slug__in=keywords)
 
         if extension:
             file = File.objects.filter(extension__in=extension).values('dataset_id')
