@@ -6,7 +6,7 @@
     emptyString="{% trans "No list items selected. Use the + button to add." %}">
   </resource-cart>
   {% block bulk_perms_button %}
-    <div role="group" aria-label="tools" ng-if="cart.getCart().items.length">
+    <div role="group" aria-label="tools" ng-if="cart.getCart().items.length" style="margin-bottom: 5em;">
       <div class="btn-group btn-search-content" role="group">
         <button type="button" class="btn btn-upload" ng-disabled="!cart.getCart().items.length" data-toggle="modal"
           data-target="#bulkModalPerms">Set permissions</button>
