@@ -28,6 +28,8 @@ urlpatterns = [
         views.resource_geolimits, name='resource_geolimits'),
     url(r'^bulk-permissions/?$',
         views.set_bulk_permissions, name='bulk_permissions'),
+    url(r'^bulk-metadata/?$',
+        views.set_bulk_metadata, name='bulk_metadata'),
     url(r'^request-permissions/?$',
         views.request_permissions, name='request_permissions'),
     url(r'^invalidate-permissions-cache/?$',

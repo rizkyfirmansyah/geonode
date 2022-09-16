@@ -132,7 +132,7 @@ def user_and_group_permission(request, model):
 
 
 def batch_modify(request, model):
-    if not request.user.is_superuser:
+    if not request.user.is_staff:
         raise PermissionDenied
     if model == 'Dataset':
         Resource = Dataset
@@ -169,8 +169,10 @@ def batch_modify(request, model):
 
             # update m2m category fields here
             for resource in resources:
-                resource.poc = new_poc
-                resource.metadata_author = new_metadata_author
+                if new_poc:
+                    resource.poc = new_poc
+                if new_metadata_author:
+                    resource.metadata_author = new_metadata_author
                 resource.category.clear()
                 resource.category.add(*new_categories)
             resources.update(**to_update)

@@ -36,9 +36,11 @@ from geonode.utils import build_absolute_uri, resolve_object
 from geonode.base.models import (
     ResourceBase,
     UserGeoLimit,
+    HierarchicalKeyword,
     GroupGeoLimit)
 from geonode.layers.models import Layer
 from geonode.groups.models import GroupProfile
+from geonode.base.forms import BatchEditForm
 
 from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import send_notification
@@ -450,6 +452,80 @@ def invalidate_tiledlayer_cache(request):
             content_type='text/plain'
         )
 
+
+@require_POST
+def set_bulk_metadata(request):
+    from geonode.base.models import bulk_metadata_version
+    from geonode.base.models import Region
+
+    ids = json.loads(request.POST.get("ids", '[]'))
+    resources = json.loads(request.POST.get("resources", '[]'))
+
+    keywords = resources.get('keywords')
+    regions = resources.get("regions")
+    categories = resources.get('category')
+    new_categories = None
+    poc = resources.get("poc")
+    metadata_author = resources.get("metadata_author")
+    new_poc = None
+    if poc:
+        new_poc = get_user_model().objects.get(id=poc)
+    if metadata_author:
+        new_metadata_author = get_user_model().objects.get(id=metadata_author)
+    if categories:
+        new_categories = resources.get('category')
+
+    to_update = {}
+    for _key, _value in resources.items():
+        if _value and _key != 'category' and _key != 'poc' and _key != 'metadata_author' and _key != 'csrfmiddlewaretoken' and _key != 'keywords' and _key != 'regions':
+            to_update[_key] = _value
+    resourcebase = ResourceBase.objects.filter(id__in=ids)
+
+    if keywords:
+        keywords = keywords.split(", ")
+
+    if regions:
+        regions = Region.objects.get(pk=regions)
+
+    # update m2m category fields here
+    for resource in resourcebase:
+        if poc:
+            resource.poc = new_poc
+        if metadata_author:
+            resource.metadata_author = new_metadata_author
+        if new_categories:
+            resource.category.clear()
+            resource.category.add(*new_categories)
+        bulk_metadata_version(resource=resource, vals = to_update, keywords=keywords, category=new_categories, contributors=request.user, poc=poc)
+
+    resourcebase.update(**to_update)
+
+    if regions:
+        regions_through = ResourceBase.regions.through
+        new_regions = [regions_through(region=regions, resourcebase=resource) for resource in resourcebase]
+        regions_through.objects.bulk_create(new_regions, ignore_conflicts=True)
+
+    if keywords:
+        keywords_through = ResourceBase.keywords.through
+        keywords_through.objects.filter(content_object__in=resourcebase).delete()
+        def get_or_create(keyword):
+            try:
+                return HierarchicalKeyword.objects.get(name=keyword)
+            except HierarchicalKeyword.DoesNotExist:
+                return HierarchicalKeyword.add_root(name=keyword)
+        hierarchical_keyword = [get_or_create(keyword) for keyword in keywords]
+
+        _new_keywords = []
+        for keyword in hierarchical_keyword:
+            _new_keywords += [keywords_through(
+                content_object=resource, tag_id=keyword.pk) for resource in resourcebase]
+        keywords_through.objects.bulk_create(_new_keywords, ignore_conflicts=True)
+
+    return HttpResponse(
+        json.dumps({'success': 'ok'}),
+        status=200,
+        content_type='text/plain'
+    )
 
 @require_POST
 def set_bulk_permissions(request):

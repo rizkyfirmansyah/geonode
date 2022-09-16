@@ -181,15 +181,19 @@
     <dd>{{ resource.maintenance_frequency_title|safe }}</dd>
     {% endif %}
 
-    {% if resource.restriction_code_type or resource.constraints_other %}
-    <dt>{% trans "Restrictions" %}</dt>
-    <dd>{% if resource.constraints_other %}
-            {{ resource.constraints_other|safe|escape }}
-        {% else %}
-            {{ resource.restriction_code_type|safe }}
-        {% endif %}
-    </dd>
+    {% if resource.restriction_code_type %}
+      <dt>{% trans "Restrictions" %}</dt>
+      <dd itemprop="restrictions">{{ resource.restriction_code_type }} <a href="#restriction-more-above" data-toggle="collapse" data-target=".restriction-more-above"><i class="fa-solid fa-circle-info"></i></a></dd>
     {% endif %}
+    <dd class="restriction-more-above collapse">
+      {{ resource.restriction_desc }}
+    </dd>
+
+    {% if resource.constraints_other %}
+    <dt>{% trans "Constraints Other" %}</dt>
+    <dd>{{ resource.constraints_other|safe }}</dd>
+    {% endif %}
+
 
     {% if resource.edition %}
     <dt>{% trans "Edition" %}</dt>

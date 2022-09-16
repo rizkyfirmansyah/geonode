@@ -93,9 +93,12 @@ class AdvancedModelChoiceIterator(models.ModelChoiceIterator):
             obj)
 
 
-class GroupsChoiceField(forms.ChoiceField):
+class GroupsChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.title
+        from geonode.groups.models import GroupProfile
+        group = GroupProfile.objects.get(group_id=obj.id)
+
+        return group.title
 
 
 class RegionsMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -532,6 +535,7 @@ class ValuesListField(forms.Field):
 
 
 class BatchEditForm(forms.Form):
+    from django.contrib.auth.models import Group
     LANGUAGES = (('', '--------'),) + ALL_LANGUAGES
     project_information = forms.CharField(
         label=_('Project Information'),
@@ -583,20 +587,20 @@ class BatchEditForm(forms.Form):
         help_text=ResourceBase.keywords_help_text)
     group = GroupsChoiceField(
         label=_('Group'),
-        choices=get_groups_id_choices,
+        queryset=Group.objects.exclude(name='anonymous'),
         required=False)
     owner = ProfileChoiceField(
         label=_("Owner"),
-        required=True,
+        required=False,
         help_text=ResourceBase.owner_help_text,
         queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
     poc = ProfileChoiceField(
         label=_("Point of Contact"),
-        required=True,
+        required=False,
         queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
     metadata_author = ProfileChoiceField(
         label=_("Metadata Author"),
-        required=True,
+        required=False,
         queryset=get_user_model().objects.exclude(Q(username='AnonymousUser') | Q(is_active=False)))
     regions = forms.ModelChoiceField(
         label=_('Regions'),
@@ -629,6 +633,10 @@ class BatchEditForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['category'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
         self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['group'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['owner'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['poc'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['metadata_author'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
 
 
 class BatchPermissionsForm(PermissionsForm):

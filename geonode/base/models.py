@@ -349,7 +349,7 @@ class RestrictionCodeType(models.Model):
     is_choice = models.BooleanField(default=True)
 
     def __str__(self):
-        return str(self.gn_description)
+        return str(self.title)
 
     class Meta:
         ordering = ("identifier",)
@@ -1408,6 +1408,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
     @property
     def restriction_code(self):
+        return self.restriction_code_type.id if self.restriction_code_type else None
+
+    @property
+    def restriction_desc(self):
         return self.restriction_code_type.gn_description if self.restriction_code_type else None
 
     @property
@@ -1421,6 +1425,10 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     @property
     def topiccategory(self):
         return self.category.identifier
+
+    @property
+    def license_code(self):
+        return self.license.id
 
     @property
     def csw_crs(self):
@@ -2551,6 +2559,82 @@ def get_latest_version(resource_id):
         return None
 
 
+def bulk_metadata_version(resource, vals: dict = {}, **kwargs):
+    resources = get_object_or_404(ResourceBase, pk=resource.id)
+    recommended_version = get_recommended_version(resource.id)
+    summary = []
+    commit = {}
+    owner = vals.get('owner')
+    data_citation = vals.get('data_citation')
+    related_publication = vals.get('related_publication')
+    constraints_other = vals.get('constraints_other')
+    data_description = vals.get('data_description')
+    data_quality_statement = vals.get('data_quality_statement')
+    supplemental_information = vals.get('supplemental_information')
+    license = vals.get('license')
+    restrictions = vals.get('restriction_code_type')
+    author = vals.get('author')
+
+    if kwargs['keywords']:
+        commit["keywords"] = kwargs['keywords']
+        summary.append('Keywords (Changed)')
+    if kwargs['category']:
+        commit["category"] = [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]
+        summary.append('Category (Changed)')
+    if owner:
+        commit["responsible"] = get_user_model().objects.get(id=vals.get('owner')).full_name_or_nick
+        summary.append('Responsible (Changed)')
+    if kwargs['poc']:
+        commit["point_of_contact"] = get_user_model().objects.get(id=kwargs['poc']).full_name_or_nick
+        summary.append('Point of Contact (Changed)')
+    if data_citation:
+        commit["data_citation"] = data_citation
+        summary.append('Data Citation (Changed)')
+    if related_publication:
+        commit["related_publication"] = related_publication
+        summary.append('Related Publication (Changed)')
+    if constraints_other:
+        commit["constraints_other"] = constraints_other
+        summary.append('Constraints Other (Changed)')
+    if data_description:
+        commit["data_description"] = data_description
+        summary.append('Data Description (Changed)')
+    if data_quality_statement:
+        commit["data_quality_statement"] = data_quality_statement
+        summary.append('Data Quality Statement (Changed)')
+    if supplemental_information:
+        commit["supplemental_information"] = supplemental_information
+        summary.append('Supplemental Information (Changed)')
+    if author:
+        commit["author"] = author
+        summary.append('Author (Changed)')
+    if license:
+        commit["license"] = str(License.objects.get(id=license))
+        summary.append('License (Changed)')
+    if restrictions:
+        commit["restrictions"] = str(RestrictionCodeType.objects.get(id=restrictions))
+        summary.append('Restriction (Changed)')
+
+    if len(summary) > 0:
+        summary = '; '.join(summary)
+        if recommended_version:
+            resource_version = ResourceVersion.objects.get_or_create(
+                resource=resources,
+                contributors=kwargs['contributors'],
+                tags=ResourceVersion.TAG_CHOICES[1][0],
+                version=recommended_version,
+                summary=summary,
+                changes=commit)
+
+    if not recommended_version:
+        resource_version = ResourceVersion.objects.get_or_create(
+            resource=resources,
+            contributors=kwargs['contributors'],
+            tags=ResourceVersion.TAG_CHOICES[1][0],
+            version='1.0',
+            summary='This is the first published version.',
+            changes=commit)
+
 def version_post_save(instance, sender, **kwargs):
     """
     Get information from resource
@@ -2570,13 +2654,15 @@ def version_post_save(instance, sender, **kwargs):
         commit["point_of_contact"] = kwargs['poc'].full_name_or_nick
         commit["data_citation"] = instance.data_citation
         commit["related_publication"] = instance.related_publication
-        commit["data_description"] = instance.data_description
+        commit["constraints_other"] = instance.constraints_other
         commit["data_description"] = instance.data_description
         commit["data_quality_statement"] = instance.data_quality_statement
         commit["source"] = instance.source
         commit["edition"] = instance.edition
         commit["supplemental_information"] = instance.supplemental_information
         commit["author"] = instance.author
+        commit["license"] = str(License.objects.get(id=instance.license))
+        commit["restrictions"] = str(RestrictionCodeType.objects.get(id=instance.restriction_code_type))
 
     if resources.title != instance.title:
         summary.append('Title (Changed)')
@@ -2617,6 +2703,13 @@ def version_post_save(instance, sender, **kwargs):
     elif resources.related_publication != instance.related_publication:
         summary.append('Related Publication (Changed)')
         changes["related_publication"] = instance.related_publication
+
+    if len(instance.constraints_other) > 0 and len(resources.constraints_other) == 0:
+        summary.append('Constraints Other (Added)')
+        changes["constraints_other"] = instance.constraints_other
+    elif resources.constraints_other != instance.constraints_other:
+        summary.append('Constraints Other (Changed)')
+        changes["constraints_other"] = instance.constraints_other
 
     if len(instance.data_description) > 0 and len(resources.data_description) == 0:
         summary.append('Data Description (Added)')
@@ -2661,6 +2754,14 @@ def version_post_save(instance, sender, **kwargs):
     if resources.author != instance.author:
         summary.append('Author (Changed)')
         changes["author"] = instance.author
+
+    if resources.license != instance.license:
+        summary.append('License (Changed)')
+        changes["license"] = str(instance.license)
+
+    if resources.restriction_code_type != instance.restriction_code_type:
+        summary.append('Restrictions (Changed)')
+        changes["restrictions"] = str(instance.restriction_code_type)
 
     if len(summary) > 0:
         summary = '; '.join(summary)

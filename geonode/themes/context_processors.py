@@ -1,7 +1,7 @@
 
 from django.core.cache import cache
 
-from geonode.base.forms import ResourceVersionForm
+from geonode.base.forms import ResourceVersionForm, BatchEditForm
 from geonode.security.forms import RodaForm
 from geonode.people.forms import ProfileSignupForm, ProfileLoginForm, ProfileChangePasswordForm, ProfileAddEmailForm
 from geonode.security.forms import PermissionsForm
@@ -37,5 +37,6 @@ def ModalForm(request):
         'change_pwd_form': ProfileChangePasswordForm(),
         'add_email_form': ProfileAddEmailForm(),
         'version_form': ResourceVersionForm(),
-        'permissions_form': PermissionsForm(user=request.user)
+        'permissions_form': PermissionsForm(user=request.user),
+        'bulk_metadata_form': BatchEditForm()
     }

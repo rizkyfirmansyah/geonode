@@ -21,6 +21,7 @@
           <button class="btn btn-primary sidebar-toggle col-md-2" id="sidebarFilter" aria-haspopup="true" aria-expanded="false">Filter</button>
           {% include "search/_sort_filters.html" %}
           {% include "modal/bulk_permissions.html" %}
+          {% include "modal/bulk_metadata.html" %}
         </div>
       </div>
     </div>
@@ -43,7 +44,7 @@
     <aside class="sidebar-right">
       <div class="toggle-right">
         <a href="#" class="js-menu-toggle-right menu-toggle text-decoration-none">
-          <span class="icon-plus-circle text-black" title="Bulk Selection to manage permissions"></span>
+          <span class="icon-plus-circle text-black" title="Bulk Selection to manage permissions and set metadata"></span>
         </a>
       </div>
       {% include "section/bulk_selection.html" %}

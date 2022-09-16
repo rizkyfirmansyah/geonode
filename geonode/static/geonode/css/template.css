@@ -1263,19 +1263,24 @@ ref: https://stackoverflow.com/questions/16603979/how-to-remove-the-default-arro
 
 
 #SigninModal .img {
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  max-height: 800px;
-  height: 100vh
-}
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    max-height: 800px;
+    height: 100vh
+  }
 
 #SigninModal .modal-header {
-  display: none
+    display: none
 }
 
 .modal-dialog-preview {
     margin: 4em !important;
+    max-width: none !important;
+}
+
+.modal-dialog-bulk {
+    margin: 0 20em !important;
     max-width: none !important;
 }
 
@@ -5411,7 +5416,6 @@ body.show-sidebar-right {
 
 body.show-sidebar-right:before {
     opacity: .3;
-    visibility: visible;
     -webkit-transition: .3s all ease-in-out;
     -o-transition: .3s all ease-in-out;
     transition: .3s all ease-in-out;

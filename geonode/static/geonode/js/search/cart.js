@@ -141,6 +141,58 @@
             });
         };
 
+        $scope.bulk_metadata_submit = function($event) {
+            var items = cart.getCart().items;
+            var selected_ids = $.map(items, function(item) { return item.pk });
+            var data = $("#bulk_metadata_form").serializeObject();
+            var bulkMetadataMsg = function(msg, status = 'success') {
+                return `
+                <div id="bulkMetadataToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+                  <div class="toast-message alert-`+status+` align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                      <strong class="mr-auto">Edit Metadata</strong>
+                      <small class="text-muted"></small>
+                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('bulkMetadataToast').remove()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="toast-body">
+                      <span class="font-lg-1">`+msg+`.</span>
+                    </div>
+                  </div>
+                </div>
+              `
+            }
+            
+            $.ajax({
+                type: "POST",
+                url: siteUrl + "security/bulk-metadata",
+                data: {
+                    resources: JSON.stringify(data),
+                    ids: JSON.stringify(selected_ids)
+                },
+                beforeSend: function() {
+                    Pace.start();
+                },
+                success: function(data) {
+                    var msg = 'Metadata has been updated on your selected resources';
+                    $(document.body).append(bulkMetadataMsg(msg));
+                    setTimeout(function() {
+                        $("#bulkMetadataToast").remove();
+                        $("#bulkMetadataForm").modal("hide");
+                        $("#bulkMetadataForm")[0].reset();
+                        window.location.href = $event.target.href;
+                    }, 2000);
+                    Pace.stop();
+                },
+                error: function(xhr, status, error) {
+                    var msg = xhr.responseText;
+                    var errors = msg.errors;
+                    console.log(errors, msg);
+                }
+            });
+        };
+
     })
 
     .directive('resourceCart', ['$sce', function($sce) {

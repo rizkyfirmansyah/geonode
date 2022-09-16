@@ -69,7 +69,7 @@ MD_CORE_MODEL = {
         'pycsw:OperatesOnIdentifier': 'operatesonidentifier',
         'pycsw:OperatesOnName': 'operatesoname',
         'pycsw:Degree': 'degree',
-        'pycsw:AccessConstraints': 'restriction_code',
+        'pycsw:AccessConstraints': 'restriction_desc',
         'pycsw:OtherConstraints': 'raw_constraints_other',
         'pycsw:Classification': 'classification',
         'pycsw:ConditionApplyingToAccessAndUse': 'conditionapplyingtoaccessanduse',
