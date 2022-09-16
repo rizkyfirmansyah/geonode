@@ -588,7 +588,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 "count": get_resources_with_perms(request.user).filter(resource_type=_type).count(),
                 "allowed_perms": _allowed_perms[_type] if _type in _allowed_perms else []
             })
-        return Response({"resource_types": resource_types})
+        return Response({"objects": resource_types})
 
     @extend_schema(methods=['get', 'put', 'patch', 'delete'],
                    request=PermSpecSerialiazer(),
