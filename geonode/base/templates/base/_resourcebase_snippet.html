@@ -84,7 +84,7 @@
                 {% endverbatim %}
                 {% if request.user.is_authenticated and not request.user_agent.is_mobile %}
                   {% verbatim %}
-                    <div class="col align-self-center" ng-controller="CartList">
+                    <div class="col align-self-center" ng-controller="CartList" ng-if="item.perms.includes('change_resourcebase')">
                       <button
                         class="btn btn-block btn-xs p-0"
                         ng-if="cart"
