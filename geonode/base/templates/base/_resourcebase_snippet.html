@@ -133,7 +133,7 @@
             {% if request.user.is_authenticated %}
               {% verbatim %}
                 <div class="card-footer text-center" ng-if="item.resource_type == 'layer'">
-                  <a href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.detail_url.substring(8) }}">
+                  <a href="{% endverbatim %}{% url "new_map" %}?layer={% verbatim %}{{ item.alternate }}">
                   <i class="fa-solid fa-map-location-dot" title="Create a Map"></i>Create a Map</a>
                 </div>
               {% endverbatim %}
