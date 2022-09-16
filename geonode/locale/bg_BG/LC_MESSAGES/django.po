@@ -4132,7 +4132,7 @@ msgstr "Създаване на нова карта "
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Зареждане на документи"
 
 msgid "Create a new map"

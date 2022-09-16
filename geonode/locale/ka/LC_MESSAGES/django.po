@@ -4051,7 +4051,7 @@ msgstr "ახალი რუკის შექმნა"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "დოკუმენტის ატვირთვა"
 
 msgid "Create a new map"

@@ -3819,8 +3819,8 @@ msgstr "Upload new layers"
 msgid "Create a new layer"
 msgstr "Create a new layer"
 
-msgid "Upload new document"
-msgstr "Upload new document"
+msgid "Upload new dataset"
+msgstr "Upload new dataset"
 
 msgid "Create a new map"
 msgstr "Create a new map"

@@ -3690,7 +3690,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Add a Comment"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Add a Comment"
 
 msgid "Create a new map"

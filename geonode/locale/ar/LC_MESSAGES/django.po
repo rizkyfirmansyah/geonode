@@ -3953,7 +3953,7 @@ msgstr "إنشاء طبقة جديدة"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "تحميل الوثيقة"
 
 msgid "Create a new map"

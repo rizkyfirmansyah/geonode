@@ -4122,7 +4122,7 @@ msgstr "Luo uusi kartta"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Tallennettu asiakirja"
 
 msgid "Create a new map"

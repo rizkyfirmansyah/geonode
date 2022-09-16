@@ -4113,7 +4113,7 @@ msgstr "புதிய வரைபடம் ஒன்றை உருவாக
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "ஆவணத்தை பதிவேற்றல்"
 
 msgid "Create a new map"

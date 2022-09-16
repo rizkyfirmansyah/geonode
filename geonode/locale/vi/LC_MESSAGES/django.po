@@ -4134,7 +4134,7 @@ msgstr "Tạo một bản đồ mới"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Upload tài liệu"
 
 msgid "Create a new map"

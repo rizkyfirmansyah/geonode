@@ -3595,7 +3595,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Replace this Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Replace this Document"
 
 msgid "Create a new map"

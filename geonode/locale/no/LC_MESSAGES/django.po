@@ -4011,7 +4011,7 @@ msgstr "Lag ny kart"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Last opp dokument"
 
 msgid "Create a new map"

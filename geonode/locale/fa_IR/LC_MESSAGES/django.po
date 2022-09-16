@@ -4103,7 +4103,7 @@ msgstr "ایجاد نقشه جدید"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "آپلود سند"
 
 msgid "Create a new map"

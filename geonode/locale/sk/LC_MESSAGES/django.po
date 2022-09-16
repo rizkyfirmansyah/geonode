@@ -4572,7 +4572,7 @@ msgid "Create a new layer"
 msgstr "Vytvorte novú vrstvu"
 
 #, fuzzy
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Nahrajte nový dokument"
 
 #, fuzzy

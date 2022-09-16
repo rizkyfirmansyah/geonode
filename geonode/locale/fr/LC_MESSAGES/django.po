@@ -4035,7 +4035,7 @@ msgstr "Déposer sur le serveur des nouvelles couches"
 msgid "Create a new layer"
 msgstr "Créer une nouvelle couche"
 
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Télécharger un document"
 
 msgid "Create a new map"

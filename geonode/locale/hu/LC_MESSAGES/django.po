@@ -4138,7 +4138,7 @@ msgstr "Hozzon létre egy új térképet"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Dokumentum feltöltése"
 
 msgid "Create a new map"

@@ -3867,7 +3867,7 @@ msgstr "Δημιουργία νέου επιπέδου"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Μεταφόρτωση Εγγράφων"
 
 msgid "Create a new map"

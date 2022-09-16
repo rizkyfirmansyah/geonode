@@ -4099,7 +4099,7 @@ msgstr "បង្កើត​ផែនទី​ថ្មី​មួយ"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "ផ្ទុក​ឡើង​ឯកសារ"
 
 msgid "Create a new map"

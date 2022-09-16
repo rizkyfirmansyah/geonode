@@ -4106,7 +4106,7 @@ msgstr "새로운 지도 생성"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "문서 업로드"
 
 msgid "Create a new map"

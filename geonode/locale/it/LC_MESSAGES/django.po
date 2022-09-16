@@ -3888,7 +3888,7 @@ msgstr "Carica livelli"
 msgid "Create a new layer"
 msgstr "Crea un nuovo livello"
 
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Carica documento"
 
 msgid "Create a new map"

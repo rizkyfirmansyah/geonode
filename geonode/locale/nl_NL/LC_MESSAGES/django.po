@@ -3997,7 +3997,7 @@ msgstr "Maak een nieuwe groep"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Upload Document"
 
 msgid "Create a new map"

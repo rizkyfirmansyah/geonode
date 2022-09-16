@@ -4164,7 +4164,7 @@ msgstr "Creați o nouă hartă"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Încărcați documente"
 
 msgid "Create a new map"

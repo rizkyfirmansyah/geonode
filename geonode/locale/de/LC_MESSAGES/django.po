@@ -3858,7 +3858,7 @@ msgstr "Neue Ebenen hochladen"
 msgid "Create a new layer"
 msgstr "Neue Ebene erstellen"
 
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Dokument hochladen"
 
 msgid "Create a new map"

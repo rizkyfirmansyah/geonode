@@ -4082,7 +4082,7 @@ msgstr "একটি নতুন মানচিত্র তৈরি কর�
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "আপলোড ডকুমেন্ট"
 
 msgid "Create a new map"

@@ -4129,7 +4129,7 @@ msgstr "Buat peta baru"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Unggah Dokumen"
 
 msgid "Create a new map"

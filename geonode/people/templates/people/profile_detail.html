@@ -126,7 +126,7 @@
         {% if USE_GEOSERVER and CREATE_LAYER %}
           <li class="list-group-item p-0"><a href="{% url "layer_create" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-map"></i>{% trans "Create a new layer" %}</a></li>
         {% endif %}
-        <li class="list-group-item p-0"><a href="{% url "dataset_upload" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-file"></i>{% trans "Upload new document" %}</a></li>
+        <li class="list-group-item p-0"><a href="{% url "dataset_upload" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-file"></i>{% trans "Upload new dataset" %}</a></li>
         <li class="list-group-item p-0"><a href="{% url "new_map" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-map-location-dot"></i>{% trans "Create a new map" %}</a></li>
       {% endif %}
       <li class="list-group-item p-0"><a href="{% url "user-activity" profile.username %}" class="btn-light btn_wrapper"><i class="fa-solid fa-fire"></i>{% trans "My Activities" %}</a></li>

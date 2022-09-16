@@ -4134,7 +4134,7 @@ msgstr "Tengeneza ramani mpya"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Pakia hati"
 
 msgid "Create a new map"

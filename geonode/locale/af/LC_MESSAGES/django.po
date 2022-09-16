@@ -4149,7 +4149,7 @@ msgstr "Skep 'n nuwe kaart"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Oplaai Document"
 
 msgid "Create a new map"

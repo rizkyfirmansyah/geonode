@@ -4127,7 +4127,7 @@ msgstr "新しい地図を生成"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "ドキュメントアップロード"
 
 msgid "Create a new map"

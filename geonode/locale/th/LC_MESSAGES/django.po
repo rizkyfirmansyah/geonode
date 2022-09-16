@@ -4064,7 +4064,7 @@ msgstr "สร้างแผนที่"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "อัพโหลดเอกสาร"
 
 msgid "Create a new map"

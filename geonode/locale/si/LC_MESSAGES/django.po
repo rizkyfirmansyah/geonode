@@ -4103,7 +4103,7 @@ msgstr "නව සිතියමක් නිර්මාණය කරන්න
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "ලේඛනය උඩුගත කරන්න"
 
 msgid "Create a new map"

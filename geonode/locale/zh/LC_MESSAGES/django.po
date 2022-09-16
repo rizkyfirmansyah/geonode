@@ -3994,7 +3994,7 @@ msgstr "创建一个新的地图"
 
 #, fuzzy
 #| msgid "Upload Document"
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "上传文件"
 
 msgid "Create a new map"

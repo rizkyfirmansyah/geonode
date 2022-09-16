@@ -4023,7 +4023,7 @@ msgstr "Cargar Nueva Capa"
 msgid "Create a new layer"
 msgstr "Crea una nueva capa"
 
-msgid "Upload new document"
+msgid "Upload new dataset"
 msgstr "Cargar documento nuevo"
 
 msgid "Create a new map"
