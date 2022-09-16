@@ -33,7 +33,7 @@ from ..models import Dataset, File
 from rest_framework import viewsets
 
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, DjangoModelPermissionsOrAnonReadOnly  # noqa
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly  # noqa
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework.response import Response
@@ -47,6 +47,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.templatetags.static import static
 
+from geonode.base.api.permissions import UserHasPerms
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter
 from geonode.base.api.permissions import IsOwnerOrReadOnly
 from geonode.base.api.pagination import GeoNodeApiPagination
@@ -56,14 +57,49 @@ from geonode.storage.manager import storage_manager
 from geonode.base.models import ResourceBase
 from geonode.base.api.serializers import ResourceBaseSerializer
 from django.template import loader
-from .serializers import DatasetFileSerializer, DatasetIngestFileSerializer, DatasetIngestUrlSerializer
-from .permissions import DocumentPermissionsFilter
+from .serializers import DatasetSerializer, DatasetFileSerializer, DatasetIngestFileSerializer, DatasetIngestUrlSerializer
+from .permissions import DatasetPermissionsFilter
 from django.conf import settings
 import logging
 from django.contrib import messages
 from django.db.models import Count
 
 logger = logging.getLogger(__name__)
+
+
+class DatasetViewSet(DynamicModelViewSet):
+    """
+    API endpoint that allows documents to be viewed or edited.
+    """
+    http_method_names = ['get', 'patch', 'put']
+    authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
+    permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
+    filter_backends = [
+        DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
+        ExtentFilter, DatasetPermissionsFilter
+    ]
+    queryset = Dataset.objects.all().order_by('-last_updated')
+    serializer_class = DatasetSerializer
+    pagination_class = GeoNodeApiPagination
+
+    @extend_schema(methods=['get'], responses={200: ResourceBaseSerializer(many=True)},
+                   description="API endpoint allowing to retrieve the DatasetResourceLink(s).")
+    @action(detail=True, methods=['get'])
+    def linked_resources(self, request, pk=None):
+        document = self.get_object()
+        resources_id = document.links.all().values('object_id')
+        resources = ResourceBase.objects.filter(id__in=resources_id)
+        exclude = []
+        for resource in resources:
+            if not request.user.is_superuser and \
+                    not request.user.has_perm('view_resourcebase', resource.get_self_resource()):
+                exclude.append(resource.id)
+        resources = resources.exclude(id__in=exclude)
+        paginator = GeoNodeApiPagination()
+        paginator.page_size = request.GET.get('page_size', 10)
+        result_page = paginator.paginate_queryset(resources, request)
+        serializer = ResourceBaseSerializer(result_page, embed=True, many=True)
+        return paginator.get_paginated_response({"objects": serializer.data})
 
 
 class DatasetFilesViewSet(DynamicModelViewSet):
@@ -78,30 +114,11 @@ class DatasetFilesViewSet(DynamicModelViewSet):
         permission_classes = [IsAuthenticated, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
-        ExtentFilter, DocumentPermissionsFilter
+        ExtentFilter, DatasetPermissionsFilter
     ]
     queryset = File.objects.all().order_by('-last_updated')
     serializer_class = DatasetFileSerializer
     pagination_class = GeoNodeApiPagination
-
-    @extend_schema(methods=['get'], responses={200: ResourceBaseSerializer(many=True)},
-                   description="API endpoint allowing to retrieve the FileResourceLink(s).")
-    @action(detail=True, methods=['get'])
-    def linked_resources(self, request, pk=None):
-        document = self.get_object()
-        resources_id = document.links.all().values('object_id')
-        resources = ResourceBase.objects.filter(id__in=resources_id)
-        exclude = []
-        for resource in resources:
-            if not request.user.is_superuser and \
-            not request.user.has_perm('view_resourcebase', resource.get_self_resource()):
-                exclude.append(resource.id)
-        resources = resources.exclude(id__in=exclude)
-        paginator = GeoNodeApiPagination()
-        paginator.page_size = request.GET.get('page_size', 10)
-        result_page = paginator.paginate_queryset(resources, request)
-        serializer = ResourceBaseSerializer(result_page, embed=True, many=True)
-        return paginator.get_paginated_response({"resources": serializer.data})
 
     @extend_schema(
         methods=['get'],

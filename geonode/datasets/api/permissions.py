@@ -21,7 +21,7 @@ from django.conf import settings
 from rest_framework.filters import BaseFilterBackend
 
 
-class DocumentPermissionsFilter(BaseFilterBackend):
+class DatasetPermissionsFilter(BaseFilterBackend):
     """
     A filter backend that limits results to those where the requesting user
     has read object level permissions.

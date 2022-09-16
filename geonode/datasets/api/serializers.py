@@ -19,12 +19,29 @@
 #########################################################################
 from rest_framework import serializers
 from dynamic_rest.serializers import DynamicModelSerializer
+from geonode.base.api.serializers import ResourceBaseSerializer
+from geonode.datasets.models import Dataset
 
 import logging
 
 from ..models import File
 
 logger = logging.getLogger(__name__)
+
+
+class DatasetSerializer(ResourceBaseSerializer):
+
+    def __init__(self, *args, **kwargs):
+        # Instantiate the superclass normally
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Dataset
+        name = 'objects'
+        view_name = 'datasets-list'
+        fields = (
+            'pk', 'uuid', 'name', 'title', 'abstract'
+        )
 
 
 class DatasetFileSerializer(DynamicModelSerializer):
