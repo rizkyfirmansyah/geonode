@@ -2571,6 +2571,7 @@ def bulk_metadata_version(resource, vals: dict = {}, **kwargs):
     data_description = vals.get('data_description')
     data_quality_statement = vals.get('data_quality_statement')
     supplemental_information = vals.get('supplemental_information')
+    purpose = vals.get('purpose')
     license = vals.get('license')
     restrictions = vals.get('restriction_code_type')
     author = vals.get('author')
@@ -2605,6 +2606,9 @@ def bulk_metadata_version(resource, vals: dict = {}, **kwargs):
     if supplemental_information:
         commit["supplemental_information"] = supplemental_information
         summary.append('Supplemental Information (Changed)')
+    if purpose:
+        commit["purpose"] = purpose
+        summary.append('Purpose (Changed)')
     if author:
         commit["author"] = author
         summary.append('Author (Changed)')
@@ -2663,105 +2667,114 @@ def version_post_save(instance, sender, **kwargs):
         commit["author"] = instance.author
         commit["license"] = str(instance.license)
         commit["restrictions"] = str(instance.restriction_code_type)
+        commit["purpose"] = instance.purpose
 
-    if resources.title != instance.title:
-        summary.append('Title (Changed)')
+    else:
+        if resources.title != instance.title:
+            summary.append('Title (Changed)')
 
-    if len(instance.abstract) > 0 and len(resources.abstract) == 0:
-        summary.append('Abstract (Added)')
-        changes["abstract"] = instance.abstract
-    elif resources.abstract != instance.abstract:
-        summary.append('Abstract (Changed)')
-        changes["abstract"] = instance.abstract
+        if len(instance.abstract) > 0 and len(resources.abstract) == 0:
+            summary.append('Abstract (Added)')
+            changes["abstract"] = instance.abstract
+        elif resources.abstract != instance.abstract:
+            summary.append('Abstract (Changed)')
+            changes["abstract"] = instance.abstract
 
-    if resources.keyword_list() != kwargs['keywords']:
-        summary.append('Keywords (Changed)')
-        changes["keywords"] = kwargs['keywords']
+        if resources.keyword_list() != kwargs['keywords']:
+            summary.append('Keywords (Changed)')
+            changes["keywords"] = kwargs['keywords']
 
-    if sorted(resources.category_list_id()) != sorted(kwargs['category']):
-        summary.append('Category (Changed)')
-        changes["category"] = [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]
+        if sorted(resources.category_list_id()) != sorted(kwargs['category']):
+            summary.append('Category (Changed)')
+            changes["category"] = [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]
 
-    if str(resources.owner) != str(instance.owner):
-        summary.append('Responsible (Changed)')
-        changes["responsible"] = instance.owner.full_name_or_nick
+        if str(resources.owner) != str(instance.owner):
+            summary.append('Responsible (Changed)')
+            changes["responsible"] = instance.owner.full_name_or_nick
 
-    if str(resources.poc) != str(kwargs['poc']):
-        summary.append('Point of Contact (Changed)')
-        changes["point_of_contact"] = kwargs['poc'].full_name_or_nick
+        if str(resources.poc) != str(kwargs['poc']):
+            summary.append('Point of Contact (Changed)')
+            changes["point_of_contact"] = kwargs['poc'].full_name_or_nick
 
-    if len(instance.data_citation) > 0 and len(resources.data_citation) == 0:
-        summary.append('Data Citation (Added)')
-        changes["data_citation"] = instance.data_citation
-    elif resources.data_citation != instance.data_citation:
-        summary.append('Data Citation (Changed)')
-        changes["data_citation"] = instance.data_citation
+        if len(instance.data_citation) > 0 and len(resources.data_citation) == 0:
+            summary.append('Data Citation (Added)')
+            changes["data_citation"] = instance.data_citation
+        elif resources.data_citation != instance.data_citation:
+            summary.append('Data Citation (Changed)')
+            changes["data_citation"] = instance.data_citation
 
-    if len(instance.related_publication) > 0 and len(resources.related_publication) == 0:
-        summary.append('Related Publication (Added)')
-        changes["related_publication"] = instance.related_publication
-    elif resources.related_publication != instance.related_publication:
-        summary.append('Related Publication (Changed)')
-        changes["related_publication"] = instance.related_publication
+        if len(instance.related_publication) > 0 and len(resources.related_publication) == 0:
+            summary.append('Related Publication (Added)')
+            changes["related_publication"] = instance.related_publication
+        elif resources.related_publication != instance.related_publication:
+            summary.append('Related Publication (Changed)')
+            changes["related_publication"] = instance.related_publication
 
-    if len(instance.constraints_other) > 0 and len(resources.constraints_other) == 0:
-        summary.append('Constraints Other (Added)')
-        changes["constraints_other"] = instance.constraints_other
-    elif resources.constraints_other != instance.constraints_other:
-        summary.append('Constraints Other (Changed)')
-        changes["constraints_other"] = instance.constraints_other
+        if len(instance.constraints_other) > 0 and len(resources.constraints_other) == 0:
+            summary.append('Constraints Other (Added)')
+            changes["constraints_other"] = instance.constraints_other
+        elif resources.constraints_other != instance.constraints_other:
+            summary.append('Constraints Other (Changed)')
+            changes["constraints_other"] = instance.constraints_other
 
-    if len(instance.data_description) > 0 and len(resources.data_description) == 0:
-        summary.append('Data Description (Added)')
-        changes["data_description"] = instance.data_description
-    elif resources.data_description != instance.data_description:
-        summary.append('Data Description (Changed)')
-        changes["data_description"] = instance.data_description
+        if len(instance.purpose) > 0 and len(resources.purpose) == 0:
+            summary.append('Purpose (Added)')
+            changes["purpose"] = instance.purpose
+        elif resources.purpose != instance.purpose:
+            summary.append('Purpose (Changed)')
+            changes["purpose"] = instance.purpose
 
-    if len(instance.data_quality_statement) > 0 and len(resources.data_quality_statement) == 0:
-        summary.append('Data Quality Statement (Added)')
-        changes["data_quality_statement"] = instance.data_quality_statement
-    elif resources.data_quality_statement != instance.data_quality_statement:
-        summary.append('Data Quality Statement (Changed)')
-        changes["data_quality_statement"] = instance.data_quality_statement
+        if len(instance.data_description) > 0 and len(resources.data_description) == 0:
+            summary.append('Data Description (Added)')
+            changes["data_description"] = instance.data_description
+        elif resources.data_description != instance.data_description:
+            summary.append('Data Description (Changed)')
+            changes["data_description"] = instance.data_description
 
-    if len(instance.source) > 0 and len(resources.source) == 0:
-        summary.append('Source (Added)')
-        changes["source"] = instance.source
-    elif resources.source != instance.source:
-        summary.append('Source (Changed)')
-        changes["source"] = instance.source
+        if len(instance.data_quality_statement) > 0 and len(resources.data_quality_statement) == 0:
+            summary.append('Data Quality Statement (Added)')
+            changes["data_quality_statement"] = instance.data_quality_statement
+        elif resources.data_quality_statement != instance.data_quality_statement:
+            summary.append('Data Quality Statement (Changed)')
+            changes["data_quality_statement"] = instance.data_quality_statement
 
-    # data type of CharField which max_length of 255 or varchar(255) treat null value as None rather than empty string as any CharField defined its max_length > 255
-    if instance.edition and resources.edition:
-        if resources.edition != instance.edition:
+        if len(instance.source) > 0 and len(resources.source) == 0:
+            summary.append('Source (Added)')
+            changes["source"] = instance.source
+        elif resources.source != instance.source:
+            summary.append('Source (Changed)')
+            changes["source"] = instance.source
+
+        # data type of CharField which max_length of 255 or varchar(255) treat null value as None rather than empty string as any CharField defined its max_length > 255
+        if instance.edition and resources.edition:
+            if resources.edition != instance.edition:
+                summary.append('Edition (Changed)')
+                changes["edition"] = instance.edition
+        elif instance.edition and not resources.edition:
+            summary.append('Edition (Added)')
+            changes["edition"] = instance.edition
+        elif not instance.edition and resources.edition:
             summary.append('Edition (Changed)')
             changes["edition"] = instance.edition
-    elif instance.edition and not resources.edition:
-        summary.append('Edition (Added)')
-        changes["edition"] = instance.edition
-    elif not instance.edition and resources.edition:
-        summary.append('Edition (Changed)')
-        changes["edition"] = instance.edition
 
-    if len(instance.supplemental_information) > 0 and len(resources.supplemental_information) == 0:
-        summary.append('Supplemental Information (Added)')
-        changes["supplemental_information"] = instance.supplemental_information
-    elif resources.supplemental_information != instance.supplemental_information:
-        summary.append('Supplemental Information (Changed)')
-        changes["supplemental_information"] = instance.supplemental_information
+        if len(instance.supplemental_information) > 0 and len(resources.supplemental_information) == 0:
+            summary.append('Supplemental Information (Added)')
+            changes["supplemental_information"] = instance.supplemental_information
+        elif resources.supplemental_information != instance.supplemental_information:
+            summary.append('Supplemental Information (Changed)')
+            changes["supplemental_information"] = instance.supplemental_information
 
-    if resources.author != instance.author:
-        summary.append('Author (Changed)')
-        changes["author"] = instance.author
+        if resources.author != instance.author:
+            summary.append('Author (Changed)')
+            changes["author"] = instance.author
 
-    if resources.license != instance.license:
-        summary.append('License (Changed)')
-        changes["license"] = str(instance.license)
+        if resources.license != instance.license:
+            summary.append('License (Changed)')
+            changes["license"] = str(instance.license)
 
-    if resources.restriction_code_type != instance.restriction_code_type:
-        summary.append('Restrictions (Changed)')
-        changes["restrictions"] = str(instance.restriction_code_type)
+        if resources.restriction_code_type != instance.restriction_code_type:
+            summary.append('Restrictions (Changed)')
+            changes["restrictions"] = str(instance.restriction_code_type)
 
     if len(summary) > 0:
         summary = '; '.join(summary)
