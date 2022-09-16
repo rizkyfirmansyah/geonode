@@ -71,7 +71,7 @@ class GroupForm(TranslationModelForm):
                   'data-live-search': 'true',
                   'data-selected-text-format': 'count > 4',
                   'data-actions-box': 'true',
-                  'data-size': '5'})
+                  'data-size': '10'})
 
     class Meta:
         model = GroupProfile
@@ -88,7 +88,7 @@ class GroupUpdateForm(forms.ModelForm):
                   'data-live-search': 'true',
                   'data-selected-text-format': 'count > 4',
                   'data-actions-box': 'true',
-                  'data-size': '5'})
+                  'data-size': '10'})
 
     def clean_name(self):
         if GroupProfile.objects.filter(
@@ -106,7 +106,7 @@ class GroupUpdateForm(forms.ModelForm):
 
 
 class GroupMemberForm(forms.Form):
-    get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+    get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser') | Q(is_active = False))
 
     user_identifiers = ProfileMultipleChoiceField(
         label='Registered Users',
@@ -117,7 +117,7 @@ class GroupMemberForm(forms.Form):
                 'data-live-search': 'true',
                 'data-selected-text-format': 'count > 4',
                 'data-actions-box': 'true',
-                'data-size': '5'
+                'data-size': '10'
         }),
         required=False)
 

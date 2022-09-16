@@ -28,16 +28,16 @@ def get_groups_id_choices():
 
 
 class PermissionsForm(forms.Form):
-    get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+    get_users = get_user_model().objects.all().exclude(Q(username='AnonymousUser') | Q(is_active=False))
     if settings.DEFAULT_ANONYMOUS_VIEW_PERMISSION:
-        get_users_view = get_user_model().objects.all()
+        get_users_view = get_user_model().objects.all().exclude(Q(is_active=False))
     else:
-        get_users_view = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+        get_users_view = get_user_model().objects.all().exclude(Q(username='AnonymousUser') | Q(is_active=False))
 
     if settings.DEFAULT_ANONYMOUS_DOWNLOAD_PERMISSION:
-        get_users_download = get_user_model().objects.all()
+        get_users_download = get_user_model().objects.all().exclude(Q(is_active=False))
     else:
-        get_users_download = get_user_model().objects.all().exclude(Q(username='AnonymousUser'))
+        get_users_download = get_user_model().objects.all().exclude(Q(username='AnonymousUser') | Q(is_active=False))
 
     def __init__(self, user, *args, **kwargs):
       super().__init__(*args, **kwargs)
@@ -49,7 +49,7 @@ class PermissionsForm(forms.Form):
                   'data-live-search': 'true',
                   'data-selected-text-format': 'count > 4',
                   'data-actions-box': 'true',
-                  'data-size': '5'})
+                  'data-size': '10'})
           if 'users' in field:
               self.fields[field].initial = user
 
