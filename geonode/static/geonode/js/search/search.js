@@ -831,12 +831,14 @@
                 $scope.is_next = data.data.links.next;
                 if (!$scope.is_next) {
                     $scope.infiniteScrollLoaded = false;
-                    setTimeout(function() {
-                      $(document.body).append(infiniteScrollMsg);
-                      setTimeout(function() {
-                        $('#infiniteToast').remove();
-                      }, 4000);
-                    }, 3000);
+                    if ($location.path().includes("catalogue") || $location.path() == "/people/" || $location.path().includes("groups")) {
+                        setTimeout(function() {
+                          $(document.body).append(infiniteScrollMsg);
+                          setTimeout(function() {
+                            $('#infiniteToast').remove();
+                          }, 4000);
+                        }, 3000);
+                    }
                 } else if ($scope.is_next) {
                     $scope.page += 1;
                 } 
