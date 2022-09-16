@@ -5376,6 +5376,12 @@ aside .side-inner {
     -webkit-overflow-scrolling: touch;
 }
 
+aside .side-inner-right {
+    height: 100%;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
 body.show-sidebar {
     overflow: hidden;
 }

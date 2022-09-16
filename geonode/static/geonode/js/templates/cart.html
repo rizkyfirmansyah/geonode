@@ -5,15 +5,15 @@
     </div>
     <ul class="list-group" ng-if="cart.getCart().items.length">
         <div class="row w-100 ml-1 d-block p-1">
-          <li class="p-1 col text-white"
+          <li data-toggle="tooltip" title="{{ resource.title }}" class="p-1 col text-white"
               ng-if="resource && resource.title"
               ng-repeat="resource in cart.getCart().items">
-              {{ resource.title | limitTo: 25 }}{{ resource.title.length > 25 ? '...' : '' }}
+              {{ resource.title | limitTo: 30 }}{{ resource.title.length > 30 ? '...' : '' }}
               <button class="btn-danger btn-xs float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-sm"></i></button>
           </li>
         </div>
     </ul>
-    <div class="card-footer" ng-if="cart.getCart().items.length >= 2">
+    <div class="card-footer" ng-if="cart.getCart().items.length >= 2" style="margin-bottom: 5em;">
       <div ng-click="cart.removeAll()">
           <button class="btn btn-danger btn-block">Remove all selected</button>
       </div>

@@ -159,8 +159,9 @@ class GroupSerializer(DynamicModelSerializer):
 
     def get_title(self, obj):
         resources = GroupProfile.objects.filter(group_id=obj.id).values_list('title', flat=True)
-
-        return list(resources)[0]
+        title = list(resources)
+        if title:
+            return title[0]
 
 
 class GroupProfileSerializer(BaseDynamicModelSerializer):
