@@ -2639,6 +2639,7 @@ def bulk_metadata_version(resource, vals: dict = {}, **kwargs):
             summary='This is the first published version.',
             changes=commit)
 
+
 def version_post_save(instance, sender, **kwargs):
     """
     Get information from resource

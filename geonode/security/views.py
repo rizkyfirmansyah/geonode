@@ -502,6 +502,7 @@ def set_bulk_metadata(request):
 
     if regions:
         regions_through = ResourceBase.regions.through
+        regions_through.objects.filter(resourcebase__in=resourcebase).delete()
         new_regions = [regions_through(region=regions, resourcebase=resource) for resource in resourcebase]
         regions_through.objects.bulk_create(new_regions, ignore_conflicts=True)
 

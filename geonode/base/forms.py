@@ -632,11 +632,11 @@ class BatchEditForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['category'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
-        self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['regions'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
         self.fields['group'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
-        self.fields['owner'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
-        self.fields['poc'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
-        self.fields['metadata_author'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '5'})
+        self.fields['owner'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
+        self.fields['poc'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
+        self.fields['metadata_author'].widget.attrs.update({'class': 'selectpicker', 'data-live-search': 'true', 'data-size': '10'})
 
 
 class BatchPermissionsForm(PermissionsForm):
