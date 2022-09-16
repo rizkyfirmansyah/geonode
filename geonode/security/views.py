@@ -464,16 +464,14 @@ def set_bulk_metadata(request):
     keywords = resources.get('keywords')
     regions = resources.get("regions")
     categories = resources.get('category')
-    new_categories = None
     poc = resources.get("poc")
     metadata_author = resources.get("metadata_author")
     new_poc = None
+    new_categories = None
     if poc:
         new_poc = get_user_model().objects.get(id=poc)
     if metadata_author:
         new_metadata_author = get_user_model().objects.get(id=metadata_author)
-    if categories:
-        new_categories = resources.get('category')
 
     to_update = {}
     for _key, _value in resources.items():
@@ -483,6 +481,12 @@ def set_bulk_metadata(request):
 
     if keywords:
         keywords = keywords.split(", ")
+    
+    if categories:
+        if isinstance(categories, list):
+            new_categories = [int(c) for c in categories]
+        else:
+            new_categories = [int(categories)]
 
     if regions:
         regions = Region.objects.get(pk=regions)
@@ -493,10 +497,10 @@ def set_bulk_metadata(request):
             resource.poc = new_poc
         if metadata_author:
             resource.metadata_author = new_metadata_author
-        if new_categories:
+        if categories:
             resource.category.clear()
             resource.category.add(*new_categories)
-        bulk_metadata_version(resource=resource, vals = to_update, keywords=keywords, category=new_categories, contributors=request.user, poc=poc)
+        bulk_metadata_version(resource=resource, vals = to_update, keywords=keywords, category=categories, contributors=request.user, poc=poc)
 
     resourcebase.update(**to_update)
 

@@ -2575,12 +2575,16 @@ def bulk_metadata_version(resource, vals: dict = {}, **kwargs):
     license = vals.get('license')
     restrictions = vals.get('restriction_code_type')
     author = vals.get('author')
-
+    category = kwargs['category']
+    
     if kwargs['keywords']:
         commit["keywords"] = kwargs['keywords']
         summary.append('Keywords (Changed)')
-    if kwargs['category']:
-        commit["category"] = [str(TopicCategory.objects.get(id=id)) for id in kwargs['category']]
+    if category:
+        if isinstance(category, list):
+            commit["category"] = [str(TopicCategory.objects.get(id=id)) for id in category]
+        else:
+            commit["category"] = str(TopicCategory.objects.get(id=category))
         summary.append('Category (Changed)')
     if owner:
         commit["responsible"] = get_user_model().objects.get(id=vals.get('owner')).full_name_or_nick

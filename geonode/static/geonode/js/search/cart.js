@@ -46,7 +46,7 @@
           };
     })
 
-    .controller('CartList', function($scope, cart, $http) {
+    .controller('CartList', function($scope, cart, $http, $window) {
         $scope.cart = cart;
         $scope.layers_params = '';
 
@@ -180,9 +180,9 @@
                     setTimeout(function() {
                         $("#bulkMetadataToast").remove();
                         $("#bulkMetadataForm").modal("hide");
-                        $("#bulkMetadataForm")[0].reset();
-                        window.location.href = $event.target.href;
-                    }, 2000);
+                        $window.location.reload();
+                        // reset modal
+                    }, 1000);
                     Pace.stop();
                 },
                 error: function(xhr, status, error) {
