@@ -4,13 +4,15 @@
         <h6 class="text-white text-center">{{ emptyString }}</h6>
     </div>
     <ul class="list-group" ng-if="cart.getCart().items.length">
-        <div class="row w-100 ml-1 d-block p-1">
-          <li data-toggle="tooltip" title="{{ resource.title }}" class="p-1 col text-white"
-              ng-if="resource && resource.title"
-              ng-repeat="resource in cart.getCart().items">
-              {{ resource.title | limitTo: 27 }}{{ resource.title.length > 27 ? '..' : '' }}
-              <button class="btn-danger btn-xs float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-sm"></i></button>
-          </li>
+        <div class="row">
+          <div class="col-md-12">
+            <li data-toggle="tooltip" title="{{ resource.title }}" class="p-1"
+                ng-if="resource && resource.title"
+                ng-repeat="resource in cart.getCart().items">
+                <span class="small p-1 col text-white">{{ resource.title | limitTo: 30 }}{{ resource.title.length > 30 ? '..' : '' }}</span>
+                <button class="btn-danger btn-xs float-right" ng-click="cart.removeItem(resource)"><i class="fa-solid fa-remove fa-sm"></i></button>
+            </li>
+          </div>
         </div>
     </ul>
     <div class="card-footer" ng-if="cart.getCart().items.length >= 2">
