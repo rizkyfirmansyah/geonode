@@ -486,12 +486,15 @@ class DatasetFilesViewSet(DynamicModelViewSet):
             AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
             VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
             TEXTTPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'text']
+            PPTTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'powerpoint']
             if ext in AUDIOTYPES:
                 ext = 'audio'
             elif ext in VIDEOTYPES:
                 ext = 'video'
             elif ext in TEXTTPES:
                 ext = 'txt'
+            elif ext in PPTTYPES:
+                ext = 'ppt'
             dataset_thumb = os.path.join(DATASET_THUMB, f'{ext}-placeholder.png')
             update_file.update(dataset=self.object.id)
             update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(
