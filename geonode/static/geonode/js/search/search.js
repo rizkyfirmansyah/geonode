@@ -52,6 +52,23 @@
       </div>
     `
 
+    var infiniteScrollMsg = `
+      <div id="infiniteToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+        <div class="toast-message alert-info align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="mr-auto">End of Content</strong>
+            <small class="text-muted"></small>
+            <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('infiniteToast').remove()" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="toast-body">
+            <span class="font-lg-1">You have reached the end of this content. There's nothing more here.</span>
+          </div>
+        </div>
+      </div>
+    `
+
     var deleteMsg = `
       <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
         <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
@@ -814,6 +831,12 @@
                 $scope.is_next = data.data.links.next;
                 if (!$scope.is_next) {
                     $scope.infiniteScrollLoaded = false;
+                    setTimeout(function() {
+                      $(document.body).append(infiniteScrollMsg);
+                      setTimeout(function() {
+                        $('#infiniteToast').remove();
+                      }, 4000);
+                    }, 3000);
                 } else if ($scope.is_next) {
                     $scope.page += 1;
                 } 
