@@ -2661,8 +2661,8 @@ def version_post_save(instance, sender, **kwargs):
         commit["edition"] = instance.edition
         commit["supplemental_information"] = instance.supplemental_information
         commit["author"] = instance.author
-        commit["license"] = str(License.objects.get(id=instance.license))
-        commit["restrictions"] = str(RestrictionCodeType.objects.get(id=instance.restriction_code_type))
+        commit["license"] = str(instance.license)
+        commit["restrictions"] = str(instance.restriction_code_type)
 
     if resources.title != instance.title:
         summary.append('Title (Changed)')

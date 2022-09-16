@@ -10,9 +10,9 @@
 
 {% block body_inner %}
   <div class="col-md-8">
+    <form enctype="multipart/form-data">
     <div class="card">
       <div class="card-body">
-        <form enctype="multipart/form-data">
           <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
           <section id="drop-zone" dropzone class="w-100 mb-2" onclick="document.getElementById('doc_file').click();">
             <h3 id="drop_files"><i class="fa-solid fa-cloud-arrow-up fa-4x" style="color: cornflowerblue;"></i><br />{% trans "Drag and drop your " %}<span style="color:midnightblue">{% trans "datasets or tabular files" %}</span>{% trans " or click here to upload" %}</h3>
@@ -22,10 +22,15 @@
           <input type="hidden" name="permissions" id="permissions">
           <input type="hidden" name="extension" id="extension">
           <input type="hidden" name="import_id" id="import_id" value="{{ import_id }}">
-          <button id="submit" type="submit" class="btn btn-primary btn-block" ng-click="post_file()">Add file</button>
-        </form>
+        </div>
       </div>
-    </div>
+      <div class="card-footer">
+          <div class="row">
+            <div class="col-md-6"><button id="clear-button" type="button" class="btn btn-secondary btn-block">Clear</button></div>
+            <div class="col-md-6"><button id="submit" type="submit" class="btn btn-primary btn-block" ng-click="post_file()">Add file</button></div>
+          </div>
+      </div>
+    </form>
   </div>
 
 {% endblock %}

@@ -30,12 +30,16 @@
       var _text = $('#doc_file').val().replace("C:\\fakepath\\", "");
       var _title = _text.replace(/\.[^/.]+$/, "");
       var _fileName = _title.replace(/[_\W]+/g, " ") // remove non-word characters
-      const displaySelectedFile = () => {
-          $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
-          $('#drop-zone').addClass('drop-selected');
+      if ($('.files_selected').length) {
+          $('.files_selected').remove();
+          $('#drop-zone').removeClass('drop-selected');
+      }
+      var displaySelectedFile = () => {
+        $('#drop_files').append('<span class="files_selected"><br/>Files selected: ' + _fileName + '</span>');
+        $('#drop-zone').addClass('drop-selected');
       }
       displaySelectedFile();
-  });
+    });
 
   $('#clear-button').on('click', function () {
       removeEventSelected();
