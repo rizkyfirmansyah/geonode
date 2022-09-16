@@ -1021,11 +1021,21 @@
         });
 
         $("#dltDate1").on('click', function (e) {
+            $scope.date_query = {
+                'date__gte': '',
+                'date__lte': '',
+                'date__range': ''
+            };
             reset_query();
             $("#inpDate1").val('');
         });
 
         $("#dltDate2").on('click', function (e) {
+            $scope.date_query = {
+                'date__gte': '',
+                'date__lte': '',
+                'date__range': ''
+            };
             reset_query();
             $("#inpDate2").val('');
         });
