@@ -4988,7 +4988,7 @@ msgstr ""
 msgid "You can visit the document's detail page here"
 msgstr ""
 
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr ""
 
 msgid "A comment has been posted for the document"
@@ -5006,19 +5006,19 @@ msgstr ""
 msgid "uploaded the following document"
 msgstr ""
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr ""
 
 msgid "The following document was deleted"
 msgstr ""
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr ""
 
 msgid "The following document was published"
 msgstr ""
 
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr ""
 
 msgid "rated"
@@ -5030,13 +5030,13 @@ msgstr ""
 msgid "You can visit the layer's detail page here"
 msgstr ""
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr ""
 
 msgid "The following document was updated"
 msgstr ""
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr ""
 
 msgid "You have received the following notice from"

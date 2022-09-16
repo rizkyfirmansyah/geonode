@@ -5653,8 +5653,8 @@ msgstr "owned by"
 msgid "You can visit the document's detail page here"
 msgstr "You can visit the document's detail page here"
 
-msgid "A document has been approved"
-msgstr "A document has been approved"
+msgid "A dataset has been approved"
+msgstr "A dataset has been approved"
 
 msgid "A comment has been posted for the document"
 msgstr "A comment has been posted for the document"
@@ -5671,20 +5671,20 @@ msgstr "The user"
 msgid "uploaded the following document"
 msgstr "uploaded the following document"
 
-msgid "A document has been uploaded"
-msgstr "A document has been uploaded"
+msgid "A dataset has been uploaded"
+msgstr "A dataset has been uploaded"
 
 msgid "The following document was deleted"
 msgstr "The following document was deleted"
 
-msgid "A document has been deleted"
-msgstr "A document has been deleted"
+msgid "A dataset has been deleted"
+msgstr "A dataset has been deleted"
 
 msgid "The following document was published"
 msgstr "The following document was published"
 
-msgid "A document has been published"
-msgstr "A document has been published"
+msgid "A dataset has been published"
+msgstr "A dataset has been published"
 
 msgid "rated"
 msgstr "rated"
@@ -5695,14 +5695,14 @@ msgstr "the following document"
 msgid "You can visit the layer's detail page here"
 msgstr "You can visit the layer's detail page here"
 
-msgid "A document has been rated"
-msgstr "A document has been rated"
+msgid "A dataset has been rated"
+msgstr "A dataset has been rated"
 
 msgid "The following document was updated"
 msgstr "The following document was updated"
 
-msgid "A document has been updated"
-msgstr "A document has been updated"
+msgid "A dataset has been updated"
+msgstr "A dataset has been updated"
 
 msgid "You have received the following notice from"
 msgstr "You have received the following notice from"

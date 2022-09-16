@@ -5816,8 +5816,8 @@ msgid "You can visit the document's detail page here"
 msgstr "თქვენ შეგიძლიათ ეწვიოთ დოკუმენტის დეტალებს ამ გვერდზე"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "დოკუმენტი შეფასდა"
 
 msgid "A comment has been posted for the document"
@@ -5837,13 +5837,13 @@ msgstr "მომხმარებელი"
 msgid "uploaded the following document"
 msgstr "ატვირთულია შემდეგი დოკუმენტი"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "დოკუმენტი იუო ატვირთული"
 
 msgid "The following document was deleted"
 msgstr "დოკუმენტი იყო წაშლილი"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "დოკუმენტი წაიშალა"
 
 #, fuzzy
@@ -5852,8 +5852,8 @@ msgid "The following document was published"
 msgstr "დოკუმენტი იყო წაშლილი"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "დოკუმენტი იუო ატვირთული"
 
 msgid "rated"
@@ -5865,13 +5865,13 @@ msgstr "ამჟამინდელი დოკუმენტი"
 msgid "You can visit the layer's detail page here"
 msgstr "თქვენ შეგიძლიათ ნახოთ ამ ფენის დეტალები ამ გვერდძე"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "დოკუმენტი შეფასდა"
 
 msgid "The following document was updated"
 msgstr "დოკუმენტი იყო ატვირთული"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "დოკუმენტი აიტვირთა"
 
 #, fuzzy
@@ -6021,7 +6021,7 @@ msgid ""
 msgstr "გთხოვთ გადადით რესურსების გვერდზე და თუ გსურთ ჩამოტვირთოთ უფლებები"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "დოკუმენტი წაიშალა"
 

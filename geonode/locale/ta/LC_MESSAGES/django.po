@@ -5923,8 +5923,8 @@ msgid "You can visit the document's detail page here"
 msgstr "ஆவணத்தின் விரிவான பக்கங்களை நீங்கள் இங்கே காண முடியும் "
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "ஆவணம் ஒன்று மதிப்பீடு செய்யப்பட்டுள்ளது  "
 
 msgid "A comment has been posted for the document"
@@ -5944,13 +5944,13 @@ msgstr "பயன்படுத்துபவர் "
 msgid "uploaded the following document"
 msgstr "பின்வரும் ஆவணம் பதிவேற்றம்"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "ஒரு ஆவணம் பதிவேற்றம் செய்யப்பட்டுள்ளது"
 
 msgid "The following document was deleted"
 msgstr "பின்வரும் ஆவணம் நீக்கப்பட்டது"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "ஒரு ஆவணம் நீக்கப்பட்டது"
 
 #, fuzzy
@@ -5959,8 +5959,8 @@ msgid "The following document was published"
 msgstr "பின்வரும் ஆவணம் நீக்கப்பட்டது"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "ஒரு ஆவணம் பதிவேற்றம் செய்யப்பட்டுள்ளது"
 
 msgid "rated"
@@ -5972,13 +5972,13 @@ msgstr "பின்வரும் ஆவணம் "
 msgid "You can visit the layer's detail page here"
 msgstr "படுகைகளுக்கான விரிவான பக்கங்களை நீங்கள் இங்கே காணமுடியும் "
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "ஆவணம் ஒன்று மதிப்பீடு செய்யப்பட்டுள்ளது  "
 
 msgid "The following document was updated"
 msgstr "பின்வரும் ஆவணம் புதிப்பிக்கப்பட்டுள்ளது "
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "ஆவணம் ஒன்று புதிப்பிக்கப்பட்டுள்ளது"
 
 #, fuzzy
@@ -6137,7 +6137,7 @@ msgid ""
 msgstr "அவசியமாயின் வளங்கள் பக்கத்திற்கு சென்று தரவிறக்க அணுமதியை குறியிடவும்"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "ஒரு ஆவணம் நீக்கப்பட்டது"
 

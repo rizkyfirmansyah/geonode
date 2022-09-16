@@ -6361,7 +6361,7 @@ msgstr "المملوكة من قبل"
 msgid "You can visit the document's detail page here"
 msgstr "يمكنك زيارة صفحة تفاصيل الوثيقة هنا"
 
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "تمت الموافقة على وثيقة"
 
 msgid "A comment has been posted for the document"
@@ -6379,19 +6379,19 @@ msgstr "المستخدم"
 msgid "uploaded the following document"
 msgstr "تم تحميل المستند التالي"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "تم تحميل مستند"
 
 msgid "The following document was deleted"
 msgstr "تم حذف الوثيقة التالية"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "تم حذف مستند"
 
 msgid "The following document was published"
 msgstr "تم نشر الوثيقة التالية"
 
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "تم نشر وثيقة"
 
 msgid "rated"
@@ -6403,13 +6403,13 @@ msgstr "الوثيقة التالية"
 msgid "You can visit the layer's detail page here"
 msgstr "يمكنك زيارة صفحة تفاصيل الطبقة هنا"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "تم تقييم وثيقة"
 
 msgid "The following document was updated"
 msgstr "تم تحديث الوثيقة التالية"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "تم تحديث وثيقة"
 
 msgid "You have received the following notice from"

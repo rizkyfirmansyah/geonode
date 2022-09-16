@@ -5856,7 +5856,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "A Document was created"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "একটি নথি তৈরি করা হয়েছে"
 
 #, fuzzy
@@ -5886,7 +5886,7 @@ msgstr "নিম্নলিখিত ব্যবহারকারী:"
 
 #, fuzzy
 #| msgid "A Document was updated"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "নথিটি হালনাগাদ করা হয়েছে"
 
 #, fuzzy
@@ -5896,7 +5896,7 @@ msgstr "একটি নথি মোছা হয়েছে"
 
 #, fuzzy
 #| msgid "A Document was deleted"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "একটি নথি মোছা হয়েছে"
 
 #, fuzzy
@@ -5906,7 +5906,7 @@ msgstr "নিম্নলিখিত গ্রুপ:"
 
 #, fuzzy
 #| msgid "A Document was deleted"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "একটি নথি মোছা হয়েছে"
 
 #, fuzzy
@@ -5924,7 +5924,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "A Document was created"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "একটি নথি তৈরি করা হয়েছে"
 
 #, fuzzy
@@ -5934,7 +5934,7 @@ msgstr "নথিটি হালনাগাদ করা হয়েছে"
 
 #, fuzzy
 #| msgid "A Document was updated"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "নথিটি হালনাগাদ করা হয়েছে"
 
 #, fuzzy

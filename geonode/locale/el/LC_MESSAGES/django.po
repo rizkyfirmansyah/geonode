@@ -5598,7 +5598,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "A layer was uploaded"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Ανέβηκε μια επιφάνεια"
 
 #, fuzzy
@@ -5628,7 +5628,7 @@ msgstr "Το παρακάτω έγγραφο έχει εγκριθεί"
 
 #, fuzzy
 #| msgid "A Document was updated"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Ένα Έγγραφο ενημερώθηκε"
 
 #, fuzzy
@@ -5638,7 +5638,7 @@ msgstr "Το παρακάτω έγγραφο έχει δημοσιευθεί"
 
 #, fuzzy
 #| msgid "A Document was deleted"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Ένα Έγγραφο διαγράφηκε"
 
 msgid "The following document was published"
@@ -5646,7 +5646,7 @@ msgstr "Το παρακάτω έγγραφο έχει δημοσιευθεί"
 
 #, fuzzy
 #| msgid "A Document was published"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Ένα Έγγραφο δημοσιεύτηκε"
 
 #, fuzzy
@@ -5664,7 +5664,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "A Document was created"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Ένα Έγγραφο δημιουργήθηκε"
 
 #, fuzzy
@@ -5674,7 +5674,7 @@ msgstr "Το παρακάτω έγγραφο έχει εγκριθεί"
 
 #, fuzzy
 #| msgid "A Document was updated"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Ένα Έγγραφο ενημερώθηκε"
 
 #, fuzzy

@@ -5908,7 +5908,7 @@ msgstr "manejada por"
 msgid "You can visit the document's detail page here"
 msgstr "Usted puede visitar la página de detalle del documento aquí"
 
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Un documento ha sido aprobado"
 
 msgid "A comment has been posted for the document"
@@ -5926,19 +5926,19 @@ msgstr "El usuario"
 msgid "uploaded the following document"
 msgstr "subio el siguiente documento"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Un documento ha sido subido"
 
 msgid "The following document was deleted"
 msgstr "El siguiente documento se eliminó"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Un documento fue eliminado"
 
 msgid "The following document was published"
 msgstr "El siguiente documento fue publicado"
 
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Un documento ha sido publicado"
 
 msgid "rated"
@@ -5950,13 +5950,13 @@ msgstr "el siguiente documento"
 msgid "You can visit the layer's detail page here"
 msgstr "Usted puede visitar la página de detalle de la capa aquí"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Un documento fue catalogado"
 
 msgid "The following document was updated"
 msgstr "Un documento siguiente fue actualizado"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Un documento fue actualizado"
 
 msgid "You have received the following notice from"

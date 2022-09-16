@@ -6144,8 +6144,8 @@ msgid "You can visit the document's detail page here"
 msgstr "Вы можете посетить страницу сведений документа здесь"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "Документ был оценен"
 
 msgid "A comment has been posted for the document"
@@ -6165,13 +6165,13 @@ msgstr "Пользователь"
 msgid "uploaded the following document"
 msgstr "загрузил следующий документ"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Документ был загружен"
 
 msgid "The following document was deleted"
 msgstr "Следующий документ был удалён"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Документ был удалён"
 
 #, fuzzy
@@ -6180,8 +6180,8 @@ msgid "The following document was published"
 msgstr "Следующий документ был удалён"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "Документ был загружен"
 
 msgid "rated"
@@ -6193,13 +6193,13 @@ msgstr "следующие документы"
 msgid "You can visit the layer's detail page here"
 msgstr "Вы можете посетить страницу сведений слоя здесь"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Документ был оценен"
 
 msgid "The following document was updated"
 msgstr "Следующий документ был обновлён"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Документ был обновлён"
 
 #, fuzzy
@@ -6357,7 +6357,7 @@ msgstr ""
 "скачивания, если желаете"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "Документ был удалён"
 

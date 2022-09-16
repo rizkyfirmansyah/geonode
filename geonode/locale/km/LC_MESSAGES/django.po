@@ -5856,7 +5856,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "សេវាកម្ម​ត្រូវ​បាន​បង្កើត​:"
 
 #, fuzzy
@@ -5884,7 +5884,7 @@ msgstr "អ្នក​ប្រើ​ដូច​ខាង​ក្រោម​
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "សេវាកម្ម​ត្រូវ​បាន​បង្កើត​:"
 
 #, fuzzy
@@ -5894,7 +5894,7 @@ msgstr "អ្នក​ប្រើ​ដូច​ខាង​ក្រោម​
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "សេវាកម្ម​ត្រូវ​បាន​បង្កើត​:"
 
 #, fuzzy
@@ -5904,7 +5904,7 @@ msgstr "ក្រុម​ដូច​ខាង​ក្រោម​:"
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "ឯកសារ"
 
 #, fuzzy
@@ -5922,7 +5922,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "សេវាកម្ម​ត្រូវ​បាន​បង្កើត​:"
 
 #, fuzzy
@@ -5932,7 +5932,7 @@ msgstr "អ្នក​ប្រើ​ដូច​ខាង​ក្រោម​
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "សេវាកម្ម​ត្រូវ​បាន​បង្កើត​:"
 
 #, fuzzy

@@ -5893,7 +5893,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "サービスが作成されています："
 
 #, fuzzy
@@ -5921,7 +5921,7 @@ msgstr "次のユーザー："
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "サービスが作成されています："
 
 #, fuzzy
@@ -5931,7 +5931,7 @@ msgstr "次のユーザー："
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "サービスが作成されています："
 
 #, fuzzy
@@ -5941,7 +5941,7 @@ msgstr "以下のグループ："
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "ドキュメント"
 
 #, fuzzy
@@ -5959,7 +5959,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "サービスが作成されています："
 
 #, fuzzy
@@ -5969,7 +5969,7 @@ msgstr "次のユーザー："
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "サービスが作成されています："
 
 #, fuzzy

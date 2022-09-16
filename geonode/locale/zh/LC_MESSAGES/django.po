@@ -6051,8 +6051,8 @@ msgid "You can visit the document's detail page here"
 msgstr "您可以在这里阅读文档的具体信息"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "一个文档已经被评分"
 
 msgid "A comment has been posted for the document"
@@ -6070,13 +6070,13 @@ msgstr "该用户"
 msgid "uploaded the following document"
 msgstr "上传下列文档"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "一个文档已经上传"
 
 msgid "The following document was deleted"
 msgstr "下列文档被删除"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "一个文档已经被删除"
 
 #, fuzzy
@@ -6085,8 +6085,8 @@ msgid "The following document was published"
 msgstr "下列文档被删除"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "一个文档已经上传"
 
 msgid "rated"
@@ -6098,13 +6098,13 @@ msgstr "下列文档"
 msgid "You can visit the layer's detail page here"
 msgstr "您可以在这里参阅该图层的具体信息"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "一个文档已经被评分"
 
 msgid "The following document was updated"
 msgstr "下列文档被更新"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "一个文档已经被更新"
 
 #, fuzzy
@@ -6254,7 +6254,7 @@ msgid ""
 msgstr "如果您愿意，请前往资源页面设置下载许可"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "一个文档已经被删除"
 

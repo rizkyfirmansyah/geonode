@@ -5899,7 +5899,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Dịch vụ đã được tạo ra:"
 
 #, fuzzy
@@ -5927,7 +5927,7 @@ msgstr "Người sử dụng sau đây:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Dịch vụ đã được tạo ra:"
 
 #, fuzzy
@@ -5937,7 +5937,7 @@ msgstr "Người sử dụng sau đây:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Dịch vụ đã được tạo ra:"
 
 #, fuzzy
@@ -5947,7 +5947,7 @@ msgstr "Các nhóm sau:"
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Tài liệu"
 
 #, fuzzy
@@ -5965,7 +5965,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Dịch vụ đã được tạo ra:"
 
 #, fuzzy
@@ -5975,7 +5975,7 @@ msgstr "Người sử dụng sau đây:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Dịch vụ đã được tạo ra:"
 
 #, fuzzy

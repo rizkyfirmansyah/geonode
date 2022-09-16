@@ -5865,7 +5865,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "خدمات ایجاد شده است:"
 
 #, fuzzy
@@ -5895,7 +5895,7 @@ msgstr "کاربران زیر:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "خدمات ایجاد شده است:"
 
 #, fuzzy
@@ -5905,7 +5905,7 @@ msgstr "کاربران زیر:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "خدمات ایجاد شده است:"
 
 #, fuzzy
@@ -5915,7 +5915,7 @@ msgstr "گروه های زیر:"
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "مستندات"
 
 #, fuzzy
@@ -5933,7 +5933,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "خدمات ایجاد شده است:"
 
 #, fuzzy
@@ -5943,7 +5943,7 @@ msgstr "کاربران زیر:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "خدمات ایجاد شده است:"
 
 #, fuzzy

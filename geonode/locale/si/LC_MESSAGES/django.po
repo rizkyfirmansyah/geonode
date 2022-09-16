@@ -5911,8 +5911,8 @@ msgid "You can visit the document's detail page here"
 msgstr "ඔබ මෙතනයි ලේඛනයේ විස්තර පිටුව වෙත හැකි"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "කරන ලද ලියවිල්ලක් ශ්රේණිගත කර ඇත"
 
 msgid "A comment has been posted for the document"
@@ -5932,13 +5932,13 @@ msgstr "පරිශීලකයා"
 msgid "uploaded the following document"
 msgstr "පහත සඳහන් ලේඛන උඩුගත"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "කරන ලද ලියවිල්ලක් උඩුගත කර ඇත"
 
 msgid "The following document was deleted"
 msgstr "පහත දැක්වෙන ලේඛනය මකා"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "කරන ලද ලියවිල්ලක් මකාදමා ඇත"
 
 #, fuzzy
@@ -5947,8 +5947,8 @@ msgid "The following document was published"
 msgstr "පහත දැක්වෙන ලේඛනය මකා"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "කරන ලද ලියවිල්ලක් උඩුගත කර ඇත"
 
 msgid "rated"
@@ -5960,13 +5960,13 @@ msgstr "පහත සඳහන් ලේඛන"
 msgid "You can visit the layer's detail page here"
 msgstr "ඔබ මෙතනයි ස්තරයෙහි විස්තර පිටුව වෙත හැකි"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "කරන ලද ලියවිල්ලක් ශ්රේණිගත කර ඇත"
 
 msgid "The following document was updated"
 msgstr "පහත දැක්වෙන ලේඛනය යාවත්කාලීන කර"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "කරන ලද ලියවිල්ලක් යාවත්කාලීන කර ඇත"
 
 #, fuzzy
@@ -6122,7 +6122,7 @@ msgid ""
 msgstr "ඔබ කැමති නම්, පිටුව සම්පත් හා බාගත අවසර ලබා දිය යන්න කරුණාකර"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "කරන ලද ලියවිල්ලක් මකාදමා ඇත"
 

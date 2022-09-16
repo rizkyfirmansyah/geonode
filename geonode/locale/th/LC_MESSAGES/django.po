@@ -6027,8 +6027,8 @@ msgid "You can visit the document's detail page here"
 msgstr "คุณสามารถดูหน้ารายละเอียดของเอกสารได้ที่นี่"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "เอกสารได้รับการให้คะแนนแล้ว"
 
 msgid "A comment has been posted for the document"
@@ -6048,13 +6048,13 @@ msgstr "ผู้ใช้"
 msgid "uploaded the following document"
 msgstr "อัพโหลดเอกสารดังต่อไปนี้เสร็จแล้ว"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "อัพโหลดเอกสารแล้ว"
 
 msgid "The following document was deleted"
 msgstr "เอกสารดังต่อไปนี้ถูกลบแล้ว"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "เอกสารถูกลบแล้ว"
 
 #, fuzzy
@@ -6063,8 +6063,8 @@ msgid "The following document was published"
 msgstr "เอกสารดังต่อไปนี้ถูกลบแล้ว"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "อัพโหลดเอกสารแล้ว"
 
 msgid "rated"
@@ -6076,13 +6076,13 @@ msgstr "เอกสารดังต่อไปนี้"
 msgid "You can visit the layer's detail page here"
 msgstr "คุณสามารถดูหน้ารายละเอียดของชั้นข้อมูลได้ที่นี่"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "เอกสารได้รับการให้คะแนนแล้ว"
 
 msgid "The following document was updated"
 msgstr "เอกสารดังต่อไปนี้ได้รับการปรับปรุงแล้ว"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "เอกสารได้รับการปรับปรุงแล้ว"
 
 #, fuzzy
@@ -6238,7 +6238,7 @@ msgid ""
 msgstr "กรุณาไปที่หน้าทรัพยากรและกำหนดสิทธิ์การดาวน์โหลด ถ้าหากคุณต้องการ"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "เอกสารถูกลบแล้ว"
 

@@ -6150,8 +6150,8 @@ msgid "You can visit the document's detail page here"
 msgstr "Você pode visitar a página de detalhes do documento aqui"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "Um documento foi classificado"
 
 msgid "A comment has been posted for the document"
@@ -6171,13 +6171,13 @@ msgstr "O usuário"
 msgid "uploaded the following document"
 msgstr "fez upload do seguinte documento"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Foi feito upload de um documento"
 
 msgid "The following document was deleted"
 msgstr "O seguinte documento foi excluído"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Um documento foi excluído"
 
 #, fuzzy
@@ -6186,8 +6186,8 @@ msgid "The following document was published"
 msgstr "O seguinte documento foi excluído"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "Foi feito upload de um documento"
 
 msgid "rated"
@@ -6199,13 +6199,13 @@ msgstr "o seguinte documento"
 msgid "You can visit the layer's detail page here"
 msgstr "Você pode visitar a página de detalhes da camada aqui"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Um documento foi classificado"
 
 msgid "The following document was updated"
 msgstr "O seguinte documento foi atualizado"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Um documento foi atualizado"
 
 #, fuzzy
@@ -6363,7 +6363,7 @@ msgstr ""
 "Vá para a página de recursos e atribua as permissões de download, se desejar"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "Um documento foi excluído"
 

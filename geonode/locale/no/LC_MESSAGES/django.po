@@ -5734,8 +5734,8 @@ msgid "You can visit the document's detail page here"
 msgstr ""
 
 #, fuzzy
-#| msgid "A document has been updated"
-msgid "A document has been approved"
+#| msgid "A dataset has been updated"
+msgid "A dataset has been approved"
 msgstr "Et dokument har blitt oppdatert"
 
 #, fuzzy
@@ -5764,8 +5764,8 @@ msgid "uploaded the following document"
 msgstr "Følger"
 
 #, fuzzy
-#| msgid "A document has been updated"
-msgid "A document has been uploaded"
+#| msgid "A dataset has been updated"
+msgid "A dataset has been uploaded"
 msgstr "Et dokument har blitt oppdatert"
 
 #, fuzzy
@@ -5774,8 +5774,8 @@ msgid "The following document was deleted"
 msgstr "Et dokument ble fjernet"
 
 #, fuzzy
-#| msgid "A document has been updated"
-msgid "A document has been deleted"
+#| msgid "A dataset has been updated"
+msgid "A dataset has been deleted"
 msgstr "Et dokument har blitt oppdatert"
 
 #, fuzzy
@@ -5784,8 +5784,8 @@ msgid "The following document was published"
 msgstr "Et dokument ble fjernet"
 
 #, fuzzy
-#| msgid "A document has been updated"
-msgid "A document has been published"
+#| msgid "A dataset has been updated"
+msgid "A dataset has been published"
 msgstr "Et dokument har blitt oppdatert"
 
 #, fuzzy
@@ -5802,8 +5802,8 @@ msgid "You can visit the layer's detail page here"
 msgstr ""
 
 #, fuzzy
-#| msgid "A document has been updated"
-msgid "A document has been rated"
+#| msgid "A dataset has been updated"
+msgid "A dataset has been rated"
 msgstr "Et dokument har blitt oppdatert"
 
 #, fuzzy
@@ -5811,7 +5811,7 @@ msgstr "Et dokument har blitt oppdatert"
 msgid "The following document was updated"
 msgstr "Et dokument ble oppdatert"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Et dokument har blitt oppdatert"
 
 msgid "You have received the following notice from"
@@ -5995,7 +5995,7 @@ msgid ""
 msgstr ""
 
 #, fuzzy
-#| msgid "A document has been updated"
+#| msgid "A dataset has been updated"
 msgid "A resource's download has been requested"
 msgstr "Et dokument har blitt oppdatert"
 

@@ -6620,7 +6620,7 @@ msgid "You can visit the document's detail page here"
 msgstr "Tu môžete navštíviť stránku s podrobnosťami o dokumente"
 
 #, fuzzy
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Bol schválený dokument"
 
 #, fuzzy
@@ -6644,7 +6644,7 @@ msgid "uploaded the following document"
 msgstr "nahral nasledujúci dokument"
 
 #, fuzzy
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Bol nahraný dokument"
 
 #, fuzzy
@@ -6652,7 +6652,7 @@ msgid "The following document was deleted"
 msgstr "Nasledujúci dokument bol odstránený"
 
 #, fuzzy
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Dokument bol odstránený"
 
 #, fuzzy
@@ -6660,7 +6660,7 @@ msgid "The following document was published"
 msgstr "Bol zverejnený nasledujúci dokument"
 
 #, fuzzy
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Bol zverejnený dokument"
 
 msgid "rated"
@@ -6675,7 +6675,7 @@ msgid "You can visit the layer's detail page here"
 msgstr "Tu môžete navštíviť stránku s podrobnosťami o vrstve"
 
 #, fuzzy
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Dokument bol ohodnotený"
 
 #, fuzzy
@@ -6683,7 +6683,7 @@ msgid "The following document was updated"
 msgstr "Nasledujúci dokument bol aktualizovaný"
 
 #, fuzzy
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Dokument bol aktualizovaný"
 
 #, fuzzy

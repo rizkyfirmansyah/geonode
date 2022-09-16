@@ -109,8 +109,8 @@ def resource_permissions_handle_post(request, resource):
                             "consistently!").format(username=user.username)
 
         # mail the user pertaining to they can download the resource
-        subject_email = f"🌏 Download Resource {resource.title}"
-        msg = f"You have been granted access to download {resource.title} by {request.user}. Jump to this resource {build_absolute_uri(resource.get_absolute_url())}"
+        subject_email = f"🌏 Your download {resource.title}"
+        msg = f"You have been granted access to download <a href='{build_absolute_uri(resource.get_absolute_url())}'>{resource.title}</a> by {request.user}."
         for user, perms in info['users'].items():
             if "download_resourcebase" in perms:
                 if user != request.user:
@@ -125,6 +125,8 @@ def resource_permissions_handle_post(request, resource):
 
                         email.content_subtype = "html"
                         email.send()
+                        send_inbox(request, subject_email, msg, get_user_model().objects.get(username=user))
+
                     except Exception:
                         traceback.print_exc()
 

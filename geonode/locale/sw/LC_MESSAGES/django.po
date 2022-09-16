@@ -5902,7 +5902,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "A map has been rated"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Ramani umebadilishwa kima"
 
 #, fuzzy
@@ -5930,7 +5930,7 @@ msgstr "Watumiaji wafuatao:"
 
 #, fuzzy
 #| msgid "A map has been updated"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Ramani umesasishwa"
 
 #, fuzzy
@@ -5940,7 +5940,7 @@ msgstr "Ramani zifuatazo zimefutwa"
 
 #, fuzzy
 #| msgid "A map has been deleted"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Ramani umefutwa"
 
 #, fuzzy
@@ -5950,7 +5950,7 @@ msgstr "Ramani zifuatazo zimefutwa"
 
 #, fuzzy
 #| msgid "A map has been deleted"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Ramani umefutwa"
 
 #, fuzzy
@@ -5968,7 +5968,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "A map has been rated"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Ramani umebadilishwa kima"
 
 #, fuzzy
@@ -5978,7 +5978,7 @@ msgstr "Ramani zifuatazo zimefutwa"
 
 #, fuzzy
 #| msgid "A map has been updated"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Ramani umesasishwa"
 
 #, fuzzy

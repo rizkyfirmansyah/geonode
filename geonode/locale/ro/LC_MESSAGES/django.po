@@ -5929,7 +5929,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Serviciu a fost creat:"
 
 #, fuzzy
@@ -5957,7 +5957,7 @@ msgstr "Următorii utilizatori:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Serviciu a fost creat:"
 
 #, fuzzy
@@ -5967,7 +5967,7 @@ msgstr "Următorii utilizatori:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Serviciu a fost creat:"
 
 #, fuzzy
@@ -5977,7 +5977,7 @@ msgstr "Următoarele grupuri:"
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Documente"
 
 #, fuzzy
@@ -5995,7 +5995,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Serviciu a fost creat:"
 
 #, fuzzy
@@ -6005,7 +6005,7 @@ msgstr "Următorii utilizatori:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Serviciu a fost creat:"
 
 #, fuzzy

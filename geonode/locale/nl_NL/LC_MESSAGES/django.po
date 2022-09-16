@@ -5766,7 +5766,7 @@ msgstr "Je kan hier de pagina met details van het document bekijken"
 
 #, fuzzy
 #| msgid "A Document was created"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Document werd aangemaakt"
 
 #, fuzzy
@@ -5796,7 +5796,7 @@ msgstr "De volgende gebruikers:"
 
 #, fuzzy
 #| msgid "A Document was updated"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Document werd bijgewerkt"
 
 #, fuzzy
@@ -5806,7 +5806,7 @@ msgstr "Document werd verwijderd"
 
 #, fuzzy
 #| msgid "A Document was deleted"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Document werd verwijderd"
 
 #, fuzzy
@@ -5816,7 +5816,7 @@ msgstr "De volgende groepen:"
 
 #, fuzzy
 #| msgid "A Document was deleted"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Document werd verwijderd"
 
 #, fuzzy
@@ -5834,7 +5834,7 @@ msgstr "Je kan hier de pagina met details van de layer bekijken"
 
 #, fuzzy
 #| msgid "A Document was created"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Document werd aangemaakt"
 
 #, fuzzy
@@ -5844,7 +5844,7 @@ msgstr "Document werd bijgewerkt"
 
 #, fuzzy
 #| msgid "A Document was updated"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Document werd bijgewerkt"
 
 #, fuzzy

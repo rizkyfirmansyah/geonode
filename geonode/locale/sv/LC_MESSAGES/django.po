@@ -5892,7 +5892,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Tjänsten har skapats:"
 
 #, fuzzy
@@ -5920,7 +5920,7 @@ msgstr "Följande användare:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Tjänsten har skapats:"
 
 #, fuzzy
@@ -5930,7 +5930,7 @@ msgstr "Följande användare:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Tjänsten har skapats:"
 
 #, fuzzy
@@ -5940,7 +5940,7 @@ msgstr "Följande grupper:"
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Dokument"
 
 #, fuzzy
@@ -5958,7 +5958,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Tjänsten har skapats:"
 
 #, fuzzy
@@ -5968,7 +5968,7 @@ msgstr "Följande användare:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Tjänsten har skapats:"
 
 #, fuzzy

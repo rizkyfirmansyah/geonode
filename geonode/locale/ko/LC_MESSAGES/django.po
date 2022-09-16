@@ -6249,8 +6249,8 @@ msgid "You can visit the document's detail page here"
 msgstr "여기에서 문서의 상세정보 페이지를 방문할 수 있습니다"
 
 #, fuzzy
-#| msgid "A document has been rated"
-msgid "A document has been approved"
+#| msgid "A dataset has been rated"
+msgid "A dataset has been approved"
 msgstr "문서에 평점이 주어졌습니다"
 
 msgid "A comment has been posted for the document"
@@ -6270,13 +6270,13 @@ msgstr "사용자가"
 msgid "uploaded the following document"
 msgstr "다음 문서를 갱신했습니다"
 
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "문서가 갱신되었습니다"
 
 msgid "The following document was deleted"
 msgstr "다음 문서를 삭제했습니다"
 
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "문서가 삭제되었습니다"
 
 #, fuzzy
@@ -6285,8 +6285,8 @@ msgid "The following document was published"
 msgstr "다음 문서를 삭제했습니다"
 
 #, fuzzy
-#| msgid "A document has been uploaded"
-msgid "A document has been published"
+#| msgid "A dataset has been uploaded"
+msgid "A dataset has been published"
 msgstr "문서가 갱신되었습니다"
 
 msgid "rated"
@@ -6298,13 +6298,13 @@ msgstr "다음 문서"
 msgid "You can visit the layer's detail page here"
 msgstr "여기에서 레이어의 상세 페이지를 방문할 수 있습니다"
 
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "문서에 평점이 주어졌습니다"
 
 msgid "The following document was updated"
 msgstr "다음 문서를 갱신했습니다"
 
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "문서가 갱신되었습니다"
 
 #, fuzzy
@@ -6460,7 +6460,7 @@ msgid ""
 msgstr "원한다면 리소스 페이지로 이동하여 문서 권한을 승인하십시오"
 
 #, fuzzy
-#| msgid "A document has been deleted"
+#| msgid "A dataset has been deleted"
 msgid "A resource's download has been requested"
 msgstr "문서가 삭제되었습니다"
 

@@ -5884,7 +5884,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been approved"
+msgid "A dataset has been approved"
 msgstr "Palvelu on luotu:"
 
 #, fuzzy
@@ -5914,7 +5914,7 @@ msgstr "Seuraavat käyttäjät:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been uploaded"
+msgid "A dataset has been uploaded"
 msgstr "Palvelu on luotu:"
 
 #, fuzzy
@@ -5924,7 +5924,7 @@ msgstr "Seuraavat käyttäjät:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been deleted"
+msgid "A dataset has been deleted"
 msgstr "Palvelu on luotu:"
 
 #, fuzzy
@@ -5934,7 +5934,7 @@ msgstr "Seuraavat ryhmät:"
 
 #, fuzzy
 #| msgid "Documents"
-msgid "A document has been published"
+msgid "A dataset has been published"
 msgstr "Dokumentit"
 
 #, fuzzy
@@ -5952,7 +5952,7 @@ msgstr ""
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been rated"
+msgid "A dataset has been rated"
 msgstr "Palvelu on luotu:"
 
 #, fuzzy
@@ -5962,7 +5962,7 @@ msgstr "Seuraavat käyttäjät:"
 
 #, fuzzy
 #| msgid "Service has been created:"
-msgid "A document has been updated"
+msgid "A dataset has been updated"
 msgstr "Palvelu on luotu:"
 
 #, fuzzy
