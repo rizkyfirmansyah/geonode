@@ -198,6 +198,8 @@
 
 {% block extra_script %}
 {{ block.super }}
+  {% include 'search/search_scripts.html' %}
+  
   {% if GEONODE_SECURITY_ENABLED %}
     {% include "toast/permissions_form.html" %}
   {% endif %}

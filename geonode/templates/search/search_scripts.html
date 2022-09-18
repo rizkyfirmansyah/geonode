@@ -30,7 +30,6 @@
   {% block search_scripts_endpoints %}
   CATEGORIES_ENDPOINT = '{% url 'categories-list' %}';
   GROUP_CATEGORIES_ENDPOINT = '{% url 'group-categories-list' %}';
-  {% comment %} GROUP_CATEGORIES_ENDPOINT = '{% url 'api_dispatch_list' api_name='api' resource_name='groupcategory' %}'; {% endcomment %}
   KEYWORDS_ENDPOINT = '{% url 'keywords-list' %}';
   var enable_thesauri = false;
   {% if THESAURI_FILTERS %}
@@ -48,37 +47,26 @@
   CLIENT_RESULTS_LIMIT = {{ CLIENT_RESULTS_LIMIT }};
   API_LIMIT_PER_PAGE = {{ API_LIMIT_PER_PAGE }};
  {% endblock %}
-  // Register autocomplete for text filters
-  $(document).ready(function() {
-    window.autocomplete = new Autocomplete({
-      form_btn: '#text_search_btn',
-      form_submit: null,
-      form_selector: '#text-search-autocomplete',
-      input_selector: '#text_search_input',
-      container_selector: '#text-search-container'
-    })
-    window.autocomplete.setup()
-  })
 
-  {% get_context_resourcetype as pathc %}
-  {% if pathc == "catalogue" %}
-          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = siteUrl + 'api/v2/resources'; {% endcomment %}
-          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "base-resources-list" %}'; {% endcomment %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base"%}';
-  {% elif pathc == "maps" %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_map" %}';
-  {% elif pathc == "search" %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
-          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = siteUrl + 'api/v2/resources'; {% endcomment %}
-  {% elif pathc == "people" %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_profile" %}';
-  {% elif pathc == "groups/categories" %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_category" %}';
-  {% elif pathc == "groups" %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_groups" %}';
+  {% get_current_path as path %}
+
+  {% if path == "/people/" %}
+      SEARCH_URL = '{% url 'profiles-list' %}?q={{profile.username}}';
+
+  {% elif "/people/profile" in path %}
+      SEARCH_URL = '{% url 'base-resources-list' %}?225d70a={{profile.username}}';
+
+  {% elif "/groups/group/" in path %}
+      SEARCH_URL = '{% url 'profiles-list' %}?members={{object.slug}}';
+  
+  {% elif path == "/groups/" or "/groups/?c" in path or "/groups/?q" in path or "/groups/?order_by" in path %}
+      SEARCH_URL = '{% url 'group-profiles-list' %}';
+
+  {% elif "groups/categories/" in path %}
+      SEARCH_URL = '{% url 'group-categories-list' %}?c={{object.slug}}';
+      
   {% else %}
-          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
-          {% comment %} AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "base-resources-list" %}'; {% endcomment %}
+      SEARCH_URL = '{% url 'base-resources-list' %}';
   {% endif %}
 
   var module = angular.module('search', ['geonode_main_search', 'cart']);

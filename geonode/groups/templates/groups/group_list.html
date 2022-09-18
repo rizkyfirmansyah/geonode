@@ -40,3 +40,9 @@
     {% include 'search/_sidebar_group.html' %}
   </aside>
 {% endblock aside %}
+
+{% block extra_script %}
+{{ block.super }}
+  {% include 'search/search_scripts.html' %}
+
+{% endblock %}

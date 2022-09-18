@@ -3,7 +3,7 @@
 <div class="side-inner bg-white" id="sidebar">
   <div class="row justify-content-between mb-2 pt-2">
     <div class="col-4 ml-2">{% trans "Filters" %}</div>
-    <button type="button" id="clear-search" class="col-4 text-center delete_search_query">{% trans "Clear" %}</button>
+    <button type="button" id="clear-search" class="col-4 text-center clear_filter">{% trans "Clear" %}</button>
     {% if request.user_agent.is_mobile %}
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close-sidebar">
         <i class="fa-solid fa-xmark" data-dismiss="modal"></i>

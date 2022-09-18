@@ -27,3 +27,9 @@
 
   {% include "modal/bulk_permissions.html" %}
 {% endblock %}
+
+{% block extra_script %}
+{{ block.super }}
+  {% include 'search/search_scripts.html' %}
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load base_tags %}
+{% load i18n %}
+
+<script type="text/javascript">
+
+  // Register autocomplete for text filters
+  $(document).ready(function() {
+        window.autocomplete = new Autocomplete({
+          form_btn: '#text_search_btn',
+          form_submit: null,
+          form_selector: '#text-search-autocomplete',
+          input_selector: '#text_search_input',
+          container_selector: '#text-search-container'
+        })
+        window.autocomplete.setup();
+
+        $('.delete_search_query').on('click', function(e) {
+            e.preventDefault();
+            $("#text_search_input").val('');
+            $(".result-wrapper").css('display', 'none');
+            $(".input-highlight").css("width", '0em');
+        });
+        // hide the autocomplete div results whenever the users click on container
+        $('.container').on('click', function(){
+            $('.ac-results').addClass("d-none");
+        });
+  })
+
+  {% get_context_resourcetype as pathc %}
+  {% if pathc == "catalogue" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base"%}';
+  {% elif pathc == "maps" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_map" %}';
+  {% elif pathc == "search" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
+  {% elif pathc == "people" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_profile" %}';
+  {% elif pathc == "groups/categories" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_category" %}';
+  {% elif pathc == "groups" %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_groups" %}';
+  {% else %}
+          AUTOCOMPLETE_URL_RESOURCEBASE = '{% url "autocomplete_base" %}';
+  {% endif %}
+
+</script>

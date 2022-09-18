@@ -1,5 +1,6 @@
 {% extends "geonode_base.html" %}
 {% load i18n %}
+{% load static %}
 {% load base_tags %}
 {% load guardian_tags %}
 {% load pagination_tags %}
@@ -26,3 +27,9 @@
 
 </div>
 {% endblock body %}
+
+{% block extra_script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-tpls.js" integrity="sha512-Re9KhAaoh5qo/Cm/wtExVs7ETTKTx/81aXPHko2nWlUvTzELYhTwpp/DwUu+z8ul+DjtbJdPcmxEYwKewzG62w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-csp.css" integrity="sha512-TSigfdiJq7G9AWJnE/8D3M/HcBs9wfKpbrCbMg4iSs8IRVujA854B5wd/glfPzBRaeqiLLz1jHm6swYsci2txQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="{% static "geonode/js/upload/dataset.js" %}"></script>
+{% endblock %}

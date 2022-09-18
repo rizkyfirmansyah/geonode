@@ -55,6 +55,8 @@
 {% block extra_script %}
 {{ block.super }}
 
+  {% include 'search/search_scripts.html' %}
+
   {% include 'section/require_signin.html' %}
   
 {% endblock extra_script %}
