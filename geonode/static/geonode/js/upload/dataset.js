@@ -1,4 +1,4 @@
- 
+
     var formHandlerMsg = `
       <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
         <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
@@ -66,6 +66,28 @@
       </div>
     `
 
+    var humanFileSize = (bytes, si=false, dp=1) => {
+        const thresh = si ? 1000 : 1024;
+
+        if (Math.abs(bytes) < thresh) {
+          return bytes + ' B';
+        }
+
+        const units = si 
+          ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] 
+          : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        let u = -1;
+        const r = 10**dp;
+
+        do {
+          bytes /= thresh;
+          ++u;
+        } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+        return bytes.toFixed(dp) + ' ' + units[u];
+    }
+
     var dataset = angular.module('dataset', ['ngCookies', 'ngSanitize', 'ui.bootstrap'], function($locationProvider) {
         if (window.navigator.userAgent.indexOf("MSIE") == -1) {
             $locationProvider.html5Mode({
@@ -113,21 +135,65 @@
         }
 
         $scope.post_file = function (dataset_id) {
-          $('#submit').prop("disabled", true)
-          setTimeout(function() {
-            $('#submit').prop("disabled", false)
-          }, 2000);
+            $('#submit').prop("disabled", true)
+            setTimeout(function() {
+              $('#submit').prop("disabled", false)
+            }, 2000);
 
-          var file = $("#doc_file").val();
-          var file_url = $("#id_file_url").val();
-          if (file || file_url) {
-              var uploader = dataset.upload_dataset_file($http, $rootScope, document.querySelector('#doc_file'), dataset_id);
-          } else {
-              $(document.body).append(handlerSubmitMsg);
-              setTimeout(function() {
-                $('#datasetToast').remove();
-              }, 4000)
-          }
+            var handlerMaxFileSizeMsg = (max_size) => {
+              return `
+                <div id="datasetMaxSizeToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+                  <div class="toast-message alert-warning align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                      <strong class="mr-auto">Max File Size</strong>
+                      <small class="text-muted"></small>
+                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetMaxSizeToast').remove()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="toast-body">
+                      <span class="font-lg-1">This file exceeds the maximum upload size than the system allows: `+humanFileSize(max_size)+`. Try contact your admin to increase the max upload size or compressing your file.</span>
+                    </div>
+                  </div>
+                </div>
+              `
+            }
+
+            var file = $("#doc_file").val();
+            var file_url = $("#id_file_url").val();
+            var UPLOAD_SIZE_LIMITS = siteUrl + "api/v2/upload-size-limits";
+            $http.get(UPLOAD_SIZE_LIMITS).then(successCallback);
+            var file_size = $("#doc_file")[0].files[0].size;
+            function successCallback(data) {
+                var size_limits = data.data["upload-size-limits"];
+                if (size_limits) {
+                  $.each(size_limits, function(i, val) {
+                    if (val.slug.includes("file")) {
+                      $rootScope.max_size = val.max_size;
+                    }
+                  })
+                }
+                if (file || file_url) {
+                    if (file_size > $rootScope.max_size) {
+                        $(document.body).append(handlerMaxFileSizeMsg($rootScope.max_size));
+                        setTimeout(function() {
+                          $('#datasetMaxSizeToast').remove();
+                        }, 8000)
+                        $('#doc_file').val(null);
+                        if ($('.files_selected').length) {
+                            $('.files_selected').remove();
+                            $('#drop-zone').removeClass('drop-selected');
+                        }
+                    } else {
+                      var uploader = dataset.upload_dataset_file($http, $rootScope, document.querySelector('#doc_file'), dataset_id);
+                    }
+                } else {
+                    $(document.body).append(handlerSubmitMsg);
+                    setTimeout(function() {
+                      $('#datasetToast').remove();
+                    }, 4000)
+                }
+            }    
         };
 
         $scope.delete_file = function(id) {
@@ -384,7 +450,6 @@
 
     dataset.upload_dataset_file = function($http, $rootScope, file, dataset_id) {
       // https://github.com/shubhamkshatriya25/AJAX-File-Uploader/blob/master/static/js/app.js
-      const max_length = 1024 * 1024 * 10;
 
       const clearInputFile = () => {
           $("#doc_file").val('');
@@ -437,7 +502,8 @@
           var self = this;
           var existingPath = model_id;
           var formData = new FormData();
-          var nextChunk = start + max_length + 1;
+          var max_size = $rootScope.max_size ? $rootScope.max_size : $("#doc_file")[0].files[0].size + 1;
+          var nextChunk = start + max_size;
           $.ajaxSetup({
               headers: {
                   "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
@@ -475,7 +541,7 @@
                   uploadEventHandlers: {
                       progress: function (e) {
                                 if (e.lengthComputable) {
-                                  if (file.size < max_length) {
+                                  if (file.size < max_size) {
                                       var pct = Math.round((e.loaded / e.total) * 100);
                                   } else {
                                       var pct = Math.round((uploadedChunk / file.size) * 100);
