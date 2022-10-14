@@ -8667,10 +8667,8 @@ msgid "Please wait... We are processing your request."
 msgstr ""
 
 #: geonode/templates/modal/remove_incomplete_upload.html:8
-#, fuzzy
-#| msgid "Incomplete Uploads"
 msgid "Delete incomplete upload"
-msgstr "Unggahan tidak sempurna"
+msgstr "Hapus Unggahan tidak sempurna"
 
 #: geonode/templates/modal/remove_incomplete_upload.html:14
 #, fuzzy
