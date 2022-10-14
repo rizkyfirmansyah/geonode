@@ -5,7 +5,7 @@ from geonode.groups.models import GroupProfile
 from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from geonode.people.forms import ProfileMultipleChoiceField
 
@@ -54,57 +54,57 @@ class PermissionsForm(forms.Form):
               self.fields[field].initial = user
 
     view_resourcebase_users = ProfileMultipleChoiceField(
-      label="The following users",
+      label=_("The following users"),
       queryset=get_users_view,
       to_field_name="username",
       required=True)
     view_resourcebase_groups = GroupsMultipleChoiceField(
-      label="The following groups",
+      label=_("The following groups"),
       choices=get_groups_choices,
       required=False)
     download_resourcebase_users = ProfileMultipleChoiceField(
-      label="The following users",
+      label=_("The following users"),
       queryset=get_users_download,
       to_field_name="username",
       required=True)
     download_resourcebase_groups = GroupsMultipleChoiceField(
-      label="The following groups",
+      label=_("The following groups"),
       choices=get_groups_choices,
       required=False)
     change_resourcebase_metadata_users = ProfileMultipleChoiceField(
-      label="The following users",
+      label=_("The following users"),
       queryset=get_users,
       to_field_name="username",
       required=True)
     change_resourcebase_metadata_groups = GroupsMultipleChoiceField(
-      label="The following groups",
+      label=_("The following groups"),
       choices=get_groups_choices,
       required=False)
     change_layer_data_users = ProfileMultipleChoiceField(
-      label="The following users",
+      label=_("The following users"),
       queryset=get_users,
       to_field_name="username",
       required=True)
     change_layer_data_groups = GroupsMultipleChoiceField(
-      label="The following groups",
+      label=_("The following groups"),
       choices=get_groups_choices,
       required=False)
     change_layer_style_users = ProfileMultipleChoiceField(
-      label="The following users",
+      label=_("The following users"),
       queryset=get_users,
       to_field_name="username",
       required=True)
     change_layer_style_groups = GroupsMultipleChoiceField(
-      label="The following groups",
+      label=_("The following groups"),
       choices=get_groups_choices,
       required=False)
     manage_resourcebase_users = ProfileMultipleChoiceField(
-      label="The following users",
+      label=_("The following users"),
       queryset=get_users,
       to_field_name="username",
       required=True)
     manage_resourcebase_groups = GroupsMultipleChoiceField(
-      label="The following groups",
+      label=_("The following groups"),
       choices=get_groups_choices,
       required=False)
 

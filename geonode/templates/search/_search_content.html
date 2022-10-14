@@ -10,6 +10,6 @@
     <div class="col-md-2 text-right d-flex"><a href="{% url "new_map" %}" class="btn btn-save d-flex align-items-center">{% trans "Create a New Map" %}</a></div>
   {% endif %}
 {% endif %}
-<button class="btn btn-primary sidebar-toggle col-md-2" id="sidebarFilter" aria-haspopup="true" aria-expanded="false">Filter</button>
+<button class="btn btn-primary sidebar-toggle col-md-2" id="sidebarFilter" aria-haspopup="true" aria-expanded="false">{% trans "Filter" %}</button>
 {% include "search/_sort_filters.html" %}
 {% include "modal/bulk_permissions.html" %}

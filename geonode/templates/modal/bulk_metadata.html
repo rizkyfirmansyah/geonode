@@ -17,7 +17,7 @@
         <div class="modal-footer">
           <div class="row">
             <button class="btn btn-secondary mr-2" data-dismiss="modal">{% trans "Close" %}</button>
-            {% verbatim %}<button ng-if="cart" class="btn btn-save" ng-click="bulk_metadata_submit($event)" id="bulk_metadata_submit" type="submit">Apply Changes</button>{% endverbatim %}
+              {% verbatim %}<button ng-if="cart" class="btn btn-save" ng-click="bulk_metadata_submit($event)" id="bulk_metadata_submit" type="submit">{% endverbatim %}{% trans "Apply Changes" %}</button>
           </div>
         </div>
       </div>

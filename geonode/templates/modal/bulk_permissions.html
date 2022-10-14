@@ -79,7 +79,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
-          {% verbatim %}<button ng-if="cart" class="btn btn-save" ng-click="bulk_perms_submit()" id="bulk_perms_submit" type="submit">Apply Changes</button>{% endverbatim %}
+          {% verbatim %}<button ng-if="cart" class="btn btn-save" ng-click="bulk_perms_submit()" id="bulk_perms_submit" type="submit">{% endverbatim %}{% trans "Apply Changes" %}</button>
         </div>
       </div>
     </div>

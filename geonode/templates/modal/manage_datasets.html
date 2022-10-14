@@ -30,14 +30,14 @@
                   <a class="btn btn-edit btn-block btn-md" href="{% url "dataset_replace" resource.id %}">{% trans "Replace" %}</a>
                 {% endif %}
                 {% if "delete_resourcebase" in perms_list %}
-                  <a id="removeDocumentModal" data-toggle="modal" class="btn btn-danger btn-block btn-md" data-target="#removeDatasetsModal" style="cursor: pointer;">Remove</a>
+                  <a id="removeDocumentModal" data-toggle="modal" class="btn btn-danger btn-block btn-md" data-target="#removeDatasetsModal" style="cursor: pointer;">{% trans "Remove" %}</a>
                 {% endif %}
               </div>
             {% endif %}
         </div>
       </div>
       <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">{% trans "Close" %}</button>
       </div>
     </div>
   </div>

@@ -122,8 +122,8 @@
 }
 
 #select-language .dropdown-menu.show {
-    top: 1.4em !important;
-    padding: 0.4rem!important;
+  top: 1em !important;
+  padding: 0.3rem!important;
 }
 
 #select-language .dropdown-menu.show li {
