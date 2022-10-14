@@ -8464,10 +8464,8 @@ msgid "Edit Layer"
 msgstr "Ubah Layer"
 
 #: geonode/templates/modal/manage_layers.html:23
-#, fuzzy
-#| msgid "Download Metadata"
 msgid "Upload Metadata"
-msgstr "Mengunduh Metadata"
+msgstr "Unggah Metadata"
 
 #: geonode/templates/modal/manage_layers.html:54
 msgid "Edit data"
@@ -8664,23 +8662,19 @@ msgstr "Cari"
 
 #: geonode/templates/modal/progress.html:12
 msgid "Please wait... We are processing your request."
-msgstr ""
+msgstr "Mohon menunggu... Kami sedang memproses"
 
 #: geonode/templates/modal/remove_incomplete_upload.html:8
 msgid "Delete incomplete upload"
 msgstr "Hapus Unggahan tidak sempurna"
 
 #: geonode/templates/modal/remove_incomplete_upload.html:14
-#, fuzzy
-#| msgid "Are you sure you want to delete this upload?"
 msgid "Are you sure you want to remove this incomplete upload?"
 msgstr "Anda yakin untuk menghapus unggahan ini?"
 
 #: geonode/templates/modal/resource_uploading.html:7
-#, fuzzy
-#| msgid "uploaded"
 msgid "Uploading..."
-msgstr "unggah"
+msgstr "Mengunggah..."
 
 #: geonode/templates/modal/thumbnail_processing.html:13
 #, fuzzy
