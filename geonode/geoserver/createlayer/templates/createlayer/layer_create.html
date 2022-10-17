@@ -15,37 +15,48 @@
 {% endblock %}
 
 {% block body %}
-
-<div class="row w-100">
-  <a href="{% url "catalogue_browse" %}" class="btn btn-primary float-right">{% trans "Explore Catalogue" %}</a>
-  <h3 class="page-title">{% trans "Create an empty layer" %}</h3>
-</div>
-
-<div class="row">
-  <div class="col-md-8">
-
-    {% if error %}
-    <div id="errors" class="alert alert-danger">
-      <p>{{ error }}</p>
-    </div>
-    {% endif %}
-
-    <section>
-      <form id="layer-create-form"  method="post" action="{% url "layer_create" %}">
-        {% csrf_token %}
-        {{ form|crispy }}
-
-        <div class="input-attrs-wrap">
-          <button id="add-attr-button" class="add-attr-button btn btn-primary">{% trans "Add Attribute" %}</button>
+<div class="card rounded bg-light mb-2">
+    <div class="card-body bg-layer">
+        <div class="row">
+          <h3 class="col-md-8 text-light">{% trans "Create an empty layer" %}</h3>
+          <div class="col-md-4"><a href="{% url "catalogue_browse" %}" class="btn btn-light float-right">{% trans "Explore Catalogue" %}</a></div>
         </div>
+    </div>
+</div>
+{% endblock %}
 
-        <button type="submit" id="layer-create-button" class="btn btn-danger" style="margin-top:20px">{% trans "Create" %}</button>
+{% block body_inner %}
+<div class="col-8">
+    <form id="layer-create-form" method="post" action="{% url "layer_create" %}">
+    <div class="card">
+      <div class="card-body">
 
-      </form>
-    </section>
+        {% if error %}
+        <div id="errors" class="alert alert-danger">
+          <p>{{ error }}</p>
+        </div>
+        {% endif %}
 
-  </div>
+        <section>
+            {% csrf_token %}
+            {{ form|crispy }}
+        </section>
 
+      </div>
+      <div class="card-footer">
+        <div class="input-attrs-wrap">
+          <button id="add-attr-button" class="col-6 add-attr-button btn btn-primary btn-block">{% trans "Add Attribute" %}</button>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="col-6 float-right"><button type="submit" id="layer-create-button" class="btn btn-upload btn-block">{% trans "Create" %}</button></div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock body_inner %}
+
+{% block body_sidebar %}
   {% display_change_perms_button resource request.user perms_list as display_perms_button %}
   {% if display_perms_button %}
   <div class="card col-4 p-0">
@@ -57,10 +68,7 @@
     </form>
   </div>
   {% endif %}
-
-</div>
-{% endblock %}
-
+{% endblock body_sidebar %}
 
 {% block extra_script %}
 
@@ -87,7 +95,7 @@
     $(".add-attr-button").click(function(e){
         e.preventDefault();
         if(x < max_attrs){
-            $(".input-attrs-wrap").append('<div class="attr-definition"><input type="text" class="form-control" style="margin-top:15px" />' + attr_type_select + '<a href="#" class="remove-attr">Remove</a></div>');
+            $(".input-attrs-wrap").append('<div class="attr-definition"><input type="text" class="form-control" style="margin-top:15px" />' + attr_type_select + '<a href="#" class="btn btn-danger mt-2 float-right col-6 remove-attr">Remove</a></div>');
             x++;
         }
     });
