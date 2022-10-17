@@ -107,7 +107,7 @@
 
 <div class="col-xs-12 col-md-3 pl-0">
   <ul class="list-group m-0">
-      <li class="list-group-item p-0"><a href="{% url "message_create" profile.pk %}" class="btn-light btn_wrapper"><i class="fa-solid fa-paper-plane"></i>{% trans "Message User" %}</a></li>
+      <li class="list-group-item p-0"><a href="{% url "message_create" profile.pk %}" class="btn-light btn_wrapper"><i class="fa-solid fa-paper-plane"></i>{% trans "Message user" %}</a></li>
     </ul>
   {% if user == profile %}
     <ul class="list-group m-0">
@@ -129,7 +129,7 @@
         <li class="list-group-item p-0"><a href="{% url "dataset_upload" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-file"></i>{% trans "Upload new dataset" %}</a></li>
         <li class="list-group-item p-0"><a href="{% url "new_map" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-map-location-dot"></i>{% trans "Create a new map" %}</a></li>
       {% endif %}
-      <li class="list-group-item p-0"><a href="{% url "user-activity" profile.username %}" class="btn-light btn_wrapper"><i class="fa-solid fa-fire"></i>{% trans "My Activities" %}</a></li>
+      <li class="list-group-item p-0"><a href="{% url "user-activity" profile.username %}" class="btn-light btn_wrapper"><i class="fa-solid fa-fire"></i>{% trans "My activities" %}</a></li>
       {% if FAVORITE_ENABLED %}
       <li class="list-group-item p-0"><a href="{% url "favorite_list" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-star"></i>{% trans "Favorites" %}</a></li>
       {% endif %}
@@ -144,7 +144,7 @@
     </ul>
     <ul class="list-group m-0">
       {% if request.user.is_staff %}
-      <li class="list-group-item p-0"><a href="{% url "feedback_list" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-comments"></i>{% trans "User Feedbacks" %}</a></li>
+      <li class="list-group-item p-0"><a href="{% url "feedback_list" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-comments"></i>{% trans "User feedbacks" %}</a></li>
       {% endif %}
     </ul>
     <ul class="list-group m-0">
@@ -154,7 +154,7 @@
     </ul>
     <ul class="list-group m-0">
       {% if not READ_ONLY_MODE %}
-        <li class="list-group-item p-0"><a href="{% url "geonode.invitations:geonode-send-invite" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-edit"></i>{% trans "Invite Users" %}</a></li>
+        <li class="list-group-item p-0"><a href="{% url "geonode.invitations:geonode-send-invite" %}" class="btn-light btn_wrapper"><i class="fa-solid fa-edit"></i>{% trans "Invite users" %}</a></li>
       {% endif %}
       {% if user.is_superuser or user.is_staff %}
           <li class="list-group-item p-0"><a href="{% url "proxy" %}?url={{ OGC_SERVER.default.LOCATION }}" class="btn-light btn_wrapper"><i class="fa-solid fa-gears"></i>{% trans "GeoServer" %}</a></li>

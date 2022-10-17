@@ -2600,7 +2600,7 @@ msgstr ""
 #: geonode/favorite/templates/favorite/favorite_list.html:4
 #: geonode/people/templates/people/profile_detail.html:134
 msgid "Favorites"
-msgstr ""
+msgstr "Favorit"
 
 #: geonode/favorite/templates/favorite/favorite_list.html:9
 msgid "Favorites for"
@@ -6519,8 +6519,8 @@ msgid "User layers WMS GetCapabilities document"
 msgstr ""
 
 #: geonode/people/templates/people/profile_detail.html:110
-msgid "Message User"
-msgstr ""
+msgid "Message user"
+msgstr "Kirim pesan"
 
 #: geonode/people/templates/people/profile_detail.html:115
 #: geonode/people/templates/people/profile_detail.html:167
@@ -6529,15 +6529,13 @@ msgstr "Edit profil"
 
 #: geonode/people/templates/people/profile_detail.html:117
 msgid "Connected social accounts"
-msgstr ""
+msgstr "Akun sosial terhubung"
 
 #: geonode/people/templates/people/profile_detail.html:118
 msgid "Associated e-mails"
-msgstr ""
+msgstr "Email terkait"
 
 #: geonode/people/templates/people/profile_detail.html:120
-#, fuzzy
-#| msgid "Change password"
 msgid "Set/Change password"
 msgstr "Ganti password"
 
@@ -6552,18 +6550,16 @@ msgid "Create a new layer"
 msgstr "Buat peta baru"
 
 #: geonode/people/templates/people/profile_detail.html:129
-#, fuzzy
-#| msgid "Upload Document"
 msgid "Upload new dataset"
-msgstr "Unggah Dokumen"
+msgstr "Unggah dataset baru"
 
 #: geonode/people/templates/people/profile_detail.html:130
 msgid "Create a new map"
 msgstr "Buat peta baru"
 
 #: geonode/people/templates/people/profile_detail.html:132
-msgid "My Activities"
-msgstr "Aktivitas Saya"
+msgid "My activities"
+msgstr "Aktivitas saya"
 
 #: geonode/people/templates/people/profile_detail.html:139
 msgid "Notifications"
@@ -6577,19 +6573,17 @@ msgstr "Pengumuman"
 
 #: geonode/people/templates/people/profile_detail.html:147
 #: geonode/themes/templates/feedbacks.html:5 geonode/themes/views.py:62
-msgid "User Feedbacks"
-msgstr ""
+msgid "User feedbacks"
+msgstr "Umpan balik pengguna"
 
 #: geonode/people/templates/people/profile_detail.html:152
 msgid "Record of Datasets Activities"
-msgstr ""
+msgstr "Catatan aktivitas dataset"
 
 #: geonode/people/templates/people/profile_detail.html:157
 #: geonode/templates/invitations/forms/_invite.html:10
-#, fuzzy
-#| msgid "Invite User"
-msgid "Invite Users"
-msgstr "Undang Pengguna"
+msgid "Invite users"
+msgstr "Undang pengguna"
 
 #: geonode/people/templates/people/profile_detail.html:171
 msgid "User Activities"
