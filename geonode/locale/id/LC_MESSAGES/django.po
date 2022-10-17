@@ -3001,8 +3001,6 @@ msgid "Create Layer"
 msgstr "Buat Peta"
 
 #: geonode/geoserver/createlayer/templates/createlayer/layer_create.html:21
-#, fuzzy
-#| msgid "Create a map using this layer"
 msgid "Create an empty layer"
 msgstr "Buat peta menggunakan layer ini"
 
