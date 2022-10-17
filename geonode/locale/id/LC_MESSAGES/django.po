@@ -6472,7 +6472,7 @@ msgstr "Buat Profil"
 
 #: geonode/people/templates/people/profile_detail.html:8
 msgid "Profile of "
-msgstr "Profil dari"
+msgstr "Profil dari "
 
 #: geonode/people/templates/people/profile_detail.html:20
 #, fuzzy
