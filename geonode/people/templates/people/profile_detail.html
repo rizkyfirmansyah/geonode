@@ -37,22 +37,22 @@
                 {% if profile.email %}
                     <td><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></td>
                 {% else %}
-                    <td>{% trans 'Not provided.' %}</td>
+                    <td>{% trans 'Not provided' %}</td>
                 {% endif %}
               </tr>
               {% endif %}
               <tr>
                 <td class="table-user-profile-attribute">{% trans 'Position' %}</td>
-                <td>{{ profile.position | default:_('Not provided.') }}</td>
+                <td>{{ profile.position | default:_('Not provided') }}</td>
               </tr>
               <tr>
-                <td class="table-user-profile-attribute">{% trans 'Organization'  %}</td>
-                <td>{{ profile.organization | default:_('Not provided.') }}</td>
+                <td class="table-user-profile-attribute">{% trans 'Organization' %}</td>
+                <td>{{ profile.organization | default:_('Not provided') }}</td>
               </tr>
               {% if user.is_authenticated %}
               <tr>
                 <td class="table-user-profile-attribute">{% trans 'Location' %}</td>
-                <td>{{ profile.location | default:_('Not provided.') }}</td>
+                <td>{{ profile.location | default:_('Not provided') }}</td>
               </tr>
               {% endif %}
               <tr>

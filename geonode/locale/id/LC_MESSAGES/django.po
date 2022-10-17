@@ -2429,7 +2429,7 @@ msgstr "Kontak"
 #: geonode/layers/templates/layouts/panels.html:67
 #: geonode/maps/templates/layouts/map_panels.html:56
 msgid "Location and Licenses"
-msgstr ""
+msgstr "Lokasi dan Lisensi"
 
 #: geonode/datasets/templates/layouts/dataset_panels.html:52
 #: geonode/geoapps/templates/layouts/app_panels.html:55
@@ -2595,7 +2595,7 @@ msgstr ""
 #: geonode/favorite/templates/favorite/_favorite_js.html:23
 #: geonode/favorite/templates/favorite/favorite_list.html:25
 msgid "Delete from Favorites"
-msgstr ""
+msgstr "Hapus dari favorit"
 
 #: geonode/favorite/templates/favorite/favorite_list.html:4
 #: geonode/people/templates/people/profile_detail.html:134
@@ -6476,13 +6476,6 @@ msgstr "Profil dari "
 msgid "people explore"
 msgstr "GeoExplorer"
 
-#: geonode/people/templates/people/profile_detail.html:40
-#: geonode/people/templates/people/profile_detail.html:46
-#: geonode/people/templates/people/profile_detail.html:50
-#: geonode/people/templates/people/profile_detail.html:55
-msgid "Not provided."
-msgstr ""
-
 #: geonode/people/templates/people/profile_detail.html:45
 #: geonode/templates/metadata_detail.html:169
 #: geonode/templates/metadata_detail.html:311
@@ -6502,9 +6495,9 @@ msgstr "Organisasi"
 #: geonode/templates/metadata_detail.html:317
 #: geonode/templates/metadata_detail.html:392
 msgid "Location"
-msgstr ""
+msgstr "Lokasi"
 
-#: geonode/people/templates/people/profile_detail.html:66
+#: geonode/people/templates/people/profile_detail.html:66 geonode/people/templates/people/profile_detail.html:46 geonode/people/templates/people/profile_detail.html:50 geonode/people/templates/people/profile_detail.html:55
 #: geonode/services/serviceprocessors/arcgis.py:121
 #: geonode/services/serviceprocessors/wms.py:138
 msgid "Not provided"
@@ -6540,10 +6533,8 @@ msgid "Upload new layers"
 msgstr "Unggah layer baru"
 
 #: geonode/people/templates/people/profile_detail.html:127
-#, fuzzy
-#| msgid "Create a new map"
 msgid "Create a new layer"
-msgstr "Buat peta baru"
+msgstr "Buat layer baru"
 
 #: geonode/people/templates/people/profile_detail.html:129
 msgid "Upload new dataset"
@@ -9362,9 +9353,7 @@ msgstr "Daftar"
 
 #: geonode/templates/section/header.html:91
 #: geonode/templates/section/profile_mobile.html:24
-#, fuzzy
-#| msgid "Profile"
-msgid " Profile"
+msgid "Profile"
 msgstr "Profil"
 
 #: geonode/templates/section/header.html:102
@@ -9372,33 +9361,20 @@ msgstr "Profil"
 msgid "Recent Activity"
 msgstr "Aktivitas Terakhir"
 
-#: geonode/templates/section/header.html:110
-#: geonode/templates/section/profile_mobile.html:45
-#, fuzzy
-#| msgid "Add to Favorites"
-msgid " Favorites"
-msgstr "Add to Favorites"
-
 #: geonode/templates/section/header.html:125
 #: geonode/templates/section/profile_mobile.html:58
-#, fuzzy
-#| msgid "Inbox"
-msgid " Inbox"
-msgstr "Inbox"
+msgid "Inbox"
+msgstr "Kotak masuk"
 
 #: geonode/templates/section/header.html:139
 #: geonode/templates/section/profile_mobile.html:69
-#, fuzzy
-#| msgid "Groups"
 msgid " Groups"
 msgstr "Grup"
 
 #: geonode/templates/section/header.html:149
 #: geonode/templates/section/profile_mobile.html:76
-#, fuzzy
-#| msgid "Create Group"
 msgid " Group Category"
-msgstr "Edit Grup"
+msgstr "Kategori Grup"
 
 #: geonode/templates/section/header.html:165
 #: geonode/templates/section/profile_mobile.html:89
