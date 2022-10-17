@@ -832,8 +832,8 @@ OAUTH2_DEFAULT_BACKEND_CLIENT_NAME = os.environ.get('OAUTH2_DEFAULT_BACKEND_CLIE
 # WARNING: If not set, the endpoint can be accessed by users without authorization.
 OAUTH2_API_KEY = os.environ.get('OAUTH2_API_KEY', None)
 
-# 1 day expiration time by default; change to 3 days
-ACCESS_TOKEN_EXPIRE_SECONDS = int(os.getenv('ACCESS_TOKEN_EXPIRE_SECONDS', '259200'))
+# 1 day expiration time by default; change to 30 days
+ACCESS_TOKEN_EXPIRE_SECONDS = int(os.getenv('ACCESS_TOKEN_EXPIRE_SECONDS', '2592000'))
 
 # Require users to authenticate before using Geonode
 LOCKDOWN_GEONODE = ast.literal_eval(os.getenv('LOCKDOWN_GEONODE', 'False'))
