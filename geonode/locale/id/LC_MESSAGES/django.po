@@ -3005,10 +3005,8 @@ msgid "Create an empty layer"
 msgstr "Buat peta menggunakan layer ini"
 
 #: geonode/geoserver/createlayer/templates/createlayer/layer_create.html:39
-#, fuzzy
-#| msgid "Attribute"
 msgid "Add Attribute"
-msgstr "Atribut"
+msgstr "Tambah Atribut"
 
 #: geonode/geoserver/createlayer/templates/createlayer/layer_create.html:42
 #: geonode/groups/templates/groups/group_create.html:38
