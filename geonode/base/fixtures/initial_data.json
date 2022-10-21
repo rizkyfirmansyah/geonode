@@ -275,8 +275,8 @@
         "fields": {
             "is_choice": true,
             "gn_description": "formal permission to do something",
-            "identifier": "license",
-            "title": "license"
+            "identifier": "notRestricted",
+            "title": "Not Restricted"
         }
     },
     {
