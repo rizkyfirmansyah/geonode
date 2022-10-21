@@ -3,7 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 {% if resource.data_citation %}
-  <div class="card alert alert-info mt-2 cite-card">
+  <div class="card alert alert-info mt-2 cite-card w-100">
     <div class="row">
         <div class="col-sm-11 pr-0 small" id="citation">
           <span class="mb-0">{{ resource.raw_data_citation|safe|escape }}</span>
