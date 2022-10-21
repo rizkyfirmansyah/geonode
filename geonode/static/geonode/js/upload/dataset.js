@@ -502,7 +502,7 @@
           var self = this;
           var existingPath = model_id;
           var formData = new FormData();
-          var max_size = $rootScope.max_size ? $rootScope.max_size : $("#doc_file")[0].files[0].size + 1;
+          var max_size = $rootScope.max_size ? $rootScope.max_size : file.size + 1;
           var nextChunk = start + max_size;
           $.ajaxSetup({
               headers: {
