@@ -29,7 +29,22 @@
     $("#remove_dfiles").submit(function(t) {
       t.preventDefault();
       var ids = JSON.parse(window.localStorage.getItem('file_ids'));
-
+      var deleteAllFilesMsg = `
+        <div id="datasetToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+          <div class="toast-message alert-error align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <strong class="mr-auto">Delete Files</strong>
+              <small class="text-muted"></small>
+              <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetToast').remove()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="toast-body">
+              <span class="font-lg-1">Your files has been deleted.</span>
+            </div>
+          </div>
+        </div>
+      `
       $.ajax({
           data: {ids: ids},
           url: "/api/v2/files/delete_files",
