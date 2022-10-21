@@ -690,7 +690,12 @@
         $('#text_search_input').on('keypress', function(e) {
             if (e.which == 13) {
                 fetch_results();
+                var text_search = $("#text_search_input").val();
                 setTimeout(function() {
+                  if (text_search) {
+                      var found = $scope.total_counts + " datasets found for \"" + text_search +'"';
+                      $("#dataset-found").text(found);
+                  };
                   $(".ac-results").addClass("d-none");
                 }, 500);
             }
