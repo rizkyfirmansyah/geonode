@@ -688,6 +688,9 @@
         $('#text_search_input').on('keypress', function(e) {
             if (e.which == 13) {
                 fetch_results();
+                setTimeout(function() {
+                  $(".ac-results").addClass("d-none");
+                }, 500);
             }
         })
 
