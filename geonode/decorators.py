@@ -357,3 +357,28 @@ def registered_users(function):
                 raise PermissionDenied
         return function(request, *args, **kwargs)
     return _inner
+
+
+def registered_users_or_token(function):
+    """
+    Limit view to registered users only or token.
+    --------------------------------------------------------------------------
+    """
+    def _inner(request, *args, **kwargs):
+        from oauth2_provider.models import get_access_token_model
+        token = request.GET.get('access_token', None)
+        verified_token = get_access_token_model().objects.filter(token=token)
+
+        if token:
+            if not verified_token:
+                raise PermissionDenied
+            else:
+                pass
+        else:
+            if request.user.is_authenticated:
+                pass
+            else:
+                raise PermissionDenied
+        return function(request, *args, **kwargs)
+
+    return _inner

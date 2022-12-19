@@ -52,7 +52,7 @@ from geonode.base.api.exceptions import geonode_exception_handler
 from geonode.base.auth import get_or_create_token
 from geonode.base.forms import CategoryForm, RegionsForm, TKeywordForm, ThesaurusAvailableForm
 from geonode.base.models import Thesaurus, version_post_save
-from geonode.decorators import registered_users
+from geonode.decorators import registered_users, registered_users_or_token
 from geonode.favorite.models import Favorite
 from geonode.views import page_not_found_message, unauthorized_message
 from geonode.datasets.utils import get_download_response
@@ -104,7 +104,16 @@ def dataset_detail(request, docid):
             _PERMISSION_MSG_VIEW)
 
     except PermissionDenied:
-        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
+        from oauth2_provider.models import get_access_token_model
+        token = request.GET.get('access_token', None)
+        verified_token = get_access_token_model().objects.filter(token=token)
+        if token:
+            if not verified_token:
+                return unauthorized_message(request, _PERMISSION_MSG_VIEW)
+            else:
+                dataset = get_object_or_404(Dataset, pk=docid)
+        else:
+            return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
         return page_not_found_message(request)

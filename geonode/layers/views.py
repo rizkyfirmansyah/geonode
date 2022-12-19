@@ -37,7 +37,7 @@ from django.db.models import Q
 from django.db.models import F
 from django.urls import reverse
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.html import escape
 from django.forms.utils import ErrorList
 from django.contrib.auth import get_user_model
@@ -412,7 +412,17 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
             layername,
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
+
     except PermissionDenied:
+        from oauth2_provider.models import get_access_token_model
+        token = request.GET.get('access_token', None)
+        verified_token = get_access_token_model().objects.filter(token=token)
+        if token:
+            if not verified_token:
+                return unauthorized_message(request, _PERMISSION_MSG_VIEW)
+            else:
+                layer = get_object_or_404(Layer, alternate=layername)
+
         return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
@@ -1686,7 +1696,16 @@ def layer_metadata_detail(
             layername,
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
+
     except PermissionDenied:
+        from oauth2_provider.models import get_access_token_model
+        token = request.GET.get('access_token', None)
+        verified_token = get_access_token_model().objects.filter(token=token)
+        if token:
+            if not verified_token:
+                return unauthorized_message(request, _PERMISSION_MSG_METADATA)
+            else:
+                layer = get_object_or_404(Layer, alternate=layername)
         return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
