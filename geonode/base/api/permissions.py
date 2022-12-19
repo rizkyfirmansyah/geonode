@@ -37,6 +37,31 @@ from geonode.groups.models import GroupProfile
 logger = logging.getLogger(__name__)
 
 
+class TokenAuthOAuthApplicationsQuery(permissions.BasePermission):
+    """
+    Extend the TokenAuthentication class to support querystring authentication
+    in the form of "http://www.example.com/?token=<token_key>"
+
+    Query AbstractApplication of client_id (Django OAuth Toolkit - Applications) if the client_id token match, then provide its result to the client
+    https://github.com/GeoNode/geonode-oauth-toolkit/blob/openid-connect/oauth2_provider/models.py
+    """
+
+    def has_permission(self, request, view):
+        from oauth2_provider.models import get_application_model
+        token = request.query_params.get('token')
+        verified_token = get_application_model().objects.filter(client_id=token)
+
+        # Check if 'token' is in the request_query params
+        # Give precedence to 'Authorization' header
+        if 'token' in request.query_params and 'HTTP AUTHORIZATION' not in request.META:
+            if not verified_token:
+                return False
+            else:
+                return True
+        else:
+            return False
+
+
 class IsSelf(permissions.BasePermission):
 
     """ Grant permission only if the current instance is the request user.

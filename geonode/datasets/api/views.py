@@ -33,7 +33,7 @@ from ..models import Dataset, File
 from rest_framework import viewsets
 
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly  # noqa
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly  # noqa
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 from rest_framework.response import Response
@@ -47,7 +47,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.templatetags.static import static
 
-from geonode.base.api.permissions import UserHasPerms
+from geonode.base.api.permissions import UserHasPerms, TokenAuthOAuthApplicationsQuery
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter
 from geonode.base.api.permissions import IsOwnerOrReadOnly
 from geonode.base.api.pagination import GeoNodeApiPagination
@@ -69,11 +69,11 @@ logger = logging.getLogger(__name__)
 
 class DatasetViewSet(DynamicModelViewSet):
     """
-    API endpoint that allows documents to be viewed or edited.
+    API endpoint that allows datasets to be viewed or edited.
     """
     http_method_names = ['get', 'patch', 'put']
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
+    permission_classes = [TokenAuthOAuthApplicationsQuery | IsAuthenticated, UserHasPerms, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, DatasetPermissionsFilter
@@ -108,10 +108,8 @@ class DatasetFilesViewSet(DynamicModelViewSet):
     """
     http_method_names = ['get', 'patch', 'put', 'delete']
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    else:
-        permission_classes = [IsAuthenticated, ]
+    permission_classes = [TokenAuthOAuthApplicationsQuery | IsAuthenticated, IsOwnerOrReadOnly, ]
+
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, DatasetPermissionsFilter

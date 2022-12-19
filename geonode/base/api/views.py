@@ -36,6 +36,7 @@ from django.core.validators import URLValidator
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from django.db import models
+from django.core.validators import validate_email
 
 from geonode.thumbs.exceptions import ThumbnailError
 from geonode.thumbs.thumbnails import create_thumbnail
@@ -54,7 +55,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import status
 
@@ -81,9 +82,10 @@ from guardian.shortcuts import get_objects_for_user
 from .permissions import (
     IsSelfOrAdmin,
     IsOwnerOrAdmin,
-    IsOwnerOrReadOnly,
     ResourceBasePermissionsFilter,
-    UserHasPerms
+    UserHasPerms,
+    IsOwnerOrReadOnly,
+    TokenAuthOAuthApplicationsQuery
 )
 from .serializers import (
     FavoriteSerializer,
@@ -96,7 +98,7 @@ from .serializers import (
     PermSpecSerialiazer,
     GroupProfileSerializer,
     ResourceBaseSerializer,
-    SimpleResourceBaseSerializer,
+    ResourceBasePermsSerializer,
     ResourceBaseTypesSerializer,
     OwnerSerializer,
     HierarchicalKeywordSerializer,
@@ -237,7 +239,7 @@ class RegionViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin,
     API endpoint that lists regions.
     """
     if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
+        permission_classes = [IsAuthenticatedOrReadOnly, ]
     else:
         permission_classes = [IsAuthenticated, ]
     filter_backends = [DjangoFilterBackend]
@@ -258,7 +260,7 @@ class HierarchicalKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, Retrie
     API endpoint that lists hierarchical keywords.
     """
     if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
+        permission_classes = [IsAuthenticatedOrReadOnly, ]
     else:
         permission_classes = [IsAuthenticated, ]
     filter_backends = [DjangoFilterBackend]
@@ -279,7 +281,7 @@ class ThesaurusKeywordViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveM
     API endpoint that lists Thesaurus keywords.
     """
     if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
+        permission_classes = [IsAuthenticatedOrReadOnly, ]
     else:
         permission_classes = [IsAuthenticated, ]
     filter_backends = [DjangoFilterBackend]
@@ -300,7 +302,7 @@ class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveMode
     API endpoint that lists categories.
     """
     if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
+        permission_classes = [IsAuthenticatedOrReadOnly, ]
     else:
         permission_classes = [IsAuthenticated, ]
     filter_backends = [DjangoFilterBackend]
@@ -321,7 +323,7 @@ class DataTypeViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixi
     API endpoint that lists data type.
     """
     if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
+        permission_classes = [IsAuthenticatedOrReadOnly, ]
     else:
         permission_classes = [IsAuthenticated, ]
     filter_backends = [DjangoFilterBackend]
@@ -342,10 +344,8 @@ class OwnerViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin, 
     API endpoint that lists all possible owners.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
-    else:
-        permission_classes = [IsAuthenticated, ]
+    permission_classes = (TokenAuthOAuthApplicationsQuery | IsAuthenticated, )
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['username', 'id']
     serializer_class = OwnerSerializer
@@ -378,10 +378,8 @@ class ProfileViewSet(DynamicModelViewSet):
     API endpoint that lists all possible owners.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
-    else:
-        permission_classes = [IsAuthenticated, ]
+    permission_classes = (TokenAuthOAuthApplicationsQuery | IsAuthenticated, )
+
     filter_backends = [DjangoFilterBackend]
     serializer_class = ProfileSerializer
     pagination_class = GeoNodeApiPagination
@@ -401,16 +399,26 @@ class ProfileViewSet(DynamicModelViewSet):
 
 class ResourceBasePermsViewSet(DynamicModelViewSet):
     """
-    Minimize API endpoint to check user's permissions.
+    Minimize API endpoint to display all resources with user's permissions.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    else:
-        permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = (TokenAuthOAuthApplicationsQuery | IsAuthenticated, )
+    
+    serializer_class = ResourceBasePermsSerializer
 
-    queryset = ResourceBase.objects.all().order_by('-pk')
-    serializer_class = SimpleResourceBaseSerializer
+    def get_queryset(self):
+        queryset = ResourceBase.objects.all().order_by('title')
+        query_owner = self.request.query_params.get('u', None)
+        path_email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        if query_owner is not None:
+
+            if re.match(path_email, query_owner):
+                query_owner = get_user_model().objects.filter(email__icontains=query_owner)
+            else:
+                query_owner = get_user_model().objects.filter(username__icontains=query_owner)
+            queryset = queryset.filter(owner__in=query_owner)
+
+            return queryset
 
 
 class ResourceBaseViewSet(DynamicModelViewSet):
@@ -422,10 +430,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, ResourceBasePermissionsFilter, ResourceBaseFilter
     ]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
-    else:
-        permission_classes = [IsAuthenticatedOrReadOnly, UserHasPerms]
+    permission_classes = [TokenAuthOAuthApplicationsQuery | IsAuthenticated, UserHasPerms, ]
 
     queryset = ResourceBase.objects.all().order_by('-date')
     serializer_class = ResourceBaseSerializer
@@ -1086,10 +1091,7 @@ class ResourceVersionViewSet(DynamicModelViewSet):
     API endpoint that lists all versioning resources.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [AllowAny, ]
-    else:
-        permission_classes = [IsAuthenticated, ]
+    permission_classes = [TokenAuthOAuthApplicationsQuery | IsAuthenticated, IsOwnerOrReadOnly, ]
 
     serializer_class = ResourceVersionSerializer
     pagination_class = GeoNodeApiPagination

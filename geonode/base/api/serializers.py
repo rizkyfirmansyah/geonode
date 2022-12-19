@@ -763,16 +763,38 @@ class ResourceBaseSerializer(
     )
 
 
-class SimpleResourceBaseSerializer(ResourceBaseToRepresentationSerializerMixin, BaseDynamicModelSerializer):
+class ResourceBasePermsSerializer(DynamicModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
+    keywords = serializers.SlugRelatedField(many=True, slug_field='slug', read_only=True)
+    category = serializers.SlugRelatedField(many=True, slug_field='title', read_only=True)
+    detail_url = serializers.SerializerMethodField()
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        data = super().to_representation(instance)
+        if request:
+            data['perms'] = instance.get_user_perms(request.user).union(
+                instance.get_self_resource().get_user_perms(request.user)
+            )
+        return data
 
     class Meta:
         model = ResourceBase
         name = 'objects'
         view_name = 'base-resources-list'
-        fields = ('pk', 'resource_type', 'perms', 'title')
-        excludes = ['favorite', 'links']
-        ordering = ("-pk",)
+        fields = ('pk', 'resource_type', 'perms', 'title', 'abstract', 'date', 'detail_url', 'full_name', 'username', 'category', 'keywords')
+        ordering = ("title", )
 
+    def get_detail_url(self, obj):
+        site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
+        return site_url + obj.get_absolute_url()
+
+    def get_full_name(self, obj):
+        return get_user_model().objects.get(username=obj.owner).full_name_or_nick
+
+    def get_username(self, obj):
+        return get_user_model().objects.get(username=obj.owner).username
 
 class FavoriteSerializer(DynamicModelSerializer):
     resource = serializers.SerializerMethodField()

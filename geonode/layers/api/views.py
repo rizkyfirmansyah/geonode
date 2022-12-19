@@ -20,12 +20,12 @@
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter
-from geonode.base.api.permissions import IsOwnerOrReadOnly
+from geonode.base.api.permissions import TokenAuthOAuthApplicationsQuery, UserHasPerms
 from geonode.base.api.pagination import GeoNodeApiPagination
 from geonode.layers.models import Layer
 from django.conf import settings
@@ -43,10 +43,8 @@ class LayerViewSet(DynamicModelViewSet):
     API endpoint that allows layers to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    if settings.DEFAULT_ANONYMOUS_ACCESS_PERMISSION:
-        permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    else:
-        permission_classes = [IsAuthenticated, ]
+    permission_classes = [TokenAuthOAuthApplicationsQuery | IsAuthenticated, UserHasPerms, ]
+
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         ExtentFilter, LayerPermissionsFilter

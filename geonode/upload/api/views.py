@@ -28,7 +28,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import FileUploadParser
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
@@ -36,7 +36,7 @@ from django.shortcuts import reverse
 from django.utils.translation import ugettext as _
 
 from geonode.base.api.filters import DynamicSearchFilter
-from geonode.base.api.permissions import IsOwnerOrReadOnly, IsSelfOrAdminOrReadOnly
+from geonode.base.api.permissions import IsOwnerOrReadOnly, IsSelfOrAdminOrReadOnly, TokenAuthOAuthApplicationsQuery
 from geonode.base.api.pagination import GeoNodeApiPagination
 from geonode.upload.utils import get_max_amount_of_steps
 
@@ -58,7 +58,7 @@ class UploadViewSet(DynamicModelViewSet):
     parser_class = [FileUploadParser, ]
 
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [TokenAuthOAuthApplicationsQuery | IsAuthenticated, IsOwnerOrReadOnly, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter,
         UploadPermissionsFilter
