@@ -13,14 +13,12 @@
       <div class="col-md-12">
         <p class="font-lg-2 text-center">I want to look your restricted nerves! <br> Okay, caution. There is a bad authentication. Hold on. What is this?</p>
         <p class="text-center">
-          {% if not request.user.is_anonymous %}
-            {% if error_message %}
-              <span class="font-weight-bold font-lg-2">{% blocktrans %} {{ error_message }} {% endblocktrans %}</span>
-              <br/>
-              {% blocktrans %}Please <span class='text-danger'>ask permission</span> to the resource owner.{% endblocktrans %}
-            {% else %}
-              {% blocktrans %}You're not authorized to perform the requested operation on the given resource. Who are you?.{% endblocktrans %}
-            {% endif %}
+          {% if error_message and request.user.is_authenticated %}
+            <span class="font-weight-bold font-lg-2">{% blocktrans %} {{ error_message }} {% endblocktrans %}</span>
+            <br/>
+            {% blocktrans %}Please <span class='text-danger'>ask permission</span> to the resource owner.{% endblocktrans %}
+          {% else %}
+            {% blocktrans %}You're not allowed to perform the requested operation on the given resource. Who are you?.{% endblocktrans %}
           {% endif %}
         </p>
         <div class="row d-flex justify-content-center">

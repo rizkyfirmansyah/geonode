@@ -14,12 +14,10 @@
         <p class="font-lg-2 text-center">What's wrong with your server???!!!! <br> Call your sysadmin!!!</p>
         <p class="font-lg-2 text-center">What you're looking for may have been misplaced in the Long Term Memory</p>
         <p class="text-center">
-          {% if not request.user.is_anonymous %}
-            {% if error_message %}
-              <span class="font-weight-bold font-lg-2">{% blocktrans %} {{ error_message }} {% endblocktrans %}</span>
-            {% else %}
-              {% blocktrans %}Nothing is here.{% endblocktrans %}
-            {% endif %}
+          {% if error_message and request.user.is_authenticated %}
+            <span class="font-weight-bold font-lg-2">{% blocktrans %} {{ error_message }} {% endblocktrans %}</span>
+          {% else %}
+            {% blocktrans %}Nothing is here.{% endblocktrans %}
           {% endif %}
         </p>
         <div class="row d-flex justify-content-center">
