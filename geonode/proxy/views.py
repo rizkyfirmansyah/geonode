@@ -20,37 +20,33 @@
 import os
 import gzip
 import io
-import json
 import logging
 import re
 import traceback
 from distutils.version import StrictVersion
 from urllib.parse import urljoin, urlparse, urlsplit
-
 import zipstream
+from hyperlink import URL
+
 from django.conf import settings
-from geonode.storage.manager import storage_manager
-from django.forms.models import model_to_dict
 from django.http import HttpResponse, StreamingHttpResponse
 from django.http.request import validate_host
 from django.template import loader
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.generic import View
-from hyperlink import URL
-from slugify import slugify
 
 from geonode import geoserver  # noqa
+from geonode.storage.manager import storage_manager
 from geonode.base import register_event
 from geonode.base.enumerations import LINK_TYPES as _LT
-from geonode.base.models import Link, ResourceBase
+from geonode.base.models import ResourceBase
 from geonode.layers.models import Layer
 from geonode.utils import (
     check_ogc_backend,
     get_headers,
     http_client,
     json_response,
-    json_serializer_producer,
     resolve_object,
 )
 from geonode.upload.models import Upload

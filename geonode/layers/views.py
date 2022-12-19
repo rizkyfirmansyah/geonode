@@ -37,7 +37,7 @@ from django.db.models import Q
 from django.db.models import F
 from django.urls import reverse
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.utils.html import escape
 from django.forms.utils import ErrorList
 from django.contrib.auth import get_user_model
@@ -135,6 +135,7 @@ _PERMISSION_MSG_GENERIC = _('You do not have permissions for this layer.')
 _PERMISSION_MSG_MODIFY = _("You are not permitted to modify this layer")
 _PERMISSION_MSG_METADATA = _("You are not permitted to modify this layer's metadata")
 _PERMISSION_MSG_VIEW = _("You are not permitted to view this layer")
+_PERMISSION_MSG_DOWNLOAD = _("You are not permitted to download this layer")
 
 
 def log_snippet(log_file):
@@ -417,13 +418,17 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         from oauth2_provider.models import get_access_token_model
         token = request.GET.get('access_token', None)
         verified_token = get_access_token_model().objects.filter(token=token)
+
         if token:
             if not verified_token:
                 return unauthorized_message(request, _PERMISSION_MSG_VIEW)
             else:
-                layer = get_object_or_404(Layer, alternate=layername)
-
-        return unauthorized_message(request, _PERMISSION_MSG_VIEW)
+                try:
+                    layer = Layer.objects.get(alternate=layername)
+                except Layer.DoesNotExist:
+                    return page_not_found_message(request)
+        else:
+            return unauthorized_message(request, _PERMISSION_MSG_VIEW)
 
     except Exception:
         return page_not_found_message(request)
@@ -1368,8 +1373,60 @@ def layer_download(request, layername):
             layername,
             'base.download_resourcebase',
             _PERMISSION_MSG_GENERIC)
-    except Exception as e:
-        raise page_not_found_message(request)
+
+    except PermissionDenied:
+        # Grant access if they provide access_token in query_params
+        from oauth2_provider.models import get_access_token_model
+        token = request.GET.get('access_token', None)
+        verified_token = get_access_token_model().objects.filter(token=token)
+
+        if token:
+            if not verified_token:
+                return unauthorized_message(request, _PERMISSION_MSG_DOWNLOAD)
+            else:
+                try:
+                    from geonode.storage.manager import storage_manager
+                    import zipstream
+                    from django.http import StreamingHttpResponse
+                    BUFFER_CHUNK_SIZE = 64 * 1024
+
+                    layer = Layer.objects.get(alternate=layername)
+                    layer_files = []
+                    file_list = []
+                    files = layer.resourcebase_ptr.files
+                    for file_path in files:
+                        if storage_manager.exists(file_path):
+                            layer_files.append(file_path)
+                            filename = os.path.basename(file_path)
+                            file_list.append({
+                                "name": filename,
+                                "data_iter": storage_manager.open(file_path),
+                            })
+                    
+                    target_file_name = "".join([layer.name, ".zip"])
+                    target_zip = zipstream.ZipFile(mode="w", compression=zipstream.ZIP_DEFLATED, allowZip64=True)
+
+                    def _iterable(source_iter):
+                        while True:
+                            buf = source_iter.read(BUFFER_CHUNK_SIZE)
+                            if not buf:
+                                break
+                            yield buf
+                    # Add files to zip
+                    for file_info in file_list:
+                        target_zip.write_iter(arcname=file_info['name'], iterable=_iterable(file_info['data_iter']))
+
+                    register_event(request, 'download', layer)
+
+                    # Streaming content response
+                    response = StreamingHttpResponse(target_zip, content_type='application/zip')
+                    response['Content-Disposition'] = f'attachment; filename="{target_file_name}"'
+                    return response
+
+                except Layer.DoesNotExist:
+                    return page_not_found_message(request)
+        else:
+            return unauthorized_message(request, _PERMISSION_MSG_DOWNLOAD)
 
     if not settings.USE_GEOSERVER:
         # if GeoServer is not used, we redirect to the proxy download
@@ -1701,12 +1758,17 @@ def layer_metadata_detail(
         from oauth2_provider.models import get_access_token_model
         token = request.GET.get('access_token', None)
         verified_token = get_access_token_model().objects.filter(token=token)
+
         if token:
             if not verified_token:
                 return unauthorized_message(request, _PERMISSION_MSG_METADATA)
             else:
-                layer = get_object_or_404(Layer, alternate=layername)
-        return unauthorized_message(request, _PERMISSION_MSG_METADATA)
+                try:
+                    layer = Layer.objects.get(alternate=layername)
+                except Layer.DoesNotExist:
+                    return page_not_found_message(request)
+        else:
+            return unauthorized_message(request, _PERMISSION_MSG_METADATA)
 
     except Exception:
         return page_not_found_message(request)
