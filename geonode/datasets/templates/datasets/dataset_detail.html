@@ -116,6 +116,8 @@
     </div>
   </div>
 
+  {% include "modal/manage_datasets.html" %}
+
   <div class="tab-resource-settings {% if request.user_agent.is_mobile %}p-0{% endif %}">
     
     <ul class="list-group">
@@ -203,7 +205,6 @@
 
       {% include "base/_resourcebase_contact_snippet.html" %}
 
-      {% include "modal/manage_datasets.html" %}
       {% include "modal/download_metadata_dataset.html" %}
 
     </ul>
