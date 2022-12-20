@@ -1085,6 +1085,117 @@ class ResourceBaseViewSet(DynamicModelViewSet):
             _obj.refresh_from_db()
             return Response(ExtraMetadataSerializer().to_representation(_obj.metadata.all()), status=201)
 
+    @extend_schema(
+        methods=['post'],
+        responses={200},
+        description='API endpoint to download all resources metadata'
+    )
+    @action(
+        detail=False,
+        url_path="download_all_resources",
+        url_name="download_all_resources",
+        methods=['post'],
+        permission_classes=[IsAuthenticated]
+    )
+    def download_all_resources(self, request):
+        from oauth2_provider.models import get_application_model
+        from django.http import HttpResponse
+        from django.template import loader
+        from django.utils.translation import ugettext as _
+        from openpyxl import Workbook
+        from datetime import datetime
+        from geonode.datasets.models import File
+
+        token = request.POST['token']
+        verified_token = get_application_model().objects.filter(client_id=token)
+        if token:
+            if not verified_token:
+                return HttpResponse(
+                    loader.render_to_string(
+                        'error/403.html', context={
+                            'error_message': _("Your token is not valid. Please ask your Administrator.")}, request=request), status=401)
+                
+            else:
+                response = HttpResponse(content_type='application/ms-excel')
+                file_name = "SDI Catalogues Metadata_" + str(datetime.now().date()) + ".xlsx"
+                response['Content-Disposition'] = 'attachment; filename="'+ file_name + '"'
+                
+                data = ResourceBase.objects.all()
+
+                wb = Workbook()
+                ws = wb.active
+                ws.freeze_panes = "B2"
+                ws.title = "Metadata " + str(datetime.now().date())
+                row_counter = 2
+                headers = ["Title", "Filename", "Categories", "Abstract", "Data Description", "Data Quality Statement", "Citation", "Published Date", "Source", "Author", "Geographic Coverage", "Resource Person", "Free-text Keywords", "Link to Data"]
+                ws['A1'] = headers[0]
+                ws['B1'] = headers[1]
+                ws['C1'] = headers[2]
+                ws['D1'] = headers[3]
+                ws['E1'] = headers[4]
+                ws['F1'] = headers[5]
+                ws['G1'] = headers[6]
+                ws['H1'] = headers[7]
+                ws['I1'] = headers[8]
+                ws['J1'] = headers[9]
+                ws['K1'] = headers[10]
+                ws['L1'] = headers[11]
+                ws['M1'] = headers[12]
+                ws['N1'] = headers[13]
+                
+                for line in data:
+                    title = line.title
+                    data_title = line.alternate
+                    category = line.category_list_title
+                    abstract = line.raw_abstract
+                    data_description = line.raw_data_description
+                    data_quality_statement = line.raw_data_quality_statement
+                    data_citation = line.raw_data_citation
+                    date = line.date.strftime("%Y-%m-%d %H:%M:%S")
+                    source = line.raw_source
+                    author = line.raw_author
+                    regions = line.region_name_list
+                    creator = line.creator
+                    keywords = line.keyword_list()
+                    detail_url = line.get_absolute_url()
+                    files = File.objects.filter(dataset__id__in=[line.id])
+                    dataset_filename = [f.file_name for f in files]
+                    resource_type = line.resource_type
+                    if resource_type == 'layer':
+                        technical_title = data_title.split(':')[1]   
+                    elif resource_type == 'dataset':
+                        technical_title = ', '.join(dataset_filename)
+                    else:
+                        technical_title = ''
+
+                    ws['A{}'.format(row_counter)] = title
+                    ws['B{}'.format(row_counter)] = technical_title
+                    ws['C{}'.format(row_counter)] = ', '.join(category)
+                    ws['D{}'.format(row_counter)] = abstract
+                    ws['E{}'.format(row_counter)] = data_description
+                    ws['F{}'.format(row_counter)] = data_quality_statement
+                    ws['G{}'.format(row_counter)] = data_citation
+                    ws['H{}'.format(row_counter)] = date
+                    ws['I{}'.format(row_counter)] = source
+                    ws['J{}'.format(row_counter)] = author
+                    ws['K{}'.format(row_counter)] = ', '.join(regions)
+                    ws['L{}'.format(row_counter)] = creator
+                    ws['M{}'.format(row_counter)] = ', '.join(keywords)
+                    ws['N{}'.format(row_counter)] = line.site_url[:-1] + detail_url
+
+                    row_counter +=1
+                
+                # Styling the workbook
+                # for row in ws.iter_rows():
+                #     for cell in row:
+                #         alignment = copy.copy(cell.alignment)
+                #         alignment.wrapText = True
+                #         cell.alignment = alignment
+
+                wb.save(response)
+
+                return response
+
 
 class ResourceVersionViewSet(DynamicModelViewSet):
     """

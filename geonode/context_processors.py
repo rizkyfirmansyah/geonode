@@ -23,7 +23,7 @@ from django.conf import settings
 from geonode import get_version
 from geonode.catalogue import default_catalogue_backend
 from django.contrib.sites.models import Site
-
+import os
 from geonode.notifications_helper import has_notifications
 from geonode.base.models import Configuration, Thesaurus
 
@@ -47,6 +47,7 @@ def resource_urls(request):
         VERSION=get_version(),
         SITE_NAME=site.name,
         SITE_DOMAIN=site.domain,
+        OAUTH2_TOKEN=os.environ.get('OAUTH2_CLIENT_ID', ''),
         BILINGUAL=getattr(settings, 'BILINGUAL', 'False'),
         SITEURL=settings.SITEURL,
         HCAPTCHA_SECRET=getattr(settings, 'HCAPTCHA_SECRET', ''),

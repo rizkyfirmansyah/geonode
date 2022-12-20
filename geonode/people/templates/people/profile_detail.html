@@ -108,6 +108,7 @@
 <div id="tab-settings">
   <h5 class="pl-2 card-header bg-white">Settings</h5>
   <ul class="list-group m-0">
+      <li class="list-group-item p-0"><a data-toggle="modal" data-target="#downloadAllResources" style="cursor: pointer;" class="btn-light btn_wrapper"><i class="fa-solid fa-download"></i>{% trans "Download All Resources" %}</a></li>
       <li class="list-group-item p-0"><a href="{% url "message_create" profile.pk %}" class="btn-light btn_wrapper"><i class="fa-solid fa-paper-plane"></i>{% trans "Message user" %}</a></li>
     </ul>
   {% if user == profile %}

@@ -1,0 +1,40 @@
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load base_tags %}
+
+<form method="POST" class="mb-4" id="download-all-resources" action="{% url 'base-resources-download_all_resources' %}">
+  <div class="modal fade" id="downloadAllResources" tabindex="-1" role="dialog" aria-labelledby="downloadAllResourcesTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document"> 
+      <div class="modal-content rounded-0">
+        <div class="modal-header">
+          <h3 class="light">Token Authentication</h3>
+          <button type="button" class="close col-2" data-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark" data-dismiss="modal"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center"> 
+            <p class="mb-4 ">Please provide token to download all resources metadata.</p>
+                {% csrf_token %}
+                <div class="form-group col-lg-12">
+                  <div class="col-12 p-0">
+                      <input id="token"
+                             type="text"
+                             name="token"
+                             class="form-control"
+                             value="{{ OAUTH2_TOKEN }}"
+                             placeholder="Token Authentication">
+                      <small id="hint_id_token" class="form-text text-muted">Token above is a default one, if you could not download the resource, please reach your Admin to obtain a new token.</small>
+                  </div>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" data-dismiss="modal" class="btn btn-secondary">Maybe later</a>
+          <button type="submit" class="btn btn-save">Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form> 

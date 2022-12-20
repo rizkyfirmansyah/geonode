@@ -1602,21 +1602,17 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
             return len(allowed_file) != 0
         return True
 
-    def category_list(self):
-        return [c.identifier for c in self.category.all()]
-
     def category_list_id(self):
         return [c.id for c in self.category.all()]
-
+    
+    @property
     def category_list_title(self):
         return [c.title for c in self.category.all()]
 
     def keyword_list(self):
         return [kw.name for kw in self.keywords.all()]
 
-    def keyword_slug_list(self):
-        return [kw.slug for kw in self.keywords.all()]
-
+    @property
     def region_name_list(self):
         return [region.name for region in self.regions.all()]
 
