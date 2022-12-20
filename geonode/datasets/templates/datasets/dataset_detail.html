@@ -59,7 +59,7 @@
     {% include "modal/dataset_properties.html" %}
 </div>
 <div class="row">
-  <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
+  <div class="tab-resource-metadata {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
     <div class="row d-flex">
       {% include "_actions.html" %}
     </div>
@@ -116,7 +116,7 @@
     </div>
   </div>
 
-  <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0{% endif %}">
+  <div class="tab-resource-settings {% if request.user_agent.is_mobile %}p-0{% endif %}">
     
     <ul class="list-group">
       {% if not request.user_agent.is_mobile and "change_resourcebase_metadata" in perms_list or "change_resourcebase" in perms_list %}
@@ -309,5 +309,6 @@
   {% include "modal/preview_files.html" %}
 
   {% include "base/_resource_detail_button.html" %}
+  {% include "_responsive_tabs.html" %}
 
 {% endblock extra_script %}

@@ -84,7 +84,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0{% endif %}">
+  <div class="tab-resource-metadata {% if request.user_agent.is_mobile %}p-0{% endif %}">
 
     <div id="embedded_map">
       <div id="preview_map"></div>
@@ -328,7 +328,7 @@
     </div>
 
   </div>
-  <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
+  <div class="tab-resource-settings {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
 
     <ul class="list-group">
       {% if resource.subtype != "remote" %}
@@ -663,5 +663,7 @@
   {% if FAVORITE_ENABLED %}
     {% include "favorite/_favorite_js.html" %}
   {% endif %}
+  
+  {% include "_responsive_tabs.html" %}
 
 {% endblock extra_script %}

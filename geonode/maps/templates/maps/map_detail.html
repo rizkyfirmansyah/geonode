@@ -64,7 +64,7 @@
 </div>
 
 <div class="row w-100">
-  <div class="col-md-8 {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
+  <div class="tab-resource-metadata {% if request.user_agent.is_mobile %}p-0 mb-2{% endif %}">
 
     <div id="embedded_map">
       <div id="the_map"></div>
@@ -125,7 +125,7 @@
 
   </div>
 
-  <div class="col-md-4 {% if request.user_agent.is_mobile %}p-0{% endif %}">
+  <div class="tab-resource-settings {% if request.user_agent.is_mobile %}p-0{% endif %}">
     <ul class="list-group">
       {% if "download_resourcebase" in perms_list %}
       <li class="list-group-item">
@@ -320,5 +320,7 @@
   {% if FAVORITE_ENABLED %}
     {% include "favorite/_favorite_js.html" %}
   {% endif %}
+
+  {% include "_responsive_tabs.html" %}
 
 {% endblock extra_script %}

@@ -5243,6 +5243,22 @@ footer li a:hover {
     padding: 5px;
 }
 
+.sidebar-left {
+  width: 300px;
+  position: fixed;
+  left: 0;
+  flex-direction: column;
+  top: var(--header-height);
+}
+
+.sidebar-right {
+  width: 300px;
+  position: fixed;
+  right: 0;
+  flex-direction: column;
+  top: var(--header-height);
+}
+
 #sidebar ul.components,
 #sidebarGroup ul.components {
     padding: 20px 0;

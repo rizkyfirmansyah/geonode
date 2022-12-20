@@ -105,7 +105,8 @@
       </div>
 </div>
 
-<div class="col-xs-12 col-md-3 pl-0">
+<div id="tab-settings">
+  <h5 class="pl-2 card-header bg-white">Settings</h5>
   <ul class="list-group m-0">
       <li class="list-group-item p-0"><a href="{% url "message_create" profile.pk %}" class="btn-light btn_wrapper"><i class="fa-solid fa-paper-plane"></i>{% trans "Message user" %}</a></li>
     </ul>
@@ -173,7 +174,7 @@
   {% endif %}
 </div>
 
-<div class="col-xs-12 col-md-9" infinite-scroll-directive="loadMoreResource()" id="catalogueList">
+<div class="col-xs-12" infinite-scroll-directive="loadMoreResource()" id="catalogueList">
   <div class="card bg-light">
     <div class="card-header">
       <div class="row">
@@ -203,5 +204,17 @@
   {% if GEONODE_SECURITY_ENABLED %}
     {% include "toast/permissions_form.html" %}
   {% endif %}
+
+  <script type="text/javascript">
+    $(function() {
+      if (Modernizr.mq('(max-width: 1368px)')) {
+        $('#tab-settings').addClass('col-xs-12 col-md-3 pl-0');
+        $('#catalogueList').addClass('col-md-9');
+      } else if (Modernizr.mq('(min-width: 1368px)')) {
+          $('#tab-settings').addClass('sidebar-left');
+          $('#catalogueList').addClass('col-md-12');
+      }
+    })
+  </script>
 
 {% endblock %}
