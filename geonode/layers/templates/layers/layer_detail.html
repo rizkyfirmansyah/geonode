@@ -550,15 +550,15 @@
       
       {% include "base/_resourcebase_contact_snippet.html" %}
     </ul>
-
-    {% with catalogue='layer' %}
-      {% include "modal/permissions.html" %}
-    {% endwith %}
-
-    {% include "modal/manage_layers.html" %}
-    {% include "modal/progress.html" %}
-
   </div>
+
+  {% with catalogue='layer' %}
+    {% include "modal/permissions.html" %}
+  {% endwith %}
+
+  {% include "modal/manage_layers.html" %}
+  {% include "modal/progress.html" %}
+
 </div>
 {% endblock %}
 
