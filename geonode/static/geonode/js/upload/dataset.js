@@ -127,7 +127,7 @@
             var preview;
             var download_url = siteUrl + "datasets/upload/file/preview/" + id;
             if (type == 'word' || type == 'excel' || type == 'powerpoint' || ext == 'pdf') {
-                preview = "https://docs.google.com/gview?url=" + download_url + "%26embedded=true";
+                preview = "https://docs.google.com/gview?url=" + download_url + "&embedded=true";
             } else {
                 preview = download_url;
             }
