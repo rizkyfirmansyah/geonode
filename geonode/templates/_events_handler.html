@@ -1,0 +1,25 @@
+
+{% block extra_script %}
+<script text="text/javascript">
+  $(function () {
+
+    $('#jump_to_top').hide();
+    $(window).scroll(function () {
+      if ($(document).scrollTop() > 700) {
+        $('#jump_to_top').show();
+        $('#jump_to_top').animate({
+          scrollTop: 0
+        }, 'fast');
+      } else {
+        $('#jump_to_top').hide();
+      }
+    });
+    $("#jump_to_top").click(function () {
+      $('html, body').animate({
+        scrollTop: 0
+      }, 'fast');
+    });
+
+  });
+</script>
+{% endblock %}

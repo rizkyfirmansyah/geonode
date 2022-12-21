@@ -29,23 +29,6 @@
 <script text="text/javascript">
   $(function () {
 
-    $('#jump_to_top').hide();
-    $(window).scroll(function () {
-      if ($(document).scrollTop() > 700) {
-        $('#jump_to_top').show();
-        $('#jump_to_top').animate({
-          scrollTop: 0
-        }, 'fast');
-      } else {
-        $('#jump_to_top').hide();
-      }
-    });
-    $("#jump_to_top").click(function () {
-      $('html, body').animate({
-        scrollTop: 0
-      }, 'fast');
-    });
-
     $("#text_search_input").on("change keyup paste click", function () {
       let _length = $("#text_search_input").val().length;
       let _width = (_length * .54) + 'em';
