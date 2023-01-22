@@ -23,6 +23,7 @@ jsonschema==4.7.2
 zipstream-new==1.1.8
 schema==0.7.5
 smart_open==6.0.0
+openpyxl
 
 configparser==5.2.0
 coverage==5.5
@@ -122,7 +123,7 @@ pinax-notifications==6.0.0
 pinax-ratings==4.0.0
 
 # Read Tabular Data
-pandas==1.4.3
+pandas==1.4.4
 pyreadstat==1.1.9
 
 # production
