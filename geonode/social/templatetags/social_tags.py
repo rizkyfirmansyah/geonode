@@ -42,7 +42,7 @@ def get_data(action, key, default=None):
                 try:
                     return _action_data.get(key, default)
                 except Exception as e:
-                    logger.exceprion(e)
+                    logger.exception(e)
     return default
 
 
@@ -83,14 +83,14 @@ def activity_item(action, **kwargs):
         if object_type == 'layer':
             activity_class = 'layer'
 
-        if object_type == 'dataset':
+        if object_type == 'file':
             activity_class = 'dataset'
 
     if raw_action == 'deleted':
         activity_class = 'delete'
 
     if raw_action == 'created' and \
-    object_type in ('layer', 'dataset'):
+    object_type in ('layer', 'file'):
         activity_class = 'upload'
 
     ctx = dict(

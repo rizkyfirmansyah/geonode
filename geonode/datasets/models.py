@@ -267,6 +267,9 @@ class File(models.Model):
     def embed_url(self):
         return reverse('dataset_embed', args=(self.id,))
 
+    def get_absolute_url(self):
+        return reverse('dataset_detail', args=(self.dataset.id,))
+
     @property
     def download_url(self):
         return build_absolute_uri(reverse('dataset_download', args=(self.id,)))

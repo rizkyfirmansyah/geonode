@@ -8,7 +8,7 @@
           <span class="icon-activity"><i class="fa-solid fa-{{ activity_class|default:'list-check' }}"></i></span>
       {% endif %}
       {% if object %}
-          <span class="thumb-activity"><img src="{{ object.thumbnail_url }}"></span>
+          <span class="thumb-activity">{% if object.thumbnail_url %}<img src="{{ object.thumbnail_url }}">{% endif %}</span>
       {% endif %}
           <a href="{{ actor.get_absolute_url }}">{{ username }}</a>
 
