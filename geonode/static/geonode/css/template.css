@@ -5249,6 +5249,8 @@ footer li a:hover {
   left: 0;
   flex-direction: column;
   top: var(--header-height);
+  height: 95vh;
+  overflow-y: auto;
 }
 
 .sidebar-right {
@@ -5257,6 +5259,8 @@ footer li a:hover {
   right: 0;
   flex-direction: column;
   top: var(--header-height);
+  height: 95vh;
+  overflow-y: auto;
 }
 
 #sidebar ul.components,
