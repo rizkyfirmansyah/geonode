@@ -116,8 +116,6 @@
     </div>
   </div>
 
-  {% include "modal/manage_datasets.html" %}
-
   <div class="tab-resource-settings {% if request.user_agent.is_mobile %}p-0{% endif %}">
     
     <ul class="list-group">
@@ -194,21 +192,20 @@
         <p>{% trans "Click the button below to change the permissions of this Datasets." %}</p>
         <button class="btn btn-edit btn-block" data-toggle="modal" data-target="#resourceModalPerms">{% trans "Change Data Permissions" %}</button>
       </li>
-
-      {% with catalogue='dataset' %}
-        {% include "modal/permissions.html" %}
-      {% endwith %}
-
+      
       {% endif %}
       {% endif %}
       {% endif %}
-
-      {% include "base/_resourcebase_contact_snippet.html" %}
-
-      {% include "modal/download_metadata_dataset.html" %}
-
+      
+      {% include "base/_resourcebase_contact_snippet.html" %}      
     </ul>
   </div>
+  
+  {% include "modal/manage_datasets.html" %}
+  {% with catalogue='dataset' %}
+    {% include "modal/permissions.html" %}
+  {% endwith %}
+  {% include "modal/download_metadata_dataset.html" %}
 </div>
 {% endblock %}
 
