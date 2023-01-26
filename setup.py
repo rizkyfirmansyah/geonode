@@ -38,6 +38,6 @@ setup(
     },
     dependency_links=[
         'git+https://github.com/rizkyfirmansyah/geonode-user-messages@master#egg=geonode-user-messages',
-        'git+https://github.com/rizkyfirmansyah/geonode-mapstore-client@3.3.x#egg=django_geonode_mapstore_client'
+        'git+https://github.com/rizkyfirmansyah/geonode-mapstore-client@3.4.x#egg=django_geonode_mapstore_client'
     ]
 )

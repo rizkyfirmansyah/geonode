@@ -49,7 +49,7 @@ pycountry
 django-floppyforms==1.9.0
 
 # GeoNode org maintained apps.
-git+https://github.com/rizkyfirmansyah/geonode-mapstore-client@3.3.x#egg=django_geonode_mapstore_client
+git+https://github.com/rizkyfirmansyah/geonode-mapstore-client@3.4.x#egg=django_geonode_mapstore_client
 geonode-announcements==2.0.2
 geonode-avatar==5.0.8
 geonode-dialogos==3.0.1
