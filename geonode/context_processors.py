@@ -26,6 +26,7 @@ from django.contrib.sites.models import Site
 import os
 from geonode.notifications_helper import has_notifications
 from geonode.base.models import Configuration, Thesaurus
+from django.contrib.auth import get_user_model
 
 from allauth.socialaccount.models import SocialApp
 
@@ -52,7 +53,7 @@ def resource_urls(request):
         SITEURL=settings.SITEURL,
         HCAPTCHA_SECRET=getattr(settings, 'HCAPTCHA_SECRET', ''),
         INSTALLED_APPS=settings.INSTALLED_APPS,
-        THEME_ACCOUNT_CONTACT_EMAIL=settings.THEME_ACCOUNT_CONTACT_EMAIL,
+        THEME_ACCOUNT_CONTACT_EMAIL=get_user_model().objects.filter(is_superuser=True)[0].email,
         TINYMCE_DEFAULT_CONFIG=settings.TINYMCE_DEFAULT_CONFIG,
         DEBUG_STATIC=getattr(
             settings,

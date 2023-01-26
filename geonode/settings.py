@@ -908,12 +908,6 @@ ACTSTREAM_SETTINGS = {
     'GFK_FETCH_DEPTH': 1,
 }
 
-
-# Email for users to contact admins.
-THEME_ACCOUNT_CONTACT_EMAIL = os.getenv(
-    'THEME_ACCOUNT_CONTACT_EMAIL', 'admin@example.com'
-)
-
 #
 # GeoNode specific settings
 #
