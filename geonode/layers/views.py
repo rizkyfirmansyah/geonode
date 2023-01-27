@@ -335,7 +335,7 @@ def layer_style_upload(request):
         status=status_code)
 
 
-def get_data_tables(table):
+def preview_data_tables(table):
     """
     perform query to each layers in order to display on layer detail page as datatables
     connect to geodatabase defined in the .env using psycopg2
@@ -349,7 +349,7 @@ def get_data_tables(table):
                 select to_jsonb(sq) - 'the_geom' - 'fid'::text data
                 from (
                 select * from
-                \"""" + table + """\"
+                \"""" + table + """\" limit 100
                 ) sq
             ) as data;
         """
@@ -691,7 +691,7 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
             access_token = None
 
     _table = layer.alternate.split(":")[1] if ":" in layer.alternate else ""
-    data_tables = get_data_tables(_table)
+    data_tables = preview_data_tables(_table)
     _keys = data_tables[0].get('data')[0]
 
     context_dict = {
