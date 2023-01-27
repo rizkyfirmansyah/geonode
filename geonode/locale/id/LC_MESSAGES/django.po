@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeoNode\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-27 01:12+0700\n"
+"POT-Creation-Date: 2023-01-27 11:47+0700\n"
 "PO-Revision-Date: 2016-08-23 13:57+0000\n"
 "Last-Translator: Julien Collaer <julien.collaer@opengeode.be>\n"
 "Language-Team: Indonesian (http://www.transifex.com/geonode/geonode/language/"
@@ -797,7 +797,7 @@ msgstr "Tidak tersedia"
 
 #: geonode/base/models.py:871
 #: geonode/base/templates/base/_resourcebase_info_panel.html:117
-#: geonode/layers/templates/layers/layer_detail.html:511
+#: geonode/layers/templates/layers/layer_detail.html:512
 #: geonode/templates/metadata_detail.html:73
 msgid "Source"
 msgstr "Sumber"
@@ -1566,7 +1566,7 @@ msgstr "nama atribut"
 #: geonode/catalogue/templates/geonode_metadata_full.html:189
 #: geonode/datasets/forms.py:292 geonode/datasets/forms.py:383
 #: geonode/groups/models.py:52 geonode/groups/models.py:107
-#: geonode/layers/templates/layers/layer_detail.html:233
+#: geonode/layers/templates/layers/layer_detail.html:234
 #: geonode/layers/templates/layers/layer_metadata_advanced.html:188
 #: geonode/layers/templates/layouts/panels.html:397
 #: geonode/services/forms.py:111
@@ -1965,15 +1965,15 @@ msgid "Flash"
 msgstr ""
 
 #: geonode/datasets/exif/templates/exif/_exif_document_detail.html:20
-#: geonode/layers/templates/layers/layer_detail.html:216
-#: geonode/layers/templates/layers/layer_detail.html:221
+#: geonode/layers/templates/layers/layer_detail.html:217
+#: geonode/layers/templates/layers/layer_detail.html:222
 #: geonode/themes/models.py:88
 msgid "True"
 msgstr ""
 
 #: geonode/datasets/exif/templates/exif/_exif_document_detail.html:20
-#: geonode/layers/templates/layers/layer_detail.html:216
-#: geonode/layers/templates/layers/layer_detail.html:221
+#: geonode/layers/templates/layers/layer_detail.html:217
+#: geonode/layers/templates/layers/layer_detail.html:222
 #: geonode/themes/models.py:87
 msgid "False"
 msgstr ""
@@ -2142,14 +2142,14 @@ msgstr "Nilai layer ini"
 
 #: geonode/datasets/templates/datasets/dataset_detail.html:96
 #: geonode/geoapps/templates/apps/app_detail.html:75
-#: geonode/layers/templates/layers/layer_detail.html:317
+#: geonode/layers/templates/layers/layer_detail.html:318
 #: geonode/maps/templates/maps/map_detail.html:111
 msgid "Average Rating"
 msgstr "Rating rata-rata"
 
 #: geonode/datasets/templates/datasets/dataset_detail.html:128
 #: geonode/geoapps/templates/apps/app_detail.html:94
-#: geonode/layers/templates/layers/layer_detail.html:359
+#: geonode/layers/templates/layers/layer_detail.html:360
 #: geonode/maps/templates/maps/map_detail.html:137
 msgid "Metadata Detail"
 msgstr "Detil Metadata"
@@ -2167,13 +2167,13 @@ msgstr "Sunting Dataset"
 
 #: geonode/datasets/templates/datasets/dataset_detail.html:159
 #: geonode/geoapps/templates/apps/app_detail.html:109
-#: geonode/layers/templates/layers/layer_detail.html:367
+#: geonode/layers/templates/layers/layer_detail.html:368
 #: geonode/maps/templates/maps/map_detail.html:152
 msgid "Request change"
 msgstr ""
 
 #: geonode/datasets/templates/datasets/dataset_detail.html:165
-#: geonode/layers/templates/layers/layer_detail.html:388
+#: geonode/layers/templates/layers/layer_detail.html:389
 #: geonode/templates/modal/download_layer.html:79
 #: geonode/templates/modal/download_metadata_dataset.html:8
 msgid "Download Metadata"
@@ -2197,7 +2197,7 @@ msgstr "Daftar sumber daya yang menggunakan dokumen ini"
 #: geonode/geoserver/createlayer/templates/createlayer/layer_create.html:64
 #: geonode/groups/templates/groups/group_detail.html:78
 #: geonode/groups/templates/groups/groupcategory_list.html:76
-#: geonode/layers/templates/layers/layer_detail.html:541
+#: geonode/layers/templates/layers/layer_detail.html:542
 #: geonode/layers/templates/layers/layer_metadata_upload.html:101
 #: geonode/layers/templates/layers/layer_style_upload.html:104
 #: geonode/layers/templates/upload/layer_upload.html:137
@@ -2210,7 +2210,7 @@ msgid "Click the button below to change the permissions of this Datasets."
 msgstr "Klik tombol berikut untuk mengubah izin Dataset ini"
 
 #: geonode/datasets/templates/datasets/dataset_detail.html:193
-#: geonode/layers/templates/layers/layer_detail.html:543
+#: geonode/layers/templates/layers/layer_detail.html:544
 #: geonode/layers/templates/layers/layer_metadata_upload.html:103
 #: geonode/layers/templates/layers/layer_style_upload.html:106
 msgid "Change Data Permissions"
@@ -2616,7 +2616,7 @@ msgid "Item"
 msgstr ""
 
 #: geonode/favorite/templates/favorite/favorite_list.html:18
-#: geonode/layers/templates/layers/layer_detail.html:514
+#: geonode/layers/templates/layers/layer_detail.html:515
 #: geonode/services/templates/services/service_detail.html:26
 #: geonode/services/templates/services/service_list.html:26
 msgid "Type"
@@ -2752,7 +2752,7 @@ msgid "Rate this"
 msgstr "Nilai peta ini"
 
 #: geonode/geoapps/templates/apps/app_detail.html:100
-#: geonode/layers/templates/layers/layer_detail.html:375
+#: geonode/layers/templates/layers/layer_detail.html:376
 #: geonode/maps/templates/maps/map_detail.html:143
 #: geonode/templates/modal/manage_apps.html:33
 #: geonode/templates/modal/manage_maps.html:34
@@ -3990,7 +3990,7 @@ msgid ""
 msgstr "urutan atribut yang ditampilkan saat identifikasi layer"
 
 #: geonode/layers/models.py:488
-#: geonode/layers/templates/layers/layer_detail.html:232
+#: geonode/layers/templates/layers/layer_detail.html:233
 #: geonode/layers/templates/layers/layer_metadata_advanced.html:187
 #: geonode/layers/templates/layouts/panels.html:396
 msgid "Label"
@@ -4197,175 +4197,175 @@ msgstr ""
 msgid "offline"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:110
+#: geonode/layers/templates/layers/layer_detail.html:111
 msgid "Layer WMS GetCapabilities document"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:122
+#: geonode/layers/templates/layers/layer_detail.html:123
 msgid "Filter Granules"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:125
+#: geonode/layers/templates/layers/layer_detail.html:126
 msgid "Active Filter:"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:131
+#: geonode/layers/templates/layers/layer_detail.html:132
 msgid "Granule ID"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:132
+#: geonode/layers/templates/layers/layer_detail.html:133
 msgid "Bounding Box"
 msgstr "Batas"
 
-#: geonode/layers/templates/layers/layer_detail.html:133
+#: geonode/layers/templates/layers/layer_detail.html:134
 msgid "Time"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:134
+#: geonode/layers/templates/layers/layer_detail.html:135
 msgid "Elevation"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:135
+#: geonode/layers/templates/layers/layer_detail.html:136
 msgid "Actions"
 msgstr "Aksi"
 
-#: geonode/layers/templates/layers/layer_detail.html:153
+#: geonode/layers/templates/layers/layer_detail.html:154
 #, fuzzy
 #| msgid "Preview"
 msgid "Granule Preview"
 msgstr "Tampilan Cetak"
 
-#: geonode/layers/templates/layers/layer_detail.html:154
+#: geonode/layers/templates/layers/layer_detail.html:155
 #, fuzzy
 #| msgid "Remove"
 msgid "Granule Remove"
 msgstr "Hapus"
 
-#: geonode/layers/templates/layers/layer_detail.html:208
+#: geonode/layers/templates/layers/layer_detail.html:209
 msgid "Dimension"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:209
+#: geonode/layers/templates/layers/layer_detail.html:210
 msgid "Enabled"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:210
+#: geonode/layers/templates/layers/layer_detail.html:211
 msgid "Regex"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:215
+#: geonode/layers/templates/layers/layer_detail.html:216
 msgid "TIME"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:220
+#: geonode/layers/templates/layers/layer_detail.html:221
 msgid "ELEVATION"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:231
+#: geonode/layers/templates/layers/layer_detail.html:232
 msgid "Attribute Name"
 msgstr "Nama Atribut"
 
-#: geonode/layers/templates/layers/layer_detail.html:235
+#: geonode/layers/templates/layers/layer_detail.html:236
 msgid "Range"
 msgstr "Kisaran"
 
-#: geonode/layers/templates/layers/layer_detail.html:236
+#: geonode/layers/templates/layers/layer_detail.html:237
 msgid "Average"
 msgstr "Rata-rata"
 
-#: geonode/layers/templates/layers/layer_detail.html:237
+#: geonode/layers/templates/layers/layer_detail.html:238
 msgid "Median"
 msgstr "Nilai tengah"
 
-#: geonode/layers/templates/layers/layer_detail.html:238
+#: geonode/layers/templates/layers/layer_detail.html:239
 msgid "Standard Deviation"
 msgstr "Standar Deviasi"
 
-#: geonode/layers/templates/layers/layer_detail.html:313
+#: geonode/layers/templates/layers/layer_detail.html:314
 msgid "Rate this layer"
 msgstr "Nilai layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:338
+#: geonode/layers/templates/layers/layer_detail.html:339
 msgid "Analyze with"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:345
+#: geonode/layers/templates/layers/layer_detail.html:346
 #: geonode/templates/modal/download_layer.html:11
 msgid "Download Layer"
 msgstr "Unduh Layer"
 
-#: geonode/layers/templates/layers/layer_detail.html:347
+#: geonode/layers/templates/layers/layer_detail.html:348
 msgid "Request Download"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:382
+#: geonode/layers/templates/layers/layer_detail.html:383
 #, fuzzy
 #| msgid "Edit Layer"
 msgid "View Layer"
 msgstr "Ubah Layer"
 
-#: geonode/layers/templates/layers/layer_detail.html:394
+#: geonode/layers/templates/layers/layer_detail.html:395
 msgid "Legend"
 msgstr "Legenda"
 
-#: geonode/layers/templates/layers/layer_detail.html:427
+#: geonode/layers/templates/layers/layer_detail.html:428
 msgid "Maps using this layer"
 msgstr "Peta yang menggunakan layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:429
+#: geonode/layers/templates/layers/layer_detail.html:430
 msgid "List of maps using this layer:"
 msgstr "Daftar peta yang menggunakan layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:435
+#: geonode/layers/templates/layers/layer_detail.html:436
 msgid "This layer is not currently used in any maps."
 msgstr "Layer ini tidak digunakan pada peta manapun"
 
-#: geonode/layers/templates/layers/layer_detail.html:443
+#: geonode/layers/templates/layers/layer_detail.html:444
 msgid "Create a map using this layer"
 msgstr "Buat peta menggunakan layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:444
+#: geonode/layers/templates/layers/layer_detail.html:445
 msgid "Click the button below to generate a new map based on this layer."
 msgstr "Klik tombol berikut untuk membuat peta baru menggunakan layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:445
+#: geonode/layers/templates/layers/layer_detail.html:446
 msgid "Create a Map"
 msgstr "Buat Peta"
 
-#: geonode/layers/templates/layers/layer_detail.html:451
+#: geonode/layers/templates/layers/layer_detail.html:452
 msgid "Add the layer to an existing map"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:459
+#: geonode/layers/templates/layers/layer_detail.html:460
 #, fuzzy
 #| msgid "Click the button below to change the permissions of this layer."
 msgid "Click the button below to add the layer to the selected map."
 msgstr "Klik tombol berikut untuk mengubah izin layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:461
+#: geonode/layers/templates/layers/layer_detail.html:462
 #, fuzzy
 #| msgid "Edit Map"
 msgid "Add to Map"
 msgstr "Edit Peta"
 
-#: geonode/layers/templates/layers/layer_detail.html:468
+#: geonode/layers/templates/layers/layer_detail.html:469
 #, fuzzy
 #| msgid "Documents related to this layer"
 msgid "Datasets related to this layer"
 msgstr "Dokumen terkait dengan layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:469
+#: geonode/layers/templates/layers/layer_detail.html:470
 #, fuzzy
 #| msgid "List of documents related to this layer:"
 msgid "List of datasets related to this layer:"
 msgstr "Daftar dokumen yang terkait dengan layer ini:"
 
-#: geonode/layers/templates/layers/layer_detail.html:481
+#: geonode/layers/templates/layers/layer_detail.html:482
 #: geonode/templates/modal/manage_layers.html:31
 msgid "Styles"
 msgstr "Penampilan"
 
-#: geonode/layers/templates/layers/layer_detail.html:483
+#: geonode/layers/templates/layers/layer_detail.html:484
 msgid ""
 "The following styles are associated with this layer. Choose a style to view "
 "it in the preview map."
@@ -4373,58 +4373,58 @@ msgstr ""
 "Penampilan berikut berkaitan dengan data set ini. Pilih jenis tampilan untuk "
 "menampilkannya pada tampilan peta."
 
-#: geonode/layers/templates/layers/layer_detail.html:492
+#: geonode/layers/templates/layers/layer_detail.html:493
 #, fuzzy
 #| msgid "Layer Default Style"
 msgid "(default style)"
 msgstr "Style Default Layer"
 
-#: geonode/layers/templates/layers/layer_detail.html:500
+#: geonode/layers/templates/layers/layer_detail.html:501
 msgid "No styles associated with this layer"
 msgstr "Tida ada style untuk layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:510
+#: geonode/layers/templates/layers/layer_detail.html:511
 msgid "External service layer"
 msgstr "Lapisan layanan eksternal"
 
-#: geonode/layers/templates/layers/layer_detail.html:522
+#: geonode/layers/templates/layers/layer_detail.html:523
 msgid "Refresh Attributes and Statistics of this layer"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:524
+#: geonode/layers/templates/layers/layer_detail.html:525
 msgid ""
 "Click the button below to allow SDI refreshing the list of available Layer "
 "Attributes. If the option 'WPS_ENABLED' has been also set on the backend, it "
 "will recalculate their statistics too."
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:526
+#: geonode/layers/templates/layers/layer_detail.html:527
 msgid "Refresh Attributes and Statistics"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:530
+#: geonode/layers/templates/layers/layer_detail.html:531
 #, fuzzy
 #| msgid "Create a map using this layer"
 msgid "Clear the Server Cache of this layer"
 msgstr "Buat peta menggunakan layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:531
+#: geonode/layers/templates/layers/layer_detail.html:532
 #, fuzzy
 #| msgid "Click the button below to change the permissions of this layer."
 msgid "Click the button below to wipe the tile-cache of this layer."
 msgstr "Klik tombol berikut untuk mengubah izin layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:532
+#: geonode/layers/templates/layers/layer_detail.html:533
 msgid "Empty Tiled-Layer Cache"
 msgstr ""
 
-#: geonode/layers/templates/layers/layer_detail.html:542
+#: geonode/layers/templates/layers/layer_detail.html:543
 #: geonode/layers/templates/layers/layer_metadata_upload.html:102
 #: geonode/layers/templates/layers/layer_style_upload.html:105
 msgid "Click the button below to change the permissions of this layer."
 msgstr "Klik tombol berikut untuk mengubah izin layer ini"
 
-#: geonode/layers/templates/layers/layer_detail.html:545
+#: geonode/layers/templates/layers/layer_detail.html:546
 #, fuzzy
 #| msgid "Set permissions"
 msgid "Sync Permissions Immediately"
@@ -6625,25 +6625,25 @@ msgstr "Ubah Profil"
 msgid "Explore People"
 msgstr "Telusuri Pengguna"
 
-#: geonode/people/views.py:71
+#: geonode/people/views.py:75
 msgid "Login Required"
 msgstr ""
 
-#: geonode/people/views.py:72
+#: geonode/people/views.py:76
 #, fuzzy
 #| msgid "Please login or register and retry."
 msgid "Please login before proceed to explore."
 msgstr "Silakan coba lagi atau mendaftar kembali"
 
-#: geonode/people/views.py:161
+#: geonode/people/views.py:165
 msgid "Your username for "
 msgstr "Usernama Anda untuk"
 
-#: geonode/people/views.py:175
+#: geonode/people/views.py:179
 msgid "Your username has been emailed to you."
 msgstr "Username Anda telah diemail"
 
-#: geonode/people/views.py:177
+#: geonode/people/views.py:181
 msgid "No user could be found with that email address."
 msgstr "Tidak ditemukan pengguna dengan alamat email tersebut"
 
@@ -7274,11 +7274,11 @@ msgid ""
 msgstr ""
 
 #: geonode/templates/account/account_inactive.html:5
-#: geonode/templates/account/account_inactive.html:8
+#: geonode/templates/account/account_inactive.html:10
 msgid "Account Inactive"
 msgstr ""
 
-#: geonode/templates/account/account_inactive.html:10
+#: geonode/templates/account/account_inactive.html:13
 msgid "This account is inactive."
 msgstr ""
 
@@ -7459,9 +7459,46 @@ msgstr ""
 msgid "Change password email notification"
 msgstr "Ubah password: %s"
 
-#: geonode/templates/account/email/password_reset_key.txt:13
+#: geonode/templates/account/email/password_reset_key_message.txt:4
+#, python-format
+msgid ""
+"Hello from %(site_name)s!\n"
+"\n"
+"You're receiving this e-mail because you or someone else has "
+msgstr ""
+
+#: geonode/templates/account/email/password_reset_key_message.txt:6
+#, fuzzy
+#| msgid ""
+#| "You're receiving this email because you or someone else has requested a "
+#| "password for your user account at %(site_name)s.\n"
+#| "It can be safely ignored if you did not request a password reset. Click "
+#| "the link below to reset your password.\n"
+#| "\n"
+#| "%(password_reset_url)s\n"
+msgid ""
+"for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password.\n"
+msgstr ""
+"Anda menerima email ini karena Anda atau orang lain telah meminta password "
+"untuk account pengguna Anda di %(site_name)s. Hal ini dapat dengan aman "
+"diabaikan jika Anda tidak meminta reset password. Klik tautan di bawah ini "
+"untuk mereset password Anda. %(password_reset_url)s\n"
+
+#: geonode/templates/account/email/password_reset_key_message.txt:11
 #, python-format
 msgid "In case you forgot, your username is %(username)s.\n"
+msgstr ""
+
+#: geonode/templates/account/email/password_reset_key_message.txt:14
+#, python-format
+msgid ""
+"Thank you for using <a href=\"https://%(site_domain)s\">%(site_name)s!</a>\n"
+"\n"
+"Cheers,\n"
+"The %(site_name)s team.\n"
+"\n"
 msgstr ""
 
 #: geonode/templates/account/email/password_reset_key_subject.txt:1
@@ -7471,26 +7508,26 @@ msgid " Password reset"
 msgstr "Reset password"
 
 #: geonode/templates/account/email_confirm.html:6
-#: geonode/templates/account/email_confirm.html:10
+#: geonode/templates/account/email_confirm.html:12
 #, fuzzy
 #| msgid "Email Address"
 msgid "Confirm E-mail Address"
 msgstr "Alamat Email"
 
-#: geonode/templates/account/email_confirm.html:16
+#: geonode/templates/account/email_confirm.html:19
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an e-mail "
 "address for user %(user_display)s."
 msgstr ""
 
-#: geonode/templates/account/email_confirm.html:20
+#: geonode/templates/account/email_confirm.html:23
 #: geonode/templates/modal/custom_confirmation.html:20
 #: geonode/templates/relationships/confirm.html:12
 msgid "Confirm"
 msgstr "Konfirmasi"
 
-#: geonode/templates/account/email_confirm.html:27
+#: geonode/templates/account/email_confirm.html:30
 #, python-format
 msgid ""
 "This e-mail confirmation link expired or is invalid. Please <a "
@@ -7575,7 +7612,7 @@ msgstr ""
 "href=\"mailto:"
 "%(THEME_ACCOUNT_CONTACT_EMAIL)s\">%(THEME_ACCOUNT_CONTACT_EMAIL)s</a>."
 
-#: geonode/templates/account/password_reset.html:30
+#: geonode/templates/account/password_reset.html:28
 msgid "Reset my password"
 msgstr "Ganti password saya"
 
@@ -7590,20 +7627,20 @@ msgid ""
 "within a few minutes."
 msgstr ""
 
-#: geonode/templates/account/password_reset_from_key.html:4
-#: geonode/templates/account/password_reset_from_key.html:9
+#: geonode/templates/account/password_reset_from_key.html:5
+#: geonode/templates/account/password_reset_from_key.html:10
 #: geonode/templates/account/password_reset_from_key_done.html:4
-#: geonode/templates/account/password_reset_from_key_done.html:7
+#: geonode/templates/account/password_reset_from_key_done.html:9
 #, fuzzy
 #| msgid "Change password"
 msgid "Change Password"
 msgstr "Ganti password"
 
-#: geonode/templates/account/password_reset_from_key.html:9
+#: geonode/templates/account/password_reset_from_key.html:10
 msgid "Bad Token"
 msgstr ""
 
-#: geonode/templates/account/password_reset_from_key.html:14
+#: geonode/templates/account/password_reset_from_key.html:15
 #, python-format
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
@@ -7611,14 +7648,14 @@ msgid ""
 "a>."
 msgstr ""
 
-#: geonode/templates/account/password_reset_from_key.html:20
+#: geonode/templates/account/password_reset_from_key.html:21
 #, fuzzy
 #| msgid "Change password"
-msgid "change password"
+msgid "Change password"
 msgstr "Ganti password"
 
-#: geonode/templates/account/password_reset_from_key.html:23
-#: geonode/templates/account/password_reset_from_key_done.html:8
+#: geonode/templates/account/password_reset_from_key.html:24
+#: geonode/templates/account/password_reset_from_key_done.html:12
 msgid "Your password is now changed."
 msgstr ""
 
@@ -7628,19 +7665,19 @@ msgstr ""
 msgid "Set Password"
 msgstr "Password"
 
-#: geonode/templates/account/password_set.html:10
+#: geonode/templates/account/password_set.html:11
 #, fuzzy
 #| msgid "Password reset"
 msgid "Password Set"
 msgstr "Reset password"
 
-#: geonode/templates/account/password_set.html:15
+#: geonode/templates/account/password_set.html:14
 #, fuzzy
 #| msgid "Forgot your password?"
 msgid "Set your password here"
 msgstr "Lupa password anda?"
 
-#: geonode/templates/account/password_set.html:21
+#: geonode/templates/account/password_set.html:20
 #, fuzzy
 #| msgid "Reset my password"
 msgid "Set password"
@@ -7657,11 +7694,11 @@ msgid ""
 msgstr ""
 
 #: geonode/templates/account/signup_closed.html:5
-#: geonode/templates/account/signup_closed.html:8
+#: geonode/templates/account/signup_closed.html:10
 msgid "Sign Up Closed"
 msgstr ""
 
-#: geonode/templates/account/signup_closed.html:10
+#: geonode/templates/account/signup_closed.html:13
 msgid "We are sorry, but the sign up is currently closed."
 msgstr ""
 
@@ -7679,29 +7716,37 @@ msgstr ""
 msgid "Verify your email address"
 msgstr ""
 
+#: geonode/templates/account/verification_sent.html:14
+msgid ""
+"We have sent an email to you for verification. Follow the link provided to "
+"finalize the signup process. Please contact us if you do not receive it "
+"within a few minutes."
+msgstr ""
+
 #: geonode/templates/account/verified_email_required.html:5
-#: geonode/templates/account/verified_email_required.html:8
+#: geonode/templates/account/verified_email_required.html:10
 #, fuzzy
 #| msgid "Email Address"
 msgid "Verify Your E-mail Address"
 msgstr "Alamat Email"
 
-#: geonode/templates/account/verified_email_required.html:12
-msgid ""
-"This part of the site requires us to verify that\n"
-"you are who you claim to be. For this purpose, we require that you\n"
-"verify ownership of your e-mail address. "
-msgstr ""
-
 #: geonode/templates/account/verified_email_required.html:16
 msgid ""
-"We have sent an e-mail to you for\n"
-"verification. Please click on the link inside this e-mail. Please\n"
-"contact us if you do not receive it within a few minutes.\n"
-"Check your <strong>Spam/Junk folder</strong> to ensure you receive it well."
+"This part of the site requires us to verify that\n"
+"    you are who you claim to be. For this purpose, we require that you\n"
+"    verify ownership of your e-mail address. "
 msgstr ""
 
-#: geonode/templates/account/verified_email_required.html:21
+#: geonode/templates/account/verified_email_required.html:20
+msgid ""
+"We have sent an e-mail to you for\n"
+"    verification. Please click on the link inside this e-mail. Please\n"
+"    contact us if you do not receive it within a few minutes.\n"
+"    Check your <strong>Spam/Junk folder</strong> to ensure you receive it "
+"well."
+msgstr ""
+
+#: geonode/templates/account/verified_email_required.html:27
 #, python-format
 msgid ""
 "<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your e-"
@@ -10067,27 +10112,6 @@ msgstr "Kirim Balasan"
 #| msgid "Sent to"
 msgid "Sent at"
 msgstr "Kirim ke"
-
-#, fuzzy, python-format
-#~| msgid ""
-#~| "You're receiving this email because you or someone else has requested a "
-#~| "password for your user account at %(site_name)s.\n"
-#~| "It can be safely ignored if you did not request a password reset. Click "
-#~| "the link below to reset your password.\n"
-#~| "\n"
-#~| "%(password_reset_url)s\n"
-#~ msgid ""
-#~ "Hello from %(site_name)s!\n"
-#~ "\n"
-#~ "You're receiving this e-mail because you or someone else has requested a "
-#~ "password for your user account.\n"
-#~ "It can be safely ignored if you did not request a password reset. Click "
-#~ "the link below to reset your password.\n"
-#~ msgstr ""
-#~ "Anda menerima email ini karena Anda atau orang lain telah meminta "
-#~ "password untuk account pengguna Anda di %(site_name)s. Hal ini dapat "
-#~ "dengan aman diabaikan jika Anda tidak meminta reset password. Klik tautan "
-#~ "di bawah ini untuk mereset password Anda. %(password_reset_url)s\n"
 
 #, fuzzy
 #~| msgid "Who can edit data for this Dataset?"
