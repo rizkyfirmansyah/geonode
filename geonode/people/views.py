@@ -17,10 +17,12 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-from allauth.account.views import SignupView, LoginView
+from allauth.account.views import SignupView, LoginView, PasswordChangeView
 from allauth.account.forms import UserTokenForm
 from allauth.account.views import PasswordResetFromKeyView as AllauthPasswordResetFromKeyView
 from allauth.account.views import _ajax_response
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -243,3 +245,18 @@ class PasswordResetFromKeyView(AllauthPasswordResetFromKeyView):
             self.get_context_data(token_fail=True)
         )
         return _ajax_response(self.request, response, form=token_form)
+
+
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    """
+    Overriding Allauth view so we can redirect to profile home.
+    """
+    def get_success_url(self):
+        """
+        Return the URL to redirect to after processing a valid form.
+
+        Using this instead of just defining the success_url attribute
+        because our url has a dynamic element.
+        """
+        success_url = reverse('profile_detail', args=(self.request.user.username,))
+        return success_url

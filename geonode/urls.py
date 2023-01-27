@@ -36,7 +36,7 @@ from . import version
 
 from geonode.api.urls import api, router
 from geonode.api.views import verify_token, user_info, roles, users, admin_role
-from geonode.people.views import PasswordResetFromKeyView
+from geonode.people.views import PasswordResetFromKeyView, CustomPasswordChangeView
 
 from geonode import geoserver
 from geonode.utils import check_ogc_backend
@@ -118,6 +118,7 @@ urlpatterns += [
 
     # Social views
     url(r'^account/signup/', CustomSignupView.as_view(), name='account_signup'),
+    url(r'^account/password/change/', CustomPasswordChangeView.as_view(), name='account_change_password'),
     url(r"^account/password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$", PasswordResetFromKeyView.as_view(), name="account_reset_password_from_key"),
     url(r"^account/", include("allauth.urls")),
     url(r'^invitations/', include(
