@@ -9,7 +9,7 @@
     <div class="container-fluid">
       <div class="row {% if not request.user_agent.is_mobile %}p-2{% endif %}">
         <div class="header-logo pt-2">
-          <a href="{{ SITEURL }}">
+          <a href="{% url 'catalogue_browse' %}">
             <img
               class="w-auto h-auto"
               src="{% if custom_theme.logo %}{{SITEURL}}/uploaded/{{ custom_theme.logo }} {% else %} {% static "geonode/img/logo.png" %} {% endif %}"
