@@ -18,6 +18,10 @@
 #
 #########################################################################
 from allauth.account.views import SignupView, LoginView
+from allauth.account.forms import UserTokenForm
+from allauth.account.views import PasswordResetFromKeyView as AllauthPasswordResetFromKeyView
+from allauth.account.views import _ajax_response
+from django.views.generic.edit import FormView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -215,3 +219,30 @@ class ProfileAutocomplete(autocomplete.Select2QuerySetView):
                            | Q(last_name__icontains=self.q))
 
         return qs
+
+
+class PasswordResetFromKeyView(AllauthPasswordResetFromKeyView):
+    """
+    Override password reset to overcome the issues of bad token
+    Reference: https://github.com/pennersr/django-allauth/issues/2201
+    """
+    def dispatch(self, request, uidb36, key, **kwargs):
+        self.request = request
+        self.key = key
+        token_form = UserTokenForm(data={'uidb36': uidb36, 'key': self.key})
+        if token_form.is_valid():
+            # Store the key in the session and redirect to the
+            # password reset form at a URL without the key. That
+            # avoids the possibility of leaking the key in the
+            # HTTP Referer header.
+            # (Ab)using forms here to be able to handle errors in XHR #890
+            token_form = UserTokenForm(
+                data={'uidb36': uidb36, 'key': self.key})
+            if token_form.is_valid():
+                self.reset_user = token_form.reset_user
+                return super(FormView, self).dispatch(request, uidb36, self.key, **kwargs)
+        self.reset_user = None
+        response = self.render_to_response(
+            self.get_context_data(token_fail=True)
+        )
+        return _ajax_response(self.request, response, form=token_form)
