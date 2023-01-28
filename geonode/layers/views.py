@@ -335,7 +335,7 @@ def layer_style_upload(request):
         status=status_code)
 
 
-def preview_data_tables(table):
+def preview_data_tables(table, preview=True):
     """
     perform query to each layers in order to display on layer detail page as datatables
     connect to geodatabase defined in the .env using psycopg2
@@ -343,16 +343,28 @@ def preview_data_tables(table):
     """
 
     def _query_set(table):
-        query = """
-            select json_agg(data) data, count(*) as total_rows
-            from (
-                select to_jsonb(sq) - 'the_geom' - 'fid'::text data
+        if preview:
+            query = """
+                select json_agg(data) data, count(*) as total_rows
                 from (
-                select * from
-                \"""" + table + """\" limit 100
-                ) sq
-            ) as data;
-        """
+                    select to_jsonb(sq) - 'the_geom' - 'fid'::text data
+                    from (
+                    select * from
+                    \"""" + table + """\" limit 50
+                    ) sq
+                ) as data;
+            """
+        else:
+            query = """
+                select json_agg(data) data, count(*) as total_rows
+                from (
+                    select to_jsonb(sq) - 'the_geom' - 'fid'::text data
+                    from (
+                    select * from
+                    \"""" + table + """\"
+                    ) sq
+                ) as data;
+            """
         return query
 
     def _connect():

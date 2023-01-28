@@ -273,6 +273,9 @@
 
       <article id="datasets" class="tab-pane">
         {% if attributes %}
+          {% if links_download %}
+              <button id="loadAttributeTables" class="btn btn-download m-2 float-right">Load all data</button>
+          {% endif %}
           <table id="datasetsTable" data-page-length='10' class="display" style="width: 100%">
             <thead>
               <tr>
@@ -654,6 +657,26 @@
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
           $($.fn.dataTable.tables(true)).DataTable()
             .columns.adjust()
+        });
+        $('#loadAttributeTables').on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{% url 'layers-load_features' resource.id %}",
+                type: 'POST',
+                beforeSend: function() {
+                    $('#loadAttributeTables').prop('disabled', true);
+                    $('#datasetsTable').DataTable().clear().destroy();
+                    $(document.body).append(`{% with toast_title="Loading Features" %}
+                        {% with toast_message='Please wait.. it may take a long time to get all the data' %}
+                          {% include "toast/_trigger_toast.html" %}
+                        {% endwith %}
+                    {% endwith %}`);
+                    $('.toast').toast('show');
+                },
+                success: function(data) {
+                  $("#datasetsTable").DataTable({dom:"Bfrtip",lengthMenu:[[10,25,50,-1],["10 rows","25 rows","50 rows","All rows"]],buttons:[{extend:"copy",text:'<i class="fa-solid fa-copy fa-2x" aria-hidden="true" title="Copy All Rows to Clipboard"></i>'},{extend:"pdf",text:'<i class="fa-solid fa-file-pdf fa-2x" aria-hidden="true" title="Export to PDF"></i>'},{extend:"excel",text:'<i class="fa-solid fa-file-excel fa-2x" aria-hidden="true" title="Export to Excel"></i>'},"pageLength"],data:data.data,columns:columns,scrollX:!0});
+                }
+            })
         });
         
       });

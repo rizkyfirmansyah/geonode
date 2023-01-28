@@ -20,14 +20,19 @@
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.parsers import JSONParser, FormParser
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter
 from geonode.base.api.permissions import TokenAuthOAuthApplicationsQuery, UserHasPerms
 from geonode.base.api.pagination import GeoNodeApiPagination
 from geonode.layers.models import Layer
+from geonode.layers.views import preview_data_tables
 from django.conf import settings
 
 from .serializers import LayerSerializer
@@ -52,3 +57,24 @@ class LayerViewSet(DynamicModelViewSet):
     queryset = Layer.objects.all()
     serializer_class = LayerSerializer
     pagination_class = GeoNodeApiPagination
+
+    @extend_schema(
+        methods=['post'],
+        responses={200},
+        description="API endpoint to load all features of spatial data."
+    )
+    @action(
+        detail=False,
+        url_path="load_features/(?P<resource_id>\d+)?$",
+        url_name="load_features",
+        methods=['post'],
+        permission_classes=[
+            IsAuthenticated
+        ],
+        parser_classes=[JSONParser, FormParser]
+    )
+    def load_features(self, request, resource_id):
+        layer = Layer.objects.get(id=resource_id)
+        data_tables = preview_data_tables(layer.name, False)
+        
+        return Response({'data': data_tables[0].get('data'), 'total': data_tables[0].get('total_rows')})
