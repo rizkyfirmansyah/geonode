@@ -36,7 +36,7 @@
             {% if links_download %}
               <div class="tab-pane active" id="download_original_data">
                 <div class="mt-2 mb-2">
-                  <a href="{% url "layer_export" resource.alternate %}" class="btn btn-save btn-block mb-3">{% trans "Advanced Export Filtered Data" %}</a>
+                  <a target="_blank" href="{% url "layer_export" resource.alternate %}" class="btn btn-save btn-block mb-3">{% trans "Advanced Export Filtered Data" %}</a>
                   <button class="btn btn-upload btn-block" type="button" data-toggle="collapse" data-target="#originalDownload" aria-expanded="false" aria-controls="originalDownload">{% trans "Download Original Dataset" %}</button>
                 </div>
 
@@ -45,16 +45,8 @@
                     <h5>{% trans "Pick your download format:" %}</h5>
                     <ul>
                       {% for link in links_download %}
-                        {% if link.name == 'Original Dataset' %}
-                          {% original_link_available resource.id link.url as original_dwn_link_available %}
-                          {% if original_dwn_link_available %}
-                          <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
-                          {% else %}
-                          <!-- Hide the link instead. Uncomment the lines below to present a warning to the users. -->
-                          <!-- li><a href="javascript:thumbnailFeedbacks('{% trans "No data available for this resource. Please contact a system administrator or a manager." %}', '{% trans "Warning" %}');" id="{{ link.name | slugify }}" class="urls">{% trans link.name %}</a></li -->
-                          {% endif %}
-                        {% else %}
-                        <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
+                        {% if link.name == 'CSV' or link.name == 'Excel' or link.name == 'Original Layer' %}
+                            <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
                         {% endif %}
                       {% endfor %}
                     </ul>
