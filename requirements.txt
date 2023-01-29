@@ -2,7 +2,7 @@
 Pillow==9.1.1
 lxml==4.9.1
 psycopg2==2.9.3
-Django==3.2.14
+Django==3.2.16
 
 # Other
 aiosignal==1.2.0
@@ -49,7 +49,7 @@ pycountry
 django-floppyforms==1.9.0
 
 # GeoNode org maintained apps.
-git+https://github.com/rizkyfirmansyah/geonode-mapstore-client@3.3.x#egg=django_geonode_mapstore_client
+-e git+https://github.com/GeoNode/geonode-mapstore-client.git@3.3.x#egg=django_geonode_mapstore_client
 geonode-announcements==2.0.2
 geonode-avatar==5.0.8
 geonode-dialogos==3.0.1
