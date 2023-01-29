@@ -667,13 +667,15 @@
                     $('#loadAttributeTables').prop('disabled', true);
                     $('#datasetsTable').DataTable().clear().destroy();
                     $(document.body).append(`{% with toast_title="Loading Features" %}
-                        {% with toast_message='Please wait.. it may take a long time to get all the data' %}
-                          {% include "toast/_trigger_toast.html" %}
-                        {% endwith %}
+                          {% include "toast/_toast_loading.html" %}
                     {% endwith %}`);
+                    $('.toast').toast({delay: 99999999999});
+                    $('#prog').remove();
                     $('.toast').toast('show');
                 },
                 success: function(data) {
+                  $('#liveToast').remove();
+                  $('#loadAttributeTables').fadeOut(500, function() { $(this).remove(); });
                   $("#datasetsTable").DataTable({dom:"Bfrtip",lengthMenu:[[10,25,50,-1],["10 rows","25 rows","50 rows","All rows"]],buttons:[{extend:"copy",text:'<i class="fa-solid fa-copy fa-2x" aria-hidden="true" title="Copy All Rows to Clipboard"></i>'},{extend:"pdf",text:'<i class="fa-solid fa-file-pdf fa-2x" aria-hidden="true" title="Export to PDF"></i>'},{extend:"excel",text:'<i class="fa-solid fa-file-excel fa-2x" aria-hidden="true" title="Export to Excel"></i>'},"pageLength"],data:data.data,columns:columns,scrollX:!0});
                 }
             })
