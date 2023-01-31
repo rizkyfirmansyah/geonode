@@ -11,20 +11,15 @@
               dataType: 'json',
               data: { uuid: "{{ resource.uuid }}" },
               beforeSend: function(){
-                  // Handle the beforeSend event
-                  try {
-                      $("#progress").modal("show");
-                  } catch (err) {
-                      console.log(err);
-                  }
+                  $(document.body).append(`{% with toast_title="Refresh Security Rules Cache" %}
+                        {% include "toast/_toast_loading.html" %}
+                  {% endwith %}`);
+                  $('.toast').toast({delay: 99999999999});
+                  $('#prog').remove();
+                  $('.toast').toast('show');
               },
               complete: function(){
-                  // Handle the complete event
-                  try {
-                      $("#progress").modal("hide");
-                  } catch (err) {
-                      console.log(err);
-                  }
+                  $('#liveToast').remove();
               },
               error: function(jqXHR, textStatus){
                   console.log(textStatus);
@@ -35,8 +30,15 @@
           ).fail(function (jqXHR, textStatus, error) {
                 message = JSON.parse(jqXHR.responseText);
                 body = message.message;
-                console.log(textStatus, message);
-          }).done(function(){ location.reload(); });
+                $(document.body).append(`{% with toast_title="Failed Refresh Security Rules Cache" %}
+                    {% with toast_message='`+ body +`' %}
+                      {% with toast_alert='error' %}
+                        {% include "toast/_trigger_toast.html" %}
+                      {% endwith %}
+                    {% endwith %}
+                {% endwith %}`);
+                $('.toast').toast('show');
+          });
           return false;
       });
 
@@ -48,27 +50,30 @@
               dataType: 'json',
               data: { uuid: "{{ resource.uuid }}" },
               beforeSend: function(){
-                  // Handle the beforeSend event
-                  try {
-                      $("#progress").modal("show");
-                  } catch (err) {
-                      console.log(err);
-                  }
+                  $(document.body).append(`{% with toast_title="Refresh Attributes and Statistics" %}
+                        {% include "toast/_toast_loading.html" %}
+                  {% endwith %}`);
+                  $('.toast').toast({delay: 99999999999});
+                  $('#prog').remove();
+                  $('.toast').toast('show');
               },
               complete: function(){
-                  // Handle the complete event
-                  try {
-                      $("#progress").modal("hide");
-                  } catch (err) {
-                      console.log(err);
-                  }
+                  $('#liveToast').remove();
               },
               cache: false
             }
           ).fail(function (jqXHR, textStatus, error) {
                 message = JSON.parse(jqXHR.responseText);
-                console.log(textStatus, message);
-          }).done(function(){ location.reload(); });
+                body = message.message;
+                $(document.body).append(`{% with toast_title="Failed Refresh Attributes and Statistics" %}
+                    {% with toast_message='`+ body +`' %}
+                      {% with toast_alert='error' %}
+                        {% include "toast/_trigger_toast.html" %}
+                      {% endwith %}
+                    {% endwith %}
+                {% endwith %}`);
+                $('.toast').toast('show');
+          });
           return false;
       });
 
@@ -80,28 +85,30 @@
               dataType: 'json',
               data: { uuid: "{{ resource.uuid }}" },
               beforeSend: function(){
-                  // Handle the beforeSend event
-                  try {
-                      $("#progress").modal("show");
-                  } catch (err) {
-                      console.log(err);
-                  }
+                  $(document.body).append(`{% with toast_title="Clear Tiled-Layer Cache" %}
+                        {% include "toast/_toast_loading.html" %}
+                  {% endwith %}`);
+                  $('.toast').toast({delay: 99999999999});
+                  $('#prog').remove();
+                  $('.toast').toast('show');
               },
               complete: function(){
-                  // Handle the complete event
-                  try {
-                      $("#progress").modal("hide");
-                  } catch (err) {
-                      console.log(err);
-                  }
+                  $('#liveToast').remove();
               },
               cache: false
             }
           ).fail(function (jqXHR, textStatus, error) {
                 message = JSON.parse(jqXHR.responseText);
                 body = message.message;
-                console.log(textStatus, message);
-          }).done(function(){ location.reload(); });
+                $(document.body).append(`{% with toast_title="Failed Clear Tiled-Layer Cache" %}
+                    {% with toast_message='`+ body +`' %}
+                      {% with toast_alert='error' %}
+                        {% include "toast/_trigger_toast.html" %}
+                      {% endwith %}
+                    {% endwith %}
+                {% endwith %}`);
+                $('.toast').toast('show');
+          });
           return false;
       });
   });
