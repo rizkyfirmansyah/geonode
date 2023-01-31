@@ -439,8 +439,7 @@ class ResourceBaseForm(TranslationModelForm):
                       (False, "False"),
                       (True, "True"))
                 self.fields[field].label = ''
-                self.fields[field].widget.attrs.update(
-                    {
+                self.fields[field].widget.attrs.update({
                         'data-toggle': 'toggle',
                         'data-width': '100%',
                         'data-height': 'auto',
@@ -449,6 +448,10 @@ class ResourceBaseForm(TranslationModelForm):
                         'value': choices[0][1],
                         'data-onstyle': 'info',
                         'data-offstyle': 'primary'})
+                if field == 'metadata_only' or field == 'metadata_uploaded_preserve':
+                    self.fields[field].widget.attrs.update({
+                        'data-onstyle': 'primary',
+                        'data-offstyle': 'info'})
 
     def disable_keywords_widget_for_non_superuser(self, user):
         if settings.FREETEXT_KEYWORDS_READONLY and not user.is_superuser:

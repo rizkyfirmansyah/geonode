@@ -259,7 +259,8 @@ class DatasetForm(ResourceBaseForm, FileFormMixin):
           'featured',
           'metadata_only',
           'is_published',
-          'is_approved'
+          'is_approved',
+          'metadata_uploaded_preserve'
         ]
 
 class DocumentDescriptionForm(forms.Form):
