@@ -404,36 +404,36 @@ class ResourceBaseForm(TranslationModelForm):
                 choices = []
                 if field == 'metadata_only':
                     choices=(
-                      (False, "Make it available from search results"),
-                      (True, "Hide the Dataset from search results"))
+                      (False, _("Make it available from search results")),
+                      (True, _("Hide the Dataset from search results")))
                 elif field == 'is_published':
                     choices=(
-                      (False, "Don't publish and hide from search results"),
-                      (True, "Publish and make the Dataset available from search results"))
+                      (False, _("Don't publish and hide from search results")),
+                      (True, _("Publish and make the Dataset available from search results")))
                 elif field == 'featured':
                     choices=(
                       (False, _("No need to be categorized as Featured")),
-                      (True, "Consider the dataset as Featured"))
+                      (True, _("Consider the dataset as Featured")))
                 elif field == 'metadata_uploaded_preserve':
                     choices=(
-                      (False, "Metadata can be edited for anyone with permission"),
-                      (True, "Preserve metadata from being edited"))
+                      (False, _("Metadata can be edited for anyone with permission")),
+                      (True, _("Preserve metadata from being edited")))
                 elif field == 'is_approved':
                     choices=(
-                      (False, "Formally not being approved yet by publisher or other parties"),
-                      (True, "This dataset has been approved by publisher or other parties"))
+                      (False, _("Formally not being approved yet by publisher or other parties")),
+                      (True, _("This dataset has been approved by publisher or other parties")))
                 elif field == 'is_mosaic':
                     choices=(
-                      (False, "Not mosaic data"),
-                      (True, "This dataset is mosaic"))
+                      (False, _("Not mosaic data")),
+                      (True, _("This dataset is mosaic")))
                 elif field == 'has_time':
                     choices=(
-                      (False, "No time dimension"),
-                      (True, "Contains time dimension"))
+                      (False, _("No time dimension")),
+                      (True, _("Contains time dimension")))
                 elif field == 'has_elevation':
                     choices=(
-                      (False, "No elevation dimension"),
-                      (True, "Contains elevation dimension"))
+                      (False, _("No elevation dimension")),
+                      (True, _("Contains elevation dimension")))
                 else:
                     choices=(
                       (False, "False"),
