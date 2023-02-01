@@ -8,17 +8,18 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-0">
             <div class="modal-header bg-dark">
-              <h3 class="text-white">Replace Datasets</h3>
+              <h3 class="text-white">{% trans 'Replace Datasets' %}</h3>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <i class="fa-solid fa-xmark" data-dismiss="modal" style="color:white;"></i>
               </button>
             </div>
             <div class="modal-body">
-              <p class="text-center">Would you like to record the information below about your updates on the Dataset?</p>
+              <p class="text-center">{% trans 'Would you like to record the information below about your updates on the Dataset?' %}</p>
                 {% csrf_token %}
                 {{ version_form|crispy }}
             </div>
             <div class="modal-footer">
+              <a href="#" data-dismiss="modal" class="btn btn-secondary">{% trans "Don't record" %}</a>
               <input type="submit" class="btn btn-save form-actions" value="Submit">
             </div>
         </div>

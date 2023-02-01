@@ -27,7 +27,7 @@
                 <i class="fa-regular fa-file-lines fa-3x"></i>
                 <h5>{% trans "Data" %}</h5>
                 {% if "change_resourcebase" in perms_list %}
-                  <a class="btn btn-edit btn-block btn-md" href="{% url "dataset_replace" resource.id %}">{% trans "Replace" %}</a>
+                  <a class="btn btn-edit btn-block btn-md" href="{% url "dataset_replace" resource.id %}">{% trans "Add/Replace" %}</a>
                 {% endif %}
                 {% if "delete_resourcebase" in perms_list %}
                   <a id="removeDocumentModal" data-toggle="modal" class="btn btn-danger btn-block btn-md" data-target="#removeDatasetsModal" style="cursor: pointer;">{% trans "Remove" %}</a>

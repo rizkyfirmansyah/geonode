@@ -20,6 +20,7 @@
 
   var removeEventSelected = () => {
     $('#doc_file').val(null);
+    $("#id_file_url").val('');
     if ($('.files_selected').length) {
         $('.files_selected').remove();
         $('#drop-zone').removeClass('drop-selected');
