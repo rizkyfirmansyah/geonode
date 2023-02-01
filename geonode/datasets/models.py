@@ -11,7 +11,6 @@ from geonode.client.hooks import hookset
 
 from urllib.parse import urljoin
 
-from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
 from geonode.security.permissions import (
     VIEW_PERMISSIONS,
     OWNER_PERMISSIONS,
@@ -19,7 +18,6 @@ from geonode.security.permissions import (
 from geonode.groups.conf import settings as groups_settings
 from geonode.maps.models import Map
 from geonode.layers.models import Layer
-from geonode.utils import build_absolute_uri
 from geonode.base.models import ResourceBase
 from geonode.storage.manager import storage_manager
 
@@ -234,29 +232,31 @@ class File(models.Model):
 
     @property
     def mime_type(self):
-        if self.is_file and self.extension.lower() in DOCUMENT_MIMETYPE_MAP:
-            return DOCUMENT_MIMETYPE_MAP[self.extension.lower()]
+        MIMETYPES = AllowedExtension.objects.all().values_list('mime_type', flat=True)
+        SELECTED_MIME = AllowedExtension.objects.get(extension=self.extension.lower()).mime_type
+        if self.is_file and self.extension.lower() in MIMETYPES:
+            return SELECTED_MIME
         return None
 
     @property
     def is_audio(self):
-        AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
+        AUDIOTYPES = AllowedExtension.objects.filter(file_format='audio').values_list('extension', flat=True)
         return self.is_file and self.extension.lower() in AUDIOTYPES
 
     @property
     def is_image(self):
-        IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
+        IMGTYPES = AllowedExtension.objects.filter(file_format='image').values_list('extension', flat=True)
         return self.is_file and self.extension.lower() in IMGTYPES
 
     @property
     def is_video(self):
-        VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
+        VIDEOTYPES = AllowedExtension.objects.filter(file_format='video').values_list('extension', flat=True)
         return self.is_file and self.extension.lower() in VIDEOTYPES
 
 
     @property
     def is_tabular(self):
-        TABULARTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'tabular']
+        TABULARTYPES = AllowedExtension.objects.filter(file_format='tabular').values_list('extension', flat=True)
         return self.is_file and self.extension.lower() in TABULARTYPES
 
     @property
@@ -272,7 +272,9 @@ class File(models.Model):
 
     @property
     def download_url(self):
-        return build_absolute_uri(reverse('dataset_download', args=(self.id,)))
+        if url and 'http' not in url:
+            url = urljoin(settings.SITEURL, url)
+        return url(reverse('dataset_download', args=(self.id,)))
 
     class Meta:
         permissions = (
@@ -299,6 +301,28 @@ class FileResourceLink(models.Model):
         on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     resource = GenericForeignKey('content_type', 'object_id')
+
+
+class AllowedExtension(models.Model):
+    mime_type_help_text = _("MIME type is a label used to identiy a type of data so that the platform can know how to handle the data. Please specify the known MIME types. See more <a href='https://mimetype.io/all-types/' target='_blank'>here</a>")
+    file_format_help_text = _("Please specify known file format type. See list of file formats here <a href='https://en.wikipedia.org/wiki/List_of_file_formats' target='_blank'>here</a>")
+    extension = models.CharField(max_length=255, verbose_name=_("File Extension"), null=False, blank=False)
+    file_format = models.CharField(max_length=255, verbose_name=_("File Format"), null=False, blank=False, help_text=file_format_help_text)
+    mime_type = models.CharField(max_length=255, verbose_name=_("Mime Type"), null=False, blank=False, help_text=mime_type_help_text)
+
+    class Meta:
+        ordering = ("id", )
+        verbose_name_plural = 'Allowed File Format'
+
+    def __str__(self):
+        return str(self.extension)
+
+    def save(self, *args, **kwargs):
+        # lowercase the extension, file format and the mime type
+        self.extension = self.extension.lower()
+        self.file_format = self.file_format.lower()
+        self.mime_type = self.mime_type.lower()
+        super().save(*args, **kwargs)
 
 
 def get_related_datasets(resource):

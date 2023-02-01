@@ -26,7 +26,6 @@ from geonode.monitoring.models import EventType
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 from geonode.base import register_event
-from geonode.datasets.enumerations import DATASET_TYPE_MAP
 from ...security.utils import get_resources_with_perms, serialize_resource_permissions, sha256file
 from ...utils import doc_path, mkdtemp
 from ..models import Dataset, File
@@ -54,6 +53,7 @@ from geonode.base.api.pagination import GeoNodeApiPagination
 from geonode.resource.manager import resource_manager
 from geonode.storage.manager import storage_manager
 
+from geonode.datasets.models import AllowedExtension
 from geonode.base.models import ResourceBase
 from geonode.base.api.serializers import ResourceBaseSerializer
 from django.template import loader
@@ -100,6 +100,25 @@ class DatasetViewSet(DynamicModelViewSet):
         result_page = paginator.paginate_queryset(resources, request)
         serializer = ResourceBaseSerializer(result_page, embed=True, many=True)
         return paginator.get_paginated_response({"objects": serializer.data})
+
+    @extend_schema(
+        methods=['get'],
+        responses={200},
+        description="API endpoint for getting allowed file extension.")
+    @action(
+        detail=False,
+        methods=['get'],
+        url_path="get-allowed-ext",
+        url_name="get-allowed-ext",
+        permission_classes=[
+            IsAuthenticated,
+        ],
+        parser_classes=[JSONParser, MultiPartParser]
+    )
+    def get_allowed_ext(self, request):
+        extension = AllowedExtension.objects.all().values_list('extension', flat=True)
+
+        return Response({"objects": extension}, status=200)
 
 
 class DatasetFilesViewSet(DynamicModelViewSet):
@@ -457,6 +476,7 @@ class DatasetFilesViewSet(DynamicModelViewSet):
     )
     def upload_dataset_files(self, request):
         import json
+        from geonode.datasets.models import AllowedExtension
         # ref https://stackoverflow.com/questions/53130126/bulk-partial-updates-with-django-rest-framework
         session_uuid = request.session.get('session')
         _data = request.data.copy()
@@ -498,10 +518,12 @@ class DatasetFilesViewSet(DynamicModelViewSet):
                 ext = 'datasets'
             else:
                 ext = extension_list[0]
-            AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
-            VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
-            TEXTTPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'text']
-            PPTTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'powerpoint']
+            AUDIOTYPES = AllowedExtension.objects.filter(file_format='audio').values_list('extension', flat=True)
+            VIDEOTYPES = AllowedExtension.objects.filter(file_format='video').values_list('extension', flat=True)
+            PPTTYPES = AllowedExtension.objects.filter(file_format='powerpoint').values_list('extension', flat=True)
+            TEXTTPES = AllowedExtension.objects.filter(file_format='text').values_list('extension', flat=True)
+            ARCHIVETYPES = AllowedExtension.objects.filter(file_format='archive').values_list('extension', flat=True)
+
             if ext in AUDIOTYPES:
                 ext = 'audio'
             elif ext in VIDEOTYPES:
@@ -510,6 +532,8 @@ class DatasetFilesViewSet(DynamicModelViewSet):
                 ext = 'txt'
             elif ext in PPTTYPES:
                 ext = 'ppt'
+            elif ext in ARCHIVETYPES:
+                ext = 'rar'
             dataset_thumb = os.path.join(DATASET_THUMB, f'{ext}-placeholder.png')
             update_file.update(dataset=self.object.id)
             update_detail_url = ResourceBase.objects.filter(id=self.object.id).update(
@@ -542,7 +566,10 @@ class DatasetIngestView(viewsets.ModelViewSet):
     serializer_class = DatasetIngestFileSerializer
 
     def post(self, request, *args, **kwargs):
-        file_url = request.POST['file_url']
+        try:
+            file_url = request.POST['file_url']
+        except Exception:
+            file_url = None
         import_id = request.POST['import_id']
         try:
             dataset_id = request.POST['dataset_id']
@@ -554,7 +581,7 @@ class DatasetIngestView(viewsets.ModelViewSet):
             file_name = request.POST['file_name']
             file = request.FILES['file']
             file_size = request.POST['file_size']
-            file_type = [v for k, v in DATASET_TYPE_MAP.items() if ext in k.lower()]
+            file_type = AllowedExtension.objects.get(extension=ext).file_format
             dirname = doc_path(ext)
             filepath = storage_manager.save(f"{dirname}/{file_name}", file)
             storage_path = storage_manager.path(filepath)
@@ -565,7 +592,7 @@ class DatasetIngestView(viewsets.ModelViewSet):
                 'file_size': file_size,
                 'hash': sha256file(storage_path),
                 'extension': ext,
-                'file_type': file_type[0],
+                'file_type': file_type,
                 'import_id': import_id,
                 'session': request.session.get('session'),
                 'dataset': dataset_id,

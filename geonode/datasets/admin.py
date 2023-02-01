@@ -1,6 +1,5 @@
 from django.contrib import admin
-from ..base.models import ResourceBase
-from geonode.datasets.models import Dataset, Roda, File
+from geonode.datasets.models import Dataset, Roda, File, AllowedExtension
 from geonode.base.admin import ResourceBaseAdminForm
 from geonode.base.admin import metadata_batch_edit, set_batch_permissions
 from modeltranslation.admin import TabbedTranslationAdmin
@@ -88,5 +87,19 @@ class DatasetAdmin(TabbedTranslationAdmin):
             return True
 
 
+class DatasetFileExtension(admin.ModelAdmin):
+    model = AllowedExtension
+    list_display_links = ('extension',)
+    list_display = ('extension', 'file_format', 'mime_type')
+
+    def has_module_permission(self, request):
+        if request.user.is_staff:
+            return True
+
+    def has_view_permission(self, request, obj=None):
+        if request.user.is_staff:
+            return True
+
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(Roda, RodaAdmin)
+admin.site.register(AllowedExtension, DatasetFileExtension)

@@ -59,8 +59,7 @@ from geonode.datasets.utils import get_download_response
 from geonode.utils import resolve_object, build_social_links
 from geonode.security.views import _perms_info_json
 from geonode.people.forms import ProfileForm
-from geonode.datasets.enumerations import DATASET_TYPE_MAP, DOCUMENT_MIMETYPE_MAP
-from geonode.datasets.models import Dataset, File, Roda
+from geonode.datasets.models import Dataset, File, Roda, AllowedExtension
 from geonode.resource.utils import get_related_resources
 from geonode.datasets.forms import DatasetForm, DatasetCreateForm, DatasetReplaceForm
 from geonode.groups.models import GroupProfile
@@ -168,13 +167,14 @@ def dataset_detail(request, docid):
         else:
             access_token = None
 
-    AUDIOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'audio']
-    IMGTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'image']
-    VIDEOTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'video']
-    WORDTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'word']
-    EXCELTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'excel']
-    PPTTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'powerpoint']
-    TABULARTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'tabular']
+    AUDIOTYPES = AllowedExtension.objects.filter(file_format='audio').values_list('extension', flat=True)
+    IMGTYPES = AllowedExtension.objects.filter(file_format='image').values_list('extension', flat=True)
+    VIDEOTYPES = AllowedExtension.objects.filter(file_format='video').values_list('extension', flat=True)
+    WORDTYPES = AllowedExtension.objects.filter(file_format='word').values_list('extension', flat=True)
+    EXCELTYPES = AllowedExtension.objects.filter(file_format='excel').values_list('extension', flat=True)
+    PPTTYPES = AllowedExtension.objects.filter(file_format='powerpoint').values_list('extension', flat=True)
+    TABULARTYPES = AllowedExtension.objects.filter(file_format='tabular').values_list('extension', flat=True)
+    DOCUMENT_MIMETYPE_MAP = AllowedExtension.objects.values('extension', 'mime_type')
 
     context_dict = {
         'access_token': access_token,
@@ -289,7 +289,7 @@ class DatasetUploadView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         import_id = list(File.objects.all().aggregate(Max('import_id')).values())[0]
         import_id = (int(import_id) + 1) if import_id is not None else 0
-        TABULARTYPES = [_e for _e, _t in DATASET_TYPE_MAP.items() if _t == 'tabular']
+        TABULARTYPES = AllowedExtension.objects.filter(file_format='tabular').values_list('extension', flat=True)
         context["ALLOWED_DOC_TYPES"] = ALLOWED_DOC_TYPES
         context["TABULARTYPES"] = TABULARTYPES
         context["import_id"] = import_id
