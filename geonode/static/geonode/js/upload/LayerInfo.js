@@ -544,32 +544,10 @@ define(function(require, exports) {
                     }
                 }
             });
-        } else if (resp.status === "incomplete") {
-            var id = common.parseQueryString(resp.url).id;
-            var element = 'next_step_' + id
-            var a = '<a id="' + element + '" class="btn btn-primary" target="_blank">Continue</a>';
-            var msg = '<span>' + gettext('Files are ready to be ingested!')
-
-            if (resp.redirect_to.indexOf('time') !== -1 || resp.url.indexOf('time') !== -1) {
-                msg += '&nbsp;' + gettext('A temporal dimension may be added to this Layer.') + '&nbsp;' + a + '</span>'
-            } else {
-                msg += '&nbsp;' + a + '</span>'
-            }
-
-            self.logStatus({
-                msg: msg,
-                level: 'alert-success',
-                empty: 'true'
-            });
-            $("#" + element).on('click', resp, self.doResume);
-
-            callback(array);
-
-            return;
         } else if (resp.status === "other") {
             self.logStatus({
                 msg: '<p class="text-center">' + gettext('You need to specify more information in order to complete your upload') + '</span>',
-                level: 'alert-success',
+                level: 'alert-info',
                 empty: 'true'
             });
 
