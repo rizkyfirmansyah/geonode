@@ -46,7 +46,7 @@
                     <ul>
                       {% for link in links_download %}
                         {% if link.name == 'CSV' or link.name == 'Excel' or link.name == 'Original Layer' %}
-                            <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" target="_blank" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
+                            <li class="list-group-item p-0 border-0 mb-1"><a class="btn btn-light btn-block" href="{{ link.url }}" id="{{ link.name | slugify }}">{% trans link.name %}</a></li>
                         {% endif %}
                       {% endfor %}
                     </ul>
