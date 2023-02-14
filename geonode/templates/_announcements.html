@@ -5,7 +5,7 @@
 <div id="site_wide_announcements" class="system_messages">
     {% for announcement in site_wide_announcements %}
     {% if not announcement.members_only or request.user.is_authenticated %}
-    <div class="alert announcement {{ announcement.level_css  }}">
+    <div class="alert announcement {{ announcement.level_css }}">
         {% if announcement.dismissal_type > 1 %}
         <a type="button" class="close" data-dismiss="alert" data-dismiss-url="{% url "announcements_dismiss" announcement.pk %}" href="#">×</a>
         {% endif %}
