@@ -34,7 +34,7 @@
               <td>{% trans "Created" %}</td>
               <td>{% trans "Progress" %}</td>
               <td>{% trans "Edit Metadata" %}</td>
-              <td></td>
+              <td>{% trans "Status Upload" %}</td>
               <td></td>
             </tr>
           </thead>
@@ -42,7 +42,7 @@
           </tbody>
         </table>
         <nav aria-label="Upload progress navigation" class="text-center">
-          <ul class="pagination pagination-sm"  style="margin-top:0;">
+          <ul class="pagination pagination-sm justify-content-center mt-0">
             <li class="upload-progress-prev-page">
               <a aria-label="Previous">
                 <span aria-hidden="true"><i class="fa-solid fa-angle-left"></i></span>
@@ -116,7 +116,7 @@
 
         <div class="row mt-4">
             <div class="col-6">
-              <a href="{% url "layer_upload" %}" class="btn btn-danger text-center w-100">{% trans "Clear" %}</a>
+              <button id="clear-button" class="btn btn-danger text-center btn-block">{% trans "Clear" %}</button>
             </div>
             <div class="col-6">
               <button class="btn btn-upload text-center btn-block" id="upload-button" type="submit">{% trans "Upload files" %}</button>

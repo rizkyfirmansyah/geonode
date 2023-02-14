@@ -4,6 +4,7 @@
 'use strict';
 
 var layers = {};
+var loading = true;
 
 define(['underscore',
     './LayerInfo',
@@ -224,6 +225,15 @@ define(['underscore',
         if (layers.length > 0) {
             layers[0].uploadFiles(doUpload, layers.slice(1, layers.length));
         }
+        loading = true;
+        setTimeout(() => {
+            initUploadProgressTable();
+            // Empty the display layers
+            $("#file-input").wrap('<form>').closest('form').get(0).reset();
+            $("#file-input").unwrap();
+            // set the global layer object to empty
+            layers = {};
+        }, 2000);
     };
 
     /** Function to Upload the selected files to the server
@@ -270,7 +280,7 @@ define(['underscore',
         const removeModalButton = removeModal && removeModal.querySelector('.remove-incomplete-upload-modal-button');
         const removeModalName = removeModal && removeModal.querySelector('.remove-incomplete-upload-modal-name');
 
-        const intervalTime = 3000;
+        const intervalTime = 2000;
 
         var page = 1;
         var maxPage = 1;
@@ -280,12 +290,11 @@ define(['underscore',
         var processed = [];
         var lastUploadsIds = [];
         var uploads = [];
-        var loading = false;
-        var total;
+        var total = 1;
 
         function getUploadItems(options) {
             $.ajax({
-                    url: options.url || siteUrl + 'api/v2/uploads?filter{-state}=PROCESSED&page=1&page_size=99999',
+                    url: options.url || siteUrl + 'api/v2/uploads?filter{-state}=PROCESSED',
                     async: false,
                     mode: 'queue',
                     contentType: false,
@@ -295,6 +304,7 @@ define(['underscore',
                         options.resolve(response);
                     }
                     total = response.total;
+                    if (total == 0) loading = false;
                 })
                 .fail(function(error) {
                     if (options.reject) {
@@ -369,9 +379,15 @@ define(['underscore',
                 case 'PENDING':
                     progress.setAttribute('class', 'warning');
                     break;
+                case 'RUNNING':
+                      progress.setAttribute('class', 'info');
+                      break;
                 case 'PROCESSED':
                     progress.setAttribute('class', 'success');
                     break;
+                case 'COMPLETED':
+                      progress.setAttribute('class', 'success');
+                      break;
                 case 'INVALID':
                     progress.setAttribute('class', 'danger');
                     break;
@@ -404,10 +420,7 @@ define(['underscore',
                 $(resumeTool).tooltip();
             } else {
                 const infoIcon = document.createElement('i');
-                if (properties.state === 'COMPLETE') {
-                    infoIcon.setAttribute('class', 'fa-solid fa-spinner fa-spin');
-                }
-                if (properties.state === 'PROCESSED') {
+                if (properties.state === 'PROCESSED' || properties.state === 'COMPLETED') {
                     infoIcon.setAttribute('data-toggle', 'tooltip');
                     infoIcon.setAttribute('data-placement', 'top');
                     infoIcon.setAttribute('title', successTooltip);
@@ -452,46 +465,42 @@ define(['underscore',
         }
 
         render = function(request) {
-            loading = true;
-
             function updateRenderedNodes() {
 
-                tbody.innerHTML = '';
-                var start = (page - 1) * pageSize;
-                var end = start + pageSize;
-                var items = [].concat(uploads).concat(processed);
-
-                items.sort(function(a, b) {
-                    return (a.create_date < b.create_date) ?
-                        1 :
-                        ((a.create_date > b.create_date) ?
-                            -1 :
-                            0)
-                });
-
-                maxPage = Math.ceil(items.length / pageSize);
-
-                for (var i = start; i < end; i++) {
-                    if (items[i]) {
-                        tableRow(items[i]);
-                    }
-                }
-                const prevLink = page > 1;
-                const nextLink = page < maxPage;
-
-                prevPage.setAttribute('class', !prevLink ? 'disabled' : '');
-                nextPage.setAttribute('class', !nextLink ? 'disabled' : '');
-                prevPage.style.cursor = !prevLink ? 'not-allowed' : 'pointer';
-                nextPage.style.cursor = !nextLink ? 'not-allowed' : 'pointer';
-
-                progressPage.style.display = 'inline';
-                currentPage.innerHTML = page;
-                totalPages.innerHTML = maxPage;
-
-                section.style.display = items.length === 0 ? 'none' : 'block';
-                loading = false;
+              tbody.innerHTML = '';
+              var start = (page - 1) * pageSize;
+              var end = start + pageSize;
+              var items = [].concat(uploads).concat(processed);
+    
+              items.sort(function(a, b) {
+                  return (a.create_date < b.create_date) ?
+                      1 :
+                      ((a.create_date > b.create_date) ?
+                          -1 :
+                          0)
+              });
+    
+              maxPage = Math.ceil(items.length / pageSize);
+    
+              for (var i = start; i < end; i++) {
+                  if (items[i]) {
+                      tableRow(items[i]);
+                  }
+              }
+              const prevLink = page > 1;
+              const nextLink = page < maxPage;
+    
+              if (prevPage) prevPage.setAttribute('class', !prevLink ? 'disabled' : '');
+              if (nextPage) nextPage.setAttribute('class', !nextLink ? 'disabled' : '');
+              if (prevPage) prevPage.style.cursor = !prevLink ? 'not-allowed' : 'pointer';
+              if (nextPage) nextPage.style.cursor = !nextLink ? 'not-allowed' : 'pointer';
+    
+              progressPage.style.display = 'inline';
+              currentPage.innerHTML = page;
+              totalPages.innerHTML = maxPage;
+    
+              section.style.display = items.length === 0 ? 'none' : 'block';
             }
-
             if (request) {
                 getUploadItems({
                     resolve: function(response) {
@@ -535,7 +544,7 @@ define(['underscore',
                                 idFilters += '&filter{id.in}=' + diffUploadIds[i];
                             }
                             getUploadItems({
-                                url: siteUrl + 'api/v2/uploads?filter{state}=PROCESSED&page=1&page_size=99999' + idFilters,
+                                url: siteUrl + 'api/v2/uploads?filter{state}=PROCESSED' + idFilters,
                                 resolve: function(res) {
                                     const processedUploads = res.uploads || [];
                                     for (var i = 0; i < processedUploads.length; i++) {
@@ -551,7 +560,6 @@ define(['underscore',
                             });
                         } else {
                             updateRenderedNodes();
-                            render(false);
                         }
                     },
                     reject: function(error) {
@@ -564,7 +572,6 @@ define(['underscore',
                                 render(true);
                             }
                         }
-                        loading = false;
                     }
                 });
             } else {
@@ -582,26 +589,32 @@ define(['underscore',
                 $(removeModal).modal('hide');
             };
         }
-        prevPage.addEventListener('click', function() {
-            const prev = page - 1;
-            if (prev >= 1) {
-                page = prev;
-                render();
-            }
-        });
-        nextPage.addEventListener('click', function() {
-            const next = page + 1;
-            if (next <= maxPage) {
-                page = next;
-                render();
-            }
-        });
+        if (prevPage) {
+            prevPage.addEventListener('click', () => {
+                const prev = page - 1;
+                if (prev >= 1) {
+                    page = prev;
+                    render();
+                }
+            });
 
-        render(true);
+        }
+        if (nextPage) {
+            nextPage.addEventListener('click', () => {
+                const next = page + 1;
+                if (next <= maxPage) {
+                    page = next;
+                    render();
+                }
+            });
+        }
+
         // re-render the table if there are pending uploads
         setInterval(function() {
-            if (!loading) {
+            if (loading || total == 1) {
                 render(true);
+            } else {
+                render(false);
             }
         }, intervalTime);
     }

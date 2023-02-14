@@ -265,7 +265,7 @@ def geoserver_create_thumbnail(self, instance_id, overwrite=True, check_bbox=Tru
                 except Exception as e:
                     geoserver_create_thumbnail.retry(exc=e)
                 finally:
-                    instance.set_processing_state(enumerations.STATE_PROCESSED)
+                    instance.set_processing_state(enumerations.STATE_COMPLETE)
             finally:
                 lock.release()
 
