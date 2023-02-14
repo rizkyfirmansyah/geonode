@@ -668,7 +668,9 @@
                     const message = data.data;
                     $(document.body).append(`{% with toast_title="Summary Features" %}
                       {% with toast_message='`+ message +`' %}
+                        {% with toast_alert="error" %}
                           {% include "toast/_trigger_toast.html" %}
+                        {% endwith %}
                       {% endwith %}
                     {% endwith %}`);
                     $('.toast').toast('show');
@@ -681,7 +683,9 @@
                         var message = "This {{resource.title}} has " + total_features + " attributes. You can fetch all attributes by click the load all data button."
                         $(document.body).append(`{% with toast_title="Summary Features" %}
                           {% with toast_message='`+ message +`' %}
+                            {% with toast_alert="info" %}
                               {% include "toast/_trigger_toast.html" %}
+                            {% endwith %}
                           {% endwith %}
                         {% endwith %}`);
                         $('.toast').toast('show');
