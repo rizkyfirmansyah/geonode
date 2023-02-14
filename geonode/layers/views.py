@@ -1641,7 +1641,7 @@ def layer_remove(request):
             with transaction.atomic():
                 Layer.objects.filter(id=layer.id).delete()
             register_event(request, EventType.EVENT_REMOVE, layer)
-            message = _("Spatial data: {} has been deleted".format(layer.alternate))
+            message = _("Spatial data: {} has been deleted".format(layer.name))
 
             messages.warning(request, message, extra_tags=toast_title)
 
@@ -1649,7 +1649,7 @@ def layer_remove(request):
             raise
         except Exception as e:
             traceback.print_exc()
-            message = f'{_("Unable to delete layer")}: {layer.alternate}.'
+            message = f'{_("Unable to delete layer")}: {layer.name}.'
             if getattr(e, 'message', None) and 'referenced by layer group' in getattr(e, 'message', ''):
                 message = _(
                     'This layer is a member of a layer group, you must remove the layer from the group '
@@ -1666,7 +1666,7 @@ def layer_remove(request):
 
     except Exception:
         traceback.print_exc()
-        message = f'{_("Unable to delete layer")}: {layer.alternate}.'
+        message = f'{_("Unable to delete layer")}: {layer.name}.'
 
         messages.error(request, message, extra_tags=toast_title)
         return HttpResponseRedirect(request.path_info)
@@ -1708,7 +1708,7 @@ def layer_granule_remove(
                 coverages['coverages']['coverage'][0]['name'], store, granule_id)
         except Exception as e:
             traceback.print_exc()
-            message = f'{_("Unable to delete layer")}: {layer.alternate}.'
+            message = f'{_("Unable to delete layer")}: {layer.name}.'
             if 'referenced by layer group' in getattr(e, 'message', ''):
                 message = _(
                     'This layer is a member of a layer group, you must remove the layer from the group '
