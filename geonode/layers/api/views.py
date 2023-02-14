@@ -128,10 +128,12 @@ class LayerViewSet(DynamicModelViewSet):
                     conn.close()
 
 
-        layer = Layer.objects.get(id=resource_id)
-        data_tables = _check_by_limit(layer.name, 50)
-        # if callback is true, display the toast info
-        load_feature = data_tables[1]
-        total_feature = data_tables[0]
+                layer = Layer.objects.get(id=resource_id)
+                data_tables = _check_by_limit(layer.name, settings.LIMIT_FEATURE_LAYERS)
+                # if callback is true, display the toast info
+                load_feature = data_tables[1]
+                total_feature = data_tables[0]
 
-        return Response({'data': load_feature,'total': total_feature })
+                return Response({'data': load_feature,'total': total_feature })
+            else:
+                return Response({'data': "Error connecting database, please contact your Administrator"}, status=500, exception=True)

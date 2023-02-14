@@ -24,8 +24,6 @@ import logging
 import warnings
 import traceback
 
-import psycopg2
-
 import xml.etree.ElementTree as ET
 from requests import Request
 from urllib.parse import quote, urlparse
@@ -341,6 +339,7 @@ def preview_data_tables(table, preview=True):
     connect to geodatabase defined in the .env using psycopg2
     return: json attributes omitted the_geom column and fid
     """
+    from psycopg2 import connect
 
     def _query_set(table):
         if preview:
@@ -350,7 +349,7 @@ def preview_data_tables(table, preview=True):
                     select to_jsonb(sq) - 'the_geom' - 'fid'::text data
                     from (
                     select * from
-                    \"""" + table + """\" limit 50
+                    \"""" + table + """\" limit """ + settings.LIMIT_FEATURE_LAYERS +"""
                     ) sq
                 ) as data;
             """
@@ -374,13 +373,17 @@ def preview_data_tables(table, preview=True):
         database = result.path[1:]
         hostname = result.hostname
         port = result.port
-        connection = psycopg2.connect(
-            database=database,
-            user=username,
-            password=password,
-            host=hostname,
-            port=port
-        )
+        try:
+            connection = connect(
+                database=database,
+                user=username,
+                password=password,
+                host=hostname,
+                port=port
+            )
+        except Exception as err:
+            print(f"Stacktrace error connecting database: {str(err)}")
+            connection = None
         return connection
 
     def dictfetchall(cursor):
@@ -391,12 +394,23 @@ def preview_data_tables(table, preview=True):
             for row in cursor.fetchall()
         ]
 
-    with _connect() as conn:
-        cur = conn.cursor()
-        cur.execute(_query_set(table))
-        row = dictfetchall(cur)
+    conn = _connect()
+    if conn != None:
+        cursor = conn.cursor()
+        try:
+            cursor.execute(_query_set(table))
+            row = dictfetchall(cur)
 
-        return row
+            return row
+        except Exception as err:
+            print(f"Stacktrace error connecting database: {str(err)}")
+        finally:
+            # close the cursor object to avoid memory leak
+            cursor.close()
+            # then close the connection object
+            conn.close()
+    else:
+        return None
 
 
 @login_required

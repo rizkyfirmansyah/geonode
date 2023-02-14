@@ -2263,6 +2263,8 @@ EXTRA_METADATA_SCHEMA = {**{
 
 HONEYPOT_ADMIN = os.getenv('HONEYPOT_ADMIN', 'lakers')
 
+LIMIT_FEATURE_LAYERS = os.getenv('LIMIT_FEATURE_LAYERS', 50)
+
 '''
 Define the URLs patterns used by the SizeRestrictedFileUploadHandler
 to evaluate if the file is greater than the limit size defined

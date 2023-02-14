@@ -658,27 +658,38 @@
           $($.fn.dataTable.tables(true)).DataTable()
             .columns.adjust()
         });
-        $('#load_attributes').on('click', function(e) {
-            e.preventDefault();
-            $.ajax({
-              url: "{% url 'layers-check_features' resource.id %}",
-              type: 'POST',
-              success: function(data) {
-                const load_button = data.data;
-                const total_features = data.total;
-                if (load_button) {
-                    $("#loadAttributeTables").removeClass("d-none");
-                    var message = "This {{resource.title}} has " + total_features + " attributes. You can fetch all attributes by click the load all data button."
+        {% if links_download %}
+            $('#load_attributes').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                  url: "{% url 'layers-check_features' resource.id %}",
+                  type: 'POST',
+                  error: function(data) {
+                    const message = data.data;
                     $(document.body).append(`{% with toast_title="Summary Features" %}
                       {% with toast_message='`+ message +`' %}
                           {% include "toast/_trigger_toast.html" %}
                       {% endwith %}
                     {% endwith %}`);
                     $('.toast').toast('show');
-                }
-              }
-          })
-        });
+                  },
+                  success: function(data) {
+                    const load_button = data.data;
+                    const total_features = data.total;
+                    if (load_button) {
+                        $("#loadAttributeTables").removeClass("d-none");
+                        var message = "This {{resource.title}} has " + total_features + " attributes. You can fetch all attributes by click the load all data button."
+                        $(document.body).append(`{% with toast_title="Summary Features" %}
+                          {% with toast_message='`+ message +`' %}
+                              {% include "toast/_trigger_toast.html" %}
+                          {% endwith %}
+                        {% endwith %}`);
+                        $('.toast').toast('show');
+                    }
+                  }
+              })
+            });
+        {% endif %}
         $('#loadAttributeTables').on('click', function(e) {
             e.preventDefault();
             $.ajax({
