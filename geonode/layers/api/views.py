@@ -1,22 +1,3 @@
-# -*- coding: utf-8 -*-
-#########################################################################
-#
-# Copyright (C) 2020 OSGeo
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-#########################################################################
 from dynamic_rest.viewsets import DynamicModelViewSet
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 
@@ -78,3 +59,79 @@ class LayerViewSet(DynamicModelViewSet):
         data_tables = preview_data_tables(layer.name, False)
         
         return Response({'data': data_tables[0].get('data'), 'total': data_tables[0].get('total_rows')})
+
+    @extend_schema(
+        methods=['post'],
+        responses={200},
+        description="API endpoint to checking features of spatial data; should load the button?"
+    )
+    @action(
+        detail=False,
+        url_path="check_features/(?P<resource_id>\d+)?$",
+        url_name="check_features",
+        methods=['post'],
+        permission_classes=[
+            IsAuthenticated
+        ],
+        parser_classes=[JSONParser, FormParser]
+    )
+    def check_features(self, request, resource_id):
+        from psycopg2 import connect
+        from urllib.parse import urlparse
+        from django.contrib import messages
+        from django.utils.translation import ugettext as _
+        def _check_by_limit(table, limit):
+            """
+            perform query to each layers in order to display on layer detail page as datatables
+            connect to geodatabase defined in the .env using psycopg2
+            return: json attributes omitted the_geom column and fid
+            """
+
+            def _query_set(table, limit):
+                query = 'select count(*), count(*) > ' + str(limit) + ' as data from ' + table + ''
+                return query
+
+            def _connect():
+                result = urlparse(settings.GEODATABASE_URL)
+                username = result.username
+                password = result.password
+                database = result.path[1:]
+                hostname = result.hostname
+                port = result.port
+                try:
+                    connection = connect(
+                        database=database,
+                        user=username,
+                        password=password,
+                        host=hostname,
+                        port=port
+                    )
+                except Exception as err:
+                    print(f"Stacktrace error connecting database: {str(err)}")
+                    connection = None
+                return connection
+
+            conn = _connect()
+            if conn != None:
+                cursor = conn.cursor()
+                try:
+                    cursor.execute(_query_set(table, limit))
+                    query_results = cursor.fetchone()
+
+                    return query_results
+                except Exception as err:
+                    print(f"Stacktrace error connecting database: {str(err)}")
+                finally:
+                    # close the cursor object to avoid memory leak
+                    cursor.close()
+                    # then close the connection object
+                    conn.close()
+
+
+        layer = Layer.objects.get(id=resource_id)
+        data_tables = _check_by_limit(layer.name, 50)
+        # if callback is true, display the toast info
+        load_feature = data_tables[1]
+        total_feature = data_tables[0]
+
+        return Response({'data': load_feature,'total': total_feature })
