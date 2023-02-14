@@ -4554,74 +4554,6 @@ article.tab-pane {
   margin-right: 8px
 }
 
-.items-list {
-  padding: 10px 0
-}
-
-.items-list .btn {
-  margin-right: 5px;
-  margin-top: 10px
-}
-
-.items-list .item-info {
-  border-top: 1px solid var(--primary)
-}
-
-.items-list h4 {
-  font-weight: 400;
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap
-}
-
-.items-list h4 a {
-  color: #c4bab7
-}
-
-.items-list h4 a:hover {
-  color: #af0900;
-  text-decoration: none
-}
-
-.items-list .owner {
-  color: #c4bab7;
-  font-size: 14px
-}
-
-.items-list .owner a {
-  color: #c4bab7
-}
-
-.items-list .owner a:hover {
-  color: #af0900;
-  text-decoration: none
-}
-
-.items-list .thumb img {
-  border: 1px solid var(--primary);
-  width: 100%
-}
-
-.items-list .actions {
-  color: #c4bab7;
-  font-weight: 300
-}
-
-.items-list .actions i {
-  margin-right: .75em
-}
-
-.items-list .actions a {
-  color: #c4bab7;
-  margin-right: .5em
-}
-
-.items-list .actions a:hover {
-  color: var(--primary);
-  text-decoration: none
-}
-
 .item-container {
   padding-left: 2rem;
   padding-bottom: 2rem
@@ -4868,7 +4800,7 @@ color: transparent;
 }
 
 /* ---------------------------------------------------
-  OVERRIDE MAPSTORE STYLE
+  OVERRIDE MAPSTORE STYLE v3.3.x
 ----------------------------------------------------- */
 
 .msgapi .btn {
@@ -4906,10 +4838,6 @@ color: transparent;
 
 #page-geostory .btn {
   padding: .5em!important
-}
-
-.msgapi .btn-group, .msgapi .btn-group-vertical {
-  display: flex !important;
 }
 
 .msgapi .ms-resizable-modal>.modal-content>.modal-header .modal-title .ms-header-btn {
@@ -5158,6 +5086,94 @@ footer li a:hover {
   .search-field {
       padding-top: 7em;
   }
+}
+
+div#featuregrid-toolbar {
+    display: flex;
+}
+
+div#__lpform_input_idx_2 {
+   display: contents;
+}
+
+.ms-side-panel ul.nav.nav-tabs.nav-justified {
+    display: contents !important;
+}
+
+.ms2-border-layout-body {
+    overflow-y: hidden !important;
+}
+
+.items-list.row {
+  display: block !important;
+}
+
+.items-list {
+  padding: 10px 0
+}
+
+.items-list .btn {
+  margin-right: 5px;
+  margin-top: 10px
+}
+
+.items-list .item-info {
+  border-top: 1px solid var(--primary)
+}
+
+.items-list h4 {
+  font-weight: 400;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.items-list h4 a {
+  color: #c4bab7
+}
+
+.items-list h4 a:hover {
+  color: #af0900;
+  text-decoration: none
+}
+
+.items-list .owner {
+  color: #c4bab7;
+  font-size: 14px
+}
+
+.items-list .owner a {
+  color: #c4bab7
+}
+
+.items-list .owner a:hover {
+  color: #af0900;
+  text-decoration: none
+}
+
+.items-list .thumb img {
+  border: 1px solid var(--primary);
+  width: 100%
+}
+
+.items-list .actions {
+  color: #c4bab7;
+  font-weight: 300
+}
+
+.items-list .actions i {
+  margin-right: .75em
+}
+
+.items-list .actions a {
+  color: #c4bab7;
+  margin-right: .5em
+}
+
+.items-list .actions a:hover {
+  color: var(--primary);
+  text-decoration: none
 }
 
 /* ---------------------------------------------------
