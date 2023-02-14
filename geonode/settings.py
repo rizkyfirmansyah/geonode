@@ -2264,6 +2264,7 @@ EXTRA_METADATA_SCHEMA = {**{
 HONEYPOT_ADMIN = os.getenv('HONEYPOT_ADMIN', 'lakers')
 
 LIMIT_FEATURE_LAYERS = os.getenv('LIMIT_FEATURE_LAYERS', 50)
+DEFAULT_BULK_DOWNLOAD_SIZE = os.getenv('DEFAULT_BULK_DOWNLOAD_SIZE', 200000000)
 
 '''
 Define the URLs patterns used by the SizeRestrictedFileUploadHandler

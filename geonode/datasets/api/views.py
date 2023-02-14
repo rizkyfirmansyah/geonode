@@ -406,7 +406,7 @@ class DatasetFilesViewSet(DynamicModelViewSet):
                                     else:
                                         toast_title = f"Download External Files"
                                         file_size = int(response.headers['Content-length'])
-                                        if file_size < 200000000:
+                                        if file_size < settings.DEFAULT_BULK_DOWNLOAD_SIZE:
                                             content_type = response.headers['content-type']
                                             extension = mimetypes.guess_extension(content_type)
                                             if response.status_code != requests.codes.ok:
