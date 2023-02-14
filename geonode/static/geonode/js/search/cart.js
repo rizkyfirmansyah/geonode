@@ -315,7 +315,7 @@
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     const response = JSON.parse(xhttp.responseText);
-                    response.categories.forEach(function(value, index, array) {
+                    response.objects.forEach(function(value, index, array) {
                         if (value.title == key) {
                             const cid = value.identifier;
                             const redirect_to = siteUrl + "catalogue/?f4e493d=" + cid
