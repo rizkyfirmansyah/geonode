@@ -50,6 +50,7 @@ class GroupCategory(models.Model):
     slug = models.SlugField(max_length=255, unique=True, null=False, blank=False)
     name = models.CharField(_("Name"), max_length=255, unique=True, null=False, blank=False)
     description = models.TextField(_("Description"), null=True, default=None, blank=True)
+    logo = models.ImageField(_('Logo'), upload_to="people_group", blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
@@ -76,6 +77,25 @@ class GroupCategory(models.Model):
         except Exception as e:
             logger.exception(e)
         super().delete(*args, **kwargs)
+
+    @property
+    def logo_url(self):
+        _missing_thumbnail_url = static(MISSING_THUMB)
+        try:
+            _base_path = os.path.split(self.logo.path)[0]
+            _upload_path = os.path.split(self.logo.url)[1]
+            _upload_path = os.path.join(_base_path, _upload_path)
+            if not os.path.exists(_upload_path):
+                copyfile(self.logo.path, _upload_path)
+        except Exception as e:
+            logger.debug(e)
+        _url = None
+        try:
+            _url = self.logo.url
+        except Exception as e:
+            logger.debug(e)
+            return _missing_thumbnail_url
+        return _url
 
 
 def group_category_pre_save(sender, instance, *args, **kwargs):

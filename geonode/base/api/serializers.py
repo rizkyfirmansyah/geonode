@@ -252,7 +252,7 @@ class GroupCategoriesSerializer(DynamicModelSerializer):
         model = GroupCategory
         name = 'objects'
         view_name = 'group-categories-list'
-        fields = ('pk', 'slug', 'name', 'description', 'created_by', 'created_at', 'member_count', 'detail_url', 'profile_url', 'groups')
+        fields = ('pk', 'slug', 'name', 'description', 'created_by', 'created_at', 'member_count', 'detail_url', 'profile_url', 'groups', 'logo_url')
 
     def get_profile_url(self, obj):
         return obj.get_profile_url()

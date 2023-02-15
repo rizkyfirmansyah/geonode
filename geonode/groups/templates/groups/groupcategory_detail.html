@@ -5,7 +5,7 @@
 {% block title %}{{ object.name|default:object.slug }} — {{ block.super.super }}{% endblock %}
 
 {% block body %}
-  <div class="card w-100 border-dark rounded mb-4">
+  <div class="card border-dark rounded mb-4">
     <div class="card-header">
       <div class="row">
         <h3 class="col">{{ object.name|default:object.slug }}</h3>
@@ -20,7 +20,14 @@
       </div>
     </div>
     <div class="card-body">
-        <p>{{ object.description|default_if_none:'' }}</p>
+        <div class="row">
+          <div class="col-md-4">
+            <img src="{{ object.logo_url }}" alt="{{ object.name }}" title="{{ object.name }}">
+          </div>
+          <div class="col-md-6">
+              <p>{{ object.description|default_if_none:'' }}</p>
+          </div>
+        </div>
     </div>
   </div>
   <div class="card w-100">

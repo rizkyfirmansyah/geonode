@@ -5,8 +5,9 @@
 {% verbatim %}
   <article ng-repeat="groupcategory in results" resource_id="{{ groupcategory.id }}" ng-cloak class="ng-cloak p-2">
     <div class="card">
+      <img class="card-img-top" src="{{ groupcategory.logo_url }}" alt="{{ groupcategory.name }}" title="{{ groupcategory.title }}" />
+      <a href="{{ groupcategory.detail_url }}" class="stretched-link"></a>
       <div class="card-body">
-        <a href="{{ groupcategory.detail_url }}" class="stretched-link"></a>
         <h4 class="card-title"><a href="{{ groupcategory.detail_url }}">{{ groupcategory.name }}</a></h4>
         <p class="card-text">
           {{ groupcategory.description | limitTo: 300 }}

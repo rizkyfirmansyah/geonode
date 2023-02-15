@@ -384,6 +384,7 @@ class GroupCategoryResource(TypeFilteredResource):
     detail_url = fields.CharField()
     member_count = fields.IntegerField()
     resource_counts = fields.CharField()
+    logo_url = fields.CharField()
     created_by = fields.CharField()
     profile_url = fields.CharField()
 
@@ -426,6 +427,9 @@ class GroupCategoryResource(TypeFilteredResource):
                 ~Q(access='private')
             )
         return filtered.count()
+
+    def dehydrate_logo_url(self, bundle):
+        return bundle.obj.logo_url
 
     def dehydrate(self, bundle):
         """Provide additional resource counts"""

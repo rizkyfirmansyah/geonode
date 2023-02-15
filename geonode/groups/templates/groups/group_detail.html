@@ -22,11 +22,7 @@
     <div class="card border-dark rounded">
       <div class="card-header"><h3 class="text-center">{{ object.title|default:object.slug }}</h3></div>
       <div class="card-body">
-        {% if object.logo_url %}
-          <img class="card-img-top" src="{{ object.logo_url }}" alt="{{ object.title }}" />
-        {% else %}
-          <!-- <p>{% trans "This group has not created a logo." %}</p> -->
-        {% endif %}
+        <img class="card-img-top" src="{{ object.logo_url }}" alt="{{ object.title }}" title="{{ object.title }}" />
         <div class="card-text">
           <p class="card-body">{{ object.description }}</p>
           {% if object.keyword_list %}

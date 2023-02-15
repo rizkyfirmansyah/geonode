@@ -68,7 +68,7 @@ class SetGroupLayerPermission(View):
 
 class GroupCategoryCreateView(LoginRequiredMixin, CreateView):
     model = models.GroupCategory
-    fields = ['name', 'description']
+    fields = ['name', 'description', 'logo']
     
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -77,7 +77,7 @@ class GroupCategoryCreateView(LoginRequiredMixin, CreateView):
 
 class GroupCategoryDetailView(LoginRequiredMixin, DetailView):
     model = models.GroupCategory
-    fields = ['name', 'description']
+    fields = ['name', 'description', 'logo']
 
     def get(self, request, *args, **kwargs):
         self.groupcategory = get_object_or_404(models.GroupCategory, slug=kwargs.get('slug'))
@@ -91,7 +91,7 @@ class GroupCategoryDetailView(LoginRequiredMixin, DetailView):
 
 class GroupCategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = models.GroupCategory
-    fields = ['name', 'description']
+    fields = ['name', 'description', 'logo']
     template_name_suffix = '_update_form'
 
 
