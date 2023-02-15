@@ -78,11 +78,9 @@ class ProfileCreationForm(UserCreationForm):
 
 class ProfileLoginForm(LoginForm):
   
-    hcaptcha = hCaptchaField()
-
     class Meta:
         fields = '__all__'
-        unlabelled_fields = ('remember', 'hcaptcha')
+        unlabelled_fields = ('remember',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,8 +93,7 @@ class ProfileLoginForm(LoginForm):
             Column('login', css_class='form-group'),
             Column('password', css_class='form-group'),
             Column('remember'),
-            Column('hcaptcha'),
-            Submit('submit', 'Sign in', css_class='btn btn-primary btn-login w-100')
+            Submit('submit', 'Sign in', css_class='btn-upload btn-login btn-block mt-4')
         )
 
         self.fields['login'].label = 'E-mail Address or Username'
@@ -112,7 +109,7 @@ class ProfileLoginForm(LoginForm):
                     'data-on': remember_choices[0][1],
                     'data-off': remember_choices[1][1],
                     'value': remember_choices[0][0],
-                    'data-onstyle': 'info',
+                    'data-onstyle': 'danger',
                     'data-offstyle': 'primary'})
 
     def clean_login(self):
@@ -175,8 +172,8 @@ class ProfileSignupForm(SignupForm):
             Column('last_name', css_class='form-group'),
             Column('password1', css_class='form-group'),
             Column('password2', css_class='form-group'),
-            Column('hcaptcha', css_class='w-100'),
-            Submit('submit', 'Sign up', css_class='btn btn-primary btn-login w-100')
+            Column('hcaptcha', css_class='form-group'),
+            Submit('submit', 'Sign up', css_class='btn-upload btn-login btn-block')
         )
 
         self.fields['email'].label = 'E-mail Address'
