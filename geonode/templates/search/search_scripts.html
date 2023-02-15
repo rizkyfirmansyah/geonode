@@ -59,7 +59,7 @@
   {% elif "/groups/group/" in path %}
       SEARCH_URL = '{% url 'profiles-list' %}?members={{object.slug}}';
   
-  {% elif "/groups/" in path or "/groups/?c" in path or "/groups/?q" in path or "/groups/?order_by" in path  %}
+  {% elif path == "/groups/" or "/groups/?c" in path or "/groups/?q" in path or "/groups/?order_by" in path or "/groups/?dbgp87e" in path %}
       SEARCH_URL = '{% url 'group-profiles-list' %}';
 
   {% elif "groups/categories/" in path %}
