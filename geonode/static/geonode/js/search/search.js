@@ -744,6 +744,26 @@
             fetch_results();
         });
 
+        var noResultHandlerMsg = (query) => {
+          return `
+            <div id="searchToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+              <div class="toast-message alert-warning align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                  <strong class="mr-auto">Search Result</strong>
+                  <small class="text-muted"></small>
+                  <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('searchToast').remove()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="toast-body">
+                  <span class="font-lg-1"><strong>No results</strong> on your query: `+ query +`</span>
+                </div>
+              </div>
+              <img src="close.soon" style="display:none;" onerror="(function(el){ setTimeout(function(){ $(el).parent().remove(); }, 3000 ); })(this);" />
+            </div>
+          `
+        }
+
         $('#text_search_input').on('keypress', function(e) {
             if (e.which == 13) {
                 fetch_results();
@@ -752,6 +772,12 @@
                   if (text_search) {
                       var found = $scope.total_counts + " datasets found for \"" + text_search +'"';
                       $("#dataset-found").text(found);
+                      var url = $location.absUrl().split('/');
+                      if (!url.includes("catalogue")) {
+                          if ($scope.total_counts == 0) {
+                              $(document.body).append(noResultHandlerMsg(text_search));
+                          };
+                      }
                   };
                   $(".ac-results").addClass("d-none");
                 }, 500);
@@ -765,7 +791,16 @@
             if ($('#text_search_input').val()) {
               $scope.infiniteScrollLoaded = true;
               $scope.init = true;
-              $scope.query['dbbc87e'] = $('#text_search_input').val();
+              var url = $location.absUrl().split('/');
+              if (url.includes("catalogue")) {
+                  $scope.query['dbbc87e'] = $('#text_search_input').val();
+              } else if (url.includes("people")) {
+                  $scope.query['dbbp87e'] = $('#text_search_input').val();
+              } else if (url.includes("categories")) {
+                  $scope.query['dbgc87e'] = $('#text_search_input').val();
+              } else {
+                  $scope.query['dbgp87e'] = $('#text_search_input').val();
+              }
               query_api($scope.query);
               
             } else {

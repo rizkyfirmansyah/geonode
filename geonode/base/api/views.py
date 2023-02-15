@@ -37,6 +37,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from django.db import models
 from django.core.validators import validate_email
+from django.db.models import Q
 
 from geonode.thumbs.exceptions import ThumbnailError
 from geonode.thumbs.thumbnails import create_thumbnail
@@ -60,7 +61,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework import status
 
 from geonode.base.models import Configuration, ExtraMetadata, HierarchicalKeyword, Region, ResourceBase, ResourceVersion, TopicCategory, DataType, ThesaurusKeyword
-from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, ResourceBaseFilter
+from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, ResourceBaseFilter, ProfileFilter
 from geonode.base.utils import validate_extra_metadata
 from geonode.favorite.models import Favorite
 from geonode.groups.models import GroupCategory, GroupProfile, GroupMember
@@ -178,10 +179,18 @@ class GroupCategoryViewSet(DynamicModelViewSet):
         queryset = GroupCategory.objects.all().order_by('-last_modified')
         slug = self.request.query_params.get('c', None)
         order_by = self.request.query_params.get('order_by', None)
+        search_input = self.request.query_params.get('dbgc87e', None)
+
         if slug is not None:
             queryset = queryset.filter(slug__icontains=slug)
         if order_by is not None:
             queryset = queryset.order_by(order_by)
+        if search_input:
+            queryset = queryset.filter(
+                Q(name__icontains=search_input) |
+                Q(description__icontains=search_input)
+            )
+
         return queryset
 
 
@@ -201,12 +210,20 @@ class GroupViewSet(DynamicModelViewSet):
         slug = self.request.query_params.get('q', None)
         slug_categories = self.request.GET.getlist('c')
         order_by = self.request.query_params.get('order_by', None)
+        search_input = self.request.query_params.get('dbgp87e', None)
+
         if slug is not None:
             queryset = queryset.filter(slug__icontains=slug)
         if slug_categories:
             queryset = queryset.filter(categories__slug__in=slug_categories)
         if order_by is not None:
             queryset = queryset.order_by(order_by)
+        if search_input:
+            queryset = queryset.filter(
+                Q(title__icontains=search_input) |
+                Q(description__icontains=search_input)
+            )
+
         return queryset
 
     @extend_schema(methods=['get'], responses={200: UserSerializer(many=True)},
@@ -380,7 +397,7 @@ class ProfileViewSet(DynamicModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
     permission_classes = (TokenAuthOAuthApplicationsQuery | IsAuthenticated, )
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, ProfileFilter]
     serializer_class = ProfileSerializer
     pagination_class = GeoNodeApiPagination
 

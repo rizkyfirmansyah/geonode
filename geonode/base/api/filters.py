@@ -135,3 +135,20 @@ class ResourceBaseFilter(BaseFilterBackend):
                 queryset = queryset.exclude(id__in=is_favorited)
 
         return queryset.distinct()
+
+
+class ProfileFilter(BaseFilterBackend):
+    def filter_queryset(self, request, queryset, _):
+        order_by = request.query_params.get('order_by', None)
+        search_input = request.query_params.get('dbbp87e', None)
+
+        if order_by:
+            queryset = queryset.order_by(order_by)
+
+        if search_input:
+            queryset = queryset.filter(
+                Q(username__icontains=search_input) |
+                Q(first_name__icontains=search_input) |
+                Q(last_name__icontains=search_input)
+            )
+        return queryset

@@ -1,18 +1,16 @@
 {% load i18n %}
 {% load static %}
 
-  {% if facet_type == 'groups' %}
+{% if facet_type == 'groups' %}
   <div class="col-md-12 m-0 p-0 float-right groupsList" infinite-scroll-directive="loadMoreResource()">
         {% include 'search/_group_snippet.html' %}
   </div>
-  {% elif facet_type == 'groupcategories' %}
-  <div class="clearfix groupsList" infinite-scroll-directive="loadMoreResource()">
+{% elif facet_type == 'groupcategories' %}
+  <div class="col-md-12 m-0 p-0 float-right groupsList" infinite-scroll-directive="loadMoreResource()">
       {% include 'search/_groupcategory_snippet.html' %}
   </div>
-    {% elif facet_type == 'people' %}
-  <div class="row groupsList" infinite-scroll-directive="loadMoreResource()">
-    <div class="col-md-12 mt-2 p-0"></div>
+{% elif facet_type == 'people' %}
+  <div class="col-md-12 m-0 p-0 float-right groupsList" infinite-scroll-directive="loadMoreResource()">
         {% include "people/_profile_list_item.html" %}
-    </div>
   </div>
-  {% endif %}
+{% endif %}
