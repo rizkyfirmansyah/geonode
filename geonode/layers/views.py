@@ -349,7 +349,7 @@ def preview_data_tables(table, preview=True):
                     select to_jsonb(sq) - 'the_geom' - 'fid'::text data
                     from (
                     select * from
-                    \"""" + table + """\" limit """ + settings.LIMIT_FEATURE_LAYERS +"""
+                    \"""" + table + """\" limit """ + str(settings.LIMIT_FEATURE_LAYERS) +"""
                     ) sq
                 ) as data;
             """
@@ -399,7 +399,7 @@ def preview_data_tables(table, preview=True):
         cursor = conn.cursor()
         try:
             cursor.execute(_query_set(table))
-            row = dictfetchall(cur)
+            row = dictfetchall(cursor)
 
             return row
         except Exception as err:
