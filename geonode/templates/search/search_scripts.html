@@ -50,7 +50,7 @@
 
   {% get_current_path as path %}
 
-  {% if "/people/" in path %}
+  {% if path == "/people/" or "people/?dbbp87e" in path %}
       SEARCH_URL = '{% url 'profiles-list' %}?q={{profile.username}}';
 
   {% elif "/people/profile" in path %}
@@ -65,7 +65,7 @@
   {% elif "groups/categories/" in path %}
       SEARCH_URL = '{% url 'group-categories-list' %}?c={{object.slug}}';
       
-  {% elif "catalogue" in path %}
+  {% else %}
       SEARCH_URL = '{% url 'base-resources-list' %}';
   {% endif %}
 
