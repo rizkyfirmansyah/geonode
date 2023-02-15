@@ -23,9 +23,11 @@
         <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "about" %}" role="button" target="_self" title="About">
           <div class="col-12 navigation_link">About</div>
         </a>
-        <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "account_login" %}" role="button" target="_self" title="Login">
-          <div class="col-12 navigation_link">Login</div>
-        </a>
+        {% if not user.is_authenticated %}
+          <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "account_login" %}" role="button" target="_self" title="Login">
+            <div class="col-12 navigation_link">Login</div>
+          </a>
+        {% endif %}
         {% if request.user.is_authenticated %}
         <a class="text-white row w-100 mb-2 text-decoration-none" href="{% url "help" %}" role="button" target="_self" title="Help & Support">
           <div class="col-12 navigation_link">Help & Support</div>
