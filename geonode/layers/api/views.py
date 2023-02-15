@@ -76,19 +76,18 @@ class LayerViewSet(DynamicModelViewSet):
         parser_classes=[JSONParser, FormParser]
     )
     def check_features(self, request, resource_id):
-        from psycopg2 import connect
-        from urllib.parse import urlparse
-        from django.contrib import messages
-        from django.utils.translation import ugettext as _
+
         def _check_by_limit(table, limit):
             """
             perform query to each layers in order to display on layer detail page as datatables
             connect to geodatabase defined in the .env using psycopg2
             return: json attributes omitted the_geom column and fid
             """
+            from psycopg2 import connect
+            from urllib.parse import urlparse
 
             def _query_set(table, limit):
-                query = 'select count(*), count(*) > ' + str(limit) + ' as data from ' + table + ''
+                query = 'select count(*), count(*) > ' + str(limit) + ' as data from "' + table + '"'
                 return query
 
             def _connect():
@@ -126,14 +125,17 @@ class LayerViewSet(DynamicModelViewSet):
                     cursor.close()
                     # then close the connection object
                     conn.close()
-
-
-                layer = Layer.objects.get(id=resource_id)
-                data_tables = _check_by_limit(layer.name, settings.LIMIT_FEATURE_LAYERS)
-                # if callback is true, display the toast info
-                load_feature = data_tables[1]
-                total_feature = data_tables[0]
-
-                return Response({'data': load_feature,'total': total_feature })
             else:
-                return Response({'data': "Error connecting database, please contact your Administrator"}, status=500, exception=True)
+                return None
+
+
+        layer = Layer.objects.get(id=resource_id)
+        data_tables = _check_by_limit(layer.name, settings.LIMIT_FEATURE_LAYERS)
+
+        if data_tables:
+            # if callback is true, display the toast info
+            load_feature = data_tables[1]
+            total_feature = data_tables[0]
+            return Response({'data': load_feature,'total': total_feature })
+        else:
+            return Response({'data': "Error connecting database, please contact your Administrator"}, status=500, exception=True)
