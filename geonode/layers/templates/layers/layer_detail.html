@@ -691,7 +691,7 @@
                         $('.toast').toast('show');
                     }
                   }
-              })
+                }).done(() => { $('#liveToast').remove(); } );
             });
         {% endif %}
         $('#loadAttributeTables').on('click', function(e) {
