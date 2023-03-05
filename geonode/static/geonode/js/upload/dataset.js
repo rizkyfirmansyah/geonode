@@ -220,6 +220,7 @@
                       var formData = new FormData();
                       formData.append('file_url', file_url);
                       formData.append('import_id', $('#import_id').val());
+                      formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
                       var postParams = {
                           method: 'POST',
                           url: siteUrl + "datasets/upload/file",
@@ -584,6 +585,7 @@
         formData.append('end', end);
         formData.append('existingPath', existingPath);
         formData.append('nextSlice', nextChunk);
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
         $('.filename').text(file.name);
         var postParams = {
             method: 'POST',
