@@ -220,14 +220,13 @@
                       var formData = new FormData();
                       formData.append('file_url', file_url);
                       formData.append('import_id', $('#import_id').val());
-                      formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
                       var postParams = {
                           method: 'POST',
                           url: siteUrl + "datasets/upload/file",
                           data: formData,
                           cache: false,
                           dataType: 'json',
-                          headers: {'Content-Type': undefined }
+                          headers: {'Content-Type': undefined, "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
                       };
                       var uploadFile = $http(postParams).then(function(res) {
                           var _data = res.data.objects;
@@ -309,7 +308,8 @@
               data: {pk: id},
               url: siteUrl + "api/v2/files/delete_file",
               headers: {
-                  'Content-type': 'application/json;charset=utf-8'
+                  'Content-type': 'application/json;charset=utf-8',
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
               }
           };
           $http(deleteParams).then(successCallback)
@@ -354,7 +354,7 @@
                       "file_url": $(".file_url:eq("+i+")").val(),
                       "file_description": $(".file_description:eq("+i+")").val(),
                       "file_data_quality": $(".file_data_quality:eq("+i+")").val(),
-                      "permissions": perms
+                      "permissions": perms,
                       // "file_keywords": $(".file_keywords:eq("+i+")").val(),
                   })
               }
@@ -375,7 +375,7 @@
                       "file_name": $(".file_name:eq("+i+")").val(),
                       "file_url": $(".file_url:eq("+i+")").val(),
                       "file_description": $(".file_description:eq("+i+")").val(),
-                      "file_data_quality": $(".file_data_quality:eq("+i+")").val()
+                      "file_data_quality": $(".file_data_quality:eq("+i+")").val(),
                       // "file_keywords": $(".file_keywords:eq("+i+")").val(),
                   })
               }
@@ -390,7 +390,7 @@
                   data: JSON.stringify(patchReplaceDatasetFile()),
                   cache: false,
                   dataType: 'json',
-                  headers: {'Content-Type': "application/json" }
+                  headers: {'Content-Type': "application/json", "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
               };
           } else {
             var postParams = {
@@ -400,7 +400,7 @@
                 data: JSON.stringify(patchDatasetFile()),
                 cache: false,
                 dataType: 'json',
-                headers: {'Content-Type': "application/json" }
+                headers: {'Content-Type': "application/json", "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
             };
           }
           
@@ -585,7 +585,6 @@
         formData.append('end', end);
         formData.append('existingPath', existingPath);
         formData.append('nextSlice', nextChunk);
-        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
         $('.filename').text(file.name);
         var postParams = {
             method: 'POST',
@@ -605,7 +604,7 @@
                 }
             },
             data: formData,
-            headers: {'Content-Type': undefined }
+            headers: {'Content-Type': undefined, "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value }
         };
         var uploadFile = $http(postParams).then(function(res) {
             var _data = res.data.objects;
