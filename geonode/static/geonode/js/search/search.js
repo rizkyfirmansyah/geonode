@@ -759,7 +759,7 @@
                   <span class="font-lg-1"><strong>No results</strong> on your query: `+ query +`</span>
                 </div>
               </div>
-              <img src="close.soon" style="display:none;" onerror="(function(el){ setTimeout(function(){ $(el).parent().remove(); }, 3000 ); })(this);" />
+              <img src="" style="display:none;" onerror="(function(el){ setTimeout(function(){ $(el).parent().remove(); }, 3000 ); })(this);" />
             </div>
           `
         }
