@@ -147,6 +147,9 @@
 
 {% block extra_script %}
 {{ block.super }}
+
+{% include 'search/search_scripts.html' %}
+
 <script data-main="{% static 'geonode/js/upload/main.js' %}"
   src="{% static 'lib/js/require.js' %}">
 </script>
