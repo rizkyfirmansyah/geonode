@@ -166,6 +166,13 @@
       setTimeout(function() {
         $('#upload-button').prop("disabled", false)
       }, 3000);
+      const onConfirmRefresh = function (event) {
+        event.preventDefault();
+        console.log(event);
+        return event.returnValue = "Are you sure you want to leave the page?";
+      }
+      
+      window.addEventListener("beforeunload", onConfirmRefresh, { capture: true });
   });
 
 </script>
