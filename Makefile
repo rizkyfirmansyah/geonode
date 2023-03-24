@@ -17,10 +17,10 @@ up:
 	docker-compose up -d
 
 geoserver:
-	docker-compose -f docker-compose-geoserver-server.yml up --build -d
+	docker-compose -f docker-compose-geoserver.yml up --build -d
 
 geoserverdown:
-	docker-compose -f docker-compose-geoserver-server.yml down
+	docker-compose -f docker-compose-geoserver.yml down
 
 build:
 	docker-compose build django

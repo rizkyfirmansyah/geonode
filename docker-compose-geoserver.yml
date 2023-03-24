@@ -1,0 +1,56 @@
+version: '3.5'
+services:
+
+  geoserver:
+    build:
+      context: ./scripts/docker/env/${DOCKER_ENV}/geoserver/
+      args:
+        - GEOSERVER_DATA_DIR=${GEOSERVER_DATA_DIR}
+        - GEONODE_GEODATABASE=${GEONODE_GEODATABASE}
+        - GEONODE_DATABASE_GF=${GEONODE_DATABASE_GF}
+        - GEONODE_DATABASE=${GEONODE_DATABASE}
+        - GEONODE_MONITORING_DATABASE=${GEONODE_MONITORING_DATABASE}
+        - GEONODE_DATABASE_PASSWORD=${GEONODE_DATABASE_PASSWORD}
+        - GEONODE_GEODATABASE_USER=${GEONODE_GEODATABASE_USER}
+        - GEONODE_GEODATABASE_PASSWORD=${GEONODE_GEODATABASE_PASSWORD}
+        - DB_CMS_HOST=${DB_CMS_HOST}
+        - DB_CMS_PORT=${DB_CMS_PORT}
+        - DB_GIS_HOST=${DB_GIS_HOST}
+        - DB_GIS_PORT=${DB_GIS_PORT}
+        - GEOSERVER_VERSION=${GEOSERVER_VERSION}
+        - HTTP_HOST=${HTTP_HOST}
+        - SITEURL=${SITEURL}
+        - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+        - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+        - OAUTH2_CLIENT_ID=${OAUTH2_CLIENT_ID}
+        - OAUTH2_CLIENT_SECRET=${OAUTH2_CLIENT_SECRET}
+    restart: unless-stopped
+    container_name: geoserver4${COMPOSE_PROJECT_NAME}
+    healthcheck:
+      test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/rest/workspaces/geonode.html"
+      interval: 60s
+      timeout: 10s
+      retries: 1
+      start_period: 60s
+    volumes:
+      - statics:/mnt/volumes/statics
+      - geoserver-data-dir:${GEOSERVER_DATA_DIR}
+      - backup-restore:/backup_restore
+    env_file:
+      - ./scripts/docker/env/${DOCKER_ENV}/geoserver/geoserver.env
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - geonode
+
+volumes:
+  geoserver-data-dir:
+    name: ${COMPOSE_PROJECT_NAME}-gsdatadir
+  statics:
+    name: ${COMPOSE_PROJECT_NAME}-statics
+  backup-restore:
+    name: ${COMPOSE_PROJECT_NAME}-backup-restore
+
+networks:
+  geonode:
+    name: geonode
