@@ -14,9 +14,7 @@
 {% block body %}
 <div class="card rounded bg-light">
   <div class="card-header bg-layer">
-    <div class="row">
-      <h3 class="text-light"> {% trans "Inspect data for " %} "{{ layer_name }}" </h3>
-    </div>
+      <h3 class="text-light text-center"> {% trans "Inspect data for " %} "{{ layer_name }}" </h3>
   </div>
 
   <form method="POST" id="timeForm" role="form" class="form-horizontal">
@@ -25,8 +23,10 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card-header">
-              <h4>{% trans "Configure as Time-Series" %}</h4>
-              <input type="checkbox" id="time-series-toggle-choice" data-toggle="toggle">
+              <div class="d-flex justify-content-between">
+                <h5>{% trans "Configure as Time-Series" %}</h5>
+                <input type="checkbox" id="time-series-toggle-choice" data-toggle="toggle float-right">
+              </div>
               <span class="help-tip">
                   <p>{% blocktrans %}Toggling this selector allows you to configure (or not) this data as a time series; in this case you will also have to select an attribute
                       to drive the time dimension.
