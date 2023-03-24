@@ -1,5 +1,5 @@
-FROM python:3.8.9-buster
-LABEL version="3.6.x"
+FROM python:3.10-buster
+LABEL version="3.7.x"
 
 RUN mkdir -p /usr/src/geonode
 
@@ -74,8 +74,6 @@ RUN pip install --upgrade  -e .
 
 # Cleanup apt update lists
 RUN rm -rf /var/lib/apt/lists/*
-
-COPY package/geotools /mnt/volumes/statics/geoip
 
 # Export ports
 EXPOSE 8000
