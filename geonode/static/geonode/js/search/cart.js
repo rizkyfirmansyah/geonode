@@ -82,7 +82,7 @@
                     <div class="toast-header">
                       <strong class="mr-auto">Set Permissions</strong>
                       <small class="text-muted"></small>
-                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('datasetToast').remove()" aria-label="Close">
+                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('permsToast').remove()" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
@@ -92,6 +92,38 @@
                   </div>
                 </div>
               `
+            }
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date+' '+time;
+
+            var toastLoadingMsg = function(title, status = 'info') {
+                return `
+                <div id="loadingToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+                  <div class="toast-message alert-`+status+` align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                      <strong class="mr-auto">`+title+`</strong>
+                      <small class="text-muted">`+time+`</small>
+                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('loadingToast').remove()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="toast-body">
+                        <p class="text-center text-primary" id="remaining">
+                          <span class="text-center text-primary">Grab your favourite snack, coffee, or tea while waiting :)</span>
+                        </p>
+                        <div class="row justify-content-center">
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                `
             }
             
             $.ajax({
@@ -104,9 +136,12 @@
                 },
                 beforeSend: function() {
                     Pace.start();
+                    const toast_title = "Updating Permission Resources";
+                    $(document.body).append(toastLoadingMsg(toast_title));
                 },
                 complete: function() {
                     // Handle the complete event
+                    $('#loadingToast').remove();
                     try {
                         $("#bulkModalPerms").modal("hide");
                     } catch (err) {
@@ -175,6 +210,11 @@
                 },
                 beforeSend: function() {
                     Pace.start();
+                    const toast_title = "Updating Metadata Resources";
+                    $(document.body).append(toastLoadingMsg(toast_title));
+                },
+                complete: function() {
+                    $('#loadingToast').remove();
                 },
                 success: function(data) {
                     var msg = 'Metadata has been updated on your selected resources';
