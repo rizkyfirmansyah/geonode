@@ -66,6 +66,7 @@
 {% include 'search/search_scripts.html' %}
 
 <script type="text/javascript">
+
   $("#id-mark-as-unread").click(() => {
       $("#id-action-type").attr('value', 'unread');
       $("#id-inbox-form").submit();
@@ -94,23 +95,25 @@
       })
   });
 
-function prepare_read_unread_form(objectClicked) {
-    if (objectClicked.type === 'checkbox') {
-        $("#read_unread_" + objectClicked.name.split("_")[1])[0].value = objectClicked.checked;
+function getting_row_ids(ids) {
+    var name = $("#"+ids).attr("name");
+    var is_checked = $("#"+ids).prop("checked");
+    if (name) {
+        var id = name.split("_")[1];
+        deleteList.push(id);
+        $("#read_unread_" + id)[0].value = is_checked;
     }
 }
 
-function prepare_delete_form(objectClicked) {
-    if (objectClicked.type === 'checkbox') {
-        deleteList.push(objectClicked.name.split("_")[1])
-    }
-}
 var deleteList = [];
 
 $('.tab-content').click(function(event) {
+  var tr = event.target.closest('tr');
+  var id = $(tr).find('input[type=checkbox]').attr('id');
+  $("#"+id).prop("checked", !$("#"+id).prop("checked"));
+
   const objectClicked = event.target;
-  prepare_read_unread_form(objectClicked)
-  prepare_delete_form(objectClicked)
+  getting_row_ids(id);
 
   // If we clicked the delete button
   if ($(objectClicked)[0].className.indexOf('message_delete_btn') >= 0) {
