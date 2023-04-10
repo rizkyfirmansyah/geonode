@@ -52,7 +52,7 @@ def random_uuid():
 @register.simple_tag
 def format_senders(thread, current_user):
     User = get_user_model()
-    users = User.objects.filter(sent_messages__thread=thread).annotate(Sum('pk'))
+    users = User.objects.filter(sent_messages__thread=thread)
     sender_string = ''
     u_count = users.count()
     if u_count < 3:
