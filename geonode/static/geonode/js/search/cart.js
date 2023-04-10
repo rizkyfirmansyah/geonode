@@ -96,6 +96,7 @@
             
             $.ajax({
                 type: "POST",
+                headers: {"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value },
                 url: siteUrl + "security/bulk-permissions",
                 data: {
                     permissions: JSON.stringify(data),
@@ -166,6 +167,7 @@
             
             $.ajax({
                 type: "POST",
+                headers: {"X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value },
                 url: siteUrl + "security/bulk-metadata",
                 data: {
                     resources: JSON.stringify(data),
