@@ -46,7 +46,7 @@ from geonode.messaging.notifications import send_inbox
 from geonode.notifications_helper import send_notification
 from geonode.security.forms import RodaForm
 from django.shortcuts import render, redirect
-from geonode.notifications_helper import toast_unauthorized
+from geonode.views import unauthorized_message
 from django.contrib import messages
 from user_messages.models import Message, Thread
 from django.core.mail import EmailMessage
@@ -175,20 +175,19 @@ def resource_permissions(request, resource_id):
 
 
 def resource_geolimits(request, resource_id):
-    toast_title = _("Resource Geolimits")
     try:
         resource = resolve_object(
             request, ResourceBase, {
                 'id': resource_id}, 'base.change_resourcebase_permissions')
     except PermissionDenied:
-        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_MODIFY)
+        return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
 
     can_change_permissions = request.user.has_perm(
         'change_resourcebase_permissions',
         resource)
 
     if not can_change_permissions:
-        return toast_unauthorized(request, toast_title, _PERMISSION_MSG_MODIFY)
+        return unauthorized_message(request, _PERMISSION_MSG_MODIFY)
 
     user_id = request.GET.get('user_id', None)
     group_id = request.GET.get('group_id', None)
