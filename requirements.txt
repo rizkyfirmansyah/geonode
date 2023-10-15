@@ -152,13 +152,13 @@ mock<5.0.0
 pyOpenSSL==22.0.0
 
 # geopython dependencies
-pyproj>=3.3.0
+pyproj<3.7.0
 OWSLib==0.26.0
 pycsw==2.6.1
-SQLAlchemy==1.4.39 # require by PyCSW
+SQLAlchemy==2.0.21 # require by PyCSW
 Shapely==1.8.2
 mercantile==1.2.1
-geoip2==4.6.0
+geoip2==4.7.0
 numpy==1.23.*
 
 # tests
@@ -181,5 +181,5 @@ setuptools>=59.1.1,<63.2.0
 webdriver-manager==3.4.2
 webencodings==0.5.1
 websocket-client==1.2.3
-pip>=22.1.2
+pip==23.1.1
 pixelmatch~=0.2.3
