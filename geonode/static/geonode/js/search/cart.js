@@ -199,6 +199,34 @@
                 </div>
               `
             }
+
+            var toastLoadingMsg = function(title, status = 'info') {
+                return `
+                <div id="loadingToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
+                  <div class="toast-message alert-`+status+` align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                      <strong class="mr-auto">`+title+`</strong>
+                      <small class="text-muted">`+time+`</small>
+                      <button type="button" class="ml-2 mb-1 close" onclick="document.getElementById('loadingToast').remove()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="toast-body">
+                        <p class="text-center text-primary" id="remaining">
+                          <span class="text-center text-primary">Grab your favourite snack, coffee, or tea while waiting :)</span>
+                        </p>
+                        <div class="row justify-content-center">
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                          <div class="spinner-grow text-info mr-3" role="status"><span class="sr-only text-center">Loading...</span></div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                `
+            }
             
             $.ajax({
                 type: "POST",
