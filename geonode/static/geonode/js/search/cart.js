@@ -181,6 +181,10 @@
             var items = cart.getCart().items;
             var selected_ids = $.map(items, function(item) { return item.pk });
             var data = $("#bulk_metadata_form").serializeObject();
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date+' '+time;
             var bulkMetadataMsg = function(msg, status = 'success') {
                 return `
                 <div id="bulkMetadataToast" class="position-fixed bottom-0 right-0 p-3" style="z-index: 99999; right: 0; bottom: 0;">
