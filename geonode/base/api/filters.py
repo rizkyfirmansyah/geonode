@@ -72,13 +72,15 @@ class ResourceBaseFilter(BaseFilterBackend):
             queryset = queryset.filter(owner__username__in=owner)
 
         if search_input:
+            from geonode.base.models import HierarchicalKeyword
+            kws = HierarchicalKeyword.objects.filter(name__iexact=search_input)
             queryset = queryset.filter(
                 Q(title__icontains=search_input) |
                 Q(abstract__icontains=search_input) |
                 Q(data_quality_statement__icontains=search_input) |
                 Q(purpose__icontains=search_input) |
                 Q(data_description__icontains=search_input) |
-                Q(keywords__slug__in=search_input)
+                Q(keywords__in=kws)
             )
         if order_by:
             queryset = queryset.order_by(order_by)
