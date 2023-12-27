@@ -329,7 +329,13 @@ class ResourceBaseAutocomplete(autocomplete.Select2QuerySetView):
         qs = ResourceBase.objects.all().filter(id__in=permitted)
 
         if self.q:
-            qs = qs.filter(Q(title__icontains=self.q) | Q(abstract__icontains=self.q)).order_by('title')
+            qs = qs.filter(Q(title__icontains=self.q) | 
+                            Q(abstract__icontains=self.q) |
+                            Q(data_quality_statement__icontains=self.q) |
+                            Q(purpose__icontains=self.q) |
+                            Q(data_description__icontains=self.q) |
+                            Q(keywords__slug__in=self.q)
+                            ).order_by('title')
 
         return get_visible_resources(
             qs,
