@@ -77,7 +77,8 @@ class ResourceBaseFilter(BaseFilterBackend):
                 Q(abstract__icontains=search_input) |
                 Q(data_quality_statement__icontains=search_input) |
                 Q(purpose__icontains=search_input) |
-                Q(data_description__icontains=search_input)
+                Q(data_description__icontains=search_input) |
+                Q(keywords__slug__in=search_input)
             )
         if order_by:
             queryset = queryset.order_by(order_by)
