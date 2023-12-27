@@ -131,7 +131,7 @@ def _get_wcs_axis_labels(coverage_id):
             <ows:Metadata xlink:type="simple" xlink:href="..."/>
             <ows:Metadata xlink:type="simple" xlink:href="..."/>
             <ows:Metadata xlink:type="simple" xlink:href="..."/>
-            <ows:Metadata xlink:type="simple" xlink:href="http://localhost:8000/showmetadata/xsl/42"/>
+            <ows:Metadata xlink:type="simple" xlink:href="https://localhost:8000/showmetadata/xsl/42"/>
         </gmlcov:Extension>
         </gmlcov:metadata>
         <gml:domainSet>
