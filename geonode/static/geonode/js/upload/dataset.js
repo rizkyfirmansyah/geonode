@@ -770,7 +770,7 @@
     var render_html;
     if (ext == 'pdf') {
         render_html = `
-          <canvas id="pdf_renderer" class="w-100"></canvas>
+          <canvas id="pdf_renderer" class=""></canvas>
           <div class="row justify-content-center mt-2">
               <div id="prev" class="btn btn-light mr-4"><i class="fa-solid fa-angle-left"></i></div>
               <div>
