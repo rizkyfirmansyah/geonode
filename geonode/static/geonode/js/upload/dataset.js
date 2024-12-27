@@ -126,7 +126,7 @@
           }).modal('show');
           var preview;
           var download_url = siteUrl + "datasets/upload/file/preview/" + id;
-          if (type == 'word' || type == 'excel' || type == 'powerpoint' || ext == 'pdf') {
+          if (type == 'word' || type == 'excel' || type == 'powerpoint') {
               preview = "https://docs.google.com/gview?url=" + download_url + "&embedded=true";
           } else {
               preview = download_url;
@@ -739,7 +739,7 @@
         
         queueRenderPage(num);
     }
-    // document.getElementById('zoom_in').addEventListener('click', zoomIn);
+    document.getElementById('zoom_in').addEventListener('click', zoomIn);
 
 
     /**
@@ -752,7 +752,7 @@
         var num = parseInt($("#current_page").val());
         queueRenderPage(num);
     }
-    // document.getElementById('zoom_out').addEventListener('click', zoomOut);
+    document.getElementById('zoom_out').addEventListener('click', zoomOut);
 
     /**
       * Asynchronously downloads PDF.
@@ -768,7 +768,7 @@
 
   dataset.render_file = function(ext, type, url, id) {
     var render_html;
-    if (ext == 'odp') {
+    if (ext == 'pdf') {
         render_html = `
           <canvas id="pdf_renderer" class="w-100"></canvas>
           <div class="row justify-content-center mt-2">
@@ -778,10 +778,12 @@
                 <span> / <span id="page_count"></span> </span>
               </div>
               <div id="next" class="btn btn-light ml-4"><i class="fa-solid fa-angle-right"></i></div>
+              <div id="zoom_in" class="btn"><i class="fa-solid fa-search-plus"></i></div>
+              <div id="zoom_out" class="btn"><i class="fa-solid fa-search-minus"></i></div>
           </div>
         `
     }
-    else if (type == 'word' || type == 'excel' || type == 'powerpoint' || ext == 'pdf') {
+    else if (type == 'word' || type == 'excel' || type == 'powerpoint') {
         render_html = '<iframe src='+ url +' width="100%" height="480px" frameborder="0"></iframe>'
     }
     else if (type == 'image') {
